@@ -1,0 +1,17 @@
+{
+	"expo": {
+		"scheme": "work-holo",
+		"userInterfaceStyle": "automatic",
+		"orientation": "default",
+		"web": {
+			"bundler": "metro"
+		},
+		"name": "work-holo",
+		"slug": "work-holo",
+		"plugins": ["expo-font"],
+		"experiments": {
+			"typedRoutes": true,
+			"reactCompiler": true
+		}
+	}
+}
