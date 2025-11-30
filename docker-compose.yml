@@ -1,0 +1,32 @@
+name: "work-holo"
+
+services:
+  electric:
+    image: docker.io/electricsql/electric:latest
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@supabase_db_db:5432/postgres
+      # Not suitable for production. Only use insecure mode in development or if you've otherwise secured the Electric API.
+      # See https://electric-sql.com/docs/guides/security
+      ELECTRIC_INSECURE: true
+    ports:
+      - "5003:3000"
+    networks:
+      - supabase_network_db
+
+  dragonfly:
+    image: docker.dragonflydb.io/dragonflydb/dragonfly:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - supabase_network_db
+    ulimits:
+      memlock: -1
+    volumes:
+      - dragonfly_data:/data
+
+networks:
+  supabase_network_db:
+    external: true
+
+volumes:
+  dragonfly_data:

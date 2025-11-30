@@ -14,13 +14,15 @@
     "@work-holo/config": "workspace:*"
   },
   "peerDependencies": {
-    "typescript": "^5"
+    "typescript": "^5.9.3"
   },
   "dependencies": {
-    "better-auth": "catalog:",
-    "@better-auth/expo": "catalog:",
+    "drizzle-orm": "catalog:",
+    "@better-auth/expo": "^1.4.3",
+    "@work-holo/db": "workspace:*",
+    "better-auth": "^1.4.3",
     "dotenv": "catalog:",
-    "zod": "^4.1.11",
-    "@work-holo/db": "workspace:*"
+    "zod": "^4.1.13",
+    "@t3-oss/env-core": "^0.13.8"
   }
 }

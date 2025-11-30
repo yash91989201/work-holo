@@ -22,8 +22,29 @@
       "!**/.source"
     ]
   },
-  "extends": [
-    "ultracite/core",
-    "ultracite/react"
-  ]
+  "extends": ["ultracite/core", "ultracite/react"],
+  "linter": {
+    "rules": {
+      "complexity": {
+        "noForEach": "off"
+      },
+      "nursery": {
+        "noShadow": "off",
+        "noIncrementDecrement": "off"
+      },
+      "style": {
+        "noMagicNumbers": "off",
+        "useBlockStatements": "off",
+        "useConsistentTypeDefinitions": "off"
+      },
+      "suspicious": {
+        "noConsole": "off"
+      },
+      "performance": {
+        "noNamespaceImport": "off",
+        "noBarrelFile": "off"
+      }
+    }
+  }
 }
+

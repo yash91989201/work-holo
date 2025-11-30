@@ -17,7 +17,6 @@ This project was created with [Better-T-Stack](https://github.com/AmanVarshney01
 - **PostgreSQL** - Database engine
 - **Authentication** - Better-Auth
 - **Husky** - Git hooks for code quality
-- **PWA** - Progressive Web App support
 - **Starlight** - Documentation site with Astro
 - **Tauri** - Build native desktop applications
 - **Turborepo** - Optimized monorepo build system
@@ -29,6 +28,7 @@ First, install the dependencies:
 ```bash
 bun install
 ```
+
 ## Database Setup
 
 This project uses PostgreSQL with Drizzle ORM.
@@ -37,26 +37,20 @@ This project uses PostgreSQL with Drizzle ORM.
 2. Update your `apps/server/.env` file with your PostgreSQL connection details.
 
 3. Apply the schema to your database:
-```bash
-bun run db:push
-```
 
+```bash
+bun db:push
+```
 
 Then, run the development server:
 
 ```bash
-bun run dev
+bun dev
 ```
 
 Open [http://localhost:3001](http://localhost:3001) in your browser to see the web application.
 Use the Expo Go app to run the mobile application.
 The API is running at [http://localhost:3000](http://localhost:3000).
-
-
-
-
-
-
 
 ## Project Structure
 
@@ -75,16 +69,15 @@ work-holo/
 
 ## Available Scripts
 
-- `bun run dev`: Start all applications in development mode
-- `bun run build`: Build all applications
-- `bun run dev:web`: Start only the web application
-- `bun run dev:server`: Start only the server
-- `bun run check-types`: Check TypeScript types across all apps
-- `bun run dev:native`: Start the React Native/Expo development server
-- `bun run db:push`: Push schema changes to database
-- `bun run db:studio`: Open database studio UI
-- `cd apps/web && bun run generate-pwa-assets`: Generate PWA assets
-- `cd apps/web && bun run desktop:dev`: Start Tauri desktop app in development
-- `cd apps/web && bun run desktop:build`: Build Tauri desktop app
-- `cd apps/docs && bun run dev`: Start documentation site
-- `cd apps/docs && bun run build`: Build documentation site
+- `bun dev`: Start all applications in development mode
+- `bun build`: Build all applications
+- `bun dev:web`: Start only the web application
+- `bun dev:server`: Start only the server
+- `bun check-types`: Check TypeScript types across all apps
+- `bun dev:native`: Start the React Native/Expo development server
+- `bun db:push`: Push schema changes to database
+- `bun db:studio`: Open database studio UI
+- `cd apps/web && bun desktop:dev`: Start Tauri desktop app in development
+- `cd apps/web && bun desktop:build`: Build Tauri desktop app
+- `cd apps/docs && bun dev`: Start documentation site
+- `cd apps/docs && bun build`: Build documentation site

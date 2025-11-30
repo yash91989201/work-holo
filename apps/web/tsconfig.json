@@ -8,18 +8,22 @@
     "moduleResolution": "Bundler",
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
-    "types": [
-      "vite/client"
-    ],
-    "rootDirs": [
-      "."
-    ],
+    "types": ["vite/client"],
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"]
     },
     "strictNullChecks": true
-  }
+  },
+  "references": [
+    {
+      "path": "../../packages/api"
+    },
+    {
+      "path": "../../packages/auth"
+    },
+    {
+      "path": "../../packages/db"
+    }
+  ]
 }
