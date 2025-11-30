@@ -9,7 +9,11 @@ export default defineConfig({
   plugins: [
     tailwindcss(),
     tanstackRouter({}),
-    react(),
+    react({
+      babel: {
+        plugins: ["babel-plugin-react-compiler"],
+      },
+    }),
     VitePWA({
       registerType: "autoUpdate",
       manifest: {
@@ -25,9 +29,6 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
-      "@work-holo/db": path.resolve(__dirname, "../../packages/db/src"),
-      "@work-holo/api": path.resolve(__dirname, "../../packages/api/src"),
-      "@work-holo/auth": path.resolve(__dirname, "../../packages/auth/src"),
     },
   },
   build: {

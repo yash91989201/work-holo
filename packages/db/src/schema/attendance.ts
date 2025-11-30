@@ -9,7 +9,7 @@ import {
   text,
   timestamp,
 } from "drizzle-orm/pg-core";
-import { organization, team, user } from "@/schema/auth";
+import { organization, team, user } from "./auth";
 
 // Define PostgreSQL enums for attendance
 export const attendanceStatusEnum = pgEnum("attendanceStatus", [

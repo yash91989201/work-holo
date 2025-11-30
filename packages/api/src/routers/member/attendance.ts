@@ -6,7 +6,7 @@ import {
   workBlockTable,
 } from "@work-holo/db/schema/index";
 import { and, asc, eq, gte, isNull, lte } from "drizzle-orm";
-import { protectedProcedure } from "@/index";
+import { protectedProcedure } from "../../index";
 import {
   AddBreakDurationInput,
   AddBreakDurationOutput,
@@ -20,7 +20,7 @@ import {
   MemberPunchInOutput,
   MemberPunchOutInput,
   MemberPunchOutOutput,
-} from "@/lib/schemas/attendance";
+} from "../../lib/schemas/attendance";
 
 export const memberAttendanceRouter = {
   punchIn: protectedProcedure

@@ -10,7 +10,7 @@ import {
 import { auth } from "@work-holo/auth";
 import { team } from "@work-holo/db/schema/index";
 import { eq } from "drizzle-orm";
-import { protectedProcedure } from "@/index";
+import { protectedProcedure } from "../../index";
 
 export const adminTeamRouter = {
   listTeams: protectedProcedure

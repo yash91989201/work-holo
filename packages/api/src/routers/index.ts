@@ -1,8 +1,8 @@
 import type { RouterClient } from "@orpc/server";
 import { publicProcedure } from "@work-holo/api/index";
-import { adminRouter } from "@/routers/admin";
-import { communicationRouter } from "@/routers/communication";
-import { memberRouter } from "@/routers/member";
+import { adminRouter } from "./admin";
+import { communicationRouter } from "./communication";
+import { memberRouter } from "./member";
 
 export const appRouter = {
   healthCheck: publicProcedure.handler(() => "OK"),

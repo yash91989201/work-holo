@@ -1,10 +1,5 @@
 import { ORPCError } from "@orpc/server";
 import {
-  getPresenceForUsers,
-  setManualStatus,
-  updatePresence,
-} from "@work-holo/api/lib/presence";
-import {
   GetOrgPresenceInput,
   GetOrgPresenceOutput,
   HeartbeatInput,
@@ -14,7 +9,12 @@ import {
 } from "@work-holo/api/lib/schemas/presence";
 import { member } from "@work-holo/db/schema/index";
 import { eq } from "drizzle-orm";
-import { protectedProcedure } from "@/index";
+import { protectedProcedure } from "../../index";
+import {
+  getPresenceForUsers,
+  setManualStatus,
+  updatePresence,
+} from "../../lib/presence";
 
 export const presenceRouter = {
   heartbeat: protectedProcedure

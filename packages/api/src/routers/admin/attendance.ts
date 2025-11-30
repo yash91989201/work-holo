@@ -17,7 +17,7 @@ import {
   lte,
   or,
 } from "drizzle-orm";
-import { protectedProcedure } from "@/index";
+import { protectedProcedure } from "../../index";
 import {
   GetAttendanceDetailInput,
   GetAttendanceDetailOutput,
@@ -25,7 +25,7 @@ import {
   GetAttendanceStatsOutput,
   ListAttendanceRecordsInput,
   ListAttendanceRecordsOutput,
-} from "@/lib/schemas/admin-attendance";
+} from "../../lib/schemas/admin-attendance";
 
 export const adminAttendanceRouter = {
   getAttendanceStats: protectedProcedure

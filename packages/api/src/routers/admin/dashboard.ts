@@ -1,7 +1,7 @@
 import { ORPCError } from "@orpc/client";
 import { member, team } from "@work-holo/db/schema/index";
 import { count, eq } from "drizzle-orm";
-import { protectedProcedure } from "@/index";
+import { protectedProcedure } from "../../index";
 
 export const adminDashboardRouter = {
   getMemberCount: protectedProcedure.handler(

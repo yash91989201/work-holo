@@ -4,7 +4,7 @@ import {
   createUpdateSchema,
 } from "drizzle-zod";
 import z from "zod";
-import { attendanceTable, workBlockTable } from "@/schema/attendance";
+import { attendanceTable, workBlockTable } from "../../schema/attendance";
 import {
   account,
   invitation,
@@ -15,7 +15,7 @@ import {
   teamMember,
   user,
   verification,
-} from "@/schema/auth";
+} from "../../schema/auth";
 import {
   attachmentTable,
   channelJoinRequestTable,
@@ -24,7 +24,7 @@ import {
   messageReadTable,
   messageTable,
   notificationTable,
-} from "@/schema/communication";
+} from "../../schema/communication";
 
 export const AccountSchema = createSelectSchema(account);
 export const UserSchema = createSelectSchema(user, {

@@ -1,5 +1,5 @@
 import { RedisClient } from "bun";
-import { env } from "@work-holo/api/env";
+import { env } from "../env";
 
 export function createRedisClient(): RedisClient {
   const redisUrl = env.REDIS_URL;

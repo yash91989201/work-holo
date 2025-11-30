@@ -1,7 +1,7 @@
 import { ORPCError } from "@orpc/client";
 import { member } from "@work-holo/db/schema/index";
 import { eq } from "drizzle-orm";
-import { protectedProcedure } from "@/index";
+import { protectedProcedure } from "../../index";
 
 export const adminMemberRouter = {
   listMembers: protectedProcedure.handler(

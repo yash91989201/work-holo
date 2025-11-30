@@ -1,8 +1,11 @@
 import type { Context as HonoContext, MiddlewareHandler } from "hono";
 import { Hono } from "hono";
-import type { Context } from "@/context";
-import { createContext } from "@/context";
-import { prepareElectricUrl, proxyElectricRequest } from "@/lib/electric-proxy";
+import type { Context } from "../../context";
+import { createContext } from "../../context";
+import {
+  prepareElectricUrl,
+  proxyElectricRequest,
+} from "../../lib/electric-proxy";
 
 type ElectricEnv = {
   Variables: {

@@ -1,13 +1,12 @@
 import { expo } from "@better-auth/expo";
-import { env } from "@work-holo/auth/env";
 import { db } from "@work-holo/db";
 import * as authSchema from "@work-holo/db/schema/auth";
-import type { BetterAuthOptions } from "better-auth";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { organization } from "better-auth/plugins";
+import { env } from "./env";
 
-export const auth = betterAuth<BetterAuthOptions>({
+export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: authSchema,

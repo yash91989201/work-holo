@@ -9,21 +9,11 @@
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
     "types": ["vite/client"],
+    "strictNullChecks": true,
+    "rootDirs": ["."],
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    },
-    "strictNullChecks": true
-  },
-  "references": [
-    {
-      "path": "../../packages/api"
-    },
-    {
-      "path": "../../packages/auth"
-    },
-    {
-      "path": "../../packages/db"
     }
-  ]
+  }
 }

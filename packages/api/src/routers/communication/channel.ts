@@ -10,8 +10,8 @@ import {
 } from "@work-holo/db/schema/index";
 import type { SQL } from "drizzle-orm";
 import { and, eq, getTableColumns, inArray } from "drizzle-orm";
-import { protectedProcedure } from "@/index";
-import { generateTxId } from "@/lib/electric-proxy";
+import { protectedProcedure } from "../../index";
+import { generateTxId } from "../../lib/electric-proxy";
 import {
   ChannelJoinRequestInput,
   ChannelJoinRequestOutput,
@@ -32,7 +32,7 @@ import {
   ModifyChannelMembersInput,
   SuccessOutput,
   UpdateChannelInput,
-} from "@/lib/schemas/channel";
+} from "../../lib/schemas/channel";
 
 export const channelRouter = {
   create: protectedProcedure

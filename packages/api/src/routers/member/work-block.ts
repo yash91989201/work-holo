@@ -11,7 +11,7 @@ import {
 } from "@work-holo/api/lib/schemas/work-block";
 import { attendanceTable, workBlockTable } from "@work-holo/db/schema/index";
 import { and, eq, isNull } from "drizzle-orm";
-import { protectedProcedure } from "@/index";
+import { protectedProcedure } from "../../index";
 
 export const workBlockRouter = {
   getActiveBlock: protectedProcedure

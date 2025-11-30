@@ -16,8 +16,8 @@ import {
   or,
   sql,
 } from "drizzle-orm";
-import { protectedProcedure } from "@/index";
-import { generateTxId } from "@/lib/electric-proxy";
+import { protectedProcedure } from "../../index";
+import { generateTxId } from "../../lib/electric-proxy";
 import {
   AddReactionInput,
   AddReactionOutput,
@@ -47,8 +47,8 @@ import {
   UnreadCountOutput,
   UpdateMessageInput,
   UpdateMessageOutput,
-} from "@/lib/schemas/message";
-import { supabase } from "@/lib/supabase";
+} from "../../lib/schemas/message";
+import { supabase } from "../../lib/supabase";
 
 export const messageRouter = {
   searchUsers: protectedProcedure

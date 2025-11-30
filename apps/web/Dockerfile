@@ -8,6 +8,7 @@ WORKDIR /app
 
 COPY package.json bun.lock bunfig.toml ./
 COPY apps/web/package.json apps/web/
+COPY packages/config/package.json packages/config/
 COPY packages/api/package.json packages/api/
 COPY packages/auth/package.json packages/auth/
 COPY packages/db/package.json packages/db/
@@ -21,26 +22,17 @@ RUN --mount=type=cache,target=/root/.bun/install/cache \
 FROM deps AS builder
 WORKDIR /app
 
-COPY tsconfig.base.json tsconfig.json ./
+COPY packages/config packages/config
 COPY packages/db/tsconfig.json packages/db/
 COPY packages/auth/tsconfig.json packages/auth/
 COPY packages/api/tsconfig.json packages/api/
 
 COPY packages/db/src packages/db/src
 COPY packages/db/drizzle.config.ts packages/db/
-COPY packages/db/tsdown.config.ts packages/db/
 
 COPY packages/auth/src packages/auth/src
-COPY packages/auth/tsdown.config.ts packages/auth/
 
 COPY packages/api/src packages/api/src
-COPY packages/api/tsdown.config.ts packages/api/
-
-# Build packages in parallel
-RUN bun run --cwd packages/db build & \
-  bun run --cwd packages/auth build & \
-  bun run --cwd packages/api build & \
-  wait
 
 COPY apps/web apps/web
 

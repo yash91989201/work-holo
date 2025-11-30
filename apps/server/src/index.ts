@@ -9,35 +9,23 @@ import { getRedisClient } from "@work-holo/api/lib/redis";
 import { electricRouter } from "@work-holo/api/routers/electric/index";
 import { appRouter } from "@work-holo/api/routers/index";
 import { auth } from "@work-holo/auth";
+import type { RedisClient } from "bun";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { env } from "@/env";
 
-// Initialize Redis client (optional - will be null if Redis is not available)
-let redis: ReturnType<typeof getRedisClient> | undefined;
-try {
-  redis = getRedisClient();
-  // Try to connect
-  redis
-    .connect()
-    .then(() => {
-      console.log("✅ Redis connected successfully");
-    })
-    .catch((err) => {
-      console.warn(
-        "!  Redis connection failed, presence features will be disabled:",
-        err.message
-      );
-      redis = undefined;
-    });
-} catch (err) {
-  console.warn(
-    "!  Redis initialization failed, presence features will be disabled:",
-    err
-  );
-  redis = undefined;
-}
+export const redis: RedisClient = getRedisClient();
+
+redis
+  .connect()
+  .then(() => {
+    console.log("✅ Redis connected successfully");
+  })
+  .catch((err) => {
+    console.error("❌ Redis connection failed:", err.message);
+    throw new Error(`Redis connection failed: ${err.message}`);
+  });
 
 const app = new Hono();
 

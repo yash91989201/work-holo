@@ -1,7 +1,7 @@
 import { ELECTRIC_PROTOCOL_QUERY_PARAMS } from "@electric-sql/client";
 import type { db } from "@work-holo/db";
 import { sql } from "drizzle-orm";
-import { env } from "@work-holo/api/env";
+import { env } from "../env";
 
 /**
  * Prepares the Electric SQL proxy URL from a request URL

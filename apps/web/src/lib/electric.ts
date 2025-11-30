@@ -1,8 +1,8 @@
-export const fetchClient = (
+export const fetchClient = ((
   url: URL | RequestInfo,
   init: RequestInit | undefined
 ) =>
   fetch(url, {
     ...init,
     credentials: "include",
-  });
+  })) as typeof fetch;

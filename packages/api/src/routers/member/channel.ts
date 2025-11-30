@@ -1,7 +1,7 @@
 import { ORPCError } from "@orpc/client";
 import { channelMemberTable, channelTable } from "@work-holo/db/schema/index";
 import { and, eq, getTableColumns } from "drizzle-orm";
-import { protectedProcedure } from "@/index";
+import { protectedProcedure } from "../../index";
 
 export const memberChannelRouter = {
   listChannels: protectedProcedure.handler(

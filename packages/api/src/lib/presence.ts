@@ -1,5 +1,5 @@
-import { getPresenceKey } from "@work-holo/api/lib/redis";
 import type { RedisClient } from "bun";
+import { getPresenceKey } from "./redis";
 
 // Presence status types
 export type PresenceStatus =

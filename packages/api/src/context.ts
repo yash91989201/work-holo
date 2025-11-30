@@ -5,14 +5,14 @@ import type { Context as HonoContext } from "hono";
 
 export type CreateContextOptions = {
   context: HonoContext;
-  redis?: RedisClient;
+  redis: RedisClient;
 };
 
 export type Context = {
   headers: Headers;
   session: Awaited<ReturnType<typeof auth.api.getSession>>;
   db: typeof db;
-  redis?: RedisClient;
+  redis: RedisClient;
 };
 
 export async function createContext({
