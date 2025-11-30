@@ -24,6 +24,7 @@ import { CreateOrgFormSchema } from "@/lib/schemas/org";
 import { supabase } from "@/lib/supabase";
 import type { CreateOrgFormType } from "@/lib/types";
 import { generateSlug } from "@/utils";
+import { Spinner } from "@/components/ui/spinner";
 
 export const CreateOrgForm = () => {
   const navigate = useNavigate();
@@ -48,7 +49,7 @@ export const CreateOrgForm = () => {
 
       if (values.formState.logo) {
         const file = values.formState.logo;
-        const filePath = file.name;
+        const filePath = `${values.slug}/${file.name}`;
 
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from("org-logo")
@@ -179,11 +180,11 @@ export const CreateOrgForm = () => {
                         }
                       }}
                     />
-                    {isSlugValidating && (
+                    {isSlugValidating ? (
                       <div className="-translate-y-1/2 absolute top-1/2 right-3">
-                        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                        <Spinner />
                       </div>
-                    )}
+                    ) : null}
                   </div>
                   <Button
                     aria-label={slugLocked ? "Unlock slug" : "Lock slug"}

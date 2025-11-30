@@ -80,8 +80,7 @@ export const CreateChannelForm = () => {
   const channelType = form.watch("type");
 
   const onSubmit: SubmitHandler<CreateChannelFormType> = async (formData) => {
-    const createChannelRes = await createChannel(formData);
-    if (createChannelRes == null) return;
+    await createChannel(formData);
 
     setDialogOpen(false);
   };
