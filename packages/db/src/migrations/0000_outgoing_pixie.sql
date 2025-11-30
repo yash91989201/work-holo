@@ -72,11 +72,11 @@ CREATE TABLE "invitation" (
 	"organizationId" text NOT NULL,
 	"email" text NOT NULL,
 	"role" text,
+	"teamId" text,
 	"status" text DEFAULT 'pending' NOT NULL,
 	"expiresAt" timestamp NOT NULL,
-	"inviterId" text NOT NULL,
-	"teamId" text,
-	"createdAt" timestamp NOT NULL
+	"createdAt" timestamp NOT NULL,
+	"inviterId" text NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "member" (
@@ -90,7 +90,7 @@ CREATE TABLE "member" (
 CREATE TABLE "organization" (
 	"id" text PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,
-	"slug" text,
+	"slug" text NOT NULL,
 	"logo" text,
 	"createdAt" timestamp NOT NULL,
 	"metadata" text,
@@ -106,6 +106,7 @@ CREATE TABLE "session" (
 	"ipAddress" text,
 	"userAgent" text,
 	"userId" text NOT NULL,
+	"impersonatedBy" text,
 	"activeOrganizationId" text,
 	"activeTeamId" text,
 	CONSTRAINT "session_token_unique" UNIQUE("token")
@@ -116,14 +117,14 @@ CREATE TABLE "team" (
 	"name" text NOT NULL,
 	"organizationId" text NOT NULL,
 	"createdAt" timestamp NOT NULL,
-	"updatedAt" timestamp NOT NULL
+	"updatedAt" timestamp
 );
 --> statement-breakpoint
 CREATE TABLE "teamMember" (
 	"id" text PRIMARY KEY NOT NULL,
 	"teamId" text NOT NULL,
 	"userId" text NOT NULL,
-	"createdAt" timestamp NOT NULL
+	"createdAt" timestamp
 );
 --> statement-breakpoint
 CREATE TABLE "user" (
@@ -134,6 +135,10 @@ CREATE TABLE "user" (
 	"image" text,
 	"createdAt" timestamp NOT NULL,
 	"updatedAt" timestamp NOT NULL,
+	"role" text,
+	"banned" boolean DEFAULT false,
+	"banReason" text,
+	"banExpires" timestamp,
 	CONSTRAINT "user_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
@@ -257,7 +262,6 @@ ALTER TABLE "workBlock" ADD CONSTRAINT "workBlock_userId_user_id_fk" FOREIGN KEY
 ALTER TABLE "account" ADD CONSTRAINT "account_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "invitation" ADD CONSTRAINT "invitation_organizationId_organization_id_fk" FOREIGN KEY ("organizationId") REFERENCES "public"."organization"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "invitation" ADD CONSTRAINT "invitation_inviterId_user_id_fk" FOREIGN KEY ("inviterId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "invitation" ADD CONSTRAINT "invitation_teamId_team_id_fk" FOREIGN KEY ("teamId") REFERENCES "public"."team"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "member" ADD CONSTRAINT "member_organizationId_organization_id_fk" FOREIGN KEY ("organizationId") REFERENCES "public"."organization"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "member" ADD CONSTRAINT "member_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "session" ADD CONSTRAINT "session_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -282,6 +286,16 @@ ALTER TABLE "message" ADD CONSTRAINT "message_receiverId_user_id_fk" FOREIGN KEY
 ALTER TABLE "message" ADD CONSTRAINT "message_pinnedBy_user_id_fk" FOREIGN KEY ("pinnedBy") REFERENCES "public"."user"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "message" ADD CONSTRAINT "fk_message_parent" FOREIGN KEY ("parentMessageId") REFERENCES "public"."message"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "notification" ADD CONSTRAINT "notification_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+CREATE INDEX "account_userId_idx" ON "account" USING btree ("userId");--> statement-breakpoint
+CREATE INDEX "invitation_organizationId_idx" ON "invitation" USING btree ("organizationId");--> statement-breakpoint
+CREATE INDEX "invitation_email_idx" ON "invitation" USING btree ("email");--> statement-breakpoint
+CREATE INDEX "member_organizationId_idx" ON "member" USING btree ("organizationId");--> statement-breakpoint
+CREATE INDEX "member_userId_idx" ON "member" USING btree ("userId");--> statement-breakpoint
+CREATE INDEX "session_userId_idx" ON "session" USING btree ("userId");--> statement-breakpoint
+CREATE INDEX "team_organizationId_idx" ON "team" USING btree ("organizationId");--> statement-breakpoint
+CREATE INDEX "teamMember_teamId_idx" ON "teamMember" USING btree ("teamId");--> statement-breakpoint
+CREATE INDEX "teamMember_userId_idx" ON "teamMember" USING btree ("userId");--> statement-breakpoint
+CREATE INDEX "verification_identifier_idx" ON "verification" USING btree ("identifier");--> statement-breakpoint
 CREATE UNIQUE INDEX "unique_channel_user" ON "channelMember" USING btree ("channelId","userId");--> statement-breakpoint
 CREATE INDEX "idx_message_parent_message_id" ON "message" USING btree ("parentMessageId");--> statement-breakpoint
 CREATE INDEX "idx_message_is_deleted" ON "message" USING btree ("isDeleted");--> statement-breakpoint
