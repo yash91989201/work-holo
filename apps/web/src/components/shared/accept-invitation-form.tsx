@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { acceptInvitationAndActivate } from "@/lib/auth/invitation";
-import { deriveNameFromEmail } from "@/lib/auth/utils";
 import { authClient } from "@/lib/auth-client";
 import { AcceptInvitationFormSchema } from "@/lib/schemas/auth";
 import type { AcceptInvitationFormType } from "@/lib/types";
@@ -42,7 +41,7 @@ export function AcceptInvitationForm() {
     resolver: standardSchemaResolver(AcceptInvitationFormSchema),
     defaultValues: {
       email,
-      name: deriveNameFromEmail(email),
+      name: "",
       password: "",
       invitationId,
     },

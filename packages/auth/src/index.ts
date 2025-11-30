@@ -3,7 +3,13 @@ import { db } from "@work-holo/db";
 import * as authSchema from "@work-holo/db/schema/auth";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { admin, organization } from "better-auth/plugins";
+import {
+  admin,
+  haveIBeenPwned,
+  lastLoginMethod,
+  multiSession,
+  organization,
+} from "better-auth/plugins";
 import { env } from "./env";
 
 export const auth = betterAuth({
@@ -26,6 +32,9 @@ export const auth = betterAuth({
   plugins: [
     expo(),
     admin(),
+    haveIBeenPwned(),
+    lastLoginMethod(),
+    multiSession(),
     organization({
       teams: {
         enabled: true,
