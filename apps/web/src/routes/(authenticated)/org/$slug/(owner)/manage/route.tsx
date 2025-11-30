@@ -1,7 +1,9 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { OwnerHeader } from "@/components/owner";
 
-export const Route = createFileRoute("/(authenticated)/org/$slug/(owner)")({
+export const Route = createFileRoute(
+  "/(authenticated)/org/$slug/(owner)/manage"
+)({
   component: RouteComponent,
 });
 
