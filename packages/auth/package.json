@@ -17,11 +17,11 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "drizzle-orm": "catalog:",
+    "drizzle-orm": "^0.44.7",
     "@better-auth/expo": "^1.4.3",
     "@work-holo/db": "workspace:*",
     "better-auth": "^1.4.3",
-    "dotenv": "catalog:",
+    "dotenv": "^17.2.3",
     "zod": "^4.1.13",
     "@t3-oss/env-core": "^0.13.8"
   }

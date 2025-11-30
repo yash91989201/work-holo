@@ -17,12 +17,12 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@orpc/server": "catalog:",
-    "@orpc/client": "catalog:",
-    "@orpc/openapi": "catalog:",
-    "@orpc/zod": "catalog:",
-    "hono": "catalog:",
-    "drizzle-orm": "catalog:",
+    "@orpc/server": "^1.12.0",
+    "@orpc/client": "^1.12.0",
+    "@orpc/openapi": "^1.12.0",
+    "@orpc/zod": "^1.12.0",
+    "hono": "^4.10.7",
+    "drizzle-orm": "^0.44.7",
     "@electric-sql/client": "^1.2.0",
     "@supabase/supabase-js": "^2.86.0",
     "@t3-oss/env-core": "^0.13.8",
