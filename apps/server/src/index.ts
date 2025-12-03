@@ -5,27 +5,13 @@ import { onError } from "@orpc/server";
 import { RPCHandler } from "@orpc/server/fetch";
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
 import { createContext } from "@work-holo/api/context";
-import { getRedisClient } from "@work-holo/api/lib/redis";
 import { electricRouter } from "@work-holo/api/routers/electric/index";
 import { appRouter } from "@work-holo/api/routers/index";
 import { auth } from "@work-holo/auth";
-import type { RedisClient } from "bun";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { env } from "@/env";
-
-export const redis: RedisClient = getRedisClient();
-
-redis
-  .connect()
-  .then(() => {
-    console.log("✅ Redis connected successfully");
-  })
-  .catch((err) => {
-    console.error("❌ Redis connection failed:", err.message);
-    throw new Error(`Redis connection failed: ${err.message}`);
-  });
 
 const app = new Hono();
 
@@ -66,7 +52,7 @@ export const rpcHandler = new RPCHandler(appRouter, {
 });
 
 app.use("/*", async (c, next) => {
-  const context = await createContext({ context: c, redis });
+  const context = await createContext({ context: c });
 
   const rpcResult = await rpcHandler.handle(c.req.raw, {
     prefix: "/rpc",

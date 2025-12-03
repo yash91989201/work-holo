@@ -1,7 +1,7 @@
 import type { Context as HonoContext, MiddlewareHandler } from "hono";
 import { Hono } from "hono";
-import type { Context } from "../../context";
-import { createContext } from "../../context";
+import type { ElectricContext } from "../../context";
+import { createElectricContext } from "../../context";
 import {
   prepareElectricUrl,
   proxyElectricRequest,
@@ -9,7 +9,7 @@ import {
 
 type ElectricEnv = {
   Variables: {
-    context: Context;
+    context: ElectricContext;
   };
 };
 
@@ -36,7 +36,7 @@ const sendProxyResponse = async (
 
 // Inject context into all routes
 electricRouter.use("*", async (c, next) => {
-  const context = await createContext({ context: c });
+  const context = await createElectricContext({ context: c });
   c.set("context", context);
   await next();
 });
@@ -67,7 +67,7 @@ electricRouter.get("/shapes/attachments", requireAuth, (c) => {
 });
 
 electricRouter.get("/shapes/accounts", requireAuth, (c) => {
-  const context = c.get("context") as Context;
+  const context = c.get("context") as ElectricContext;
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", "account");
@@ -79,7 +79,7 @@ electricRouter.get("/shapes/accounts", requireAuth, (c) => {
 });
 
 electricRouter.get("/shapes/sessions", requireAuth, (c) => {
-  const context = c.get("context") as Context;
+  const context = c.get("context") as ElectricContext;
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", "session");
@@ -91,7 +91,7 @@ electricRouter.get("/shapes/sessions", requireAuth, (c) => {
 });
 
 electricRouter.get("/shapes/invitations", requireAuth, (c) => {
-  const context = c.get("context") as Context;
+  const context = c.get("context") as ElectricContext;
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", "invitation");
@@ -103,7 +103,7 @@ electricRouter.get("/shapes/invitations", requireAuth, (c) => {
 });
 
 electricRouter.get("/shapes/members", requireAuth, (c) => {
-  const context = c.get("context") as Context;
+  const context = c.get("context") as ElectricContext;
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", "member");
@@ -115,7 +115,7 @@ electricRouter.get("/shapes/members", requireAuth, (c) => {
 });
 
 electricRouter.get("/shapes/organizations", requireAuth, (c) => {
-  const context = c.get("context") as Context;
+  const context = c.get("context") as ElectricContext;
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", "organization");
@@ -127,7 +127,7 @@ electricRouter.get("/shapes/organizations", requireAuth, (c) => {
 });
 
 electricRouter.get("/shapes/teams", requireAuth, (c) => {
-  const context = c.get("context") as Context;
+  const context = c.get("context") as ElectricContext;
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", "team");
@@ -139,7 +139,7 @@ electricRouter.get("/shapes/teams", requireAuth, (c) => {
 });
 
 electricRouter.get("/shapes/team-members", requireAuth, (c) => {
-  const context = c.get("context") as Context;
+  const context = c.get("context") as ElectricContext;
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", "teamMember");
@@ -151,7 +151,7 @@ electricRouter.get("/shapes/team-members", requireAuth, (c) => {
 });
 
 electricRouter.get("/shapes/verifications", requireAuth, (c) => {
-  const context = c.get("context") as Context;
+  const context = c.get("context") as ElectricContext;
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", "verification");
@@ -163,7 +163,7 @@ electricRouter.get("/shapes/verifications", requireAuth, (c) => {
 });
 
 electricRouter.get("/shapes/attendance", requireAuth, (c) => {
-  const context = c.get("context") as Context;
+  const context = c.get("context") as ElectricContext;
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", "attendance");
@@ -175,7 +175,7 @@ electricRouter.get("/shapes/attendance", requireAuth, (c) => {
 });
 
 electricRouter.get("/shapes/channels", requireAuth, (c) => {
-  const context = c.get("context") as Context;
+  const context = c.get("context") as ElectricContext;
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", "channel");
@@ -195,7 +195,7 @@ electricRouter.get("/shapes/channel-members", requireAuth, (c) => {
 });
 
 electricRouter.get("/shapes/notifications", requireAuth, (c) => {
-  const context = c.get("context") as Context;
+  const context = c.get("context") as ElectricContext;
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", "notification");
@@ -207,7 +207,7 @@ electricRouter.get("/shapes/notifications", requireAuth, (c) => {
 });
 
 electricRouter.get("/shapes/message-read", requireAuth, (c) => {
-  const context = c.get("context") as Context;
+  const context = c.get("context") as ElectricContext;
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", "messageRead");

@@ -1,27 +1,30 @@
 import { RedisClient } from "bun";
 import { env } from "../env";
 
-export function createRedisClient(): RedisClient {
-  const redisUrl = env.REDIS_URL;
-
-  const redis = new RedisClient(redisUrl);
-
-  return redis;
+function createRedisClient(): RedisClient {
+  return new RedisClient(env.REDIS_URL);
 }
 
-let redisClient: RedisClient | null = null;
+const redisClient: RedisClient = createRedisClient();
 
-export function getRedisClient(): RedisClient {
-  if (!redisClient) {
-    redisClient = createRedisClient();
+const connectionPromise: Promise<void> = (async () => {
+  try {
+    await redisClient.connect();
+    console.log("✅ Redis connected successfully");
+  } catch (err) {
+    console.error("❌ Redis connection failed:", err);
+    process.exit(1);
   }
+})();
+
+export async function getRedisClient(): Promise<RedisClient> {
+  await connectionPromise;
   return redisClient;
 }
 
 export function closeRedisClient(): void {
   if (redisClient) {
     redisClient.close();
-    redisClient = null;
   }
 }
 
