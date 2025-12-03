@@ -2,7 +2,7 @@
 # See https://okigu.com/ruler for documentation.
 
 # Default agents to run when --agents is not specified
-default_agents = ["copilot", "claude", "gemini-cli", "crush", "warp"]
+default_agents = ["copilot", "claude", "gemini-cli", "warp"]
 
 # --- Global MCP Server Configuration ---
 [mcp]
@@ -17,21 +17,17 @@ command = "npx"
 args = ["-y", "@upstash/context7-mcp"]
 
 
-
 [mcp_servers.shadcn]
 command = "npx"
 args = ["shadcn@latest", "mcp"]
-
-
-
 
 
 [mcp_servers.better-auth]
 url = "https://mcp.chonkie.ai/better-auth/better-auth-builder/mcp"
 
 
-
 # --- Global .gitignore Configuration ---
 [gitignore]
 # Enable/disable automatic .gitignore updates (default: true)
 enabled = true
+
