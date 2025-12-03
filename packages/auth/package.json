@@ -18,9 +18,9 @@
   },
   "dependencies": {
     "drizzle-orm": "^0.44.7",
-    "@better-auth/expo": "^1.4.3",
+    "@better-auth/expo": "^1.4.5",
     "@work-holo/db": "workspace:*",
-    "better-auth": "^1.4.3",
+    "better-auth": "^1.4.5",
     "dotenv": "^17.2.3",
     "zod": "^4.1.13",
     "@t3-oss/env-core": "^0.13.8"
