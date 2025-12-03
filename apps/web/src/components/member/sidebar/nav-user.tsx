@@ -1,5 +1,5 @@
 import { IconDotsVertical, IconLogout } from "@tabler/icons-react";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useParams } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -17,12 +17,18 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useAuthedSession } from "@/hooks/use-authed-session";
+import { useMemberRole } from "@/hooks/use-member-role";
 import { authClient } from "@/lib/auth-client";
 
 export function NavUser() {
   const navigate = useNavigate();
+  const { slug } = useParams({
+    from: "/(authenticated)/org/$slug",
+  });
+
   const { isMobile } = useSidebar();
   const { user } = useAuthedSession();
+  const role = useMemberRole();
 
   const logout = async () => {
     const signOutRes = await authClient.signOut();
@@ -74,6 +80,21 @@ export function NavUser() {
                 </div>
               </div>
             </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {role === "admin" && (
+              <DropdownMenuItem asChild>
+                <Link params={{ slug }} to="/org/$slug/dashboard/members">
+                  Admin Dashboard
+                </Link>
+              </DropdownMenuItem>
+            )}
+            {role === "owner" && (
+              <DropdownMenuItem asChild>
+                <Link params={{ slug }} to="/org/$slug/manage">
+                  Manage Org
+                </Link>
+              </DropdownMenuItem>
+            )}
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <Link to="/settings/account/profile">Profile</Link>

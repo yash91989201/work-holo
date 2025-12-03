@@ -22,13 +22,11 @@ export function MyOrgButton() {
     );
   }
 
-  const to = getUserOrgLink(role);
-
   return (
     <Link
       className={buttonVariants({ variant: "outline" })}
       params={{ slug }}
-      to={to}
+      to="/org/$slug/attendance"
     >
       My Org
     </Link>
@@ -38,15 +36,3 @@ export function MyOrgButton() {
 export function MyOrgButtonSkeleton() {
   return <Skeleton className="h-9 w-20" />;
 }
-
-export const getUserOrgLink = (role: string) => {
-  if (role === "owner") {
-    return "/org/$slug/manage";
-  }
-
-  if (role === "admin") {
-    return "/org/$slug/dashboard";
-  }
-
-  return "/org/$slug/attendance";
-};

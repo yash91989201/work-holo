@@ -1,7 +1,6 @@
 import { IconInnerShadowTop } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import { Image } from "@/components/shared/image";
-import { getUserOrgLink } from "@/components/shared/my-org-button";
 import { SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useActiveMemberRole } from "@/hooks/use-active-member-role";
@@ -28,12 +27,14 @@ export const OrgMenuButton = () => {
   }
 
   const logo = activeOrganization.logo ?? "/logo.webp";
-  const to = getUserOrgLink(role);
 
   return (
     <SidebarMenuItem>
       <SidebarMenuButton asChild tooltip={activeOrganization.name}>
-        <Link params={{ slug: activeOrganization.slug }} to={to}>
+        <Link
+          params={{ slug: activeOrganization.slug }}
+          to="/org/$slug/attendance"
+        >
           <Image
             alt={activeOrganization.name}
             className="rounded-sm"

@@ -4,12 +4,13 @@ import {
   channelJoinRequestTable,
   channelMemberTable,
   channelTable,
+  member,
   notificationTable,
   teamMember,
   user as userTable,
 } from "@work-holo/db/schema/index";
 import type { SQL } from "drizzle-orm";
-import { and, eq, getTableColumns, inArray } from "drizzle-orm";
+import { and, eq, getTableColumns, inArray, not } from "drizzle-orm";
 import { protectedProcedure } from "../../index";
 import { generateTxId } from "../../lib/electric-proxy";
 import {
@@ -66,6 +67,18 @@ export const channelRouter = {
             });
           }
 
+          const nonMemberUserIds = await tx.query.member.findMany({
+            where: and(
+              not(eq(member.role, "member")),
+              eq(member.organizationId, orgId)
+            ),
+            columns: {
+              userId: true,
+            },
+          });
+
+          const nonMemberIds = nonMemberUserIds.map((member) => member.userId);
+
           if (input.type === "team" && input.teamId) {
             const teamMemberIds = await tx.query.teamMember.findMany({
               where: eq(teamMember.teamId, input.teamId),
@@ -74,29 +87,51 @@ export const channelRouter = {
               },
             });
 
-            const channelMembers = teamMemberIds.map((member) => ({
+            const teamChannelMembers = teamMemberIds.map((member) => ({
               channelId: channel.id,
               userId: member.userId,
               role: "member",
             }));
 
+            const nonMemberChannelMembers = nonMemberIds.map((userId) => ({
+              channelId: channel.id,
+              userId,
+              role: "member",
+            }));
+
+            const allChannelMembers = [
+              ...teamChannelMembers,
+              ...nonMemberChannelMembers,
+            ];
+
             await tx
               .insert(channelMemberTable)
-              .values(channelMembers)
+              .values(allChannelMembers)
               .returning();
 
             return { txid, channel };
           }
 
-          const channelMembers = input.memberIds.map((memberId) => ({
+          const regularChannelMembers = input.memberIds.map((memberId) => ({
             channelId: channel.id,
             userId: memberId,
             role: "member",
           }));
 
+          const nonMemberChannelMembers = nonMemberIds.map((userId) => ({
+            channelId: channel.id,
+            userId,
+            role: "member",
+          }));
+
+          const allChannelMembers = [
+            ...regularChannelMembers,
+            ...nonMemberChannelMembers,
+          ];
+
           await tx
             .insert(channelMemberTable)
-            .values(channelMembers)
+            .values(allChannelMembers)
             .returning();
 
           return { txid, channel };
