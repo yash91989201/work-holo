@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Profile } from "@/components/settings/profile";
+import { Suspense } from "react";
+import { Profile, ProfileSkeleton } from "@/components/settings/profile";
 
 export const Route = createFileRoute(
   "/(authenticated)/settings/account/profile"
@@ -13,7 +14,9 @@ function RouteComponent() {
       <div className="space-y-6">
         <h2 className="font-semibold text-2xl tracking-tight">Profile</h2>
         <div className="space-y-6">
-          <Profile />
+          <Suspense fallback={<ProfileSkeleton />}>
+            <Profile />
+          </Suspense>
         </div>
       </div>
     </div>

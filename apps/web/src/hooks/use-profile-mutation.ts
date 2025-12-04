@@ -29,6 +29,7 @@ export function useProfileMutation() {
       queryClient.invalidateQueries({
         queryKey: getAuthQueryKey.session.current(),
       });
+
       queryClient.invalidateQueries({
         queryKey: getAuthQueryKey.user.profile(),
       });

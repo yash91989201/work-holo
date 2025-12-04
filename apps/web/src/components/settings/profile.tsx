@@ -28,8 +28,9 @@ import {
   ItemTitle,
 } from "@/components/ui/item";
 import { Separator } from "@/components/ui/separator";
-import { useAuthedSession } from "@/hooks/use-authed-session";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useProfileMutation } from "@/hooks/use-profile-mutation";
+import { useSession } from "@/hooks/use-session";
 import { authClient } from "@/lib/auth-client";
 import {
   ProfileEmailSchema,
@@ -42,7 +43,12 @@ import { cn } from "@/lib/utils";
 import { uploadProfileImage } from "@/utils/upload-helper";
 
 export function Profile() {
-  const { user } = useAuthedSession();
+  const session = useSession();
+
+  if (session === null) {
+    return null;
+  }
+  const { user } = session;
 
   return (
     <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
@@ -121,7 +127,7 @@ function ProfileImageSection({
         <ItemTitle>Profile image</ItemTitle>
         <ItemDescription>
           Update your profile picture,
-          <br /> Max 5MB, JPEG, PNG, or WebP
+          <br /> Max 5MB, jpeg, png, or webp
         </ItemDescription>
       </ItemContent>
       <ItemActions>
@@ -131,7 +137,7 @@ function ProfileImageSection({
               className="relative cursor-pointer rounded-full focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
               type="button"
             >
-              <Avatar className="size-12">
+              <Avatar className="size-9">
                 <AvatarImage alt={userName} src={imageUrl || undefined} />
                 <AvatarFallback>
                   {userName
@@ -658,5 +664,110 @@ function InlineUsernameEditor({
         <X className="size-4 text-destructive" />
       </Button>
     </div>
+  );
+}
+
+// ============================================================================
+// Skeleton Components
+// ============================================================================
+
+export function ProfileSkeleton() {
+  return (
+    <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
+      <ProfileImageSectionSkeleton />
+      <Separator />
+      <EmailSectionSkeleton />
+      <Separator />
+      <FullNameSectionSkeleton />
+      <Separator />
+      <DisplayUsernameSectionSkeleton />
+      <Separator />
+      <UsernameSectionSkeleton />
+    </div>
+  );
+}
+
+function ProfileImageSectionSkeleton() {
+  return (
+    <Item>
+      <ItemContent>
+        <ItemTitle>Profile image</ItemTitle>
+        <ItemDescription>
+          Update your profile picture,
+          <br /> Max 5MB, jpeg, png, or webp
+        </ItemDescription>
+      </ItemContent>
+      <ItemActions>
+        <Skeleton className="size-9 rounded-full" />
+      </ItemActions>
+    </Item>
+  );
+}
+
+function EmailSectionSkeleton() {
+  return (
+    <Item>
+      <ItemContent>
+        <ItemTitle>Email</ItemTitle>
+      </ItemContent>
+      <ItemContent>
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-4 w-48" />
+          <Skeleton className="size-8" />
+        </div>
+      </ItemContent>
+    </Item>
+  );
+}
+
+function FullNameSectionSkeleton() {
+  return (
+    <Item>
+      <ItemContent>
+        <ItemTitle>Full Name</ItemTitle>
+      </ItemContent>
+      <ItemContent>
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-4 w-32" />
+          <Skeleton className="size-8" />
+        </div>
+      </ItemContent>
+    </Item>
+  );
+}
+
+function DisplayUsernameSectionSkeleton() {
+  return (
+    <Item>
+      <ItemContent>
+        <ItemTitle>Display Username</ItemTitle>
+        <ItemDescription>How you want to be called in WorkHolo</ItemDescription>
+      </ItemContent>
+      <ItemContent>
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-4 w-40" />
+          <Skeleton className="size-8" />
+        </div>
+      </ItemContent>
+    </Item>
+  );
+}
+
+function UsernameSectionSkeleton() {
+  return (
+    <Item>
+      <ItemContent>
+        <ItemTitle>Username</ItemTitle>
+        <ItemDescription>
+          Nickname or firstname whatever you want to be called in WorkHolo
+        </ItemDescription>
+      </ItemContent>
+      <ItemContent>
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-4 w-36" />
+          <Skeleton className="size-8" />
+        </div>
+      </ItemContent>
+    </Item>
   );
 }
