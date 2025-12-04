@@ -22,7 +22,7 @@
     "@orpc/openapi": "^1.12.2",
     "@orpc/zod": "^1.12.2",
     "hono": "^4.10.7",
-    "drizzle-orm": "^0.44.7",
+    "drizzle-orm": "^0.45.0",
     "@electric-sql/client": "^1.2.0",
     "@supabase/supabase-js": "^2.86.2",
     "@t3-oss/env-core": "^0.13.8",

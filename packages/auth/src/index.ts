@@ -1,4 +1,5 @@
 import { expo } from "@better-auth/expo";
+import { passkey } from "@better-auth/passkey";
 import { db } from "@work-holo/db";
 import * as authSchema from "@work-holo/db/schema/auth";
 import { betterAuth } from "better-auth";
@@ -40,6 +41,7 @@ export const auth = betterAuth({
     twoFactor(),
     username(),
     phoneNumber(),
+    passkey(),
     magicLink({
       sendMagicLink: () => {
         // TODO: Send email to user

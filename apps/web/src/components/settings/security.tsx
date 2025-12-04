@@ -2,14 +2,6 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { FieldGroup } from "@/components/ui/field";
 import { useAppForm } from "@/components/ui/form/hooks";
-import {
-  Item,
-  ItemActions,
-  ItemContent,
-  ItemDescription,
-  ItemTitle,
-} from "@/components/ui/item";
-import { Separator } from "@/components/ui/separator";
 import { authClient } from "@/lib/auth-client";
 import { ChangePasswordFormSchema } from "@/lib/schemas/settings/security";
 import type { ChangePasswordFormType } from "@/lib/types";
@@ -103,46 +95,6 @@ export function ChangePasswordForm() {
           </FieldGroup>
         </div>
       </form>
-    </div>
-  );
-}
-
-export function Manage2FA() {
-  return (
-    <div className="space-y-3">
-      <h3>Two-Factor authentication</h3>
-      <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
-        <Item>
-          <ItemContent>
-            <ItemTitle>Display full names</ItemTitle>
-            <ItemDescription>
-              Show full names instead of short usernames
-            </ItemDescription>
-          </ItemContent>
-          <ItemActions>action</ItemActions>
-        </Item>
-        <Separator />
-      </div>
-    </div>
-  );
-}
-
-export function ManagePasskeys() {
-  return (
-    <div className="space-y-3">
-      <h3>Passkeys</h3>
-      <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
-        <Item>
-          <ItemContent>
-            <ItemTitle>Display full names</ItemTitle>
-            <ItemDescription>
-              Show full names instead of short usernames
-            </ItemDescription>
-          </ItemContent>
-          <ItemActions>action</ItemActions>
-        </Item>
-        <Separator />
-      </div>
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import { passkeyClient } from "@better-auth/passkey/client";
 import {
   adminClient,
   emailOTPClient,
@@ -15,6 +16,7 @@ import { env } from "@/env";
 export const authClient = createAuthClient({
   baseURL: env.VITE_SERVER_URL,
   plugins: [
+    passkeyClient(),
     twoFactorClient(),
     usernameClient(),
     phoneNumberClient(),

@@ -17,12 +17,14 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "drizzle-orm": "^0.45.0",
     "@better-auth/expo": "^1.4.5",
+    "@better-auth/passkey": "^1.4.5",
+    "@simplewebauthn/server": "^13.2.2",
+    "@t3-oss/env-core": "^0.13.8",
     "@work-holo/db": "workspace:*",
     "better-auth": "^1.4.5",
     "dotenv": "^17.2.3",
-    "zod": "^4.1.13",
-    "@t3-oss/env-core": "^0.13.8"
+    "drizzle-orm": "^0.45.0",
+    "zod": "^4.1.13"
   }
 }
