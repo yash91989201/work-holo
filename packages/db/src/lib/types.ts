@@ -1,62 +1,63 @@
 // AUTO-GENERATED FILE. DO NOT EDIT.
 // Run `bun run generate:types` to refresh
 import type { z } from "zod";
-
-import type { AccountInsertSchema } from "./schemas/db-tables";
-import type { AccountSchema } from "./schemas/db-tables";
-import type { AccountUpdateSchema } from "./schemas/db-tables";
-import type { AttachmentInsertSchema } from "./schemas/db-tables";
-import type { AttachmentSchema } from "./schemas/db-tables";
-import type { AttachmentUpdateSchema } from "./schemas/db-tables";
-import type { AttendanceInsertSchema } from "./schemas/db-tables";
-import type { AttendanceSchema } from "./schemas/db-tables";
-import type { AttendanceUpdateSchema } from "./schemas/db-tables";
-import type { ChannelInsertSchema } from "./schemas/db-tables";
-import type { ChannelJoinRequestInsertSchema } from "./schemas/db-tables";
-import type { ChannelJoinRequestSchema } from "./schemas/db-tables";
-import type { ChannelJoinRequestUpdateSchema } from "./schemas/db-tables";
-import type { ChannelMemberInsertSchema } from "./schemas/db-tables";
-import type { ChannelMemberSchema } from "./schemas/db-tables";
-import type { ChannelMemberUpdateSchema } from "./schemas/db-tables";
-import type { ChannelSchema } from "./schemas/db-tables";
-import type { ChannelTypeSchema } from "./schemas/db-tables";
-import type { ChannelUpdateSchema } from "./schemas/db-tables";
-import type { InvitationInsertSchema } from "./schemas/db-tables";
-import type { InvitationSchema } from "./schemas/db-tables";
-import type { InvitationUpdateSchema } from "./schemas/db-tables";
-import type { MemberInsertSchema } from "./schemas/db-tables";
-import type { MemberSchema } from "./schemas/db-tables";
-import type { MemberUpdateSchema } from "./schemas/db-tables";
-import type { MessageInsertSchema } from "./schemas/db-tables";
-import type { MessageReadInsertSchema } from "./schemas/db-tables";
-import type { MessageReadSchema } from "./schemas/db-tables";
-import type { MessageReadUpdateSchema } from "./schemas/db-tables";
-import type { MessageSchema } from "./schemas/db-tables";
-import type { MessageUpdateSchema } from "./schemas/db-tables";
-import type { NotificationInsertSchema } from "./schemas/db-tables";
-import type { NotificationSchema } from "./schemas/db-tables";
-import type { NotificationUpdateSchema } from "./schemas/db-tables";
-import type { OrganizationInsertSchema } from "./schemas/db-tables";
-import type { OrganizationSchema } from "./schemas/db-tables";
-import type { OrganizationUpdateSchema } from "./schemas/db-tables";
-import type { SessionInsertSchema } from "./schemas/db-tables";
-import type { SessionSchema } from "./schemas/db-tables";
-import type { SessionUpdateSchema } from "./schemas/db-tables";
-import type { TeamInsertSchema } from "./schemas/db-tables";
-import type { TeamMemberInsertSchema } from "./schemas/db-tables";
-import type { TeamMemberSchema } from "./schemas/db-tables";
-import type { TeamMemberUpdateSchema } from "./schemas/db-tables";
-import type { TeamSchema } from "./schemas/db-tables";
-import type { TeamUpdateSchema } from "./schemas/db-tables";
-import type { UserInsertSchema } from "./schemas/db-tables";
-import type { UserSchema } from "./schemas/db-tables";
-import type { UserUpdateSchema } from "./schemas/db-tables";
-import type { VerificationInsertSchema } from "./schemas/db-tables";
-import type { VerificationSchema } from "./schemas/db-tables";
-import type { VerificationUpdateSchema } from "./schemas/db-tables";
-import type { WorkBlockInsertSchema } from "./schemas/db-tables";
-import type { WorkBlockSchema } from "./schemas/db-tables";
-import type { WorkBlockUpdateSchema } from "./schemas/db-tables";
+import type {
+  AccountInsertSchema,
+  AccountSchema,
+  AccountUpdateSchema,
+  AttachmentInsertSchema,
+  AttachmentSchema,
+  AttachmentUpdateSchema,
+  AttendanceInsertSchema,
+  AttendanceSchema,
+  AttendanceUpdateSchema,
+  ChannelInsertSchema,
+  ChannelJoinRequestInsertSchema,
+  ChannelJoinRequestSchema,
+  ChannelJoinRequestUpdateSchema,
+  ChannelMemberInsertSchema,
+  ChannelMemberSchema,
+  ChannelMemberUpdateSchema,
+  ChannelSchema,
+  ChannelTypeSchema,
+  ChannelUpdateSchema,
+  InvitationInsertSchema,
+  InvitationSchema,
+  InvitationUpdateSchema,
+  MemberInsertSchema,
+  MemberSchema,
+  MemberUpdateSchema,
+  MessageInsertSchema,
+  MessageReadInsertSchema,
+  MessageReadSchema,
+  MessageReadUpdateSchema,
+  MessageSchema,
+  MessageUpdateSchema,
+  NotificationInsertSchema,
+  NotificationSchema,
+  NotificationUpdateSchema,
+  OrganizationInsertSchema,
+  OrganizationSchema,
+  OrganizationUpdateSchema,
+  SessionInsertSchema,
+  SessionSchema,
+  SessionUpdateSchema,
+  TeamInsertSchema,
+  TeamMemberInsertSchema,
+  TeamMemberSchema,
+  TeamMemberUpdateSchema,
+  TeamSchema,
+  TeamUpdateSchema,
+  UserInsertSchema,
+  UserSchema,
+  UserUpdateSchema,
+  VerificationInsertSchema,
+  VerificationSchema,
+  VerificationUpdateSchema,
+  WorkBlockInsertSchema,
+  WorkBlockSchema,
+  WorkBlockUpdateSchema,
+} from "./schemas/db-tables";
 
 export type AccountInsertType = z.infer<typeof AccountInsertSchema>;
 export type AccountType = z.infer<typeof AccountSchema>;

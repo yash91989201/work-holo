@@ -19,12 +19,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth-client";
 import { CreateOrgFormSchema } from "@/lib/schemas/org";
 import { supabase } from "@/lib/supabase";
 import type { CreateOrgFormType } from "@/lib/types";
 import { generateSlug } from "@/utils";
-import { Spinner } from "@/components/ui/spinner";
 
 export const CreateOrgForm = () => {
   const navigate = useNavigate();

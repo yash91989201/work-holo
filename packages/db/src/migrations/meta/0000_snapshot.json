@@ -192,12 +192,8 @@
           "name": "attendance_userId_user_id_fk",
           "tableFrom": "attendance",
           "tableTo": "user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -205,12 +201,8 @@
           "name": "attendance_organizationId_organization_id_fk",
           "tableFrom": "attendance",
           "tableTo": "organization",
-          "columnsFrom": [
-            "organizationId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organizationId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -218,12 +210,8 @@
           "name": "attendance_teamId_team_id_fk",
           "tableFrom": "attendance",
           "tableTo": "team",
-          "columnsFrom": [
-            "teamId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["teamId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -231,12 +219,8 @@
           "name": "attendance_verifiedBy_user_id_fk",
           "tableFrom": "attendance",
           "tableTo": "user",
-          "columnsFrom": [
-            "verifiedBy"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["verifiedBy"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -244,12 +228,8 @@
           "name": "attendance_approvedBy_user_id_fk",
           "tableFrom": "attendance",
           "tableTo": "user",
-          "columnsFrom": [
-            "approvedBy"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["approvedBy"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -326,12 +306,8 @@
           "name": "workBlock_attendanceId_attendance_id_fk",
           "tableFrom": "workBlock",
           "tableTo": "attendance",
-          "columnsFrom": [
-            "attendanceId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["attendanceId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -339,12 +315,8 @@
           "name": "workBlock_userId_user_id_fk",
           "tableFrom": "workBlock",
           "tableTo": "user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -460,12 +432,8 @@
           "name": "account_userId_user_id_fk",
           "tableFrom": "account",
           "tableTo": "user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -573,12 +541,8 @@
           "name": "invitation_organizationId_organization_id_fk",
           "tableFrom": "invitation",
           "tableTo": "organization",
-          "columnsFrom": [
-            "organizationId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organizationId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -586,12 +550,8 @@
           "name": "invitation_inviterId_user_id_fk",
           "tableFrom": "invitation",
           "tableTo": "user",
-          "columnsFrom": [
-            "inviterId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["inviterId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -675,12 +635,8 @@
           "name": "member_organizationId_organization_id_fk",
           "tableFrom": "member",
           "tableTo": "organization",
-          "columnsFrom": [
-            "organizationId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organizationId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -688,12 +644,8 @@
           "name": "member_userId_user_id_fk",
           "tableFrom": "member",
           "tableTo": "user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -752,9 +704,7 @@
         "organization_slug_unique": {
           "name": "organization_slug_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "slug"
-          ]
+          "columns": ["slug"]
         }
       },
       "policies": {},
@@ -854,12 +804,8 @@
           "name": "session_userId_user_id_fk",
           "tableFrom": "session",
           "tableTo": "user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -869,9 +815,7 @@
         "session_token_unique": {
           "name": "session_token_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "token"
-          ]
+          "columns": ["token"]
         }
       },
       "policies": {},
@@ -935,12 +879,8 @@
           "name": "team_organizationId_organization_id_fk",
           "tableFrom": "team",
           "tableTo": "organization",
-          "columnsFrom": [
-            "organizationId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organizationId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1017,12 +957,8 @@
           "name": "teamMember_teamId_team_id_fk",
           "tableFrom": "teamMember",
           "tableTo": "team",
-          "columnsFrom": [
-            "teamId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["teamId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1030,12 +966,8 @@
           "name": "teamMember_userId_user_id_fk",
           "tableFrom": "teamMember",
           "tableTo": "user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1126,9 +1058,7 @@
         "user_email_unique": {
           "name": "user_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -1291,12 +1221,8 @@
           "name": "attachment_messageId_message_id_fk",
           "tableFrom": "attachment",
           "tableTo": "message",
-          "columnsFrom": [
-            "messageId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["messageId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1304,12 +1230,8 @@
           "name": "attachment_uploadedBy_user_id_fk",
           "tableFrom": "attachment",
           "tableTo": "user",
-          "columnsFrom": [
-            "uploadedBy"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["uploadedBy"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1393,12 +1315,8 @@
           "name": "channelJoinRequest_channelId_channel_id_fk",
           "tableFrom": "channelJoinRequest",
           "tableTo": "channel",
-          "columnsFrom": [
-            "channelId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["channelId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1406,12 +1324,8 @@
           "name": "channelJoinRequest_userId_user_id_fk",
           "tableFrom": "channelJoinRequest",
           "tableTo": "user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1419,12 +1333,8 @@
           "name": "channelJoinRequest_reviewedBy_user_id_fk",
           "tableFrom": "channelJoinRequest",
           "tableTo": "user",
-          "columnsFrom": [
-            "reviewedBy"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["reviewedBy"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1518,12 +1428,8 @@
           "name": "channelMember_channelId_channel_id_fk",
           "tableFrom": "channelMember",
           "tableTo": "channel",
-          "columnsFrom": [
-            "channelId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["channelId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1531,12 +1437,8 @@
           "name": "channelMember_userId_user_id_fk",
           "tableFrom": "channelMember",
           "tableTo": "user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1641,12 +1543,8 @@
           "name": "channel_organizationId_organization_id_fk",
           "tableFrom": "channel",
           "tableTo": "organization",
-          "columnsFrom": [
-            "organizationId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organizationId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1654,12 +1552,8 @@
           "name": "channel_teamId_team_id_fk",
           "tableFrom": "channel",
           "tableTo": "team",
-          "columnsFrom": [
-            "teamId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["teamId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1667,12 +1561,8 @@
           "name": "channel_createdBy_user_id_fk",
           "tableFrom": "channel",
           "tableTo": "user",
-          "columnsFrom": [
-            "createdBy"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["createdBy"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1718,12 +1608,8 @@
           "name": "messageRead_messageId_message_id_fk",
           "tableFrom": "messageRead",
           "tableTo": "message",
-          "columnsFrom": [
-            "messageId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["messageId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1731,12 +1617,8 @@
           "name": "messageRead_userId_user_id_fk",
           "tableFrom": "messageRead",
           "tableTo": "user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1966,12 +1848,8 @@
           "name": "message_channelId_channel_id_fk",
           "tableFrom": "message",
           "tableTo": "channel",
-          "columnsFrom": [
-            "channelId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["channelId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1979,12 +1857,8 @@
           "name": "message_senderId_user_id_fk",
           "tableFrom": "message",
           "tableTo": "user",
-          "columnsFrom": [
-            "senderId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["senderId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1992,12 +1866,8 @@
           "name": "message_receiverId_user_id_fk",
           "tableFrom": "message",
           "tableTo": "user",
-          "columnsFrom": [
-            "receiverId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["receiverId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -2005,12 +1875,8 @@
           "name": "message_pinnedBy_user_id_fk",
           "tableFrom": "message",
           "tableTo": "user",
-          "columnsFrom": [
-            "pinnedBy"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["pinnedBy"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -2018,12 +1884,8 @@
           "name": "fk_message_parent",
           "tableFrom": "message",
           "tableTo": "message",
-          "columnsFrom": [
-            "parentMessageId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["parentMessageId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2126,12 +1988,8 @@
           "name": "notification_userId_user_id_fk",
           "tableFrom": "notification",
           "tableTo": "user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2186,69 +2044,37 @@
     "public.endReason": {
       "name": "endReason",
       "schema": "public",
-      "values": [
-        "manual",
-        "break",
-        "punch_out",
-        "idle_timeout"
-      ]
+      "values": ["manual", "break", "punch_out", "idle_timeout"]
     },
     "public.attachmentType": {
       "name": "attachmentType",
       "schema": "public",
-      "values": [
-        "image",
-        "document",
-        "video",
-        "audio",
-        "archive"
-      ]
+      "values": ["image", "document", "video", "audio", "archive"]
     },
     "public.channelType": {
       "name": "channelType",
       "schema": "public",
-      "values": [
-        "team",
-        "group",
-        "direct"
-      ]
+      "values": ["team", "group", "direct"]
     },
     "public.joinRequestStatus": {
       "name": "joinRequestStatus",
       "schema": "public",
-      "values": [
-        "pending",
-        "approved",
-        "rejected"
-      ]
+      "values": ["pending", "approved", "rejected"]
     },
     "public.messageType": {
       "name": "messageType",
       "schema": "public",
-      "values": [
-        "text",
-        "attachment",
-        "audio"
-      ]
+      "values": ["text", "attachment", "audio"]
     },
     "public.notificationStatus": {
       "name": "notificationStatus",
       "schema": "public",
-      "values": [
-        "unread",
-        "read",
-        "dismissed"
-      ]
+      "values": ["unread", "read", "dismissed"]
     },
     "public.notificationType": {
       "name": "notificationType",
       "schema": "public",
-      "values": [
-        "message",
-        "mention",
-        "channel_invite",
-        "direct_message"
-      ]
+      "values": ["message", "mention", "channel_invite", "direct_message"]
     }
   },
   "schemas": {},

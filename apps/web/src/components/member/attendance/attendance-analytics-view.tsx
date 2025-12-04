@@ -61,9 +61,7 @@ export function AttendanceAnalyticsView() {
 
         <div className="flex items-center gap-3">
           <Select
-            onValueChange={(value) =>
-              setRange(value as RangeOptionValue)
-            }
+            onValueChange={(value) => setRange(value as RangeOptionValue)}
             value={range}
           >
             <SelectTrigger className="w-40">

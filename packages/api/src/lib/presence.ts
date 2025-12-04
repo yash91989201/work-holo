@@ -110,8 +110,24 @@ export async function setManualStatus(
   const key = getPresenceKey(userId);
   const now = Date.now().toString();
 
-  // Update specific fields using hset (hmset is deprecated)
+  // Get existing presence data to compute the new status
+  const existingData = await getPresence(redis, userId);
+  const currentInput: ComputePresenceInput = {
+    punchedIn: existingData?.punchedIn === "1",
+    onBreak: existingData?.onBreak === "1",
+    inCall: existingData?.inCall === "1",
+    inMeeting: existingData?.inMeeting === "1",
+    isTabFocused: true, // Assume focused when manually setting status
+    isIdle: false, // Assume not idle when manually setting status
+    manualStatus,
+  };
+
+  // Compute the new status based on the updated manual status
+  const newStatus = computeStatus(currentInput);
+
+  // Update all fields including the computed status
   await redis.hset(key, {
+    status: newStatus,
     manualStatus: manualStatus || "",
     lastSeenAt: now,
     orgId,

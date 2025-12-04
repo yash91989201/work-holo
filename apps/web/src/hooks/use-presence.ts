@@ -32,11 +32,12 @@ export function usePresenceHeartbeat({
   inCall = false,
   inMeeting = false,
   manualStatus = null,
-  intervalMs = 60_000, // 60 seconds
+  intervalMs = 300_000, // 5 minutes
 }: UsePresenceHeartbeatOptions) {
   const organization = useActiveOrganization();
   const lastActivityRef = useRef(Date.now());
   const isTabFocusedRef = useRef(true);
+  const lastHeartbeatRef = useRef(0); // ADD THIS LINE
 
   const { mutate: sendHeartbeat } = useMutation(
     queryUtils.member.presence.heartbeat.mutationOptions({})
@@ -46,8 +47,19 @@ export function usePresenceHeartbeat({
   useEffect(() => {
     const handleActivity = () => {
       lastActivityRef.current = Date.now();
-      // Send immediate heartbeat when user becomes active
+
+      // Throttle heartbeats to once per 5 minutes
+      const now = Date.now();
+      const timeSinceLastHeartbeat = now - lastHeartbeatRef.current;
+      const THROTTLE_INTERVAL = 300_000; // 5 minutes
+
+      if (timeSinceLastHeartbeat < THROTTLE_INTERVAL) {
+        return; // Skip heartbeat, too soon
+      }
+
+      // Send heartbeat when user becomes active (throttled)
       if (enabled && organization?.id) {
+        lastHeartbeatRef.current = now;
         const isIdle = false;
         sendHeartbeat({
           orgId: organization.id,
@@ -65,10 +77,12 @@ export function usePresenceHeartbeat({
     const handleVisibilityChange = () => {
       const newFocusState = !document.hidden;
       isTabFocusedRef.current = newFocusState;
-      
+
       // Send immediate heartbeat when tab becomes focused
       if (newFocusState && enabled && organization?.id) {
-        lastActivityRef.current = Date.now();
+        const now = Date.now();
+        lastActivityRef.current = now;
+        lastHeartbeatRef.current = now; // ADD THIS LINE
         sendHeartbeat({
           orgId: organization.id,
           punchedIn,
@@ -93,7 +107,16 @@ export function usePresenceHeartbeat({
       window.removeEventListener("click", handleActivity);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [enabled, organization?.id, punchedIn, onBreak, inCall, inMeeting, manualStatus, sendHeartbeat]);
+  }, [
+    enabled,
+    organization?.id,
+    punchedIn,
+    onBreak,
+    inCall,
+    inMeeting,
+    manualStatus,
+    sendHeartbeat,
+  ]);
 
   // Send heartbeat
   useEffect(() => {
@@ -115,6 +138,9 @@ export function usePresenceHeartbeat({
         manualStatus,
       });
     };
+
+    // Initialize throttle ref - ADD THIS LINE
+    lastHeartbeatRef.current = Date.now();
 
     // Send immediately
     sendPresenceUpdate();
@@ -140,13 +166,15 @@ export function useSetManualStatus() {
   const organization = useActiveOrganization();
   return useMutation(
     queryUtils.member.presence.setManualStatus.mutationOptions({
-      onSuccess: () => {
-        queryClient.invalidateQueries({
+      onSuccess: async () => {
+        // Immediately refetch the org presence data to update UI
+        await queryClient.refetchQueries({
           queryKey: queryUtils.member.presence.getOrgPresence.queryKey({
             input: {
               orgId: organization?.id ?? "",
             },
           }),
+          exact: true,
         });
       },
     })

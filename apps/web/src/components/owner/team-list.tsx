@@ -53,10 +53,7 @@ export const TeamList = () => {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {teams.map((team) => (
-        <Card
-          className="cursor-pointer transition-shadow hover:shadow-md"
-          key={team.id}
-        >
+        <Card className="cursor-pointer" key={team.id}>
           <CardHeader className="pb-3">
             <div className="flex items-start justify-between">
               <div className="space-y-1">

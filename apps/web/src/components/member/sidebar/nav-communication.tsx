@@ -61,7 +61,7 @@ export function NavChannels() {
       <SidebarMenu>
         <SidebarMenuItem>
           <SidebarMenuButton tooltip="No Channels">
-            {isPopover? <CircleAlert/> : "No Channels"}
+            {isPopover ? <CircleAlert /> : "No Channels"}
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>

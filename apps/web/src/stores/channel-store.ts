@@ -123,10 +123,8 @@ const useChannelStore = create<ChannelState>((set) => ({
     set({ messageThread: { messageId: null, isOpen: false } }),
   openPinnedMessages: () => set({ pinnedMessages: { isOpen: true } }),
   closePinnedMessages: () => set({ pinnedMessages: { isOpen: false } }),
-  openMentionsSidebar: () =>
-    set({ mentionsSidebar: { isOpen: true } }),
-  closeMentionsSidebar: () =>
-    set({ mentionsSidebar: { isOpen: false } }),
+  openMentionsSidebar: () => set({ mentionsSidebar: { isOpen: true } }),
+  closeMentionsSidebar: () => set({ mentionsSidebar: { isOpen: false } }),
 }));
 
 export function useChannel(channelId: string) {

@@ -17,7 +17,13 @@ export function ThemeProvider({
       spacing: theme.spacing,
       letterSpacing: theme.letterSpacing,
     });
-  }, [theme.fontFamily, theme.fontSize, theme.radius, theme.spacing, theme.letterSpacing]);
+  }, [
+    theme.fontFamily,
+    theme.fontSize,
+    theme.radius,
+    theme.spacing,
+    theme.letterSpacing,
+  ]);
 
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
 }

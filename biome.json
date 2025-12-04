@@ -30,7 +30,8 @@
       },
       "nursery": {
         "noShadow": "off",
-        "noIncrementDecrement": "off"
+        "noIncrementDecrement": "off",
+        "noLeakedRender": "off"
       },
       "style": {
         "noMagicNumbers": "off",
@@ -47,4 +48,3 @@
     }
   }
 }
-

@@ -2,16 +2,25 @@ import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import {
   Check,
   Clock,
-  Coffee,
   LogOut,
   Moon,
   Pause,
   PhoneCall,
   Play,
+  Target,
   XCircle,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,6 +39,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Spinner } from "@/components/ui/spinner";
+import { useSetManualStatus } from "@/hooks/use-presence";
 import { queryClient, queryUtils } from "@/utils/orpc";
 
 export function NavQuickActions() {
@@ -107,9 +117,7 @@ function WorkBlockToggle() {
     })
   );
 
-  const { mutateAsync: setManualStatus } = useMutation(
-    queryUtils.member.presence.setManualStatus.mutationOptions({})
-  );
+  const { mutateAsync: setManualStatus } = useSetManualStatus();
 
   const { mutateAsync: endBlock, isPending: isEnding } = useMutation(
     queryUtils.member.workBlock.endBlock.mutationOptions({
@@ -186,13 +194,7 @@ function PresenceStatusDropdown() {
     })
   );
 
-  const { mutateAsync: setManualStatus, isPending } = useMutation(
-    queryUtils.member.presence.setManualStatus.mutationOptions({
-      onSuccess: () => {
-        toast.success("Status updated");
-      },
-    })
-  );
+  const { mutateAsync: setManualStatus, isPending } = useSetManualStatus();
 
   const hasCheckedIn = !!attendance?.checkInTime;
   const hasCheckedOut = !!attendance?.checkOutTime;
@@ -207,6 +209,7 @@ function PresenceStatusDropdown() {
     if (!orgId) return;
 
     await setManualStatus({ orgId, status });
+    toast.success("Status updated");
   };
 
   const myPresence =
@@ -239,7 +242,7 @@ function PresenceStatusDropdown() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <SidebarMenuButton disabled={isPending}>
-          <Coffee />
+          <Target />
           <span>{currentStatusLabel}</span>
         </SidebarMenuButton>
       </DropdownMenuTrigger>
@@ -249,7 +252,7 @@ function PresenceStatusDropdown() {
         side="right"
         sideOffset={12}
       >
-        <DropdownMenuLabel>Status</DropdownMenuLabel>
+        <DropdownMenuLabel>Update Status</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => handleStatusChange(null)}>
           <Clock className="mr-2 h-4 w-4 text-green-600" />
@@ -277,6 +280,8 @@ function MarkAttendanceButton() {
     queryUtils.member.attendance.getStatus.queryOptions({})
   );
 
+  const [showPunchOutDialog, setShowPunchOutDialog] = useState(false);
+
   const { mutateAsync: punchIn, isPending: isPunchingIn } = useMutation(
     queryUtils.member.attendance.punchIn.mutationOptions({
       onSuccess: async () => {
@@ -298,7 +303,12 @@ function MarkAttendanceButton() {
     queryUtils.member.attendance.punchOut.mutationOptions({
       onSuccess: async () => {
         toast.success("Checked out successfully!");
+        setShowPunchOutDialog(false);
         await refetch();
+      },
+      onError: (error) => {
+        toast.error(error.message);
+        setShowPunchOutDialog(false);
       },
     })
   );
@@ -306,6 +316,14 @@ function MarkAttendanceButton() {
   const hasCheckedIn = !!attendance?.checkInTime;
   const hasCheckedOut = !!attendance?.checkOutTime;
   const isActionPending = isPunchingIn || isPunchingOut;
+
+  const handlePunchOut = () => {
+    setShowPunchOutDialog(true);
+  };
+
+  const confirmPunchOut = async () => {
+    await punchOut({});
+  };
 
   if (!hasCheckedIn) {
     return (
@@ -332,24 +350,62 @@ function MarkAttendanceButton() {
 
   if (hasCheckedIn && !hasCheckedOut) {
     return (
-      <SidebarMenuButton
-        className="min-w-8 bg-red-600 text-primary-foreground duration-200 ease-linear hover:bg-red-700 hover:text-primary-foreground active:bg-red-700 active:text-primary-foreground"
-        disabled={isActionPending}
-        onClick={() => punchOut({})}
-        tooltip="Punch Out"
-      >
-        {isPunchingOut ? (
-          <>
-            <Spinner className="mr-2 h-4 w-4 animate-spin" />
-            <span>Punching Out…</span>
-          </>
-        ) : (
-          <>
-            <LogOut />
-            <span>Punch Out</span>
-          </>
-        )}
-      </SidebarMenuButton>
+      <>
+        <SidebarMenuButton
+          className="min-w-8 bg-red-600 text-primary-foreground duration-200 ease-linear hover:bg-red-700 hover:text-primary-foreground active:bg-red-700 active:text-primary-foreground"
+          disabled={isActionPending}
+          onClick={handlePunchOut}
+          tooltip="Punch Out"
+        >
+          {isPunchingOut ? (
+            <>
+              <Spinner className="mr-2 h-4 w-4 animate-spin" />
+              <span>Punching Out…</span>
+            </>
+          ) : (
+            <>
+              <LogOut />
+              <span>Punch Out</span>
+            </>
+          )}
+        </SidebarMenuButton>
+
+        <Dialog onOpenChange={setShowPunchOutDialog} open={showPunchOutDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Confirm Punch Out</DialogTitle>
+              <DialogDescription>
+                Confirm punch out? This action cannot be undone, preventing
+                further check-ins today. Unfinished work sessions will be
+                automatically paused.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button
+                disabled={isPunchingOut}
+                onClick={() => setShowPunchOutDialog(false)}
+                variant="outline"
+              >
+                Cancel
+              </Button>
+              <Button
+                disabled={isPunchingOut}
+                onClick={confirmPunchOut}
+                variant="destructive"
+              >
+                {isPunchingOut ? (
+                  <>
+                    <Spinner className="mr-2 h-4 w-4" />
+                    Punching Out...
+                  </>
+                ) : (
+                  "Confirm Punch Out"
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </>
     );
   }
 

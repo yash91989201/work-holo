@@ -56,13 +56,19 @@ const WorkBlockItem = ({
   let iconComponent: React.ReactNode;
 
   if (isOngoing) {
-    iconComponent = reason === null
-      ? <Briefcase className="h-4 w-4 text-green-500" />
-      : endReasonIcons[reason as string] || <Clock className="h-4 w-4" />;
+    iconComponent =
+      reason === null ? (
+        <Briefcase className="h-4 w-4 text-green-500" />
+      ) : (
+        endReasonIcons[reason as string] || <Clock className="h-4 w-4" />
+      );
   } else {
-    iconComponent = reason !== null
-      ? endReasonIcons[reason as string] || <Clock className="h-4 w-4" />
-      : <Clock className="h-4 w-4" />;
+    iconComponent =
+      reason !== null ? (
+        endReasonIcons[reason as string] || <Clock className="h-4 w-4" />
+      ) : (
+        <Clock className="h-4 w-4" />
+      );
   }
 
   return (

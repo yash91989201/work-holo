@@ -70,7 +70,7 @@ export function LinkBubbleMenu({ editor }: LinkBubbleMenuProps) {
     const handleClickOutside = (e: MouseEvent) => {
       // Don't close menu if clicking in popover
       if (isEditPopoverOpen) return;
-      
+
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         const { view } = editor;
         if (!view.dom.contains(e.target as Node)) {
