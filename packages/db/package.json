@@ -17,7 +17,6 @@
   },
   "devDependencies": {
     "drizzle-kit": "^0.31.8",
-    "@types/pg": "^8.15.6",
     "@work-holo/config": "workspace:*",
     "supabase": "^2.65.6"
   },
@@ -31,7 +30,6 @@
     "drizzle-cuid2": "^2.2.0",
     "drizzle-orm": "^0.45.0",
     "drizzle-zod": "^0.8.3",
-    "pg": "^8.16.3",
     "zod": "^4.1.13"
   }
 }
