@@ -1,6 +1,16 @@
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import chokidar from "chokidar";
+
+// Resolve paths relative to the project root (two levels up from this script)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+// Adjust "..", ".." if your script lives elsewhere
+const projectRoot = path.resolve(__dirname, "..", "..");
+
+const schemasDir = path.join(projectRoot, "src", "lib", "schemas");
+const outputFile = path.join(projectRoot, "src", "lib", "types.ts");
 
 // Regex patterns
 const TS_EXTENSION_REGEX = /\.ts$/;
@@ -11,13 +21,7 @@ const INPUT_SUFFIX_REGEX = /Input$/;
 const OUTPUT_SUFFIX_REGEX = /Output$/;
 const NON_DB_SCHEMA_PATTERNS = /(Create|Update|Delete|Form|Insert|Select)$/;
 
-const schemasDir = path.resolve("src/lib/schemas");
-const outputFile = path.resolve("src/lib/types.ts");
-
-// Ensure directories exist
-if (!fs.existsSync(schemasDir)) {
-  fs.mkdirSync(schemasDir, { recursive: true });
-}
+// Ensure output directory exists (but don't create schemasDir silently)
 if (!fs.existsSync(path.dirname(outputFile))) {
   fs.mkdirSync(path.dirname(outputFile), { recursive: true });
 }
@@ -40,21 +44,14 @@ function extractSchemaNames(content: string): string[] {
 }
 
 function getTypeName(schemaName: string): string {
-  // For schemas ending with "Schema"
   if (SCHEMA_SUFFIX_REGEX.test(schemaName)) {
     const withoutSchema = schemaName.slice(0, -6);
-    // If it doesn't contain common action/form patterns, treat as DB schema
-    // e.g., UserSchema -> UserType
     if (!NON_DB_SCHEMA_PATTERNS.test(withoutSchema)) {
       return `${withoutSchema}Type`;
     }
-    // For form/action schemas, remove "Schema" and add "Type"
-    // e.g., CreateChannelFormSchema -> CreateChannelFormType
     return `${withoutSchema}Type`;
   }
 
-  // For Input/Output, just add "Type"
-  // e.g., CreateUserInput -> CreateUserInputType
   if (
     INPUT_SUFFIX_REGEX.test(schemaName) ||
     OUTPUT_SUFFIX_REGEX.test(schemaName)
@@ -62,15 +59,18 @@ function getTypeName(schemaName: string): string {
     return `${schemaName}Type`;
   }
 
-  // Fallback: add "Type" to the name
   return `${schemaName}Type`;
 }
 
 function generateTypes() {
   console.log("🔄 Generating types...");
+  console.log("📁 Schemas dir:", schemasDir);
+  console.log("📄 Output file:", outputFile);
 
   if (!fs.existsSync(schemasDir)) {
-    console.warn(`Schemas directory ${schemasDir} does not exist`);
+    console.warn(
+      `! Schemas directory ${schemasDir} does not exist. No types generated.`
+    );
     return;
   }
 
@@ -85,7 +85,7 @@ function generateTypes() {
 
       if (schemaNames.length === 0) continue;
 
-      // Get relative path from schemas directory
+      // Get path relative to schemas directory
       const relPath = path
         .relative(schemasDir, file)
         .replace(/\\/g, "/")
@@ -140,9 +140,7 @@ if (process.argv.includes("--watch") || process.argv.includes("-w")) {
   });
 
   const handleChange = (filePath: string) => {
-    console.log(
-      `Detected change in: ${path.relative(process.cwd(), filePath)}`
-    );
+    console.log(`Detected change in: ${path.relative(projectRoot, filePath)}`);
     generateTypes();
   };
 

@@ -1,8 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  AccountSessions,
-  ChangePasswordForm,
-} from "@/components/settings/security";
+import { ChangePasswordForm, Manage2FA } from "@/components/settings/security";
 
 export const Route = createFileRoute(
   "/(authenticated)/settings/account/security"
@@ -19,7 +16,7 @@ function RouteComponent() {
         </h2>
         <div className="space-y-6">
           <ChangePasswordForm />
-          <AccountSessions />
+          <Manage2FA />
         </div>
       </div>
     </div>
