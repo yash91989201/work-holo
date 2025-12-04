@@ -24,7 +24,7 @@
     "hono": "^4.10.7",
     "drizzle-orm": "^0.44.7",
     "@electric-sql/client": "^1.2.0",
-    "@supabase/supabase-js": "^2.86.0",
+    "@supabase/supabase-js": "^2.86.2",
     "@t3-oss/env-core": "^0.13.8",
     "@work-holo/auth": "workspace:*",
     "@work-holo/db": "workspace:*",

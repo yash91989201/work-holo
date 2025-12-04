@@ -19,7 +19,7 @@
     "drizzle-kit": "^0.31.7",
     "@types/pg": "^8.15.6",
     "@work-holo/config": "workspace:*",
-    "supabase": "^2.65.3"
+    "supabase": "^2.65.6"
   },
   "peerDependencies": {
     "typescript": "^5.9.3"
