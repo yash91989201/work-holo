@@ -16,6 +16,12 @@ import type {
 import type { JoinChannelRequestFormSchema } from "@/lib/schemas/memeber/join-channel-request";
 import type { CreateOrgFormSchema } from "@/lib/schemas/org";
 import type { InviteAdminFormSchema } from "@/lib/schemas/owner/index";
+import type {
+  ProfileEmailSchema,
+  ProfileImageSchema,
+  ProfileNameSchema,
+  ProfileUsernameSchema,
+} from "@/lib/schemas/settings/profile";
 
 export type AcceptInvitationFormType = z.infer<
   typeof AcceptInvitationFormSchema
@@ -33,4 +39,8 @@ export type LogInFormType = z.infer<typeof LogInFormSchema>;
 export type ModifyChannelMembersType = z.infer<
   typeof ModifyChannelMembersSchema
 >;
+export type ProfileEmailType = z.infer<typeof ProfileEmailSchema>;
+export type ProfileImageType = z.infer<typeof ProfileImageSchema>;
+export type ProfileNameType = z.infer<typeof ProfileNameSchema>;
+export type ProfileUsernameType = z.infer<typeof ProfileUsernameSchema>;
 export type SignUpFormType = z.infer<typeof SignUpFormSchema>;
