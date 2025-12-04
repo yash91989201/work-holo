@@ -14,11 +14,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { acceptInvitationAndActivate } from "@/lib/auth/invitation";
+import { acceptOrgInvitation } from "@/lib/auth/invitation";
 import { AcceptInvitationFormSchema } from "@/lib/schemas/auth";
 import type { AcceptInvitationFormType } from "@/lib/types";
 
 export function AcceptInvitationForm() {
+  const navigate = useNavigate();
+
   const { id: invitationId } = useParams({
     from: "/(auth)/accept-invitation/$id",
   });
@@ -26,7 +28,6 @@ export function AcceptInvitationForm() {
   const { email } = useSearch({
     from: "/(auth)/accept-invitation/$id",
   });
-  const navigate = useNavigate();
 
   const form = useForm<AcceptInvitationFormType>({
     resolver: standardSchemaResolver(AcceptInvitationFormSchema),
@@ -41,7 +42,7 @@ export function AcceptInvitationForm() {
   const { mutateAsync: acceptInvitation, isPending } = useMutation({
     mutationKey: ["acceptInvitation", invitationId],
     mutationFn: (formValues: AcceptInvitationFormType) =>
-      acceptInvitationAndActivate({ ...formValues, invitationId }),
+      acceptOrgInvitation({ ...formValues, invitationId }),
     onSuccess: (slug) => {
       toast.success("Invitation accepted successfully!");
 

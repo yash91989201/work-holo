@@ -8,9 +8,7 @@ interface AcceptedInvitation {
   };
 }
 
-export async function acceptInvitationAndActivate(
-  params: AcceptInvitationFormType
-) {
+export async function acceptOrgInvitation(params: AcceptInvitationFormType) {
   await ensureAuthenticatedUser(params);
 
   const accepted = await acceptOrganizationInvitation(params.invitationId);
