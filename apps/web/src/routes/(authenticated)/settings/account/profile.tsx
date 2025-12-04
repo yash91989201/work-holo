@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Profile } from "@/components/settings/profile";
 
 export const Route = createFileRoute(
   "/(authenticated)/settings/account/profile"
@@ -7,5 +8,14 @@ export const Route = createFileRoute(
 });
 
 function RouteComponent() {
-  return <div>Hello "/(authenticated)/settings/account/profile"!</div>;
+  return (
+    <div className="container mx-auto max-w-2xl py-12">
+      <div className="space-y-6">
+        <h2 className="font-semibold text-2xl tracking-tight">Profile</h2>
+        <div className="space-y-6">
+          <Profile />
+        </div>
+      </div>
+    </div>
+  );
 }

@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
 import {
   type FontFamily,
   type FontSize,
@@ -27,7 +28,6 @@ import {
   type Spacing,
   useThemeStore,
 } from "@/stores/theme-store";
-import { Switch } from "../ui/switch";
 
 const themeOptions = [
   { value: "light", label: "Light", icon: Sun },
