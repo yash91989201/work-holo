@@ -5,10 +5,15 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import {
   admin,
+  emailOTP,
   haveIBeenPwned,
   lastLoginMethod,
+  magicLink,
   multiSession,
   organization,
+  phoneNumber,
+  twoFactor,
+  username,
 } from "better-auth/plugins";
 import { env } from "./env";
 
@@ -32,6 +37,19 @@ export const auth = betterAuth({
   plugins: [
     expo(),
     admin(),
+    twoFactor(),
+    username(),
+    phoneNumber(),
+    magicLink({
+      sendMagicLink: () => {
+        // TODO: Send email to user
+      },
+    }),
+    emailOTP({
+      async sendVerificationOTP() {
+        // TODO: Send email to user
+      },
+    }),
     haveIBeenPwned(),
     lastLoginMethod(),
     multiSession(),
