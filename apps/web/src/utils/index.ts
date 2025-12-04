@@ -1,3 +1,5 @@
+import { UAParser } from "ua-parser-js";
+
 export const generateSlug = (value: string) => {
   return (
     value
@@ -20,3 +22,23 @@ export const getNameInitials = (name: string) =>
     .join("")
     .toUpperCase()
     .slice(0, 2);
+
+export const getBrowserInformation = (userAgent?: string | null) => {
+  if (!userAgent) return "Unknown Device";
+
+  try {
+    const parser = new UAParser(userAgent);
+    const result = parser.getResult();
+
+    if (!(result.browser.name || result.os.name)) {
+      return "Unknown Device";
+    }
+
+    if (!result.browser.name) return result.os.name;
+    if (!result.os.name) return result.browser.name;
+
+    return `${result.browser.name}, ${result.os.name}`;
+  } catch {
+    return "Unknown Device";
+  }
+};
