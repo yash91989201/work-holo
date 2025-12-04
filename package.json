@@ -13,6 +13,7 @@
     "check": "oxlint",
     "prepare": "husky",
     "ruler:apply": "bunx @intellectronica/ruler@latest apply --local-only",
+    "auth:generate": "bunx @better-auth/cli@latest generate --config packages/auth/src/index.ts --output packages/db/src/schema/auth.ts",
     "dev": "turbo dev",
     "build": "turbo build",
     "check-types": "turbo check-types",
