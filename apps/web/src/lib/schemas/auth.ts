@@ -11,6 +11,8 @@ export const LogInFormSchema = z.object({
 export const SignUpFormSchema = z
   .object({
     name: z.string().min(6, "Enter your full name."),
+    username: z.string().min(3, "Enter unique username"),
+    displayUsername: z.string().min(3, "Enter a display username"),
     email: z.email("Invalid email address").nonempty("Email is required"),
     password: z
       .string()
