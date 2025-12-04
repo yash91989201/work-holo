@@ -79,7 +79,7 @@ export function NavUser() {
               <Link to="/settings/account/profile">Profile</Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link to="/settings/preferences">Preferences</Link>
+              <Link to="/settings/account/preferences">Preferences</Link>
             </DropdownMenuItem>
             <DropdownMenuItem onClick={logout}>
               <IconLogout />

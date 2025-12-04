@@ -1,83 +1,61 @@
-import { Link } from "@tanstack/react-router";
-import { ChevronRight, SwatchBook, User } from "lucide-react";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { Link, linkOptions } from "@tanstack/react-router";
+import { BellDot, SwatchBook, User, UserLock } from "lucide-react";
 import {
   SidebarGroup,
+  SidebarGroupContent,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 
-const navItems = [
+const items = linkOptions([
   {
-    title: "Settings",
-    url: "/settings",
+    label: "Preferences",
+    to: "/settings/account/preferences",
     icon: SwatchBook,
-    isActive: false,
-    items: [
-      {
-        title: "Preferences",
-        url: "/settings/preferences",
-      },
-    ],
   },
   {
-    title: "Account",
+    label: "Profile",
+    to: "/settings/account/profile",
     icon: User,
-    url: "/settings/account",
-    isActive: false,
-    items: [
-      {
-        title: "Profile",
-        url: "/settings/account/profile",
-      },
-    ],
   },
-];
+  {
+    label: "Notifications",
+    to: "/settings/account/notifications",
+    icon: BellDot,
+  },
+  {
+    label: "Security & access",
+    to: "/settings/account/security",
+    icon: UserLock,
+  },
+]);
 
 export function NavMain() {
   return (
     <SidebarGroup>
-      <SidebarMenu>
-        {navItems.map((item) => (
-          <Collapsible
-            asChild
-            className="group/collapsible"
-            defaultOpen={item.isActive}
-            key={item.title}
-          >
-            <SidebarMenuItem>
-              <CollapsibleTrigger asChild>
-                <SidebarMenuButton tooltip={item.title}>
-                  {item.icon && <item.icon />}
-                  <span>{item.title}</span>
-                  <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                </SidebarMenuButton>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <SidebarMenuSub>
-                  {item.items?.map((subItem) => (
-                    <SidebarMenuSubItem key={subItem.title}>
-                      <SidebarMenuSubButton asChild>
-                        <Link to={subItem.url}>
-                          <span>{subItem.title} </span>
-                        </Link>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                  ))}
-                </SidebarMenuSub>
-              </CollapsibleContent>
+      <SidebarGroupContent className="flex flex-col gap-2">
+        <SidebarMenu>
+          {items.map((item) => (
+            <SidebarMenuItem key={item.to}>
+              <Link {...item}>
+                {({ isActive }) => (
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isActive}
+                    tooltip={item.label}
+                  >
+                    <div className="flex items-center gap-2">
+                      {item.icon && <item.icon />}
+                      <span>{item.label}</span>
+                    </div>
+                  </SidebarMenuButton>
+                )}
+              </Link>
             </SidebarMenuItem>
-          </Collapsible>
-        ))}
-      </SidebarMenu>
+          ))}
+        </SidebarMenu>
+      </SidebarGroupContent>
     </SidebarGroup>
   );
 }

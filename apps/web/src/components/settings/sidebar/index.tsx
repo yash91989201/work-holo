@@ -1,18 +1,16 @@
+import { Link } from "@tanstack/react-router";
+import { ArrowLeft } from "lucide-react";
 import type * as React from "react";
-import { Suspense } from "react";
-import {
-  OrgMenuButton,
-  OrgMenuButtonSkeleton,
-} from "@/components/shared/org-menu-button";
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarHeader,
   SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarRail,
 } from "@/components/ui/sidebar";
 import { NavMain } from "./nav-main";
-import { NavUser } from "./nav-user";
 
 export function SettingsSidebar({
   ...props
@@ -21,17 +19,20 @@ export function SettingsSidebar({
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarMenu>
-          <Suspense fallback={<OrgMenuButtonSkeleton />}>
-            <OrgMenuButton />
-          </Suspense>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <Link to="..">
+                <ArrowLeft />
+                <span>Back to Org</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
         <NavMain />
       </SidebarContent>
-      <SidebarFooter>
-        <NavUser />
-      </SidebarFooter>
+      <SidebarRail />
     </Sidebar>
   );
 }

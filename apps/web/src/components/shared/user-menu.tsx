@@ -43,7 +43,7 @@ export default function UserMenu() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link to="/settings/preferences">Preferences</Link>
+          <Link to="/settings/account/preferences">Preferences</Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link to="/settings/account/profile">Profile</Link>

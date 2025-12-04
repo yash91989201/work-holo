@@ -1,5 +1,4 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { RouteHeader } from "@/components/settings/route-header";
 import { SettingsSidebar } from "@/components/settings/sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
@@ -22,7 +21,6 @@ function RouteComponent() {
       <SidebarInset>
         <div className="flex flex-1 flex-col">
           <main className="@container/main flex flex-1 flex-col gap-2">
-            <RouteHeader />
             <Outlet />
           </main>
         </div>

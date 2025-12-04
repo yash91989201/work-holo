@@ -1,12 +1,20 @@
 import { Monitor, Moon, RotateCcw, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemHeader,
+  ItemTitle,
+} from "@/components/ui/item";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -19,6 +27,7 @@ import {
   type Spacing,
   useThemeStore,
 } from "@/stores/theme-store";
+import { Switch } from "../ui/switch";
 
 const themeOptions = [
   { value: "light", label: "Light", icon: Sun },
@@ -89,8 +98,94 @@ const letterSpacingOptions: {
   { value: "wider", label: "Wider" },
 ];
 
-export function Preferences() {
+export function General() {
+  return (
+    <div className="space-y-3">
+      <h3>General</h3>
+      <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
+        <Item>
+          <ItemContent>
+            <ItemTitle>Default home view</ItemTitle>
+            <ItemDescription>
+              Which view is opened when you open up Work Holo
+            </ItemDescription>
+          </ItemContent>
+          <ItemActions>
+            <Select>
+              <SelectTrigger className="w-40">
+                <SelectValue placeholder="Select a view" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Select a view</SelectLabel>
+                  <SelectItem value="org">Org home</SelectItem>
+                  <SelectItem value="attendance">Attendance</SelectItem>
+                  <SelectItem value="communication">Communication</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </ItemActions>
+        </Item>
+        <Separator />
+        <Item>
+          <ItemContent>
+            <ItemTitle>Display full names</ItemTitle>
+            <ItemDescription>
+              Show full names instead of short usernames
+            </ItemDescription>
+          </ItemContent>
+          <ItemActions>
+            <Switch id="airplane-mode" />
+          </ItemActions>
+        </Item>
+        <Separator />
+        <Item>
+          <ItemContent>
+            <ItemTitle>First day of week</ItemTitle>
+            <ItemDescription>
+              Used for date pickers and calendars
+            </ItemDescription>
+          </ItemContent>
+          <ItemActions>
+            <Select>
+              <SelectTrigger className="w-40">
+                <SelectValue placeholder="Select a day" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Select a day</SelectLabel>
+                  <SelectItem value="monday">Monday</SelectItem>
+                  <SelectItem value="tuesday">Tuesday</SelectItem>
+                  <SelectItem value="wednesday">Wednesday</SelectItem>
+                  <SelectItem value="thursday">Thursday</SelectItem>
+                  <SelectItem value="friday">Friday</SelectItem>
+                  <SelectItem value="saturday">Saturday</SelectItem>
+                  <SelectItem value="sunday">Sunday</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </ItemActions>
+        </Item>
+        <Separator />
+        <Item>
+          <ItemContent>
+            <ItemTitle>Convert text emoticons to emoji</ItemTitle>
+            <ItemDescription>
+              Strings like :) will be converted to 😊
+            </ItemDescription>
+          </ItemContent>
+          <ItemActions>
+            <Switch id="airplane-mode" />
+          </ItemActions>
+        </Item>
+      </div>
+    </div>
+  );
+}
+
+export function Interface() {
   const { setTheme, theme } = useTheme();
+
   const {
     fontFamily,
     fontSize,
@@ -106,169 +201,156 @@ export function Preferences() {
   } = useThemeStore();
 
   return (
-    <>
-      <div className="space-y-3">
-        <h2>Interface and Themes</h2>
-
-        <Card>
-          <CardContent className="space-y-6">
-            {/* Theme */}
-            <div className="flex items-center justify-between">
-              <Label htmlFor="theme">Theme</Label>
-              <Select onValueChange={setTheme} value={theme || "system"}>
-                <SelectTrigger className="w-32" id="theme">
-                  <SelectValue placeholder="Select theme" />
-                </SelectTrigger>
-                <SelectContent>
-                  {themeOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      <div className="flex items-center gap-2">
-                        <option.icon className="h-4 w-4" />
-                        {option.label}
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <Separator />
-
-            {/* Font Family */}
-            <div className="flex items-center justify-between">
-              <Label htmlFor="font-family">Font Family</Label>
-
-              <Select onValueChange={setFontFamily} value={fontFamily}>
-                <SelectTrigger id="font-family">
-                  <SelectValue placeholder="Select font family" />
-                </SelectTrigger>
-                <SelectContent>
-                  {fontFamilyOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
+    <div className="space-y-3">
+      <h3>Interface and theme</h3>
+      <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
+        <Item>
+          <ItemContent>
+            <ItemTitle>Theme</ItemTitle>
+            <ItemDescription>Customize your interface theme.</ItemDescription>
+          </ItemContent>
+          <ItemActions>
+            <Select onValueChange={setTheme} value={theme || "system"}>
+              <SelectTrigger className="w-32" id="theme">
+                <SelectValue placeholder="Select theme" />
+              </SelectTrigger>
+              <SelectContent>
+                {themeOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    <div className="flex items-center gap-2">
+                      <option.icon className="h-4 w-4" />
                       {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </ItemActions>
+        </Item>
+        <Separator />
+        <Item>
+          <ItemContent>
+            <ItemTitle>Font family</ItemTitle>
+            <ItemDescription>
+              Customize the font used across the app
+            </ItemDescription>
+          </ItemContent>
+          <ItemActions>
+            <Select onValueChange={setFontFamily} value={fontFamily}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select font family" />
+              </SelectTrigger>
+              <SelectContent>
+                {fontFamilyOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </ItemActions>
+        </Item>
+        <Separator />
+        <Item>
+          <ItemContent>
+            <ItemTitle>Font size</ItemTitle>
+            <ItemDescription>
+              Customize the font size across the app
+            </ItemDescription>
+          </ItemContent>
+          <ItemActions>
+            <Select onValueChange={setFontSize} value={fontSize}>
+              <SelectTrigger id="font-size">
+                <SelectValue placeholder="Select font size" />
+              </SelectTrigger>
+              <SelectContent>
+                {fontSizeOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </ItemActions>
+        </Item>
+        <Separator />
+        <Item>
+          <ItemContent>
+            <ItemTitle>Letter Spacing</ItemTitle>
+            <ItemDescription>
+              Set spacing between individual letters
+            </ItemDescription>
+          </ItemContent>
+          <ItemActions>
+            <Select onValueChange={setLetterSpacing} value={letterSpacing}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select letter spacing" />
+              </SelectTrigger>
+              <SelectContent>
+                {letterSpacingOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </ItemActions>
+        </Item>
+        <Separator />
+        <Item>
+          <ItemContent>
+            <ItemTitle>Gap</ItemTitle>
+            <ItemDescription>Set the gap between ui elements</ItemDescription>
+          </ItemContent>
+          <ItemActions>
+            <Select onValueChange={setSpacing} value={spacing}>
+              <SelectTrigger id="spacing">
+                <SelectValue placeholder="Select spacing" />
+              </SelectTrigger>
+              <SelectContent>
+                {spacingOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </ItemActions>
+        </Item>
+        <Separator />
+        <Item>
+          <ItemContent>
+            <ItemTitle>Corner Radius</ItemTitle>
+            <ItemDescription>
+              Customize the border radius of cards and buttons
+            </ItemDescription>
+          </ItemContent>
+          <ItemActions>
+            <Select onValueChange={setRadius} value={radius}>
+              <SelectTrigger id="radius">
+                <SelectValue placeholder="Select radius" />
+              </SelectTrigger>
+              <SelectContent>
+                {radiusOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </ItemActions>
+        </Item>
+        <Separator />
+        <Item>
+          <ItemHeader>Theme preview</ItemHeader>
+          <ItemContent>
+            <ItemTitle>A preview of your current theme</ItemTitle>
 
-            <Separator />
-
-            {/* Font Size */}
-            <div className="flex items-center justify-between">
-              <Label htmlFor="font-size">Font Size</Label>
-
-              <Select onValueChange={setFontSize} value={fontSize}>
-                <SelectTrigger id="font-size">
-                  <SelectValue placeholder="Select font size" />
-                </SelectTrigger>
-                <SelectContent>
-                  {fontSizeOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <Separator />
-
-            {/* Letter Spacing */}
-            <div className="flex items-center justify-between">
-              <Label htmlFor="letter-spacing">Letter Spacing</Label>
-
-              <Select onValueChange={setLetterSpacing} value={letterSpacing}>
-                <SelectTrigger id="letter-spacing">
-                  <SelectValue placeholder="Select letter spacing" />
-                </SelectTrigger>
-                <SelectContent>
-                  {letterSpacingOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <Separator />
-
-            {/* Spacing */}
-            <div className="flex items-center justify-between">
-              <Label htmlFor="spacing">Interface Spacing</Label>
-
-              <Select onValueChange={setSpacing} value={spacing}>
-                <SelectTrigger id="spacing">
-                  <SelectValue placeholder="Select spacing" />
-                </SelectTrigger>
-                <SelectContent>
-                  {spacingOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <Separator />
-
-            {/* Border Radius */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="radius">Border Radius</Label>
-
-                <Select onValueChange={setRadius} value={radius}>
-                  <SelectTrigger id="radius">
-                    <SelectValue placeholder="Select radius" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {radiusOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label className="font-normal text-muted-foreground text-sm">
-                  Visual Preview
-                </Label>
-                <div className="flex gap-2">
-                  {radiusOptions.map((option) => (
-                    <div
-                      className="h-10 w-10 border-2 bg-card transition-colors hover:bg-accent"
-                      key={option.value}
-                      style={{
-                        borderRadius:
-                          option.value === "none"
-                            ? "0"
-                            : option.value === "sm"
-                              ? "0.25rem"
-                              : option.value === "md"
-                                ? "0.5rem"
-                                : option.value === "lg"
-                                  ? "0.75rem"
-                                  : option.value === "xl"
-                                    ? "1rem"
-                                    : "1.5rem",
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <Separator />
-
-            {/* Preview */}
-            <div className="space-y-3">
-              <h3 className="font-medium text-lg">Preview</h3>
+            <div className="mt-3 space-y-3">
               <div className="space-x-3">
                 <Button>Primary Button</Button>
                 <Button variant="secondary">Secondary</Button>
+                <Button variant="destructive">Destructive</Button>
                 <Button variant="outline">Outline</Button>
               </div>
               <div className="space-y-2">
@@ -279,16 +361,25 @@ export function Preferences() {
                 </p>
               </div>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+          </ItemContent>
+        </Item>
+        <Separator />
 
-      <div className="flex justify-end">
-        <Button onClick={resetTheme} variant="outline">
-          <RotateCcw className="mr-2 h-4 w-4" />
-          Reset to Default
-        </Button>
+        <Item>
+          <ItemContent>
+            <ItemTitle>Reset Theme</ItemTitle>
+            <ItemDescription>
+              Reset all theme customizations to default
+            </ItemDescription>
+          </ItemContent>
+          <ItemActions>
+            <Button onClick={resetTheme} variant="outline">
+              <RotateCcw className="size-3" />
+              <span>Reset</span>
+            </Button>
+          </ItemActions>
+        </Item>
       </div>
-    </>
+    </div>
   );
 }

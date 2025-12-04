@@ -15,12 +15,14 @@ import { Route as publicIndexRouteImport } from './routes/(public)/index'
 import { Route as authSignupRouteImport } from './routes/(auth)/signup'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as authenticatedSettingsRouteRouteImport } from './routes/(authenticated)/settings/route'
-import { Route as authenticatedSettingsPreferencesRouteImport } from './routes/(authenticated)/settings/preferences'
 import { Route as authenticatedOrgNewRouteImport } from './routes/(authenticated)/org/new'
 import { Route as authAcceptInvitationIdRouteImport } from './routes/(auth)/accept-invitation.$id'
 import { Route as authenticatedOrgSlugRouteRouteImport } from './routes/(authenticated)/org/$slug/route'
 import { Route as authenticatedOrgSlugIndexRouteImport } from './routes/(authenticated)/org/$slug/index'
+import { Route as authenticatedSettingsAccountSecurityRouteImport } from './routes/(authenticated)/settings/account/security'
 import { Route as authenticatedSettingsAccountProfileRouteImport } from './routes/(authenticated)/settings/account/profile'
+import { Route as authenticatedSettingsAccountPreferencesRouteImport } from './routes/(authenticated)/settings/account/preferences'
+import { Route as authenticatedSettingsAccountNotificationsRouteImport } from './routes/(authenticated)/settings/account/notifications'
 import { Route as authenticatedOrgSlugmemberRouteRouteImport } from './routes/(authenticated)/org/$slug/(member)/route'
 import { Route as authenticatedOrgSlugownerManageRouteRouteImport } from './routes/(authenticated)/org/$slug/(owner)/manage/route'
 import { Route as authenticatedOrgSlugadminDashboardRouteRouteImport } from './routes/(authenticated)/org/$slug/(admin)/dashboard/route'
@@ -83,12 +85,6 @@ const authenticatedSettingsRouteRoute =
     path: '/settings',
     getParentRoute: () => authenticatedRouteRoute,
   } as any)
-const authenticatedSettingsPreferencesRoute =
-  authenticatedSettingsPreferencesRouteImport.update({
-    id: '/preferences',
-    path: '/preferences',
-    getParentRoute: () => authenticatedSettingsRouteRoute,
-  } as any)
 const authenticatedOrgNewRoute = authenticatedOrgNewRouteImport.update({
   id: '/org/new',
   path: '/org/new',
@@ -111,10 +107,28 @@ const authenticatedOrgSlugIndexRoute =
     path: '/',
     getParentRoute: () => authenticatedOrgSlugRouteRoute,
   } as any)
+const authenticatedSettingsAccountSecurityRoute =
+  authenticatedSettingsAccountSecurityRouteImport.update({
+    id: '/account/security',
+    path: '/account/security',
+    getParentRoute: () => authenticatedSettingsRouteRoute,
+  } as any)
 const authenticatedSettingsAccountProfileRoute =
   authenticatedSettingsAccountProfileRouteImport.update({
     id: '/account/profile',
     path: '/account/profile',
+    getParentRoute: () => authenticatedSettingsRouteRoute,
+  } as any)
+const authenticatedSettingsAccountPreferencesRoute =
+  authenticatedSettingsAccountPreferencesRouteImport.update({
+    id: '/account/preferences',
+    path: '/account/preferences',
+    getParentRoute: () => authenticatedSettingsRouteRoute,
+  } as any)
+const authenticatedSettingsAccountNotificationsRoute =
+  authenticatedSettingsAccountNotificationsRouteImport.update({
+    id: '/account/notifications',
+    path: '/account/notifications',
     getParentRoute: () => authenticatedSettingsRouteRoute,
   } as any)
 const authenticatedOrgSlugmemberRouteRoute =
@@ -330,8 +344,10 @@ export interface FileRoutesByFullPath {
   '/org/$slug': typeof authenticatedOrgSlugmemberRouteRouteWithChildren
   '/accept-invitation/$id': typeof authAcceptInvitationIdRoute
   '/org/new': typeof authenticatedOrgNewRoute
-  '/settings/preferences': typeof authenticatedSettingsPreferencesRoute
+  '/settings/account/notifications': typeof authenticatedSettingsAccountNotificationsRoute
+  '/settings/account/preferences': typeof authenticatedSettingsAccountPreferencesRoute
   '/settings/account/profile': typeof authenticatedSettingsAccountProfileRoute
+  '/settings/account/security': typeof authenticatedSettingsAccountSecurityRoute
   '/org/$slug/': typeof authenticatedOrgSlugIndexRoute
   '/org/$slug/dashboard': typeof authenticatedOrgSlugadminDashboardRouteRouteWithChildren
   '/org/$slug/manage': typeof authenticatedOrgSlugownerManageRouteRouteWithChildren
@@ -372,9 +388,11 @@ export interface FileRoutesByTo {
   '/': typeof publicIndexRoute
   '/accept-invitation/$id': typeof authAcceptInvitationIdRoute
   '/org/new': typeof authenticatedOrgNewRoute
-  '/settings/preferences': typeof authenticatedSettingsPreferencesRoute
   '/org/$slug': typeof authenticatedOrgSlugIndexRoute
+  '/settings/account/notifications': typeof authenticatedSettingsAccountNotificationsRoute
+  '/settings/account/preferences': typeof authenticatedSettingsAccountPreferencesRoute
   '/settings/account/profile': typeof authenticatedSettingsAccountProfileRoute
+  '/settings/account/security': typeof authenticatedSettingsAccountSecurityRoute
   '/org/$slug/dashboard': typeof authenticatedOrgSlugadminDashboardIndexRoute
   '/org/$slug/team': typeof authenticatedOrgSlugmemberTeamIndexRoute
   '/org/$slug/manage': typeof authenticatedOrgSlugownerManageIndexRoute
@@ -413,9 +431,11 @@ export interface FileRoutesById {
   '/(authenticated)/org/$slug': typeof authenticatedOrgSlugRouteRouteWithChildren
   '/(auth)/accept-invitation/$id': typeof authAcceptInvitationIdRoute
   '/(authenticated)/org/new': typeof authenticatedOrgNewRoute
-  '/(authenticated)/settings/preferences': typeof authenticatedSettingsPreferencesRoute
   '/(authenticated)/org/$slug/(member)': typeof authenticatedOrgSlugmemberRouteRouteWithChildren
+  '/(authenticated)/settings/account/notifications': typeof authenticatedSettingsAccountNotificationsRoute
+  '/(authenticated)/settings/account/preferences': typeof authenticatedSettingsAccountPreferencesRoute
   '/(authenticated)/settings/account/profile': typeof authenticatedSettingsAccountProfileRoute
+  '/(authenticated)/settings/account/security': typeof authenticatedSettingsAccountSecurityRoute
   '/(authenticated)/org/$slug/': typeof authenticatedOrgSlugIndexRoute
   '/(authenticated)/org/$slug/(admin)/dashboard': typeof authenticatedOrgSlugadminDashboardRouteRouteWithChildren
   '/(authenticated)/org/$slug/(owner)/manage': typeof authenticatedOrgSlugownerManageRouteRouteWithChildren
@@ -459,8 +479,10 @@ export interface FileRouteTypes {
     | '/org/$slug'
     | '/accept-invitation/$id'
     | '/org/new'
-    | '/settings/preferences'
+    | '/settings/account/notifications'
+    | '/settings/account/preferences'
     | '/settings/account/profile'
+    | '/settings/account/security'
     | '/org/$slug/'
     | '/org/$slug/dashboard'
     | '/org/$slug/manage'
@@ -501,9 +523,11 @@ export interface FileRouteTypes {
     | '/'
     | '/accept-invitation/$id'
     | '/org/new'
-    | '/settings/preferences'
     | '/org/$slug'
+    | '/settings/account/notifications'
+    | '/settings/account/preferences'
     | '/settings/account/profile'
+    | '/settings/account/security'
     | '/org/$slug/dashboard'
     | '/org/$slug/team'
     | '/org/$slug/manage'
@@ -541,9 +565,11 @@ export interface FileRouteTypes {
     | '/(authenticated)/org/$slug'
     | '/(auth)/accept-invitation/$id'
     | '/(authenticated)/org/new'
-    | '/(authenticated)/settings/preferences'
     | '/(authenticated)/org/$slug/(member)'
+    | '/(authenticated)/settings/account/notifications'
+    | '/(authenticated)/settings/account/preferences'
     | '/(authenticated)/settings/account/profile'
+    | '/(authenticated)/settings/account/security'
     | '/(authenticated)/org/$slug/'
     | '/(authenticated)/org/$slug/(admin)/dashboard'
     | '/(authenticated)/org/$slug/(owner)/manage'
@@ -630,13 +656,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authenticatedSettingsRouteRouteImport
       parentRoute: typeof authenticatedRouteRoute
     }
-    '/(authenticated)/settings/preferences': {
-      id: '/(authenticated)/settings/preferences'
-      path: '/preferences'
-      fullPath: '/settings/preferences'
-      preLoaderRoute: typeof authenticatedSettingsPreferencesRouteImport
-      parentRoute: typeof authenticatedSettingsRouteRoute
-    }
     '/(authenticated)/org/new': {
       id: '/(authenticated)/org/new'
       path: '/org/new'
@@ -665,11 +684,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authenticatedOrgSlugIndexRouteImport
       parentRoute: typeof authenticatedOrgSlugRouteRoute
     }
+    '/(authenticated)/settings/account/security': {
+      id: '/(authenticated)/settings/account/security'
+      path: '/account/security'
+      fullPath: '/settings/account/security'
+      preLoaderRoute: typeof authenticatedSettingsAccountSecurityRouteImport
+      parentRoute: typeof authenticatedSettingsRouteRoute
+    }
     '/(authenticated)/settings/account/profile': {
       id: '/(authenticated)/settings/account/profile'
       path: '/account/profile'
       fullPath: '/settings/account/profile'
       preLoaderRoute: typeof authenticatedSettingsAccountProfileRouteImport
+      parentRoute: typeof authenticatedSettingsRouteRoute
+    }
+    '/(authenticated)/settings/account/preferences': {
+      id: '/(authenticated)/settings/account/preferences'
+      path: '/account/preferences'
+      fullPath: '/settings/account/preferences'
+      preLoaderRoute: typeof authenticatedSettingsAccountPreferencesRouteImport
+      parentRoute: typeof authenticatedSettingsRouteRoute
+    }
+    '/(authenticated)/settings/account/notifications': {
+      id: '/(authenticated)/settings/account/notifications'
+      path: '/account/notifications'
+      fullPath: '/settings/account/notifications'
+      preLoaderRoute: typeof authenticatedSettingsAccountNotificationsRouteImport
       parentRoute: typeof authenticatedSettingsRouteRoute
     }
     '/(authenticated)/org/$slug/(member)': {
@@ -900,16 +940,22 @@ declare module '@tanstack/react-router' {
 }
 
 interface authenticatedSettingsRouteRouteChildren {
-  authenticatedSettingsPreferencesRoute: typeof authenticatedSettingsPreferencesRoute
+  authenticatedSettingsAccountNotificationsRoute: typeof authenticatedSettingsAccountNotificationsRoute
+  authenticatedSettingsAccountPreferencesRoute: typeof authenticatedSettingsAccountPreferencesRoute
   authenticatedSettingsAccountProfileRoute: typeof authenticatedSettingsAccountProfileRoute
+  authenticatedSettingsAccountSecurityRoute: typeof authenticatedSettingsAccountSecurityRoute
 }
 
 const authenticatedSettingsRouteRouteChildren: authenticatedSettingsRouteRouteChildren =
   {
-    authenticatedSettingsPreferencesRoute:
-      authenticatedSettingsPreferencesRoute,
+    authenticatedSettingsAccountNotificationsRoute:
+      authenticatedSettingsAccountNotificationsRoute,
+    authenticatedSettingsAccountPreferencesRoute:
+      authenticatedSettingsAccountPreferencesRoute,
     authenticatedSettingsAccountProfileRoute:
       authenticatedSettingsAccountProfileRoute,
+    authenticatedSettingsAccountSecurityRoute:
+      authenticatedSettingsAccountSecurityRoute,
   }
 
 const authenticatedSettingsRouteRouteWithChildren =

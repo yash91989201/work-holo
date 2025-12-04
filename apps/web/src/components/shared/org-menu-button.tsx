@@ -31,10 +31,7 @@ export const OrgMenuButton = () => {
   return (
     <SidebarMenuItem>
       <SidebarMenuButton asChild tooltip={activeOrganization.name}>
-        <Link
-          params={{ slug: activeOrganization.slug }}
-          to="/org/$slug/attendance"
-        >
+        <Link params={{ slug: activeOrganization.slug }} to="/org/$slug">
           <Image
             alt={activeOrganization.name}
             className="rounded-sm"
