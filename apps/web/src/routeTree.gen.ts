@@ -19,6 +19,7 @@ import { Route as authenticatedOrgNewRouteImport } from './routes/(authenticated
 import { Route as authAcceptInvitationIdRouteImport } from './routes/(auth)/accept-invitation.$id'
 import { Route as authenticatedOrgSlugRouteRouteImport } from './routes/(authenticated)/org/$slug/route'
 import { Route as authenticatedOrgSlugIndexRouteImport } from './routes/(authenticated)/org/$slug/index'
+import { Route as authenticatedSettingsAccountSessionsRouteImport } from './routes/(authenticated)/settings/account/sessions'
 import { Route as authenticatedSettingsAccountSecurityRouteImport } from './routes/(authenticated)/settings/account/security'
 import { Route as authenticatedSettingsAccountProfileRouteImport } from './routes/(authenticated)/settings/account/profile'
 import { Route as authenticatedSettingsAccountPreferencesRouteImport } from './routes/(authenticated)/settings/account/preferences'
@@ -106,6 +107,12 @@ const authenticatedOrgSlugIndexRoute =
     id: '/',
     path: '/',
     getParentRoute: () => authenticatedOrgSlugRouteRoute,
+  } as any)
+const authenticatedSettingsAccountSessionsRoute =
+  authenticatedSettingsAccountSessionsRouteImport.update({
+    id: '/account/sessions',
+    path: '/account/sessions',
+    getParentRoute: () => authenticatedSettingsRouteRoute,
   } as any)
 const authenticatedSettingsAccountSecurityRoute =
   authenticatedSettingsAccountSecurityRouteImport.update({
@@ -348,6 +355,7 @@ export interface FileRoutesByFullPath {
   '/settings/account/preferences': typeof authenticatedSettingsAccountPreferencesRoute
   '/settings/account/profile': typeof authenticatedSettingsAccountProfileRoute
   '/settings/account/security': typeof authenticatedSettingsAccountSecurityRoute
+  '/settings/account/sessions': typeof authenticatedSettingsAccountSessionsRoute
   '/org/$slug/': typeof authenticatedOrgSlugIndexRoute
   '/org/$slug/dashboard': typeof authenticatedOrgSlugadminDashboardRouteRouteWithChildren
   '/org/$slug/manage': typeof authenticatedOrgSlugownerManageRouteRouteWithChildren
@@ -393,6 +401,7 @@ export interface FileRoutesByTo {
   '/settings/account/preferences': typeof authenticatedSettingsAccountPreferencesRoute
   '/settings/account/profile': typeof authenticatedSettingsAccountProfileRoute
   '/settings/account/security': typeof authenticatedSettingsAccountSecurityRoute
+  '/settings/account/sessions': typeof authenticatedSettingsAccountSessionsRoute
   '/org/$slug/dashboard': typeof authenticatedOrgSlugadminDashboardIndexRoute
   '/org/$slug/team': typeof authenticatedOrgSlugmemberTeamIndexRoute
   '/org/$slug/manage': typeof authenticatedOrgSlugownerManageIndexRoute
@@ -436,6 +445,7 @@ export interface FileRoutesById {
   '/(authenticated)/settings/account/preferences': typeof authenticatedSettingsAccountPreferencesRoute
   '/(authenticated)/settings/account/profile': typeof authenticatedSettingsAccountProfileRoute
   '/(authenticated)/settings/account/security': typeof authenticatedSettingsAccountSecurityRoute
+  '/(authenticated)/settings/account/sessions': typeof authenticatedSettingsAccountSessionsRoute
   '/(authenticated)/org/$slug/': typeof authenticatedOrgSlugIndexRoute
   '/(authenticated)/org/$slug/(admin)/dashboard': typeof authenticatedOrgSlugadminDashboardRouteRouteWithChildren
   '/(authenticated)/org/$slug/(owner)/manage': typeof authenticatedOrgSlugownerManageRouteRouteWithChildren
@@ -483,6 +493,7 @@ export interface FileRouteTypes {
     | '/settings/account/preferences'
     | '/settings/account/profile'
     | '/settings/account/security'
+    | '/settings/account/sessions'
     | '/org/$slug/'
     | '/org/$slug/dashboard'
     | '/org/$slug/manage'
@@ -528,6 +539,7 @@ export interface FileRouteTypes {
     | '/settings/account/preferences'
     | '/settings/account/profile'
     | '/settings/account/security'
+    | '/settings/account/sessions'
     | '/org/$slug/dashboard'
     | '/org/$slug/team'
     | '/org/$slug/manage'
@@ -570,6 +582,7 @@ export interface FileRouteTypes {
     | '/(authenticated)/settings/account/preferences'
     | '/(authenticated)/settings/account/profile'
     | '/(authenticated)/settings/account/security'
+    | '/(authenticated)/settings/account/sessions'
     | '/(authenticated)/org/$slug/'
     | '/(authenticated)/org/$slug/(admin)/dashboard'
     | '/(authenticated)/org/$slug/(owner)/manage'
@@ -683,6 +696,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/org/$slug/'
       preLoaderRoute: typeof authenticatedOrgSlugIndexRouteImport
       parentRoute: typeof authenticatedOrgSlugRouteRoute
+    }
+    '/(authenticated)/settings/account/sessions': {
+      id: '/(authenticated)/settings/account/sessions'
+      path: '/account/sessions'
+      fullPath: '/settings/account/sessions'
+      preLoaderRoute: typeof authenticatedSettingsAccountSessionsRouteImport
+      parentRoute: typeof authenticatedSettingsRouteRoute
     }
     '/(authenticated)/settings/account/security': {
       id: '/(authenticated)/settings/account/security'
@@ -944,6 +964,7 @@ interface authenticatedSettingsRouteRouteChildren {
   authenticatedSettingsAccountPreferencesRoute: typeof authenticatedSettingsAccountPreferencesRoute
   authenticatedSettingsAccountProfileRoute: typeof authenticatedSettingsAccountProfileRoute
   authenticatedSettingsAccountSecurityRoute: typeof authenticatedSettingsAccountSecurityRoute
+  authenticatedSettingsAccountSessionsRoute: typeof authenticatedSettingsAccountSessionsRoute
 }
 
 const authenticatedSettingsRouteRouteChildren: authenticatedSettingsRouteRouteChildren =
@@ -956,6 +977,8 @@ const authenticatedSettingsRouteRouteChildren: authenticatedSettingsRouteRouteCh
       authenticatedSettingsAccountProfileRoute,
     authenticatedSettingsAccountSecurityRoute:
       authenticatedSettingsAccountSecurityRoute,
+    authenticatedSettingsAccountSessionsRoute:
+      authenticatedSettingsAccountSessionsRoute,
   }
 
 const authenticatedSettingsRouteRouteWithChildren =

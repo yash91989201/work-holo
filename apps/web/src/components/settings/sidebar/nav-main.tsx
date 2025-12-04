@@ -1,5 +1,5 @@
 import { Link, linkOptions } from "@tanstack/react-router";
-import { BellDot, SwatchBook, User, UserLock } from "lucide-react";
+import { BellDot, Key, SwatchBook, User, UserLock } from "lucide-react";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -28,6 +28,11 @@ const items = linkOptions([
     label: "Security & access",
     to: "/settings/account/security",
     icon: UserLock,
+  },
+  {
+    label: "Sessions",
+    to: "/settings/account/sessions",
+    icon: Key,
   },
 ]);
 

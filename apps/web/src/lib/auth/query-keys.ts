@@ -55,8 +55,11 @@ export const getAuthQueryKey = {
     // Current session
     current: () => ["auth", "session", "current"] as const,
 
-    // Session list for user
-    list: (userId: string) => ["auth", "session", "list", userId] as const,
+    // Session list for user (no userId needed as it's based on current session)
+    list: () => ["auth", "session", "list"] as const,
+
+    // Specific session by token
+    byToken: (token: string) => ["auth", "session", "byToken", token] as const,
   },
 
   // Invitation-related query keys (standalone)
@@ -98,6 +101,12 @@ export const getAuthQueryKey = {
 
     // All session queries
     allSessions: () => ["auth", "session"] as const,
+
+    // Current session and session list (used after login/logout/session changes)
+    sessionData: () => ["auth", "session"] as const,
+
+    // Session list only (used when managing sessions)
+    sessionList: () => ["auth", "session", "list"] as const,
   },
 } as const;
 
