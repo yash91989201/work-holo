@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import type * as React from "react";
+import { Suspense } from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -10,6 +11,8 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useActiveOrgSlug } from "@/hooks/use-active-org-slug";
 import { NavMain } from "./nav-main";
 
 export function SettingsSidebar({
@@ -19,14 +22,9 @@ export function SettingsSidebar({
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link to="..">
-                <ArrowLeft />
-                <span>Back to Org</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          <Suspense fallback={<Skeleton className="h-9 w-full" />}>
+            <BackToOrgButton />
+          </Suspense>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
@@ -34,5 +32,24 @@ export function SettingsSidebar({
       </SidebarContent>
       <SidebarRail />
     </Sidebar>
+  );
+}
+
+function BackToOrgButton() {
+  const activeOrg = useActiveOrgSlug();
+
+  if (activeOrg === null) {
+    return null;
+  }
+
+  return (
+    <SidebarMenuItem>
+      <SidebarMenuButton asChild>
+        <Link params={{ slug: activeOrg }} to="/org/$slug">
+          <ArrowLeft />
+          <span>Back to Org</span>
+        </Link>
+      </SidebarMenuButton>
+    </SidebarMenuItem>
   );
 }

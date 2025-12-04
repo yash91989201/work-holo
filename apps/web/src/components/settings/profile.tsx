@@ -58,13 +58,13 @@ export function Profile() {
         userName={user.name}
       />
       <Separator />
-      <EmailSection currentEmail={user.email} />
-      <Separator />
       <FullNameSection currentName={user.name} />
+      <Separator />
+      <UsernameSection currentUsername={user.username} />
       <Separator />
       <DisplayUsernameSection currentDisplayUsername={user.displayUsername} />
       <Separator />
-      <UsernameSection currentUsername={user.username} />
+      <EmailSection currentEmail={user.email} />
     </div>
   );
 }
