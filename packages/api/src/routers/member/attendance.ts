@@ -33,7 +33,7 @@ export const memberAttendanceRouter = {
 
       const now = new Date();
 
-      if (orgId == null) {
+      if (!orgId) {
         throw new ORPCError("NOT_FOUND", {
           message: "Organization not found.",
         });
@@ -97,7 +97,7 @@ export const memberAttendanceRouter = {
       const orgId = session.session.activeOrganizationId;
       const now = new Date();
 
-      if (orgId == null) {
+      if (!orgId) {
         throw new ORPCError("NOT_FOUND", {
           message: "Organization not found.",
         });
@@ -140,10 +140,16 @@ export const memberAttendanceRouter = {
           .where(eq(workBlockTable.id, activeBlock.id));
       }
 
-      // Calculate total hours
+      if (!attendance.checkInTime) {
+        throw new ORPCError("BAD_REQUEST", {
+          message: "Checkin before checkout is required.",
+        });
+      }
+
       const totalMinutes =
-        (now.getTime() - attendance.checkInTime!.getTime()) / 60_000 -
+        (now.getTime() - attendance.checkInTime?.getTime()) / 60_000 -
         (attendance.breakDuration ?? 0);
+
       const totalHours = (totalMinutes / 60).toFixed(2);
 
       const updatePayload: Partial<AttendanceUpdateType> = {
@@ -182,7 +188,7 @@ export const memberAttendanceRouter = {
       const user = session.user;
       const orgId = session.session.activeOrganizationId;
 
-      if (orgId == null) {
+      if (!orgId) {
         throw new ORPCError("NOT_FOUND", {
           message: "Organization not found.",
         });
@@ -196,7 +202,7 @@ export const memberAttendanceRouter = {
         ),
       });
 
-      if (membership == null) {
+      if (!membership) {
         throw new ORPCError("FORBIDDEN", {
           message: "You are not a member of this organization.",
         });
@@ -213,7 +219,7 @@ export const memberAttendanceRouter = {
         ),
       });
 
-      if (attendance == null) {
+      if (!attendance) {
         return null;
       }
 

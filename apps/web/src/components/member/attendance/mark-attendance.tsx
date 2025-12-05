@@ -10,6 +10,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
 import { usePresenceHeartbeat } from "@/hooks/use-presence";
@@ -78,10 +86,25 @@ export const MarkAttendance = () => {
     queryUtils.member.attendance.punchOut.mutationOptions({
       onSuccess: async () => {
         toast.success("Checked out successfully!");
+        setShowPunchOutDialog(false);
         await refetch();
+      },
+      onError: (error) => {
+        toast.error(error.message);
+        setShowPunchOutDialog(false);
       },
     })
   );
+
+  const [showPunchOutDialog, setShowPunchOutDialog] = useState(false);
+
+  const handlePunchOut = () => {
+    setShowPunchOutDialog(true);
+  };
+
+  const confirmPunchOut = async () => {
+    await punchOut({});
+  };
 
   const [, setCurrentTime] = useState(new Date());
 
@@ -105,8 +128,6 @@ export const MarkAttendance = () => {
     punchedIn: hasCheckedIn && !hasCheckedOut,
     onBreak: false,
   });
-
-  // --- Views ---
 
   if (!hasCheckedIn) {
     return (
@@ -140,44 +161,82 @@ export const MarkAttendance = () => {
     const workMinutes = totalMinutes - breakMinutes;
 
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Work Session in Progress</CardTitle>
-          <CardDescription>You are currently punched in.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-            <StatCard
-              icon={<Clock className="text-blue-500" />}
-              label="Checked In"
-              value={formatDateTime(attendance.checkInTime)}
-            />
-            <StatCard
-              icon={<Briefcase className="text-green-500" />}
-              label="Total Work Time"
-              value={formatDuration(workMinutes)}
-            />
-            <StatCard
-              icon={<Coffee className="text-orange-500" />}
-              label="Break Time"
-              value={formatDuration(breakMinutes)}
-            />
-          </div>
-          <Button
-            className="bg-red-600 hover:bg-red-700"
-            disabled={isActionPending}
-            onClick={() => punchOut({})}
-            size="lg"
-          >
-            {isPunchingOut ? (
-              <Spinner className="mr-2" />
-            ) : (
-              <LogOut className="mr-2 h-5 w-5" />
-            )}
-            <span>Punch Out</span>
-          </Button>
-        </CardContent>
-      </Card>
+      <>
+        <Card>
+          <CardHeader>
+            <CardTitle>Work Session in Progress</CardTitle>
+            <CardDescription>You are currently punched in.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+              <StatCard
+                icon={<Clock className="text-blue-500" />}
+                label="Checked In"
+                value={formatDateTime(attendance.checkInTime)}
+              />
+              <StatCard
+                icon={<Briefcase className="text-green-500" />}
+                label="Total Work Time"
+                value={formatDuration(workMinutes)}
+              />
+              <StatCard
+                icon={<Coffee className="text-orange-500" />}
+                label="Break Time"
+                value={formatDuration(breakMinutes)}
+              />
+            </div>
+            <Button
+              className="bg-red-600 hover:bg-red-700"
+              disabled={isActionPending}
+              onClick={handlePunchOut}
+              size="lg"
+            >
+              {isPunchingOut ? (
+                <Spinner className="mr-2" />
+              ) : (
+                <LogOut className="mr-2 h-5 w-5" />
+              )}
+              <span>Punch Out</span>
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Dialog onOpenChange={setShowPunchOutDialog} open={showPunchOutDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Confirm Punch Out</DialogTitle>
+              <DialogDescription>
+                Confirm punch out? This action cannot be undone, preventing
+                further check-ins today. Unfinished work sessions will be
+                automatically paused.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button
+                disabled={isPunchingOut}
+                onClick={() => setShowPunchOutDialog(false)}
+                variant="outline"
+              >
+                Cancel
+              </Button>
+              <Button
+                disabled={isPunchingOut}
+                onClick={confirmPunchOut}
+                variant="destructive"
+              >
+                {isPunchingOut ? (
+                  <>
+                    <Spinner className="mr-2 h-4 w-4" />
+                    Punching Out...
+                  </>
+                ) : (
+                  "Confirm Punch Out"
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </>
     );
   }
 
