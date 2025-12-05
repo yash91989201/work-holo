@@ -409,7 +409,7 @@ body {
 }
 
 .ProseMirror a {
-  @apply text-primary underline transition-colors hover:text-primary/80;
+  @apply text-primary-foreground underline transition-colors hover:text-primary-foreground/80;
   @apply cursor-pointer;
 }
 
