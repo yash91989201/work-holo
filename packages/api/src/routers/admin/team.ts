@@ -48,11 +48,10 @@ export const adminTeamRouter = {
         // Add members one by one
         for (const userId of userIds) {
           try {
-            await auth.api.addMember({
+            await auth.api.addTeamMember({
               body: {
                 userId,
                 teamId,
-                role: "member", // Default role
               },
               headers,
             });
