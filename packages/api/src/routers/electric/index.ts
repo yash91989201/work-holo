@@ -31,6 +31,7 @@ const sendProxyResponse = async (
   originUrl: URL
 ) => {
   const response = await proxyElectricRequest(originUrl);
+  console.log(response);
   return c.newResponse(response.body, response);
 };
 
@@ -47,7 +48,6 @@ electricRouter.get("/shapes/messages", requireAuth, async (c) => {
   originUrl.searchParams.set("table", "message");
 
   const res = await sendProxyResponse(c, originUrl);
-  console.log(res);
   return res;
 });
 
