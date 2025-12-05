@@ -3,6 +3,8 @@ import { useParams } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef } from "react";
 import {
   attachmentsCollection,
+  channelMembersCollection,
+  channelsCollection,
   messagesCollection,
   usersCollection,
 } from "@/db/collections";
@@ -11,7 +13,7 @@ import { buildMessageWithAttachments } from "@/lib/communications/message";
 import { extractMentionIdsFromContent } from "@/lib/mentions";
 
 export function useChannelMentions() {
-  const { id: channelId } = useParams({
+  const { id: currentChannelId } = useParams({
     from: "/(authenticated)/org/$slug/(member)/(base-modules)/communication/channels/$id",
   });
 
@@ -25,20 +27,29 @@ export function useChannelMentions() {
         .innerJoin({ sender: usersCollection }, ({ message, sender }) =>
           eq(message.senderId, sender.id)
         )
+        .innerJoin({ channel: channelsCollection }, ({ message, channel }) =>
+          eq(message.channelId, channel.id)
+        )
+        .innerJoin(
+          { channelMember: channelMembersCollection },
+          ({ channel, channelMember }) =>
+            eq(channelMember.channelId, channel.id)
+        )
         .leftJoin(
           { attachment: attachmentsCollection },
           ({ message, attachment }) => eq(attachment.messageId, message.id)
         )
-        .where(({ message }) =>
-          and(eq(message.channelId, channelId), isNull(message.deletedAt))
+        .where(({ message, channelMember }) =>
+          and(isNull(message.deletedAt), eq(channelMember.userId, userId))
         )
         .orderBy(({ message }) => message.createdAt, "desc")
-        .select(({ message, sender, attachment }) => ({
+        .select(({ message, sender, attachment, channel }) => ({
           message,
           sender,
           attachment,
+          channel,
         })),
-    [channelId, userId]
+    [userId]
   );
 
   const mentions = useMemo(() => {
@@ -48,14 +59,19 @@ export function useChannelMentions() {
 
     const map = new Map<
       string,
-      ReturnType<typeof buildMessageWithAttachments>
+      ReturnType<typeof buildMessageWithAttachments> & {
+        channel: { id: string; name: string };
+      }
     >();
 
-    for (const { message, sender, attachment } of data) {
+    for (const { message, sender, attachment, channel } of data) {
       let entry = map.get(message.id);
 
       if (!entry) {
-        entry = buildMessageWithAttachments(message, sender);
+        entry = {
+          ...buildMessageWithAttachments(message, sender),
+          channel: { id: channel.id, name: channel.name },
+        };
         map.set(message.id, entry);
       }
 
@@ -96,12 +112,6 @@ export function useChannelMentions() {
 
   const prevMentionCountRef = useRef(mentionCount);
   const isFirstLoadRef = useRef(true);
-  const previousChannelIdRef = useRef(channelId);
-
-  if (previousChannelIdRef.current !== channelId) {
-    isFirstLoadRef.current = true;
-    previousChannelIdRef.current = channelId;
-  }
 
   useEffect(() => {
     if (isLoading) return;
@@ -126,5 +136,6 @@ export function useChannelMentions() {
     mentions,
     mentionCount,
     isLoading,
+    currentChannelId,
   };
 }

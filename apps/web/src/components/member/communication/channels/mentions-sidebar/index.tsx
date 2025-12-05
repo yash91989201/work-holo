@@ -1,14 +1,22 @@
 import { AtSign, Loader2Icon, X } from "lucide-react";
-import { MessageItem } from "@/components/member/communication/channels/message-list/message-item";
+import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { useChannelMentions } from "@/hooks/communications/use-channel-mentions";
+import { insertDateSeparators } from "@/lib/communications/message";
 import { cn } from "@/lib/utils";
 import { useMentionsSidebar } from "@/stores/channel-store";
+import { MentionMessageItem } from "./mention-message-item";
 
 export function MentionsSidebar() {
-  const { mentions, mentionCount, isLoading } = useChannelMentions();
+  const { mentions, mentionCount, isLoading, currentChannelId } =
+    useChannelMentions();
 
   const { isOpen, closeMentionsSidebar } = useMentionsSidebar();
+
+  const mentionsWithSeparators = useMemo(
+    () => insertDateSeparators(mentions),
+    [mentions]
+  );
 
   return (
     <div
@@ -58,8 +66,8 @@ export function MentionsSidebar() {
       {!isLoading && mentionCount === 0 && (
         <div className="flex flex-1 items-center justify-center p-6">
           <div className="rounded-lg border bg-muted/40 p-4 text-center text-muted-foreground text-sm">
-            No one has mentioned you in this channel yet. When someone @mentions
-            you, the message will show up here instantly.
+            No one has mentioned you yet. When someone @mentions you in any
+            channel, the message will show up here instantly.
           </div>
         </div>
       )}
@@ -67,9 +75,28 @@ export function MentionsSidebar() {
       {mentionCount > 0 && (
         <div className="flex-1 overflow-auto px-3 py-4">
           <div className="space-y-4">
-            {mentions.map((message) => (
-              <MessageItem key={message.id} message={message} />
-            ))}
+            {mentionsWithSeparators.map((item) => {
+              if ("type" in item && item.type === "date-separator") {
+                return (
+                  <div
+                    className="sticky top-0 z-10 flex items-center justify-center py-2"
+                    key={item.id}
+                  >
+                    <div className="rounded-full border bg-background px-3 py-1 font-medium text-muted-foreground text-xs shadow-sm">
+                      {item.displayDate}
+                    </div>
+                  </div>
+                );
+              }
+
+              return (
+                <MentionMessageItem
+                  currentChannelId={currentChannelId}
+                  key={item.id}
+                  message={item}
+                />
+              );
+            })}
           </div>
         </div>
       )}
