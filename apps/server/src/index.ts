@@ -28,7 +28,7 @@ app.use(
 
 app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));
 
-app.route("/api/electric", electricRouter);
+app.route("/electric", electricRouter);
 
 export const apiHandler = new OpenAPIHandler(appRouter, {
   plugins: [
