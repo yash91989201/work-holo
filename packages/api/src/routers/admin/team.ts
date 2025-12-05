@@ -45,7 +45,6 @@ export const adminTeamRouter = {
         let addedCount = 0;
         const errors: string[] = [];
 
-        // Add members one by one
         for (const userId of userIds) {
           try {
             await auth.api.addTeamMember({
@@ -55,6 +54,7 @@ export const adminTeamRouter = {
               },
               headers,
             });
+
             addedCount++;
           } catch (error) {
             errors.push(

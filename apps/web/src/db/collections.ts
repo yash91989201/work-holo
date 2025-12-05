@@ -19,15 +19,14 @@ import {
   UserSchema,
   VerificationSchema,
 } from "@work-holo/db/lib/schemas/db-tables";
-import { env } from "@/env";
-import { fetchClient } from "@/lib/electric";
+import { ELECTRIC_SHAPE_BASE_URL, fetchClient } from "@/lib/electric";
 
 export const messagesCollection = createCollection(
   electricCollectionOptions({
     getKey: (m) => m.id,
     schema: MessageSchema,
     shapeOptions: {
-      url: `${env.VITE_SERVER_URL}/api/electric/shapes/messages`,
+      url: `${ELECTRIC_SHAPE_BASE_URL}/messages`,
       params: {
         table: "message",
       },
@@ -44,7 +43,7 @@ export const usersCollection = createCollection(
     schema: UserSchema,
     getKey: (m) => m.id,
     shapeOptions: {
-      url: `${env.VITE_SERVER_URL}/api/electric/shapes/users`,
+      url: `${ELECTRIC_SHAPE_BASE_URL}/users`,
       params: {
         table: "user",
       },
@@ -60,7 +59,7 @@ export const attachmentsCollection = createCollection(
     getKey: (m) => m.id,
     schema: AttachmentSchema,
     shapeOptions: {
-      url: `${env.VITE_SERVER_URL}/api/electric/shapes/attachments`,
+      url: `${ELECTRIC_SHAPE_BASE_URL}/attachments`,
       params: {
         table: "attachment",
       },
@@ -77,7 +76,7 @@ export const accountsCollection = createCollection(
     getKey: (a) => a.id,
     schema: AccountSchema,
     shapeOptions: {
-      url: `${env.VITE_SERVER_URL}/api/electric/shapes/accounts`,
+      url: `${ELECTRIC_SHAPE_BASE_URL}/accounts`,
       params: {
         table: "account",
       },
@@ -94,7 +93,7 @@ export const sessionsCollection = createCollection(
     getKey: (s) => s.id,
     schema: SessionSchema,
     shapeOptions: {
-      url: `${env.VITE_SERVER_URL}/api/electric/shapes/sessions`,
+      url: `${ELECTRIC_SHAPE_BASE_URL}/sessions`,
       params: {
         table: "session",
       },
@@ -111,7 +110,7 @@ export const invitationsCollection = createCollection(
     getKey: (i) => i.id,
     schema: InvitationSchema,
     shapeOptions: {
-      url: `${env.VITE_SERVER_URL}/api/electric/shapes/invitations`,
+      url: `${ELECTRIC_SHAPE_BASE_URL}/invitations`,
       params: {
         table: "invitation",
       },
@@ -128,7 +127,7 @@ export const membersCollection = createCollection(
     getKey: (m) => m.id,
     schema: MemberSchema,
     shapeOptions: {
-      url: `${env.VITE_SERVER_URL}/api/electric/shapes/members`,
+      url: `${ELECTRIC_SHAPE_BASE_URL}/members`,
       params: {
         table: "member",
       },
@@ -145,7 +144,7 @@ export const organizationsCollection = createCollection(
     getKey: (o) => o.id,
     schema: OrganizationSchema,
     shapeOptions: {
-      url: `${env.VITE_SERVER_URL}/api/electric/shapes/organizations`,
+      url: `${ELECTRIC_SHAPE_BASE_URL}/organizations`,
       params: {
         table: "organization",
       },
@@ -162,7 +161,7 @@ export const teamsCollection = createCollection(
     getKey: (t) => t.id,
     schema: TeamSchema,
     shapeOptions: {
-      url: `${env.VITE_SERVER_URL}/api/electric/shapes/teams`,
+      url: `${ELECTRIC_SHAPE_BASE_URL}/teams`,
       params: {
         table: "team",
       },
@@ -179,7 +178,7 @@ export const teamMembersCollection = createCollection(
     getKey: (tm) => tm.id,
     schema: TeamMemberSchema,
     shapeOptions: {
-      url: `${env.VITE_SERVER_URL}/api/electric/shapes/team-members`,
+      url: `${ELECTRIC_SHAPE_BASE_URL}/team-members`,
       params: {
         table: "teamMember",
       },
@@ -196,7 +195,7 @@ export const verificationsCollection = createCollection(
     getKey: (v) => v.id,
     schema: VerificationSchema,
     shapeOptions: {
-      url: `${env.VITE_SERVER_URL}/api/electric/shapes/verifications`,
+      url: `${ELECTRIC_SHAPE_BASE_URL}/verifications`,
       params: {
         table: "verification",
       },
@@ -213,7 +212,7 @@ export const attendanceCollection = createCollection(
     getKey: (a) => a.id,
     schema: AttendanceSchema,
     shapeOptions: {
-      url: `${env.VITE_SERVER_URL}/api/electric/shapes/attendance`,
+      url: `${ELECTRIC_SHAPE_BASE_URL}/attendance`,
       params: {
         table: "attendance",
       },
@@ -230,7 +229,7 @@ export const channelsCollection = createCollection(
     getKey: (c) => c.id,
     schema: ChannelSchema,
     shapeOptions: {
-      url: `${env.VITE_SERVER_URL}/api/electric/shapes/channels`,
+      url: `${ELECTRIC_SHAPE_BASE_URL}/channels`,
       params: {
         table: "channel",
       },
@@ -247,7 +246,7 @@ export const channelMembersCollection = createCollection(
     getKey: (cm) => cm.id,
     schema: ChannelMemberSchema,
     shapeOptions: {
-      url: `${env.VITE_SERVER_URL}/api/electric/shapes/channel-members`,
+      url: `${ELECTRIC_SHAPE_BASE_URL}/channel-members`,
       params: {
         table: "channelMember",
       },
@@ -264,7 +263,7 @@ export const notificationsCollection = createCollection(
     getKey: (n) => n.id,
     schema: NotificationSchema,
     shapeOptions: {
-      url: `${env.VITE_SERVER_URL}/api/electric/shapes/notifications`,
+      url: `${ELECTRIC_SHAPE_BASE_URL}/notifications`,
       params: {
         table: "notification",
       },
@@ -281,7 +280,7 @@ export const messageReadCollection = createCollection(
     getKey: (mr) => mr.id,
     schema: MessageReadSchema,
     shapeOptions: {
-      url: `${env.VITE_SERVER_URL}/api/electric/shapes/message-read`,
+      url: `${ELECTRIC_SHAPE_BASE_URL}/message-read`,
       params: {
         table: "messageRead",
       },
@@ -298,7 +297,7 @@ export const channelJoinRequestsCollection = createCollection(
     getKey: (cjr) => cjr.id,
     schema: ChannelJoinRequestSchema,
     shapeOptions: {
-      url: `${env.VITE_SERVER_URL}/api/electric/shapes/channel-join-requests`,
+      url: `${ELECTRIC_SHAPE_BASE_URL}/channel-join-requests`,
       params: {
         table: "channelJoinRequest",
       },
