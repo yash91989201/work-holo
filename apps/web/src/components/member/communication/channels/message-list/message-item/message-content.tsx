@@ -93,7 +93,7 @@ export function MessageContent({
       className={cn(
         "flex flex-col gap-3 rounded-2xl px-3 py-2 text-sm shadow-sm transition-colors",
         isOwnMessage
-          ? "bg-primary text-primary-foreground"
+          ? "bg-primary/30 text-primary-foreground"
           : "border border-border/60 bg-background/90"
       )}
     >

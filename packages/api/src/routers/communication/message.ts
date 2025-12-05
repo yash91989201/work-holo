@@ -214,15 +214,7 @@ export const messageRouter = {
           txid,
           message: {
             ...message,
-            sender: {
-              name: user.name,
-              email: user.email,
-              createdAt: user.createdAt,
-              emailVerified: user.emailVerified,
-              id: user.id,
-              updatedAt: user.updatedAt,
-              image: user.image ?? null,
-            },
+            sender: user,
           },
         };
       }

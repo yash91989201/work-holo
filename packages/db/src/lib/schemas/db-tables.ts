@@ -29,6 +29,15 @@ import {
 export const AccountSchema = createSelectSchema(account);
 export const UserSchema = createSelectSchema(user, {
   image: z.url().nullable().optional(),
+  username: z.string().nullable().optional(),
+  displayUsername: z.string().nullable().optional(),
+  phoneNumber: z.string().nullable().optional(),
+  phoneNumberVerified: z.boolean().nullable().optional(),
+  role: z.string().nullable().optional(),
+  banned: z.boolean().nullable().optional(),
+  banReason: z.string().nullable().optional(),
+  banExpires: z.date().nullable().optional(),
+  twoFactorEnabled: z.boolean().nullable().optional(),
 });
 export const SessionSchema = createSelectSchema(session);
 export const InvitationSchema = createSelectSchema(invitation);
