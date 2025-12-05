@@ -30,9 +30,8 @@ const sendProxyResponse = async (
   c: HonoContext<ElectricEnv>,
   originUrl: URL
 ) => {
-  console.log("Electric proxy URL =>", originUrl.toString());
   const response = await proxyElectricRequest(originUrl);
-  console.log("Electric proxy status =>", response.status, response.statusText);
+
   return c.newResponse(response.body, response);
 };
 
