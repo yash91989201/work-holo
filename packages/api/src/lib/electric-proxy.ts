@@ -56,7 +56,8 @@ export async function generateTxId(
   const result = await tx.execute(
     sql`SELECT pg_current_xact_id()::xid::text as txid`
   );
-  const txid = result.rows[0]?.txid;
+
+  const txid = result[0]?.txid;
 
   if (txid === undefined) {
     throw new Error("Failed to get transaction ID");

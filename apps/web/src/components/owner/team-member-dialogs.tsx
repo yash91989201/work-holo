@@ -1,5 +1,5 @@
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
-import { Plus, UserMinus } from "lucide-react";
+import { UserMinus, UserPlus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
@@ -65,9 +65,13 @@ export function AddTeamMemberDialog({ teamId }: { teamId: string }) {
   return (
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" variant="ghost">
-          <Plus className="mr-1.5 size-4" />
-          Add Members
+        <Button
+          className="flex w-full items-center justify-start gap-1.5"
+          size="sm"
+          variant="ghost"
+        >
+          <UserPlus className="size-4" />
+          Add members
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
@@ -194,8 +198,12 @@ export function RemoveTeamMemberDialog({ teamId }: { teamId: string }) {
   return (
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" variant="ghost">
-          <UserMinus className="mr-1.5 size-4" />
+        <Button
+          className="flex w-full items-center justify-start gap-1.5"
+          size="sm"
+          variant="ghost"
+        >
+          <UserMinus className="size-4" />
           <span>Remove Members</span>
         </Button>
       </DialogTrigger>

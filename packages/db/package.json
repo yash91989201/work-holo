@@ -16,8 +16,8 @@
     "db:migrate": "drizzle-kit migrate"
   },
   "devDependencies": {
-    "drizzle-kit": "^0.31.8",
     "@work-holo/config": "workspace:*",
+    "drizzle-kit": "^0.31.8",
     "supabase": "^2.65.6"
   },
   "peerDependencies": {

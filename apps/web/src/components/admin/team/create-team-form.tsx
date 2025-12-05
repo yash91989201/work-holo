@@ -52,12 +52,12 @@ export const CreateTeamForm = () => {
         throw new Error(error.message);
       }
 
-      if (data == null) {
+      if (data === null) {
         throw new Error("Failed to create team");
       }
 
       queryClient.refetchQueries({
-        queryKey: queryUtils.admin.team.listTeams.mutationKey(),
+        queryKey: queryUtils.admin.team.listTeams.queryKey({}),
       });
 
       toast.success(`${data.name} team created successfully`);

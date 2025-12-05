@@ -58,6 +58,9 @@ export const auth = betterAuth({
     organization({
       teams: {
         enabled: true,
+        defaultTeam: {
+          enabled: false,
+        },
       },
       // sendInvitationEmail(data) {
       //   const invitationLink = `${env.WEB_URL}/accept-invitation/${data.id}?email=${data.email}`;

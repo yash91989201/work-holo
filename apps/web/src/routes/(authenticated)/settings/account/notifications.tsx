@@ -7,5 +7,5 @@ export const Route = createFileRoute(
 });
 
 function RouteComponent() {
-  return <div>Hello "/(authenticated)/settings/account/notifications"!</div>;
+  return <div>Notification Settings: Under development</div>;
 }

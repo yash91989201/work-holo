@@ -1,5 +1,12 @@
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
-import { Building2, Calendar, MoreHorizontal, Users } from "lucide-react";
+import {
+  Building2,
+  Calendar,
+  MoreHorizontal,
+  Trash2,
+  Users,
+} from "lucide-react";
+import { Suspense } from "react";
 import { CreateTeamForm } from "@/components/admin/team/create-team-form";
 import {
   AddTeamMemberDialog,
@@ -71,17 +78,22 @@ export const TeamList = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem asChild>
-                    <AddTeamMemberDialog teamId={team.id} />
+                    <Suspense fallback={<Skeleton className="h-9 w-full" />}>
+                      <AddTeamMemberDialog teamId={team.id} />
+                    </Suspense>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <RemoveTeamMemberDialog teamId={team.id} />
+                    <Suspense fallback={<Skeleton className="h-9 w-full" />}>
+                      <RemoveTeamMemberDialog teamId={team.id} />
+                    </Suspense>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     className="text-destructive"
                     onClick={() => deleteTeam({ teamId: team.id })}
                   >
-                    Delete Team
+                    <Trash2 />
+                    <span>Delete Team</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

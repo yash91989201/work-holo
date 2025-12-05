@@ -67,17 +67,16 @@ export const channelRouter = {
             });
           }
 
-          const nonMemberUserIds = await tx.query.member.findMany({
+          const nonMemberUsers = await tx.query.member.findMany({
             where: and(
               not(eq(member.role, "member")),
               eq(member.organizationId, orgId)
             ),
             columns: {
               userId: true,
+              role: true,
             },
           });
-
-          const nonMemberIds = nonMemberUserIds.map((member) => member.userId);
 
           if (input.type === "team" && input.teamId) {
             const teamMemberIds = await tx.query.teamMember.findMany({
@@ -93,11 +92,13 @@ export const channelRouter = {
               role: "member",
             }));
 
-            const nonMemberChannelMembers = nonMemberIds.map((userId) => ({
-              channelId: channel.id,
-              userId,
-              role: "member",
-            }));
+            const nonMemberChannelMembers = nonMemberUsers.map(
+              ({ userId, role }) => ({
+                channelId: channel.id,
+                userId,
+                role,
+              })
+            );
 
             const allChannelMembers = [
               ...teamChannelMembers,
@@ -118,11 +119,13 @@ export const channelRouter = {
             role: "member",
           }));
 
-          const nonMemberChannelMembers = nonMemberIds.map((userId) => ({
-            channelId: channel.id,
-            userId,
-            role: "member",
-          }));
+          const nonMemberChannelMembers = nonMemberUsers.map(
+            ({ userId, role }) => ({
+              channelId: channel.id,
+              userId,
+              role,
+            })
+          );
 
           const allChannelMembers = [
             ...regularChannelMembers,
@@ -229,6 +232,7 @@ export const channelRouter = {
     .input(ListChannelMembersInput)
     .output(ListChannelMembersOutput)
     .handler(async ({ input, context }) => {
+      const filter = input?.filter;
       const members = await context.db
         .select({
           id: userTable.id,
@@ -240,7 +244,12 @@ export const channelRouter = {
         })
         .from(channelMemberTable)
         .innerJoin(userTable, eq(channelMemberTable.userId, userTable.id))
-        .where(eq(channelMemberTable.channelId, input.channelId));
+        .where(
+          and(
+            eq(channelMemberTable.channelId, input.channelId),
+            filter?.role ? eq(channelMemberTable.role, filter.role) : undefined
+          )
+        );
 
       return members;
     }),

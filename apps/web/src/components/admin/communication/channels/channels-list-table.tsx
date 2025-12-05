@@ -225,8 +225,11 @@ export function AddMemberDialog({ channelId }: { channelId: string }) {
   return (
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost">
-          <Plus className="mr-1.5 size-4" />
+        <Button
+          className="flex items-center justify-start gap-1.5"
+          variant="ghost"
+        >
+          <Plus className="size-4" />
           Add Members
         </Button>
       </DialogTrigger>
@@ -317,7 +320,7 @@ export function RemoveMemberDialog({ channelId }: { channelId: string }) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { data: members } = useSuspenseQuery(
     queryUtils.communication.channel.listMembers.queryOptions({
-      input: { channelId },
+      input: { channelId, filter: { role: "member" } },
     })
   );
 
@@ -352,8 +355,11 @@ export function RemoveMemberDialog({ channelId }: { channelId: string }) {
   return (
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost">
-          <UserMinus className="mr-1.5 size-4" />
+        <Button
+          className="flex items-center justify-start gap-1.5"
+          variant="ghost"
+        >
+          <UserMinus className="size-4" />
           <span>Remove Members</span>
         </Button>
       </DialogTrigger>
