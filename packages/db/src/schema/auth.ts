@@ -1,11 +1,11 @@
 import { relations } from "drizzle-orm";
 import {
+  boolean,
+  index,
+  integer,
   pgTable,
   text,
   timestamp,
-  boolean,
-  integer,
-  index,
 } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
@@ -49,7 +49,7 @@ export const session = pgTable(
     activeOrganizationId: text("activeOrganizationId"),
     activeTeamId: text("activeTeamId"),
   },
-  (table) => [index("session_userId_idx").on(table.userId)],
+  (table) => [index("session_userId_idx").on(table.userId)]
 );
 
 export const account = pgTable(
@@ -73,7 +73,7 @@ export const account = pgTable(
       .$onUpdate(() => /* @__PURE__ */ new Date())
       .notNull(),
   },
-  (table) => [index("account_userId_idx").on(table.userId)],
+  (table) => [index("account_userId_idx").on(table.userId)]
 );
 
 export const verification = pgTable(
@@ -89,7 +89,7 @@ export const verification = pgTable(
       .$onUpdate(() => /* @__PURE__ */ new Date())
       .notNull(),
   },
-  (table) => [index("verification_identifier_idx").on(table.identifier)],
+  (table) => [index("verification_identifier_idx").on(table.identifier)]
 );
 
 export const twoFactor = pgTable(
@@ -105,7 +105,7 @@ export const twoFactor = pgTable(
   (table) => [
     index("twoFactor_secret_idx").on(table.secret),
     index("twoFactor_userId_idx").on(table.userId),
-  ],
+  ]
 );
 
 export const passkey = pgTable(
@@ -128,7 +128,7 @@ export const passkey = pgTable(
   (table) => [
     index("passkey_userId_idx").on(table.userId),
     index("passkey_credentialID_idx").on(table.credentialID),
-  ],
+  ]
 );
 
 export const organization = pgTable("organization", {
@@ -150,10 +150,10 @@ export const team = pgTable(
       .references(() => organization.id, { onDelete: "cascade" }),
     createdAt: timestamp("createdAt").notNull(),
     updatedAt: timestamp("updatedAt").$onUpdate(
-      () => /* @__PURE__ */ new Date(),
+      () => /* @__PURE__ */ new Date()
     ),
   },
-  (table) => [index("team_organizationId_idx").on(table.organizationId)],
+  (table) => [index("team_organizationId_idx").on(table.organizationId)]
 );
 
 export const teamMember = pgTable(
@@ -171,7 +171,7 @@ export const teamMember = pgTable(
   (table) => [
     index("teamMember_teamId_idx").on(table.teamId),
     index("teamMember_userId_idx").on(table.userId),
-  ],
+  ]
 );
 
 export const member = pgTable(
@@ -190,7 +190,7 @@ export const member = pgTable(
   (table) => [
     index("member_organizationId_idx").on(table.organizationId),
     index("member_userId_idx").on(table.userId),
-  ],
+  ]
 );
 
 export const invitation = pgTable(
@@ -213,7 +213,7 @@ export const invitation = pgTable(
   (table) => [
     index("invitation_organizationId_idx").on(table.organizationId),
     index("invitation_email_idx").on(table.email),
-  ],
+  ]
 );
 
 export const userRelations = relations(user, ({ many }) => ({
