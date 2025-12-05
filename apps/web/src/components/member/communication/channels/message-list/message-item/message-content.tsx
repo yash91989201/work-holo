@@ -4,12 +4,17 @@ import parse from "html-react-parser";
 import { Download, FileIcon, Maximize2 } from "lucide-react";
 import { useRef } from "react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface MessageContentProps {
   message: MessageWithSenderType;
+  isOwnMessage?: boolean;
 }
 
-export function MessageContent({ message }: MessageContentProps) {
+export function MessageContent({
+  message,
+  isOwnMessage = false,
+}: MessageContentProps) {
   const hasContent = message.content && message.content.trim().length > 0;
   const hasAttachments = message.attachments && message.attachments.length > 0;
 
@@ -84,9 +89,23 @@ export function MessageContent({ message }: MessageContentProps) {
 
   // For text messages (with or without attachments)
   return (
-    <div className="flex flex-col gap-3 rounded-2xl border border-border/60 bg-background/90 px-3 py-2 text-sm shadow-sm transition-colors">
+    <div
+      className={cn(
+        "flex flex-col gap-3 rounded-2xl px-3 py-2 text-sm shadow-sm transition-colors",
+        isOwnMessage
+          ? "bg-primary text-primary-foreground"
+          : "border border-border/60 bg-background/90"
+      )}
+    >
       {hasContent && message.content !== null && (
-        <div className="ProseMirror prose-sm dark:prose-invert wrapbreak-word whitespace-pre-wrap">
+        <div
+          className={cn(
+            "ProseMirror prose-sm wrapbreak-word whitespace-pre-wrap",
+            isOwnMessage
+              ? "dark:prose-invert prose-headings:text-primary-foreground prose-p:text-primary-foreground prose-strong:text-primary-foreground"
+              : "dark:prose-invert"
+          )}
+        >
           {parse(DOMPurify.sanitize(message.content))}
         </div>
       )}
@@ -114,24 +133,51 @@ export function MessageContent({ message }: MessageContentProps) {
 
             return (
               <div
-                className="flex w-fit max-w-sm items-center gap-2 rounded-lg border bg-background p-2.5 shadow-sm transition-colors hover:bg-muted/50"
+                className={cn(
+                  "flex w-fit max-w-sm items-center gap-2 rounded-lg border p-2.5 shadow-sm transition-colors",
+                  isOwnMessage
+                    ? "border-primary-foreground/20 bg-primary-foreground/10 text-primary-foreground"
+                    : "border-border bg-background hover:bg-muted/50"
+                )}
                 key={attachment.id}
               >
-                <div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-primary/10">
-                  <FileIcon className="size-5 text-primary" />
+                <div
+                  className={cn(
+                    "flex size-10 shrink-0 items-center justify-center rounded-md",
+                    isOwnMessage ? "bg-primary-foreground/20" : "bg-primary/10"
+                  )}
+                >
+                  <FileIcon
+                    className={cn(
+                      "size-5",
+                      isOwnMessage ? "text-primary-foreground" : "text-primary"
+                    )}
+                  />
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-medium text-sm leading-tight">
                     {attachment.originalName}
                   </p>
-                  <p className="text-muted-foreground text-xs">
+                  <p
+                    className={cn(
+                      "text-xs",
+                      isOwnMessage
+                        ? "text-primary-foreground/80"
+                        : "text-muted-foreground"
+                    )}
+                  >
                     {formatFileSize(attachment.fileSize)}
                   </p>
                 </div>
                 {attachment.url && (
                   <Button
                     asChild
-                    className="shrink-0"
+                    className={cn(
+                      "shrink-0",
+                      isOwnMessage
+                        ? "text-primary-foreground hover:bg-primary-foreground/20 hover:text-primary-foreground"
+                        : ""
+                    )}
                     size="icon-sm"
                     variant="ghost"
                   >

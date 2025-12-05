@@ -15,6 +15,7 @@ interface MessageActionsProps {
   onDelete: () => void;
   onPin: () => void;
   onReact: (emoji: string) => void;
+  className?: string;
 }
 
 export function MessageActions({
@@ -28,9 +29,16 @@ export function MessageActions({
   onDelete,
   onPin,
   onReact,
+  className,
 }: MessageActionsProps) {
+  const canReact = false;
   return (
-    <ButtonGroup className="pointer-events-none absolute top-0.5 right-3 z-10 rounded-lg bg-popover/95 opacity-0 backdrop-blur transition-opacity group-hover:pointer-events-auto group-hover:opacity-100 supports-backdrop-filter:bg-popover/75">
+    <ButtonGroup
+      className={cn(
+        "pointer-events-none absolute top-0.5 z-10 rounded-lg bg-popover/95 opacity-0 backdrop-blur transition-opacity group-hover:pointer-events-auto group-hover:opacity-100 supports-backdrop-filter:bg-popover/75",
+        className ?? "right-3"
+      )}
+    >
       {canReply && (
         <Button
           aria-label="Reply"
@@ -43,7 +51,7 @@ export function MessageActions({
         </Button>
       )}
 
-      <ReactionPicker onSelectEmoji={onReact} />
+      {canReact && <ReactionPicker onSelectEmoji={onReact} />}
 
       {canEdit && (
         <Button

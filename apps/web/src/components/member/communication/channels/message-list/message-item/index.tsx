@@ -34,6 +34,7 @@ export function MessageItem({
   } = useMessageMutations();
 
   const { user } = useAuthedSession();
+  const isOwnMessage = user.id === message.senderId;
 
   const { messageId, openMessageThread, closeMessageThread } =
     useMessageThreadSidebar();
@@ -97,7 +98,8 @@ export function MessageItem({
   return (
     <div
       className={cn(
-        "group relative flex gap-3 rounded-xl p-3 transition-all hover:bg-muted/40",
+        "group relative flex w-full gap-3 rounded-xl p-3 transition-all hover:bg-muted/40",
+        isOwnMessage ? "flex-row-reverse" : "flex-row",
         {
           "bg-primary/5 ring-2 ring-primary/20 hover:bg-primary/10":
             isMessageThreadActive,
@@ -121,9 +123,20 @@ export function MessageItem({
         </Avatar>
       </div>
 
-      <div className="flex min-w-0 flex-1 flex-col gap-3">
+      {/* NEW: A relative container for the message bubble and its actions */}
+      <div
+        className={cn(
+          "relative flex max-w-[70%] flex-col gap-1.5",
+          isOwnMessage ? "items-end" : "items-start"
+        )}
+      >
         {/* Header */}
-        <div className="flex flex-wrap items-stretch gap-3 text-xs">
+        <div
+          className={cn(
+            "flex flex-wrap items-center gap-2 text-xs",
+            isOwnMessage ? "flex-row-reverse" : "flex-row"
+          )}
+        >
           <span className="font-semibold text-foreground text-sm">
             {message.sender.name}
           </span>
@@ -144,7 +157,25 @@ export function MessageItem({
           )}
         </div>
 
-        <MessageContent message={message} />
+        <div className="relative">
+          <MessageContent isOwnMessage={isOwnMessage} message={message} />
+          <MessageActions
+            canEdit={user.id === message.senderId && message.type === "text"}
+            canPin={!isThreadMessage}
+            canReply={!isThreadMessage}
+            className={cn(
+              "top-2 right-auto",
+              isOwnMessage ? "right-full mr-2" : "left-full ml-2"
+            )}
+            isOwnMessage={user.id === message.senderId}
+            isPinned={message.isPinned}
+            onDelete={handleDelete}
+            onEdit={handleEditDialog}
+            onPin={handlePin}
+            onReact={handleReact}
+            onReply={toggleMessageThread}
+          />
+        </div>
 
         <MessageReactions
           onAddReaction={handleReact}
@@ -154,7 +185,7 @@ export function MessageItem({
 
         {!isThreadMessage && message.parentMessageId && (
           <Button
-            className="self-start rounded-full"
+            className="rounded-full"
             onClick={() => handleReplyInThread(message.parentMessageId)}
             size="sm"
             variant="secondary"
@@ -166,7 +197,7 @@ export function MessageItem({
 
         {message.threadCount > 0 && (
           <Button
-            className="self-start rounded-full"
+            className="rounded-full"
             onClick={toggleMessageThread}
             size="sm"
             variant="secondary"
@@ -175,19 +206,6 @@ export function MessageItem({
           </Button>
         )}
       </div>
-
-      <MessageActions
-        canEdit={user.id === message.senderId && message.type === "text"}
-        canPin={!isThreadMessage}
-        canReply={!isThreadMessage}
-        isOwnMessage={user.id === message.senderId}
-        isPinned={message.isPinned}
-        onDelete={handleDelete}
-        onEdit={handleEditDialog}
-        onPin={handlePin}
-        onReact={handleReact}
-        onReply={toggleMessageThread}
-      />
     </div>
   );
 }
