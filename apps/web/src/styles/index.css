@@ -368,11 +368,14 @@ body {
 }
 
 .ProseMirror p.is-editor-empty:first-child::before {
-  @apply text-muted-foreground;
+  @apply text-muted-foreground/70;
   content: attr(data-placeholder);
   float: left;
   height: 0;
   pointer-events: none;
+  font-size: 0.95rem;
+  font-weight: 400;
+  letter-spacing: 0.01em;
 }
 
 .ProseMirror ul,
@@ -424,4 +427,46 @@ body {
 
 .tippy-content {
   @apply p-0;
+}
+
+/* Force word wrapping in editor to prevent horizontal scroll */
+.ProseMirror {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.ProseMirror * {
+  max-width: 100%;
+}
+
+/* Ensure long links wrap properly */
+.ProseMirror a {
+  word-break: break-all;
+  overflow-wrap: anywhere;
+}
+
+/* Ensure code blocks wrap */
+.ProseMirror code {
+  word-break: break-all;
+  white-space: pre-wrap;
+}
+
+/* Ensure pre-formatted text wraps */
+.ProseMirror pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* Smooth animations for message composer */
+.ProseMirror {
+  transition: background-color 0.2s ease;
+}
+
+.ProseMirror:focus-visible {
+  background-color: hsl(var(--accent) / 0.05);
+}
+
+/* Smooth toggle states */
+[data-slot="toggle"][data-state="on"] {
+  transform: translateY(-1px);
 }

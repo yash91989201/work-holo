@@ -29,12 +29,15 @@
   .tiptap-link {
     color: #2563eb; /* blue-600 */
     text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
     cursor: pointer;
-    transition: color 0.2s;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     pointer-events: none; /* Prevent clicking links in editor */
 
     &:hover {
       color: #1d4ed8; /* blue-700 */
+      text-decoration-thickness: 2px;
     }
   }
 
@@ -121,5 +124,25 @@
   [data-resize-state="true"] [data-resize-wrapper] {
     outline: 1px solid rgba(0, 0, 0, 0.25);
     border-radius: 0.125rem;
+  }
+
+  /* Word wrapping for editor content */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+
+  a,
+  .tiptap-link {
+    word-break: break-all;
+    overflow-wrap: anywhere;
+  }
+
+  code {
+    word-break: break-all;
+    white-space: pre-wrap;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
   }
 }

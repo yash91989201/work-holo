@@ -11,7 +11,6 @@ import { orpcClient } from "@/utils/orpc";
 import { uploadToSupabase } from "@/utils/upload-helper";
 import { AttachmentPreviewList } from "./attachment-preview-list";
 import { AudioRecorder } from "./audio-recorder";
-import { ComposerActions } from "./composer-actions";
 import { MessageEditor } from "./message-editor";
 import { TypingIndicator } from "./typing-indicator";
 
@@ -378,9 +377,14 @@ export function MessageComposer({
         type="file"
       />
 
-      <div className={cn("relative border-t bg-background", className)}>
-        <div>
-          <div className="relative">
+      <div
+        className={cn(
+          "relative min-w-0 overflow-x-hidden bg-background",
+          className
+        )}
+      >
+        <div className="min-w-0">
+          <div className="relative min-w-0">
             {typingUsers.length > 0 && (
               <div className="border-b px-4 py-2">
                 <TypingIndicator typingUsers={typingUsers} />
@@ -412,27 +416,18 @@ export function MessageComposer({
               content={text}
               disabled={isRecording || audioUrl !== null}
               fetchUsers={fetchUsers}
+              hasAttachments={attachments.length > 0}
+              hasAudio={audioUrl !== null}
+              isCreatingMessage={false}
               isMaximized={onMaximize ? false : isEditorMaximized}
+              isRecording={isRecording}
               onChange={handleMarkdownChange}
+              onEmojiSelect={handleEmojiSelect}
+              onFileUpload={() => fileInputRef.current?.click()}
               onMaximize={handleMaximize}
               onSubmit={handleSubmit}
+              onVoiceRecord={handleVoiceRecord}
             />
-
-            <div className="border-t p-3">
-              <ComposerActions
-                hasAttachments={attachments.length > 0}
-                hasAudio={audioUrl !== null}
-                hasText={text.trim().length > 0}
-                isCreatingMessage={false}
-                isRecording={isRecording}
-                onEmojiSelect={handleEmojiSelect}
-                onFileUpload={() => fileInputRef.current?.click()}
-                onSubmit={handleSubmit}
-                onVoiceRecord={handleVoiceRecord}
-                recordingDuration={duration}
-                text={text}
-              />
-            </div>
           </div>
         </div>
       </div>

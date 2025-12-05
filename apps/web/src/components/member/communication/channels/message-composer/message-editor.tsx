@@ -11,20 +11,26 @@ import {
   ArrowRight,
   Bold,
   Code,
+  Eraser,
   Image as ImageIcon,
   Italic,
   LinkIcon,
   List,
   ListOrdered,
   Maximize,
+  Mic,
   Minimize2,
+  Paperclip,
+  Redo,
+  Send,
+  SmilePlus,
   Strikethrough,
-  Trash2,
-  UnderlineIcon,
+  Undo,
   X,
 } from "lucide-react";
 import type { KeyboardEvent } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Toggle } from "@/components/ui/toggle";
 import { cn } from "@/lib/utils";
@@ -35,7 +41,13 @@ import { createMentionSuggestion } from "./mention-suggestion";
 import "tippy.js/dist/tippy.css";
 import "@/styles/tiptap.css";
 import z from "zod";
-import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  EmojiPicker,
+  EmojiPickerContent,
+  EmojiPickerFooter,
+  EmojiPickerSearch,
+} from "@/components/ui/emoji-picker";
 import {
   InputGroup,
   InputGroupAddon,
@@ -47,6 +59,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Spinner } from "@/components/ui/spinner";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { supabase } from "@/lib/supabase";
 
 const URL_REGEX = /^[a-zA-Z]+:\/\//;
@@ -64,6 +83,14 @@ interface MessageEditorProps {
   onMinimize?: () => void;
   isMaximized?: boolean;
   isInMaximizedComposer?: boolean;
+  // New props for integrated actions
+  isRecording?: boolean;
+  isCreatingMessage?: boolean;
+  hasAttachments?: boolean;
+  hasAudio?: boolean;
+  onEmojiSelect?: (emoji: { emoji: string; label: string }) => void;
+  onFileUpload?: () => void;
+  onVoiceRecord?: () => void;
 }
 
 export function MessageEditor({
@@ -77,6 +104,13 @@ export function MessageEditor({
   onMinimize,
   isMaximized = false,
   isInMaximizedComposer = false,
+  isRecording = false,
+  isCreatingMessage = false,
+  hasAttachments = false,
+  hasAudio = false,
+  onEmojiSelect,
+  onFileUpload,
+  onVoiceRecord,
 }: MessageEditorProps) {
   const uploadImageToSupabase = useCallback(
     async (file: File): Promise<string> => {
@@ -136,7 +170,8 @@ export function MessageEditor({
       }),
       Underline,
       Placeholder.configure({
-        placeholder: "Type your message...",
+        placeholder: "Type a message...",
+        showOnlyWhenEditable: true,
       }),
       Mention.configure({
         HTMLAttributes: {
@@ -182,10 +217,10 @@ export function MessageEditor({
     editorProps: {
       attributes: {
         class: cn(
-          "prose prose-sm max-w-none p-2 focus:outline-none sm:p-3",
+          "prose prose-sm max-w-none break-words focus:outline-none",
           isMaximized && isInMaximizedComposer
             ? "min-h-[56vh] overflow-y-auto sm:min-h-[64vh]"
-            : "max-h-48 min-h-32 overflow-y-auto"
+            : "max-h-36 min-h-32 overflow-y-auto"
         ),
       },
       handleKeyDown: (_, event) => {
@@ -262,6 +297,40 @@ export function MessageEditor({
     }
   }, [content, editor]);
 
+  // Auto-scroll to keep cursor visible when typing
+  useEffect(() => {
+    if (!editor) return;
+
+    const handleUpdate = () => {
+      // Get the DOM element of the editor
+      const editorElement = editor.view.dom;
+      const { selection } = editor.state;
+      const { from } = selection;
+
+      // Get the coordinates of the cursor
+      const coords = editor.view.coordsAtPos(from);
+      const editorRect = editorElement.getBoundingClientRect();
+
+      // Check if cursor is below the visible area
+      if (coords.bottom > editorRect.bottom) {
+        // Scroll to keep cursor visible
+        editorElement.scrollTop += coords.bottom - editorRect.bottom + 20;
+      }
+      // Check if cursor is above the visible area
+      else if (coords.top < editorRect.top) {
+        editorElement.scrollTop -= editorRect.top - coords.top + 20;
+      }
+    };
+
+    editor.on("update", handleUpdate);
+    editor.on("selectionUpdate", handleUpdate);
+
+    return () => {
+      editor.off("update", handleUpdate);
+      editor.off("selectionUpdate", handleUpdate);
+    };
+  }, [editor]);
+
   const [isLinkPopoverOpen, setIsLinkPopoverOpen] = useState(false);
   const [linkUrl, setLinkUrl] = useState("");
 
@@ -335,8 +404,8 @@ export function MessageEditor({
   return (
     <div
       className={cn(
-        "flex flex-col",
-        isMaximized ? "flex-1 overflow-hidden" : "space-y-2"
+        "flex min-w-0 flex-col overflow-x-hidden",
+        isMaximized ? "flex-1 overflow-y-hidden" : ""
       )}
     >
       <input
@@ -347,198 +416,370 @@ export function MessageEditor({
         ref={fileInputRef}
         type="file"
       />
-      <div className="flex shrink-0 flex-wrap items-center gap-1 border-b p-2 sm:p-3">
-        <Toggle
-          aria-label="Toggle bold"
-          onPressedChange={() => editor.chain().focus().toggleBold().run()}
-          pressed={editor.isActive("bold")}
-          size="sm"
-          title="Bold (Ctrl+B)"
+
+      <div
+        className={cn(
+          "mx-3 overflow-hidden rounded-lg border transition-colors",
+          "focus-within:border-primary",
+          isMaximized && "mx-0 flex flex-1 flex-col rounded-none border-0"
+        )}
+      >
+        {/* Editor Content */}
+        <div
+          className={cn(
+            "relative min-w-0 overflow-x-hidden",
+            isMaximized && "flex-1 overflow-y-auto"
+          )}
         >
-          <Bold className="h-3 w-3 sm:h-4 sm:w-4" />
-        </Toggle>
+          <LinkBubbleMenu editor={editor} />
+          <div className="p-3">
+            <EditorContent
+              className={cn("min-w-0", disabled && "opacity-50")}
+              editor={editor}
+              onKeyDown={handleEditorKeyDown}
+            />
+          </div>
 
-        <Toggle
-          aria-label="Toggle italic"
-          onPressedChange={() => editor.chain().focus().toggleItalic().run()}
-          pressed={editor.isActive("italic")}
-          size="sm"
-          title="Italic (Ctrl+I)"
-        >
-          <Italic className="h-3 w-3 sm:h-4 sm:w-4" />
-        </Toggle>
-
-        <Toggle
-          aria-label="Toggle strikethrough"
-          onPressedChange={() => editor.chain().focus().toggleStrike().run()}
-          pressed={editor.isActive("strike")}
-          size="sm"
-          title="Strikethrough (Ctrl+Shift+S)"
-        >
-          <Strikethrough className="h-3 w-3 sm:h-4 sm:w-4" />
-        </Toggle>
-
-        <Toggle
-          aria-label="Toggle underline"
-          onPressedChange={() => editor.chain().focus().toggleUnderline().run()}
-          pressed={editor.isActive("underline")}
-          size="sm"
-          title="Underline (Ctrl+U)"
-        >
-          <UnderlineIcon className="h-3 w-3 sm:h-4 sm:w-4" />
-        </Toggle>
-
-        <Toggle
-          aria-label="Toggle code"
-          onPressedChange={() => editor.chain().focus().toggleCode().run()}
-          pressed={editor.isActive("code")}
-          size="sm"
-          title="Inline Code (Ctrl+E)"
-        >
-          <Code className="h-3 w-3 sm:h-4 sm:w-4" />
-        </Toggle>
-
-        <Separator className="mx-1 h-6" orientation="vertical" />
-
-        <Toggle
-          aria-label="Toggle bullet list"
-          onPressedChange={() =>
-            editor.chain().focus().toggleBulletList().run()
-          }
-          pressed={editor.isActive("bulletList")}
-          size="sm"
-          title="Bullet List (Ctrl+Shift+8)"
-        >
-          <List className="h-3 w-3 sm:h-4 sm:w-4" />
-        </Toggle>
-
-        <Toggle
-          aria-label="Toggle ordered list"
-          onPressedChange={() =>
-            editor.chain().focus().toggleOrderedList().run()
-          }
-          pressed={editor.isActive("orderedList")}
-          size="sm"
-          title="Ordered List (Ctrl+Shift+7)"
-        >
-          <ListOrdered className="h-3 w-3 sm:h-4 sm:w-4" />
-        </Toggle>
-
-        <Separator className="mx-1 h-6" orientation="vertical" />
-        <Popover onOpenChange={setIsLinkPopoverOpen} open={isLinkPopoverOpen}>
-          <PopoverTrigger asChild>
-            <Toggle
-              aria-label="Add a link"
-              onPressedChange={handleAddLink}
-              pressed={editor.isActive("link") || isLinkPopoverOpen}
-              ref={linkToggleRef}
-              size="sm"
-              title="Insert Link (Ctrl+K)"
+          {/* Content Length Badge - Bottom Right */}
+          <div className="pointer-events-none absolute right-4 bottom-3">
+            <Badge
+              variant={content.length > 5000 ? "destructive" : "secondary"}
             >
-              <LinkIcon className="h-3 w-3 sm:h-4 sm:w-4" />
-            </Toggle>
-          </PopoverTrigger>
-          <PopoverContent align="start" className="w-80 p-2">
-            <InputGroup>
-              <InputGroupInput
-                autoFocus
-                onChange={(e) => setLinkUrl(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    handleSaveLink();
-                  }
-                  if (e.key === "Escape") {
-                    setLinkUrl("");
-                    setIsLinkPopoverOpen(false);
-                  }
-                }}
-                placeholder="https://example.com"
-                type="url"
-                value={linkUrl}
-              />
-              <InputGroupAddon align="inline-end">
-                <InputGroupButton
-                  onClick={() => {
-                    setLinkUrl("");
-                    setIsLinkPopoverOpen(false);
-                  }}
-                  size="icon-xs"
-                  title="Cancel"
-                  type="button"
-                  variant="ghost"
-                >
-                  <X className="h-3.5 w-3.5" />
-                </InputGroupButton>
-                <InputGroupButton
-                  onClick={handleSaveLink}
-                  size="icon-xs"
-                  title="Insert Link"
-                  type="button"
-                  variant="ghost"
-                >
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </InputGroupButton>
-              </InputGroupAddon>
-            </InputGroup>
-          </PopoverContent>
-        </Popover>
-
-        <Toggle
-          aria-label="Upload image"
-          onPressedChange={handleImageUploadClick}
-          pressed={false}
-          size="sm"
-          title="Upload Image"
-        >
-          <ImageIcon className="h-3 w-3 sm:h-4 sm:w-4" />
-        </Toggle>
-
-        <div className="ml-auto flex items-center gap-1">
-          <Toggle
-            aria-label={isMaximized ? "Minimize editor" : "Maximize editor"}
-            onPressedChange={() => {
-              if (isMaximized) {
-                onMinimize?.();
-              } else {
-                onMaximize?.();
-              }
-            }}
-            pressed={isMaximized}
-            size="sm"
-            title={
-              isMaximized
-                ? "Minimize Editor (Ctrl+M)"
-                : "Maximize Editor (Ctrl+M)"
-            }
-          >
-            {isMaximized ? (
-              <Minimize2 className="h-3 w-3 sm:h-4 sm:w-4" />
-            ) : (
-              <Maximize className="h-3 w-3 sm:h-4 sm:w-4" />
-            )}
-          </Toggle>
-          <Button
-            aria-label="Clear content"
-            onClick={() => {
-              editor.chain().focus().clearContent().run();
-            }}
-            size="icon-sm"
-            title="Clear Content"
-            variant="secondary"
-          >
-            <Trash2 />
-          </Button>
+              {content.length}/5000
+            </Badge>
+          </div>
         </div>
-      </div>
 
-      <div className={cn("relative", isMaximized && "flex-1 overflow-y-auto")}>
-        <LinkBubbleMenu editor={editor} />
-        <EditorContent
-          className={cn("p-2 sm:p-3", disabled && "opacity-50")}
-          editor={editor}
-          onKeyDown={handleEditorKeyDown}
-        />
+        {/* Actions Bar at Bottom */}
+        <div className="flex shrink-0 flex-wrap items-center gap-2 border-t bg-muted/30 px-3 py-1.5">
+          {/* Formatting Group */}
+          <div className="flex items-center gap-0.5">
+            <Toggle
+              aria-label="Toggle bold"
+              onPressedChange={() => editor.chain().focus().toggleBold().run()}
+              pressed={editor.isActive("bold")}
+              size="sm"
+              title="Bold (Ctrl+B)"
+            >
+              <Bold className="h-3.5 w-3.5" />
+            </Toggle>
+
+            <Toggle
+              aria-label="Toggle italic"
+              onPressedChange={() =>
+                editor.chain().focus().toggleItalic().run()
+              }
+              pressed={editor.isActive("italic")}
+              size="sm"
+              title="Italic (Ctrl+I)"
+            >
+              <Italic className="h-3.5 w-3.5" />
+            </Toggle>
+
+            <Toggle
+              aria-label="Toggle strikethrough"
+              onPressedChange={() =>
+                editor.chain().focus().toggleStrike().run()
+              }
+              pressed={editor.isActive("strike")}
+              size="sm"
+              title="Strikethrough (Ctrl+Shift+S)"
+            >
+              <Strikethrough className="h-3.5 w-3.5" />
+            </Toggle>
+
+            <Toggle
+              aria-label="Toggle code"
+              onPressedChange={() => editor.chain().focus().toggleCode().run()}
+              pressed={editor.isActive("code")}
+              size="sm"
+              title="Inline Code (Ctrl+E)"
+            >
+              <Code className="h-3.5 w-3.5" />
+            </Toggle>
+          </div>
+
+          <Separator className="h-4" orientation="vertical" />
+
+          {/* Lists Group */}
+          <div className="flex items-center gap-0.5">
+            <Toggle
+              aria-label="Toggle bullet list"
+              onPressedChange={() =>
+                editor.chain().focus().toggleBulletList().run()
+              }
+              pressed={editor.isActive("bulletList")}
+              size="sm"
+              title="Bullet List (Ctrl+Shift+8)"
+            >
+              <List className="h-3.5 w-3.5" />
+            </Toggle>
+
+            <Toggle
+              aria-label="Toggle ordered list"
+              onPressedChange={() =>
+                editor.chain().focus().toggleOrderedList().run()
+              }
+              pressed={editor.isActive("orderedList")}
+              size="sm"
+              title="Ordered List (Ctrl+Shift+7)"
+            >
+              <ListOrdered className="h-3.5 w-3.5" />
+            </Toggle>
+          </div>
+
+          <Separator className="h-4" orientation="vertical" />
+
+          {/* History Group */}
+          <div className="flex items-center gap-0.5">
+            <Toggle
+              aria-label="Undo"
+              disabled={!editor.can().undo()}
+              onPressedChange={() => editor.chain().focus().undo().run()}
+              pressed={false}
+              size="sm"
+              title="Undo (Ctrl+Z)"
+            >
+              <Undo className="h-3.5 w-3.5" />
+            </Toggle>
+
+            <Toggle
+              aria-label="Redo"
+              disabled={!editor.can().redo()}
+              onPressedChange={() => editor.chain().focus().redo().run()}
+              pressed={false}
+              size="sm"
+              title="Redo (Ctrl+Y)"
+            >
+              <Redo className="h-3.5 w-3.5" />
+            </Toggle>
+            <Toggle
+              aria-label="Clear content"
+              onClick={() => {
+                editor.chain().focus().clearContent(true).run();
+                onChange("");
+              }}
+              size="sm"
+              title="Clear Content"
+            >
+              <Eraser className="h-3.5 w-3.5" />
+            </Toggle>
+          </div>
+
+          <Separator className="h-4" orientation="vertical" />
+
+          {/* Insert Group */}
+          <div className="flex items-center gap-0.5">
+            <Popover
+              onOpenChange={setIsLinkPopoverOpen}
+              open={isLinkPopoverOpen}
+            >
+              <PopoverTrigger asChild>
+                <Toggle
+                  aria-label="Add a link"
+                  onPressedChange={handleAddLink}
+                  pressed={editor.isActive("link") || isLinkPopoverOpen}
+                  ref={linkToggleRef}
+                  size="sm"
+                  title="Insert Link (Ctrl+K)"
+                >
+                  <LinkIcon className="h-3.5 w-3.5" />
+                </Toggle>
+              </PopoverTrigger>
+              <PopoverContent align="start" className="w-80 p-2">
+                <InputGroup>
+                  <InputGroupInput
+                    autoFocus
+                    onChange={(e) => setLinkUrl(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleSaveLink();
+                      }
+                      if (e.key === "Escape") {
+                        setLinkUrl("");
+                        setIsLinkPopoverOpen(false);
+                      }
+                    }}
+                    placeholder="https://example.com"
+                    type="url"
+                    value={linkUrl}
+                  />
+                  <InputGroupAddon align="inline-end">
+                    <InputGroupButton
+                      onClick={() => {
+                        setLinkUrl("");
+                        setIsLinkPopoverOpen(false);
+                      }}
+                      size="icon-xs"
+                      title="Cancel"
+                      type="button"
+                      variant="ghost"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </InputGroupButton>
+                    <InputGroupButton
+                      onClick={handleSaveLink}
+                      size="icon-xs"
+                      title="Insert Link"
+                      type="button"
+                      variant="ghost"
+                    >
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </InputGroupButton>
+                  </InputGroupAddon>
+                </InputGroup>
+              </PopoverContent>
+            </Popover>
+
+            <Toggle
+              aria-label="Upload image"
+              onPressedChange={handleImageUploadClick}
+              pressed={false}
+              size="sm"
+              title="Upload Image"
+            >
+              <ImageIcon className="h-3.5 w-3.5" />
+            </Toggle>
+          </div>
+
+          <Separator className="h-4" orientation="vertical" />
+
+          {/* Communication Actions Group */}
+          <div className="flex items-center gap-0.5">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    aria-label={
+                      isRecording ? "Stop recording" : "Start voice message"
+                    }
+                    className={cn(
+                      "transition-all duration-200",
+                      isRecording && "relative"
+                    )}
+                    disabled={!onVoiceRecord || content.trim().length > 0}
+                    onClick={onVoiceRecord}
+                    size="icon-sm"
+                    title={
+                      content.trim().length > 0
+                        ? "Clear text to record audio"
+                        : isRecording
+                          ? "Stop recording"
+                          : "Start voice message"
+                    }
+                    variant="ghost"
+                  >
+                    <Mic
+                      className={cn(
+                        "h-3.5 w-3.5",
+                        content.trim().length > 0 && "opacity-50",
+                        isRecording && "text-red-500"
+                      )}
+                    />
+                  </Button>
+                </TooltipTrigger>
+                {content.trim().length > 0 && (
+                  <TooltipContent>
+                    <p>Clear text to record audio</p>
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            </TooltipProvider>
+
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  className="transition-all duration-200"
+                  disabled={!onEmojiSelect || hasAudio}
+                  size="icon-sm"
+                  title="Add emoji"
+                  variant="ghost"
+                >
+                  <SmilePlus
+                    className={cn("h-3.5 w-3.5", hasAudio && "opacity-50")}
+                  />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent align="start" className="w-80 p-0" side="top">
+                <EmojiPicker onEmojiSelect={onEmojiSelect || (() => {})}>
+                  <EmojiPickerSearch
+                    className="h-16"
+                    placeholder="Search emoji..."
+                  />
+                  <EmojiPickerContent />
+                  <EmojiPickerFooter />
+                </EmojiPicker>
+              </PopoverContent>
+            </Popover>
+
+            <Button
+              className="transition-all duration-200"
+              onClick={onFileUpload}
+              size="icon-sm"
+              title="Attach file"
+              variant="ghost"
+            >
+              <Paperclip className="h-3.5 w-3.5" />
+            </Button>
+          </div>
+
+          <Separator className="h-4" orientation="vertical" />
+
+          {/* Actions Group - Right Aligned */}
+          <div className="ml-auto flex items-center gap-3">
+            <Toggle
+              aria-label={isMaximized ? "Minimize editor" : "Maximize editor"}
+              onPressedChange={() => {
+                if (isMaximized) {
+                  onMinimize?.();
+                } else {
+                  onMaximize?.();
+                }
+              }}
+              pressed={isMaximized}
+              size="sm"
+              title={
+                isMaximized
+                  ? "Minimize Editor (Ctrl+M)"
+                  : "Maximize Editor (Ctrl+M)"
+              }
+            >
+              {isMaximized ? (
+                <Minimize2 className="h-3.5 w-3.5" />
+              ) : (
+                <Maximize className="h-3.5 w-3.5" />
+              )}
+            </Toggle>
+
+            <Button
+              className={cn(
+                "ml-2 rounded-full transition-all duration-200",
+                (content.trim().length > 0 || hasAttachments || hasAudio) &&
+                  "scale-105 bg-primary hover:bg-primary/90"
+              )}
+              disabled={
+                isCreatingMessage ||
+                content.length > 5000 ||
+                !(content.trim().length > 0 || hasAttachments || hasAudio)
+              }
+              onClick={onSubmit}
+              size="icon-sm"
+              title="Send message (Enter)"
+              variant={
+                content.trim().length > 0 || hasAttachments || hasAudio
+                  ? "default"
+                  : "ghost"
+              }
+            >
+              {isCreatingMessage ? (
+                <Spinner />
+              ) : (
+                <Send className="h-3.5 w-3.5" />
+              )}
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   );

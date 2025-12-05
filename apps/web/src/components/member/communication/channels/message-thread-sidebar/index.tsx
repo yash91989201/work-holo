@@ -72,7 +72,7 @@ export function MessageThreadSidebar() {
         isOpen ? "w-96 opacity-100 shadow-lg sm:w-[560px]" : "w-0 opacity-0"
       )}
     >
-      <div className="flex h-full flex-1 flex-col">
+      <div className="flex h-full min-w-0 flex-1 flex-col">
         {!message && (
           <div className="flex flex-1 flex-col items-center justify-center gap-3 px-4 text-center text-muted-foreground text-sm">
             <p>Message might be deleted</p>
@@ -191,17 +191,15 @@ export function MessageThreadSidebar() {
         )}
 
         {message && (
-          <div className="border-t">
-            <MessageComposer
-              channelId={channelId}
-              initialContent={threadComposerText}
-              key={`${message.id}-${Date.now()}`}
-              onMaximize={handleMaximizedReply}
-              parentMessageId={message.id}
-              placeholder="Reply in thread..."
-              showHelpText={false}
-            />
-          </div>
+          <MessageComposer
+            channelId={channelId}
+            initialContent={threadComposerText}
+            key={`${message.id}-${Date.now()}`}
+            onMaximize={handleMaximizedReply}
+            parentMessageId={message.id}
+            placeholder="Reply in thread..."
+            showHelpText={false}
+          />
         )}
       </div>
     </div>
