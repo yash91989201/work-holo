@@ -1,8 +1,20 @@
 import { ArrowDownIcon, Loader2Icon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useVirtualMessages } from "@/hooks/communications/use-messages";
+import type { DateSeparator } from "@/lib/communications/message";
+import { DateFilter } from "./date-filter";
+import { DateSeparator as DateSeparatorComponent } from "./date-separator";
 import { EmptyState } from "./empty-state";
 import { MessageItem } from "./message-item";
+
+function isDateSeparator(item: unknown): item is DateSeparator {
+  return (
+    typeof item === "object" &&
+    item !== null &&
+    "type" in item &&
+    item.type === "date-separator"
+  );
+}
 
 export function MessageList() {
   const {
@@ -10,11 +22,15 @@ export function MessageList() {
     virtualizer,
     virtualItems,
     totalSize,
+    items,
     messages,
     isLoading,
     isFetchingNextPage,
     showScrollButton,
     scrollToBottom,
+    filterDate,
+    scrollToDate,
+    dateRange,
   } = useVirtualMessages();
 
   if (isLoading && messages.length === 0) {
@@ -37,6 +53,15 @@ export function MessageList() {
 
   return (
     <div className="relative flex-1 overflow-hidden bg-linear-to-b from-background via-background to-muted/10">
+      {messages.length > 0 && (
+        <DateFilter
+          maxDate={dateRange.maxDate}
+          minDate={dateRange.minDate}
+          onDateSelect={scrollToDate}
+          selectedDate={filterDate}
+        />
+      )}
+
       <div className="h-full overflow-auto" ref={scrollRef}>
         <div
           style={{
@@ -63,16 +88,32 @@ export function MessageList() {
               transform: `translateY(${virtualItems[0]?.start ?? 0}px)`,
             }}
           >
-            {virtualItems.map((virtualRow) => (
-              <div
-                className="p-3"
-                data-index={virtualRow.index}
-                key={virtualRow.key}
-                ref={virtualizer.measureElement}
-              >
-                <MessageItem message={messages[virtualRow.index]} />
-              </div>
-            ))}
+            {virtualItems.map((virtualRow) => {
+              const item = items[virtualRow.index];
+
+              if (isDateSeparator(item)) {
+                return (
+                  <div
+                    data-index={virtualRow.index}
+                    key={virtualRow.key}
+                    ref={virtualizer.measureElement}
+                  >
+                    <DateSeparatorComponent displayDate={item.displayDate} />
+                  </div>
+                );
+              }
+
+              return (
+                <div
+                  className="p-3"
+                  data-index={virtualRow.index}
+                  key={virtualRow.key}
+                  ref={virtualizer.measureElement}
+                >
+                  <MessageItem message={item} />
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

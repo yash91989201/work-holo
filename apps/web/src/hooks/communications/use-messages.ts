@@ -14,7 +14,10 @@ import {
   messagesCollection,
   usersCollection,
 } from "@/db/collections";
-import { buildOrderedMessages } from "@/lib/communications/message";
+import {
+  buildOrderedMessages,
+  insertDateSeparators,
+} from "@/lib/communications/message";
 
 export function useVirtualMessages() {
   const { id: channelId } = useParams({
@@ -31,6 +34,8 @@ export function useVirtualMessages() {
     isLoading,
   } = useMessages({ channelId });
 
+  const items = useMemo(() => insertDateSeparators(messages), [messages]);
+
   const lastMessageIdRef = useRef<string | null>(null);
 
   // Track if we've done the initial scroll-to-bottom
@@ -45,7 +50,7 @@ export function useVirtualMessages() {
   const isAutoScrollingRef = useRef(false);
 
   const virtualizer = useVirtualizer({
-    count: messages.length,
+    count: items.length,
     getScrollElement: () => scrollRef.current,
     estimateSize: () => 160,
     overscan: 25,
@@ -191,6 +196,58 @@ export function useVirtualMessages() {
     });
   }, [virtualizer]);
 
+  // Date filter state
+  const [filterDate, setFilterDate] = useState<Date | undefined>(undefined);
+
+  // Calculate min and max dates from messages
+  const dateRange = useMemo(() => {
+    if (messages.length === 0) {
+      return { minDate: undefined, maxDate: undefined };
+    }
+
+    const dates = messages.map((msg) => new Date(msg.createdAt));
+    return {
+      minDate: new Date(Math.min(...dates.map((d) => d.getTime()))),
+      maxDate: new Date(Math.max(...dates.map((d) => d.getTime()))),
+    };
+  }, [messages]);
+
+  // Scroll to date handler
+  const scrollToDate = useCallback(
+    (date: Date | undefined) => {
+      setFilterDate(date);
+
+      if (!date) {
+        scrollToBottom();
+        return;
+      }
+
+      // Normalize the date to start of day for comparison
+      const targetDate = new Date(date);
+      targetDate.setHours(0, 0, 0, 0);
+
+      // Find the first item on or after the selected date
+      const index = items.findIndex((item) => {
+        if ("type" in item && item.type === "date-separator") {
+          return false;
+        }
+        const messageDate = new Date(item.createdAt);
+        messageDate.setHours(0, 0, 0, 0);
+        return messageDate >= targetDate;
+      });
+
+      if (index !== -1) {
+        requestAnimationFrame(() => {
+          virtualizer.scrollToIndex(index, {
+            align: "start",
+            behavior: "smooth",
+          });
+        });
+      }
+    },
+    [items, scrollToBottom, virtualizer]
+  );
+
   return {
     // DOM
     scrollRef,
@@ -201,6 +258,7 @@ export function useVirtualMessages() {
     totalSize,
 
     // data
+    items,
     messages,
 
     // status flags
@@ -211,6 +269,11 @@ export function useVirtualMessages() {
     // scroll actions
     showScrollButton,
     scrollToBottom,
+
+    // date filter
+    filterDate,
+    scrollToDate,
+    dateRange,
   };
 }
 
