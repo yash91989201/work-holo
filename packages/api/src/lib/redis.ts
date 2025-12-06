@@ -1,30 +1,57 @@
 import { RedisClient } from "bun";
 import { env } from "../env";
 
-function createRedisClient(): RedisClient {
-  return new RedisClient(env.REDIS_URL);
+let client: RedisClient | null = null;
+let connectPromise: Promise<RedisClient> | null = null;
+
+function createClient(): RedisClient {
+  const c = new RedisClient(env.REDIS_URL);
+
+  c.onconnect = () => {
+    console.log("[redis] connected");
+  };
+
+  c.onclose = (err) => {
+    console.error("[redis] connection closed:", err);
+    // Mark as unusable so we create a new one next time
+    client = null;
+    connectPromise = null;
+  };
+
+  return c;
 }
 
-const redisClient: RedisClient = createRedisClient();
+function connectClient() {
+  if (client?.connected) return client;
+  if (connectPromise) return connectPromise;
 
-const connectionPromise: Promise<void> = (async () => {
-  try {
-    await redisClient.connect();
-    console.log("✅ Redis connected successfully");
-  } catch (err) {
-    console.error("❌ Redis connection failed:", err);
-    process.exit(1);
-  }
-})();
+  connectPromise = (async () => {
+    const c = createClient();
+    try {
+      await c.connect();
+      client = c;
+      return c;
+    } catch (err) {
+      console.error("[redis] initial connect failed:", err);
+      // Important: don’t keep a broken client/promise around
+      client = null;
+      connectPromise = null;
+      throw err;
+    }
+  })();
+
+  return connectPromise;
+}
 
 export async function getRedisClient(): Promise<RedisClient> {
-  await connectionPromise;
-  return redisClient;
+  return await connectClient();
 }
 
 export function closeRedisClient(): void {
-  if (redisClient) {
-    redisClient.close();
+  if (client) {
+    client.close();
+    client = null;
+    connectPromise = null;
   }
 }
 
