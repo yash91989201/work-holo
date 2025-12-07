@@ -5,6 +5,7 @@ import { MentionsSidebar } from "@/components/member/communication/channels/ment
 import { MessageListSkeleton } from "@/components/member/communication/channels/message-list/message-list-skeleton";
 import { MessageThreadSidebar } from "@/components/member/communication/channels/message-thread-sidebar";
 import { PinnedMessagesSidebar } from "@/components/member/communication/channels/pinned-messages-sidebar";
+import { ChannelHeader } from "@/components/member/communication/channels/channel-header";
 
 export const Route = createFileRoute(
   "/(authenticated)/org/$slug/(modules)/communication/channels/$id"
@@ -29,23 +30,26 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   return (
-    <div className="flex min-h-0 flex-1">
-      <Suspense
-        fallback={
-          <div className="flex min-h-0 flex-1 flex-col">
-            <MessageListSkeleton />
-            <div className="border-t bg-background px-4 py-6 text-center text-muted-foreground text-sm">
-              Preparing message composer.
+    <section className="flex h-screen min-h-0 flex-col">
+      <ChannelHeader />
+      <div className="flex min-h-0 flex-1">
+        <Suspense
+          fallback={
+            <div className="flex min-h-0 flex-1 flex-col">
+              <MessageListSkeleton />
+              <div className="border-t bg-background px-4 py-6 text-center text-muted-foreground text-sm">
+                Preparing message composer.
+              </div>
             </div>
-          </div>
-        }
-      >
-        <Outlet />
-      </Suspense>
-      <MessageThreadSidebar />
-      <MentionsSidebar />
-      <PinnedMessagesSidebar />
-      <ChannelInfoSidebar />
-    </div>
+          }
+        >
+          <Outlet />
+        </Suspense>
+        <MessageThreadSidebar />
+        <MentionsSidebar />
+        <PinnedMessagesSidebar />
+        <ChannelInfoSidebar />
+      </div>
+    </section>
   );
 }

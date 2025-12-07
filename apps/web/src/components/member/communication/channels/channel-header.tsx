@@ -27,14 +27,12 @@ export function ChannelHeader() {
   const { slug } = useParams({
     from: "/(authenticated)/org/$slug",
   });
+
   const channelParams = useParams({
     from: "/(authenticated)/org/$slug/(modules)/communication/channels/$id",
-    shouldThrow: false,
   });
 
-  const channelId = channelParams?.id ?? "";
-
-  const { channel } = useChannel(channelId);
+  const { channel } = useChannel(channelParams.id);
 
   const { toggleInfoSidebar } = useChannelInfoSidebar();
   const { isOpen, togglePinnedMessages } = usePinnedMessagesSidebar();
@@ -58,7 +56,7 @@ export function ChannelHeader() {
             <BreadcrumbItem>
               <BreadcrumbLink asChild className="font-medium">
                 <Link
-                  params={{ slug, id: channelId }}
+                  params={{ slug, id: channelParams.id }}
                   to="/org/$slug/communication/channels/$id"
                 >
                   {channel.name}
@@ -73,7 +71,6 @@ export function ChannelHeader() {
             <TooltipTrigger asChild>
               <Button
                 className="relative"
-                disabled={!channelId}
                 onClick={toggleMentionsSidebar}
                 size="icon-sm"
                 variant={mentionsOpen ? "secondary" : "ghost"}

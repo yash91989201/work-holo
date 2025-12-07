@@ -15,16 +15,12 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
-      <div className="flex-1 overflow-y-auto p-6">
-        <div className="mx-auto max-w-6xl space-y-8">
-          <RecentChannels />
-          <GettingStarted />
-          <ChannelTypes />
-          <ChannelFeatures />
-          <ChannelTips />
-        </div>
-      </div>
+    <div className="space-y-6 p-6">
+      <RecentChannels />
+      <GettingStarted />
+      <ChannelTypes />
+      <ChannelFeatures />
+      <ChannelTips />
     </div>
   );
 }
