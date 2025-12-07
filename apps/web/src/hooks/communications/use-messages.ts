@@ -21,7 +21,7 @@ import {
 
 export function useVirtualMessages() {
   const { id: channelId } = useParams({
-    from: "/(authenticated)/org/$slug/(member)/(base-modules)/communication/channels/$id",
+    from: "/(authenticated)/org/$slug/(modules)/communication/channels/$id",
   });
 
   const scrollRef = useRef<HTMLDivElement | null>(null);

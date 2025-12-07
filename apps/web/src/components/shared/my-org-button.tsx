@@ -26,7 +26,7 @@ export function MyOrgButton() {
     <Link
       className={buttonVariants({ variant: "outline" })}
       params={{ slug }}
-      to="/org/$slug/attendance"
+      to="/org/$slug"
     >
       My Org
     </Link>

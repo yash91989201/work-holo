@@ -45,7 +45,7 @@ function BackToOrgButton() {
   return (
     <SidebarMenuItem>
       <SidebarMenuButton asChild>
-        <Link params={{ slug: activeOrg }} to="/org/$slug/attendance">
+        <Link params={{ slug: activeOrg }} to="/org/$slug">
           <ArrowLeft />
           <span>Back to Org</span>
         </Link>

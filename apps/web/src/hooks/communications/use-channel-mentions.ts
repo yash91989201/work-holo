@@ -14,7 +14,7 @@ import { extractMentionIdsFromContent } from "@/lib/mentions";
 
 export function useChannelMentions() {
   const { id: currentChannelId } = useParams({
-    from: "/(authenticated)/org/$slug/(member)/(base-modules)/communication/channels/$id",
+    from: "/(authenticated)/org/$slug/(modules)/communication/channels/$id",
   });
 
   const { user } = useAuthedSession();

@@ -6,9 +6,9 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
+  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import {
   Tooltip,
@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useChannelMentions } from "@/hooks/communications/use-channel-mentions";
 import {
+  useChannel,
   useChannelInfoSidebar,
   useMentionsSidebar,
   usePinnedMessagesSidebar,
@@ -27,10 +28,13 @@ export function ChannelHeader() {
     from: "/(authenticated)/org/$slug",
   });
   const channelParams = useParams({
-    from: "/(authenticated)/org/$slug/(member)/(base-modules)/communication/channels/$id",
+    from: "/(authenticated)/org/$slug/(modules)/communication/channels/$id",
     shouldThrow: false,
   });
-  const channelId = channelParams?.id;
+
+  const channelId = channelParams?.id ?? "";
+
+  const { channel } = useChannel(channelId);
 
   const { toggleInfoSidebar } = useChannelInfoSidebar();
   const { isOpen, togglePinnedMessages } = usePinnedMessagesSidebar();
@@ -41,16 +45,23 @@ export function ChannelHeader() {
     <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b bg-background/95 backdrop-blur-sm transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height) supports-backdrop-filter:bg-background/60">
       <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
         <SidebarTrigger className="-ml-1.5" title="Toggle Sidebar (Crtl+B)" />
-        <Separator
-          className="mx-2 data-[orientation=vertical]:h-(--header-height)"
-          orientation="vertical"
-        />
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink asChild className="font-medium">
                 <Link params={{ slug }} to="/org/$slug/communication/channels">
                   Channels
+                </Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild className="font-medium">
+                <Link
+                  params={{ slug, id: channelId }}
+                  to="/org/$slug/communication/channels/$id"
+                >
+                  {channel.name}
                 </Link>
               </BreadcrumbLink>
             </BreadcrumbItem>

@@ -17,7 +17,7 @@ export function MentionMessageItem({
   currentChannelId,
 }: MentionMessageItemProps) {
   const { slug } = useParams({
-    from: "/(authenticated)/org/$slug/(member)/(base-modules)/communication/channels/$id",
+    from: "/(authenticated)/org/$slug/(modules)/communication/channels/$id",
   });
 
   const isCurrentChannel = message.channel.id === currentChannelId;

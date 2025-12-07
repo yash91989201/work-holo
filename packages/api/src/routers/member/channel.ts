@@ -1,6 +1,10 @@
 import { ORPCError } from "@orpc/client";
-import { channelMemberTable, channelTable } from "@work-holo/db/schema/index";
-import { and, eq, getTableColumns } from "drizzle-orm";
+import {
+  channelMemberTable,
+  channelTable,
+  messageTable,
+} from "@work-holo/db/schema/index";
+import { and, desc, eq, getTableColumns, inArray } from "drizzle-orm";
 import { protectedProcedure } from "../../index";
 
 export const memberChannelRouter = {
@@ -31,6 +35,36 @@ export const memberChannelRouter = {
         );
 
       return { channels };
+    }
+  ),
+  recentChannels: protectedProcedure.handler(
+    async ({ context: { db, session } }) => {
+      const recentMessages = await db.query.messageTable.findMany({
+        where: eq(messageTable.senderId, session.user.id),
+        orderBy: [desc(messageTable.createdAt)],
+        limit: 5,
+        columns: {
+          channelId: true,
+        },
+      });
+
+      if (recentMessages.length === 0) {
+        return [];
+      }
+
+      const recentChannelIds = recentMessages.map(
+        (message) => message.channelId
+      );
+
+      const recentChannels = await db.query.channelTable.findMany({
+        where: inArray(channelTable.id, recentChannelIds),
+        with: {
+          creator: true,
+          members: true,
+        },
+      });
+
+      return recentChannels;
     }
   ),
 };

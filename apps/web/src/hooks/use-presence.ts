@@ -3,15 +3,7 @@ import { useEffect, useRef } from "react";
 import { queryClient, queryUtils } from "@/utils/orpc";
 import { useActiveOrganization } from "./use-active-organization";
 
-export type PresenceStatus =
-  | "available"
-  | "away"
-  | "on_break"
-  | "busy"
-  | "in_call"
-  | "in_meeting"
-  | "offline"
-  | "dnd";
+export type PresenceStatus = "available" | "away" | "busy" | "offline" | "dnd";
 
 export type ManualStatus = "dnd" | "busy" | "away" | null;
 

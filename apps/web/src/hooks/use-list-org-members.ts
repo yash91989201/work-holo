@@ -16,7 +16,7 @@ export function useListOrgMembers() {
   });
 
   return {
-    members: members.filter((m) => m.role === "member"),
+    members,
     refetchTeamMembers,
     isRefetching,
   };

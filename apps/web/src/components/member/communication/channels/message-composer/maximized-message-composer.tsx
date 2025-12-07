@@ -32,7 +32,7 @@ export function MaximizedMessageComposer() {
   const isReplying = !!parentMessageId;
 
   const { id: channelId } = useParams({
-    from: "/(authenticated)/org/$slug/(member)/(base-modules)/communication/channels/$id",
+    from: "/(authenticated)/org/$slug/(modules)/communication/channels/$id",
   });
 
   const { user } = useAuthedSession();
