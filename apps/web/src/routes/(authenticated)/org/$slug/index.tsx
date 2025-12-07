@@ -17,7 +17,7 @@ function RouteComponent() {
   return (
     <>
       <Header />
-      <div className="space-y-6 p-6">
+      <section className="space-y-6 p-6">
         <Greeting />
         <OrgStats />
         <div className="flex flex-col gap-3 md:flex-row">
@@ -26,7 +26,7 @@ function RouteComponent() {
             <PresenceRoster />
           </Suspense>
         </div>
-      </div>
+      </section>
     </>
   );
 }

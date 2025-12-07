@@ -15,11 +15,11 @@ function RouteComponent() {
         </div>
       </header>
 
-      <main className="flex-1 overflow-auto">
+      <section className="flex-1 overflow-auto">
         <div className="container mx-auto py-6">
           <Outlet />
         </div>
-      </main>
+      </section>
     </>
   );
 }

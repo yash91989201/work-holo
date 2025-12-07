@@ -19,11 +19,7 @@ function RouteComponent() {
     >
       <SettingsSidebar variant="sidebar" />
       <SidebarInset>
-        <div className="flex flex-1 flex-col">
-          <main className="@container/main flex flex-1 flex-col gap-2">
-            <Outlet />
-          </main>
-        </div>
+        <Outlet />
       </SidebarInset>
     </SidebarProvider>
   );

@@ -1,5 +1,5 @@
 import { Filter, Search } from "lucide-react";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { CreateTeamForm } from "../admin/team/create-team-form";
-import { TeamList } from "./team-list";
+import { TeamList, TeamListSkeleton } from "./team-list";
 
 export const TeamManagement = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -45,7 +45,9 @@ export const TeamManagement = () => {
             </Button>
           </div>
 
-          <TeamList />
+          <Suspense fallback={<TeamListSkeleton />}>
+            <TeamList />
+          </Suspense>
         </CardContent>
       </Card>
     </div>
