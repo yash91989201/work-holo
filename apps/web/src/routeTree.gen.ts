@@ -24,38 +24,20 @@ import { Route as authenticatedSettingsAccountSecurityRouteImport } from './rout
 import { Route as authenticatedSettingsAccountProfileRouteImport } from './routes/(authenticated)/settings/account/profile'
 import { Route as authenticatedSettingsAccountPreferencesRouteImport } from './routes/(authenticated)/settings/account/preferences'
 import { Route as authenticatedSettingsAccountNotificationsRouteImport } from './routes/(authenticated)/settings/account/notifications'
-import { Route as authenticatedOrgSlugmemberRouteRouteImport } from './routes/(authenticated)/org/$slug/(member)/route'
-import { Route as authenticatedOrgSlugownerManageRouteRouteImport } from './routes/(authenticated)/org/$slug/(owner)/manage/route'
-import { Route as authenticatedOrgSlugadminDashboardRouteRouteImport } from './routes/(authenticated)/org/$slug/(admin)/dashboard/route'
-import { Route as authenticatedOrgSlugownerManageIndexRouteImport } from './routes/(authenticated)/org/$slug/(owner)/manage/index'
-import { Route as authenticatedOrgSlugmemberTeamIndexRouteImport } from './routes/(authenticated)/org/$slug/(member)/team/index'
-import { Route as authenticatedOrgSlugadminDashboardIndexRouteImport } from './routes/(authenticated)/org/$slug/(admin)/dashboard/index'
-import { Route as authenticatedOrgSlugownerManageSettingsRouteRouteImport } from './routes/(authenticated)/org/$slug/(owner)/manage/settings/route'
-import { Route as authenticatedOrgSlugownerManageSettingsIndexRouteImport } from './routes/(authenticated)/org/$slug/(owner)/manage/settings/index'
-import { Route as authenticatedOrgSlugmemberTeamIdIndexRouteImport } from './routes/(authenticated)/org/$slug/(member)/team/$id/index'
-import { Route as authenticatedOrgSlugmemberbaseModulesAttendanceIndexRouteImport } from './routes/(authenticated)/org/$slug/(member)/(base-modules)/attendance/index'
-import { Route as authenticatedOrgSlugadminDashboardTeamsIndexRouteImport } from './routes/(authenticated)/org/$slug/(admin)/dashboard/teams/index'
-import { Route as authenticatedOrgSlugadminDashboardMembersIndexRouteImport } from './routes/(authenticated)/org/$slug/(admin)/dashboard/members/index'
-import { Route as authenticatedOrgSlugadminDashboardAttendanceIndexRouteImport } from './routes/(authenticated)/org/$slug/(admin)/dashboard/attendance/index'
-import { Route as authenticatedOrgSlugownerManageSettingsSecurityRouteImport } from './routes/(authenticated)/org/$slug/(owner)/manage/settings/security'
-import { Route as authenticatedOrgSlugownerManageSettingsNotificationsRouteImport } from './routes/(authenticated)/org/$slug/(owner)/manage/settings/notifications'
-import { Route as authenticatedOrgSlugownerManageSettingsMembersRouteImport } from './routes/(authenticated)/org/$slug/(owner)/manage/settings/members'
-import { Route as authenticatedOrgSlugownerManageSettingsIntegrationsRouteImport } from './routes/(authenticated)/org/$slug/(owner)/manage/settings/integrations'
-import { Route as authenticatedOrgSlugownerManageSettingsDataRouteImport } from './routes/(authenticated)/org/$slug/(owner)/manage/settings/data'
-import { Route as authenticatedOrgSlugownerManageSettingsDangerZoneRouteImport } from './routes/(authenticated)/org/$slug/(owner)/manage/settings/danger-zone'
-import { Route as authenticatedOrgSlugownerManageSettingsBillingRouteImport } from './routes/(authenticated)/org/$slug/(owner)/manage/settings/billing'
-import { Route as authenticatedOrgSlugownerManageSettingsAppearanceRouteImport } from './routes/(authenticated)/org/$slug/(owner)/manage/settings/appearance'
-import { Route as authenticatedOrgSlugmemberbaseModulesAttendanceAnalyticsRouteImport } from './routes/(authenticated)/org/$slug/(member)/(base-modules)/attendance/analytics'
-import { Route as authenticatedOrgSlugadminDashboardAttendanceAnalyticsRouteImport } from './routes/(authenticated)/org/$slug/(admin)/dashboard/attendance/analytics'
-import { Route as authenticatedOrgSlugmemberbaseModulesCommunicationChannelsRouteRouteImport } from './routes/(authenticated)/org/$slug/(member)/(base-modules)/communication/channels/route'
-import { Route as authenticatedOrgSlugmemberTeamIdModuleIndexRouteImport } from './routes/(authenticated)/org/$slug/(member)/team/$id/module/index'
-import { Route as authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIndexRouteImport } from './routes/(authenticated)/org/$slug/(member)/(base-modules)/communication/channels/index'
-import { Route as authenticatedOrgSlugadminDashboardCommunicationChannelsIndexRouteImport } from './routes/(authenticated)/org/$slug/(admin)/dashboard/communication/channels/index'
-import { Route as authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIdRouteRouteImport } from './routes/(authenticated)/org/$slug/(member)/(base-modules)/communication/channels/$id/route'
-import { Route as authenticatedOrgSlugmemberTeamIdModuleSlugIndexRouteImport } from './routes/(authenticated)/org/$slug/(member)/team/$id/module/$slug/index'
-import { Route as authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIdIndexRouteImport } from './routes/(authenticated)/org/$slug/(member)/(base-modules)/communication/channels/$id/index'
-import { Route as authenticatedOrgSlugmemberTeamIdModuleSlugFeatureIndexRouteImport } from './routes/(authenticated)/org/$slug/(member)/team/$id/module/$slug/feature/index'
-import { Route as authenticatedOrgSlugmemberTeamIdModuleSlugFeatureSlugIndexRouteImport } from './routes/(authenticated)/org/$slug/(member)/team/$id/module/$slug/feature/$slug/index'
+import { Route as authenticatedOrgSlugDashboardRouteRouteImport } from './routes/(authenticated)/org/$slug/dashboard/route'
+import { Route as authenticatedOrgSlugManageIndexRouteImport } from './routes/(authenticated)/org/$slug/manage/index'
+import { Route as authenticatedOrgSlugDashboardIndexRouteImport } from './routes/(authenticated)/org/$slug/dashboard/index'
+import { Route as authenticatedOrgSlugDashboardTeamsIndexRouteImport } from './routes/(authenticated)/org/$slug/dashboard/teams/index'
+import { Route as authenticatedOrgSlugDashboardMembersIndexRouteImport } from './routes/(authenticated)/org/$slug/dashboard/members/index'
+import { Route as authenticatedOrgSlugDashboardAttendanceIndexRouteImport } from './routes/(authenticated)/org/$slug/dashboard/attendance/index'
+import { Route as authenticatedOrgSlugmodulesAttendanceIndexRouteImport } from './routes/(authenticated)/org/$slug/(modules)/attendance/index'
+import { Route as authenticatedOrgSlugDashboardAttendanceAnalyticsRouteImport } from './routes/(authenticated)/org/$slug/dashboard/attendance/analytics'
+import { Route as authenticatedOrgSlugmodulesAttendanceAnalyticsRouteImport } from './routes/(authenticated)/org/$slug/(modules)/attendance/analytics'
+import { Route as authenticatedOrgSlugmodulesCommunicationChannelsRouteRouteImport } from './routes/(authenticated)/org/$slug/(modules)/communication/channels/route'
+import { Route as authenticatedOrgSlugDashboardCommunicationChannelsIndexRouteImport } from './routes/(authenticated)/org/$slug/dashboard/communication/channels/index'
+import { Route as authenticatedOrgSlugmodulesCommunicationChannelsIndexRouteImport } from './routes/(authenticated)/org/$slug/(modules)/communication/channels/index'
+import { Route as authenticatedOrgSlugmodulesCommunicationChannelsIdRouteRouteImport } from './routes/(authenticated)/org/$slug/(modules)/communication/channels/$id/route'
+import { Route as authenticatedOrgSlugmodulesCommunicationChannelsIdIndexRouteImport } from './routes/(authenticated)/org/$slug/(modules)/communication/channels/$id/index'
 
 const publicRouteRoute = publicRouteRouteImport.update({
   id: '/(public)',
@@ -138,209 +120,92 @@ const authenticatedSettingsAccountNotificationsRoute =
     path: '/account/notifications',
     getParentRoute: () => authenticatedSettingsRouteRoute,
   } as any)
-const authenticatedOrgSlugmemberRouteRoute =
-  authenticatedOrgSlugmemberRouteRouteImport.update({
-    id: '/(member)',
-    getParentRoute: () => authenticatedOrgSlugRouteRoute,
-  } as any)
-const authenticatedOrgSlugownerManageRouteRoute =
-  authenticatedOrgSlugownerManageRouteRouteImport.update({
-    id: '/(owner)/manage',
-    path: '/manage',
-    getParentRoute: () => authenticatedOrgSlugRouteRoute,
-  } as any)
-const authenticatedOrgSlugadminDashboardRouteRoute =
-  authenticatedOrgSlugadminDashboardRouteRouteImport.update({
-    id: '/(admin)/dashboard',
+const authenticatedOrgSlugDashboardRouteRoute =
+  authenticatedOrgSlugDashboardRouteRouteImport.update({
+    id: '/dashboard',
     path: '/dashboard',
     getParentRoute: () => authenticatedOrgSlugRouteRoute,
   } as any)
-const authenticatedOrgSlugownerManageIndexRoute =
-  authenticatedOrgSlugownerManageIndexRouteImport.update({
+const authenticatedOrgSlugManageIndexRoute =
+  authenticatedOrgSlugManageIndexRouteImport.update({
+    id: '/manage/',
+    path: '/manage/',
+    getParentRoute: () => authenticatedOrgSlugRouteRoute,
+  } as any)
+const authenticatedOrgSlugDashboardIndexRoute =
+  authenticatedOrgSlugDashboardIndexRouteImport.update({
     id: '/',
     path: '/',
-    getParentRoute: () => authenticatedOrgSlugownerManageRouteRoute,
+    getParentRoute: () => authenticatedOrgSlugDashboardRouteRoute,
   } as any)
-const authenticatedOrgSlugmemberTeamIndexRoute =
-  authenticatedOrgSlugmemberTeamIndexRouteImport.update({
-    id: '/team/',
-    path: '/team/',
-    getParentRoute: () => authenticatedOrgSlugmemberRouteRoute,
-  } as any)
-const authenticatedOrgSlugadminDashboardIndexRoute =
-  authenticatedOrgSlugadminDashboardIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => authenticatedOrgSlugadminDashboardRouteRoute,
-  } as any)
-const authenticatedOrgSlugownerManageSettingsRouteRoute =
-  authenticatedOrgSlugownerManageSettingsRouteRouteImport.update({
-    id: '/settings',
-    path: '/settings',
-    getParentRoute: () => authenticatedOrgSlugownerManageRouteRoute,
-  } as any)
-const authenticatedOrgSlugownerManageSettingsIndexRoute =
-  authenticatedOrgSlugownerManageSettingsIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => authenticatedOrgSlugownerManageSettingsRouteRoute,
-  } as any)
-const authenticatedOrgSlugmemberTeamIdIndexRoute =
-  authenticatedOrgSlugmemberTeamIdIndexRouteImport.update({
-    id: '/team/$id/',
-    path: '/team/$id/',
-    getParentRoute: () => authenticatedOrgSlugmemberRouteRoute,
-  } as any)
-const authenticatedOrgSlugmemberbaseModulesAttendanceIndexRoute =
-  authenticatedOrgSlugmemberbaseModulesAttendanceIndexRouteImport.update({
-    id: '/(base-modules)/attendance/',
-    path: '/attendance/',
-    getParentRoute: () => authenticatedOrgSlugmemberRouteRoute,
-  } as any)
-const authenticatedOrgSlugadminDashboardTeamsIndexRoute =
-  authenticatedOrgSlugadminDashboardTeamsIndexRouteImport.update({
+const authenticatedOrgSlugDashboardTeamsIndexRoute =
+  authenticatedOrgSlugDashboardTeamsIndexRouteImport.update({
     id: '/teams/',
     path: '/teams/',
-    getParentRoute: () => authenticatedOrgSlugadminDashboardRouteRoute,
+    getParentRoute: () => authenticatedOrgSlugDashboardRouteRoute,
   } as any)
-const authenticatedOrgSlugadminDashboardMembersIndexRoute =
-  authenticatedOrgSlugadminDashboardMembersIndexRouteImport.update({
+const authenticatedOrgSlugDashboardMembersIndexRoute =
+  authenticatedOrgSlugDashboardMembersIndexRouteImport.update({
     id: '/members/',
     path: '/members/',
-    getParentRoute: () => authenticatedOrgSlugadminDashboardRouteRoute,
+    getParentRoute: () => authenticatedOrgSlugDashboardRouteRoute,
   } as any)
-const authenticatedOrgSlugadminDashboardAttendanceIndexRoute =
-  authenticatedOrgSlugadminDashboardAttendanceIndexRouteImport.update({
+const authenticatedOrgSlugDashboardAttendanceIndexRoute =
+  authenticatedOrgSlugDashboardAttendanceIndexRouteImport.update({
     id: '/attendance/',
     path: '/attendance/',
-    getParentRoute: () => authenticatedOrgSlugadminDashboardRouteRoute,
+    getParentRoute: () => authenticatedOrgSlugDashboardRouteRoute,
   } as any)
-const authenticatedOrgSlugownerManageSettingsSecurityRoute =
-  authenticatedOrgSlugownerManageSettingsSecurityRouteImport.update({
-    id: '/security',
-    path: '/security',
-    getParentRoute: () => authenticatedOrgSlugownerManageSettingsRouteRoute,
+const authenticatedOrgSlugmodulesAttendanceIndexRoute =
+  authenticatedOrgSlugmodulesAttendanceIndexRouteImport.update({
+    id: '/(modules)/attendance/',
+    path: '/attendance/',
+    getParentRoute: () => authenticatedOrgSlugRouteRoute,
   } as any)
-const authenticatedOrgSlugownerManageSettingsNotificationsRoute =
-  authenticatedOrgSlugownerManageSettingsNotificationsRouteImport.update({
-    id: '/notifications',
-    path: '/notifications',
-    getParentRoute: () => authenticatedOrgSlugownerManageSettingsRouteRoute,
-  } as any)
-const authenticatedOrgSlugownerManageSettingsMembersRoute =
-  authenticatedOrgSlugownerManageSettingsMembersRouteImport.update({
-    id: '/members',
-    path: '/members',
-    getParentRoute: () => authenticatedOrgSlugownerManageSettingsRouteRoute,
-  } as any)
-const authenticatedOrgSlugownerManageSettingsIntegrationsRoute =
-  authenticatedOrgSlugownerManageSettingsIntegrationsRouteImport.update({
-    id: '/integrations',
-    path: '/integrations',
-    getParentRoute: () => authenticatedOrgSlugownerManageSettingsRouteRoute,
-  } as any)
-const authenticatedOrgSlugownerManageSettingsDataRoute =
-  authenticatedOrgSlugownerManageSettingsDataRouteImport.update({
-    id: '/data',
-    path: '/data',
-    getParentRoute: () => authenticatedOrgSlugownerManageSettingsRouteRoute,
-  } as any)
-const authenticatedOrgSlugownerManageSettingsDangerZoneRoute =
-  authenticatedOrgSlugownerManageSettingsDangerZoneRouteImport.update({
-    id: '/danger-zone',
-    path: '/danger-zone',
-    getParentRoute: () => authenticatedOrgSlugownerManageSettingsRouteRoute,
-  } as any)
-const authenticatedOrgSlugownerManageSettingsBillingRoute =
-  authenticatedOrgSlugownerManageSettingsBillingRouteImport.update({
-    id: '/billing',
-    path: '/billing',
-    getParentRoute: () => authenticatedOrgSlugownerManageSettingsRouteRoute,
-  } as any)
-const authenticatedOrgSlugownerManageSettingsAppearanceRoute =
-  authenticatedOrgSlugownerManageSettingsAppearanceRouteImport.update({
-    id: '/appearance',
-    path: '/appearance',
-    getParentRoute: () => authenticatedOrgSlugownerManageSettingsRouteRoute,
-  } as any)
-const authenticatedOrgSlugmemberbaseModulesAttendanceAnalyticsRoute =
-  authenticatedOrgSlugmemberbaseModulesAttendanceAnalyticsRouteImport.update({
-    id: '/(base-modules)/attendance/analytics',
-    path: '/attendance/analytics',
-    getParentRoute: () => authenticatedOrgSlugmemberRouteRoute,
-  } as any)
-const authenticatedOrgSlugadminDashboardAttendanceAnalyticsRoute =
-  authenticatedOrgSlugadminDashboardAttendanceAnalyticsRouteImport.update({
+const authenticatedOrgSlugDashboardAttendanceAnalyticsRoute =
+  authenticatedOrgSlugDashboardAttendanceAnalyticsRouteImport.update({
     id: '/attendance/analytics',
     path: '/attendance/analytics',
-    getParentRoute: () => authenticatedOrgSlugadminDashboardRouteRoute,
+    getParentRoute: () => authenticatedOrgSlugDashboardRouteRoute,
   } as any)
-const authenticatedOrgSlugmemberbaseModulesCommunicationChannelsRouteRoute =
-  authenticatedOrgSlugmemberbaseModulesCommunicationChannelsRouteRouteImport.update(
-    {
-      id: '/(base-modules)/communication/channels',
-      path: '/communication/channels',
-      getParentRoute: () => authenticatedOrgSlugmemberRouteRoute,
-    } as any,
-  )
-const authenticatedOrgSlugmemberTeamIdModuleIndexRoute =
-  authenticatedOrgSlugmemberTeamIdModuleIndexRouteImport.update({
-    id: '/team/$id/module/',
-    path: '/team/$id/module/',
-    getParentRoute: () => authenticatedOrgSlugmemberRouteRoute,
+const authenticatedOrgSlugmodulesAttendanceAnalyticsRoute =
+  authenticatedOrgSlugmodulesAttendanceAnalyticsRouteImport.update({
+    id: '/(modules)/attendance/analytics',
+    path: '/attendance/analytics',
+    getParentRoute: () => authenticatedOrgSlugRouteRoute,
   } as any)
-const authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIndexRoute =
-  authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIndexRouteImport.update(
-    {
-      id: '/',
-      path: '/',
-      getParentRoute: () =>
-        authenticatedOrgSlugmemberbaseModulesCommunicationChannelsRouteRoute,
-    } as any,
-  )
-const authenticatedOrgSlugadminDashboardCommunicationChannelsIndexRoute =
-  authenticatedOrgSlugadminDashboardCommunicationChannelsIndexRouteImport.update(
-    {
-      id: '/communication/channels/',
-      path: '/communication/channels/',
-      getParentRoute: () => authenticatedOrgSlugadminDashboardRouteRoute,
-    } as any,
-  )
-const authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIdRouteRoute =
-  authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIdRouteRouteImport.update(
-    {
-      id: '/$id',
-      path: '/$id',
-      getParentRoute: () =>
-        authenticatedOrgSlugmemberbaseModulesCommunicationChannelsRouteRoute,
-    } as any,
-  )
-const authenticatedOrgSlugmemberTeamIdModuleSlugIndexRoute =
-  authenticatedOrgSlugmemberTeamIdModuleSlugIndexRouteImport.update({
-    id: '/team/$id/module/$slug/',
-    path: '/team/$id/module/$slug/',
-    getParentRoute: () => authenticatedOrgSlugmemberRouteRoute,
+const authenticatedOrgSlugmodulesCommunicationChannelsRouteRoute =
+  authenticatedOrgSlugmodulesCommunicationChannelsRouteRouteImport.update({
+    id: '/(modules)/communication/channels',
+    path: '/communication/channels',
+    getParentRoute: () => authenticatedOrgSlugRouteRoute,
   } as any)
-const authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIdIndexRoute =
-  authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIdIndexRouteImport.update(
-    {
-      id: '/',
-      path: '/',
-      getParentRoute: () =>
-        authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIdRouteRoute,
-    } as any,
-  )
-const authenticatedOrgSlugmemberTeamIdModuleSlugFeatureIndexRoute =
-  authenticatedOrgSlugmemberTeamIdModuleSlugFeatureIndexRouteImport.update({
-    id: '/team/$id/module/$slug/feature/',
-    path: '/team/$id/module/$slug/feature/',
-    getParentRoute: () => authenticatedOrgSlugmemberRouteRoute,
+const authenticatedOrgSlugDashboardCommunicationChannelsIndexRoute =
+  authenticatedOrgSlugDashboardCommunicationChannelsIndexRouteImport.update({
+    id: '/communication/channels/',
+    path: '/communication/channels/',
+    getParentRoute: () => authenticatedOrgSlugDashboardRouteRoute,
   } as any)
-const authenticatedOrgSlugmemberTeamIdModuleSlugFeatureSlugIndexRoute =
-  authenticatedOrgSlugmemberTeamIdModuleSlugFeatureSlugIndexRouteImport.update({
-    id: '/team/$id/module/$slug/feature/$slug/',
-    path: '/team/$id/module/$slug/feature/$slug/',
-    getParentRoute: () => authenticatedOrgSlugmemberRouteRoute,
+const authenticatedOrgSlugmodulesCommunicationChannelsIndexRoute =
+  authenticatedOrgSlugmodulesCommunicationChannelsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () =>
+      authenticatedOrgSlugmodulesCommunicationChannelsRouteRoute,
+  } as any)
+const authenticatedOrgSlugmodulesCommunicationChannelsIdRouteRoute =
+  authenticatedOrgSlugmodulesCommunicationChannelsIdRouteRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () =>
+      authenticatedOrgSlugmodulesCommunicationChannelsRouteRoute,
+  } as any)
+const authenticatedOrgSlugmodulesCommunicationChannelsIdIndexRoute =
+  authenticatedOrgSlugmodulesCommunicationChannelsIdIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () =>
+      authenticatedOrgSlugmodulesCommunicationChannelsIdRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -348,46 +213,29 @@ export interface FileRoutesByFullPath {
   '/login': typeof authLoginRoute
   '/signup': typeof authSignupRoute
   '/': typeof publicIndexRoute
-  '/org/$slug': typeof authenticatedOrgSlugmemberRouteRouteWithChildren
+  '/org/$slug': typeof authenticatedOrgSlugRouteRouteWithChildren
   '/accept-invitation/$id': typeof authAcceptInvitationIdRoute
   '/org/new': typeof authenticatedOrgNewRoute
+  '/org/$slug/dashboard': typeof authenticatedOrgSlugDashboardRouteRouteWithChildren
   '/settings/account/notifications': typeof authenticatedSettingsAccountNotificationsRoute
   '/settings/account/preferences': typeof authenticatedSettingsAccountPreferencesRoute
   '/settings/account/profile': typeof authenticatedSettingsAccountProfileRoute
   '/settings/account/security': typeof authenticatedSettingsAccountSecurityRoute
   '/settings/account/sessions': typeof authenticatedSettingsAccountSessionsRoute
   '/org/$slug/': typeof authenticatedOrgSlugIndexRoute
-  '/org/$slug/dashboard': typeof authenticatedOrgSlugadminDashboardRouteRouteWithChildren
-  '/org/$slug/manage': typeof authenticatedOrgSlugownerManageRouteRouteWithChildren
-  '/org/$slug/manage/settings': typeof authenticatedOrgSlugownerManageSettingsRouteRouteWithChildren
-  '/org/$slug/dashboard/': typeof authenticatedOrgSlugadminDashboardIndexRoute
-  '/org/$slug/team': typeof authenticatedOrgSlugmemberTeamIndexRoute
-  '/org/$slug/manage/': typeof authenticatedOrgSlugownerManageIndexRoute
-  '/org/$slug/communication/channels': typeof authenticatedOrgSlugmemberbaseModulesCommunicationChannelsRouteRouteWithChildren
-  '/org/$slug/dashboard/attendance/analytics': typeof authenticatedOrgSlugadminDashboardAttendanceAnalyticsRoute
-  '/org/$slug/attendance/analytics': typeof authenticatedOrgSlugmemberbaseModulesAttendanceAnalyticsRoute
-  '/org/$slug/manage/settings/appearance': typeof authenticatedOrgSlugownerManageSettingsAppearanceRoute
-  '/org/$slug/manage/settings/billing': typeof authenticatedOrgSlugownerManageSettingsBillingRoute
-  '/org/$slug/manage/settings/danger-zone': typeof authenticatedOrgSlugownerManageSettingsDangerZoneRoute
-  '/org/$slug/manage/settings/data': typeof authenticatedOrgSlugownerManageSettingsDataRoute
-  '/org/$slug/manage/settings/integrations': typeof authenticatedOrgSlugownerManageSettingsIntegrationsRoute
-  '/org/$slug/manage/settings/members': typeof authenticatedOrgSlugownerManageSettingsMembersRoute
-  '/org/$slug/manage/settings/notifications': typeof authenticatedOrgSlugownerManageSettingsNotificationsRoute
-  '/org/$slug/manage/settings/security': typeof authenticatedOrgSlugownerManageSettingsSecurityRoute
-  '/org/$slug/dashboard/attendance': typeof authenticatedOrgSlugadminDashboardAttendanceIndexRoute
-  '/org/$slug/dashboard/members': typeof authenticatedOrgSlugadminDashboardMembersIndexRoute
-  '/org/$slug/dashboard/teams': typeof authenticatedOrgSlugadminDashboardTeamsIndexRoute
-  '/org/$slug/attendance': typeof authenticatedOrgSlugmemberbaseModulesAttendanceIndexRoute
-  '/org/$slug/team/$id': typeof authenticatedOrgSlugmemberTeamIdIndexRoute
-  '/org/$slug/manage/settings/': typeof authenticatedOrgSlugownerManageSettingsIndexRoute
-  '/org/$slug/communication/channels/$id': typeof authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIdRouteRouteWithChildren
-  '/org/$slug/dashboard/communication/channels': typeof authenticatedOrgSlugadminDashboardCommunicationChannelsIndexRoute
-  '/org/$slug/communication/channels/': typeof authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIndexRoute
-  '/org/$slug/team/$id/module': typeof authenticatedOrgSlugmemberTeamIdModuleIndexRoute
-  '/org/$slug/communication/channels/$id/': typeof authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIdIndexRoute
-  '/org/$slug/team/$id/module/$slug': typeof authenticatedOrgSlugmemberTeamIdModuleSlugIndexRoute
-  '/org/$slug/team/$id/module/$slug/feature': typeof authenticatedOrgSlugmemberTeamIdModuleSlugFeatureIndexRoute
-  '/org/$slug/team/$id/module/$slug/feature/$slug': typeof authenticatedOrgSlugmemberTeamIdModuleSlugFeatureSlugIndexRoute
+  '/org/$slug/dashboard/': typeof authenticatedOrgSlugDashboardIndexRoute
+  '/org/$slug/manage': typeof authenticatedOrgSlugManageIndexRoute
+  '/org/$slug/communication/channels': typeof authenticatedOrgSlugmodulesCommunicationChannelsRouteRouteWithChildren
+  '/org/$slug/attendance/analytics': typeof authenticatedOrgSlugmodulesAttendanceAnalyticsRoute
+  '/org/$slug/dashboard/attendance/analytics': typeof authenticatedOrgSlugDashboardAttendanceAnalyticsRoute
+  '/org/$slug/attendance': typeof authenticatedOrgSlugmodulesAttendanceIndexRoute
+  '/org/$slug/dashboard/attendance': typeof authenticatedOrgSlugDashboardAttendanceIndexRoute
+  '/org/$slug/dashboard/members': typeof authenticatedOrgSlugDashboardMembersIndexRoute
+  '/org/$slug/dashboard/teams': typeof authenticatedOrgSlugDashboardTeamsIndexRoute
+  '/org/$slug/communication/channels/$id': typeof authenticatedOrgSlugmodulesCommunicationChannelsIdRouteRouteWithChildren
+  '/org/$slug/communication/channels/': typeof authenticatedOrgSlugmodulesCommunicationChannelsIndexRoute
+  '/org/$slug/dashboard/communication/channels': typeof authenticatedOrgSlugDashboardCommunicationChannelsIndexRoute
+  '/org/$slug/communication/channels/$id/': typeof authenticatedOrgSlugmodulesCommunicationChannelsIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/settings': typeof authenticatedSettingsRouteRouteWithChildren
@@ -396,38 +244,23 @@ export interface FileRoutesByTo {
   '/': typeof publicIndexRoute
   '/accept-invitation/$id': typeof authAcceptInvitationIdRoute
   '/org/new': typeof authenticatedOrgNewRoute
-  '/org/$slug': typeof authenticatedOrgSlugIndexRoute
   '/settings/account/notifications': typeof authenticatedSettingsAccountNotificationsRoute
   '/settings/account/preferences': typeof authenticatedSettingsAccountPreferencesRoute
   '/settings/account/profile': typeof authenticatedSettingsAccountProfileRoute
   '/settings/account/security': typeof authenticatedSettingsAccountSecurityRoute
   '/settings/account/sessions': typeof authenticatedSettingsAccountSessionsRoute
-  '/org/$slug/dashboard': typeof authenticatedOrgSlugadminDashboardIndexRoute
-  '/org/$slug/team': typeof authenticatedOrgSlugmemberTeamIndexRoute
-  '/org/$slug/manage': typeof authenticatedOrgSlugownerManageIndexRoute
-  '/org/$slug/dashboard/attendance/analytics': typeof authenticatedOrgSlugadminDashboardAttendanceAnalyticsRoute
-  '/org/$slug/attendance/analytics': typeof authenticatedOrgSlugmemberbaseModulesAttendanceAnalyticsRoute
-  '/org/$slug/manage/settings/appearance': typeof authenticatedOrgSlugownerManageSettingsAppearanceRoute
-  '/org/$slug/manage/settings/billing': typeof authenticatedOrgSlugownerManageSettingsBillingRoute
-  '/org/$slug/manage/settings/danger-zone': typeof authenticatedOrgSlugownerManageSettingsDangerZoneRoute
-  '/org/$slug/manage/settings/data': typeof authenticatedOrgSlugownerManageSettingsDataRoute
-  '/org/$slug/manage/settings/integrations': typeof authenticatedOrgSlugownerManageSettingsIntegrationsRoute
-  '/org/$slug/manage/settings/members': typeof authenticatedOrgSlugownerManageSettingsMembersRoute
-  '/org/$slug/manage/settings/notifications': typeof authenticatedOrgSlugownerManageSettingsNotificationsRoute
-  '/org/$slug/manage/settings/security': typeof authenticatedOrgSlugownerManageSettingsSecurityRoute
-  '/org/$slug/dashboard/attendance': typeof authenticatedOrgSlugadminDashboardAttendanceIndexRoute
-  '/org/$slug/dashboard/members': typeof authenticatedOrgSlugadminDashboardMembersIndexRoute
-  '/org/$slug/dashboard/teams': typeof authenticatedOrgSlugadminDashboardTeamsIndexRoute
-  '/org/$slug/attendance': typeof authenticatedOrgSlugmemberbaseModulesAttendanceIndexRoute
-  '/org/$slug/team/$id': typeof authenticatedOrgSlugmemberTeamIdIndexRoute
-  '/org/$slug/manage/settings': typeof authenticatedOrgSlugownerManageSettingsIndexRoute
-  '/org/$slug/dashboard/communication/channels': typeof authenticatedOrgSlugadminDashboardCommunicationChannelsIndexRoute
-  '/org/$slug/communication/channels': typeof authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIndexRoute
-  '/org/$slug/team/$id/module': typeof authenticatedOrgSlugmemberTeamIdModuleIndexRoute
-  '/org/$slug/communication/channels/$id': typeof authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIdIndexRoute
-  '/org/$slug/team/$id/module/$slug': typeof authenticatedOrgSlugmemberTeamIdModuleSlugIndexRoute
-  '/org/$slug/team/$id/module/$slug/feature': typeof authenticatedOrgSlugmemberTeamIdModuleSlugFeatureIndexRoute
-  '/org/$slug/team/$id/module/$slug/feature/$slug': typeof authenticatedOrgSlugmemberTeamIdModuleSlugFeatureSlugIndexRoute
+  '/org/$slug': typeof authenticatedOrgSlugIndexRoute
+  '/org/$slug/dashboard': typeof authenticatedOrgSlugDashboardIndexRoute
+  '/org/$slug/manage': typeof authenticatedOrgSlugManageIndexRoute
+  '/org/$slug/attendance/analytics': typeof authenticatedOrgSlugmodulesAttendanceAnalyticsRoute
+  '/org/$slug/dashboard/attendance/analytics': typeof authenticatedOrgSlugDashboardAttendanceAnalyticsRoute
+  '/org/$slug/attendance': typeof authenticatedOrgSlugmodulesAttendanceIndexRoute
+  '/org/$slug/dashboard/attendance': typeof authenticatedOrgSlugDashboardAttendanceIndexRoute
+  '/org/$slug/dashboard/members': typeof authenticatedOrgSlugDashboardMembersIndexRoute
+  '/org/$slug/dashboard/teams': typeof authenticatedOrgSlugDashboardTeamsIndexRoute
+  '/org/$slug/communication/channels': typeof authenticatedOrgSlugmodulesCommunicationChannelsIndexRoute
+  '/org/$slug/dashboard/communication/channels': typeof authenticatedOrgSlugDashboardCommunicationChannelsIndexRoute
+  '/org/$slug/communication/channels/$id': typeof authenticatedOrgSlugmodulesCommunicationChannelsIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -440,44 +273,26 @@ export interface FileRoutesById {
   '/(authenticated)/org/$slug': typeof authenticatedOrgSlugRouteRouteWithChildren
   '/(auth)/accept-invitation/$id': typeof authAcceptInvitationIdRoute
   '/(authenticated)/org/new': typeof authenticatedOrgNewRoute
-  '/(authenticated)/org/$slug/(member)': typeof authenticatedOrgSlugmemberRouteRouteWithChildren
+  '/(authenticated)/org/$slug/dashboard': typeof authenticatedOrgSlugDashboardRouteRouteWithChildren
   '/(authenticated)/settings/account/notifications': typeof authenticatedSettingsAccountNotificationsRoute
   '/(authenticated)/settings/account/preferences': typeof authenticatedSettingsAccountPreferencesRoute
   '/(authenticated)/settings/account/profile': typeof authenticatedSettingsAccountProfileRoute
   '/(authenticated)/settings/account/security': typeof authenticatedSettingsAccountSecurityRoute
   '/(authenticated)/settings/account/sessions': typeof authenticatedSettingsAccountSessionsRoute
   '/(authenticated)/org/$slug/': typeof authenticatedOrgSlugIndexRoute
-  '/(authenticated)/org/$slug/(admin)/dashboard': typeof authenticatedOrgSlugadminDashboardRouteRouteWithChildren
-  '/(authenticated)/org/$slug/(owner)/manage': typeof authenticatedOrgSlugownerManageRouteRouteWithChildren
-  '/(authenticated)/org/$slug/(owner)/manage/settings': typeof authenticatedOrgSlugownerManageSettingsRouteRouteWithChildren
-  '/(authenticated)/org/$slug/(admin)/dashboard/': typeof authenticatedOrgSlugadminDashboardIndexRoute
-  '/(authenticated)/org/$slug/(member)/team/': typeof authenticatedOrgSlugmemberTeamIndexRoute
-  '/(authenticated)/org/$slug/(owner)/manage/': typeof authenticatedOrgSlugownerManageIndexRoute
-  '/(authenticated)/org/$slug/(member)/(base-modules)/communication/channels': typeof authenticatedOrgSlugmemberbaseModulesCommunicationChannelsRouteRouteWithChildren
-  '/(authenticated)/org/$slug/(admin)/dashboard/attendance/analytics': typeof authenticatedOrgSlugadminDashboardAttendanceAnalyticsRoute
-  '/(authenticated)/org/$slug/(member)/(base-modules)/attendance/analytics': typeof authenticatedOrgSlugmemberbaseModulesAttendanceAnalyticsRoute
-  '/(authenticated)/org/$slug/(owner)/manage/settings/appearance': typeof authenticatedOrgSlugownerManageSettingsAppearanceRoute
-  '/(authenticated)/org/$slug/(owner)/manage/settings/billing': typeof authenticatedOrgSlugownerManageSettingsBillingRoute
-  '/(authenticated)/org/$slug/(owner)/manage/settings/danger-zone': typeof authenticatedOrgSlugownerManageSettingsDangerZoneRoute
-  '/(authenticated)/org/$slug/(owner)/manage/settings/data': typeof authenticatedOrgSlugownerManageSettingsDataRoute
-  '/(authenticated)/org/$slug/(owner)/manage/settings/integrations': typeof authenticatedOrgSlugownerManageSettingsIntegrationsRoute
-  '/(authenticated)/org/$slug/(owner)/manage/settings/members': typeof authenticatedOrgSlugownerManageSettingsMembersRoute
-  '/(authenticated)/org/$slug/(owner)/manage/settings/notifications': typeof authenticatedOrgSlugownerManageSettingsNotificationsRoute
-  '/(authenticated)/org/$slug/(owner)/manage/settings/security': typeof authenticatedOrgSlugownerManageSettingsSecurityRoute
-  '/(authenticated)/org/$slug/(admin)/dashboard/attendance/': typeof authenticatedOrgSlugadminDashboardAttendanceIndexRoute
-  '/(authenticated)/org/$slug/(admin)/dashboard/members/': typeof authenticatedOrgSlugadminDashboardMembersIndexRoute
-  '/(authenticated)/org/$slug/(admin)/dashboard/teams/': typeof authenticatedOrgSlugadminDashboardTeamsIndexRoute
-  '/(authenticated)/org/$slug/(member)/(base-modules)/attendance/': typeof authenticatedOrgSlugmemberbaseModulesAttendanceIndexRoute
-  '/(authenticated)/org/$slug/(member)/team/$id/': typeof authenticatedOrgSlugmemberTeamIdIndexRoute
-  '/(authenticated)/org/$slug/(owner)/manage/settings/': typeof authenticatedOrgSlugownerManageSettingsIndexRoute
-  '/(authenticated)/org/$slug/(member)/(base-modules)/communication/channels/$id': typeof authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIdRouteRouteWithChildren
-  '/(authenticated)/org/$slug/(admin)/dashboard/communication/channels/': typeof authenticatedOrgSlugadminDashboardCommunicationChannelsIndexRoute
-  '/(authenticated)/org/$slug/(member)/(base-modules)/communication/channels/': typeof authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIndexRoute
-  '/(authenticated)/org/$slug/(member)/team/$id/module/': typeof authenticatedOrgSlugmemberTeamIdModuleIndexRoute
-  '/(authenticated)/org/$slug/(member)/(base-modules)/communication/channels/$id/': typeof authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIdIndexRoute
-  '/(authenticated)/org/$slug/(member)/team/$id/module/$slug/': typeof authenticatedOrgSlugmemberTeamIdModuleSlugIndexRoute
-  '/(authenticated)/org/$slug/(member)/team/$id/module/$slug/feature/': typeof authenticatedOrgSlugmemberTeamIdModuleSlugFeatureIndexRoute
-  '/(authenticated)/org/$slug/(member)/team/$id/module/$slug/feature/$slug/': typeof authenticatedOrgSlugmemberTeamIdModuleSlugFeatureSlugIndexRoute
+  '/(authenticated)/org/$slug/dashboard/': typeof authenticatedOrgSlugDashboardIndexRoute
+  '/(authenticated)/org/$slug/manage/': typeof authenticatedOrgSlugManageIndexRoute
+  '/(authenticated)/org/$slug/(modules)/communication/channels': typeof authenticatedOrgSlugmodulesCommunicationChannelsRouteRouteWithChildren
+  '/(authenticated)/org/$slug/(modules)/attendance/analytics': typeof authenticatedOrgSlugmodulesAttendanceAnalyticsRoute
+  '/(authenticated)/org/$slug/dashboard/attendance/analytics': typeof authenticatedOrgSlugDashboardAttendanceAnalyticsRoute
+  '/(authenticated)/org/$slug/(modules)/attendance/': typeof authenticatedOrgSlugmodulesAttendanceIndexRoute
+  '/(authenticated)/org/$slug/dashboard/attendance/': typeof authenticatedOrgSlugDashboardAttendanceIndexRoute
+  '/(authenticated)/org/$slug/dashboard/members/': typeof authenticatedOrgSlugDashboardMembersIndexRoute
+  '/(authenticated)/org/$slug/dashboard/teams/': typeof authenticatedOrgSlugDashboardTeamsIndexRoute
+  '/(authenticated)/org/$slug/(modules)/communication/channels/$id': typeof authenticatedOrgSlugmodulesCommunicationChannelsIdRouteRouteWithChildren
+  '/(authenticated)/org/$slug/(modules)/communication/channels/': typeof authenticatedOrgSlugmodulesCommunicationChannelsIndexRoute
+  '/(authenticated)/org/$slug/dashboard/communication/channels/': typeof authenticatedOrgSlugDashboardCommunicationChannelsIndexRoute
+  '/(authenticated)/org/$slug/(modules)/communication/channels/$id/': typeof authenticatedOrgSlugmodulesCommunicationChannelsIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -489,43 +304,26 @@ export interface FileRouteTypes {
     | '/org/$slug'
     | '/accept-invitation/$id'
     | '/org/new'
+    | '/org/$slug/dashboard'
     | '/settings/account/notifications'
     | '/settings/account/preferences'
     | '/settings/account/profile'
     | '/settings/account/security'
     | '/settings/account/sessions'
     | '/org/$slug/'
-    | '/org/$slug/dashboard'
-    | '/org/$slug/manage'
-    | '/org/$slug/manage/settings'
     | '/org/$slug/dashboard/'
-    | '/org/$slug/team'
-    | '/org/$slug/manage/'
+    | '/org/$slug/manage'
     | '/org/$slug/communication/channels'
-    | '/org/$slug/dashboard/attendance/analytics'
     | '/org/$slug/attendance/analytics'
-    | '/org/$slug/manage/settings/appearance'
-    | '/org/$slug/manage/settings/billing'
-    | '/org/$slug/manage/settings/danger-zone'
-    | '/org/$slug/manage/settings/data'
-    | '/org/$slug/manage/settings/integrations'
-    | '/org/$slug/manage/settings/members'
-    | '/org/$slug/manage/settings/notifications'
-    | '/org/$slug/manage/settings/security'
+    | '/org/$slug/dashboard/attendance/analytics'
+    | '/org/$slug/attendance'
     | '/org/$slug/dashboard/attendance'
     | '/org/$slug/dashboard/members'
     | '/org/$slug/dashboard/teams'
-    | '/org/$slug/attendance'
-    | '/org/$slug/team/$id'
-    | '/org/$slug/manage/settings/'
     | '/org/$slug/communication/channels/$id'
-    | '/org/$slug/dashboard/communication/channels'
     | '/org/$slug/communication/channels/'
-    | '/org/$slug/team/$id/module'
+    | '/org/$slug/dashboard/communication/channels'
     | '/org/$slug/communication/channels/$id/'
-    | '/org/$slug/team/$id/module/$slug'
-    | '/org/$slug/team/$id/module/$slug/feature'
-    | '/org/$slug/team/$id/module/$slug/feature/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/settings'
@@ -534,38 +332,23 @@ export interface FileRouteTypes {
     | '/'
     | '/accept-invitation/$id'
     | '/org/new'
-    | '/org/$slug'
     | '/settings/account/notifications'
     | '/settings/account/preferences'
     | '/settings/account/profile'
     | '/settings/account/security'
     | '/settings/account/sessions'
+    | '/org/$slug'
     | '/org/$slug/dashboard'
-    | '/org/$slug/team'
     | '/org/$slug/manage'
-    | '/org/$slug/dashboard/attendance/analytics'
     | '/org/$slug/attendance/analytics'
-    | '/org/$slug/manage/settings/appearance'
-    | '/org/$slug/manage/settings/billing'
-    | '/org/$slug/manage/settings/danger-zone'
-    | '/org/$slug/manage/settings/data'
-    | '/org/$slug/manage/settings/integrations'
-    | '/org/$slug/manage/settings/members'
-    | '/org/$slug/manage/settings/notifications'
-    | '/org/$slug/manage/settings/security'
+    | '/org/$slug/dashboard/attendance/analytics'
+    | '/org/$slug/attendance'
     | '/org/$slug/dashboard/attendance'
     | '/org/$slug/dashboard/members'
     | '/org/$slug/dashboard/teams'
-    | '/org/$slug/attendance'
-    | '/org/$slug/team/$id'
-    | '/org/$slug/manage/settings'
-    | '/org/$slug/dashboard/communication/channels'
     | '/org/$slug/communication/channels'
-    | '/org/$slug/team/$id/module'
+    | '/org/$slug/dashboard/communication/channels'
     | '/org/$slug/communication/channels/$id'
-    | '/org/$slug/team/$id/module/$slug'
-    | '/org/$slug/team/$id/module/$slug/feature'
-    | '/org/$slug/team/$id/module/$slug/feature/$slug'
   id:
     | '__root__'
     | '/(authenticated)'
@@ -577,44 +360,26 @@ export interface FileRouteTypes {
     | '/(authenticated)/org/$slug'
     | '/(auth)/accept-invitation/$id'
     | '/(authenticated)/org/new'
-    | '/(authenticated)/org/$slug/(member)'
+    | '/(authenticated)/org/$slug/dashboard'
     | '/(authenticated)/settings/account/notifications'
     | '/(authenticated)/settings/account/preferences'
     | '/(authenticated)/settings/account/profile'
     | '/(authenticated)/settings/account/security'
     | '/(authenticated)/settings/account/sessions'
     | '/(authenticated)/org/$slug/'
-    | '/(authenticated)/org/$slug/(admin)/dashboard'
-    | '/(authenticated)/org/$slug/(owner)/manage'
-    | '/(authenticated)/org/$slug/(owner)/manage/settings'
-    | '/(authenticated)/org/$slug/(admin)/dashboard/'
-    | '/(authenticated)/org/$slug/(member)/team/'
-    | '/(authenticated)/org/$slug/(owner)/manage/'
-    | '/(authenticated)/org/$slug/(member)/(base-modules)/communication/channels'
-    | '/(authenticated)/org/$slug/(admin)/dashboard/attendance/analytics'
-    | '/(authenticated)/org/$slug/(member)/(base-modules)/attendance/analytics'
-    | '/(authenticated)/org/$slug/(owner)/manage/settings/appearance'
-    | '/(authenticated)/org/$slug/(owner)/manage/settings/billing'
-    | '/(authenticated)/org/$slug/(owner)/manage/settings/danger-zone'
-    | '/(authenticated)/org/$slug/(owner)/manage/settings/data'
-    | '/(authenticated)/org/$slug/(owner)/manage/settings/integrations'
-    | '/(authenticated)/org/$slug/(owner)/manage/settings/members'
-    | '/(authenticated)/org/$slug/(owner)/manage/settings/notifications'
-    | '/(authenticated)/org/$slug/(owner)/manage/settings/security'
-    | '/(authenticated)/org/$slug/(admin)/dashboard/attendance/'
-    | '/(authenticated)/org/$slug/(admin)/dashboard/members/'
-    | '/(authenticated)/org/$slug/(admin)/dashboard/teams/'
-    | '/(authenticated)/org/$slug/(member)/(base-modules)/attendance/'
-    | '/(authenticated)/org/$slug/(member)/team/$id/'
-    | '/(authenticated)/org/$slug/(owner)/manage/settings/'
-    | '/(authenticated)/org/$slug/(member)/(base-modules)/communication/channels/$id'
-    | '/(authenticated)/org/$slug/(admin)/dashboard/communication/channels/'
-    | '/(authenticated)/org/$slug/(member)/(base-modules)/communication/channels/'
-    | '/(authenticated)/org/$slug/(member)/team/$id/module/'
-    | '/(authenticated)/org/$slug/(member)/(base-modules)/communication/channels/$id/'
-    | '/(authenticated)/org/$slug/(member)/team/$id/module/$slug/'
-    | '/(authenticated)/org/$slug/(member)/team/$id/module/$slug/feature/'
-    | '/(authenticated)/org/$slug/(member)/team/$id/module/$slug/feature/$slug/'
+    | '/(authenticated)/org/$slug/dashboard/'
+    | '/(authenticated)/org/$slug/manage/'
+    | '/(authenticated)/org/$slug/(modules)/communication/channels'
+    | '/(authenticated)/org/$slug/(modules)/attendance/analytics'
+    | '/(authenticated)/org/$slug/dashboard/attendance/analytics'
+    | '/(authenticated)/org/$slug/(modules)/attendance/'
+    | '/(authenticated)/org/$slug/dashboard/attendance/'
+    | '/(authenticated)/org/$slug/dashboard/members/'
+    | '/(authenticated)/org/$slug/dashboard/teams/'
+    | '/(authenticated)/org/$slug/(modules)/communication/channels/$id'
+    | '/(authenticated)/org/$slug/(modules)/communication/channels/'
+    | '/(authenticated)/org/$slug/dashboard/communication/channels/'
+    | '/(authenticated)/org/$slug/(modules)/communication/channels/$id/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -732,229 +497,103 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authenticatedSettingsAccountNotificationsRouteImport
       parentRoute: typeof authenticatedSettingsRouteRoute
     }
-    '/(authenticated)/org/$slug/(member)': {
-      id: '/(authenticated)/org/$slug/(member)'
-      path: ''
-      fullPath: '/org/$slug'
-      preLoaderRoute: typeof authenticatedOrgSlugmemberRouteRouteImport
-      parentRoute: typeof authenticatedOrgSlugRouteRoute
-    }
-    '/(authenticated)/org/$slug/(owner)/manage': {
-      id: '/(authenticated)/org/$slug/(owner)/manage'
-      path: '/manage'
-      fullPath: '/org/$slug/manage'
-      preLoaderRoute: typeof authenticatedOrgSlugownerManageRouteRouteImport
-      parentRoute: typeof authenticatedOrgSlugRouteRoute
-    }
-    '/(authenticated)/org/$slug/(admin)/dashboard': {
-      id: '/(authenticated)/org/$slug/(admin)/dashboard'
+    '/(authenticated)/org/$slug/dashboard': {
+      id: '/(authenticated)/org/$slug/dashboard'
       path: '/dashboard'
       fullPath: '/org/$slug/dashboard'
-      preLoaderRoute: typeof authenticatedOrgSlugadminDashboardRouteRouteImport
+      preLoaderRoute: typeof authenticatedOrgSlugDashboardRouteRouteImport
       parentRoute: typeof authenticatedOrgSlugRouteRoute
     }
-    '/(authenticated)/org/$slug/(owner)/manage/': {
-      id: '/(authenticated)/org/$slug/(owner)/manage/'
-      path: '/'
-      fullPath: '/org/$slug/manage/'
-      preLoaderRoute: typeof authenticatedOrgSlugownerManageIndexRouteImport
-      parentRoute: typeof authenticatedOrgSlugownerManageRouteRoute
+    '/(authenticated)/org/$slug/manage/': {
+      id: '/(authenticated)/org/$slug/manage/'
+      path: '/manage'
+      fullPath: '/org/$slug/manage'
+      preLoaderRoute: typeof authenticatedOrgSlugManageIndexRouteImport
+      parentRoute: typeof authenticatedOrgSlugRouteRoute
     }
-    '/(authenticated)/org/$slug/(member)/team/': {
-      id: '/(authenticated)/org/$slug/(member)/team/'
-      path: '/team'
-      fullPath: '/org/$slug/team'
-      preLoaderRoute: typeof authenticatedOrgSlugmemberTeamIndexRouteImport
-      parentRoute: typeof authenticatedOrgSlugmemberRouteRoute
-    }
-    '/(authenticated)/org/$slug/(admin)/dashboard/': {
-      id: '/(authenticated)/org/$slug/(admin)/dashboard/'
+    '/(authenticated)/org/$slug/dashboard/': {
+      id: '/(authenticated)/org/$slug/dashboard/'
       path: '/'
       fullPath: '/org/$slug/dashboard/'
-      preLoaderRoute: typeof authenticatedOrgSlugadminDashboardIndexRouteImport
-      parentRoute: typeof authenticatedOrgSlugadminDashboardRouteRoute
+      preLoaderRoute: typeof authenticatedOrgSlugDashboardIndexRouteImport
+      parentRoute: typeof authenticatedOrgSlugDashboardRouteRoute
     }
-    '/(authenticated)/org/$slug/(owner)/manage/settings': {
-      id: '/(authenticated)/org/$slug/(owner)/manage/settings'
-      path: '/settings'
-      fullPath: '/org/$slug/manage/settings'
-      preLoaderRoute: typeof authenticatedOrgSlugownerManageSettingsRouteRouteImport
-      parentRoute: typeof authenticatedOrgSlugownerManageRouteRoute
-    }
-    '/(authenticated)/org/$slug/(owner)/manage/settings/': {
-      id: '/(authenticated)/org/$slug/(owner)/manage/settings/'
-      path: '/'
-      fullPath: '/org/$slug/manage/settings/'
-      preLoaderRoute: typeof authenticatedOrgSlugownerManageSettingsIndexRouteImport
-      parentRoute: typeof authenticatedOrgSlugownerManageSettingsRouteRoute
-    }
-    '/(authenticated)/org/$slug/(member)/team/$id/': {
-      id: '/(authenticated)/org/$slug/(member)/team/$id/'
-      path: '/team/$id'
-      fullPath: '/org/$slug/team/$id'
-      preLoaderRoute: typeof authenticatedOrgSlugmemberTeamIdIndexRouteImport
-      parentRoute: typeof authenticatedOrgSlugmemberRouteRoute
-    }
-    '/(authenticated)/org/$slug/(member)/(base-modules)/attendance/': {
-      id: '/(authenticated)/org/$slug/(member)/(base-modules)/attendance/'
-      path: '/attendance'
-      fullPath: '/org/$slug/attendance'
-      preLoaderRoute: typeof authenticatedOrgSlugmemberbaseModulesAttendanceIndexRouteImport
-      parentRoute: typeof authenticatedOrgSlugmemberRouteRoute
-    }
-    '/(authenticated)/org/$slug/(admin)/dashboard/teams/': {
-      id: '/(authenticated)/org/$slug/(admin)/dashboard/teams/'
+    '/(authenticated)/org/$slug/dashboard/teams/': {
+      id: '/(authenticated)/org/$slug/dashboard/teams/'
       path: '/teams'
       fullPath: '/org/$slug/dashboard/teams'
-      preLoaderRoute: typeof authenticatedOrgSlugadminDashboardTeamsIndexRouteImport
-      parentRoute: typeof authenticatedOrgSlugadminDashboardRouteRoute
+      preLoaderRoute: typeof authenticatedOrgSlugDashboardTeamsIndexRouteImport
+      parentRoute: typeof authenticatedOrgSlugDashboardRouteRoute
     }
-    '/(authenticated)/org/$slug/(admin)/dashboard/members/': {
-      id: '/(authenticated)/org/$slug/(admin)/dashboard/members/'
+    '/(authenticated)/org/$slug/dashboard/members/': {
+      id: '/(authenticated)/org/$slug/dashboard/members/'
       path: '/members'
       fullPath: '/org/$slug/dashboard/members'
-      preLoaderRoute: typeof authenticatedOrgSlugadminDashboardMembersIndexRouteImport
-      parentRoute: typeof authenticatedOrgSlugadminDashboardRouteRoute
+      preLoaderRoute: typeof authenticatedOrgSlugDashboardMembersIndexRouteImport
+      parentRoute: typeof authenticatedOrgSlugDashboardRouteRoute
     }
-    '/(authenticated)/org/$slug/(admin)/dashboard/attendance/': {
-      id: '/(authenticated)/org/$slug/(admin)/dashboard/attendance/'
+    '/(authenticated)/org/$slug/dashboard/attendance/': {
+      id: '/(authenticated)/org/$slug/dashboard/attendance/'
       path: '/attendance'
       fullPath: '/org/$slug/dashboard/attendance'
-      preLoaderRoute: typeof authenticatedOrgSlugadminDashboardAttendanceIndexRouteImport
-      parentRoute: typeof authenticatedOrgSlugadminDashboardRouteRoute
+      preLoaderRoute: typeof authenticatedOrgSlugDashboardAttendanceIndexRouteImport
+      parentRoute: typeof authenticatedOrgSlugDashboardRouteRoute
     }
-    '/(authenticated)/org/$slug/(owner)/manage/settings/security': {
-      id: '/(authenticated)/org/$slug/(owner)/manage/settings/security'
-      path: '/security'
-      fullPath: '/org/$slug/manage/settings/security'
-      preLoaderRoute: typeof authenticatedOrgSlugownerManageSettingsSecurityRouteImport
-      parentRoute: typeof authenticatedOrgSlugownerManageSettingsRouteRoute
+    '/(authenticated)/org/$slug/(modules)/attendance/': {
+      id: '/(authenticated)/org/$slug/(modules)/attendance/'
+      path: '/attendance'
+      fullPath: '/org/$slug/attendance'
+      preLoaderRoute: typeof authenticatedOrgSlugmodulesAttendanceIndexRouteImport
+      parentRoute: typeof authenticatedOrgSlugRouteRoute
     }
-    '/(authenticated)/org/$slug/(owner)/manage/settings/notifications': {
-      id: '/(authenticated)/org/$slug/(owner)/manage/settings/notifications'
-      path: '/notifications'
-      fullPath: '/org/$slug/manage/settings/notifications'
-      preLoaderRoute: typeof authenticatedOrgSlugownerManageSettingsNotificationsRouteImport
-      parentRoute: typeof authenticatedOrgSlugownerManageSettingsRouteRoute
-    }
-    '/(authenticated)/org/$slug/(owner)/manage/settings/members': {
-      id: '/(authenticated)/org/$slug/(owner)/manage/settings/members'
-      path: '/members'
-      fullPath: '/org/$slug/manage/settings/members'
-      preLoaderRoute: typeof authenticatedOrgSlugownerManageSettingsMembersRouteImport
-      parentRoute: typeof authenticatedOrgSlugownerManageSettingsRouteRoute
-    }
-    '/(authenticated)/org/$slug/(owner)/manage/settings/integrations': {
-      id: '/(authenticated)/org/$slug/(owner)/manage/settings/integrations'
-      path: '/integrations'
-      fullPath: '/org/$slug/manage/settings/integrations'
-      preLoaderRoute: typeof authenticatedOrgSlugownerManageSettingsIntegrationsRouteImport
-      parentRoute: typeof authenticatedOrgSlugownerManageSettingsRouteRoute
-    }
-    '/(authenticated)/org/$slug/(owner)/manage/settings/data': {
-      id: '/(authenticated)/org/$slug/(owner)/manage/settings/data'
-      path: '/data'
-      fullPath: '/org/$slug/manage/settings/data'
-      preLoaderRoute: typeof authenticatedOrgSlugownerManageSettingsDataRouteImport
-      parentRoute: typeof authenticatedOrgSlugownerManageSettingsRouteRoute
-    }
-    '/(authenticated)/org/$slug/(owner)/manage/settings/danger-zone': {
-      id: '/(authenticated)/org/$slug/(owner)/manage/settings/danger-zone'
-      path: '/danger-zone'
-      fullPath: '/org/$slug/manage/settings/danger-zone'
-      preLoaderRoute: typeof authenticatedOrgSlugownerManageSettingsDangerZoneRouteImport
-      parentRoute: typeof authenticatedOrgSlugownerManageSettingsRouteRoute
-    }
-    '/(authenticated)/org/$slug/(owner)/manage/settings/billing': {
-      id: '/(authenticated)/org/$slug/(owner)/manage/settings/billing'
-      path: '/billing'
-      fullPath: '/org/$slug/manage/settings/billing'
-      preLoaderRoute: typeof authenticatedOrgSlugownerManageSettingsBillingRouteImport
-      parentRoute: typeof authenticatedOrgSlugownerManageSettingsRouteRoute
-    }
-    '/(authenticated)/org/$slug/(owner)/manage/settings/appearance': {
-      id: '/(authenticated)/org/$slug/(owner)/manage/settings/appearance'
-      path: '/appearance'
-      fullPath: '/org/$slug/manage/settings/appearance'
-      preLoaderRoute: typeof authenticatedOrgSlugownerManageSettingsAppearanceRouteImport
-      parentRoute: typeof authenticatedOrgSlugownerManageSettingsRouteRoute
-    }
-    '/(authenticated)/org/$slug/(member)/(base-modules)/attendance/analytics': {
-      id: '/(authenticated)/org/$slug/(member)/(base-modules)/attendance/analytics'
-      path: '/attendance/analytics'
-      fullPath: '/org/$slug/attendance/analytics'
-      preLoaderRoute: typeof authenticatedOrgSlugmemberbaseModulesAttendanceAnalyticsRouteImport
-      parentRoute: typeof authenticatedOrgSlugmemberRouteRoute
-    }
-    '/(authenticated)/org/$slug/(admin)/dashboard/attendance/analytics': {
-      id: '/(authenticated)/org/$slug/(admin)/dashboard/attendance/analytics'
+    '/(authenticated)/org/$slug/dashboard/attendance/analytics': {
+      id: '/(authenticated)/org/$slug/dashboard/attendance/analytics'
       path: '/attendance/analytics'
       fullPath: '/org/$slug/dashboard/attendance/analytics'
-      preLoaderRoute: typeof authenticatedOrgSlugadminDashboardAttendanceAnalyticsRouteImport
-      parentRoute: typeof authenticatedOrgSlugadminDashboardRouteRoute
+      preLoaderRoute: typeof authenticatedOrgSlugDashboardAttendanceAnalyticsRouteImport
+      parentRoute: typeof authenticatedOrgSlugDashboardRouteRoute
     }
-    '/(authenticated)/org/$slug/(member)/(base-modules)/communication/channels': {
-      id: '/(authenticated)/org/$slug/(member)/(base-modules)/communication/channels'
+    '/(authenticated)/org/$slug/(modules)/attendance/analytics': {
+      id: '/(authenticated)/org/$slug/(modules)/attendance/analytics'
+      path: '/attendance/analytics'
+      fullPath: '/org/$slug/attendance/analytics'
+      preLoaderRoute: typeof authenticatedOrgSlugmodulesAttendanceAnalyticsRouteImport
+      parentRoute: typeof authenticatedOrgSlugRouteRoute
+    }
+    '/(authenticated)/org/$slug/(modules)/communication/channels': {
+      id: '/(authenticated)/org/$slug/(modules)/communication/channels'
       path: '/communication/channels'
       fullPath: '/org/$slug/communication/channels'
-      preLoaderRoute: typeof authenticatedOrgSlugmemberbaseModulesCommunicationChannelsRouteRouteImport
-      parentRoute: typeof authenticatedOrgSlugmemberRouteRoute
+      preLoaderRoute: typeof authenticatedOrgSlugmodulesCommunicationChannelsRouteRouteImport
+      parentRoute: typeof authenticatedOrgSlugRouteRoute
     }
-    '/(authenticated)/org/$slug/(member)/team/$id/module/': {
-      id: '/(authenticated)/org/$slug/(member)/team/$id/module/'
-      path: '/team/$id/module'
-      fullPath: '/org/$slug/team/$id/module'
-      preLoaderRoute: typeof authenticatedOrgSlugmemberTeamIdModuleIndexRouteImport
-      parentRoute: typeof authenticatedOrgSlugmemberRouteRoute
-    }
-    '/(authenticated)/org/$slug/(member)/(base-modules)/communication/channels/': {
-      id: '/(authenticated)/org/$slug/(member)/(base-modules)/communication/channels/'
-      path: '/'
-      fullPath: '/org/$slug/communication/channels/'
-      preLoaderRoute: typeof authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIndexRouteImport
-      parentRoute: typeof authenticatedOrgSlugmemberbaseModulesCommunicationChannelsRouteRoute
-    }
-    '/(authenticated)/org/$slug/(admin)/dashboard/communication/channels/': {
-      id: '/(authenticated)/org/$slug/(admin)/dashboard/communication/channels/'
+    '/(authenticated)/org/$slug/dashboard/communication/channels/': {
+      id: '/(authenticated)/org/$slug/dashboard/communication/channels/'
       path: '/communication/channels'
       fullPath: '/org/$slug/dashboard/communication/channels'
-      preLoaderRoute: typeof authenticatedOrgSlugadminDashboardCommunicationChannelsIndexRouteImport
-      parentRoute: typeof authenticatedOrgSlugadminDashboardRouteRoute
+      preLoaderRoute: typeof authenticatedOrgSlugDashboardCommunicationChannelsIndexRouteImport
+      parentRoute: typeof authenticatedOrgSlugDashboardRouteRoute
     }
-    '/(authenticated)/org/$slug/(member)/(base-modules)/communication/channels/$id': {
-      id: '/(authenticated)/org/$slug/(member)/(base-modules)/communication/channels/$id'
+    '/(authenticated)/org/$slug/(modules)/communication/channels/': {
+      id: '/(authenticated)/org/$slug/(modules)/communication/channels/'
+      path: '/'
+      fullPath: '/org/$slug/communication/channels/'
+      preLoaderRoute: typeof authenticatedOrgSlugmodulesCommunicationChannelsIndexRouteImport
+      parentRoute: typeof authenticatedOrgSlugmodulesCommunicationChannelsRouteRoute
+    }
+    '/(authenticated)/org/$slug/(modules)/communication/channels/$id': {
+      id: '/(authenticated)/org/$slug/(modules)/communication/channels/$id'
       path: '/$id'
       fullPath: '/org/$slug/communication/channels/$id'
-      preLoaderRoute: typeof authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIdRouteRouteImport
-      parentRoute: typeof authenticatedOrgSlugmemberbaseModulesCommunicationChannelsRouteRoute
+      preLoaderRoute: typeof authenticatedOrgSlugmodulesCommunicationChannelsIdRouteRouteImport
+      parentRoute: typeof authenticatedOrgSlugmodulesCommunicationChannelsRouteRoute
     }
-    '/(authenticated)/org/$slug/(member)/team/$id/module/$slug/': {
-      id: '/(authenticated)/org/$slug/(member)/team/$id/module/$slug/'
-      path: '/team/$id/module/$slug'
-      fullPath: '/org/$slug/team/$id/module/$slug'
-      preLoaderRoute: typeof authenticatedOrgSlugmemberTeamIdModuleSlugIndexRouteImport
-      parentRoute: typeof authenticatedOrgSlugmemberRouteRoute
-    }
-    '/(authenticated)/org/$slug/(member)/(base-modules)/communication/channels/$id/': {
-      id: '/(authenticated)/org/$slug/(member)/(base-modules)/communication/channels/$id/'
+    '/(authenticated)/org/$slug/(modules)/communication/channels/$id/': {
+      id: '/(authenticated)/org/$slug/(modules)/communication/channels/$id/'
       path: '/'
       fullPath: '/org/$slug/communication/channels/$id/'
-      preLoaderRoute: typeof authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIdIndexRouteImport
-      parentRoute: typeof authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIdRouteRoute
-    }
-    '/(authenticated)/org/$slug/(member)/team/$id/module/$slug/feature/': {
-      id: '/(authenticated)/org/$slug/(member)/team/$id/module/$slug/feature/'
-      path: '/team/$id/module/$slug/feature'
-      fullPath: '/org/$slug/team/$id/module/$slug/feature'
-      preLoaderRoute: typeof authenticatedOrgSlugmemberTeamIdModuleSlugFeatureIndexRouteImport
-      parentRoute: typeof authenticatedOrgSlugmemberRouteRoute
-    }
-    '/(authenticated)/org/$slug/(member)/team/$id/module/$slug/feature/$slug/': {
-      id: '/(authenticated)/org/$slug/(member)/team/$id/module/$slug/feature/$slug/'
-      path: '/team/$id/module/$slug/feature/$slug'
-      fullPath: '/org/$slug/team/$id/module/$slug/feature/$slug'
-      preLoaderRoute: typeof authenticatedOrgSlugmemberTeamIdModuleSlugFeatureSlugIndexRouteImport
-      parentRoute: typeof authenticatedOrgSlugmemberRouteRoute
+      preLoaderRoute: typeof authenticatedOrgSlugmodulesCommunicationChannelsIdIndexRouteImport
+      parentRoute: typeof authenticatedOrgSlugmodulesCommunicationChannelsIdRouteRoute
     }
   }
 }
@@ -986,181 +625,90 @@ const authenticatedSettingsRouteRouteWithChildren =
     authenticatedSettingsRouteRouteChildren,
   )
 
-interface authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIdRouteRouteChildren {
-  authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIdIndexRoute: typeof authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIdIndexRoute
+interface authenticatedOrgSlugDashboardRouteRouteChildren {
+  authenticatedOrgSlugDashboardIndexRoute: typeof authenticatedOrgSlugDashboardIndexRoute
+  authenticatedOrgSlugDashboardAttendanceAnalyticsRoute: typeof authenticatedOrgSlugDashboardAttendanceAnalyticsRoute
+  authenticatedOrgSlugDashboardAttendanceIndexRoute: typeof authenticatedOrgSlugDashboardAttendanceIndexRoute
+  authenticatedOrgSlugDashboardMembersIndexRoute: typeof authenticatedOrgSlugDashboardMembersIndexRoute
+  authenticatedOrgSlugDashboardTeamsIndexRoute: typeof authenticatedOrgSlugDashboardTeamsIndexRoute
+  authenticatedOrgSlugDashboardCommunicationChannelsIndexRoute: typeof authenticatedOrgSlugDashboardCommunicationChannelsIndexRoute
 }
 
-const authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIdRouteRouteChildren: authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIdRouteRouteChildren =
+const authenticatedOrgSlugDashboardRouteRouteChildren: authenticatedOrgSlugDashboardRouteRouteChildren =
   {
-    authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIdIndexRoute:
-      authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIdIndexRoute,
+    authenticatedOrgSlugDashboardIndexRoute:
+      authenticatedOrgSlugDashboardIndexRoute,
+    authenticatedOrgSlugDashboardAttendanceAnalyticsRoute:
+      authenticatedOrgSlugDashboardAttendanceAnalyticsRoute,
+    authenticatedOrgSlugDashboardAttendanceIndexRoute:
+      authenticatedOrgSlugDashboardAttendanceIndexRoute,
+    authenticatedOrgSlugDashboardMembersIndexRoute:
+      authenticatedOrgSlugDashboardMembersIndexRoute,
+    authenticatedOrgSlugDashboardTeamsIndexRoute:
+      authenticatedOrgSlugDashboardTeamsIndexRoute,
+    authenticatedOrgSlugDashboardCommunicationChannelsIndexRoute:
+      authenticatedOrgSlugDashboardCommunicationChannelsIndexRoute,
   }
 
-const authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIdRouteRouteWithChildren =
-  authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIdRouteRoute._addFileChildren(
-    authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIdRouteRouteChildren,
+const authenticatedOrgSlugDashboardRouteRouteWithChildren =
+  authenticatedOrgSlugDashboardRouteRoute._addFileChildren(
+    authenticatedOrgSlugDashboardRouteRouteChildren,
   )
 
-interface authenticatedOrgSlugmemberbaseModulesCommunicationChannelsRouteRouteChildren {
-  authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIdRouteRoute: typeof authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIdRouteRouteWithChildren
-  authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIndexRoute: typeof authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIndexRoute
+interface authenticatedOrgSlugmodulesCommunicationChannelsIdRouteRouteChildren {
+  authenticatedOrgSlugmodulesCommunicationChannelsIdIndexRoute: typeof authenticatedOrgSlugmodulesCommunicationChannelsIdIndexRoute
 }
 
-const authenticatedOrgSlugmemberbaseModulesCommunicationChannelsRouteRouteChildren: authenticatedOrgSlugmemberbaseModulesCommunicationChannelsRouteRouteChildren =
+const authenticatedOrgSlugmodulesCommunicationChannelsIdRouteRouteChildren: authenticatedOrgSlugmodulesCommunicationChannelsIdRouteRouteChildren =
   {
-    authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIdRouteRoute:
-      authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIdRouteRouteWithChildren,
-    authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIndexRoute:
-      authenticatedOrgSlugmemberbaseModulesCommunicationChannelsIndexRoute,
+    authenticatedOrgSlugmodulesCommunicationChannelsIdIndexRoute:
+      authenticatedOrgSlugmodulesCommunicationChannelsIdIndexRoute,
   }
 
-const authenticatedOrgSlugmemberbaseModulesCommunicationChannelsRouteRouteWithChildren =
-  authenticatedOrgSlugmemberbaseModulesCommunicationChannelsRouteRoute._addFileChildren(
-    authenticatedOrgSlugmemberbaseModulesCommunicationChannelsRouteRouteChildren,
+const authenticatedOrgSlugmodulesCommunicationChannelsIdRouteRouteWithChildren =
+  authenticatedOrgSlugmodulesCommunicationChannelsIdRouteRoute._addFileChildren(
+    authenticatedOrgSlugmodulesCommunicationChannelsIdRouteRouteChildren,
   )
 
-interface authenticatedOrgSlugmemberRouteRouteChildren {
-  authenticatedOrgSlugmemberTeamIndexRoute: typeof authenticatedOrgSlugmemberTeamIndexRoute
-  authenticatedOrgSlugmemberbaseModulesCommunicationChannelsRouteRoute: typeof authenticatedOrgSlugmemberbaseModulesCommunicationChannelsRouteRouteWithChildren
-  authenticatedOrgSlugmemberbaseModulesAttendanceAnalyticsRoute: typeof authenticatedOrgSlugmemberbaseModulesAttendanceAnalyticsRoute
-  authenticatedOrgSlugmemberbaseModulesAttendanceIndexRoute: typeof authenticatedOrgSlugmemberbaseModulesAttendanceIndexRoute
-  authenticatedOrgSlugmemberTeamIdIndexRoute: typeof authenticatedOrgSlugmemberTeamIdIndexRoute
-  authenticatedOrgSlugmemberTeamIdModuleIndexRoute: typeof authenticatedOrgSlugmemberTeamIdModuleIndexRoute
-  authenticatedOrgSlugmemberTeamIdModuleSlugIndexRoute: typeof authenticatedOrgSlugmemberTeamIdModuleSlugIndexRoute
-  authenticatedOrgSlugmemberTeamIdModuleSlugFeatureIndexRoute: typeof authenticatedOrgSlugmemberTeamIdModuleSlugFeatureIndexRoute
-  authenticatedOrgSlugmemberTeamIdModuleSlugFeatureSlugIndexRoute: typeof authenticatedOrgSlugmemberTeamIdModuleSlugFeatureSlugIndexRoute
+interface authenticatedOrgSlugmodulesCommunicationChannelsRouteRouteChildren {
+  authenticatedOrgSlugmodulesCommunicationChannelsIdRouteRoute: typeof authenticatedOrgSlugmodulesCommunicationChannelsIdRouteRouteWithChildren
+  authenticatedOrgSlugmodulesCommunicationChannelsIndexRoute: typeof authenticatedOrgSlugmodulesCommunicationChannelsIndexRoute
 }
 
-const authenticatedOrgSlugmemberRouteRouteChildren: authenticatedOrgSlugmemberRouteRouteChildren =
+const authenticatedOrgSlugmodulesCommunicationChannelsRouteRouteChildren: authenticatedOrgSlugmodulesCommunicationChannelsRouteRouteChildren =
   {
-    authenticatedOrgSlugmemberTeamIndexRoute:
-      authenticatedOrgSlugmemberTeamIndexRoute,
-    authenticatedOrgSlugmemberbaseModulesCommunicationChannelsRouteRoute:
-      authenticatedOrgSlugmemberbaseModulesCommunicationChannelsRouteRouteWithChildren,
-    authenticatedOrgSlugmemberbaseModulesAttendanceAnalyticsRoute:
-      authenticatedOrgSlugmemberbaseModulesAttendanceAnalyticsRoute,
-    authenticatedOrgSlugmemberbaseModulesAttendanceIndexRoute:
-      authenticatedOrgSlugmemberbaseModulesAttendanceIndexRoute,
-    authenticatedOrgSlugmemberTeamIdIndexRoute:
-      authenticatedOrgSlugmemberTeamIdIndexRoute,
-    authenticatedOrgSlugmemberTeamIdModuleIndexRoute:
-      authenticatedOrgSlugmemberTeamIdModuleIndexRoute,
-    authenticatedOrgSlugmemberTeamIdModuleSlugIndexRoute:
-      authenticatedOrgSlugmemberTeamIdModuleSlugIndexRoute,
-    authenticatedOrgSlugmemberTeamIdModuleSlugFeatureIndexRoute:
-      authenticatedOrgSlugmemberTeamIdModuleSlugFeatureIndexRoute,
-    authenticatedOrgSlugmemberTeamIdModuleSlugFeatureSlugIndexRoute:
-      authenticatedOrgSlugmemberTeamIdModuleSlugFeatureSlugIndexRoute,
+    authenticatedOrgSlugmodulesCommunicationChannelsIdRouteRoute:
+      authenticatedOrgSlugmodulesCommunicationChannelsIdRouteRouteWithChildren,
+    authenticatedOrgSlugmodulesCommunicationChannelsIndexRoute:
+      authenticatedOrgSlugmodulesCommunicationChannelsIndexRoute,
   }
 
-const authenticatedOrgSlugmemberRouteRouteWithChildren =
-  authenticatedOrgSlugmemberRouteRoute._addFileChildren(
-    authenticatedOrgSlugmemberRouteRouteChildren,
-  )
-
-interface authenticatedOrgSlugadminDashboardRouteRouteChildren {
-  authenticatedOrgSlugadminDashboardIndexRoute: typeof authenticatedOrgSlugadminDashboardIndexRoute
-  authenticatedOrgSlugadminDashboardAttendanceAnalyticsRoute: typeof authenticatedOrgSlugadminDashboardAttendanceAnalyticsRoute
-  authenticatedOrgSlugadminDashboardAttendanceIndexRoute: typeof authenticatedOrgSlugadminDashboardAttendanceIndexRoute
-  authenticatedOrgSlugadminDashboardMembersIndexRoute: typeof authenticatedOrgSlugadminDashboardMembersIndexRoute
-  authenticatedOrgSlugadminDashboardTeamsIndexRoute: typeof authenticatedOrgSlugadminDashboardTeamsIndexRoute
-  authenticatedOrgSlugadminDashboardCommunicationChannelsIndexRoute: typeof authenticatedOrgSlugadminDashboardCommunicationChannelsIndexRoute
-}
-
-const authenticatedOrgSlugadminDashboardRouteRouteChildren: authenticatedOrgSlugadminDashboardRouteRouteChildren =
-  {
-    authenticatedOrgSlugadminDashboardIndexRoute:
-      authenticatedOrgSlugadminDashboardIndexRoute,
-    authenticatedOrgSlugadminDashboardAttendanceAnalyticsRoute:
-      authenticatedOrgSlugadminDashboardAttendanceAnalyticsRoute,
-    authenticatedOrgSlugadminDashboardAttendanceIndexRoute:
-      authenticatedOrgSlugadminDashboardAttendanceIndexRoute,
-    authenticatedOrgSlugadminDashboardMembersIndexRoute:
-      authenticatedOrgSlugadminDashboardMembersIndexRoute,
-    authenticatedOrgSlugadminDashboardTeamsIndexRoute:
-      authenticatedOrgSlugadminDashboardTeamsIndexRoute,
-    authenticatedOrgSlugadminDashboardCommunicationChannelsIndexRoute:
-      authenticatedOrgSlugadminDashboardCommunicationChannelsIndexRoute,
-  }
-
-const authenticatedOrgSlugadminDashboardRouteRouteWithChildren =
-  authenticatedOrgSlugadminDashboardRouteRoute._addFileChildren(
-    authenticatedOrgSlugadminDashboardRouteRouteChildren,
-  )
-
-interface authenticatedOrgSlugownerManageSettingsRouteRouteChildren {
-  authenticatedOrgSlugownerManageSettingsAppearanceRoute: typeof authenticatedOrgSlugownerManageSettingsAppearanceRoute
-  authenticatedOrgSlugownerManageSettingsBillingRoute: typeof authenticatedOrgSlugownerManageSettingsBillingRoute
-  authenticatedOrgSlugownerManageSettingsDangerZoneRoute: typeof authenticatedOrgSlugownerManageSettingsDangerZoneRoute
-  authenticatedOrgSlugownerManageSettingsDataRoute: typeof authenticatedOrgSlugownerManageSettingsDataRoute
-  authenticatedOrgSlugownerManageSettingsIntegrationsRoute: typeof authenticatedOrgSlugownerManageSettingsIntegrationsRoute
-  authenticatedOrgSlugownerManageSettingsMembersRoute: typeof authenticatedOrgSlugownerManageSettingsMembersRoute
-  authenticatedOrgSlugownerManageSettingsNotificationsRoute: typeof authenticatedOrgSlugownerManageSettingsNotificationsRoute
-  authenticatedOrgSlugownerManageSettingsSecurityRoute: typeof authenticatedOrgSlugownerManageSettingsSecurityRoute
-  authenticatedOrgSlugownerManageSettingsIndexRoute: typeof authenticatedOrgSlugownerManageSettingsIndexRoute
-}
-
-const authenticatedOrgSlugownerManageSettingsRouteRouteChildren: authenticatedOrgSlugownerManageSettingsRouteRouteChildren =
-  {
-    authenticatedOrgSlugownerManageSettingsAppearanceRoute:
-      authenticatedOrgSlugownerManageSettingsAppearanceRoute,
-    authenticatedOrgSlugownerManageSettingsBillingRoute:
-      authenticatedOrgSlugownerManageSettingsBillingRoute,
-    authenticatedOrgSlugownerManageSettingsDangerZoneRoute:
-      authenticatedOrgSlugownerManageSettingsDangerZoneRoute,
-    authenticatedOrgSlugownerManageSettingsDataRoute:
-      authenticatedOrgSlugownerManageSettingsDataRoute,
-    authenticatedOrgSlugownerManageSettingsIntegrationsRoute:
-      authenticatedOrgSlugownerManageSettingsIntegrationsRoute,
-    authenticatedOrgSlugownerManageSettingsMembersRoute:
-      authenticatedOrgSlugownerManageSettingsMembersRoute,
-    authenticatedOrgSlugownerManageSettingsNotificationsRoute:
-      authenticatedOrgSlugownerManageSettingsNotificationsRoute,
-    authenticatedOrgSlugownerManageSettingsSecurityRoute:
-      authenticatedOrgSlugownerManageSettingsSecurityRoute,
-    authenticatedOrgSlugownerManageSettingsIndexRoute:
-      authenticatedOrgSlugownerManageSettingsIndexRoute,
-  }
-
-const authenticatedOrgSlugownerManageSettingsRouteRouteWithChildren =
-  authenticatedOrgSlugownerManageSettingsRouteRoute._addFileChildren(
-    authenticatedOrgSlugownerManageSettingsRouteRouteChildren,
-  )
-
-interface authenticatedOrgSlugownerManageRouteRouteChildren {
-  authenticatedOrgSlugownerManageSettingsRouteRoute: typeof authenticatedOrgSlugownerManageSettingsRouteRouteWithChildren
-  authenticatedOrgSlugownerManageIndexRoute: typeof authenticatedOrgSlugownerManageIndexRoute
-}
-
-const authenticatedOrgSlugownerManageRouteRouteChildren: authenticatedOrgSlugownerManageRouteRouteChildren =
-  {
-    authenticatedOrgSlugownerManageSettingsRouteRoute:
-      authenticatedOrgSlugownerManageSettingsRouteRouteWithChildren,
-    authenticatedOrgSlugownerManageIndexRoute:
-      authenticatedOrgSlugownerManageIndexRoute,
-  }
-
-const authenticatedOrgSlugownerManageRouteRouteWithChildren =
-  authenticatedOrgSlugownerManageRouteRoute._addFileChildren(
-    authenticatedOrgSlugownerManageRouteRouteChildren,
+const authenticatedOrgSlugmodulesCommunicationChannelsRouteRouteWithChildren =
+  authenticatedOrgSlugmodulesCommunicationChannelsRouteRoute._addFileChildren(
+    authenticatedOrgSlugmodulesCommunicationChannelsRouteRouteChildren,
   )
 
 interface authenticatedOrgSlugRouteRouteChildren {
-  authenticatedOrgSlugmemberRouteRoute: typeof authenticatedOrgSlugmemberRouteRouteWithChildren
+  authenticatedOrgSlugDashboardRouteRoute: typeof authenticatedOrgSlugDashboardRouteRouteWithChildren
   authenticatedOrgSlugIndexRoute: typeof authenticatedOrgSlugIndexRoute
-  authenticatedOrgSlugadminDashboardRouteRoute: typeof authenticatedOrgSlugadminDashboardRouteRouteWithChildren
-  authenticatedOrgSlugownerManageRouteRoute: typeof authenticatedOrgSlugownerManageRouteRouteWithChildren
+  authenticatedOrgSlugManageIndexRoute: typeof authenticatedOrgSlugManageIndexRoute
+  authenticatedOrgSlugmodulesCommunicationChannelsRouteRoute: typeof authenticatedOrgSlugmodulesCommunicationChannelsRouteRouteWithChildren
+  authenticatedOrgSlugmodulesAttendanceAnalyticsRoute: typeof authenticatedOrgSlugmodulesAttendanceAnalyticsRoute
+  authenticatedOrgSlugmodulesAttendanceIndexRoute: typeof authenticatedOrgSlugmodulesAttendanceIndexRoute
 }
 
 const authenticatedOrgSlugRouteRouteChildren: authenticatedOrgSlugRouteRouteChildren =
   {
-    authenticatedOrgSlugmemberRouteRoute:
-      authenticatedOrgSlugmemberRouteRouteWithChildren,
+    authenticatedOrgSlugDashboardRouteRoute:
+      authenticatedOrgSlugDashboardRouteRouteWithChildren,
     authenticatedOrgSlugIndexRoute: authenticatedOrgSlugIndexRoute,
-    authenticatedOrgSlugadminDashboardRouteRoute:
-      authenticatedOrgSlugadminDashboardRouteRouteWithChildren,
-    authenticatedOrgSlugownerManageRouteRoute:
-      authenticatedOrgSlugownerManageRouteRouteWithChildren,
+    authenticatedOrgSlugManageIndexRoute: authenticatedOrgSlugManageIndexRoute,
+    authenticatedOrgSlugmodulesCommunicationChannelsRouteRoute:
+      authenticatedOrgSlugmodulesCommunicationChannelsRouteRouteWithChildren,
+    authenticatedOrgSlugmodulesAttendanceAnalyticsRoute:
+      authenticatedOrgSlugmodulesAttendanceAnalyticsRoute,
+    authenticatedOrgSlugmodulesAttendanceIndexRoute:
+      authenticatedOrgSlugmodulesAttendanceIndexRoute,
   }
 
 const authenticatedOrgSlugRouteRouteWithChildren =

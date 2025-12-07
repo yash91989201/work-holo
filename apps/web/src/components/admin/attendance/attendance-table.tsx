@@ -63,7 +63,7 @@ export function AttendanceTable() {
   });
 
   const searchParams = useSearch({
-    from: "/(authenticated)/org/$slug/(admin)/dashboard/attendance/",
+    from: "/(authenticated)/org/$slug/dashboard/attendance/",
   }) as AttendanceSearch;
 
   const { page = 1, search = "", startDate, endDate, status } = searchParams;

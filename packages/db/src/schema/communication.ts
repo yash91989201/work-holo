@@ -94,7 +94,6 @@ export const channelMemberTable = pgTable(
       .notNull(),
     lastReadAt: timestamp({ withTimezone: true }),
     isMuted: boolean().default(false).notNull(),
-    notificationSettings: json(),
   },
   (table) => [
     uniqueIndex("unique_channel_user").on(table.channelId, table.userId),

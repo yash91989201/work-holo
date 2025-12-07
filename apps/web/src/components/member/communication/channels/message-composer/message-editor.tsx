@@ -461,7 +461,7 @@ export function MessageEditor({
               size="sm"
               title="Bold (Ctrl+B)"
             >
-              <Bold className="h-3.5 w-3.5" />
+              <Bold />
             </Toggle>
 
             <Toggle
@@ -473,7 +473,7 @@ export function MessageEditor({
               size="sm"
               title="Italic (Ctrl+I)"
             >
-              <Italic className="h-3.5 w-3.5" />
+              <Italic />
             </Toggle>
 
             <Toggle
@@ -485,7 +485,7 @@ export function MessageEditor({
               size="sm"
               title="Strikethrough (Ctrl+Shift+S)"
             >
-              <Strikethrough className="h-3.5 w-3.5" />
+              <Strikethrough />
             </Toggle>
 
             <Toggle
@@ -495,7 +495,7 @@ export function MessageEditor({
               size="sm"
               title="Inline Code (Ctrl+E)"
             >
-              <Code className="h-3.5 w-3.5" />
+              <Code />
             </Toggle>
           </div>
 
@@ -512,7 +512,7 @@ export function MessageEditor({
               size="sm"
               title="Bullet List (Ctrl+Shift+8)"
             >
-              <List className="h-3.5 w-3.5" />
+              <List />
             </Toggle>
 
             <Toggle
@@ -524,7 +524,7 @@ export function MessageEditor({
               size="sm"
               title="Ordered List (Ctrl+Shift+7)"
             >
-              <ListOrdered className="h-3.5 w-3.5" />
+              <ListOrdered />
             </Toggle>
           </div>
 
@@ -540,7 +540,7 @@ export function MessageEditor({
               size="sm"
               title="Undo (Ctrl+Z)"
             >
-              <Undo className="h-3.5 w-3.5" />
+              <Undo />
             </Toggle>
 
             <Toggle
@@ -551,7 +551,7 @@ export function MessageEditor({
               size="sm"
               title="Redo (Ctrl+Y)"
             >
-              <Redo className="h-3.5 w-3.5" />
+              <Redo />
             </Toggle>
             <Toggle
               aria-label="Clear content"
@@ -559,10 +559,11 @@ export function MessageEditor({
                 editor.chain().focus().clearContent(true).run();
                 onChange("");
               }}
+              pressed={false}
               size="sm"
               title="Clear Content"
             >
-              <Eraser className="h-3.5 w-3.5" />
+              <Eraser />
             </Toggle>
           </div>
 
@@ -583,7 +584,7 @@ export function MessageEditor({
                   size="sm"
                   title="Insert Link (Ctrl+K)"
                 >
-                  <LinkIcon className="h-3.5 w-3.5" />
+                  <LinkIcon />
                 </Toggle>
               </PopoverTrigger>
               <PopoverContent align="start" className="w-80 p-2">
@@ -616,7 +617,7 @@ export function MessageEditor({
                       type="button"
                       variant="ghost"
                     >
-                      <X className="h-3.5 w-3.5" />
+                      <X />
                     </InputGroupButton>
                     <InputGroupButton
                       onClick={handleSaveLink}
@@ -625,7 +626,7 @@ export function MessageEditor({
                       type="button"
                       variant="ghost"
                     >
-                      <ArrowRight className="h-3.5 w-3.5" />
+                      <ArrowRight />
                     </InputGroupButton>
                   </InputGroupAddon>
                 </InputGroup>
@@ -639,7 +640,7 @@ export function MessageEditor({
               size="sm"
               title="Upload Image"
             >
-              <ImageIcon className="h-3.5 w-3.5" />
+              <ImageIcon />
             </Toggle>
           </div>
 
@@ -672,7 +673,6 @@ export function MessageEditor({
                   >
                     <Mic
                       className={cn(
-                        "h-3.5 w-3.5",
                         content.trim().length > 0 && "opacity-50",
                         isRecording && "text-red-500"
                       )}
@@ -696,9 +696,7 @@ export function MessageEditor({
                   title="Add emoji"
                   variant="ghost"
                 >
-                  <SmilePlus
-                    className={cn("h-3.5 w-3.5", hasAudio && "opacity-50")}
-                  />
+                  <SmilePlus className={cn(hasAudio && "opacity-50")} />
                 </Button>
               </PopoverTrigger>
               <PopoverContent align="start" className="w-80 p-0" side="top">
