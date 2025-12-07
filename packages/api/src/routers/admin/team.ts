@@ -9,22 +9,69 @@ import {
 } from "@work-holo/api/lib/schemas/team";
 import { auth } from "@work-holo/auth";
 import { team } from "@work-holo/db/schema/index";
-import { eq } from "drizzle-orm";
+import { and, asc, count, desc, eq, gte, like, lte } from "drizzle-orm";
 import { protectedProcedure } from "../../index";
 
 export const adminTeamRouter = {
   listTeams: protectedProcedure
     .input(ListTeamsInput)
     .output(ListTeamsOutput)
-    .handler(async ({ context: { db, session } }) => {
+    .handler(async ({ input, context: { db, session } }) => {
       const organizationId = session.session.activeOrganizationId;
+
       if (!organizationId)
         throw new ORPCError("BAD_REQUEST", {
           message: "No active organization",
         });
 
+      const { page, limit, search, filters, sorting } = input;
+      const offset = (page - 1) * limit;
+
+      // Build where clause
+      const conditions = [eq(team.organizationId, organizationId)];
+
+      if (search) {
+        conditions.push(like(team.name, `%${search}%`));
+      }
+
+      if (filters?.dateRange) {
+        if (filters.dateRange.from) {
+          conditions.push(gte(team.createdAt, filters.dateRange.from));
+        }
+        if (filters.dateRange.to) {
+          conditions.push(lte(team.createdAt, filters.dateRange.to));
+        }
+      }
+
+      const whereClause =
+        conditions.length > 1 ? and(...conditions) : conditions[0];
+
+      // Build order by
+      // Default sort by createdAt desc if no sorting provided
+      let orderBy = [desc(team.createdAt)];
+
+      if (sorting && sorting.length > 0) {
+        orderBy = sorting.map((sort) => {
+          // We only support sorting by direct team fields for now
+          // Cast sort.id to keyof typeof team but verify it exists
+          // For safety, let's switch on supported sort keys or just allow if it's in team columns
+
+          if (sort.id === "name")
+            return sort.desc ? desc(team.name) : asc(team.name);
+          if (sort.id === "createdAt")
+            return sort.desc ? desc(team.createdAt) : asc(team.createdAt);
+
+          // Fallback
+          return desc(team.createdAt);
+        });
+      }
+
+      // Get Data
       const teams = await db.query.team.findMany({
-        where: eq(team.organizationId, organizationId),
+        where: whereClause,
+        limit,
+        offset,
+        orderBy,
         with: {
           teamMembers: {
             with: {
@@ -34,7 +81,17 @@ export const adminTeamRouter = {
         },
       });
 
-      return { teams };
+      // Get Total Count
+      const totalResult = await db
+        .select({ count: count() })
+        .from(team)
+        .where(whereClause);
+
+      // Using Number() because some drivers return count as string (BigInt)
+      const total = Number(totalResult[0]?.count ?? 0);
+      const pageCount = Math.ceil(total / limit);
+
+      return { teams, total, pageCount };
     }),
 
   addMember: protectedProcedure
@@ -58,7 +115,9 @@ export const adminTeamRouter = {
             addedCount++;
           } catch (error) {
             errors.push(
-              `Failed to add user ${userId}: ${error instanceof Error ? error.message : "Unknown error"}`
+              `Failed to add user ${userId}: ${
+                error instanceof Error ? error.message : "Unknown error"
+              }`
             );
           }
         }
@@ -74,7 +133,9 @@ export const adminTeamRouter = {
           message:
             addedCount === userIds.length
               ? `Successfully added ${addedCount} member(s)`
-              : `Added ${addedCount} of ${userIds.length} member(s). Some failed: ${errors.join(", ")}`,
+              : `Added ${addedCount} of ${
+                  userIds.length
+                } member(s). Some failed: ${errors.join(", ")}`,
           addedCount,
         };
       } catch (error) {
@@ -111,7 +172,9 @@ export const adminTeamRouter = {
             removedCount++;
           } catch (error) {
             errors.push(
-              `Failed to remove user ${userId}: ${error instanceof Error ? error.message : "Unknown error"}`
+              `Failed to remove user ${userId}: ${
+                error instanceof Error ? error.message : "Unknown error"
+              }`
             );
           }
         }
@@ -127,7 +190,9 @@ export const adminTeamRouter = {
           message:
             removedCount === userIds.length
               ? `Successfully removed ${removedCount} member(s)`
-              : `Removed ${removedCount} of ${userIds.length} member(s). Some failed: ${errors.join(", ")}`,
+              : `Removed ${removedCount} of ${
+                  userIds.length
+                } member(s). Some failed: ${errors.join(", ")}`,
           removedCount,
         };
       } catch (error) {

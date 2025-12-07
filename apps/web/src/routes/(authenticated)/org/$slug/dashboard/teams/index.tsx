@@ -14,9 +14,9 @@ function RouteComponent() {
   return (
     <div className="flex h-full flex-col gap-3">
       {/* Header */}
-      <div className="border-b py-4">
+      <div>
         <div className="flex items-center justify-between">
-          <h1 className="mt-2 font-bold text-2xl">Teams Management</h1>
+          <h1 className="font-bold text-xl">Teams Management</h1>
           <div className="flex items-center gap-2">
             <CreateTeamForm />
           </div>
