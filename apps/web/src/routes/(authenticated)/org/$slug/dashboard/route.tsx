@@ -16,7 +16,7 @@ function RouteComponent() {
       </header>
 
       <section className="flex-1 overflow-auto">
-        <div className="container mx-auto py-6">
+        <div className="p-6">
           <Outlet />
         </div>
       </section>
