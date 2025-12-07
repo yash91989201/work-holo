@@ -11,8 +11,10 @@ import {
   SidebarHeader,
   SidebarMenu,
   SidebarRail,
+  SidebarSeparator,
 } from "@/components/ui/sidebar";
 import { NavModules } from "./nav-modules";
+import { NavOps } from "./nav-ops";
 import { NavOrg } from "./nav-org";
 import { NavQuickActions } from "./nav-quick-actions";
 import { NavUser } from "./nav-user";
@@ -31,7 +33,9 @@ export function Sidebar({
       </SidebarHeader>
       <SidebarContent className="gap-0">
         <NavQuickActions />
+        <SidebarSeparator />
         <NavModules />
+        <NavOps />
         <NavOrg />
       </SidebarContent>
       <SidebarFooter>

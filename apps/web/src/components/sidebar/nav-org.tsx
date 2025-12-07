@@ -12,6 +12,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarSeparator,
 } from "@/components/ui/sidebar";
 
 export function NavOrg() {
@@ -37,22 +38,26 @@ export function NavOrg() {
   ]);
 
   return (
-    <SidebarGroup>
-      <SidebarGroupLabel>My Organization</SidebarGroupLabel>
-      <SidebarGroupContent>
-        <SidebarMenu>
-          {items.map((item) => (
-            <SidebarMenuItem key={item.label}>
-              <SidebarMenuButton asChild tooltip={item.label}>
-                <Link {...item}>
-                  {item.icon && <item.icon />}
-                  <span>{item.label}</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
-        </SidebarMenu>
-      </SidebarGroupContent>
-    </SidebarGroup>
+    <>
+      <SidebarSeparator />
+
+      <SidebarGroup>
+        <SidebarGroupLabel>My Organization</SidebarGroupLabel>
+        <SidebarGroupContent>
+          <SidebarMenu>
+            {items.map((item) => (
+              <SidebarMenuItem key={item.label}>
+                <SidebarMenuButton asChild tooltip={item.label}>
+                  <Link {...item}>
+                    {item.icon && <item.icon />}
+                    <span>{item.label}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </SidebarGroupContent>
+      </SidebarGroup>
+    </>
   );
 }

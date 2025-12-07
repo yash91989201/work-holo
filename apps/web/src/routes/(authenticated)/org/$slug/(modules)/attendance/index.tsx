@@ -18,16 +18,12 @@ export const Route = createFileRoute(
 function RouteComponent() {
   return (
     <div className="space-y-6 p-6">
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="space-y-6 lg:col-span-2">
-          <Suspense fallback={<MarkAttendanceSkeleton />}>
-            <MarkAttendance />
-          </Suspense>
-          <Suspense fallback={<WorkBlocksListSkeleton />}>
-            <WorkBlocksList />
-          </Suspense>
-        </div>
-      </div>
+      <Suspense fallback={<MarkAttendanceSkeleton />}>
+        <MarkAttendance />
+      </Suspense>
+      <Suspense fallback={<WorkBlocksListSkeleton />}>
+        <WorkBlocksList />
+      </Suspense>
     </div>
   );
 }

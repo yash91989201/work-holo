@@ -148,7 +148,7 @@ export function PresenceRoster() {
   const filteredCount = filteredAndSortedMembers?.length ?? 0;
 
   return (
-    <Card>
+    <Card className="w-full max-w-xl">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Users className="h-5 w-5" />

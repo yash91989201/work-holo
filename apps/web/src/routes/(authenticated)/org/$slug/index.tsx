@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Suspense } from "react";
 import { Header } from "@/components/header";
 import { Greeting } from "@/components/member/attendance/greeting";
+import { OrgStats } from "@/components/org/org-stats";
 import {
   PresenceRoster,
   PresenceRosterSkeleton,
@@ -18,10 +19,13 @@ function RouteComponent() {
       <Header />
       <div className="space-y-6 p-6">
         <Greeting />
-        <RecentChannels />
-        <Suspense fallback={<PresenceRosterSkeleton />}>
-          <PresenceRoster />
-        </Suspense>
+        <OrgStats />
+        <div className="flex flex-col gap-3 md:flex-row">
+          <RecentChannels />
+          <Suspense fallback={<PresenceRosterSkeleton />}>
+            <PresenceRoster />
+          </Suspense>
+        </div>
       </div>
     </>
   );

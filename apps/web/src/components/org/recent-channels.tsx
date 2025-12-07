@@ -153,35 +153,25 @@ function getInitials(name: string): string {
 
 function NoRecentChannels() {
   return (
-    <Card className="shadow-sm">
-      <CardHeader className="border-b bg-muted/30 pb-3">
-        <CardTitle className="flex items-center gap-2 text-base">
-          <MessageSquareOff className="h-4 w-4 text-muted-foreground" />
-          Your recent channels
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="p-6">
-        <Empty>
-          <EmptyHeader>
-            <EmptyMedia variant="icon">
-              <MessageSquareOff />
-            </EmptyMedia>
-            <EmptyTitle>No recent channels</EmptyTitle>
-            <EmptyDescription>
-              You have not messaged in any channels recently.
-            </EmptyDescription>
-          </EmptyHeader>
-          <EmptyContent>
-            <Link
-              className={buttonVariants({ variant: "outline", size: "sm" })}
-              params={{ slug: "" }}
-              to="/org/$slug/communication/channels"
-            >
-              Browse Channels
-            </Link>
-          </EmptyContent>
-        </Empty>
-      </CardContent>
-    </Card>
+    <Empty className="border">
+      <EmptyHeader>
+        <EmptyMedia variant="icon">
+          <MessageSquareOff />
+        </EmptyMedia>
+        <EmptyTitle>No recent channels</EmptyTitle>
+        <EmptyDescription>
+          You have not messaged in any channels recently.
+        </EmptyDescription>
+      </EmptyHeader>
+      <EmptyContent>
+        <Link
+          className={buttonVariants({ variant: "outline", size: "sm" })}
+          params={{ slug: "" }}
+          to="/org/$slug/communication/channels"
+        >
+          Browse Channels
+        </Link>
+      </EmptyContent>
+    </Empty>
   );
 }
