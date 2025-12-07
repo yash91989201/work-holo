@@ -29,7 +29,7 @@ export function NavOps() {
       <SidebarSeparator />
 
       <SidebarGroup>
-        <SidebarGroupLabel>Management</SidebarGroupLabel>
+        <SidebarGroupLabel>Ops</SidebarGroupLabel>
         <SidebarGroupContent>
           <SidebarMenu>
             <SidebarMenuItem>

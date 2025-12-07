@@ -130,7 +130,7 @@ export function WorkBlocksList() {
   }
 
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader>
         <CardTitle>Work Timeline</CardTitle>
         <CardDescription>

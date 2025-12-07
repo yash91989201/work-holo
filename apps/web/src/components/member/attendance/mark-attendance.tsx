@@ -162,13 +162,13 @@ export const MarkAttendance = () => {
 
     return (
       <>
-        <Card>
+        <Card className="w-full">
           <CardHeader>
             <CardTitle>Work Session in Progress</CardTitle>
             <CardDescription>You are currently punched in.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4">
               <StatCard
                 icon={<Clock className="text-blue-500" />}
                 label="Checked In"
@@ -249,13 +249,13 @@ export const MarkAttendance = () => {
   const workMinutes = totalMinutes - breakMinutes;
 
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader>
         <CardTitle>Day Complete!</CardTitle>
         <CardDescription>Here's a summary of your workday.</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <StatCard
             icon={<Clock className="text-blue-500" />}
             label="Checked In"

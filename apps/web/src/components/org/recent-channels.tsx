@@ -153,7 +153,7 @@ function getInitials(name: string): string {
 
 function NoRecentChannels() {
   return (
-    <Empty className="border">
+    <Empty className="max-w-md border">
       <EmptyHeader>
         <EmptyMedia variant="icon">
           <MessageSquareOff />
