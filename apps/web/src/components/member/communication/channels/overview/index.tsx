@@ -37,14 +37,14 @@ export const RecentChannels = () => {
     <div>
       <h2 className="mb-4 font-semibold text-xl">Recent Channels</h2>
       {channels.length === 0 ? (
-        <Empty>
+        <Empty className="border">
           <EmptyHeader>
             <EmptyMedia variant="icon">
               <Hash className="h-12 w-12 text-green-600" />
             </EmptyMedia>
             <EmptyTitle>No recent channels found</EmptyTitle>
             <EmptyDescription>
-              Start by creating a channel for your team, project, or topic.
+              Start by creating sending messages in channels.
             </EmptyDescription>
           </EmptyHeader>
         </Empty>

@@ -17,20 +17,20 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@orpc/server": "^1.12.2",
+    "@electric-sql/client": "^1.2.0",
     "@orpc/client": "^1.12.2",
     "@orpc/openapi": "^1.12.2",
+    "@orpc/server": "^1.12.2",
     "@orpc/zod": "^1.12.2",
-    "hono": "^4.10.7",
-    "drizzle-orm": "^0.45.0",
-    "@electric-sql/client": "^1.2.0",
-    "@supabase/supabase-js": "^2.86.2",
+    "@supabase/supabase-js": "^2.87.0",
     "@t3-oss/env-core": "^0.13.8",
     "@work-holo/auth": "workspace:*",
     "@work-holo/db": "workspace:*",
     "chokidar": "^5.0.0",
     "dotenv": "^17.2.3",
+    "drizzle-orm": "^0.45.0",
     "drizzle-zod": "^0.8.3",
+    "hono": "^4.10.7",
     "zod": "^4.1.13"
   }
 }
