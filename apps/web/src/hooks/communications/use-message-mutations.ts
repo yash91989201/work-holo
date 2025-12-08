@@ -1,9 +1,14 @@
 import { createOptimisticAction } from "@tanstack/react-db";
 import type {
   CreateMessageInputType,
+  MarkMentionSeenInputType,
   UpdateMessageInputType,
 } from "@work-holo/api/lib/types";
-import { attachmentsCollection, messagesCollection } from "@/db/collections";
+import {
+  attachmentsCollection,
+  messageMentionsCollection,
+  messagesCollection,
+} from "@/db/collections";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { orpcClient } from "@/utils/orpc";
 
@@ -56,6 +61,19 @@ export function useMessageMutations() {
         }
       }
 
+      if (message.mentions?.length) {
+        for (const mentionedUserId of message.mentions) {
+          messageMentionsCollection.insert({
+            id: crypto.randomUUID().toString(),
+            messageId,
+            mentionedById: user.id,
+            mentionedUserId,
+            isSeen: false,
+            createdAt: new Date(),
+          });
+        }
+      }
+
       if (message.parentMessageId) {
         messagesCollection.update(message.parentMessageId, (draft) => {
           draft.threadCount += 1;
@@ -67,6 +85,7 @@ export function useMessageMutations() {
 
       await messagesCollection.utils.awaitTxId(txid);
       await attachmentsCollection.utils.awaitTxId(txid);
+      await messageMentionsCollection.utils.awaitTxId(txid);
     },
   });
 
@@ -74,14 +93,43 @@ export function useMessageMutations() {
     onMutate: ({ message }: { message: UpdateMessageInputType }) => {
       messagesCollection.update(message.messageId, (draft) => {
         draft.content = message.content ?? null;
-        draft.mentions = message.mentions ?? null;
+        if (message.mentions !== undefined) {
+          draft.mentions = message.mentions ?? null;
+        }
       });
+
+      if (message.mentions !== undefined) {
+        const mentionsToRemove: string[] = [];
+        messageMentionsCollection.forEach((mention) => {
+          if (mention.messageId === message.messageId) {
+            mentionsToRemove.push(mention.id);
+          }
+        });
+
+        if (mentionsToRemove.length) {
+          messageMentionsCollection.delete(mentionsToRemove);
+        }
+
+        if (message.mentions?.length) {
+          for (const mentionedUserId of message.mentions) {
+            messageMentionsCollection.insert({
+              id: crypto.randomUUID().toString(),
+              messageId: message.messageId,
+              mentionedById: user.id,
+              mentionedUserId,
+              isSeen: false,
+              createdAt: new Date(),
+            });
+          }
+        }
+      }
     },
     mutationFn: async ({ message }: { message: UpdateMessageInputType }) => {
       const { txid } = await orpcClient.communication.message.update(message);
 
       await messagesCollection.utils.awaitTxId(txid);
       await attachmentsCollection.utils.awaitTxId(txid);
+      await messageMentionsCollection.utils.awaitTxId(txid);
     },
   });
 
@@ -109,6 +157,16 @@ export function useMessageMutations() {
         }
       });
 
+      const mentionIdsToDelete: string[] = [];
+      messageMentionsCollection.forEach((mention) => {
+        if (
+          mention.messageId === messageId ||
+          childMessagesToDelete.includes(mention.messageId)
+        ) {
+          mentionIdsToDelete.push(mention.id);
+        }
+      });
+
       messagesCollection.delete(messageId);
 
       if (childMessagesToDelete.length > 0) {
@@ -117,6 +175,10 @@ export function useMessageMutations() {
 
       if (attachmentsToDelete.length > 0) {
         attachmentsCollection.delete(attachmentsToDelete);
+      }
+
+      if (mentionIdsToDelete.length > 0) {
+        messageMentionsCollection.delete(mentionIdsToDelete);
       }
     },
     mutationFn: async ({ messageId }: { messageId: string }) => {
@@ -223,6 +285,21 @@ export function useMessageMutations() {
     },
   });
 
+  const markMentionSeen = createOptimisticAction({
+    onMutate: ({ mentionId }: MarkMentionSeenInputType) => {
+      messageMentionsCollection.update(mentionId, (draft) => {
+        draft.isSeen = true;
+      });
+    },
+    mutationFn: async ({ mentionId }: MarkMentionSeenInputType) => {
+      const { txid } = await orpcClient.communication.message.markMentionSeen({
+        mentionId,
+      });
+
+      await messageMentionsCollection.utils.awaitTxId(txid);
+    },
+  });
+
   return {
     createMessage,
     updateMessage,
@@ -231,5 +308,6 @@ export function useMessageMutations() {
     unPinMessage,
     addReaction,
     removeReaction,
+    markMentionSeen,
   };
 }

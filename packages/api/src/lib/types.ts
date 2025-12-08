@@ -84,6 +84,8 @@ import type {
   GetThreadMessagesInput,
   GetUnreadCountInput,
   MarkMessageAsReadInput,
+  MarkMentionSeenInput,
+  MarkMentionSeenOutput,
   MessageAttachmentOutput,
   MessageOutput,
   MessagesListOutput,
@@ -120,6 +122,7 @@ import type {
   GetNotificationsInput,
   MarkMultipleAsReadInput,
   MarkNotificationAsReadInput,
+  MarkNotificationAsReadOutput,
   NotificationOutput,
   NotificationStatusSchema,
   NotificationsListOutput,
@@ -251,6 +254,14 @@ export type ListJoinRequestOutputType = z.infer<typeof ListJoinRequestOutput>;
 export type ListTeamsInputType = z.infer<typeof ListTeamsInput>;
 export type ListTeamsOutputType = z.infer<typeof ListTeamsOutput>;
 export type MarkMessageAsReadInputType = z.infer<typeof MarkMessageAsReadInput>;
+export type MarkNotificationAsReadInputType = z.infer<
+  typeof MarkNotificationAsReadInput
+>;
+export type MarkNotificationAsReadOutputType = z.infer<
+  typeof MarkNotificationAsReadOutput
+>;
+export type MarkMentionSeenInputType = z.infer<typeof MarkMentionSeenInput>;
+export type MarkMentionSeenOutputType = z.infer<typeof MarkMentionSeenOutput>;
 export type MarkMultipleAsReadInputType = z.infer<
   typeof MarkMultipleAsReadInput
 >;

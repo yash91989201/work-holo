@@ -2,6 +2,7 @@ import { ORPCError } from "@orpc/client";
 import {
   attachmentTable,
   channelMemberTable,
+  messageMentionTable,
   messageTable,
   notificationTable,
   user as userTable,
@@ -34,6 +35,8 @@ import {
   GetPinnedMessagesInput,
   GetPinnedMessagesOutput,
   GetUnreadCountInput,
+  MarkMentionSeenInput,
+  MarkMentionSeenOutput,
   PinMessageInput,
   PinMessageOutput,
   RemoveReactionInput,
@@ -127,6 +130,23 @@ export const messageRouter = {
           }
 
           if (input.mentions && input.mentions.length > 0) {
+            const mentionValues = input.mentions.map((mentionedUserId) => ({
+              messageId: newMessage.id,
+              mentionedById: user.id,
+              mentionedUserId,
+              isSeen: false,
+            }));
+
+            await tx
+              .insert(messageMentionTable)
+              .values(mentionValues)
+              .onConflictDoNothing({
+                target: [
+                  messageMentionTable.messageId,
+                  messageMentionTable.mentionedUserId,
+                ],
+              });
+
             const mentionNotifications = input.mentions.map(
               (mentionedUserId) => ({
                 userId: mentionedUserId,
@@ -177,9 +197,11 @@ export const messageRouter = {
             .update(messageTable)
             .set({
               content: input.content,
-              mentions: input.mentions,
               isEdited: true,
               editedAt: new Date(),
+              ...(input.mentions !== undefined
+                ? { mentions: input.mentions }
+                : {}),
             })
             .where(eq(messageTable.id, input.messageId))
             .returning();
@@ -190,21 +212,44 @@ export const messageRouter = {
             });
           }
 
-          if (input.mentions && input.mentions.length > 0) {
-            const mentionNotifications = input.mentions.map(
-              (mentionedUserId) => ({
-                userId: mentionedUserId,
-                type: "mention" as const,
-                title: `${user.name || user.email} mentioned you`,
-                message:
-                  input.content?.slice(0, 200) ||
-                  "You were mentioned in a message",
-                entityId: updatedMessage.id,
-                entityType: "message",
-              })
-            );
+          if (input.mentions !== undefined) {
+            await tx
+              .delete(messageMentionTable)
+              .where(eq(messageMentionTable.messageId, input.messageId));
 
-            await tx.insert(notificationTable).values(mentionNotifications);
+            if (input.mentions.length > 0) {
+              const mentionValues = input.mentions.map((mentionedUserId) => ({
+                messageId: updatedMessage.id,
+                mentionedById: user.id,
+                mentionedUserId,
+                isSeen: false,
+              }));
+
+              await tx
+                .insert(messageMentionTable)
+                .values(mentionValues)
+                .onConflictDoNothing({
+                  target: [
+                    messageMentionTable.messageId,
+                    messageMentionTable.mentionedUserId,
+                  ],
+                });
+
+              const mentionNotifications = input.mentions.map(
+                (mentionedUserId) => ({
+                  userId: mentionedUserId,
+                  type: "mention" as const,
+                  title: `${user.name || user.email} mentioned you`,
+                  message:
+                    input.content?.slice(0, 200) ||
+                    "You were mentioned in a message",
+                  entityId: updatedMessage.id,
+                  entityType: "message",
+                })
+              );
+
+              await tx.insert(notificationTable).values(mentionNotifications);
+            }
           }
 
           return { txid, message: updatedMessage };
@@ -526,6 +571,40 @@ export const messageRouter = {
       });
 
       return users;
+    }),
+  markMentionSeen: protectedProcedure
+    .input(MarkMentionSeenInput)
+    .output(MarkMentionSeenOutput)
+    .handler(async ({ context: { db, session }, input }) => {
+      const { user } = session;
+
+      const { txid } = await db.transaction(async (tx) => {
+        const txid = await generateTxId(tx);
+
+        const mention = await tx.query.messageMentionTable.findFirst({
+          where: and(
+            eq(messageMentionTable.id, input.mentionId),
+            eq(messageMentionTable.mentionedUserId, user.id)
+          ),
+        });
+
+        if (!mention) {
+          throw new ORPCError("NOT_FOUND", {
+            message: "Mention not found.",
+          });
+        }
+
+        if (!mention.isSeen) {
+          await tx
+            .update(messageMentionTable)
+            .set({ isSeen: true })
+            .where(eq(messageMentionTable.id, input.mentionId));
+        }
+
+        return { txid };
+      });
+
+      return { txid, success: true };
     }),
 
   addReaction: protectedProcedure

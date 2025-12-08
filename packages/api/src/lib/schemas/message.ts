@@ -1,8 +1,8 @@
-import {
-  AttachmentSchema,
-  MessageSchema,
-  UserSchema,
-} from "@work-holo/db/lib/schemas/db-tables";
+ import {
+   AttachmentSchema,
+   MessageSchema,
+   UserSchema,
+ } from "@work-holo/db/lib/schemas/db-tables";
 import { z } from "zod";
 
 // Message types enum
@@ -242,6 +242,15 @@ export const SearchMessagesListOutput = z.object({
 // Unread count output
 export const UnreadCountOutput = z.object({
   count: z.number(),
+});
+
+export const MarkMentionSeenInput = z.object({
+  mentionId: z.string(),
+});
+
+export const MarkMentionSeenOutput = z.object({
+  txid: z.number(),
+  success: z.literal(true),
 });
 
 export const PinMessageInput = z.object({

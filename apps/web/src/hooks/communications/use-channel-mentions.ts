@@ -1,16 +1,31 @@
-import { and, eq, isNull, useLiveQuery } from "@tanstack/react-db";
+import { and, eq, useLiveQuery } from "@tanstack/react-db";
 import { useParams } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef } from "react";
 import {
   attachmentsCollection,
   channelMembersCollection,
   channelsCollection,
+  messageMentionsCollection,
   messagesCollection,
   usersCollection,
 } from "@/db/collections";
 import { useAuthedSession } from "@/hooks/use-authed-session";
+import type { MessageWithSender } from "@/lib/communications/message";
 import { buildMessageWithAttachments } from "@/lib/communications/message";
-import { extractMentionIdsFromContent } from "@/lib/mentions";
+
+type MentionRecord = {
+  id: string;
+  messageId: string;
+  mentionedById: string;
+  mentionedUserId: string;
+  isSeen: boolean;
+  createdAt: Date;
+};
+
+type MentionWithRelations = MessageWithSender & {
+  channel: { id: string; name: string };
+  mention: MentionRecord;
+};
 
 export function useChannelMentions() {
   const { id: currentChannelId } = useParams({
@@ -23,7 +38,10 @@ export function useChannelMentions() {
   const { data, isLoading } = useLiveQuery(
     (q) =>
       q
-        .from({ message: messagesCollection })
+        .from({ mention: messageMentionsCollection })
+        .innerJoin({ message: messagesCollection }, ({ mention, message }) =>
+          eq(mention.messageId, message.id)
+        )
         .innerJoin({ sender: usersCollection }, ({ message, sender }) =>
           eq(message.senderId, sender.id)
         )
@@ -39,40 +57,44 @@ export function useChannelMentions() {
           { attachment: attachmentsCollection },
           ({ message, attachment }) => eq(attachment.messageId, message.id)
         )
-        .where(({ message, channelMember }) =>
-          and(isNull(message.deletedAt), eq(channelMember.userId, userId))
+        .where(({ message, channelMember, mention }) =>
+          and(
+            eq(message.isDeleted, false),
+            eq(message.channelId, currentChannelId),
+            eq(channelMember.userId, userId),
+            eq(mention.mentionedUserId, userId)
+          )
         )
-        .orderBy(({ message }) => message.createdAt, "desc")
-        .select(({ message, sender, attachment, channel }) => ({
+        .orderBy(({ mention }) => mention.createdAt, "desc")
+        .select(({ mention, message, sender, attachment, channel }) => ({
+          mention,
           message,
           sender,
           attachment,
           channel,
         })),
-    [userId]
+    [userId, currentChannelId]
   );
 
-  const mentions = useMemo(() => {
+  const mentions = useMemo<MentionWithRelations[]>(() => {
     if (!(data && Array.isArray(data) && userId)) {
       return [];
     }
 
-    const map = new Map<
-      string,
-      ReturnType<typeof buildMessageWithAttachments> & {
-        channel: { id: string; name: string };
-      }
-    >();
+    const map = new Map<string, MentionWithRelations>();
 
-    for (const { message, sender, attachment, channel } of data) {
+    const orderedMentions: MentionWithRelations[] = [];
+
+    for (const { mention, message, sender, attachment, channel } of data) {
       let entry = map.get(message.id);
 
       if (!entry) {
         entry = {
-          ...buildMessageWithAttachments(message, sender),
-          channel: { id: channel.id, name: channel.name },
+          ...buildMessageWithAttachments(message, sender, channel),
+          mention,
         };
         map.set(message.id, entry);
+        orderedMentions.push(entry);
       }
 
       if (attachment) {
@@ -80,35 +102,13 @@ export function useChannelMentions() {
       }
     }
 
-    const getMentionIds = (
-      content: string | null,
-      mentions?: string[] | null
-    ) => {
-      if (Array.isArray(mentions) && mentions.length > 0) {
-        return mentions;
-      }
-      return extractMentionIdsFromContent(content) ?? [];
-    };
-
-    return Array.from(map.values())
-      .filter((message) => {
-        const mentionIds = getMentionIds(
-          message.content ?? null,
-          message.mentions
-        );
-        if (!mentionIds.length) return false;
-        if (!Array.isArray(message.mentions) || message.mentions.length === 0) {
-          message.mentions = mentionIds.length ? mentionIds : null;
-        }
-        return mentionIds.includes(userId);
-      })
-      .sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      );
+    return orderedMentions;
   }, [data, userId]);
 
   const mentionCount = mentions.length;
+  const unreadMentionCount = mentions.filter(
+    (mention) => !mention.mention.isSeen
+  ).length;
 
   const prevMentionCountRef = useRef(mentionCount);
   const isFirstLoadRef = useRef(true);
@@ -135,6 +135,7 @@ export function useChannelMentions() {
   return {
     mentions,
     mentionCount,
+    unreadMentionCount,
     isLoading,
     currentChannelId,
   };

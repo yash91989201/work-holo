@@ -183,6 +183,34 @@ export const messageTable = pgTable(
   ]
 );
 
+export const messageMentionTable = pgTable(
+  "messageMention",
+  {
+    id: cuid2().defaultRandom().primaryKey(),
+    messageId: text()
+      .notNull()
+      .references(() => messageTable.id, { onDelete: "cascade" }),
+    mentionedById: text()
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    mentionedUserId: text()
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    isSeen: boolean().notNull().default(false),
+    createdAt: timestamp({ withTimezone: true })
+      .$defaultFn(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    uniqueIndex("unique_message_mention_user").on(
+      table.messageId,
+      table.mentionedUserId
+    ),
+    index("idx_message_mention_user").on(table.mentionedUserId),
+    index("idx_message_mention_message").on(table.messageId),
+  ]
+);
+
 export const attachmentTable = pgTable("attachment", {
   id: cuid2().defaultRandom().primaryKey(),
   messageId: text()
@@ -268,6 +296,7 @@ export const messageTableRelations = relations(
     // Inverse relations (other tables reference messageTable)
     attachments: many(attachmentTable),
     reads: many(messageReadTable),
+    mentions: many(messageMentionTable),
   })
 );
 
@@ -363,6 +392,24 @@ export const messageReadTableRelations = relations(
     }),
     user: one(user, {
       fields: [messageReadTable.userId],
+      references: [user.id],
+    }),
+  })
+);
+
+export const messageMentionTableRelations = relations(
+  messageMentionTable,
+  ({ one }) => ({
+    message: one(messageTable, {
+      fields: [messageMentionTable.messageId],
+      references: [messageTable.id],
+    }),
+    mentionedBy: one(user, {
+      fields: [messageMentionTable.mentionedById],
+      references: [user.id],
+    }),
+    mentionedUser: one(user, {
+      fields: [messageMentionTable.mentionedUserId],
       references: [user.id],
     }),
   })

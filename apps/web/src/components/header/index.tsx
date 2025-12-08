@@ -1,5 +1,5 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { NotificationSheet } from "./notification-sheet";
+import { NotificationSheet } from "@/components/shared/notification-sheet";
 
 export function Header() {
   return (

@@ -1,16 +1,19 @@
 import type {
   AttachmentType,
+  ChannelType,
   MessageType,
   UserType,
 } from "@work-holo/db/lib/types";
 
 export function buildMessageWithAttachments(
   message: MessageType,
-  sender: UserType
+  sender: UserType,
+  channel: ChannelType
 ) {
   return {
     ...message,
     sender,
+    channel,
     attachments: [] as AttachmentType[],
   };
 }
@@ -20,6 +23,7 @@ export function buildOrderedMessages(
     Array<{
       message: MessageType;
       sender: UserType;
+      channel: ChannelType;
       attachment: AttachmentType | undefined;
     }>
   >
@@ -31,9 +35,12 @@ export function buildOrderedMessages(
   const map = new Map<string, ReturnType<typeof buildMessageWithAttachments>>();
 
   for (const page of pages) {
-    for (const { message, sender, attachment } of page) {
+    for (const { message, sender, attachment, channel } of page) {
       if (!map.has(message.id)) {
-        map.set(message.id, buildMessageWithAttachments(message, sender));
+        map.set(
+          message.id,
+          buildMessageWithAttachments(message, sender, channel)
+        );
       }
 
       if (attachment) {
@@ -56,7 +63,9 @@ export type DateSeparator = {
 
 export type MessageWithSender = ReturnType<typeof buildMessageWithAttachments>;
 
-export type MessageListItem = MessageWithSender | DateSeparator;
+export type MessageListItem<T extends MessageWithSender = MessageWithSender> =
+  | T
+  | DateSeparator;
 
 function formatDateSeparator(date: Date): string {
   const today = new Date();
@@ -89,14 +98,14 @@ function getDateKey(date: Date): string {
   return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
 }
 
-export function insertDateSeparators(
-  messages: MessageWithSender[]
-): MessageListItem[] {
+export function insertDateSeparators<T extends MessageWithSender>(
+  messages: T[]
+): MessageListItem<T>[] {
   if (messages.length === 0) {
     return [];
   }
 
-  const result: MessageListItem[] = [];
+  const result: MessageListItem<T>[] = [];
   let lastDateKey: string | null = null;
 
   for (const message of messages) {

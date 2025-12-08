@@ -1,6 +1,6 @@
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { Loader2, PlusIcon } from "lucide-react";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { getAuthQueryKey } from "@/lib/auth/query-keys";
 import { authClient } from "@/lib/auth-client";
@@ -108,7 +109,9 @@ export const InviteMemberForm = () => {
                   </FormItem>
                 )}
               />
-              <TeamsDropdown />
+              <Suspense fallback={<Skeleton className="h-9 w-full" />}>
+                <TeamsDropdown />
+              </Suspense>
               <Button disabled={form.formState.isSubmitting}>
                 {form.formState.isSubmitting ? (
                   <>

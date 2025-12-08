@@ -48,7 +48,7 @@ export function AcceptInvitationForm() {
 
       if (slug) {
         navigate({
-          to: "/org/$slug/attendance",
+          to: "/org/$slug",
           params: { slug },
         });
         return;

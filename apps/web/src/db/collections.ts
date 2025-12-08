@@ -9,6 +9,7 @@ import {
   ChannelSchema,
   InvitationSchema,
   MemberSchema,
+  MessageMentionSchema,
   MessageReadSchema,
   MessageSchema,
   NotificationSchema,
@@ -29,6 +30,23 @@ export const messagesCollection = createCollection(
       url: `${ELECTRIC_SHAPE_BASE_URL}/messages`,
       params: {
         table: "message",
+      },
+      fetchClient,
+      parser: {
+        timestamptz: (s: string) => new Date(s),
+      },
+    },
+  })
+);
+
+export const messageMentionsCollection = createCollection(
+  electricCollectionOptions({
+    getKey: (m) => m.id,
+    schema: MessageMentionSchema,
+    shapeOptions: {
+      url: `${ELECTRIC_SHAPE_BASE_URL}/message-mentions`,
+      params: {
+        table: "messageMention",
       },
       fetchClient,
       parser: {

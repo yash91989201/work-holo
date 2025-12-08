@@ -51,6 +51,15 @@ electricRouter.get("/shapes/messages", requireAuth, async (c) => {
   return res;
 });
 
+electricRouter.get("/shapes/message-mentions", requireAuth, async (c) => {
+  const originUrl = prepareElectricUrl(c.req.url);
+
+  originUrl.searchParams.set("table", '"messageMention"');
+
+  const res = await sendProxyResponse(c, originUrl);
+  return res;
+});
+
 electricRouter.get("/shapes/users", requireAuth, (c) => {
   const originUrl = prepareElectricUrl(c.req.url);
 

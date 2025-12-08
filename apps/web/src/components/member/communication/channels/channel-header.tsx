@@ -1,5 +1,6 @@
 import { Link, useParams } from "@tanstack/react-router";
-import { AtSign, Bell, Info, Pin } from "lucide-react";
+import { AtSign, Info, Pin } from "lucide-react";
+import { NotificationSheet } from "@/components/shared/notification-sheet";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import {
   Breadcrumb,
@@ -37,7 +38,7 @@ export function ChannelHeader() {
   const { toggleInfoSidebar } = useChannelInfoSidebar();
   const { isOpen, togglePinnedMessages } = usePinnedMessagesSidebar();
   const { isOpen: mentionsOpen, toggleMentionsSidebar } = useMentionsSidebar();
-  const { mentionCount } = useChannelMentions();
+  const { unreadMentionCount } = useChannelMentions();
 
   return (
     <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b bg-background/95 backdrop-blur-sm transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height) supports-backdrop-filter:bg-background/60">
@@ -76,9 +77,9 @@ export function ChannelHeader() {
                 variant={mentionsOpen ? "secondary" : "ghost"}
               >
                 <AtSign />
-                {mentionCount > 0 && (
+                {unreadMentionCount > 0 && (
                   <span className="-right-1 -top-1 pointer-events-none absolute inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1 font-semibold text-[10px] text-destructive-foreground leading-none">
-                    {mentionCount > 99 ? "99+" : mentionCount}
+                    {unreadMentionCount > 99 ? "99+" : unreadMentionCount}
                   </span>
                 )}
               </Button>
@@ -99,14 +100,7 @@ export function ChannelHeader() {
               {isOpen ? "Close pinned messages" : "View pinned messages"}
             </TooltipContent>
           </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button size="icon-sm" variant="ghost">
-                <Bell />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Notifications</TooltipContent>
-          </Tooltip>
+          <NotificationSheet />
           <ThemeToggle />
           <Tooltip>
             <TooltipTrigger asChild>

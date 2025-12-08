@@ -8,8 +8,7 @@ import { useMentionsSidebar } from "@/stores/channel-store";
 import { MentionMessageItem } from "./mention-message-item";
 
 export function MentionsSidebar() {
-  const { mentions, mentionCount, isLoading, currentChannelId } =
-    useChannelMentions();
+  const { mentions, mentionCount, isLoading } = useChannelMentions();
 
   const { isOpen, closeMentionsSidebar } = useMentionsSidebar();
 
@@ -89,13 +88,7 @@ export function MentionsSidebar() {
                 );
               }
 
-              return (
-                <MentionMessageItem
-                  currentChannelId={currentChannelId}
-                  key={item.id}
-                  message={item}
-                />
-              );
+              return <MentionMessageItem key={item.id} message={item} />;
             })}
           </div>
         </div>
