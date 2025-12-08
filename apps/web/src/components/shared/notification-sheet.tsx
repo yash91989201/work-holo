@@ -2,8 +2,7 @@ import { useNavigate, useParams } from "@tanstack/react-router";
 import DOMPurify from "dompurify";
 import parse from "html-react-parser";
 import { AtSign, Bell, Mail, MessageSquare, Users } from "lucide-react";
-import { useCallback, useMemo } from "react";
-import { Badge } from "@/components/ui/badge";
+import { useCallback, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Item,
@@ -58,6 +57,7 @@ function formatTimeAgo(date: Date) {
 export function NotificationSheet() {
   const { notifications, unreadCount, isLoading, markNotificationAsRead } =
     useNotifications();
+  const [open, setOpen] = useState(false);
 
   const handleMarkAsRead = useCallback(
     (input: { notificationId: string }) => markNotificationAsRead(input),
@@ -75,14 +75,14 @@ export function NotificationSheet() {
   );
 
   return (
-    <Sheet>
+    <Sheet onOpenChange={setOpen} open={open}>
       <SheetTrigger asChild>
         <Button className="relative" size="icon" variant="ghost">
           <Bell className="h-4 w-4" />
           {triggerBadge}
         </Button>
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent className="sm:max-w-md">
         <SheetHeader>
           <SheetTitle>Notifications</SheetTitle>
           <SheetDescription>
@@ -109,6 +109,7 @@ export function NotificationSheet() {
                   <NotificationListItem
                     key={notification.id}
                     notification={notification}
+                    onClose={() => setOpen(false)}
                     onMarkAsRead={handleMarkAsRead}
                   />
                 ))}
@@ -124,11 +125,13 @@ export function NotificationSheet() {
 type NotificationListItemProps = {
   notification: ReturnType<typeof useNotifications>["notifications"][number];
   onMarkAsRead: (input: { notificationId: string }) => void;
+  onClose: () => void;
 };
 
 function NotificationListItem({
   notification,
   onMarkAsRead,
+  onClose,
 }: NotificationListItemProps) {
   const { highlightMessage } = useChannelMessageHighlight();
   const navigate = useNavigate();
@@ -150,6 +153,9 @@ function NotificationListItem({
 
       if (message) {
         highlightMessage(notification.entityId);
+
+        onClose();
+
         navigate({
           to: "/org/$slug/communication/channels/$id",
           params: { slug, id: message.channelId },
@@ -168,32 +174,43 @@ function NotificationListItem({
       )}
       variant="outline"
     >
-      <div>
-        <ItemMedia className="mt-1" variant="icon">
-          {getNotificationIcon(notification.type)}
-        </ItemMedia>
-        <ItemContent>
-          <div className="flex items-center gap-2">
-            <ItemTitle>{notification.title}</ItemTitle>
-            <Badge className="text-[10px]" variant="outline">
-              {notification.type.replace("_", " ")}
-            </Badge>
-          </div>
-          {notification.message && (
-            <ItemDescription>
-              {parse(DOMPurify.sanitize(notification.message))}
-            </ItemDescription>
-          )}
-        </ItemContent>
-        <div className="flex flex-col items-end gap-2">
+      <div className="flex flex-col">
+        <div className="flex gap-3">
+          <ItemMedia className="mt-1" variant="icon">
+            {getNotificationIcon(notification.type)}
+          </ItemMedia>
+          <ItemContent>
+            <div className="flex items-start justify-between gap-3">
+              <ItemTitle>{notification.title}</ItemTitle>
+              <span className="whitespace-nowrap text-muted-foreground text-xs">
+                {formatTimeAgo(new Date(notification.createdAt))}
+              </span>
+            </div>
+            {notification.message && (
+              <ItemDescription>
+                {parse(DOMPurify.sanitize(notification.message))}
+              </ItemDescription>
+            )}
+          </ItemContent>
+        </div>
+        <div className="mt-3 flex justify-end">
           <ItemActions>
             <Button onClick={handleClick} size="sm" variant="ghost">
               View
             </Button>
+            {notification.status === "unread" && (
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onMarkAsRead({ notificationId: notification.id });
+                }}
+                size="sm"
+                variant="ghost"
+              >
+                Mark as read
+              </Button>
+            )}
           </ItemActions>
-          <span className="whitespace-nowrap text-muted-foreground text-xs">
-            {formatTimeAgo(new Date(notification.createdAt))}
-          </span>
         </div>
       </div>
     </Item>
