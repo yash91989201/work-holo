@@ -24,18 +24,20 @@ export const MembersSelect = () => {
 
   const { members, refetchTeamMembers, isRefetching } = useListOrgMembers();
 
-  const memberOptions: MultiSelectOption[] = members.map((member) => ({
-    label: member.user.email,
-    value: member.userId,
-    icon: () => (
-      <Avatar className="size-6">
-        <AvatarImage src={member.user?.image || ""} />
-        <AvatarFallback>
-          {member.user.name.charAt(0).toUpperCase()}
-        </AvatarFallback>
-      </Avatar>
-    ),
-  }));
+  const memberOptions: MultiSelectOption[] = members
+    .filter((m) => m.role === "member")
+    .map((member) => ({
+      label: member.user.email,
+      value: member.userId,
+      icon: () => (
+        <Avatar className="size-6">
+          <AvatarImage src={member.user?.image || ""} />
+          <AvatarFallback>
+            {member.user.name.charAt(0).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+      ),
+    }));
 
   return (
     <FormField

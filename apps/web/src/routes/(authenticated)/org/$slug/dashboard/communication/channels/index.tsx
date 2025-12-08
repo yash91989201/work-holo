@@ -12,21 +12,12 @@ function RouteComponent() {
   return (
     <div className="flex h-full flex-col">
       {/* Header */}
-      <div className="py-4">
-        <div>
-          <h1 className="mt-2 font-bold text-2xl">Channels</h1>
-          <p className="text-muted-foreground">
-            Manage communication channels in your organization.
-          </p>
-        </div>
+      <div className="flex items-center justify-between py-4">
+        <h1 className="mt-2 font-bold text-2xl">Channels</h1>
+        <CreateChannelForm />
       </div>
 
-      <div>
-        <div className="mb-4 flex justify-end">
-          <CreateChannelForm />
-        </div>
-        <ChannelsListTable />
-      </div>
+      <ChannelsListTable />
     </div>
   );
 }

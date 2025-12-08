@@ -4,7 +4,9 @@
  */
 
 export const getAuthQueryKey = {
-  // Organization-related query keys
+  // ─────────────────────────────────────────────
+  // ORGANIZATION QUERY KEYS
+  // ─────────────────────────────────────────────
   organization: {
     // List all organizations for current user
     list: () => ["auth", "organization", "list"] as const,
@@ -17,29 +19,35 @@ export const getAuthQueryKey = {
     invitations: (organizationId: string) =>
       ["auth", "organization", "invitations", organizationId] as const,
 
-    // List members of an organization
+    // List **members** of an organization
     members: (organizationId: string) =>
       ["auth", "organization", "members", organizationId] as const,
+
+    // List **teams** of an organization (NEW)
+    teams: (organizationId: string) =>
+      ["auth", "organization", "teams", organizationId] as const,
 
     // Get organization roles
     roles: () => ["auth", "organization", "roles"] as const,
 
-    // Get user's role in organization
+    // Get current user's role in active org
     userRole: () => ["auth", "organization", "userRole"] as const,
 
-    // Get active organization
+    // Get currently active organization
     active: () => ["auth", "organization", "active"] as const,
   },
 
-  // User-related query keys
+  // ─────────────────────────────────────────────
+  // USER QUERY KEYS
+  // ─────────────────────────────────────────────
   user: {
-    // Current user session
+    // Current user session user
     session: () => ["auth", "user", "session"] as const,
 
     // active org member role for user
     activeMemberRole: () => ["auth", "user", "active-member-role"] as const,
 
-    // User profile
+    // User profile (self)
     profile: () => ["auth", "user", "profile"] as const,
 
     // User by ID
@@ -50,74 +58,83 @@ export const getAuthQueryKey = {
       ["auth", "user", "organizations", userId] as const,
   },
 
-  // Session-related query keys
+  // ─────────────────────────────────────────────
+  // SESSION QUERY KEYS
+  // ─────────────────────────────────────────────
   session: {
     // Current session
     current: () => ["auth", "session", "current"] as const,
 
-    // Session list for user (no userId needed as it's based on current session)
+    // List sessions for current user
     list: () => ["auth", "session", "list"] as const,
 
-    // Specific session by token
+    // Specific session by its token
     byToken: (token: string) => ["auth", "session", "byToken", token] as const,
   },
 
-  // Invitation-related query keys (standalone)
+  // ─────────────────────────────────────────────
+  // INVITATION QUERY KEYS
+  // ─────────────────────────────────────────────
   invitation: {
     // Get invitation by token
     byToken: (token: string) =>
       ["auth", "invitation", "byToken", token] as const,
 
-    // List invitations for current user
+    // User's received invitations
     list: () => ["auth", "invitation", "list"] as const,
   },
 
-  // Admin-specific query keys
+  // ─────────────────────────────────────────────
+  // ADMIN QUERY KEYS
+  // ─────────────────────────────────────────────
   admin: {
-    // All users (admin view)
+    // All users (admin)
     users: () => ["auth", "admin", "users"] as const,
 
-    // All organizations (admin view)
+    // All organizations (admin)
     organizations: () => ["auth", "admin", "organizations"] as const,
 
-    // System stats
+    // System statistics
     stats: () => ["auth", "admin", "stats"] as const,
   },
 
-  // Utility functions for invalidation patterns
+  // ─────────────────────────────────────────────
+  // INVALIDATION HELPERS
+  // ─────────────────────────────────────────────
   invalidation: {
-    // All auth queries
+    // Invalidate all auth queries
     all: () => ["auth"] as const,
 
-    // All organization queries
+    // Invalidate all organization queries
     allOrganizations: () => ["auth", "organization"] as const,
 
-    // Specific organization and all its related queries
+    // Invalidate specific organization and all its children
     organization: (organizationId: string) =>
       ["auth", "organization", organizationId] as const,
 
-    // All user queries
+    // Invalidate all user queries
     allUsers: () => ["auth", "user"] as const,
 
-    // All session queries
+    // Invalidate all session queries
     allSessions: () => ["auth", "session"] as const,
 
-    // Current session and session list (used after login/logout/session changes)
+    // Invalidate current session + session list
     sessionData: () => ["auth", "session"] as const,
 
-    // Session list only (used when managing sessions)
+    // Invalidate only session list
     sessionList: () => ["auth", "session", "list"] as const,
   },
 } as const;
 
-// Helper function to check if a query key is an auth query
+// Helper: Check if a query key belongs to auth
 export const isAuthQueryKey = (queryKey: unknown[]): boolean =>
   Array.isArray(queryKey) && queryKey[0] === "auth";
 
-// Helper to get organization-specific query keys for bulk operations
+// Helper: All keys related to a specific organization
 export const getOrganizationQueryKeys = (organizationId: string) => ({
   invitations: getAuthQueryKey.organization.invitations(organizationId),
   members: getAuthQueryKey.organization.members(organizationId),
+  teams: getAuthQueryKey.organization.teams(organizationId),
   roles: getAuthQueryKey.organization.roles(),
   details: getAuthQueryKey.organization.byId(organizationId),
 });

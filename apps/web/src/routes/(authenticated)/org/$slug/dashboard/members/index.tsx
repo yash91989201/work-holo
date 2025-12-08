@@ -1,7 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Suspense } from "react";
 import { InvitationListTable } from "@/components/admin/invitation-list-table";
 import { InviteMemberForm } from "@/components/admin/members/invite-member-form";
-import { MemberListTable } from "@/components/owner/member-list-table";
+import {
+  MemberListTable,
+  MemberListTableSkeleton,
+} from "@/components/owner/member-list-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export const Route = createFileRoute(
@@ -30,7 +34,9 @@ function RouteComponent() {
         </TabsList>
 
         <TabsContent className="mt-4" value="members">
-          <MemberListTable />
+          <Suspense fallback={<MemberListTableSkeleton />}>
+            <MemberListTable />
+          </Suspense>
         </TabsContent>
 
         <TabsContent className="mt-4" value="invitations">

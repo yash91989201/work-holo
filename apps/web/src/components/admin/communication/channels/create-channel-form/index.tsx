@@ -99,7 +99,7 @@ export const CreateChannelForm = () => {
       <DialogTrigger asChild>
         <Button>
           <Plus />
-          <span>Create new channel</span>
+          <span>New channel</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
@@ -166,7 +166,6 @@ export const CreateChannelForm = () => {
                     <SelectContent>
                       <SelectItem value="team">Team</SelectItem>
                       <SelectItem value="group">Group</SelectItem>
-                      <SelectItem value="direct">Direct</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />

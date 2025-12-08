@@ -8,6 +8,7 @@ import {
 import type { SQL } from "drizzle-orm";
 import {
   and,
+  asc,
   count,
   desc,
   eq,
@@ -85,8 +86,14 @@ export const adminAttendanceRouter = {
         });
       }
 
-      const { page, perPage, search, date, startDate, endDate, status } = input;
+      const { page, perPage, search, filters, sorting } = input;
       const offset = (page - 1) * perPage;
+
+      // Extract filters safely
+      const date = filters?.date;
+      const startDate = filters?.startDate;
+      const endDate = filters?.endDate;
+      const status = filters?.status;
 
       // Build where conditions
       const conditions = [
@@ -129,6 +136,39 @@ export const adminAttendanceRouter = {
         );
       }
 
+      const whereClause = searchCondition
+        ? and(...conditions, searchCondition)
+        : and(...conditions);
+
+      // Handle Sorting
+      let orderBy = [
+        desc(attendanceTable.date),
+        desc(attendanceTable.checkInTime),
+      ];
+
+      if (sorting && sorting.length > 0) {
+        orderBy = sorting.map((sort) => {
+          const direction = sort.desc ? desc : asc;
+
+          switch (sort.id) {
+            case "checkInTime":
+              return direction(attendanceTable.checkInTime);
+            case "checkOutTime":
+              return direction(attendanceTable.checkOutTime);
+            case "totalHours":
+              return direction(attendanceTable.totalHours);
+            case "status":
+              return direction(attendanceTable.status);
+            case "date":
+              return direction(attendanceTable.date);
+            case "user.name": // Sorting by joined column
+              return direction(user.name);
+            default:
+              return desc(attendanceTable.date);
+          }
+        });
+      }
+
       // Get total count
       const [totalRow] = await db
         .select({
@@ -136,11 +176,7 @@ export const adminAttendanceRouter = {
         })
         .from(attendanceTable)
         .innerJoin(user, eq(attendanceTable.userId, user.id))
-        .where(
-          searchCondition
-            ? and(...conditions, searchCondition)
-            : and(...conditions)
-        );
+        .where(whereClause);
 
       const total = totalRow?.count ?? 0;
       const totalPages = Math.ceil(total / perPage);
@@ -158,12 +194,8 @@ export const adminAttendanceRouter = {
         })
         .from(attendanceTable)
         .innerJoin(user, eq(attendanceTable.userId, user.id))
-        .where(
-          searchCondition
-            ? and(...conditions, searchCondition)
-            : and(...conditions)
-        )
-        .orderBy(desc(attendanceTable.date), desc(attendanceTable.checkInTime))
+        .where(whereClause)
+        .orderBy(...orderBy)
         .limit(perPage)
         .offset(offset);
 

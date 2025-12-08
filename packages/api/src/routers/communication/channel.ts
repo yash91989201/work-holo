@@ -9,8 +9,7 @@ import {
   teamMember,
   user as userTable,
 } from "@work-holo/db/schema/index";
-import type { SQL } from "drizzle-orm";
-import { and, eq, getTableColumns, inArray, not } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray, like, not } from "drizzle-orm";
 import { protectedProcedure } from "../../index";
 import { generateTxId } from "../../lib/electric-proxy";
 import {
@@ -196,35 +195,68 @@ export const channelRouter = {
     .output(ListChannelsOutput)
     .handler(async ({ context, input }) => {
       const orgId = context.session.session.activeOrganizationId ?? "";
-      const teamId = input.teamId ?? context.session.session.activeTeamId ?? "";
 
-      const filters: SQL[] = [eq(channelTable.organizationId, orgId)];
+      const { page, limit, search, filters, sorting } = input;
+      const offset = (page - 1) * limit;
 
-      if (input?.type) {
-        filters.push(eq(channelTable.type, input.type));
+      const conditions = [eq(channelTable.organizationId, orgId)];
+
+      if (search) {
+        conditions.push(like(channelTable.name, `%${search}%`));
       }
 
-      if (input?.teamId) {
-        filters.push(eq(channelTable.teamId, teamId));
+      if (filters?.type) {
+        conditions.push(eq(channelTable.type, filters.type));
       }
 
-      if (!input?.includeArchived) {
-        filters.push(eq(channelTable.isArchived, false));
+      if (filters?.teamId) {
+        conditions.push(eq(channelTable.teamId, filters.teamId));
       }
 
-      const baseConditions = and(...filters);
+      if (!filters?.includeArchived) {
+        conditions.push(eq(channelTable.isArchived, false));
+      }
 
-      const channels = await context.db
-        .select({
-          ...getTableColumns(channelTable),
-          creator: getTableColumns(userTable),
-        })
+      const whereClause =
+        conditions.length > 1 ? and(...conditions) : conditions[0];
+
+      let orderBy = [desc(channelTable.createdAt)];
+
+      if (sorting && sorting.length > 0) {
+        orderBy = sorting.map((sort) => {
+          if (sort.id === "name")
+            return sort.desc ? desc(channelTable.name) : asc(channelTable.name);
+          if (sort.id === "createdAt")
+            return sort.desc
+              ? desc(channelTable.createdAt)
+              : asc(channelTable.createdAt);
+          if (sort.id === "type")
+            return sort.desc ? desc(channelTable.type) : asc(channelTable.type);
+          return desc(channelTable.createdAt);
+        });
+      }
+
+      const channels = await context.db.query.channelTable.findMany({
+        where: whereClause,
+        limit,
+        offset,
+        orderBy,
+        with: {
+          creator: true,
+        },
+      });
+
+      const totalResult = await context.db
+        .select({ count: count() })
         .from(channelTable)
-        .innerJoin(userTable, eq(channelTable.createdBy, userTable.id))
-        .where(baseConditions);
+        .where(whereClause);
+      const total = Number(totalResult[0]?.count ?? 0);
+      const pageCount = Math.ceil(total / limit);
 
       return {
         channels,
+        total,
+        pageCount,
       };
     }),
 

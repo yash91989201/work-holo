@@ -49,16 +49,11 @@ function RouteComponent() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="font-bold text-2xl">Attendance</h1>
-        <p className="text-muted-foreground text-sm">
-          Manage and monitor member attendance records.
-        </p>
+        <h2 className="font-bold text-xl">Attendance</h2>
       </div>
 
-      {/* Stats Cards */}
       <AttendanceStats />
 
-      {/* Table Section */}
       <AttendanceTable />
     </div>
   );

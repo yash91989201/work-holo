@@ -49,18 +49,38 @@ export const GetChannelsInput = z.object({
   offset: z.number().min(0).default(0),
 });
 
-export const ListChannelsInput = z.object({
-  type: ChannelTypeSchema.optional(),
-  teamId: z.string().optional(),
-  includeArchived: z.boolean().default(false),
+export const ListChannelsInput = z
+  .object({
+    page: z.number().default(1),
+    limit: z.number().default(10),
+    search: z.string().optional(),
+    filters: z
+      .object({
+        type: ChannelTypeSchema.optional(),
+        teamId: z.string().optional(),
+        includeArchived: z.boolean().default(false),
+      })
+      .optional(),
+    sorting: z
+      .array(
+        z.object({
+          id: z.string(),
+          desc: z.boolean(),
+        })
+      )
+      .optional(),
+  })
+  .optional()
+  .default({ page: 1, limit: 10 });
+
+const ChannelWithCreator = ChannelSchema.extend({
+  creator: UserSchema,
 });
 
 export const ListChannelsOutput = z.object({
-  channels: z.array(
-    ChannelSchema.extend({
-      creator: UserSchema,
-    })
-  ),
+  channels: z.array(ChannelWithCreator),
+  total: z.number(),
+  pageCount: z.number(),
 });
 
 // Add channel member input

@@ -8,7 +8,7 @@ export function useListOrgTeams() {
     refetch: refetchTeams,
     isRefetching,
   } = useSuspenseQuery({
-    queryKey: getAuthQueryKey.organization.members("current"),
+    queryKey: getAuthQueryKey.organization.teams("current"),
     queryFn: async () => {
       const { data, error } = await authClient.organization.listTeams();
 

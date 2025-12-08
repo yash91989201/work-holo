@@ -21,26 +21,41 @@ export type GetAttendanceStatsOutputType = z.infer<
 >;
 
 // List attendance records input/output
-export const ListAttendanceRecordsInput = z.object({
-  page: z.number().min(1).default(1),
-  perPage: z.number().min(1).max(100).default(10),
-  search: z.string().optional(),
-  date: z.string().optional(), // ISO date string (for single date)
-  startDate: z.string().optional(), // ISO date string (for date range)
-  endDate: z.string().optional(), // ISO date string (for date range)
-  status: z
-    .enum([
-      "present",
-      "absent",
-      "late",
-      "excused",
-      "partial",
-      "holiday",
-      "sick_leave",
-      "work_from_home",
-    ])
-    .optional(),
-});
+export const ListAttendanceRecordsInput = z
+  .object({
+    page: z.number().min(1).default(1),
+    perPage: z.number().min(1).max(100).default(10),
+    search: z.string().optional(),
+    filters: z
+      .object({
+        date: z.date().optional(),
+        startDate: z.date().optional(),
+        endDate: z.date().optional(),
+        status: z
+          .enum([
+            "present",
+            "absent",
+            "late",
+            "excused",
+            "partial",
+            "holiday",
+            "sick_leave",
+            "work_from_home",
+          ])
+          .optional(),
+      })
+      .optional(),
+    sorting: z
+      .array(
+        z.object({
+          id: z.string(),
+          desc: z.boolean(),
+        })
+      )
+      .optional(),
+  })
+  .optional()
+  .default({ page: 1, perPage: 10 });
 
 export const AttendanceRecordWithUser = AttendanceSelectSchema.extend({
   user: z.object({

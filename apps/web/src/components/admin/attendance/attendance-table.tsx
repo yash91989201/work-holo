@@ -7,11 +7,23 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useNavigate, useSearch } from "@tanstack/react-router";
+import { useSearch } from "@tanstack/react-router";
+import {
+  type ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  type PaginationState,
+  type SortingState,
+  useReactTable,
+} from "@tanstack/react-table";
+import { useDebounce } from "@uidotdev/usehooks";
+import type { AttendanceRecordWithUser } from "@work-holo/api/lib/schemas/admin-attendance";
 import { startOfMonth, subDays } from "date-fns";
-import { useState } from "react";
+import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { useMemo, useState } from "react";
 import type { DateRange } from "react-day-picker";
 import { toast } from "sonner";
+import type { z } from "zod";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -57,30 +69,36 @@ interface AttendanceSearch {
   status?: string;
 }
 
-export function AttendanceTable() {
-  const navigate = useNavigate({
-    from: "/org/$slug/dashboard/attendance",
-  });
+// Helper for type safety if not imported
+type AttendanceRecord = z.infer<typeof AttendanceRecordWithUser>;
 
+export function AttendanceTable() {
   const searchParams = useSearch({
     from: "/(authenticated)/org/$slug/dashboard/attendance/",
   }) as AttendanceSearch;
 
-  const { page = 1, search = "", startDate, endDate, status } = searchParams;
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: (searchParams.page || 1) - 1,
+    pageSize: 10,
+  });
 
-  const [searchInput, setSearchInput] = useState(search);
+  const [searchInput, setSearchInput] = useState(searchParams.search || "");
+  const debouncedSearch = useDebounce(searchInput, 500);
+
   const [dateRange, setDateRange] = useState<DateRange | undefined>(() => {
-    if (startDate && endDate) {
+    if (searchParams.startDate && searchParams.endDate) {
       return {
-        from: new Date(startDate),
-        to: new Date(endDate),
+        from: new Date(searchParams.startDate),
+        to: new Date(searchParams.endDate),
       };
     }
+
     return;
   });
 
   const [selectedStatus, setSelectedStatus] = useState<string | undefined>(
-    status
+    searchParams.status
   );
 
   const [filterOpen, setFilterOpen] = useState(false);
@@ -88,69 +106,181 @@ export function AttendanceTable() {
     null
   );
 
+  // Data Fetching
   const { data: attendanceData } = useSuspenseQuery(
     queryUtils.admin.attendance.listAttendanceRecords.queryOptions({
       input: {
-        page,
-        perPage: 10,
-        search,
-        startDate,
-        endDate,
-        status: status as any,
+        page: pagination.pageIndex + 1,
+        perPage: pagination.pageSize,
+        search: debouncedSearch || undefined,
+        filters: {
+          startDate: dateRange?.from?.toISOString(),
+          endDate: dateRange?.to?.toISOString(),
+          status: selectedStatus as any,
+        },
+        sorting: sorting.map((s) => ({ id: s.id, desc: s.desc })),
       },
     })
   );
 
-  const handleSearch = () => {
-    navigate({
-      search: (prev) => ({ ...prev, page: 1, search: searchInput }),
-    });
-  };
-
   const handleClearSearch = () => {
     setSearchInput("");
-    navigate({
-      search: (prev) => ({ ...prev, page: 1, search: "" }),
-    });
-  };
-
-  const handlePageChange = (newPage: number) => {
-    navigate({
-      search: (prev) => ({ ...prev, page: newPage }),
-    });
   };
 
   const handleApplyFilters = () => {
-    navigate({
-      search: (prev) => ({
-        ...prev,
-        page: 1,
-        startDate: dateRange?.from?.toISOString().split("T")[0],
-        endDate: dateRange?.to?.toISOString().split("T")[0],
-        status: selectedStatus,
-      }),
-    });
+    setPagination((p) => ({ ...p, pageIndex: 0 }));
     setFilterOpen(false);
   };
 
   const handleClearFilters = () => {
     setDateRange(undefined);
     setSelectedStatus(undefined);
-    navigate({
-      search: (prev) => ({
-        ...prev,
-        page: 1,
-        startDate: undefined,
-        endDate: undefined,
-        status: undefined,
-      }),
-    });
+    setPagination((p) => ({ ...p, pageIndex: 0 }));
     setFilterOpen(false);
   };
 
+  const columns = useMemo<ColumnDef<AttendanceRecord>[]>(
+    () => [
+      {
+        accessorKey: "user.name",
+        id: "user.name",
+        header: "Member",
+        cell: ({ row }) => {
+          const record = row.original;
+          const getInitials = (name: string | null) => {
+            if (!name) return "U";
+            return name
+              .split(" ")
+              .map((n) => n[0])
+              .join("")
+              .toUpperCase()
+              .slice(0, 2);
+          };
+          return (
+            <div className="flex items-center gap-3">
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={record.user.image ?? undefined} />
+                <AvatarFallback>{getInitials(record.user.name)}</AvatarFallback>
+              </Avatar>
+              <div>
+                <div className="font-medium">
+                  {record.user.name ?? "Unknown"}
+                </div>
+                <div className="text-muted-foreground text-sm">
+                  {record.user.email}
+                </div>
+              </div>
+            </div>
+          );
+        },
+      },
+      {
+        accessorKey: "date",
+        header: ({ column }) => (
+          <Button
+            className="-ml-4 h-8"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            variant="ghost"
+          >
+            Date
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        ),
+        cell: ({ row }) =>
+          new Date(row.original.date).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          }),
+      },
+      {
+        accessorKey: "checkInTime",
+        header: ({ column }) => (
+          <Button
+            className="-ml-4 h-8"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            variant="ghost"
+          >
+            Check In
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        ),
+        cell: ({ row }) => {
+          const val = row.original.checkInTime;
+          if (!val) return "-";
+          return new Date(val).toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+          });
+        },
+      },
+      {
+        accessorKey: "checkOutTime",
+        header: ({ column }) => (
+          <Button
+            className="-ml-4 h-8"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            variant="ghost"
+          >
+            Check Out
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        ),
+        cell: ({ row }) => {
+          const val = row.original.checkOutTime;
+          if (!val) return "-";
+          return new Date(val).toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+          });
+        },
+      },
+      {
+        accessorKey: "totalHours",
+        header: "Total Hours",
+        cell: ({ row }) =>
+          row.original.totalHours ? `${row.original.totalHours}h` : "-",
+      },
+      {
+        id: "actions",
+        enableHiding: false,
+        cell: ({ row }) => (
+          <Button
+            onClick={() => setDetailAttendanceId(row.original.id)}
+            size="icon"
+            variant="ghost"
+          >
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        ),
+      },
+    ],
+    []
+  );
+
+  const table = useReactTable({
+    data: attendanceData.records,
+    columns,
+    state: {
+      sorting,
+      pagination,
+    },
+    pageCount: attendanceData.pagination.totalPages,
+    rowCount: attendanceData.pagination.total,
+    onSortingChange: setSorting,
+    onPaginationChange: setPagination,
+    getCoreRowModel: getCoreRowModel(),
+    manualPagination: true,
+    manualSorting: true,
+    manualFiltering: true,
+  });
+
+  const activeFilterCount = [dateRange, selectedStatus].filter(Boolean).length;
+
   const handleExportCSV = () => {
     try {
-      // Create CSV content
       const headers = [
         "Member Name",
         "Email",
@@ -163,7 +293,6 @@ export function AttendanceTable() {
         "Location",
         "IP Address",
       ];
-
       const rows = attendanceData.records.map((record) => [
         record.user.name ?? "Unknown",
         record.user.email,
@@ -183,10 +312,8 @@ export function AttendanceTable() {
 
       const csvContent = [
         headers.join(","),
-        ...rows.map((row) => row.map((cell) => `"${cell}"`).join(",")),
+        ...rows.map((r) => r.map((c) => `"${c}"`).join(",")),
       ].join("\n");
-
-      // Create blob and download
       const blob = new Blob([csvContent], { type: "text/csv" });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
@@ -196,39 +323,11 @@ export function AttendanceTable() {
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
-
       toast.success("CSV exported successfully");
     } catch {
       toast.error("Failed to export CSV");
     }
   };
-
-  const formatTime = (timestamp: string | Date | null) => {
-    if (!timestamp) return "-";
-    const date = new Date(timestamp);
-    return date.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
-  };
-
-  const formatHours = (hours: string | null) => {
-    if (!hours) return "-";
-    return `${hours}h`;
-  };
-
-  const getInitials = (name: string | null) => {
-    if (!name) return "U";
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
-  const activeFilterCount = [startDate, endDate, status].filter(Boolean).length;
 
   return (
     <>
@@ -243,11 +342,6 @@ export function AttendanceTable() {
                 </InputGroupAddon>
                 <InputGroupInput
                   onChange={(e) => setSearchInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      handleSearch();
-                    }
-                  }}
                   placeholder="Search members..."
                   value={searchInput}
                 />
@@ -341,10 +435,7 @@ export function AttendanceTable() {
                           <Button
                             className="h-8 text-xs"
                             onClick={() =>
-                              setDateRange({
-                                from: new Date(),
-                                to: new Date(),
-                              })
+                              setDateRange({ from: new Date(), to: new Date() })
                             }
                             variant="outline"
                           >
@@ -412,17 +503,23 @@ export function AttendanceTable() {
         <CardContent>
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead>Member</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Check In</TableHead>
-                <TableHead>Check Out</TableHead>
-                <TableHead>Total Hours</TableHead>
-                <TableHead className="w-12" />
-              </TableRow>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow className="hover:bg-transparent" key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              ))}
             </TableHeader>
             <TableBody>
-              {attendanceData.records.length === 0 ? (
+              {table.getRowModel().rows?.length === 0 ? (
                 <TableRow>
                   <TableCell className="text-center" colSpan={6}>
                     <div className="py-8 text-muted-foreground">
@@ -431,45 +528,20 @@ export function AttendanceTable() {
                   </TableCell>
                 </TableRow>
               ) : (
-                attendanceData.records.map((record) => (
-                  <TableRow key={record.id}>
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <Avatar className="h-8 w-8">
-                          <AvatarImage src={record.user.image ?? undefined} />
-                          <AvatarFallback>
-                            {getInitials(record.user.name)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <div className="font-medium">
-                            {record.user.name ?? "Unknown"}
-                          </div>
-                          <div className="text-muted-foreground text-sm">
-                            {record.user.email}
-                          </div>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      {new Date(record.date).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
-                    </TableCell>
-                    <TableCell>{formatTime(record.checkInTime)}</TableCell>
-                    <TableCell>{formatTime(record.checkOutTime)}</TableCell>
-                    <TableCell>{formatHours(record.totalHours)}</TableCell>
-                    <TableCell>
-                      <Button
-                        onClick={() => setDetailAttendanceId(record.id)}
-                        size="icon"
-                        variant="ghost"
-                      >
-                        <span className="text-lg">⋮</span>
-                      </Button>
-                    </TableCell>
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    className="hover:bg-muted/50"
+                    data-state={row.getIsSelected() && "selected"}
+                    key={row.id}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
                   </TableRow>
                 ))
               )}
@@ -477,33 +549,73 @@ export function AttendanceTable() {
           </Table>
 
           {/* Pagination */}
-          {attendanceData.pagination.totalPages > 1 && (
-            <div className="mt-4 flex items-center justify-between">
-              <div className="text-muted-foreground text-sm">
-                Showing {(page - 1) * 10 + 1} to{" "}
-                {Math.min(page * 10, attendanceData.pagination.total)} of{" "}
-                {attendanceData.pagination.total} results
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  disabled={page === 1}
-                  onClick={() => handlePageChange(page - 1)}
-                  size="sm"
-                  variant="outline"
+          <div className="flex items-center justify-between p-4">
+            <div className="flex items-center gap-2 text-muted-foreground text-sm">
+              <div className="flex items-center gap-2">
+                <p className="hidden sm:block">Rows per page</p>
+                <Select
+                  onValueChange={(value) => {
+                    table.setPageSize(Number(value));
+                  }}
+                  value={`${table.getState().pagination.pageSize}`}
                 >
-                  <IconChevronLeft className="h-4 w-4" />
-                </Button>
-                <Button
-                  disabled={page === attendanceData.pagination.totalPages}
-                  onClick={() => handlePageChange(page + 1)}
-                  size="sm"
-                  variant="outline"
-                >
-                  <IconChevronRight className="h-4 w-4" />
-                </Button>
+                  <SelectTrigger className="h-8 w-[70px]">
+                    <SelectValue
+                      placeholder={table.getState().pagination.pageSize}
+                    />
+                  </SelectTrigger>
+                  <SelectContent side="top">
+                    {[10, 20, 30, 40, 50].map((pageSize) => (
+                      <SelectItem key={pageSize} value={`${pageSize}`}>
+                        {pageSize}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
+              <div>{attendanceData.pagination.total} row(s) total</div>
             </div>
-          )}
+            <div className="flex items-center space-x-2">
+              <Button
+                className="h-8 px-2 lg:px-3"
+                disabled={!table.getCanPreviousPage()}
+                onClick={() => table.setPageIndex(0)}
+                variant="outline"
+              >
+                <IconChevronLeft className="h-4 w-4" />
+                <span className="sr-only">First</span>
+              </Button>
+              <Button
+                className="h-8 px-2 lg:px-3"
+                disabled={!table.getCanPreviousPage()}
+                onClick={() => table.previousPage()}
+                variant="outline"
+              >
+                <IconChevronLeft className="h-4 w-4" />
+              </Button>
+              <span className="text-sm">
+                Page {table.getState().pagination.pageIndex + 1} of{" "}
+                {table.getPageCount()}
+              </span>
+              <Button
+                className="h-8 px-2 lg:px-3"
+                disabled={!table.getCanNextPage()}
+                onClick={() => table.nextPage()}
+                variant="outline"
+              >
+                <IconChevronRight className="h-4 w-4" />
+              </Button>
+              <Button
+                className="h-8 px-2 lg:px-3"
+                disabled={!table.getCanNextPage()}
+                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                variant="outline"
+              >
+                <IconChevronRight className="h-4 w-4" />
+                <span className="sr-only">Last</span>
+              </Button>
+            </div>
+          </div>
         </CardContent>
       </Card>
 

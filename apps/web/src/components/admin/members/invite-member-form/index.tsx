@@ -50,7 +50,7 @@ export const InviteMemberForm = () => {
         teamId: formData.teamId,
       });
 
-      if (error != null) {
+      if (error !== null) {
         throw new Error(error.message);
       }
 

@@ -1,8 +1,26 @@
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
-import type { ColumnDef } from "@tanstack/react-table";
+import {
+  type ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  type PaginationState,
+  type SortingState,
+  useReactTable,
+  type VisibilityState,
+} from "@tanstack/react-table";
+import { useDebounce } from "@uidotdev/usehooks";
 import type { ListChannelsOutputType } from "@work-holo/api/lib/types";
-import { Hash, Lock, MoreHorizontal, Plus, UserMinus } from "lucide-react";
-import { Suspense, useState } from "react";
+import {
+  ArrowUpDown,
+  Hash,
+  LayoutList,
+  Lock,
+  MoreHorizontal,
+  Plus,
+  Search,
+  UserMinus,
+} from "lucide-react";
+import { Suspense, useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -18,7 +36,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { DataTable } from "@/components/ui/data-table";
 import {
   Dialog,
   DialogContent,
@@ -34,147 +51,358 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { useListOrgMembers } from "@/hooks/use-list-org-members";
 import { queryClient, queryUtils } from "@/utils/orpc";
 import { ChannelMembersPopover } from "./channel-members-popover";
 
 export const ChannelsListTable = () => {
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  });
+  const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearch = useDebounce(searchTerm, 500);
+
   const {
-    data: { channels },
+    data: { channels, total, pageCount },
   } = useSuspenseQuery(
-    queryUtils.communication.channel.list.queryOptions({ input: {} })
+    queryUtils.communication.channel.list.queryOptions({
+      input: {
+        page: pagination.pageIndex + 1,
+        limit: pagination.pageSize,
+        search: debouncedSearch || undefined,
+        sorting: sorting.map((s) => ({
+          id: s.id,
+          desc: s.desc,
+        })),
+      },
+    })
   );
 
-  return <DataTable columns={columns} data={channels} />;
-};
+  const columns = useMemo<ColumnDef<ListChannelsOutputType["channels"][0]>[]>(
+    () => [
+      {
+        accessorKey: "name",
+        header: ({ column }) => (
+          <Button
+            className="-ml-4"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            variant="ghost"
+          >
+            Channel
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        ),
+        cell: ({ row }) => {
+          const channel = row.original;
+          const isPrivate = channel.isPrivate;
+          const TypeIcon = isPrivate ? Lock : Hash;
 
-const getChannelTypeIcon = (type: string) => {
-  switch (type) {
-    case "private":
-    case "direct":
-      return Lock;
-    default:
-      return Hash;
-  }
-};
-
-const getChannelTypeBadgeVariant = (type: string) => {
-  switch (type) {
-    case "private":
-    case "direct":
-      return "secondary";
-    default:
-      return "default";
-  }
-};
-
-export const columns: ColumnDef<ListChannelsOutputType["channels"][0]>[] = [
-  {
-    accessorKey: "name",
-    header: "Channel",
-    cell: ({ row }) => {
-      const channel = row.original;
-      const TypeIcon = getChannelTypeIcon(channel.name);
-
-      return (
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-md bg-muted">
-            <TypeIcon className="h-5 w-5" />
-          </div>
-          <div>
-            <div className="font-medium">{channel.name}</div>
-            {channel.description && (
-              <div className="text-muted-foreground text-sm">
-                {channel.description}
+          return (
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-muted">
+                <TypeIcon className="h-5 w-5" />
               </div>
-            )}
-            {channel.isPrivate && (
-              <Badge className="mt-1 text-xs" variant="outline">
-                Private
-              </Badge>
-            )}
-          </div>
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "type",
-    header: "Type",
-    cell: ({ row }) => {
-      const channel = row.original;
-      const TypeIcon = getChannelTypeIcon(channel.type);
+              <div>
+                <div className="font-medium">{channel.name}</div>
+                {channel.description && (
+                  <div className="text-muted-foreground text-sm">
+                    {channel.description}
+                  </div>
+                )}
+                {channel.isPrivate && (
+                  <Badge className="mt-1 text-xs" variant="outline">
+                    Private
+                  </Badge>
+                )}
+              </div>
+            </div>
+          );
+        },
+      },
+      {
+        accessorKey: "type",
+        header: ({ column }) => (
+          <Button
+            className="-ml-4 h-8 data-[state=open]:bg-accent"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            variant="ghost"
+          >
+            Type
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        ),
+        cell: ({ row }) => <Badge>{row.original.type}</Badge>,
+      },
+      {
+        accessorKey: "members",
+        header: "Members",
+        enableSorting: false,
+        cell: ({ row }) => {
+          const channel = row.original;
+          return <ChannelMembersPopover channelId={channel.id} />;
+        },
+      },
+      {
+        accessorKey: "creator",
+        header: "Created by",
+        enableSorting: false,
+        cell: ({ row }) => row.original.creator.name,
+      },
+      {
+        accessorKey: "createdAt",
+        header: ({ column }) => (
+          <Button
+            className="-ml-4"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            variant="ghost"
+          >
+            Created On
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        ),
+        cell: ({ row }) => {
+          const channel = row.original;
+          return (
+            <div className="text-muted-foreground">
+              {new Date(channel.createdAt).toLocaleDateString()}
+            </div>
+          );
+        },
+      },
+      {
+        id: "actions",
+        header: "Actions",
+        cell: ({ row }) => {
+          const channel = row.original;
+          return (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button size="icon" variant="ghost">
+                  <MoreHorizontal />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="flex flex-col items-stretch gap-1.5">
+                <DropdownMenuItem asChild>
+                  <Suspense fallback={<Skeleton className="h-9" />}>
+                    <AddMemberDialog channelId={channel.id} />
+                  </Suspense>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Suspense fallback={<Skeleton className="h-9" />}>
+                    <RemoveMemberDialog channelId={channel.id} />
+                  </Suspense>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild variant="destructive">
+                  <DeleteChannelDialog channelId={channel.id} />
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          );
+        },
+      },
+    ],
+    []
+  );
 
-      return (
-        <Badge
-          className="gap-1"
-          variant={getChannelTypeBadgeVariant(channel.type)}
-        >
-          <TypeIcon className="h-3 w-3" />
-          {channel.type}
-        </Badge>
-      );
+  const table = useReactTable({
+    data: channels,
+    columns,
+    state: {
+      sorting,
+      columnVisibility,
+      pagination,
     },
-  },
-  {
-    accessorKey: "members",
-    header: "Members",
-    cell: ({ row }) => {
-      const channel = row.original;
-      return <ChannelMembersPopover channelId={channel.id} />;
-    },
-  },
-  {
-    accessorKey: "creator",
-    header: "Created by",
-    cell: ({ row }) => row.original.creator.name,
-  },
-  {
-    accessorKey: "createdAt",
-    header: "Created On",
-    cell: ({ row }) => {
-      const channel = row.original;
-      return (
-        <div className="text-muted-foreground">
-          {new Date(channel.createdAt).toLocaleDateString()}
+    pageCount,
+    rowCount: total,
+    onSortingChange: setSorting,
+    onPaginationChange: setPagination,
+    onColumnVisibilityChange: setColumnVisibility,
+    getCoreRowModel: getCoreRowModel(),
+    manualPagination: true,
+    manualSorting: true,
+    manualFiltering: true,
+  });
+
+  if (channels.length === 0 && !debouncedSearch) {
+    return (
+      <div className="rounded-lg border bg-card py-12 text-center text-card-foreground shadow-sm">
+        <LayoutList className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+        <h3 className="mb-2 font-medium text-lg">No channels found</h3>
+        <p className="mb-4 text-muted-foreground">
+          Get started by creating your first channel.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full rounded-md border bg-card text-card-foreground shadow-sm">
+      <div className="flex items-center justify-between gap-4 border-b p-4">
+        <div className="flex flex-1 items-center gap-2">
+          <InputGroup className="w-full max-w-sm">
+            <InputGroupAddon>
+              <Search className="size-4" />
+            </InputGroupAddon>
+            <InputGroupInput
+              onChange={(event) => setSearchTerm(event.target.value)}
+              placeholder="Search channels..."
+              value={searchTerm}
+            />
+          </InputGroup>
         </div>
-      );
-    },
-  },
-  {
-    id: "actions",
-    header: "Actions",
-    cell: ({ row }) => {
-      const channel = row.original;
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button size="icon" variant="ghost">
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="flex flex-col items-stretch gap-1.5">
-            <DropdownMenuItem asChild>
-              <Suspense fallback={<Skeleton className="h-9" />}>
-                <AddMemberDialog channelId={channel.id} />
-              </Suspense>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Suspense fallback={<Skeleton className="h-9" />}>
-                <RemoveMemberDialog channelId={channel.id} />
-              </Suspense>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild variant="destructive">
-              <DeleteChannelDialog channelId={channel.id} />
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
-  },
-];
+      </div>
+
+      <div className="rounded-md border-b">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow className="hover:bg-transparent" key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  className="hover:bg-muted/50"
+                  data-state={row.getIsSelected() && "selected"}
+                  key={row.id}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  className="h-24 text-center"
+                  colSpan={columns.length}
+                >
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+
+      <div className="flex items-center justify-between p-4">
+        <div className="flex items-center gap-2 text-muted-foreground text-sm">
+          <div className="flex items-center gap-2">
+            <p className="hidden sm:block">Rows per page</p>
+            <Select
+              onValueChange={(value) => {
+                table.setPageSize(Number(value));
+              }}
+              value={`${table.getState().pagination.pageSize}`}
+            >
+              <SelectTrigger className="h-8 w-[70px]">
+                <SelectValue
+                  placeholder={table.getState().pagination.pageSize}
+                />
+              </SelectTrigger>
+              <SelectContent side="top">
+                {[10, 20, 30, 40, 50].map((pageSize) => (
+                  <SelectItem key={pageSize} value={`${pageSize}`}>
+                    {pageSize}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>{total} row(s) total</div>
+        </div>
+        <div className="flex items-center space-x-2">
+          <Button
+            className="h-8 px-2 lg:px-3"
+            disabled={!table.getCanPreviousPage()}
+            onClick={() => table.setPageIndex(0)}
+            variant="outline"
+          >
+            <span className="sr-only">Go to first page</span>
+            <span className="hidden sm:block">First</span>
+            <span className="sm:hidden">«</span>
+          </Button>
+          <Button
+            className="h-8 px-2 lg:px-3"
+            disabled={!table.getCanPreviousPage()}
+            onClick={() => table.previousPage()}
+            variant="outline"
+          >
+            <span className="sr-only">Go to previous page</span>
+            <span className="hidden sm:block">Previous</span>
+            <span className="sm:hidden">‹</span>
+          </Button>
+          <div className="flex items-center justify-center font-medium text-sm">
+            Page {table.getState().pagination.pageIndex + 1} of{" "}
+            {table.getPageCount() || 1}
+          </div>
+          <Button
+            className="h-8 px-2 lg:px-3"
+            disabled={!table.getCanNextPage()}
+            onClick={() => table.nextPage()}
+            variant="outline"
+          >
+            <span className="sr-only">Go to next page</span>
+            <span className="hidden sm:block">Next</span>
+            <span className="sm:hidden">›</span>
+          </Button>
+          <Button
+            className="h-8 px-2 lg:px-3"
+            disabled={!table.getCanNextPage()}
+            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+            variant="outline"
+          >
+            <span className="sr-only">Go to last page</span>
+            <span className="hidden sm:block">Last</span>
+            <span className="sm:hidden">»</span>
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export function AddMemberDialog({ channelId }: { channelId: string }) {
   const [dialogOpen, setDialogOpen] = useState(false);
