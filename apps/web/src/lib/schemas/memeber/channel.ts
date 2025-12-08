@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const CreateChannelFormSchema = z
   .object({
-    name: z.string().min(4).max(64),
+    name: z.string().min(3).max(64),
     description: z.string().min(4).max(128).optional(),
     type: z.enum(["team", "group", "direct"]),
     isPublic: z.boolean().default(true),
