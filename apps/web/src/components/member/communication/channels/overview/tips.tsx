@@ -51,7 +51,7 @@ export const ChannelTips = () => {
 
   return (
     <div>
-      <h2 className="mb-4 font-semibold text-2xl">Tips & Best Practices</h2>
+      <h2 className="mb-4 font-semibold text-xl">Tips & Best Practices</h2>
       <div className="grid gap-4 md:grid-cols-3">
         {tips.map((tip, index) => (
           <Card

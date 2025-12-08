@@ -17,6 +17,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { queryUtils } from "@/utils/orpc";
 
 export const RecentChannels = () => {
@@ -27,13 +34,27 @@ export const RecentChannels = () => {
   );
 
   return (
-    <div data-channels-list>
-      <h2 className="mb-4 font-semibold text-2xl">Recent Channels</h2>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {channels.map((channel) => (
-          <ChannelCard channel={channel} key={channel.id} slug={slug} />
-        ))}
-      </div>
+    <div>
+      <h2 className="mb-4 font-semibold text-xl">Recent Channels</h2>
+      {channels.length === 0 ? (
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <Hash className="h-12 w-12 text-green-600" />
+            </EmptyMedia>
+            <EmptyTitle>No recent channels found</EmptyTitle>
+            <EmptyDescription>
+              Start by creating a channel for your team, project, or topic.
+            </EmptyDescription>
+          </EmptyHeader>
+        </Empty>
+      ) : (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {channels.map((channel) => (
+            <ChannelCard channel={channel} key={channel.id} slug={slug} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
@@ -92,7 +113,7 @@ export const ChannelCard = ({
 
 export const ChannelTypes = () => (
   <div>
-    <h2 className="mb-4 font-semibold text-2xl">Channel Types</h2>
+    <h2 className="mb-4 font-semibold text-xl">Channel Types</h2>
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       <Card>
         <CardHeader>
@@ -223,7 +244,7 @@ export const GettingStarted = () => {
 
   return (
     <div>
-      <h2 className="mb-4 font-semibold text-2xl">Getting Started</h2>
+      <h2 className="mb-4 font-semibold text-xl">Getting Started</h2>
       <Card>
         <CardContent className="p-6">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -286,7 +307,7 @@ export const ChannelFeatures = () => {
 
   return (
     <div>
-      <h2 className="mb-4 font-semibold text-2xl">Channel Features</h2>
+      <h2 className="mb-4 font-semibold text-xl">Channel Features</h2>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {features.map((feature, index) => (
           <Card key={index.toString()}>
