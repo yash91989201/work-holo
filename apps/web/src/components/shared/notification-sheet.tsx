@@ -1,9 +1,11 @@
+import { useNavigate, useParams } from "@tanstack/react-router";
 import { AtSign, Bell, Mail, MessageSquare, Users } from "lucide-react";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Item,
+  ItemActions,
   ItemContent,
   ItemDescription,
   ItemGroup,
@@ -19,8 +21,10 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
+import { messagesCollection } from "@/db/collections";
 import { useNotifications } from "@/hooks/communications/use-notifications";
 import { cn } from "@/lib/utils";
+import { useChannelMessageHighlight } from "@/stores/channel-store";
 
 function getNotificationIcon(type: string) {
   switch (type) {
@@ -123,45 +127,33 @@ function NotificationListItem({
   notification,
   onMarkAsRead,
 }: NotificationListItemProps) {
-  const itemRef = useRef<HTMLDivElement | null>(null);
-  const hasMarkedRef = useRef(false);
-  const timeoutRef = useRef<number | null>(null);
+  const { highlightMessage } = useChannelMessageHighlight();
+  const navigate = useNavigate();
+  const { slug } = useParams({
+    from: "/(authenticated)/org/$slug",
+  });
 
-  useEffect(() => {
-    if (notification.status !== "unread" || hasMarkedRef.current) return;
+  const handleClick = () => {
+    if (notification.status === "unread") {
+      onMarkAsRead({ notificationId: notification.id });
+    }
 
-    const node = itemRef.current;
+    if (
+      notification.type === "mention" &&
+      notification.entityId &&
+      typeof slug === "string"
+    ) {
+      const message = messagesCollection.get(notification.entityId);
 
-    if (!node || typeof IntersectionObserver === "undefined") return;
-
-    const handleInView = (entries: IntersectionObserverEntry[]) => {
-      const [entry] = entries;
-
-      if (entry.isIntersecting && !hasMarkedRef.current) {
-        timeoutRef.current = window.setTimeout(() => {
-          hasMarkedRef.current = true;
-          onMarkAsRead({ notificationId: notification.id });
-        }, 2000);
-      } else if (timeoutRef.current) {
-        window.clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
+      if (message) {
+        highlightMessage(notification.entityId);
+        navigate({
+          to: "/org/$slug/communication/channels/$id",
+          params: { slug, id: message.channelId },
+        });
       }
-    };
-
-    const observer = new IntersectionObserver(handleInView, {
-      threshold: 0.5,
-    });
-
-    observer.observe(node);
-
-    return () => {
-      if (timeoutRef.current) {
-        window.clearTimeout(timeoutRef.current);
-      }
-
-      observer.disconnect();
-    };
-  }, [notification.id, notification.status, onMarkAsRead]);
+    }
+  };
 
   return (
     <Item
@@ -173,7 +165,7 @@ function NotificationListItem({
       )}
       variant="outline"
     >
-      <div ref={itemRef}>
+      <div>
         <ItemMedia className="mt-1" variant="icon">
           {getNotificationIcon(notification.type)}
         </ItemMedia>
@@ -188,9 +180,16 @@ function NotificationListItem({
             <ItemDescription>{notification.message}</ItemDescription>
           )}
         </ItemContent>
-        <span className="whitespace-nowrap text-muted-foreground text-xs">
-          {formatTimeAgo(new Date(notification.createdAt))}
-        </span>
+        <div className="flex flex-col items-end gap-2">
+          <ItemActions>
+            <Button onClick={handleClick} size="sm" variant="ghost">
+              View
+            </Button>
+          </ItemActions>
+          <span className="whitespace-nowrap text-muted-foreground text-xs">
+            {formatTimeAgo(new Date(notification.createdAt))}
+          </span>
+        </div>
       </div>
     </Item>
   );
