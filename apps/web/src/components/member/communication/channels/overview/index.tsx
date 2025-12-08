@@ -22,10 +22,8 @@ import { queryUtils } from "@/utils/orpc";
 export const RecentChannels = () => {
   const { slug } = useParams({ from: "/(authenticated)/org/$slug" });
 
-  const {
-    data: { channels },
-  } = useSuspenseQuery(
-    queryUtils.communication.channel.list.queryOptions({ input: {} })
+  const { data: channels } = useSuspenseQuery(
+    queryUtils.member.channel.recentChannels.queryOptions({ input: {} })
   );
 
   return (
