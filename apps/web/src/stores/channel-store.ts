@@ -52,12 +52,18 @@ interface MentionsSidebarState {
   isOpen: boolean;
 }
 
+interface HighlightedMessageState {
+  messageId: string | null;
+  triggeredAt: number | null;
+}
+
 interface ChannelState {
   infoSidebar: InfoSidebarState;
   maximizedMessageComposer: MaximizedMessageComposerState;
   messageThread: MessageThreadState;
   pinnedMessages: PinnedMessagesState;
   mentionsSidebar: MentionsSidebarState;
+  highlightedMessage: HighlightedMessageState;
 
   openInfoSidebar: () => void;
   closeInfoSidebar: () => void;
@@ -75,6 +81,9 @@ interface ChannelState {
 
   openMentionsSidebar: () => void;
   closeMentionsSidebar: () => void;
+
+  highlightMessage: (messageId: string) => void;
+  clearHighlightedMessage: () => void;
 }
 
 const defaultMaximizedComposerState: MaximizedMessageComposerState = {
@@ -93,6 +102,10 @@ const useChannelStore = create<ChannelState>((set) => ({
   },
   mentionsSidebar: {
     isOpen: false,
+  },
+  highlightedMessage: {
+    messageId: null,
+    triggeredAt: null,
   },
   messageThread: {
     messageId: null,
@@ -125,6 +138,17 @@ const useChannelStore = create<ChannelState>((set) => ({
   closePinnedMessages: () => set({ pinnedMessages: { isOpen: false } }),
   openMentionsSidebar: () => set({ mentionsSidebar: { isOpen: true } }),
   closeMentionsSidebar: () => set({ mentionsSidebar: { isOpen: false } }),
+  highlightMessage: (messageId) =>
+    set({
+      highlightedMessage: {
+        messageId,
+        triggeredAt: Date.now(),
+      },
+    }),
+  clearHighlightedMessage: () =>
+    set({
+      highlightedMessage: { messageId: null, triggeredAt: null },
+    }),
 }));
 
 export function useChannel(channelId: string) {
@@ -215,6 +239,26 @@ export function useMentionsSidebar() {
     openMentionsSidebar,
     closeMentionsSidebar,
     toggleMentionsSidebar,
+  };
+}
+
+export function useChannelMessageHighlight() {
+  const highlightedMessageId = useChannelStore(
+    (state) => state.highlightedMessage.messageId
+  );
+  const highlightedAt = useChannelStore(
+    (state) => state.highlightedMessage.triggeredAt
+  );
+  const highlightMessage = useChannelStore((state) => state.highlightMessage);
+  const clearHighlightedMessage = useChannelStore(
+    (state) => state.clearHighlightedMessage
+  );
+
+  return {
+    highlightedMessageId,
+    highlightedAt,
+    highlightMessage,
+    clearHighlightedMessage,
   };
 }
 

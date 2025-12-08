@@ -19,11 +19,13 @@ interface MessageItemProps {
   message: MessageWithSenderType;
   isThreadMessage?: boolean;
   isPinnedMessage?: boolean;
+  isHighlighted?: boolean;
 }
 
 export function MessageItem({
   message,
   isThreadMessage = false,
+  isHighlighted = false,
 }: MessageItemProps) {
   const {
     deleteMessage,
@@ -103,6 +105,8 @@ export function MessageItem({
         {
           "bg-primary/5 ring-2 ring-primary/20 hover:bg-primary/10":
             isMessageThreadActive,
+          "ring-2 ring-primary animate-[pulse_0.2s_ease-in-out_6]":
+            isHighlighted,
         }
       )}
       data-message-id={message.id}

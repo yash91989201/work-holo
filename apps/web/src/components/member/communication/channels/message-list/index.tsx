@@ -31,6 +31,7 @@ export function MessageList() {
     filterDate,
     scrollToDate,
     dateRange,
+    highlightedMessageId,
   } = useVirtualMessages();
 
   if (isLoading && messages.length === 0) {
@@ -110,7 +111,10 @@ export function MessageList() {
                   key={virtualRow.key}
                   ref={virtualizer.measureElement}
                 >
-                  <MessageItem message={item} />
+                  <MessageItem
+                    isHighlighted={highlightedMessageId === item.id}
+                    message={item}
+                  />
                 </div>
               );
             })}

@@ -18,6 +18,7 @@ import {
   buildOrderedMessages,
   insertDateSeparators,
 } from "@/lib/communications/message";
+import { useChannelMessageHighlight } from "@/stores/channel-store";
 
 export function useVirtualMessages() {
   const { id: channelId } = useParams({
@@ -25,6 +26,7 @@ export function useVirtualMessages() {
   });
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  const pendingDateRef = useRef<Date | undefined>(undefined);
 
   const {
     messages,
@@ -60,6 +62,8 @@ export function useVirtualMessages() {
   const totalSize = virtualizer.getTotalSize();
 
   const [showScrollButton, setShowScrollButton] = useState(false);
+  const { highlightedAt, highlightedMessageId, clearHighlightedMessage } =
+    useChannelMessageHighlight();
 
   // Initial scroll to bottom
   useEffect(() => {
@@ -184,6 +188,47 @@ export function useVirtualMessages() {
     return () => el.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    if (!highlightedMessageId) return;
+
+    const targetIndex = items.findIndex((item) => {
+      if ("type" in item && item.type === "date-separator") return false;
+      return item.id === highlightedMessageId;
+    });
+
+    if (targetIndex === -1) return;
+
+    isAutoScrollingRef.current = true;
+    setShowScrollButton(false);
+
+    const frameId = requestAnimationFrame(() => {
+      virtualizer.scrollToIndex(targetIndex, {
+        align: "center",
+        behavior: "smooth",
+      });
+    });
+
+    const resetAutoScrollTimeout = window.setTimeout(() => {
+      isAutoScrollingRef.current = false;
+    }, 800);
+
+    const timeoutId = window.setTimeout(() => {
+      clearHighlightedMessage();
+    }, 1200);
+
+    return () => {
+      cancelAnimationFrame(frameId);
+      window.clearTimeout(timeoutId);
+      window.clearTimeout(resetAutoScrollTimeout);
+    };
+  }, [
+    clearHighlightedMessage,
+    highlightedAt,
+    highlightedMessageId,
+    items,
+    virtualizer,
+  ]);
+
   const scrollToBottom = useCallback(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -198,6 +243,23 @@ export function useVirtualMessages() {
 
   // Date filter state
   const [filterDate, setFilterDate] = useState<Date | undefined>(undefined);
+
+  const findIndexForDate = useCallback(
+    (date: Date) => {
+      const targetDate = new Date(date);
+      targetDate.setHours(0, 0, 0, 0);
+
+      return items.findIndex((item) => {
+        if ("type" in item && item.type === "date-separator") {
+          return false;
+        }
+        const messageDate = new Date(item.createdAt);
+        messageDate.setHours(0, 0, 0, 0);
+        return messageDate >= targetDate;
+      });
+    },
+    [items]
+  );
 
   // Calculate min and max dates from messages
   const dateRange = useMemo(() => {
@@ -218,23 +280,14 @@ export function useVirtualMessages() {
       setFilterDate(date);
 
       if (!date) {
+        pendingDateRef.current = undefined;
         scrollToBottom();
         return;
       }
 
-      // Normalize the date to start of day for comparison
-      const targetDate = new Date(date);
-      targetDate.setHours(0, 0, 0, 0);
+      pendingDateRef.current = date;
 
-      // Find the first item on or after the selected date
-      const index = items.findIndex((item) => {
-        if ("type" in item && item.type === "date-separator") {
-          return false;
-        }
-        const messageDate = new Date(item.createdAt);
-        messageDate.setHours(0, 0, 0, 0);
-        return messageDate >= targetDate;
-      });
+      const index = findIndexForDate(date);
 
       if (index !== -1) {
         requestAnimationFrame(() => {
@@ -243,10 +296,54 @@ export function useVirtualMessages() {
             behavior: "smooth",
           });
         });
+        pendingDateRef.current = undefined;
+        return;
+      }
+
+      if (hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
       }
     },
-    [items, scrollToBottom, virtualizer]
+    [
+      fetchNextPage,
+      findIndexForDate,
+      hasNextPage,
+      isFetchingNextPage,
+      scrollToBottom,
+      virtualizer,
+    ]
   );
+
+  useEffect(() => {
+    const pendingDate = pendingDateRef.current;
+    if (!pendingDate) return;
+
+    const index = findIndexForDate(pendingDate);
+
+    if (index !== -1) {
+      requestAnimationFrame(() => {
+        virtualizer.scrollToIndex(index, {
+          align: "start",
+          behavior: "smooth",
+        });
+      });
+      pendingDateRef.current = undefined;
+      return;
+    }
+
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+      return;
+    }
+
+    pendingDateRef.current = undefined;
+  }, [
+    fetchNextPage,
+    findIndexForDate,
+    hasNextPage,
+    isFetchingNextPage,
+    virtualizer,
+  ]);
 
   return {
     // DOM
@@ -274,6 +371,8 @@ export function useVirtualMessages() {
     filterDate,
     scrollToDate,
     dateRange,
+
+    highlightedMessageId,
   };
 }
 
