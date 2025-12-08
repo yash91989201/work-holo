@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM oven/bun:1.3.3-slim AS base
+FROM oven/bun:1.3.4-slim AS base
 WORKDIR /app
 
 FROM base AS deps
@@ -39,7 +39,7 @@ COPY apps/server/tsdown.config.ts apps/server/
 # Build in parallel
 RUN  bun run --cwd apps/server compile
 
-FROM oven/bun:1.3.3-slim AS runtime
+FROM oven/bun:1.3.4-slim AS runtime
 WORKDIR /app
 
 COPY --from=builder /app/apps/server/server /app/server
