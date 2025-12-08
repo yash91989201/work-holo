@@ -1,11 +1,11 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { Suspense } from "react";
+import { ChannelHeader } from "@/components/member/communication/channels/channel-header";
 import { ChannelInfoSidebar } from "@/components/member/communication/channels/channel-info-sidebar";
 import { MentionsSidebar } from "@/components/member/communication/channels/mentions-sidebar";
 import { MessageListSkeleton } from "@/components/member/communication/channels/message-list/message-list-skeleton";
 import { MessageThreadSidebar } from "@/components/member/communication/channels/message-thread-sidebar";
 import { PinnedMessagesSidebar } from "@/components/member/communication/channels/pinned-messages-sidebar";
-import { ChannelHeader } from "@/components/member/communication/channels/channel-header";
 
 export const Route = createFileRoute(
   "/(authenticated)/org/$slug/(modules)/communication/channels/$id"

@@ -75,8 +75,8 @@ export function MentionMessageItem({ message }: MentionMessageItemProps) {
       <div className="flex items-center justify-between rounded-lg border bg-muted/40 px-3 py-2">
         <Hash className="h-4 w-4 text-muted-foreground" />
         <Link
-          params={{ slug, id: message.channel.id }}
           onClick={handleViewMention}
+          params={{ slug, id: message.channel.id }}
           to="/org/$slug/communication/channels/$id"
         >
           <Button className="h-7 px-2 text-xs" size="sm" variant="ghost">

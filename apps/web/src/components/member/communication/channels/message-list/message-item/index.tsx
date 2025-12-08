@@ -105,7 +105,7 @@ export function MessageItem({
         {
           "bg-primary/5 ring-2 ring-primary/20 hover:bg-primary/10":
             isMessageThreadActive,
-          "ring-2 ring-primary animate-[pulse_0.2s_ease-in-out_6]":
+          "animate-[pulse_0.2s_ease-in-out_6] ring-2 ring-primary":
             isHighlighted,
         }
       )}

@@ -1,12 +1,4 @@
-import {
-  Circle,
-  Clock,
-  LogIn,
-  Moon,
-  Users,
-  WifiOff,
-  XCircle,
-} from "lucide-react";
+import { Circle, Clock, Moon, Users, WifiOff, XCircle } from "lucide-react";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -101,13 +93,6 @@ const formatTimeAgo = (dateString: string | undefined) => {
   if (diffInDays < 7) return `${diffInDays}d ago`;
 
   return date.toLocaleDateString();
-};
-
-const formatTime = (dateString: string | undefined) => {
-  if (!dateString) return null;
-
-  const date = new Date(dateString);
-  return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 };
 
 export function PresenceRoster() {
@@ -215,8 +200,6 @@ export function PresenceRoster() {
                   const config = presenceConfig[member.status];
                   const initials = getInitials(member.user.name);
                   const lastSeen = formatTimeAgo(member.presence?.lastSeenAt);
-                  const punchedInTime = formatTime(member.presence?.punchedIn);
-                  const isPunchedIn = !!member.presence?.punchedIn;
 
                   return (
                     <div key={member.userId}>
@@ -254,20 +237,6 @@ export function PresenceRoster() {
                               <span className="flex items-center gap-1">
                                 <Clock className="h-3 w-3" />
                                 Active {lastSeen}
-                              </span>
-                            )}
-
-                            {member.status === "offline" && lastSeen && (
-                              <span className="flex items-center gap-1">
-                                <Clock className="h-3 w-3" />
-                                Last seen {lastSeen}
-                              </span>
-                            )}
-
-                            {isPunchedIn && punchedInTime && (
-                              <span className="ml-4 inline-flex items-center gap-1">
-                                <LogIn className="h-3 w-3" />
-                                Punched in at {punchedInTime}
                               </span>
                             )}
                           </ItemDescription>

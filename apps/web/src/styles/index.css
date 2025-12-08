@@ -344,6 +344,15 @@ body {
   @apply whitespace-nowrap;
 }
 
+/* Channel mention styles */
+.mention-channel {
+  @apply bg-blue-500/20 text-blue-600 font-semibold;
+}
+
+.mention-channel:hover {
+  @apply bg-blue-500/30;
+}
+
 /* Dark mode mention styles */
 .dark .mention {
   @apply bg-primary/20 text-primary-foreground;
@@ -351,6 +360,14 @@ body {
 
 .dark .mention:hover {
   @apply bg-primary/30;
+}
+
+.dark .mention-channel {
+  @apply bg-blue-500/30 text-blue-400;
+}
+
+.dark .mention-channel:hover {
+  @apply bg-blue-500/40;
 }
 
 @layer base {
