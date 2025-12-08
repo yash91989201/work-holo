@@ -3,7 +3,6 @@ import { useMentionUsers } from "@/hooks/communications/use-mention-users";
 import type { Mention } from "@/lib/mentions";
 import {
   CHANNEL_MENTION,
-  CHANNEL_MENTION_ID,
   getCurrentWord,
   getMentionQuery,
   insertMention as insertMentionUtil,

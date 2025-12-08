@@ -61,12 +61,12 @@ export const adminMemberRouter = {
             case "role":
               return direction(member.role);
             case "createdAt": // User joined date (user creation or member creation? previously used user.createdAt in UI sort of?)
-              // UI shows "Joined" which usually means member joined org. Member has createdAt. 
+              // UI shows "Joined" which usually means member joined org. Member has createdAt.
               // The UI code was showing `member.user.createdAt`.
-              // Member table usually has createdAt. Let's use member.createdAt for "Joined" context if possible, 
-              // or match UI which used user.createdAt. 
-              // Actually, user.createdAt is when the user signed up to the platform. 
-              // member.createdAt is when they joined the org. 
+              // Member table usually has createdAt. Let's use member.createdAt for "Joined" context if possible,
+              // or match UI which used user.createdAt.
+              // Actually, user.createdAt is when the user signed up to the platform.
+              // member.createdAt is when they joined the org.
               // Let's stick to user.createdAt if that's what was displayed, or better yet, fix it to member.createdAt?
               // The previous code used `member.user.createdAt`. I will stick to that to avoid breaking UI perception, or support both.
               return direction(user.createdAt);

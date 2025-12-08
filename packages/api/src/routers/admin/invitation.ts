@@ -65,8 +65,8 @@ export const adminInvitationRouter = {
       const invitations = await db.query.invitation.findMany({
         where: whereClause,
         limit: perPage,
-        offset: offset,
-        orderBy: orderBy,
+        offset,
+        orderBy,
       });
 
       const [totalRow] = await db

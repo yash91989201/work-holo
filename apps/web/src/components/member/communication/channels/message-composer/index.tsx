@@ -79,10 +79,7 @@ export function MessageComposer({
 
         const channelMention = includeChannelMention ? [CHANNEL_MENTION] : [];
 
-        return [
-          ...channelMention,
-          ...users.filter((su) => su.id !== user.id),
-        ];
+        return [...channelMention, ...users.filter((su) => su.id !== user.id)];
       } catch (error) {
         console.error("Error fetching mention users:", error);
         const channelMention = includeChannelMention ? [CHANNEL_MENTION] : [];
@@ -257,9 +254,7 @@ export function MessageComposer({
         channelId,
         content: textToSend,
         mentions:
-          mentionUserIds.size > 0
-            ? Array.from(mentionUserIds)
-            : undefined,
+          mentionUserIds.size > 0 ? Array.from(mentionUserIds) : undefined,
         parentMessageId,
         type: messageType,
         attachments:

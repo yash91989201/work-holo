@@ -1,8 +1,8 @@
- import {
-   AttachmentSchema,
-   MessageSchema,
-   UserSchema,
- } from "@work-holo/db/lib/schemas/db-tables";
+import {
+  AttachmentSchema,
+  MessageSchema,
+  UserSchema,
+} from "@work-holo/db/lib/schemas/db-tables";
 import { z } from "zod";
 
 // Message types enum

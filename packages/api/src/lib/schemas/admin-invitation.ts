@@ -12,7 +12,9 @@ export const ListInvitationsInput = z
     filters: z
       .object({
         role: z.string().optional(),
-        status: z.enum(["pending", "accepted", "rejected", "expired"]).optional(),
+        status: z
+          .enum(["pending", "accepted", "rejected", "expired"])
+          .optional(),
       })
       .optional(),
     sorting: z

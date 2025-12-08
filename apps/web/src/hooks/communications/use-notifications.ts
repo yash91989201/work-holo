@@ -1,6 +1,6 @@
 import { createOptimisticAction, eq, useLiveQuery } from "@tanstack/react-db";
-import type { MarkNotificationAsReadInputType } from "@work-holo/api/lib/types";
 import { useRouterState } from "@tanstack/react-router";
+import type { MarkNotificationAsReadInputType } from "@work-holo/api/lib/types";
 import { useEffect, useRef } from "react";
 import { messagesCollection, notificationsCollection } from "@/db/collections";
 import { useAuthedSession } from "@/hooks/use-authed-session";

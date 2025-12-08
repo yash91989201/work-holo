@@ -1,4 +1,6 @@
 import { useNavigate, useParams } from "@tanstack/react-router";
+import DOMPurify from "dompurify";
+import parse from "html-react-parser";
 import { AtSign, Bell, Mail, MessageSquare, Users } from "lucide-react";
 import { useCallback, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -25,6 +27,7 @@ import { messagesCollection } from "@/db/collections";
 import { useNotifications } from "@/hooks/communications/use-notifications";
 import { cn } from "@/lib/utils";
 import { useChannelMessageHighlight } from "@/stores/channel-store";
+import { ScrollArea } from "../ui/scroll-area";
 
 function getNotificationIcon(type: string) {
   switch (type) {
@@ -86,7 +89,7 @@ export function NotificationSheet() {
             Stay on top of mentions, invites, and messages.
           </SheetDescription>
         </SheetHeader>
-        <div className="py-4">
+        <ScrollArea className="h-[calc(100vh-8rem)]">
           {(() => {
             if (isLoading) {
               return <NotificationListSkeleton />;
@@ -101,7 +104,7 @@ export function NotificationSheet() {
             }
 
             return (
-              <ItemGroup className="gap-3 p-3">
+              <ItemGroup className="gap-3 px-4">
                 {notifications.map((notification) => (
                   <NotificationListItem
                     key={notification.id}
@@ -112,7 +115,7 @@ export function NotificationSheet() {
               </ItemGroup>
             );
           })()}
-        </div>
+        </ScrollArea>
       </SheetContent>
     </Sheet>
   );
@@ -177,7 +180,9 @@ function NotificationListItem({
             </Badge>
           </div>
           {notification.message && (
-            <ItemDescription>{notification.message}</ItemDescription>
+            <ItemDescription>
+              {parse(DOMPurify.sanitize(notification.message))}
+            </ItemDescription>
           )}
         </ItemContent>
         <div className="flex flex-col items-end gap-2">
