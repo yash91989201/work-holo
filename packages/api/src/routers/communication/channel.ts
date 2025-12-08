@@ -4,11 +4,12 @@ import {
   channelJoinRequestTable,
   channelMemberTable,
   channelTable,
+  member,
   notificationTable,
   teamMember,
   user as userTable,
 } from "@work-holo/db/schema/index";
-import { and, asc, count, desc, eq, inArray, like } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray, like, not } from "drizzle-orm";
 import { protectedProcedure } from "../../index";
 import { generateTxId } from "../../lib/electric-proxy";
 import {
@@ -65,6 +66,17 @@ export const channelRouter = {
             });
           }
 
+          const nonMemberUsers = await tx.query.member.findMany({
+            where: and(
+              not(eq(member.role, "member")),
+              eq(member.organizationId, orgId)
+            ),
+            columns: {
+              userId: true,
+              role: true,
+            },
+          });
+
           if (input.type === "team" && input.teamId) {
             const teamMemberIds = await tx.query.teamMember.findMany({
               where: eq(teamMember.teamId, input.teamId),
@@ -79,15 +91,28 @@ export const channelRouter = {
               role: "member",
             }));
 
+            const nonMemberChannelMembers = nonMemberUsers.map(
+              ({ userId, role }) => ({
+                channelId: channel.id,
+                userId,
+                role,
+              })
+            );
+
+            const allChannelMembers = [
+              ...teamChannelMembers,
+              ...nonMemberChannelMembers,
+            ];
+
             await tx
               .insert(channelMemberTable)
-              .values(teamChannelMembers)
+              .values(allChannelMembers)
               .returning();
 
             return { txid, channel };
           }
 
-          const regularChannelMembers = input.memberIds.map((memberId) => ({
+          const channelMembers = input.memberIds.map((memberId) => ({
             channelId: channel.id,
             userId: memberId,
             role: "member",
@@ -95,7 +120,7 @@ export const channelRouter = {
 
           await tx
             .insert(channelMemberTable)
-            .values(regularChannelMembers)
+            .values(channelMembers)
             .returning();
 
           return { txid, channel };
