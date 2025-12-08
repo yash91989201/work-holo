@@ -1,7 +1,9 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useMentionUsers } from "@/hooks/communications/use-mention-users";
 import type { Mention } from "@/lib/mentions";
 import {
+  CHANNEL_MENTION,
+  CHANNEL_MENTION_ID,
   getCurrentWord,
   getMentionQuery,
   insertMention as insertMentionUtil,
@@ -20,6 +22,16 @@ export function useMentionInput(channelId: string) {
       mentionQuery,
       showSuggestions && mentionQuery.trim().length >= 0
     );
+
+  const suggestions = useMemo(() => {
+    const users = mentionUsersData?.users || [];
+    const normalizedQuery = mentionQuery.trim().toLowerCase();
+    const includeChannelMention =
+      normalizedQuery.length === 0 ||
+      "channel".startsWith(normalizedQuery.replace("@", ""));
+
+    return includeChannelMention ? [CHANNEL_MENTION, ...users] : users;
+  }, [mentionQuery, mentionUsersData]);
 
   const handleTextChange = useCallback((content: string, position: number) => {
     setText(content);
@@ -65,9 +77,9 @@ export function useMentionInput(channelId: string) {
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (!showSuggestions) return false;
+      if (!showSuggestions || suggestions.length === 0) return false;
 
-      const users = mentionUsersData?.users || [];
+      const users = suggestions;
 
       if (e.key === "ArrowDown") {
         e.preventDefault();
@@ -95,7 +107,7 @@ export function useMentionInput(channelId: string) {
 
       return false;
     },
-    [showSuggestions, mentionUsersData, selectedIndex, insertMention]
+    [showSuggestions, suggestions, selectedIndex, insertMention]
   );
 
   return {
@@ -106,7 +118,7 @@ export function useMentionInput(channelId: string) {
     showSuggestions,
     mentionQuery,
     selectedIndex,
-    suggestions: mentionUsersData?.users || [],
+    suggestions,
     isFetchingUsers,
     handleTextChange,
     insertMention,

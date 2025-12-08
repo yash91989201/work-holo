@@ -5,6 +5,14 @@ export interface Mention {
   image: string | null;
 }
 
+export const CHANNEL_MENTION_ID = "__channel__";
+export const CHANNEL_MENTION: Mention = {
+  id: CHANNEL_MENTION_ID,
+  name: "channel",
+  email: "Notify everyone in this channel",
+  image: null,
+};
+
 export interface MentionMatch {
   id: string;
   name: string;

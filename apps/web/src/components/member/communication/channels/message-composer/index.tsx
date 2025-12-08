@@ -4,6 +4,7 @@ import { useMessageMutations } from "@/hooks/communications/use-message-mutation
 import { useTypingIndicator } from "@/hooks/communications/use-typing-indicator";
 import { useAudioRecorder } from "@/hooks/use-audio-recorder";
 import { useAuthedSession } from "@/hooks/use-authed-session";
+import { CHANNEL_MENTION, CHANNEL_MENTION_ID } from "@/lib/mentions";
 import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 import { useMaximizedMessageComposerActions } from "@/stores/channel-store";
@@ -63,6 +64,11 @@ export function MessageComposer({
 
   const fetchUsers = useCallback(
     async (query: string) => {
+      const normalizedQuery = query.trim().toLowerCase();
+      const includeChannelMention =
+        normalizedQuery.length === 0 ||
+        "channel".startsWith(normalizedQuery.replace("@", ""));
+
       try {
         const { users = [] } =
           await orpcClient.communication.message.searchUsers({
@@ -71,10 +77,16 @@ export function MessageComposer({
             limit: 10,
           });
 
-        return users.filter((su) => su.id !== user.id);
+        const channelMention = includeChannelMention ? [CHANNEL_MENTION] : [];
+
+        return [
+          ...channelMention,
+          ...users.filter((su) => su.id !== user.id),
+        ];
       } catch (error) {
         console.error("Error fetching mention users:", error);
-        return [];
+        const channelMention = includeChannelMention ? [CHANNEL_MENTION] : [];
+        return channelMention;
       }
     },
     [channelId, user.id]
@@ -136,13 +148,32 @@ export function MessageComposer({
     try {
       const mentionRegex =
         /<span[^>]*data-type="mention"[^>]*data-id="([^"]+)"[^>]*>/g;
-      const mentionUserIds: string[] = [];
+      const mentionUserIds = new Set<string>();
       let match: RegExpExecArray | null;
 
       while (true) {
         match = mentionRegex.exec(textToSend || "");
         if (match === null) break;
-        mentionUserIds.push(match[1]);
+        mentionUserIds.add(match[1]);
+      }
+
+      if (mentionUserIds.has(CHANNEL_MENTION_ID)) {
+        try {
+          const channelMembers =
+            await orpcClient.communication.channel.listMembers({
+              channelId,
+            });
+
+          for (const member of channelMembers) {
+            if (member.id !== user.id) {
+              mentionUserIds.add(member.id);
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching channel members for mention:", error);
+        }
+
+        mentionUserIds.delete(CHANNEL_MENTION_ID);
       }
 
       // Determine message type
@@ -225,7 +256,10 @@ export function MessageComposer({
       const messageData = {
         channelId,
         content: textToSend,
-        mentions: mentionUserIds.length > 0 ? mentionUserIds : undefined,
+        mentions:
+          mentionUserIds.size > 0
+            ? Array.from(mentionUserIds)
+            : undefined,
         parentMessageId,
         type: messageType,
         attachments:
