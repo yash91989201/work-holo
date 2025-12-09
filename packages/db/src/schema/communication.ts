@@ -155,9 +155,6 @@ export const messageTable = pgTable(
       onDelete: "set null",
     }),
     deletedAt: timestamp({ withTimezone: true }),
-    mentions: json().$type<string[]>(),
-    reactions:
-      json().$type<{ reaction: string; userId: string; createdAt: string }[]>(),
     createdAt: timestamp({ withTimezone: true })
       .$defaultFn(() => new Date())
       .notNull(),
@@ -269,6 +266,32 @@ export const messageReadTable = pgTable("messageRead", {
     .notNull(),
 });
 
+export const messageReactionTable = pgTable(
+  "messageReaction",
+  {
+    id: cuid2().defaultRandom().primaryKey(),
+    messageId: text()
+      .notNull()
+      .references(() => messageTable.id, { onDelete: "cascade" }),
+    userId: text()
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    reaction: text().notNull(),
+    createdAt: timestamp({ withTimezone: true })
+      .$defaultFn(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    uniqueIndex("unique_message_reaction_user").on(
+      table.messageId,
+      table.userId,
+      table.reaction
+    ),
+    index("idx_message_reaction_message").on(table.messageId),
+    index("idx_message_reaction_user").on(table.userId),
+  ]
+);
+
 export const messageTableRelations = relations(
   messageTable,
   ({ one, many }) => ({
@@ -297,6 +320,7 @@ export const messageTableRelations = relations(
     attachments: many(attachmentTable),
     reads: many(messageReadTable),
     mentions: many(messageMentionTable),
+    reactions: many(messageReactionTable),
   })
 );
 
@@ -410,6 +434,20 @@ export const messageMentionTableRelations = relations(
     }),
     mentionedUser: one(user, {
       fields: [messageMentionTable.mentionedUserId],
+      references: [user.id],
+    }),
+  })
+);
+
+export const messageReactionTableRelations = relations(
+  messageReactionTable,
+  ({ one }) => ({
+    message: one(messageTable, {
+      fields: [messageReactionTable.messageId],
+      references: [messageTable.id],
+    }),
+    user: one(user, {
+      fields: [messageReactionTable.userId],
       references: [user.id],
     }),
   })

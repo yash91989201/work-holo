@@ -7,6 +7,7 @@ import type {
 import {
   attachmentsCollection,
   messageMentionsCollection,
+  messageReactionsCollection,
   messagesCollection,
 } from "@/db/collections";
 import { useAuthedSession } from "@/hooks/use-authed-session";
@@ -32,10 +33,8 @@ export function useMessageMutations() {
         deletedAt: null,
         editedAt: null,
         isPinned: false,
-        mentions: message.mentions ?? null,
         pinnedAt: null,
         pinnedBy: null,
-        reactions: null,
         receiverId: null,
         senderId: user.id,
         threadCount: 0,
@@ -91,13 +90,6 @@ export function useMessageMutations() {
 
   const updateMessage = createOptimisticAction({
     onMutate: ({ message }: { message: UpdateMessageInputType }) => {
-      messagesCollection.update(message.messageId, (draft) => {
-        draft.content = message.content ?? null;
-        if (message.mentions !== undefined) {
-          draft.mentions = message.mentions ?? null;
-        }
-      });
-
       if (message.mentions !== undefined) {
         const mentionsToRemove: string[] = [];
         messageMentionsCollection.forEach((mention) => {
@@ -227,22 +219,23 @@ export function useMessageMutations() {
 
   const addReaction = createOptimisticAction({
     onMutate: ({ messageId, emoji }: { messageId: string; emoji: string }) => {
-      messagesCollection.update(messageId, (draft) => {
-        const reactions = draft.reactions || [];
-        const userReaction = reactions.find(
-          (r) => r.reaction === emoji && r.userId === user.id
-        );
+      const existingReaction = Array.from(
+        messageReactionsCollection.values()
+      ).find(
+        (r) =>
+          r.messageId === messageId &&
+          r.userId === user.id &&
+          r.reaction === emoji
+      );
 
-        if (userReaction) return;
+      if (existingReaction) return;
 
-        draft.reactions = [
-          ...reactions,
-          {
-            reaction: emoji,
-            userId: user.id,
-            createdAt: new Date().toISOString(),
-          },
-        ];
+      messageReactionsCollection.insert({
+        id: crypto.randomUUID().toString(),
+        messageId,
+        userId: user.id,
+        reaction: emoji,
+        createdAt: new Date(),
       });
     },
     mutationFn: async ({
@@ -257,31 +250,20 @@ export function useMessageMutations() {
         emoji,
       });
 
-      await messagesCollection.utils.awaitTxId(txid);
+      await messageReactionsCollection.utils.awaitTxId(txid);
     },
   });
 
   const removeReaction = createOptimisticAction({
-    onMutate: ({ messageId, emoji }: { messageId: string; emoji: string }) => {
-      messagesCollection.update(messageId, (draft) => {
-        draft.reactions = (draft.reactions || []).filter(
-          (r) => !(r.reaction === emoji && r.userId === user.id)
-        );
-      });
+    onMutate: ({ reactionId }: { reactionId: string }) => {
+      messageReactionsCollection.delete(reactionId);
     },
-    mutationFn: async ({
-      messageId,
-      emoji,
-    }: {
-      messageId: string;
-      emoji: string;
-    }) => {
+    mutationFn: async ({ reactionId }: { reactionId: string }) => {
       const { txid } = await orpcClient.communication.message.removeReaction({
-        messageId,
-        emoji,
+        reactionId,
       });
 
-      await messagesCollection.utils.awaitTxId(txid);
+      await messageReactionsCollection.utils.awaitTxId(txid);
     },
   });
 

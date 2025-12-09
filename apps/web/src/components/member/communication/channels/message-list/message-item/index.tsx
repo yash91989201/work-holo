@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useMessageMutations } from "@/hooks/communications/use-message-mutations";
 import { useAuthedSession } from "@/hooks/use-authed-session";
-import { cn } from "@/lib/utils";
+import { cn, formatMessageTimestamp } from "@/lib/utils";
 import {
   useMaximizedMessageComposerActions,
   useMentionsSidebar,
@@ -14,6 +14,8 @@ import {
 import { MessageActions } from "./message-actions";
 import { MessageContent } from "./message-content";
 import { MessageReactions } from "./message-reactions";
+
+const QUICK_REACTIONS = ["👍", "❤️", "😂", "🎉", "👀"] as const;
 
 interface MessageItemProps {
   message: MessageWithSenderType;
@@ -38,6 +40,8 @@ export function MessageItem({
   const { user } = useAuthedSession();
   const isOwnMessage = user.id === message.senderId;
 
+  const timestamp = formatMessageTimestamp(message.createdAt);
+
   const { messageId, openMessageThread, closeMessageThread } =
     useMessageThreadSidebar();
 
@@ -59,8 +63,8 @@ export function MessageItem({
     addReaction({ messageId: message.id, emoji });
   };
 
-  const handleReactionClick = (emoji: string) => {
-    removeReaction({ messageId: message.id, emoji });
+  const handleReactionClick = (reactionId: string) => {
+    removeReaction({ reactionId });
   };
 
   const { openMaximizedMessageComposer } = useMaximizedMessageComposerActions();
@@ -144,6 +148,13 @@ export function MessageItem({
             {message.sender.name}
           </span>
 
+          <span
+            className="text-muted-foreground text-xs"
+            title={timestamp.absolute}
+          >
+            {timestamp.relative}
+          </span>
+
           {message.isEdited && <Badge variant="secondary">Edited</Badge>}
 
           {message.isPinned && (
@@ -181,10 +192,26 @@ export function MessageItem({
         </div>
 
         <MessageReactions
+          messageId={message.id}
           onAddReaction={handleReact}
           onRemoveReaction={handleReactionClick}
-          reactions={message.reactions ?? []}
         />
+
+        <div className="pointer-events-none flex gap-1 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
+          {QUICK_REACTIONS.map((emoji) => (
+            <Button
+              aria-label={`React with ${emoji}`}
+              className="h-7 w-7 rounded-full p-0"
+              key={emoji}
+              onClick={() => handleReact(emoji)}
+              size="sm"
+              title={`React with ${emoji}`}
+              variant="secondary"
+            >
+              <span className="text-sm">{emoji}</span>
+            </Button>
+          ))}
+        </div>
 
         {!isThreadMessage && message.parentMessageId && (
           <Button

@@ -57,7 +57,7 @@ export const ListAttendanceRecordsInput = z
   .optional()
   .default({ page: 1, perPage: 10 });
 
-export const AttendanceRecordWithUser = AttendanceSelectSchema.extend({
+export const AttendanceRecordWithUserSchema = AttendanceSelectSchema.extend({
   user: z.object({
     id: z.string(),
     name: z.string().nullable(),
@@ -67,7 +67,7 @@ export const AttendanceRecordWithUser = AttendanceSelectSchema.extend({
 });
 
 export const ListAttendanceRecordsOutput = z.object({
-  records: z.array(AttendanceRecordWithUser),
+  records: z.array(AttendanceRecordWithUserSchema),
   pagination: z.object({
     page: z.number(),
     perPage: z.number(),
@@ -88,7 +88,7 @@ export const GetAttendanceDetailInput = z.object({
   attendanceId: z.string().min(1, "Attendance ID is required"),
 });
 
-export const GetAttendanceDetailOutput = AttendanceRecordWithUser.extend({
+export const GetAttendanceDetailOutput = AttendanceRecordWithUserSchema.extend({
   workBlocks: z.array(
     z.object({
       id: z.string(),

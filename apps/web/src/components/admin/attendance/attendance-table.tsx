@@ -17,13 +17,13 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useDebounce } from "@uidotdev/usehooks";
-import type { AttendanceRecordWithUser } from "@work-holo/api/lib/schemas/admin-attendance";
+import type { AttendanceStatus } from "@work-holo/api/lib/schemas/attendance";
+import type { AttendanceRecordWithUserType } from "@work-holo/api/lib/types";
 import { startOfMonth, subDays } from "date-fns";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { useMemo, useState } from "react";
 import type { DateRange } from "react-day-picker";
 import { toast } from "sonner";
-import type { z } from "zod";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -61,21 +61,10 @@ import { cn } from "@/lib/utils";
 import { queryUtils } from "@/utils/orpc";
 import { AttendanceDetailsSheet } from "./attendance-details-sheet";
 
-interface AttendanceSearch {
-  page: number;
-  search?: string;
-  startDate?: string;
-  endDate?: string;
-  status?: string;
-}
-
-// Helper for type safety if not imported
-type AttendanceRecord = z.infer<typeof AttendanceRecordWithUser>;
-
 export function AttendanceTable() {
   const searchParams = useSearch({
     from: "/(authenticated)/org/$slug/dashboard/attendance/",
-  }) as AttendanceSearch;
+  });
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [pagination, setPagination] = useState<PaginationState>({
@@ -97,9 +86,9 @@ export function AttendanceTable() {
     return;
   });
 
-  const [selectedStatus, setSelectedStatus] = useState<string | undefined>(
-    searchParams.status
-  );
+  const [selectedStatus, setSelectedStatus] = useState<
+    AttendanceStatus | undefined
+  >(searchParams.status as AttendanceStatus);
 
   const [filterOpen, setFilterOpen] = useState(false);
   const [detailAttendanceId, setDetailAttendanceId] = useState<string | null>(
@@ -114,9 +103,9 @@ export function AttendanceTable() {
         perPage: pagination.pageSize,
         search: debouncedSearch || undefined,
         filters: {
-          startDate: dateRange?.from?.toISOString(),
-          endDate: dateRange?.to?.toISOString(),
-          status: selectedStatus as any,
+          startDate: dateRange?.from,
+          endDate: dateRange?.to,
+          status: selectedStatus,
         },
         sorting: sorting.map((s) => ({ id: s.id, desc: s.desc })),
       },
@@ -139,7 +128,7 @@ export function AttendanceTable() {
     setFilterOpen(false);
   };
 
-  const columns = useMemo<ColumnDef<AttendanceRecord>[]>(
+  const columns = useMemo<ColumnDef<AttendanceRecordWithUserType>[]>(
     () => [
       {
         accessorKey: "user.name",
@@ -405,7 +394,9 @@ export function AttendanceTable() {
                       <div className="space-y-2">
                         <Label className="text-xs">Status</Label>
                         <Select
-                          onValueChange={setSelectedStatus}
+                          onValueChange={(value) =>
+                            setSelectedStatus(value as AttendanceStatus)
+                          }
                           value={selectedStatus}
                         >
                           <SelectTrigger className="w-full">

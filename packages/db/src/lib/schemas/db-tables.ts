@@ -22,6 +22,7 @@ import {
   channelMemberTable,
   channelTable,
   messageMentionTable,
+  messageReactionTable,
   messageReadTable,
   messageTable,
   notificationTable,
@@ -77,6 +78,7 @@ export const WorkBlockInsertSchema = createInsertSchema(workBlockTable);
 export const ChannelSchema = createSelectSchema(channelTable);
 export const ChannelMemberSchema = createSelectSchema(channelMemberTable);
 export const MessageMentionSchema = createSelectSchema(messageMentionTable);
+export const MessageReactionSchema = createSelectSchema(messageReactionTable);
 export const MessageSchema = createSelectSchema(messageTable);
 export const AttachmentSchema = createSelectSchema(attachmentTable);
 export const NotificationSchema = createSelectSchema(notificationTable);
@@ -86,6 +88,8 @@ export const ChannelUpdateSchema = createUpdateSchema(channelTable);
 export const ChannelMemberUpdateSchema = createUpdateSchema(channelMemberTable);
 export const MessageMentionUpdateSchema =
   createUpdateSchema(messageMentionTable);
+export const MessageReactionUpdateSchema =
+  createUpdateSchema(messageReactionTable);
 export const MessageUpdateSchema = createUpdateSchema(messageTable);
 export const AttachmentUpdateSchema = createUpdateSchema(attachmentTable);
 export const NotificationUpdateSchema = createUpdateSchema(notificationTable);
@@ -95,6 +99,8 @@ export const ChannelInsertSchema = createInsertSchema(channelTable);
 export const ChannelMemberInsertSchema = createInsertSchema(channelMemberTable);
 export const MessageMentionInsertSchema =
   createInsertSchema(messageMentionTable);
+export const MessageReactionInsertSchema =
+  createInsertSchema(messageReactionTable);
 export const MessageInsertSchema = createInsertSchema(messageTable);
 export const AttachmentInsertSchema = createInsertSchema(attachmentTable);
 export const NotificationInsertSchema = createInsertSchema(notificationTable);

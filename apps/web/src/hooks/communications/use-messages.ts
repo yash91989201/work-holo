@@ -11,6 +11,7 @@ import {
 } from "react";
 import {
   attachmentsCollection,
+  channelsCollection,
   messagesCollection,
   usersCollection,
 } from "@/db/collections";
@@ -188,6 +189,7 @@ export function useVirtualMessages() {
     return () => el.removeEventListener("scroll", onScroll);
   }, []);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <checking of highlighted at is required>
   useEffect(() => {
     if (!highlightedMessageId) return;
 
@@ -391,6 +393,9 @@ export function useMessages({ channelId }: { channelId: string }) {
             { attachment: attachmentsCollection },
             ({ message, attachment }) => eq(attachment.messageId, message.id)
           )
+          .innerJoin({ channel: channelsCollection }, ({ message, channel }) =>
+            eq(message.channelId, channel.id)
+          )
           .where(({ message }) =>
             and(
               eq(message.channelId, channelId),
@@ -399,10 +404,11 @@ export function useMessages({ channelId }: { channelId: string }) {
             )
           )
           .orderBy(({ message }) => message.createdAt)
-          .select(({ message, sender, attachment }) => ({
+          .select(({ message, sender, attachment, channel }) => ({
             message,
             sender,
             attachment,
+            channel,
           })),
       {
         pageSize: PAGE_SIZE,

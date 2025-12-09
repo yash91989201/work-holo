@@ -106,8 +106,7 @@ export const AddReactionOutput = ReactionOutput;
 
 // Remove reaction input
 export const RemoveReactionInput = z.object({
-  messageId: z.string(),
-  emoji: z.string().min(1).max(10),
+  reactionId: z.string(),
 });
 
 export const RemoveReactionOutput = ReactionOutput;

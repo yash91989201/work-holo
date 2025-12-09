@@ -31,7 +31,6 @@ export function MessageActions({
   onReact,
   className,
 }: MessageActionsProps) {
-  const canReact = false;
   return (
     <ButtonGroup
       className={cn(
@@ -51,7 +50,7 @@ export function MessageActions({
         </Button>
       )}
 
-      {canReact && <ReactionPicker onSelectEmoji={onReact} />}
+      <ReactionPicker onSelectEmoji={onReact} />
 
       {canEdit && (
         <Button

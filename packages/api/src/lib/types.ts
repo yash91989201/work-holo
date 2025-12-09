@@ -2,6 +2,27 @@
 // Run `bun run generate:types` to refresh
 import type { z } from "zod";
 import type {
+  AttendanceRecordWithUserSchema,
+  AttendanceSelectSchema,
+  GetAttendanceDetailInput,
+  GetAttendanceDetailOutput,
+  GetAttendanceStatsInput,
+  GetAttendanceStatsOutput,
+  ListAttendanceRecordsInput,
+  ListAttendanceRecordsOutput,
+} from "./schemas/admin-attendance";
+import type {
+  InvitationSelectSchema,
+  ListInvitationsInput,
+  ListInvitationsOutput,
+} from "./schemas/admin-invitation";
+import type {
+  ListMembersInput,
+  ListMembersOutput,
+  MemberSelectSchema,
+  UserSelectSchema,
+} from "./schemas/admin-member";
+import type {
   AttachmentOutput,
   AttachmentsListOutput,
   AttachmentsWithChannelListOutput,
@@ -25,14 +46,20 @@ import type {
   SearchAttachmentsInput,
   StorageStatsOutput,
   UpdateAttachmentInput,
-} from "../lib/schemas/attachment";
+} from "./schemas/attachment";
 import type {
+  AddBreakDurationInput,
+  AddBreakDurationOutput,
+  AttendanceAnalyticsInput,
+  AttendanceAnalyticsOutput,
+  GetTodayInput,
+  GetTodayOutput,
   MemberAttendanceStatusOutput,
   MemberPunchInInput,
   MemberPunchInOutput,
   MemberPunchOutInput,
   MemberPunchOutOutput,
-} from "../lib/schemas/attendance";
+} from "./schemas/attendance";
 import type {
   ArchiveChannelInput,
   ChannelJoinRequestInput,
@@ -65,13 +92,15 @@ import type {
   SuccessOutput,
   UpdateChannelInput,
   UpdateChannelMemberInput,
-} from "../lib/schemas/channel";
+} from "./schemas/channel";
 import type {
   AddReactionInput,
+  AddReactionOutput,
   AttachmentInput,
   CreateMessageInput,
   CreateMessageOutput,
   DeleteMessageInput,
+  DeleteMessageOutput,
   GetChannelMessagesInput,
   GetChannelMessagesOutput,
   GetDirectMessagesInput,
@@ -93,7 +122,9 @@ import type {
   MessageWithSenderSchema,
   PinMessageInput,
   PinMessageOutput,
+  ReactionOutput,
   RemoveReactionInput,
+  RemoveReactionOutput,
   SearchMessageOutput,
   SearchMessagesInput,
   SearchMessagesListOutput,
@@ -105,12 +136,8 @@ import type {
   UnreadCountOutput,
   UpdateMessageInput,
   UpdateMessageOutput,
-} from "../lib/schemas/message";
-import type {
-  FeatureSchema,
-  ModuleSchema,
-  RoleSchema,
-} from "../lib/schemas/module";
+} from "./schemas/message";
+import type { FeatureSchema, ModuleSchema, RoleSchema } from "./schemas/module";
 import type {
   CreateAnnouncementNotificationInput,
   CreateBulkNotificationsInput,
@@ -127,10 +154,43 @@ import type {
   NotificationStatusSchema,
   NotificationsListOutput,
   NotificationTypeSchema,
-} from "../lib/schemas/notification";
-import type { ListTeamsInput, ListTeamsOutput } from "../lib/schemas/team";
+} from "./schemas/notification";
+import type {
+  GetOrgPresenceInput,
+  GetOrgPresenceOutput,
+  HeartbeatInput,
+  HeartbeatOutput,
+  ManualStatusSchema,
+  PresenceDataSchema,
+  PresenceStatusSchema,
+  SetManualStatusInput,
+  SetManualStatusOutput,
+} from "./schemas/presence";
+import type {
+  AddMemberInput,
+  AddMemberOutput,
+  ListTeamsInput,
+  ListTeamsOutput,
+  RemoveMemberInput,
+  RemoveMemberOutput,
+} from "./schemas/team";
+import type {
+  EndBlockInput,
+  EndBlockOutput,
+  GetActiveBlockInput,
+  GetActiveBlockOutput,
+  ListBlocksInput,
+  ListBlocksOutput,
+  StartBlockInput,
+  StartBlockOutput,
+} from "./schemas/work-block";
 
+export type AddBreakDurationInputType = z.infer<typeof AddBreakDurationInput>;
+export type AddBreakDurationOutputType = z.infer<typeof AddBreakDurationOutput>;
+export type AddMemberInputType = z.infer<typeof AddMemberInput>;
+export type AddMemberOutputType = z.infer<typeof AddMemberOutput>;
 export type AddReactionInputType = z.infer<typeof AddReactionInput>;
+export type AddReactionOutputType = z.infer<typeof AddReactionOutput>;
 export type ArchiveChannelInputType = z.infer<typeof ArchiveChannelInput>;
 export type AttachmentInputType = z.infer<typeof AttachmentInput>;
 export type AttachmentOutputType = z.infer<typeof AttachmentOutput>;
@@ -148,6 +208,16 @@ export type AttachmentsWithChannelListOutputType = z.infer<
 export type AttachmentsWithMessageListOutputType = z.infer<
   typeof AttachmentsWithMessageListOutput
 >;
+export type AttendanceAnalyticsInputType = z.infer<
+  typeof AttendanceAnalyticsInput
+>;
+export type AttendanceAnalyticsOutputType = z.infer<
+  typeof AttendanceAnalyticsOutput
+>;
+export type AttendanceRecordWithUserType = z.infer<
+  typeof AttendanceRecordWithUserSchema
+>;
+export type AttendanceSelectType = z.infer<typeof AttendanceSelectSchema>;
 export type ChannelJoinRequestInputType = z.infer<
   typeof ChannelJoinRequestInput
 >;
@@ -191,6 +261,7 @@ export type DeleteAttachmentInputType = z.infer<typeof DeleteAttachmentInput>;
 export type DeleteAttachmentOutputType = z.infer<typeof DeleteAttachmentOutput>;
 export type DeleteChannelInputType = z.infer<typeof DeleteChannelInput>;
 export type DeleteMessageInputType = z.infer<typeof DeleteMessageInput>;
+export type DeleteMessageOutputType = z.infer<typeof DeleteMessageOutput>;
 export type DeleteNotificationInputType = z.infer<
   typeof DeleteNotificationInput
 >;
@@ -198,8 +269,24 @@ export type DeletechannelOutputType = z.infer<typeof DeletechannelOutput>;
 export type DismissNotificationInputType = z.infer<
   typeof DismissNotificationInput
 >;
+export type EndBlockInputType = z.infer<typeof EndBlockInput>;
+export type EndBlockOutputType = z.infer<typeof EndBlockOutput>;
 export type FeatureType = z.infer<typeof FeatureSchema>;
+export type GetActiveBlockInputType = z.infer<typeof GetActiveBlockInput>;
+export type GetActiveBlockOutputType = z.infer<typeof GetActiveBlockOutput>;
 export type GetAttachmentInputType = z.infer<typeof GetAttachmentInput>;
+export type GetAttendanceDetailInputType = z.infer<
+  typeof GetAttendanceDetailInput
+>;
+export type GetAttendanceDetailOutputType = z.infer<
+  typeof GetAttendanceDetailOutput
+>;
+export type GetAttendanceStatsInputType = z.infer<
+  typeof GetAttendanceStatsInput
+>;
+export type GetAttendanceStatsOutputType = z.infer<
+  typeof GetAttendanceStatsOutput
+>;
 export type GetChannelAttachmentsInputType = z.infer<
   typeof GetChannelAttachmentsInput
 >;
@@ -224,6 +311,8 @@ export type GetMultipleMessageAttachmentsInputType = z.infer<
   typeof GetMultipleMessageAttachmentsInput
 >;
 export type GetNotificationsInputType = z.infer<typeof GetNotificationsInput>;
+export type GetOrgPresenceInputType = z.infer<typeof GetOrgPresenceInput>;
+export type GetOrgPresenceOutputType = z.infer<typeof GetOrgPresenceOutput>;
 export type GetPinnedMessagesInputType = z.infer<typeof GetPinnedMessagesInput>;
 export type GetPinnedMessagesOutputType = z.infer<
   typeof GetPinnedMessagesOutput
@@ -233,14 +322,27 @@ export type GetRecentAttachmentsInputType = z.infer<
 >;
 export type GetStorageStatsInputType = z.infer<typeof GetStorageStatsInput>;
 export type GetThreadMessagesInputType = z.infer<typeof GetThreadMessagesInput>;
+export type GetTodayInputType = z.infer<typeof GetTodayInput>;
+export type GetTodayOutputType = z.infer<typeof GetTodayOutput>;
 export type GetUnreadCountInputType = z.infer<typeof GetUnreadCountInput>;
 export type GetUserAttachmentsInputType = z.infer<
   typeof GetUserAttachmentsInput
 >;
+export type HeartbeatInputType = z.infer<typeof HeartbeatInput>;
+export type HeartbeatOutputType = z.infer<typeof HeartbeatOutput>;
+export type InvitationSelectType = z.infer<typeof InvitationSelectSchema>;
 export type IsChannelMemberInputType = z.infer<typeof IsChannelMemberInput>;
 export type IsChannelMemberOutputType = z.infer<typeof IsChannelMemberOutput>;
 export type JoinChannelInputType = z.infer<typeof JoinChannelInput>;
 export type LeaveChannelInputType = z.infer<typeof LeaveChannelInput>;
+export type ListAttendanceRecordsInputType = z.infer<
+  typeof ListAttendanceRecordsInput
+>;
+export type ListAttendanceRecordsOutputType = z.infer<
+  typeof ListAttendanceRecordsOutput
+>;
+export type ListBlocksInputType = z.infer<typeof ListBlocksInput>;
+export type ListBlocksOutputType = z.infer<typeof ListBlocksOutput>;
 export type ListChannelMembersInputType = z.infer<
   typeof ListChannelMembersInput
 >;
@@ -249,24 +351,26 @@ export type ListChannelMembersOutputType = z.infer<
 >;
 export type ListChannelsInputType = z.infer<typeof ListChannelsInput>;
 export type ListChannelsOutputType = z.infer<typeof ListChannelsOutput>;
+export type ListInvitationsInputType = z.infer<typeof ListInvitationsInput>;
+export type ListInvitationsOutputType = z.infer<typeof ListInvitationsOutput>;
 export type ListJoinRequestInputType = z.infer<typeof ListJoinRequestInput>;
 export type ListJoinRequestOutputType = z.infer<typeof ListJoinRequestOutput>;
+export type ListMembersInputType = z.infer<typeof ListMembersInput>;
+export type ListMembersOutputType = z.infer<typeof ListMembersOutput>;
 export type ListTeamsInputType = z.infer<typeof ListTeamsInput>;
 export type ListTeamsOutputType = z.infer<typeof ListTeamsOutput>;
-export type MarkMessageAsReadInputType = z.infer<typeof MarkMessageAsReadInput>;
-export type MarkNotificationAsReadInputType = z.infer<
-  typeof MarkNotificationAsReadInput
->;
-export type MarkNotificationAsReadOutputType = z.infer<
-  typeof MarkNotificationAsReadOutput
->;
+export type ManualStatusType = z.infer<typeof ManualStatusSchema>;
 export type MarkMentionSeenInputType = z.infer<typeof MarkMentionSeenInput>;
 export type MarkMentionSeenOutputType = z.infer<typeof MarkMentionSeenOutput>;
+export type MarkMessageAsReadInputType = z.infer<typeof MarkMessageAsReadInput>;
 export type MarkMultipleAsReadInputType = z.infer<
   typeof MarkMultipleAsReadInput
 >;
 export type MarkNotificationAsReadInputType = z.infer<
   typeof MarkNotificationAsReadInput
+>;
+export type MarkNotificationAsReadOutputType = z.infer<
+  typeof MarkNotificationAsReadOutput
 >;
 export type MemberAttendanceStatusOutputType = z.infer<
   typeof MemberAttendanceStatusOutput
@@ -275,6 +379,7 @@ export type MemberPunchInInputType = z.infer<typeof MemberPunchInInput>;
 export type MemberPunchInOutputType = z.infer<typeof MemberPunchInOutput>;
 export type MemberPunchOutInputType = z.infer<typeof MemberPunchOutInput>;
 export type MemberPunchOutOutputType = z.infer<typeof MemberPunchOutOutput>;
+export type MemberSelectType = z.infer<typeof MemberSelectSchema>;
 export type MessageAttachmentOutputType = z.infer<
   typeof MessageAttachmentOutput
 >;
@@ -294,6 +399,9 @@ export type NotificationsListOutputType = z.infer<
 >;
 export type PinMessageInputType = z.infer<typeof PinMessageInput>;
 export type PinMessageOutputType = z.infer<typeof PinMessageOutput>;
+export type PresenceDataType = z.infer<typeof PresenceDataSchema>;
+export type PresenceStatusType = z.infer<typeof PresenceStatusSchema>;
+export type ReactionOutputType = z.infer<typeof ReactionOutput>;
 export type RecentAttachmentOutputType = z.infer<typeof RecentAttachmentOutput>;
 export type RecentAttachmentsListOutputType = z.infer<
   typeof RecentAttachmentsListOutput
@@ -301,7 +409,10 @@ export type RecentAttachmentsListOutputType = z.infer<
 export type RemoveChannelMemberInputType = z.infer<
   typeof RemoveChannelMemberInput
 >;
+export type RemoveMemberInputType = z.infer<typeof RemoveMemberInput>;
+export type RemoveMemberOutputType = z.infer<typeof RemoveMemberOutput>;
 export type RemoveReactionInputType = z.infer<typeof RemoveReactionInput>;
+export type RemoveReactionOutputType = z.infer<typeof RemoveReactionOutput>;
 export type RoleType = z.infer<typeof RoleSchema>;
 export type SearchAttachmentsInputType = z.infer<typeof SearchAttachmentsInput>;
 export type SearchMessageOutputType = z.infer<typeof SearchMessageOutput>;
@@ -311,6 +422,10 @@ export type SearchMessagesListOutputType = z.infer<
 >;
 export type SearchUsersInputType = z.infer<typeof SearchUsersInput>;
 export type SearchUsersOutputType = z.infer<typeof SearchUsersOutput>;
+export type SetManualStatusInputType = z.infer<typeof SetManualStatusInput>;
+export type SetManualStatusOutputType = z.infer<typeof SetManualStatusOutput>;
+export type StartBlockInputType = z.infer<typeof StartBlockInput>;
+export type StartBlockOutputType = z.infer<typeof StartBlockOutput>;
 export type StorageStatsOutputType = z.infer<typeof StorageStatsOutput>;
 export type SuccessOutputType = z.infer<typeof SuccessOutput>;
 export type ThreadMessageOutputType = z.infer<typeof ThreadMessageOutput>;
@@ -324,3 +439,4 @@ export type UpdateChannelMemberInputType = z.infer<
 >;
 export type UpdateMessageInputType = z.infer<typeof UpdateMessageInput>;
 export type UpdateMessageOutputType = z.infer<typeof UpdateMessageOutput>;
+export type UserSelectType = z.infer<typeof UserSelectSchema>;

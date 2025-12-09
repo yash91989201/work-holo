@@ -3,6 +3,7 @@ import {
   attachmentTable,
   channelMemberTable,
   messageMentionTable,
+  messageReactionTable,
   messageTable,
   notificationTable,
   user as userTable,
@@ -102,7 +103,7 @@ export const messageRouter = {
               content: input.content,
               type: input.type,
               parentMessageId: input.parentMessageId,
-              mentions: input.mentions,
+              // mentions: input.mentions,
               senderId: user.id,
             })
             .returning();
@@ -619,7 +620,7 @@ export const messageRouter = {
 
         const message = await tx.query.messageTable.findFirst({
           where: eq(messageTable.id, input.messageId),
-          columns: { id: true, reactions: true },
+          columns: { id: true },
         });
 
         if (!message) {
@@ -628,23 +629,20 @@ export const messageRouter = {
           });
         }
 
-        const reactions = message.reactions || [];
-        const reactionIndex = reactions.findIndex(
-          (r) => r.reaction === input.emoji && r.userId === userId
-        );
-
-        if (reactionIndex === -1) {
-          reactions.push({
-            reaction: input.emoji,
+        await tx
+          .insert(messageReactionTable)
+          .values({
+            messageId: input.messageId,
             userId,
-            createdAt: new Date().toISOString(),
+            reaction: input.emoji,
+          })
+          .onConflictDoNothing({
+            target: [
+              messageReactionTable.messageId,
+              messageReactionTable.userId,
+              messageReactionTable.reaction,
+            ],
           });
-
-          await tx
-            .update(messageTable)
-            .set({ reactions })
-            .where(eq(messageTable.id, input.messageId));
-        }
 
         return { txid };
       });
@@ -666,25 +664,14 @@ export const messageRouter = {
       const { txid } = await db.transaction(async (tx) => {
         const txid = await generateTxId(tx);
 
-        const message = await tx.query.messageTable.findFirst({
-          where: eq(messageTable.id, input.messageId),
-          columns: { id: true, reactions: true },
-        });
-
-        if (!message) {
-          throw new ORPCError("NOT_FOUND", {
-            message: "Message not found.",
-          });
-        }
-
-        const reactions = (message.reactions || []).filter(
-          (r) => !(r.reaction === input.emoji && r.userId === userId)
-        );
-
         await tx
-          .update(messageTable)
-          .set({ reactions })
-          .where(eq(messageTable.id, input.messageId));
+          .delete(messageReactionTable)
+          .where(
+            and(
+              eq(messageReactionTable.id, input.reactionId),
+              eq(messageReactionTable.userId, userId)
+            )
+          );
 
         return { txid };
       });

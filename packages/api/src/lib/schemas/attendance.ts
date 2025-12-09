@@ -45,7 +45,7 @@ export const attendanceStatuses = [
   "work_from_home",
 ] as const;
 
-const AttendanceStatusEnum = z.enum(attendanceStatuses);
+export const AttendanceStatusEnum = z.enum(attendanceStatuses);
 
 export const AttendanceAnalyticsInput = z.object({
   startDate: z.string().optional(),
