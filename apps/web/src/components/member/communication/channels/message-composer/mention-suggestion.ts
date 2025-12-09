@@ -67,6 +67,7 @@ export const createMentionSuggestion = (
           return true;
         }
 
+        // Let the MentionList component handle all keyboard events
         return component.ref?.onKeyDown(props.event) ?? false;
       },
 

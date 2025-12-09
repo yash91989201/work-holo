@@ -98,6 +98,26 @@ interface MessageEditorProps {
   onVoiceRecord?: () => void;
 }
 
+const uploadImageToSupabase = async (file: File): Promise<string> => {
+  const bucket = "message-image";
+  const fileExt = file.name.split(".").pop();
+  const randomPrefix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+  const fileName = `${randomPrefix}.${fileExt}`;
+
+  const { data, error } = await supabase.storage
+    .from(bucket)
+    .upload(fileName, file);
+
+  if (error || !data) throw new Error("Upload failed");
+
+  // Get public URL
+  const { data: publicData } = supabase.storage
+    .from(bucket)
+    .getPublicUrl(data.path);
+
+  return publicData.publicUrl;
+};
+
 export function MessageEditor({
   content,
   onChange,
@@ -117,35 +137,13 @@ export function MessageEditor({
   onFileUpload,
   onVoiceRecord,
 }: MessageEditorProps) {
-  const uploadImageToSupabase = useCallback(
-    async (file: File): Promise<string> => {
-      const bucket = "message-image";
-      const fileExt = file.name.split(".").pop();
-      const randomPrefix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
-      const fileName = `${randomPrefix}.${fileExt}`;
-
-      const { data, error } = await supabase.storage
-        .from(bucket)
-        .upload(fileName, file);
-
-      if (error || !data) throw new Error("Upload failed");
-
-      // Get public URL
-      const { data: publicData } = supabase.storage
-        .from(bucket)
-        .getPublicUrl(data.path);
-
-      return publicData.publicUrl;
-    },
-    []
-  );
-
   const editorRef = useRef<Editor | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const linkToggleRef = useRef<HTMLButtonElement>(null);
   const handleImageUploadClick = useCallback(() => {
     fileInputRef.current?.click();
   }, []);
+
   const handleFileInputChange = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       const files = Array.from(e.target.files ?? []);
@@ -172,7 +170,7 @@ export function MessageEditor({
         input.value = "";
       }
     },
-    [uploadImageToSupabase]
+    []
   );
 
   const editor = useEditor({
@@ -237,9 +235,21 @@ export function MessageEditor({
             : "max-h-36 min-h-32 overflow-y-auto"
         ),
       },
-      handleKeyDown: (_, event) => {
+      handleKeyDown: (view, event) => {
         // Enter sends message, Shift+Enter creates new line
         if (event.key === "Enter" && !event.shiftKey) {
+          // Check if any suggestion plugin is active (mention, emoji, etc.)
+          const { state } = view;
+
+          // Look for suggestion plugin state
+          for (const plugin of state.plugins) {
+            const pluginState = plugin.getState(state);
+            // Check if this plugin has an active suggestion
+            if (pluginState?.active === true) {
+              return false; // Let the suggestion plugin handle Enter
+            }
+          }
+
           event.preventDefault();
           onSubmit();
           return true;
