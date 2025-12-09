@@ -15,6 +15,7 @@ import { link } from "@/utils/orpc";
 import "@/styles/index.css";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { FullScreenLoader } from "@/components/shared/full-screen-loader";
+import { useVersionCheck } from "@/hooks/use-version-check";
 import { authClient } from "@/lib/auth-client";
 
 export interface RouterAppContext {
@@ -88,6 +89,8 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
 function RootComponent() {
   const [client] = useState<AppRouterClient>(() => createORPCClient(link));
   const [_orpcUtils] = useState(() => createTanstackQueryUtils(client));
+
+  useVersionCheck();
 
   return (
     <>

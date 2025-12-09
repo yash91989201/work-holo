@@ -4,6 +4,7 @@ import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
+import { viteVersionPlugin } from "./vite-version-plugin";
 
 export default defineConfig({
   plugins: [
@@ -24,7 +25,18 @@ export default defineConfig({
       },
       pwaAssets: { disabled: false, config: true },
       devOptions: { enabled: true },
+      workbox: {
+        // Ensure version.json is never cached
+        navigateFallbackDenylist: [/^\/version\.json/],
+        runtimeCaching: [
+          {
+            urlPattern: /^\/version\.json/,
+            handler: "NetworkOnly",
+          },
+        ],
+      },
     }),
+    viteVersionPlugin(), // Add version plugin
   ],
   resolve: {
     alias: {
