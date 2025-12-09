@@ -78,7 +78,7 @@ export function MentionMessageItem({ message }: MentionMessageItemProps) {
   };
 
   return (
-    <Item ref={containerRef}>
+    <Item ref={containerRef} variant="outline">
       <ItemMedia variant="image">
         <Avatar className="h-10 w-10">
           <AvatarImage

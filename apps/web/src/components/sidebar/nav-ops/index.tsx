@@ -1,4 +1,4 @@
-import { IconBrandTeams } from "@tabler/icons-react";
+import { IconBrandTeams, IconBroadcast } from "@tabler/icons-react";
 import { Link, useLoaderData, useParams } from "@tanstack/react-router";
 import { Calendar, Users } from "lucide-react";
 import {
@@ -63,7 +63,7 @@ export function NavOps() {
                   params={{ slug }}
                   to="/org/$slug/dashboard/communication/channels"
                 >
-                  <Users />
+                  <IconBroadcast />
                   <span>Channels</span>
                 </Link>
               </SidebarMenuButton>
