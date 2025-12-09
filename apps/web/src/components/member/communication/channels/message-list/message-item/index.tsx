@@ -1,5 +1,5 @@
 import type { MessageWithSenderType } from "@work-holo/api/lib/types";
-import { MessageSquareReply, Pin } from "lucide-react";
+import { CornerDownRight, MessageSquareReply, Pin } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -122,7 +122,7 @@ export function MessageItem({
             alt={message.sender.name}
             src={message.sender.image || undefined}
           />
-          <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 font-medium text-primary text-xs">
+          <AvatarFallback className="bg-linear-to-br from-primary/20 to-primary/10 font-medium text-primary text-xs">
             {message.sender.name.slice(0, 2).toUpperCase()}
           </AvatarFallback>
         </Avatar>
@@ -153,16 +153,23 @@ export function MessageItem({
             {timestamp.relative}
           </span>
 
-          {message.isEdited && (
-            <Badge className="h-4 px-1 text-[10px]" variant="secondary">
-              edited
+          {message.isEdited && <Badge variant="secondary">edited</Badge>}
+
+          {message.isPinned && (
+            <Badge variant="secondary">
+              <Pin className="h-2.5 w-2.5" />
+              pinned
             </Badge>
           )}
 
-          {message.isPinned && (
-            <Badge className="h-4 gap-0.5 px-1 text-[10px]" variant="secondary">
-              <Pin className="h-2.5 w-2.5" />
-              pinned
+          {message.threadCount > 0 && (
+            <Badge
+              onClick={toggleMessageThread}
+              title={isMessageThreadActive ? "Close thread" : "Open thread"}
+              variant={isMessageThreadActive ? "default" : "secondary"}
+            >
+              <span>{message.threadCount}</span>
+              <CornerDownRight className="h-2.5 w-2.5" />
             </Badge>
           )}
         </div>
@@ -210,17 +217,6 @@ export function MessageItem({
           >
             <MessageSquareReply />
             <span>Reply</span>
-          </Button>
-        )}
-
-        {message.threadCount > 0 && (
-          <Button
-            className="rounded-full"
-            onClick={toggleMessageThread}
-            size="sm"
-            variant="secondary"
-          >
-            {isMessageThreadActive ? "Close thread" : "Open thread"}
           </Button>
         )}
       </div>
