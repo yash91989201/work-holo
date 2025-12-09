@@ -13,6 +13,10 @@ import { useDebounce } from "@uidotdev/usehooks";
 import type { ListChannelsOutputType } from "@work-holo/api/lib/types";
 import {
   ArrowUpDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
   Hash,
   LayoutList,
   Lock,
@@ -381,8 +385,7 @@ export const ChannelsListTable = () => {
             variant="outline"
           >
             <span className="sr-only">Go to first page</span>
-            <span className="hidden sm:block">First</span>
-            <span className="sm:hidden">«</span>
+            <ChevronsLeft />
           </Button>
           <Button
             className="h-8 px-2 lg:px-3"
@@ -391,8 +394,7 @@ export const ChannelsListTable = () => {
             variant="outline"
           >
             <span className="sr-only">Go to previous page</span>
-            <span className="hidden sm:block">Previous</span>
-            <span className="sm:hidden">‹</span>
+            <ChevronLeft />
           </Button>
           <div className="flex items-center justify-center font-medium text-sm">
             Page {table.getState().pagination.pageIndex + 1} of{" "}
@@ -405,8 +407,7 @@ export const ChannelsListTable = () => {
             variant="outline"
           >
             <span className="sr-only">Go to next page</span>
-            <span className="hidden sm:block">Next</span>
-            <span className="sm:hidden">›</span>
+            <ChevronRight />
           </Button>
           <Button
             className="h-8 px-2 lg:px-3"
@@ -415,8 +416,7 @@ export const ChannelsListTable = () => {
             variant="outline"
           >
             <span className="sr-only">Go to last page</span>
-            <span className="hidden sm:block">Last</span>
-            <span className="sm:hidden">»</span>
+            <ChevronsRight />
           </Button>
         </div>
       </div>
