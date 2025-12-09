@@ -225,7 +225,7 @@ const columns: ColumnDef<InvitationRecord>[] = [
           >
             {isExpired
               ? "Expired"
-              : `${Math.ceil((new Date(invitation.expiresAt).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))} days left`}
+              : `${Math.ceil((new Date(invitation.expiresAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24))} days left`}
           </p>
         </div>
       );

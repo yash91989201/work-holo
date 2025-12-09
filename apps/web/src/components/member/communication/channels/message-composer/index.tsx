@@ -21,6 +21,15 @@ interface AttachmentPreview {
   uploadedFileName?: string;
 }
 
+interface MessageAttachment {
+  fileName: string;
+  originalName: string;
+  fileSize: number;
+  mimeType: string;
+  type: "image" | "document" | "video" | "audio" | "archive";
+  url: string;
+}
+
 interface MessageComposerProps {
   channelId: string;
   className?: string;
@@ -182,7 +191,7 @@ export function MessageComposer({
       }
 
       // Upload attachments and audio in parallel
-      const uploadPromises: Promise<any>[] = [];
+      const uploadPromises: Promise<MessageAttachment>[] = [];
 
       if (attachmentsToUpload.length > 0) {
         for (const attachment of attachmentsToUpload) {
@@ -285,7 +294,6 @@ export function MessageComposer({
 
   const handleEmojiSelect = useCallback(
     (emoji: { emoji: string; label: string }) => {
-      // Insert emoji at the end for now (can be enhanced later)
       const newMessage = text + emoji.emoji;
       setText(newMessage);
     },

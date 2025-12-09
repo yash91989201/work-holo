@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Suspense } from "react";
-import { InvitationListTable } from "@/components/admin/invitation-list-table";
+import {
+  InvitationListTable,
+  InvitationListTableSkeleton,
+} from "@/components/admin/invitation-list-table";
 import { InviteMemberForm } from "@/components/admin/members/invite-member-form";
 import {
   MemberListTable,
@@ -43,7 +46,9 @@ function RouteComponent() {
           <div className="mb-4 flex justify-end">
             <InviteMemberForm />
           </div>
-          <InvitationListTable />
+          <Suspense fallback={<InvitationListTableSkeleton />}>
+            <InvitationListTable />
+          </Suspense>
         </TabsContent>
       </Tabs>
     </div>

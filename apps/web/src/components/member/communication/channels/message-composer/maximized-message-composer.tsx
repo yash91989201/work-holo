@@ -11,6 +11,7 @@ import { useMessageMutations } from "@/hooks/communications/use-message-mutation
 import { useTypingIndicator } from "@/hooks/communications/use-typing-indicator";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { useResponsive } from "@/hooks/use-responsive";
+import { CHANNEL_MENTION_ID } from "@/lib/mentions";
 import { cn } from "@/lib/utils";
 import { useMaximizedMessageComposer } from "@/stores/channel-store";
 import { orpcClient } from "@/utils/orpc";
@@ -159,27 +160,51 @@ export function MaximizedMessageComposer() {
     };
   }, [handleGlobalShortcut]);
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback(async () => {
     if (!text?.trim()) return;
 
     try {
       const mentionRegex =
         /<span[^>]*data-type="mention"[^>]*data-id="([^"]+)"[^>]*>/g;
-      const mentionUserIds: string[] = [];
+      const mentionUserIds = new Set<string>();
       let match: RegExpExecArray | null;
 
       while (true) {
         match = mentionRegex.exec(text);
         if (match === null) break;
-        mentionUserIds.push(match[1]);
+        mentionUserIds.add(match[1]);
       }
+
+      // Handle @channel mention by expanding to all channel members
+      if (mentionUserIds.has(CHANNEL_MENTION_ID)) {
+        try {
+          const channelMembers =
+            await orpcClient.communication.channel.listMembers({
+              channelId,
+            });
+
+          for (const member of channelMembers) {
+            if (member.id !== user.id) {
+              mentionUserIds.add(member.id);
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching channel members for mention:", error);
+        }
+
+        mentionUserIds.delete(CHANNEL_MENTION_ID);
+      }
+
+      const finalMentionUserIds = Array.from(mentionUserIds);
 
       if (isEditing) {
         updateMessage({
           message: {
             messageId,
             content: text.trim(),
-            mentions: mentionUserIds.length ? mentionUserIds : undefined,
+            mentions: finalMentionUserIds.length
+              ? finalMentionUserIds
+              : undefined,
           },
         });
       } else {
@@ -187,7 +212,9 @@ export function MaximizedMessageComposer() {
           message: {
             channelId,
             content: text.trim(),
-            mentions: mentionUserIds.length ? mentionUserIds : undefined,
+            mentions: finalMentionUserIds.length
+              ? finalMentionUserIds
+              : undefined,
             parentMessageId: parentMessageId ?? undefined,
             type: "text" as const,
           },

@@ -120,10 +120,13 @@ export function MessageEditor({
   const uploadImageToSupabase = useCallback(
     async (file: File): Promise<string> => {
       const bucket = "message-image";
+      const fileExt = file.name.split(".").pop();
+      const randomPrefix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+      const fileName = `${randomPrefix}.${fileExt}`;
 
       const { data, error } = await supabase.storage
         .from(bucket)
-        .upload(file.name, file);
+        .upload(fileName, file);
 
       if (error || !data) throw new Error("Upload failed");
 
@@ -146,6 +149,8 @@ export function MessageEditor({
   const handleFileInputChange = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       const files = Array.from(e.target.files ?? []);
+      const input = e.currentTarget;
+
       for (const file of files) {
         if (!file.type.startsWith("image/")) continue;
         try {
@@ -161,7 +166,11 @@ export function MessageEditor({
           console.error("Image upload failed", error);
         }
       }
-      e.currentTarget.value = "";
+
+      // Clear the input value using the saved reference
+      if (input) {
+        input.value = "";
+      }
     },
     [uploadImageToSupabase]
   );

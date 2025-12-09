@@ -5,9 +5,7 @@ import type { MentionListRef } from "./mention-list";
 import { MentionList } from "./mention-list";
 
 export const createMentionSuggestion = (
-  fetchUsers: (
-    query: string
-  ) => Promise<
+  fetchUsers: (query: string) => Promise<
     Array<{
       id: string;
       name: string | null;
