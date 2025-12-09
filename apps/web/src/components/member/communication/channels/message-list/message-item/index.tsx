@@ -1,5 +1,5 @@
 import type { MessageWithSenderType } from "@work-holo/api/lib/types";
-import { CornerDownRight, MessageSquareReply, Pin } from "lucide-react";
+import { MessageSquareReply, Pin } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,8 +14,6 @@ import {
 import { MessageActions } from "./message-actions";
 import { MessageContent } from "./message-content";
 import { MessageReactions } from "./message-reactions";
-
-const QUICK_REACTIONS = ["👍", "❤️", "😂", "🎉", "👀"] as const;
 
 interface MessageItemProps {
   message: MessageWithSenderType;
@@ -104,44 +102,44 @@ export function MessageItem({
   return (
     <div
       className={cn(
-        "group relative flex w-full gap-3 rounded-xl p-3 transition-all hover:bg-muted/40",
-        isOwnMessage ? "flex-row-reverse" : "flex-row",
+        "group relative flex w-full gap-4 rounded-lg px-4 py-2 transition-colors hover:bg-muted/50",
+        isOwnMessage && "flex-row-reverse",
         {
-          "bg-primary/5 ring-2 ring-primary/20 hover:bg-primary/10":
-            isMessageThreadActive,
-          "animate-[pulse_0.2s_ease-in-out_6] ring-2 ring-primary":
-            isHighlighted,
+          "bg-accent/50": isMessageThreadActive,
+          "animate-[pulse_0.2s_ease-in-out_3] bg-primary/10": isHighlighted,
         }
       )}
       data-message-id={message.id}
     >
-      <div className="mt-1 shrink-0">
+      {/* Avatar */}
+      <div className="shrink-0 pt-0.5">
         <Avatar
-          className={cn("h-10 w-10 ring-2 ring-border/40", {
-            "h-8 w-8 ring-border/30": isThreadMessage,
+          className={cn("h-9 w-9", {
+            "h-7 w-7": isThreadMessage,
           })}
         >
           <AvatarImage
             alt={message.sender.name}
             src={message.sender.image || undefined}
           />
-          <AvatarFallback className="bg-linear-to-br from-primary/20 to-primary/10 font-semibold text-primary">
+          <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 font-medium text-primary text-xs">
             {message.sender.name.slice(0, 2).toUpperCase()}
           </AvatarFallback>
         </Avatar>
       </div>
 
+      {/* Message content area */}
       <div
         className={cn(
-          "relative flex max-w-[70%] flex-col gap-1.5",
+          "relative flex max-w-[50%] flex-col gap-1",
           isOwnMessage ? "items-end" : "items-start"
         )}
       >
-        {/* Header */}
+        {/* Header with name, timestamp, and badges */}
         <div
           className={cn(
-            "flex flex-wrap items-center gap-2 text-xs",
-            isOwnMessage ? "flex-row-reverse" : "flex-row"
+            "flex flex-wrap items-baseline gap-x-2 gap-y-1",
+            isOwnMessage && "flex-row-reverse"
           )}
         >
           <span className="font-semibold text-foreground text-sm">
@@ -155,40 +153,46 @@ export function MessageItem({
             {timestamp.relative}
           </span>
 
-          {message.isEdited && <Badge variant="secondary">Edited</Badge>}
-
-          {message.isPinned && (
-            <Badge variant="secondary">
-              <Pin />
+          {message.isEdited && (
+            <Badge className="h-4 px-1 text-[10px]" variant="secondary">
+              edited
             </Badge>
           )}
 
-          {message.threadCount > 0 && (
-            <Badge className="gap-1.5" variant="secondary">
-              <span>{message.threadCount}</span>
-              <CornerDownRight />
+          {message.isPinned && (
+            <Badge className="h-4 gap-0.5 px-1 text-[10px]" variant="secondary">
+              <Pin className="h-2.5 w-2.5" />
+              pinned
             </Badge>
           )}
         </div>
 
-        <div className="relative">
+        {/* Message content with actions */}
+        <div className="relative w-full">
           <MessageContent isOwnMessage={isOwnMessage} message={message} />
-          <MessageActions
-            canEdit={user.id === message.senderId && message.type === "text"}
-            canPin={!isThreadMessage}
-            canReply={!isThreadMessage}
+
+          {/* Hover actions - positioned to the side of message content */}
+          <div
             className={cn(
-              "top-2 right-auto",
-              isOwnMessage ? "right-full mr-2" : "left-full ml-2"
+              "pointer-events-none absolute top-1 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100",
+              isOwnMessage
+                ? "-left-2 -translate-x-full"
+                : "-right-2 translate-x-full"
             )}
-            isOwnMessage={user.id === message.senderId}
-            isPinned={message.isPinned}
-            onDelete={handleDelete}
-            onEdit={handleEditDialog}
-            onPin={handlePin}
-            onReact={handleReact}
-            onReply={toggleMessageThread}
-          />
+          >
+            <MessageActions
+              canEdit={user.id === message.senderId && message.type === "text"}
+              canPin={!isThreadMessage}
+              canReply={!isThreadMessage}
+              isOwnMessage={user.id === message.senderId}
+              isPinned={message.isPinned}
+              onDelete={handleDelete}
+              onEdit={handleEditDialog}
+              onPin={handlePin}
+              onReact={handleReact}
+              onReply={toggleMessageThread}
+            />
+          </div>
         </div>
 
         <MessageReactions
@@ -196,22 +200,6 @@ export function MessageItem({
           onAddReaction={handleReact}
           onRemoveReaction={handleReactionClick}
         />
-
-        <div className="pointer-events-none flex gap-1 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
-          {QUICK_REACTIONS.map((emoji) => (
-            <Button
-              aria-label={`React with ${emoji}`}
-              className="h-7 w-7 rounded-full p-0"
-              key={emoji}
-              onClick={() => handleReact(emoji)}
-              size="sm"
-              title={`React with ${emoji}`}
-              variant="secondary"
-            >
-              <span className="text-sm">{emoji}</span>
-            </Button>
-          ))}
-        </div>
 
         {!isThreadMessage && message.parentMessageId && (
           <Button

@@ -49,7 +49,7 @@ export function MessageContent({
 
           return (
             <div
-              className="flex w-96 max-w-md items-center gap-2 rounded-lg border bg-background p-2.5 shadow-sm transition-colors hover:bg-muted/50"
+              className="flex w-fit max-w-sm items-center gap-2.5 rounded-lg border bg-background p-2.5 transition-colors hover:bg-muted/50"
               key={attachment.id}
             >
               <div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-primary/10">
@@ -89,24 +89,19 @@ export function MessageContent({
 
   // For text messages (with or without attachments)
   return (
-    <div
-      className={cn(
-        "flex flex-col gap-3 rounded-2xl px-3 py-2 text-sm shadow-sm transition-colors",
-        isOwnMessage
-          ? "bg-primary/30 text-primary-foreground"
-          : "border border-border/60 bg-background/90"
-      )}
-    >
+    <div className="flex flex-col gap-2">
       {hasContent && message.content !== null && (
         <div
           className={cn(
-            "ProseMirror prose-sm wrapbreak-word whitespace-pre-wrap",
+            "rounded-lg px-3 py-2",
             isOwnMessage
-              ? "dark:prose-invert prose-headings:text-primary-foreground prose-p:text-primary-foreground prose-strong:text-primary-foreground"
-              : "dark:prose-invert"
+              ? "bg-primary/30 text-foreground"
+              : "bg-muted/50 text-foreground"
           )}
         >
-          {parse(DOMPurify.sanitize(message.content))}
+          <div className="ProseMirror prose-sm dark:prose-invert break-words text-sm leading-relaxed">
+            {parse(DOMPurify.sanitize(message.content))}
+          </div>
         </div>
       )}
 
@@ -133,51 +128,24 @@ export function MessageContent({
 
             return (
               <div
-                className={cn(
-                  "flex w-fit max-w-sm items-center gap-2 rounded-lg border p-2.5 shadow-sm transition-colors",
-                  isOwnMessage
-                    ? "border-primary-foreground/20 bg-primary-foreground/10 text-primary-foreground"
-                    : "border-border bg-background hover:bg-muted/50"
-                )}
+                className="flex w-fit max-w-sm items-center gap-2.5 rounded-lg border bg-background p-2.5 transition-colors hover:bg-muted/50"
                 key={attachment.id}
               >
-                <div
-                  className={cn(
-                    "flex size-10 shrink-0 items-center justify-center rounded-md",
-                    isOwnMessage ? "bg-primary-foreground/20" : "bg-primary/10"
-                  )}
-                >
-                  <FileIcon
-                    className={cn(
-                      "size-5",
-                      isOwnMessage ? "text-primary-foreground" : "text-primary"
-                    )}
-                  />
+                <div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-primary/10">
+                  <FileIcon className="size-5 text-primary" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-medium text-sm leading-tight">
                     {attachment.originalName}
                   </p>
-                  <p
-                    className={cn(
-                      "text-xs",
-                      isOwnMessage
-                        ? "text-primary-foreground/80"
-                        : "text-muted-foreground"
-                    )}
-                  >
+                  <p className="text-muted-foreground text-xs">
                     {formatFileSize(attachment.fileSize)}
                   </p>
                 </div>
                 {attachment.url && (
                   <Button
                     asChild
-                    className={cn(
-                      "shrink-0",
-                      isOwnMessage
-                        ? "text-primary-foreground hover:bg-primary-foreground/20 hover:text-primary-foreground"
-                        : ""
-                    )}
+                    className="shrink-0"
                     size="icon-sm"
                     variant="ghost"
                   >
@@ -212,7 +180,7 @@ function AudioPlayer({ url }: { url: string }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   return (
-    <div className="flex w-[480px] items-center gap-2 rounded-lg border bg-background p-2.5 shadow-sm">
+    <div className="flex w-[400px] items-center gap-2.5 rounded-lg border bg-background p-2.5">
       {/** biome-ignore lint/a11y/useMediaCaption: <track is not required here> */}
       <audio className="flex-1" controls ref={audioRef} src={url} />
       <Button asChild className="shrink-0" size="icon-sm" variant="ghost">
@@ -232,17 +200,17 @@ function AudioPlayer({ url }: { url: string }) {
 
 function VideoPlayer({ url }: { url: string }) {
   return (
-    <div className="relative max-w-2xl overflow-hidden rounded-lg border shadow-sm">
+    <div className="group relative max-w-xl overflow-hidden rounded-lg border">
       {/** biome-ignore lint/a11y/useMediaCaption: <track is not required here> */}
       <video className="w-full" controls preload="metadata" src={url}>
         Your browser does not support the video tag.
       </video>
-      <div className="absolute top-2 right-2">
+      <div className="absolute top-2 right-2 opacity-0 transition-opacity group-hover:opacity-100">
         <Button
           asChild
-          className="bg-background/80 backdrop-blur-sm hover:bg-background"
+          className="bg-background/90 backdrop-blur-sm hover:bg-background"
           size="icon-sm"
-          variant="ghost"
+          variant="secondary"
         >
           <a
             download
@@ -278,20 +246,20 @@ function ImagePreview({ url, fileName }: { url: string; fileName: string }) {
   };
 
   return (
-    <div className="group relative max-w-md overflow-hidden rounded-lg border shadow-sm">
+    <div className="group relative max-w-md overflow-hidden rounded-lg border">
       <img
         alt={fileName}
-        className="max-h-96 w-full object-cover"
+        className="max-h-80 w-full object-cover"
         height={100}
         src={url}
         width={100}
       />
-      <div className="absolute top-2 right-2 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+      <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 transition-opacity group-hover:opacity-100">
         <Button
           asChild
-          className="bg-background/80 backdrop-blur-sm hover:bg-background"
+          className="bg-background/90 backdrop-blur-sm hover:bg-background"
           size="icon-sm"
-          variant="ghost"
+          variant="secondary"
         >
           <a
             href={url}
@@ -303,11 +271,11 @@ function ImagePreview({ url, fileName }: { url: string; fileName: string }) {
           </a>
         </Button>
         <Button
-          className="bg-background/80 backdrop-blur-sm hover:bg-background"
+          className="bg-background/90 backdrop-blur-sm hover:bg-background"
           onClick={handleDownload}
           size="icon-sm"
           title="Download image"
-          variant="ghost"
+          variant="secondary"
         >
           <Download className="size-4" />
         </Button>

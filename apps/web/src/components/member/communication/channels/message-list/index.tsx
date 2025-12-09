@@ -106,7 +106,7 @@ export function MessageList() {
 
               return (
                 <div
-                  className="p-3"
+                  className="px-3 py-1.5"
                   data-index={virtualRow.index}
                   key={virtualRow.key}
                   ref={virtualizer.measureElement}

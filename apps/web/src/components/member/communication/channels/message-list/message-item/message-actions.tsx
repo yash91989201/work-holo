@@ -4,6 +4,8 @@ import { ButtonGroup } from "@/components/ui/button-group";
 import { cn } from "@/lib/utils";
 import { ReactionPicker } from "./reaction-picker";
 
+const QUICK_REACTIONS = ["👍", "😂", "🎉", "👀"] as const;
+
 interface MessageActionsProps {
   canEdit: boolean;
   canPin: boolean;
@@ -32,62 +34,78 @@ export function MessageActions({
   className,
 }: MessageActionsProps) {
   return (
-    <ButtonGroup
-      className={cn(
-        "pointer-events-none absolute top-0.5 z-10 rounded-lg bg-popover/95 opacity-0 backdrop-blur transition-opacity group-hover:pointer-events-auto group-hover:opacity-100 supports-backdrop-filter:bg-popover/75",
-        className ?? "right-3"
-      )}
-    >
-      {canReply && (
-        <Button
-          aria-label="Reply"
-          onClick={onReply}
-          size="icon-sm"
-          title="Reply to Message"
-          variant="ghost"
-        >
-          <Reply className="h-3.5 w-3.5" />
-        </Button>
-      )}
+    <div className="flex flex-col gap-1">
+      <ButtonGroup
+        className={cn(
+          "z-10 rounded-md border bg-background shadow-sm",
+          className
+        )}
+      >
+        <ReactionPicker onSelectEmoji={onReact} />
 
-      <ReactionPicker onSelectEmoji={onReact} />
+        {QUICK_REACTIONS.map((emoji) => (
+          <Button
+            aria-label={`React with ${emoji}`}
+            key={emoji}
+            onClick={() => onReact(emoji)}
+            size="icon-sm"
+            title={`React with ${emoji}`}
+            variant="ghost"
+          >
+            {emoji}
+          </Button>
+        ))}
 
-      {canEdit && (
-        <Button
-          aria-label="Edit"
-          onClick={onEdit}
-          size="icon-sm"
-          title="Edit Message"
-          variant="ghost"
-        >
-          <Edit3 className="h-3.5 w-3.5" />
-        </Button>
-      )}
+        {canReply && (
+          <Button
+            aria-label="Reply"
+            onClick={onReply}
+            size="icon-sm"
+            title="Reply in thread"
+            variant="ghost"
+          >
+            <Reply className="h-3.5 w-3.5" />
+          </Button>
+        )}
 
-      {canPin && (
-        <Button
-          aria-label={isPinned ? "UnPin message" : "Pin message"}
-          className={cn({ "text-primary": isPinned })}
-          onClick={onPin}
-          size="icon-sm"
-          title={isPinned ? "Unpin message" : "Pin message"}
-          variant="ghost"
-        >
-          <Pin className={cn({ "fill-current": isPinned })} />
-        </Button>
-      )}
+        {canEdit && (
+          <Button
+            aria-label="Edit"
+            onClick={onEdit}
+            size="icon-sm"
+            title="Edit message"
+            variant="ghost"
+          >
+            <Edit3 className="h-3.5 w-3.5" />
+          </Button>
+        )}
 
-      {isOwnMessage && (
-        <Button
-          aria-label="Delete message"
-          onClick={onDelete}
-          size="icon-sm"
-          title="Delete message"
-          variant="ghost"
-        >
-          <Trash2 className="h-3.5 w-3.5" />
-        </Button>
-      )}
-    </ButtonGroup>
+        {canPin && (
+          <Button
+            aria-label={isPinned ? "Unpin message" : "Pin message"}
+            className={cn({ "text-primary": isPinned })}
+            onClick={onPin}
+            size="icon-sm"
+            title={isPinned ? "Unpin message" : "Pin message"}
+            variant="ghost"
+          >
+            <Pin className={cn("h-3.5 w-3.5", { "fill-current": isPinned })} />
+          </Button>
+        )}
+
+        {isOwnMessage && (
+          <Button
+            aria-label="Delete message"
+            className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+            onClick={onDelete}
+            size="icon-sm"
+            title="Delete message"
+            variant="ghost"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </Button>
+        )}
+      </ButtonGroup>
+    </div>
   );
 }

@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useMessageReactions } from "@/hooks/communications/use-message-reactions";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { cn } from "@/lib/utils";
@@ -23,12 +23,12 @@ export function MessageReactions({
   return (
     <div className="flex flex-wrap gap-1.5">
       {reactions.map((reaction) => (
-        <Button
+        <Badge
           className={cn(
-            "gap-1.5 rounded-full px-2 py-0.5 text-xs",
+            "cursor-pointer gap-1 font-medium transition-colors",
             reaction.hasCurrentUser
-              ? "border-primary/50 bg-primary/10 hover:bg-primary/20"
-              : "bg-background hover:bg-muted"
+              ? "border-primary/40 bg-primary/10 text-primary hover:bg-primary/15"
+              : "hover:bg-accent"
           )}
           key={reaction.emoji}
           onClick={() => {
@@ -38,13 +38,11 @@ export function MessageReactions({
               onAddReaction(reaction.emoji);
             }
           }}
-          size="sm"
-          type="button"
           variant="outline"
         >
-          <span className="text-base leading-none">{reaction.emoji}</span>
-          <span className="font-medium">{reaction.count}</span>
-        </Button>
+          <span className="text-sm leading-none">{reaction.emoji}</span>
+          <span className="text-xs">{reaction.count}</span>
+        </Badge>
       ))}
     </div>
   );
