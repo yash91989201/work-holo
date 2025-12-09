@@ -24,14 +24,8 @@ export function useVersionCheck() {
         },
       });
 
-      if (!response.ok) {
-        console.warn("Failed to fetch version info");
-        return null;
-      }
-
       return await response.json();
     } catch (error) {
-      console.error("Error fetching version:", error);
       return null;
     }
   }, []);
@@ -44,19 +38,11 @@ export function useVersionCheck() {
     // Initialize current version on first check
     if (currentVersionRef.current === null) {
       currentVersionRef.current = versionInfo.hash;
-      console.log("Current version:", versionInfo.hash);
       return;
     }
 
     // Check if version has changed
     if (currentVersionRef.current !== versionInfo.hash) {
-      console.log(
-        "New version detected:",
-        versionInfo.hash,
-        "Previous:",
-        currentVersionRef.current
-      );
-
       // Dismiss any existing toast
       if (toastIdRef.current !== undefined) {
         toast.dismiss(toastIdRef.current);
@@ -68,7 +54,7 @@ export function useVersionCheck() {
           "A new version of the app is available. Refresh to update.",
         duration: Number.POSITIVE_INFINITY,
         action: {
-          label: "Refresh",
+          label: "Update",
           onClick: () => {
             window.location.reload();
           },

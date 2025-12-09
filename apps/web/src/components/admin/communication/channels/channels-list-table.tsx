@@ -1,3 +1,4 @@
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import {
   type ColumnDef,
@@ -16,12 +17,14 @@ import {
   LayoutList,
   Lock,
   MoreHorizontal,
+  Pencil,
   Search,
   UserMinus,
   UserRoundPlus,
   X,
 } from "lucide-react";
 import { Suspense, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -53,6 +56,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
@@ -75,6 +87,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useListOrgMembers } from "@/hooks/use-list-org-members";
+import { UpdateChannelFormSchema } from "@/lib/schemas/admin/channel";
+import type { UpdateChannelFormType } from "@/lib/types";
 import { queryClient, queryUtils } from "@/utils/orpc";
 import { ChannelMembersPopover } from "./channel-members-popover";
 
@@ -216,6 +230,11 @@ export const ChannelsListTable = () => {
                 <DropdownMenuItem asChild>
                   <Suspense fallback={<Skeleton className="h-9" />}>
                     <RemoveMemberDialog channelId={channel.id} />
+                  </Suspense>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Suspense fallback={<Skeleton className="h-9" />}>
+                    <UpdateChannelDialog channelId={channel.id} />
                   </Suspense>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild variant="destructive">
@@ -775,6 +794,144 @@ export function DeleteChannelDialog({ channelId }: { channelId: string }) {
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
+  );
+}
+
+export function UpdateChannelDialog({ channelId }: { channelId: string }) {
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const { data: channel, isLoading } = useSuspenseQuery(
+    queryUtils.communication.channel.get.queryOptions({
+      input: { channelId },
+    })
+  );
+
+  const form = useForm<UpdateChannelFormType>({
+    resolver: standardSchemaResolver(UpdateChannelFormSchema),
+    defaultValues: {
+      channelId,
+      name: channel.name,
+      description: channel.description || "",
+    },
+  });
+
+  const { mutateAsync: updateChannel, isPending } = useMutation(
+    queryUtils.communication.channel.update.mutationOptions({
+      onSuccess: () => {
+        toast.success("Channel updated successfully");
+        setDialogOpen(false);
+        queryClient.invalidateQueries({
+          queryKey: queryUtils.communication.channel.list.queryKey({
+            input: {},
+          }),
+        });
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    })
+  );
+
+  const onSubmit = async (data: UpdateChannelFormType) => {
+    const updateData = {
+      channelId,
+      ...(data.name !== undefined && data.name !== channel.name
+        ? { name: data.name }
+        : {}),
+      ...(data.description !== undefined &&
+      data.description !== channel.description
+        ? { description: data.description }
+        : {}),
+      ...(data.isPrivate !== undefined && data.isPrivate !== channel.isPrivate
+        ? { isPrivate: data.isPrivate }
+        : {}),
+    };
+
+    if (Object.keys(updateData).length === 1) {
+      toast.info("No changes to update");
+      return;
+    }
+
+    await updateChannel(updateData);
+  };
+
+  return (
+    <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
+      <DialogTrigger asChild>
+        <Button
+          className="flex items-center justify-start gap-1.5"
+          variant="ghost"
+        >
+          <Pencil className="size-4" />
+          Edit Channel
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Edit Channel</DialogTitle>
+          <DialogDescription>
+            Update the channel name, description, and privacy settings.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4">
+          <Form {...form}>
+            <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Channel Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter channel name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter channel description"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <DialogFooter>
+                <Button
+                  onClick={() => {
+                    setDialogOpen(false);
+                    form.reset();
+                  }}
+                  type="button"
+                  variant="outline"
+                >
+                  Cancel
+                </Button>
+                <Button disabled={isPending || isLoading}>
+                  {isPending ? (
+                    <>
+                      <Spinner className="mr-2 h-4 w-4" />
+                      Updating...
+                    </>
+                  ) : (
+                    "Update Channel"
+                  )}
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 

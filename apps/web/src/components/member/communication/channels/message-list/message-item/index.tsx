@@ -130,7 +130,7 @@ export function MessageItem({
 
       <div
         className={cn(
-          "relative flex max-w-[50%] flex-col gap-1",
+          "relative flex max-w-[50%] flex-col gap-2",
           isOwnMessage ? "items-end" : "items-start"
         )}
       >

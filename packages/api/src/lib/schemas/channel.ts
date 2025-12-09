@@ -31,6 +31,8 @@ export const UpdateChannelInput = z.object({
   isArchived: z.boolean().optional(),
 });
 
+export type UpdateChannelInputType = z.infer<typeof UpdateChannelInput>;
+
 // Get channel input
 export const GetChannelInput = z.object({
   channelId: z.string(),

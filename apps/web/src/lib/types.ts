@@ -24,6 +24,7 @@ import type {
   ProfileUsernameSchema,
 } from "@/lib/schemas/settings/profile";
 import type { ChangePasswordFormSchema } from "@/lib/schemas/settings/security";
+import type { UpdateChannelFormSchema } from "@/lib/schemas/admin/channel";
 
 export type AcceptInvitationFormType = z.infer<
   typeof AcceptInvitationFormSchema
@@ -50,3 +51,4 @@ export type ProfileUsernameFormatType = z.infer<
 >;
 export type ProfileUsernameType = z.infer<typeof ProfileUsernameSchema>;
 export type SignUpFormType = z.infer<typeof SignUpFormSchema>;
+export type UpdateChannelFormType = z.infer<typeof UpdateChannelFormSchema>;
