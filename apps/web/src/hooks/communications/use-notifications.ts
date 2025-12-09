@@ -6,6 +6,8 @@ import { messagesCollection, notificationsCollection } from "@/db/collections";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { orpcClient } from "@/utils/orpc";
 
+const CHANNEL_PATH_REGEX = /\/communication\/channels\/(?<channelId>[^/]+)/;
+
 export function useNotifications() {
   const { user } = useAuthedSession();
 
@@ -23,9 +25,7 @@ export function useNotifications() {
   const activeChannelId = useRouterState({
     select: (state) => {
       const path = state.location.pathname;
-      const match = path.match(
-        /\/communication\/channels\/(?<channelId>[^/]+)/
-      );
+      const match = path.match(CHANNEL_PATH_REGEX);
 
       return match?.groups?.channelId ?? null;
     },
@@ -40,6 +40,11 @@ export function useNotifications() {
 
   useEffect(() => {
     if (isLoading) return;
+
+    const isTabFocused =
+      typeof document !== "undefined" &&
+      document.visibilityState === "visible" &&
+      document.hasFocus();
 
     const seenIds = seenNotificationIdsRef.current;
     const newNotifications = notifications.filter(
@@ -61,7 +66,7 @@ export function useNotifications() {
         notification.entityId
       ) {
         const message = messagesCollection.get(notification.entityId);
-        if (message?.channelId === activeChannelId) {
+        if (isTabFocused && message?.channelId === activeChannelId) {
           return false;
         }
       }
@@ -69,10 +74,39 @@ export function useNotifications() {
     });
 
     if (shouldPlaySound && newNotifications.length > 0) {
-      const audio = new Audio("/assets/sounds/notify.webm");
-      audio.play().catch((error) => {
-        console.error("Error playing notification sound:", error);
-      });
+      const hasMentionNotification = newNotifications.some(
+        (notification) => notification.type === "mention"
+      );
+      const soundPath = hasMentionNotification
+        ? "/assets/sounds/mention.webm"
+        : "/assets/sounds/notify.webm";
+
+      if (isTabFocused) {
+        // Tab is focused - play audio normally
+        const audio = new Audio(soundPath);
+        audio.play().catch((error) => {
+          console.error("Error playing notification sound:", error);
+        });
+      } else if (
+        typeof Notification !== "undefined" &&
+        Notification.permission === "granted"
+      ) {
+        // Tab is not focused - use desktop notification with sound
+        const notificationTitle = hasMentionNotification
+          ? "New Mention"
+          : "New Notification";
+        const notificationBody =
+          newNotifications.length === 1
+            ? "You have a new notification"
+            : `You have ${newNotifications.length} new notifications`;
+
+        new Notification(notificationTitle, {
+          body: notificationBody,
+          icon: "/favicon.ico",
+          tag: "work-holo-notification",
+          silent: false,
+        });
+      }
     }
 
     newNotifications.forEach((notification) => {
