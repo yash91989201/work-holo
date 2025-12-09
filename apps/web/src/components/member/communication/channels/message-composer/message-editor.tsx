@@ -76,9 +76,14 @@ interface MessageEditorProps {
   onSubmit: () => void;
   disabled?: boolean;
   onCursorChange?: (position: number) => void;
-  fetchUsers: (
-    query: string
-  ) => Promise<Array<{ id: string; name: string; email: string }>>;
+  fetchUsers: (query: string) => Promise<
+    Array<{
+      id: string;
+      name: string | null;
+      image: string | null;
+      email: string;
+    }>
+  >;
   onMaximize?: () => void;
   onMinimize?: () => void;
   isMaximized?: boolean;

@@ -127,7 +127,6 @@ export function MessageItem({
         </Avatar>
       </div>
 
-      {/* NEW: A relative container for the message bubble and its actions */}
       <div
         className={cn(
           "relative flex max-w-[70%] flex-col gap-1.5",

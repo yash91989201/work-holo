@@ -7,7 +7,14 @@ import { MentionList } from "./mention-list";
 export const createMentionSuggestion = (
   fetchUsers: (
     query: string
-  ) => Promise<Array<{ id: string; name: string; email: string }>>
+  ) => Promise<
+    Array<{
+      id: string;
+      name: string | null;
+      email: string;
+      image: string | null;
+    }>
+  >
 ): Omit<SuggestionOptions, "editor"> => ({
   char: "@",
 

@@ -152,6 +152,8 @@ function getInitials(name: string): string {
 }
 
 function NoRecentChannels() {
+  const slug = useActiveOrgSlug() ?? "";
+
   return (
     <Empty className="max-w-md border">
       <EmptyHeader>
@@ -166,7 +168,7 @@ function NoRecentChannels() {
       <EmptyContent>
         <Link
           className={buttonVariants({ variant: "outline", size: "sm" })}
-          params={{ slug: "" }}
+          params={{ slug }}
           to="/org/$slug/communication/channels"
         >
           Browse Channels
