@@ -33,18 +33,6 @@ export function NavOps() {
         <SidebarGroupContent>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip="Teams Management">
-                <Link params={{ slug }} to="/org/$slug/dashboard/teams">
-                  <IconBrandTeams />
-                  <span>Teams</span>
-                </Link>
-              </SidebarMenuButton>
-              <SidebarMenuButton asChild tooltip="Members Management">
-                <Link params={{ slug }} to="/org/$slug/dashboard/members">
-                  <Users />
-                  <span>Members</span>
-                </Link>
-              </SidebarMenuButton>
               <SidebarMenuButton asChild tooltip="View Attendance">
                 <Link
                   params={{ slug }}
@@ -65,6 +53,18 @@ export function NavOps() {
                 >
                   <IconBroadcast />
                   <span>Channels</span>
+                </Link>
+              </SidebarMenuButton>
+              <SidebarMenuButton asChild tooltip="Teams Management">
+                <Link params={{ slug }} to="/org/$slug/dashboard/teams">
+                  <IconBrandTeams />
+                  <span>Teams</span>
+                </Link>
+              </SidebarMenuButton>
+              <SidebarMenuButton asChild tooltip="Members Management">
+                <Link params={{ slug }} to="/org/$slug/dashboard/members">
+                  <Users />
+                  <span>Members</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

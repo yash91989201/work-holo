@@ -16,9 +16,10 @@ import {
   LayoutList,
   Lock,
   MoreHorizontal,
-  Plus,
   Search,
   UserMinus,
+  UserRoundPlus,
+  X,
 } from "lucide-react";
 import { Suspense, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -406,6 +407,8 @@ export const ChannelsListTable = () => {
 
 export function AddMemberDialog({ channelId }: { channelId: string }) {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearch = useDebounce(searchTerm, 300);
   const { members } = useListOrgMembers();
 
   const { data: currentChannelMembers } = useSuspenseQuery(
@@ -421,6 +424,15 @@ export function AddMemberDialog({ channelId }: { channelId: string }) {
   const availableMembers = members.filter(
     (member) => !currentChannelMemberIds.includes(member.userId)
   );
+
+  const filteredMembers = availableMembers.filter((member) => {
+    if (!debouncedSearch) return true;
+    const search = debouncedSearch.toLowerCase();
+    return (
+      member.user.name?.toLowerCase().includes(search) ||
+      member.user.email?.toLowerCase().includes(search)
+    );
+  });
 
   const { mutateAsync: addMembers, isPending } = useMutation(
     queryUtils.communication.channel.addMembers.mutationOptions({
@@ -457,7 +469,7 @@ export function AddMemberDialog({ channelId }: { channelId: string }) {
           className="flex items-center justify-start gap-1.5"
           variant="ghost"
         >
-          <Plus className="size-4" />
+          <UserRoundPlus className="size-4" />
           Add Members
         </Button>
       </DialogTrigger>
@@ -469,9 +481,28 @@ export function AddMemberDialog({ channelId }: { channelId: string }) {
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
+          <InputGroup>
+            <InputGroupAddon>
+              <Search className="size-4" />
+            </InputGroupAddon>
+            <InputGroupInput
+              onChange={(event) => setSearchTerm(event.target.value)}
+              placeholder="Search members..."
+              value={searchTerm}
+            />
+            {searchTerm && (
+              <InputGroupAddon
+                align="inline-end"
+                className="cursor-pointer"
+                onClick={() => setSearchTerm("")}
+              >
+                <X className="size-4" />
+              </InputGroupAddon>
+            )}
+          </InputGroup>
           <div className="max-h-64 space-y-2 overflow-y-auto">
-            {availableMembers.length > 0 ? (
-              availableMembers.map((member) => (
+            {filteredMembers.length > 0 ? (
+              filteredMembers.map((member) => (
                 <div
                   className="flex items-center space-x-3 rounded-md p-2 hover:bg-muted"
                   key={member.userId}
@@ -515,7 +546,9 @@ export function AddMemberDialog({ channelId }: { channelId: string }) {
                 </div>
               ))
             ) : (
-              <p className="text-muted-foreground text-sm">No members to add</p>
+              <p className="text-muted-foreground text-sm">
+                {debouncedSearch ? "No members found" : "No members to add"}
+              </p>
             )}
           </div>
           <DialogFooter>
@@ -546,11 +579,22 @@ export function AddMemberDialog({ channelId }: { channelId: string }) {
 
 export function RemoveMemberDialog({ channelId }: { channelId: string }) {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearch = useDebounce(searchTerm, 300);
   const { data: members } = useSuspenseQuery(
     queryUtils.communication.channel.listMembers.queryOptions({
       input: { channelId, filter: { role: "member" } },
     })
   );
+
+  const filteredMembers = members.filter((member) => {
+    if (!debouncedSearch) return true;
+    const search = debouncedSearch.toLowerCase();
+    return (
+      member.name?.toLowerCase().includes(search) ||
+      member.email?.toLowerCase().includes(search)
+    );
+  });
 
   const { mutateAsync: removeMembers, isPending } = useMutation(
     queryUtils.communication.channel.removeMembers.mutationOptions({
@@ -599,9 +643,28 @@ export function RemoveMemberDialog({ channelId }: { channelId: string }) {
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
+          <InputGroup>
+            <InputGroupAddon>
+              <Search className="size-4" />
+            </InputGroupAddon>
+            <InputGroupInput
+              onChange={(event) => setSearchTerm(event.target.value)}
+              placeholder="Search members..."
+              value={searchTerm}
+            />
+            {searchTerm && (
+              <InputGroupAddon
+                align="inline-end"
+                className="cursor-pointer"
+                onClick={() => setSearchTerm("")}
+              >
+                <X className="size-4" />
+              </InputGroupAddon>
+            )}
+          </InputGroup>
           <div className="max-h-64 space-y-2 overflow-y-auto">
-            {members.length > 0 ? (
-              members.map((member) => (
+            {filteredMembers.length > 0 ? (
+              filteredMembers.map((member) => (
                 <div
                   className="flex items-center space-x-3 rounded-md p-2 hover:bg-muted"
                   key={member.id}
@@ -643,7 +706,7 @@ export function RemoveMemberDialog({ channelId }: { channelId: string }) {
               ))
             ) : (
               <p className="text-muted-foreground text-sm">
-                No members to remove
+                {debouncedSearch ? "No members found" : "No members to remove"}
               </p>
             )}
           </div>

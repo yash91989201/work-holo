@@ -1,5 +1,5 @@
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
-import { UserMinus, UserPlus } from "lucide-react";
+import { UserMinus, UserRoundPlus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
@@ -70,7 +70,7 @@ export function AddTeamMemberDialog({ teamId }: { teamId: string }) {
           size="sm"
           variant="ghost"
         >
-          <UserPlus className="size-4" />
+          <UserRoundPlus className="size-4" />
           Add members
         </Button>
       </DialogTrigger>

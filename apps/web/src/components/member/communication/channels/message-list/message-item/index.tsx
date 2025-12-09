@@ -128,14 +128,12 @@ export function MessageItem({
         </Avatar>
       </div>
 
-      {/* Message content area */}
       <div
         className={cn(
           "relative flex max-w-[50%] flex-col gap-1",
           isOwnMessage ? "items-end" : "items-start"
         )}
       >
-        {/* Header with name, timestamp, and badges */}
         <div
           className={cn(
             "flex flex-wrap items-baseline gap-x-2 gap-y-1",
@@ -164,6 +162,7 @@ export function MessageItem({
 
           {message.threadCount > 0 && (
             <Badge
+              className="cursor-pointer"
               onClick={toggleMessageThread}
               title={isMessageThreadActive ? "Close thread" : "Open thread"}
               variant={isMessageThreadActive ? "default" : "secondary"}
@@ -174,11 +173,9 @@ export function MessageItem({
           )}
         </div>
 
-        {/* Message content with actions */}
         <div className="relative w-full">
           <MessageContent isOwnMessage={isOwnMessage} message={message} />
 
-          {/* Hover actions - positioned to the side of message content */}
           <div
             className={cn(
               "pointer-events-none absolute top-1 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100",
