@@ -1,6 +1,7 @@
 // AUTO-GENERATED FILE. DO NOT EDIT.
 // Run `bun run generate:types` to refresh
 import type { z } from "zod";
+import type { UpdateChannelFormSchema } from "@/lib/schemas/admin/channel";
 import type { InviteMemberFormSchema } from "@/lib/schemas/admin/member";
 import type { CreateTeamFormSchema } from "@/lib/schemas/admin/team";
 import type {
@@ -24,7 +25,6 @@ import type {
   ProfileUsernameSchema,
 } from "@/lib/schemas/settings/profile";
 import type { ChangePasswordFormSchema } from "@/lib/schemas/settings/security";
-import type { UpdateChannelFormSchema } from "@/lib/schemas/admin/channel";
 
 export type AcceptInvitationFormType = z.infer<
   typeof AcceptInvitationFormSchema

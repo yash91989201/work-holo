@@ -7,11 +7,11 @@ import { Dropcursor } from "@tiptap/extensions";
 import type { Editor } from "@tiptap/react";
 import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import type { SuggestionOptions } from "@tiptap/suggestion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import z from "zod";
 import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
-import type { SuggestionOptions } from "@tiptap/suggestion";
 
 const URL_REGEX = /^[a-zA-Z]+:\/\//;
 
