@@ -23,37 +23,46 @@ export function useVersionCheck() {
 
     isReloadingRef.current = true;
 
-    const waitForControllerChange = () =>
-      new Promise<void>((resolve) => {
-        const onControllerChange = () => {
-          navigator.serviceWorker.removeEventListener(
+    try {
+      // Clear all caches first
+      if ("caches" in window) {
+        const cacheNames = await caches.keys();
+        await Promise.all(cacheNames.map((name) => caches.delete(name)));
+      }
+
+      const waitForControllerChange = () =>
+        new Promise<void>((resolve) => {
+          const onControllerChange = () => {
+            navigator.serviceWorker.removeEventListener(
+              "controllerchange",
+              onControllerChange
+            );
+            resolve();
+          };
+
+          navigator.serviceWorker.addEventListener(
             "controllerchange",
             onControllerChange
           );
-          resolve();
-        };
+        });
 
-        navigator.serviceWorker.addEventListener(
-          "controllerchange",
-          onControllerChange
-        );
-      });
+      if ("serviceWorker" in navigator) {
+        const registration = await navigator.serviceWorker.getRegistration();
 
-    if ("serviceWorker" in navigator) {
-      const registration = await navigator.serviceWorker.getRegistration();
-
-      if (registration?.waiting) {
-        const controllerChanged = waitForControllerChange();
-        registration.waiting.postMessage({ type: "SKIP_WAITING" });
-        await controllerChanged;
-        window.location.reload();
-        return;
+        if (registration?.waiting) {
+          const controllerChanged = waitForControllerChange();
+          registration.waiting.postMessage({ type: "SKIP_WAITING" });
+          await controllerChanged;
+        } else {
+          await registration?.update();
+        }
       }
-
-      await registration?.update();
+    } catch (error) {
+      console.error("Error during service worker update:", error);
+    } finally {
+      // Force a hard reload to bypass any remaining caches
+      window.location.reload();
     }
-
-    window.location.reload();
   }, []);
 
   const fetchVersion = useCallback(async (): Promise<VersionInfo | null> => {

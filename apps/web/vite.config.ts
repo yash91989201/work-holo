@@ -28,6 +28,8 @@ export default defineConfig({
       workbox: {
         clientsClaim: true,
         skipWaiting: true,
+        // Clean up old caches on activation
+        cleanupOutdatedCaches: true,
         // Ensure version.json is never cached
         navigateFallbackDenylist: [/^\/version\.json/],
         runtimeCaching: [

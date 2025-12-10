@@ -309,7 +309,12 @@ export const channelRouter = {
     .handler(async ({ context, input }) => {
       await context.db
         .delete(channelMemberTable)
-        .where(inArray(channelMemberTable.userId, input.memberIds));
+        .where(
+          and(
+            eq(channelMemberTable.channelId, input.channelId),
+            inArray(channelMemberTable.userId, input.memberIds)
+          )
+        );
 
       return {
         success: true,
