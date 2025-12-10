@@ -1,4 +1,5 @@
 import { Bell, BellOff, Check, X } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Item,
@@ -9,13 +10,45 @@ import {
 } from "@/components/ui/item";
 import { Separator } from "@/components/ui/separator";
 import { useNotificationPermission } from "@/hooks/use-notification-permission";
+import { usePushNotifications } from "@/hooks/use-push-notifications";
+import { Switch } from "../ui/switch";
 
 export function NotificationSettings() {
   const { requestPermission, isGranted, isDenied, isDefault } =
     useNotificationPermission();
 
+  const {
+    isSubscribed,
+    isLoading: isPushLoading,
+    subscribe,
+    unsubscribe,
+    isSupported,
+  } = usePushNotifications();
+
+  const [isTesting, setIsTesting] = useState(false);
+
   const handleRequestPermission = async () => {
     await requestPermission();
+  };
+
+  const handleTogglePushNotifications = async (enabled: boolean) => {
+    if (enabled) {
+      await subscribe();
+    } else {
+      await unsubscribe();
+    }
+  };
+
+  const handleTestNotification = async () => {
+    setIsTesting(true);
+    try {
+      const { testPushNotification } = await import("@/lib/push-subscription");
+      await testPushNotification();
+    } catch (error) {
+      console.error("Failed to send test notification:", error);
+    } finally {
+      setIsTesting(false);
+    }
   };
 
   const getPermissionStatus = () => {
@@ -69,14 +102,13 @@ export function NotificationSettings() {
 
   return (
     <div className="space-y-3">
-      <h3>Notification manager</h3>
+      <h3>Notifications</h3>
       <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
         <Item>
           <ItemContent>
             <ItemTitle>Desktop Notifications</ItemTitle>
             <ItemDescription>
-              Receive desktop notifications with sound when you get mentions or
-              messages while the app is in the background
+              Get notified about mentions and messages
             </ItemDescription>
             <div className="mt-3">{getPermissionStatus()}</div>
             {!isGranted && <div className="mt-3">{getPermissionAction()}</div>}
@@ -95,23 +127,48 @@ export function NotificationSettings() {
             <Separator />
             <Item>
               <ItemContent>
-                <ItemTitle>How it works</ItemTitle>
+                <ItemTitle>Push Notifications</ItemTitle>
                 <ItemDescription>
-                  <ul className="mt-2 list-inside list-disc space-y-1 text-muted-foreground text-sm">
-                    <li>
-                      When the app is focused: sounds play directly in the
-                      browser
-                    </li>
-                    <li>
-                      When the app is in the background: desktop notifications
-                      appear with sound
-                    </li>
-                    <li>
-                      You'll receive notifications for mentions and new messages
-                      in your channels
-                    </li>
-                  </ul>
+                  Receive alerts even when tab is closed or in background
                 </ItemDescription>
+                {isSupported ? (
+                  <div className="mt-3 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">
+                        {isSubscribed ? "Enabled" : "Disabled"}
+                      </span>
+                      <Switch
+                        checked={isSubscribed}
+                        disabled={isPushLoading}
+                        onCheckedChange={handleTogglePushNotifications}
+                      />
+                    </div>
+                    {isSubscribed && (
+                      <Button
+                        disabled={isTesting}
+                        onClick={handleTestNotification}
+                        size="sm"
+                        variant="outline"
+                      >
+                        {isTesting ? (
+                          <>
+                            <span className="size-3 animate-spin">⏳</span>
+                            <span>Sending...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Bell className="size-3" />
+                            <span>Test Notification</span>
+                          </>
+                        )}
+                      </Button>
+                    )}
+                  </div>
+                ) : (
+                  <p className="mt-3 text-muted-foreground text-sm">
+                    Not supported in your browser
+                  </p>
+                )}
               </ItemContent>
             </Item>
           </>
@@ -119,27 +176,19 @@ export function NotificationSettings() {
       </div>
 
       {isDefault && (
-        <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-900 dark:border-blue-800 dark:bg-blue-950 dark:text-blue-100">
-          <p className="font-medium text-sm">Why enable notifications?</p>
-          <ul className="mt-2 list-inside list-disc space-y-1 text-sm">
-            <li>Never miss important mentions or messages</li>
-            <li>Stay updated even when working in other apps</li>
-            <li>Get instant alerts with sound notifications</li>
-          </ul>
+        <div className="rounded-lg border border-blue-200 bg-blue-50 p-3 text-blue-900 dark:border-blue-800 dark:bg-blue-950 dark:text-blue-100">
+          <p className="font-medium text-sm">
+            Enable to never miss mentions and messages
+          </p>
         </div>
       )}
 
       {isDenied && (
-        <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 text-yellow-900 dark:border-yellow-800 dark:bg-yellow-950 dark:text-yellow-100">
-          <p className="font-medium text-sm">How to enable notifications:</p>
-          <ul className="mt-2 list-inside list-decimal space-y-1 text-sm">
-            <li>
-              Click the lock icon or settings icon in your browser's address bar
-            </li>
-            <li>Find "Notifications" in the permissions list</li>
-            <li>Change the setting from "Block" to "Allow"</li>
-            <li>Reload this page</li>
-          </ul>
+        <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-3 text-yellow-900 dark:border-yellow-800 dark:bg-yellow-950 dark:text-yellow-100">
+          <p className="font-medium text-sm">
+            Click the lock icon in your browser's address bar to allow
+            notifications
+          </p>
         </div>
       )}
     </div>

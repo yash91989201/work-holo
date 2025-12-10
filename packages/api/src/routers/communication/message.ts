@@ -6,6 +6,7 @@ import {
   messageReactionTable,
   messageTable,
   notificationTable,
+  pushSubscriptionTable,
   user as userTable,
 } from "@work-holo/db/schema/index";
 import {
@@ -18,6 +19,8 @@ import {
   or,
   sql,
 } from "drizzle-orm";
+import webpush from "web-push";
+import "../../lib/push-notifications";
 import { protectedProcedure } from "../../index";
 import { generateTxId } from "../../lib/electric-proxy";
 import {
@@ -162,6 +165,60 @@ export const messageRouter = {
             );
 
             await tx.insert(notificationTable).values(mentionNotifications);
+
+            // Send push notifications asynchronously (don't block the transaction)
+            Promise.resolve().then(async () => {
+              try {
+                const subscriptions = await db
+                  .select()
+                  .from(pushSubscriptionTable)
+                  .where(
+                    inArray(pushSubscriptionTable.userId, input.mentions || [])
+                  );
+
+                await Promise.allSettled(
+                  subscriptions.map(async (sub) => {
+                    try {
+                      await webpush.sendNotification(
+                        {
+                          endpoint: sub.endpoint,
+                          keys: { p256dh: sub.p256dh, auth: sub.auth },
+                        },
+                        JSON.stringify({
+                          title: `${user.name || user.email} mentioned you`,
+                          body:
+                            input.content?.slice(0, 200) ||
+                            "You were mentioned in a message",
+                          icon: "/favicon.ico",
+                          badge: "/favicon.ico",
+                          tag: "work-holo-mention",
+                          data: {
+                            messageId: newMessage.id,
+                            channelId: input.channelId,
+                            type: "mention",
+                          },
+                        })
+                      );
+                    } catch (error: unknown) {
+                      // Remove invalid subscriptions (410 Gone or 404 Not Found)
+                      if (
+                        error &&
+                        typeof error === "object" &&
+                        "statusCode" in error &&
+                        (error.statusCode === 410 || error.statusCode === 404)
+                      ) {
+                        await db
+                          .delete(pushSubscriptionTable)
+                          .where(eq(pushSubscriptionTable.id, sub.id))
+                          .catch(() => {});
+                      }
+                    }
+                  })
+                );
+              } catch (error) {
+                console.error("Error sending push notifications:", error);
+              }
+            });
           }
 
           if (input.parentMessageId) {
@@ -250,6 +307,62 @@ export const messageRouter = {
               );
 
               await tx.insert(notificationTable).values(mentionNotifications);
+
+              // Send push notifications asynchronously (don't block the transaction)
+              Promise.resolve().then(async () => {
+                try {
+                  const subscriptions = await db
+                    .select()
+                    .from(pushSubscriptionTable)
+                    .where(
+                      inArray(
+                        pushSubscriptionTable.userId,
+                        input.mentions || []
+                      )
+                    );
+
+                  await Promise.allSettled(
+                    subscriptions.map(async (sub) => {
+                      try {
+                        await webpush.sendNotification(
+                          {
+                            endpoint: sub.endpoint,
+                            keys: { p256dh: sub.p256dh, auth: sub.auth },
+                          },
+                          JSON.stringify({
+                            title: `${user.name || user.email} mentioned you`,
+                            body:
+                              input.content?.slice(0, 200) ||
+                              "You were mentioned in a message",
+                            icon: "/favicon.ico",
+                            badge: "/favicon.ico",
+                            tag: "work-holo-mention",
+                            data: {
+                              messageId: updatedMessage.id,
+                              channelId: updatedMessage.channelId,
+                              type: "mention",
+                            },
+                          })
+                        );
+                      } catch (error: unknown) {
+                        if (
+                          error &&
+                          typeof error === "object" &&
+                          "statusCode" in error &&
+                          (error.statusCode === 410 || error.statusCode === 404)
+                        ) {
+                          await db
+                            .delete(pushSubscriptionTable)
+                            .where(eq(pushSubscriptionTable.id, sub.id))
+                            .catch(() => {});
+                        }
+                      }
+                    })
+                  );
+                } catch (error) {
+                  console.error("Error sending push notifications:", error);
+                }
+              });
             }
           }
 

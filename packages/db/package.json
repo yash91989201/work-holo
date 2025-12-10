@@ -18,7 +18,7 @@
   "devDependencies": {
     "@work-holo/config": "workspace:*",
     "drizzle-kit": "^0.31.8",
-    "supabase": "^2.65.6"
+    "supabase": "^2.65.8"
   },
   "peerDependencies": {
     "typescript": "^5.9.3"

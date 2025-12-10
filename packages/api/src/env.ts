@@ -15,6 +15,9 @@ export const env = createEnv({
         return trimmed;
       })
     ),
+    VAPID_PUBLIC_KEY: z.string(),
+    VAPID_PRIVATE_KEY: z.string(),
+    VAPID_SUBJECT: z.url().or(z.email()),
   },
   runtimeEnv: process.env,
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,

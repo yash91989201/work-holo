@@ -11,6 +11,50 @@ const CHANNEL_PATH_REGEX = /\/communication\/channels\/(?<channelId>[^/]+)/;
 export function useNotifications() {
   const { user } = useAuthedSession();
 
+  // Auto-subscribe to push notifications on mount
+  const hasSubscribedRef = useRef(false);
+  useEffect(() => {
+    if (hasSubscribedRef.current) return;
+    hasSubscribedRef.current = true;
+
+    // VitePWA handles service worker registration automatically
+    if ("Notification" in window && "serviceWorker" in navigator) {
+      // Wait a bit before subscribing to avoid blocking initial render
+      const timeoutId = setTimeout(async () => {
+        try {
+          // Wait for VitePWA's service worker to be ready
+          const registration = await navigator.serviceWorker.ready;
+          if (!registration) return;
+
+          const existingSubscription =
+            await registration.pushManager.getSubscription();
+          if (existingSubscription) return; // Already subscribed
+
+          // Request permission if not granted
+          if (Notification.permission === "default") {
+            const permission = await Notification.requestPermission();
+            if (permission !== "granted") return;
+          }
+
+          // Subscribe to push notifications
+          if (Notification.permission === "granted") {
+            const { subscribeToPushNotifications } = await import(
+              "@/lib/push-subscription"
+            );
+            await subscribeToPushNotifications();
+          }
+        } catch (error) {
+          console.error(
+            "Failed to auto-subscribe to push notifications:",
+            error
+          );
+        }
+      }, 2000);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, []);
+
   const { data, isLoading } = useLiveQuery(
     (q) =>
       q
@@ -37,6 +81,30 @@ export function useNotifications() {
 
   const seenNotificationIdsRef = useRef<Set<string>>(new Set());
   const isFirstLoadRef = useRef(true);
+
+  // Play sound when service worker requests it (Chromium on Linux won't play system sound)
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data?.type !== "PLAY_NOTIFICATION_SOUND") return;
+      const hasMention = Boolean(event.data?.payload?.hasMention);
+      const soundPath = hasMention
+        ? "/assets/sounds/mention.webm"
+        : "/assets/sounds/notify.webm";
+      const audio = new Audio(soundPath);
+      audio.play().catch((error) => {
+        console.error("Error playing notification sound:", error);
+      });
+    };
+
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.addEventListener("message", handleMessage);
+      return () => {
+        navigator.serviceWorker.removeEventListener("message", handleMessage);
+      };
+    }
+
+    return;
+  }, []);
 
   useEffect(() => {
     if (isLoading) return;
