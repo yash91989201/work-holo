@@ -2,7 +2,8 @@ import type { MessageWithSenderType } from "@work-holo/api/lib/types";
 import DOMPurify from "dompurify";
 import parse from "html-react-parser";
 import { Download, FileIcon, Maximize2 } from "lucide-react";
-import { useRef } from "react";
+import { type JSX, useRef } from "react";
+import { LinkPreview } from "@/components/member/communication/channels/message-composer/link-preview";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -17,6 +18,25 @@ export function MessageContent({
 }: MessageContentProps) {
   const hasContent = message.content && message.content.trim().length > 0;
   const hasAttachments = message.attachments && message.attachments.length > 0;
+
+  const parserOptions = {
+    replace: (domNode: unknown): JSX.Element | object | undefined => {
+      const node = domNode as {
+        type?: string;
+        name?: string;
+        attribs?: Record<string, string>;
+      };
+
+      if (
+        node.type === "tag" &&
+        node.name === "div" &&
+        node.attribs?.["data-type"] === "link-preview" &&
+        node.attribs?.["data-url"]
+      ) {
+        return <LinkPreview url={node.attribs["data-url"]} />;
+      }
+    },
+  };
 
   // For audio-only messages
   if (message.type === "audio" && hasAttachments) {
@@ -102,8 +122,9 @@ export function MessageContent({
           <div className="ProseMirror prose-sm dark:prose-invert wrap-break-words text-sm leading-relaxed">
             {parse(
               DOMPurify.sanitize(message.content, {
-                ADD_ATTR: ["target", "rel"],
-              })
+                ADD_ATTR: ["target", "rel", "data-url", "data-type"],
+              }),
+              parserOptions
             )}
           </div>
         </div>
