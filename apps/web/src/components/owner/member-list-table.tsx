@@ -163,7 +163,7 @@ export const MemberListTable = () => {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             variant="ghost"
           >
-            Status
+            Role
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         ),
