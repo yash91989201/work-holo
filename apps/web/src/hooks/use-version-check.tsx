@@ -14,6 +14,47 @@ const VERSION_URL = "/version.json";
 export function useVersionCheck() {
   const currentVersionRef = useRef<string | null>(null);
   const toastIdRef = useRef<string | number | undefined>(undefined);
+  const isReloadingRef = useRef(false);
+
+  const reloadWithServiceWorkerUpdate = useCallback(async () => {
+    if (isReloadingRef.current) {
+      return;
+    }
+
+    isReloadingRef.current = true;
+
+    const waitForControllerChange = () =>
+      new Promise<void>((resolve) => {
+        const onControllerChange = () => {
+          navigator.serviceWorker.removeEventListener(
+            "controllerchange",
+            onControllerChange
+          );
+          resolve();
+        };
+
+        navigator.serviceWorker.addEventListener(
+          "controllerchange",
+          onControllerChange
+        );
+      });
+
+    if ("serviceWorker" in navigator) {
+      const registration = await navigator.serviceWorker.getRegistration();
+
+      if (registration?.waiting) {
+        const controllerChanged = waitForControllerChange();
+        registration.waiting.postMessage({ type: "SKIP_WAITING" });
+        await controllerChanged;
+        window.location.reload();
+        return;
+      }
+
+      await registration?.update();
+    }
+
+    window.location.reload();
+  }, []);
 
   const fetchVersion = useCallback(async (): Promise<VersionInfo | null> => {
     try {
@@ -54,7 +95,7 @@ export function useVersionCheck() {
         action: {
           label: "Update",
           onClick: () => {
-            window.location.reload();
+            reloadWithServiceWorkerUpdate();
           },
         },
         cancel: {
@@ -69,7 +110,7 @@ export function useVersionCheck() {
 
       currentVersionRef.current = versionInfo.hash;
     }
-  }, [fetchVersion]);
+  }, [fetchVersion, reloadWithServiceWorkerUpdate]);
 
   useEffect(() => {
     if (env.VITE_ENV !== "production") {

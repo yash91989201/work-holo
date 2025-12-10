@@ -26,6 +26,8 @@ export default defineConfig({
       pwaAssets: { disabled: false, config: true },
       devOptions: { enabled: true },
       workbox: {
+        clientsClaim: true,
+        skipWaiting: true,
         // Ensure version.json is never cached
         navigateFallbackDenylist: [/^\/version\.json/],
         runtimeCaching: [
@@ -36,7 +38,7 @@ export default defineConfig({
         ],
       },
     }),
-    viteVersionPlugin(), // Add version plugin
+    viteVersionPlugin(),
   ],
   resolve: {
     alias: {
