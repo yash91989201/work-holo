@@ -403,7 +403,7 @@ export function useMessages({ channelId }: { channelId: string }) {
               isNull(message.parentMessageId)
             )
           )
-          .orderBy(({ message }) => message.createdAt)
+          .orderBy(({ message }) => message.createdAt, "desc")
           .select(({ message, sender, attachment, channel }) => ({
             message,
             sender,
