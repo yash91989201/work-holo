@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
 import { toast } from "sonner";
+import { env } from "../env";
 
 interface VersionInfo {
   hash: string;
@@ -7,7 +8,7 @@ interface VersionInfo {
   date: string;
 }
 
-const CHECK_INTERVAL = 5 * 60 * 1000; // Check every 5 minutes
+const CHECK_INTERVAL = 5 * 60 * 1000;
 const VERSION_URL = "/version.json";
 
 export function useVersionCheck() {
@@ -16,8 +17,9 @@ export function useVersionCheck() {
 
   const fetchVersion = useCallback(async (): Promise<VersionInfo | null> => {
     try {
-      // Add cache buster to ensure we get fresh data
-      const response = await fetch(`${VERSION_URL}?t=${Date.now()}`, {
+      const versionUrl = new URL(VERSION_URL, env.VITE_WEB_URL).toString();
+
+      const response = await fetch(`${versionUrl}?t=${Date.now()}`, {
         cache: "no-store",
         headers: {
           "Cache-Control": "no-cache",
@@ -25,7 +27,7 @@ export function useVersionCheck() {
       });
 
       return await response.json();
-    } catch (error) {
+    } catch {
       return null;
     }
   }, []);
@@ -35,20 +37,16 @@ export function useVersionCheck() {
 
     if (!versionInfo) return;
 
-    // Initialize current version on first check
     if (currentVersionRef.current === null) {
       currentVersionRef.current = versionInfo.hash;
       return;
     }
 
-    // Check if version has changed
     if (currentVersionRef.current !== versionInfo.hash) {
-      // Dismiss any existing toast
       if (toastIdRef.current !== undefined) {
         toast.dismiss(toastIdRef.current);
       }
 
-      // Show update notification
       toastIdRef.current = toast.info("New version available", {
         description:
           "A new version of the app is available. Refresh to update.",
@@ -69,19 +67,19 @@ export function useVersionCheck() {
         },
       });
 
-      // Update current version
       currentVersionRef.current = versionInfo.hash;
     }
   }, [fetchVersion]);
 
   useEffect(() => {
-    // Initial check
+    if (env.VITE_ENV !== "production") {
+      return;
+    }
+
     checkVersion();
 
-    // Set up periodic checks
     const interval = setInterval(checkVersion, CHECK_INTERVAL);
 
-    // Check on window focus (when user returns to tab)
     const handleFocus = () => {
       checkVersion();
     };

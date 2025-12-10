@@ -94,7 +94,7 @@ export function MentionMessageItem({ message }: MentionMessageItemProps) {
         <ItemTitle>
           {message.sender.name} mentioned you
           <span className="font-normal text-muted-foreground text-xs">
-            {timestamp.relative}
+            {timestamp.formatted}
           </span>
         </ItemTitle>
         {message.content && (

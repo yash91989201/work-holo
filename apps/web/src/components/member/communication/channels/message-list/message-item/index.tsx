@@ -144,11 +144,8 @@ export function MessageItem({
             {message.sender.name}
           </span>
 
-          <span
-            className="text-muted-foreground text-xs"
-            title={timestamp.absolute}
-          >
-            {timestamp.relative}
+          <span className="text-muted-foreground text-xs">
+            {timestamp.formatted}
           </span>
 
           {message.isEdited && <Badge variant="secondary">edited</Badge>}
