@@ -11,6 +11,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import z from "zod";
 import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
+import type { SuggestionOptions } from "@tiptap/suggestion";
 
 const URL_REGEX = /^[a-zA-Z]+:\/\//;
 
@@ -39,7 +40,7 @@ interface UseMessageEditorOptions {
         email: string;
       }>
     >
-  ) => unknown;
+  ) => Omit<SuggestionOptions, "editor">;
   LinkPreviewNode: unknown;
   AutoLinkPreview: unknown;
 }

@@ -99,8 +99,12 @@ export function MessageContent({
               : "bg-muted/50 text-foreground"
           )}
         >
-          <div className="ProseMirror prose-sm dark:prose-invert break-words text-sm leading-relaxed">
-            {parse(DOMPurify.sanitize(message.content))}
+          <div className="ProseMirror prose-sm dark:prose-invert wrap-break-words text-sm leading-relaxed">
+            {parse(
+              DOMPurify.sanitize(message.content, {
+                ADD_ATTR: ["target", "rel"],
+              })
+            )}
           </div>
         </div>
       )}
