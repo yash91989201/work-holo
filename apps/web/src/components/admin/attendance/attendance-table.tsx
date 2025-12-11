@@ -1,6 +1,8 @@
 import {
   IconChevronLeft,
   IconChevronRight,
+  IconChevronsLeft,
+  IconChevronsRight,
   IconDownload,
   IconFilter,
   IconSearch,
@@ -573,7 +575,7 @@ export function AttendanceTable() {
                 onClick={() => table.setPageIndex(0)}
                 variant="outline"
               >
-                <IconChevronLeft className="h-4 w-4" />
+                <IconChevronsLeft className="h-4 w-4" />
                 <span className="sr-only">First</span>
               </Button>
               <Button
@@ -602,7 +604,7 @@ export function AttendanceTable() {
                 onClick={() => table.setPageIndex(table.getPageCount() - 1)}
                 variant="outline"
               >
-                <IconChevronRight className="h-4 w-4" />
+                <IconChevronsRight className="h-4 w-4" />
                 <span className="sr-only">Last</span>
               </Button>
             </div>
