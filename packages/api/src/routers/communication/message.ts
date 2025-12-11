@@ -42,6 +42,8 @@ import {
   GetPinnedMessagesInput,
   GetPinnedMessagesOutput,
   GetUnreadCountInput,
+  MarkAllMentionsSeenInput,
+  MarkAllMentionsSeenOutput,
   MarkMentionSeenInput,
   MarkMentionSeenOutput,
   PinMessageInput,
@@ -740,6 +742,48 @@ export const messageRouter = {
       });
 
       return { txid, success: true };
+    }),
+
+  markAllMentionsSeen: protectedProcedure
+    .input(MarkAllMentionsSeenInput)
+    .output(MarkAllMentionsSeenOutput)
+    .handler(async ({ context: { db, session }, input }) => {
+      const { user } = session;
+
+      const { txid, count } = await db.transaction(async (tx) => {
+        const txid = await generateTxId(tx);
+
+        const mentionsToUpdate = await tx
+          .select({ id: messageMentionTable.id })
+          .from(messageMentionTable)
+          .innerJoin(
+            messageTable,
+            eq(messageMentionTable.messageId, messageTable.id)
+          )
+          .where(
+            and(
+              eq(messageMentionTable.mentionedUserId, user.id),
+              eq(messageMentionTable.isSeen, false),
+              eq(messageTable.channelId, input.channelId),
+              eq(messageTable.isDeleted, false)
+            )
+          );
+
+        if (mentionsToUpdate.length === 0) {
+          return { txid, count: 0 };
+        }
+
+        const mentionIds = mentionsToUpdate.map((m) => m.id);
+
+        await tx
+          .update(messageMentionTable)
+          .set({ isSeen: true })
+          .where(inArray(messageMentionTable.id, mentionIds));
+
+        return { txid };
+      });
+
+      return { txid, success: true, count };
     }),
 
   addReaction: protectedProcedure

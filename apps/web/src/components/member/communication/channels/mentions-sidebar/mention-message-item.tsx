@@ -2,7 +2,6 @@ import { Link, useParams } from "@tanstack/react-router";
 import type { MessageWithSenderType } from "@work-holo/api/lib/types";
 import DOMPurify from "dompurify";
 import parse from "html-react-parser";
-import { useEffect, useRef } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,7 +12,6 @@ import {
   ItemMedia,
   ItemTitle,
 } from "@/components/ui/item";
-import { useMessageMutations } from "@/hooks/communications/use-message-mutations";
 import { formatMessageTimestamp } from "@/lib/utils";
 import { useChannelMessageHighlight } from "@/stores/channel-store";
 
@@ -28,10 +26,6 @@ interface MentionMessageItemProps {
 }
 
 export function MentionMessageItem({ message }: MentionMessageItemProps) {
-  const { markMentionSeen } = useMessageMutations();
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const hasMarkedRef = useRef(false);
-  const timeoutRef = useRef<number | null>(null);
   const { highlightMessage } = useChannelMessageHighlight();
 
   const { slug } = useParams({
@@ -40,45 +34,12 @@ export function MentionMessageItem({ message }: MentionMessageItemProps) {
 
   const timestamp = formatMessageTimestamp(message.createdAt);
 
-  useEffect(() => {
-    if (message.mention.isSeen || hasMarkedRef.current) return;
-
-    const node = containerRef.current;
-    if (!node || typeof IntersectionObserver === "undefined") return;
-
-    const handleInView = (entries: IntersectionObserverEntry[]) => {
-      const [entry] = entries;
-      if (entry.isIntersecting && !hasMarkedRef.current) {
-        timeoutRef.current = window.setTimeout(() => {
-          hasMarkedRef.current = true;
-          markMentionSeen({ mentionId: message.mention.id });
-        }, 2000);
-      } else if (timeoutRef.current) {
-        window.clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
-      }
-    };
-
-    const observer = new IntersectionObserver(handleInView, {
-      threshold: 0.5,
-    });
-
-    observer.observe(node);
-
-    return () => {
-      if (timeoutRef.current) {
-        window.clearTimeout(timeoutRef.current);
-      }
-      observer.disconnect();
-    };
-  }, [markMentionSeen, message.mention.id, message.mention.isSeen]);
-
   const handleViewMention = () => {
     highlightMessage(message.id);
   };
 
   return (
-    <Item ref={containerRef} variant="outline">
+    <Item variant="outline">
       <ItemMedia variant="image">
         <Avatar className="h-10 w-10">
           <AvatarImage

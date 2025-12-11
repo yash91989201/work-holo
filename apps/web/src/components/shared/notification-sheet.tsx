@@ -27,6 +27,7 @@ import { useNotifications } from "@/hooks/communications/use-notifications";
 import { cn } from "@/lib/utils";
 import { useChannelMessageHighlight } from "@/stores/channel-store";
 import { ScrollArea } from "../ui/scroll-area";
+import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 
 function getNotificationIcon(type: string) {
   switch (type) {
@@ -55,14 +56,25 @@ function formatTimeAgo(date: Date) {
 }
 
 export function NotificationSheet() {
-  const { notifications, unreadCount, isLoading, markNotificationAsRead } =
-    useNotifications();
+  const {
+    notifications,
+    unreadCount,
+    isLoading,
+    markNotificationAsRead,
+    markAllAsRead,
+    filter,
+    setFilter,
+  } = useNotifications();
   const [open, setOpen] = useState(false);
 
   const handleMarkAsRead = useCallback(
     (input: { notificationId: string }) => markNotificationAsRead(input),
     [markNotificationAsRead]
   );
+
+  const handleMarkAllAsRead = useCallback(() => {
+    markAllAsRead({});
+  }, [markAllAsRead]);
 
   const triggerBadge = useMemo(
     () =>
@@ -82,14 +94,44 @@ export function NotificationSheet() {
           {triggerBadge}
         </Button>
       </SheetTrigger>
-      <SheetContent className="sm:max-w-md">
-        <SheetHeader>
-          <SheetTitle>Notifications</SheetTitle>
-          <SheetDescription>
-            Stay on top of mentions, invites, and messages.
-          </SheetDescription>
+      <SheetContent className="flex flex-col sm:max-w-md">
+        <SheetHeader className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <SheetTitle>Notifications</SheetTitle>
+              <SheetDescription>
+                Stay on top of mentions, invites, and messages.
+              </SheetDescription>
+            </div>
+            {unreadCount > 0 && filter === "unread" && (
+              <Button onClick={handleMarkAllAsRead} size="sm" variant="ghost">
+                Mark all as read
+              </Button>
+            )}
+          </div>
+
+          <Tabs
+            className="w-full"
+            onValueChange={(value) =>
+              setFilter(value as "all" | "unread" | "read")
+            }
+            value={filter}
+          >
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="all">All</TabsTrigger>
+              <TabsTrigger value="unread">
+                Unread
+                {unreadCount > 0 && (
+                  <span className="ml-1.5 rounded-full bg-primary px-1.5 py-0.5 font-semibold text-[10px] text-primary-foreground leading-none">
+                    {unreadCount > 99 ? "99+" : unreadCount}
+                  </span>
+                )}
+              </TabsTrigger>
+              <TabsTrigger value="read">Read</TabsTrigger>
+            </TabsList>
+          </Tabs>
         </SheetHeader>
-        <ScrollArea className="h-[calc(100vh-8rem)]">
+        <ScrollArea className="-mx-6 flex-1 px-6">
           {(() => {
             if (isLoading) {
               return <NotificationListSkeleton />;
@@ -97,7 +139,7 @@ export function NotificationSheet() {
 
             if (notifications.length === 0) {
               return (
-                <div className="rounded-lg border bg-muted/40 p-4 text-center text-muted-foreground text-sm">
+                <div className="m-3 rounded-lg border bg-muted/40 p-3 text-center text-muted-foreground text-sm">
                   You&apos;re all caught up. New notifications will appear here.
                 </div>
               );

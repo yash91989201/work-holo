@@ -1,6 +1,11 @@
-import { and, eq, useLiveQuery } from "@tanstack/react-db";
+import {
+  and,
+  createOptimisticAction,
+  eq,
+  useLiveQuery,
+} from "@tanstack/react-db";
 import { useParams } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef } from "react";
+import { useMemo, useState } from "react";
 import {
   attachmentsCollection,
   channelMembersCollection,
@@ -12,6 +17,7 @@ import {
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import type { MessageWithSender } from "@/lib/communications/message";
 import { buildMessageWithAttachments } from "@/lib/communications/message";
+import { orpcClient } from "@/utils/orpc";
 
 type MentionRecord = {
   id: string;
@@ -27,6 +33,8 @@ type MentionWithRelations = MessageWithSender & {
   mention: MentionRecord;
 };
 
+export type MentionFilter = "all" | "unseen" | "seen";
+
 export function useChannelMentions() {
   const { id: currentChannelId } = useParams({
     from: "/(authenticated)/org/$slug/(modules)/communication/channels/$id",
@@ -34,10 +42,11 @@ export function useChannelMentions() {
 
   const { user } = useAuthedSession();
   const userId = user.id;
+  const [filter, setFilter] = useState<MentionFilter>("all");
 
   const { data, isLoading } = useLiveQuery(
-    (q) =>
-      q
+    (q) => {
+      let query = q
         .from({ mention: messageMentionsCollection })
         .innerJoin({ message: messagesCollection }, ({ mention, message }) =>
           eq(mention.messageId, message.id)
@@ -64,7 +73,15 @@ export function useChannelMentions() {
             eq(channelMember.userId, userId),
             eq(mention.mentionedUserId, userId)
           )
-        )
+        );
+
+      if (filter === "unseen") {
+        query = query.where(({ mention }) => eq(mention.isSeen, false));
+      } else if (filter === "seen") {
+        query = query.where(({ mention }) => eq(mention.isSeen, true));
+      }
+
+      return query
         .orderBy(({ mention }) => mention.createdAt, "desc")
         .select(({ mention, message, sender, attachment, channel }) => ({
           mention,
@@ -72,8 +89,9 @@ export function useChannelMentions() {
           sender,
           attachment,
           channel,
-        })),
-    [userId, currentChannelId]
+        }));
+    },
+    [userId, currentChannelId, filter]
   );
 
   const mentions = useMemo<MentionWithRelations[]>(() => {
@@ -110,27 +128,42 @@ export function useChannelMentions() {
     (mention) => !mention.mention.isSeen
   ).length;
 
-  const prevMentionCountRef = useRef(mentionCount);
-  const isFirstLoadRef = useRef(true);
+  const markAllMentionsSeen = createOptimisticAction({
+    onMutate: () => {
+      // Query the collection directly to get ALL unseen mentions for this user in this channel
+      const mentionIdsToUpdate: string[] = [];
 
-  useEffect(() => {
-    if (isLoading) return;
+      messageMentionsCollection.forEach((mention) => {
+        if (mention.mentionedUserId !== userId || mention.isSeen) {
+          return;
+        }
 
-    if (isFirstLoadRef.current) {
-      isFirstLoadRef.current = false;
-      prevMentionCountRef.current = mentionCount;
-      return;
-    }
-
-    if (mentionCount > prevMentionCountRef.current) {
-      const audio = new Audio("/assets/sounds/mention.webm");
-      audio.play().catch((error) => {
-        console.error("Error playing mention sound:", error);
+        // Check if the mention's message is in the current channel
+        const message = messagesCollection.get(mention.messageId);
+        if (
+          message &&
+          message.channelId === currentChannelId &&
+          !message.isDeleted
+        ) {
+          mentionIdsToUpdate.push(mention.id);
+        }
       });
-    }
 
-    prevMentionCountRef.current = mentionCount;
-  }, [mentionCount, isLoading]);
+      mentionIdsToUpdate.forEach((mentionId) => {
+        messageMentionsCollection.update(mentionId, (draft) => {
+          draft.isSeen = true;
+        });
+      });
+    },
+    mutationFn: async () => {
+      const { txid } =
+        await orpcClient.communication.message.markAllMentionsSeen({
+          channelId: currentChannelId,
+        });
+
+      await messageMentionsCollection.utils.awaitTxId(txid);
+    },
+  });
 
   return {
     mentions,
@@ -138,5 +171,8 @@ export function useChannelMentions() {
     unreadMentionCount,
     isLoading,
     currentChannelId,
+    markAllMentionsSeen,
+    filter,
+    setFilter,
   };
 }

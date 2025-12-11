@@ -29,6 +29,12 @@ export const MarkNotificationAsReadOutput = z.object({
   success: z.literal(true),
 });
 
+export const MarkAllNotificationsAsReadInput = z.object({});
+
+export const MarkAllNotificationsAsReadOutput = z.object({
+  txid: z.number(),
+});
+
 export const MarkMultipleAsReadInput = z.object({
   notificationIds: z.array(z.string().min(1)).min(1).max(100),
 });

@@ -1,6 +1,7 @@
 import { AtSign, Loader2Icon, X } from "lucide-react";
 import { useMemo } from "react";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useChannelMentions } from "@/hooks/communications/use-channel-mentions";
 import { insertDateSeparators } from "@/lib/communications/message";
 import { cn } from "@/lib/utils";
@@ -8,7 +9,15 @@ import { useMentionsSidebar } from "@/stores/channel-store";
 import { MentionMessageItem } from "./mention-message-item";
 
 export function MentionsSidebar() {
-  const { mentions, mentionCount, isLoading } = useChannelMentions();
+  const {
+    mentions,
+    mentionCount,
+    unreadMentionCount,
+    isLoading,
+    markAllMentionsSeen,
+    filter,
+    setFilter,
+  } = useChannelMentions();
 
   const { isOpen, closeMentionsSidebar } = useMentionsSidebar();
 
@@ -24,7 +33,7 @@ export function MentionsSidebar() {
         isOpen ? "w-96 opacity-100 shadow-lg sm:w-[560px]" : "w-0 opacity-0"
       )}
     >
-      <div className="shrink-0 border-border border-b bg-muted/30 p-4">
+      <div className="shrink-0 space-y-4 border-border border-b bg-muted/30 p-4">
         <div className="flex items-start justify-between">
           <div className="flex items-start gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 ring-1 ring-primary/20">
@@ -53,6 +62,38 @@ export function MentionsSidebar() {
             <X className="h-4 w-4" />
           </Button>
         </div>
+
+        <Tabs
+          className="w-full"
+          onValueChange={(value) =>
+            setFilter(value as "all" | "unseen" | "seen")
+          }
+          value={filter}
+        >
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="all">All</TabsTrigger>
+            <TabsTrigger value="unseen">
+              Unseen
+              {unreadMentionCount > 0 && (
+                <span className="ml-1.5 rounded-full bg-primary px-1.5 py-0.5 font-semibold text-[10px] text-primary-foreground leading-none">
+                  {unreadMentionCount > 99 ? "99+" : unreadMentionCount}
+                </span>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="seen">Seen</TabsTrigger>
+          </TabsList>
+        </Tabs>
+
+        {unreadMentionCount > 0 && filter === "unseen" && (
+          <Button
+            className="w-full"
+            onClick={() => markAllMentionsSeen({})}
+            size="sm"
+            variant="outline"
+          >
+            Mark all as seen
+          </Button>
+        )}
       </div>
 
       {isLoading && mentions.length === 0 && (

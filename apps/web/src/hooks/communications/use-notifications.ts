@@ -1,21 +1,39 @@
 import { createOptimisticAction, eq, useLiveQuery } from "@tanstack/react-db";
 import { useParams } from "@tanstack/react-router";
 import type { MarkNotificationAsReadInputType } from "@work-holo/api/lib/types";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { messagesCollection, notificationsCollection } from "@/db/collections";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { orpcClient } from "@/utils/orpc";
 
+export type NotificationFilter = "all" | "unread" | "read";
+
 export function useNotifications() {
   const { user } = useAuthedSession();
+  const [filter, setFilter] = useState<NotificationFilter>("unread");
 
   const { data, isLoading } = useLiveQuery(
-    (q) =>
-      q
+    (q) => {
+      let query = q
         .from({ notification: notificationsCollection })
-        .where(({ notification }) => eq(notification.userId, user.id))
-        .orderBy(({ notification }) => notification.createdAt, "desc"),
-    [user.id]
+        .where(({ notification }) => eq(notification.userId, user.id));
+
+      if (filter === "unread") {
+        query = query.where(({ notification }) =>
+          eq(notification.status, "unread")
+        );
+      } else if (filter === "read") {
+        query = query.where(({ notification }) =>
+          eq(notification.status, "read")
+        );
+      }
+
+      return query.orderBy(
+        ({ notification }) => notification.createdAt,
+        "desc"
+      );
+    },
+    [user.id, filter]
   );
 
   const notifications = data ?? [];
@@ -63,7 +81,8 @@ export function useNotifications() {
 
     const seenIds = seenNotificationIdsRef.current;
     const newNotifications = notifications.filter(
-      (notification) => !seenIds.has(notification.id)
+      (notification) =>
+        !seenIds.has(notification.id) && notification.status === "unread"
     );
 
     if (isFirstLoadRef.current) {
@@ -123,10 +142,41 @@ export function useNotifications() {
     },
   });
 
+  const markAllAsRead = createOptimisticAction({
+    onMutate: () => {
+      // Query the collection directly to get ALL unread notifications for this user
+      const notificationIdsToUpdate: string[] = [];
+
+      notificationsCollection.forEach((notification) => {
+        if (
+          notification.userId === user.id &&
+          notification.status === "unread"
+        ) {
+          notificationIdsToUpdate.push(notification.id);
+        }
+      });
+
+      notificationIdsToUpdate.forEach((notificationId) => {
+        notificationsCollection.update(notificationId, (draft) => {
+          draft.status = "read";
+          draft.readAt = new Date();
+        });
+      });
+    },
+    mutationFn: async () => {
+      const { txid } = await orpcClient.member.notification.markAllAsRead({});
+
+      await notificationsCollection.utils.awaitTxId(txid);
+    },
+  });
+
   return {
     notifications,
     unreadCount,
     isLoading,
     markNotificationAsRead,
+    markAllAsRead,
+    filter,
+    setFilter,
   };
 }
