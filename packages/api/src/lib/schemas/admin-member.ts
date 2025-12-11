@@ -27,7 +27,7 @@ export const ListMembersInput = z
   .optional()
   .default({ page: 1, perPage: 10 });
 
-export const MemberWithUser = MemberSelectSchema.extend({
+export const MemberWithUserSchema = MemberSelectSchema.extend({
   user: UserSelectSchema.pick({
     id: true,
     name: true,
@@ -38,7 +38,7 @@ export const MemberWithUser = MemberSelectSchema.extend({
 });
 
 export const ListMembersOutput = z.object({
-  members: z.array(MemberWithUser),
+  members: z.array(MemberWithUserSchema),
   total: z.number(),
   pageCount: z.number(),
 });

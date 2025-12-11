@@ -1,3 +1,4 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   type ColumnDef,
@@ -8,7 +9,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useDebounce } from "@uidotdev/usehooks";
-import type { MemberWithUser } from "@work-holo/api/lib/schemas/admin-member";
+import type { MemberWithUserType } from "@work-holo/api/lib/types";
 import {
   ArrowUpDown,
   ChevronLeft,
@@ -17,15 +18,39 @@ import {
   ChevronsRight,
   Crown,
   LayoutList,
+  MoreHorizontal,
   Search,
   Shield,
   User,
 } from "lucide-react";
 import { useMemo, useState } from "react";
-import type { z } from "zod";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import {
   InputGroup,
   InputGroupAddon,
@@ -48,7 +73,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useAuthedSession } from "@/hooks/use-authed-session";
-import { queryUtils } from "@/utils/orpc";
+import { authClient } from "@/lib/auth-client";
+import { UpdateMemberRoleSchema } from "@/lib/schemas/admin/member";
+import type { UpdateMemberRoleFormType } from "@/lib/types";
+import { queryClient, queryUtils } from "@/utils/orpc";
 
 const getRoleBadgeVariant = (role: string) => {
   switch (role) {
@@ -76,8 +104,111 @@ const getRoleIcon = (role: string) => {
   }
 };
 
-// Helper for type safety
-type MemberRecord = z.infer<typeof MemberWithUser>;
+function UpdateMemberRole({
+  member,
+  open,
+  onOpenChange,
+}: {
+  member: MemberWithUserType;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  const form = useForm<UpdateMemberRoleFormType>({
+    resolver: zodResolver(UpdateMemberRoleSchema),
+    defaultValues: {
+      role: member.role as "admin" | "member",
+    },
+  });
+
+  const isLoading = form.formState.isSubmitting;
+
+  const onSubmit = async (data: UpdateMemberRoleFormType) => {
+    try {
+      // Use better-auth organization client to update member role
+      await authClient.organization.updateMemberRole({
+        memberId: member.id,
+        role: data.role,
+      });
+
+      // Invalidate and refetch the member list
+      queryClient.invalidateQueries({
+        queryKey: queryUtils.admin.member.listMembers.queryKey(),
+      });
+
+      toast.success(`Member role updated to ${data.role}`);
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Failed to update member role:", error);
+      toast.error("Failed to update member role");
+    }
+  };
+
+  return (
+    <Dialog onOpenChange={onOpenChange} open={open}>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Update member role</DialogTitle>
+          <DialogDescription>
+            Change the role for {member.user.name}
+          </DialogDescription>
+        </DialogHeader>
+
+        <Form {...form}>
+          <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+            <FormField
+              control={form.control}
+              name="role"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Role</FormLabel>
+                  <Select
+                    defaultValue={field.value}
+                    onValueChange={field.onChange}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a role" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="admin">
+                        <div className="flex items-center gap-2">
+                          <Shield className="h-4 w-4" />
+                          Admin
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="member">
+                        <div className="flex items-center gap-2">
+                          <User className="h-4 w-4" />
+                          Member
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <DialogFooter>
+              <Button
+                disabled={isLoading}
+                onClick={() => onOpenChange(false)}
+                type="button"
+                variant="outline"
+              >
+                Cancel
+              </Button>
+              <Button disabled={isLoading} type="submit">
+                {isLoading ? "Updating..." : "Update Role"}
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 export const MemberListTable = () => {
   const { user } = useAuthedSession();
@@ -90,6 +221,11 @@ export const MemberListTable = () => {
   });
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearch = useDebounce(searchTerm, 500);
+
+  const [updateRoleMember, setUpdateRoleMember] =
+    useState<MemberWithUserType | null>(null);
+
+  const [isUpdateRoleOpen, setIsUpdateRoleOpen] = useState(false);
 
   // Data Fetching
   const {
@@ -108,7 +244,7 @@ export const MemberListTable = () => {
     })
   );
 
-  const columns = useMemo<ColumnDef<MemberRecord>[]>(
+  const columns = useMemo<ColumnDef<MemberWithUserType>[]>(
     () => [
       {
         accessorKey: "user.name",
@@ -195,6 +331,41 @@ export const MemberListTable = () => {
             {new Date(row.original.user.createdAt).toLocaleDateString()}
           </div>
         ),
+      },
+      {
+        id: "actions",
+        header: () => <div className="text-right">Actions</div>,
+        cell: ({ row }) => {
+          const member = row.original;
+
+          // Don't show actions for the current user or owners
+          if (member.userId === user.id || member.role === "owner") {
+            return <div className="text-right text-muted-foreground">-</div>;
+          }
+
+          return (
+            <div className="text-right">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button className="h-8 w-8 p-0" variant="ghost">
+                    <span className="sr-only">Open menu</span>
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setUpdateRoleMember(member);
+                      setIsUpdateRoleOpen(true);
+                    }}
+                  >
+                    Update role
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          );
+        },
       },
     ],
     [user.id]
@@ -360,6 +531,19 @@ export const MemberListTable = () => {
           </Button>
         </div>
       </div>
+
+      {updateRoleMember && (
+        <UpdateMemberRole
+          member={updateRoleMember}
+          onOpenChange={(open) => {
+            setIsUpdateRoleOpen(open);
+            if (!open) {
+              setUpdateRoleMember(null);
+            }
+          }}
+          open={isUpdateRoleOpen}
+        />
+      )}
     </div>
   );
 };
@@ -376,8 +560,9 @@ export const MemberListTableSkeleton = () => (
         <TableHeader>
           <TableRow>
             <TableHead>Member</TableHead>
-            <TableHead>Status</TableHead>
+            <TableHead>Role</TableHead>
             <TableHead>Joined</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -397,6 +582,9 @@ export const MemberListTableSkeleton = () => (
               </TableCell>
               <TableCell>
                 <Skeleton className="h-4 w-24" />
+              </TableCell>
+              <TableCell className="text-right">
+                <Skeleton className="ml-auto h-8 w-8" />
               </TableCell>
             </TableRow>
           ))}

@@ -2,7 +2,7 @@
 // Run `bun run generate:types` to refresh
 import type { z } from "zod";
 import type { UpdateChannelFormSchema } from "@/lib/schemas/admin/channel";
-import type { InviteMemberFormSchema } from "@/lib/schemas/admin/member";
+import type { InviteMemberFormSchema, UpdateMemberRoleSchema } from "@/lib/schemas/admin/member";
 import type { CreateTeamFormSchema } from "@/lib/schemas/admin/team";
 import type {
   AcceptInvitationFormSchema,
@@ -36,6 +36,7 @@ export type CreateOrgFormType = z.infer<typeof CreateOrgFormSchema>;
 export type CreateTeamFormType = z.infer<typeof CreateTeamFormSchema>;
 export type InviteAdminFormType = z.infer<typeof InviteAdminFormSchema>;
 export type InviteMemberFormType = z.infer<typeof InviteMemberFormSchema>;
+export type UpdateMemberRoleFormType = z.infer<typeof UpdateMemberRoleSchema>;
 export type JoinChannelRequestFormType = z.infer<
   typeof JoinChannelRequestFormSchema
 >;

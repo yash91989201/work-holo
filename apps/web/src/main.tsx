@@ -1,6 +1,7 @@
 import { QueryClientProvider } from "@tanstack/react-query";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import ReactDOM from "react-dom/client";
+import { Toaster } from "sonner";
 import { FullScreenLoader } from "@/components/shared/full-screen-loader";
 import { routeTree } from "@/routeTree.gen";
 import { orpcClient, queryClient, queryUtils } from "@/utils/orpc";
@@ -29,5 +30,10 @@ if (!rootElement) {
 
 if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
-  root.render(<RouterProvider router={router} />);
+  root.render(
+    <>
+      <RouterProvider router={router} />
+      <Toaster richColors position="top-right" />
+    </>
+  );
 }
