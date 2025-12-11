@@ -1,4 +1,5 @@
 import webpush from "web-push";
+import { z } from "zod";
 import { env } from "../env";
 
 webpush.setVapidDetails(
@@ -6,6 +7,25 @@ webpush.setVapidDetails(
   env.VAPID_PUBLIC_KEY,
   env.VAPID_PRIVATE_KEY
 );
+
+export const GetVapidPublicKeyOutput = z.object({
+  publicKey: z.string(),
+});
+
+export const SavePushSubscriptionOutput = z.object({
+  success: z.boolean(),
+  txid: z.number(),
+});
+
+export const RemovePushSubscriptionOutput = z.object({
+  success: z.boolean(),
+  txid: z.number(),
+});
+
+export const TestPushNotificationOutput = z.object({
+  success: z.boolean(),
+  sent: z.number(),
+});
 
 export interface PushNotificationPayload {
   title: string;

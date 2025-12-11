@@ -138,6 +138,7 @@ SELECT * FROM "pushSubscription";
 ### Browser Support
 
 Push notifications work in:
+
 - ✅ Chrome/Edge (desktop & Android)
 - ✅ Firefox (desktop & Android)
 - ✅ Safari 16+ (desktop & iOS 16.4+)
@@ -146,6 +147,7 @@ Push notifications work in:
 ### HTTPS Requirement
 
 Push notifications **only work**:
+
 - On HTTPS sites (in production)
 - On localhost (for development)
 - NOT on HTTP sites
@@ -163,6 +165,7 @@ The service worker is registered at the root scope (`/`), which means it can han
 ### Issue: "Notification permission denied"
 
 **Solution**:
+
 1. Click the lock icon in the browser address bar
 2. Find "Notifications" in permissions
 3. Change from "Block" to "Allow"
@@ -171,6 +174,7 @@ The service worker is registered at the root scope (`/`), which means it can han
 ### Issue: "VAPID keys not found"
 
 **Solution**: Make sure you've added the VAPID keys to both:
+
 - `packages/api/.env`
 - `apps/server/.env`
 
@@ -179,6 +183,7 @@ And restart your server after adding them.
 ### Issue: "Push notifications not received"
 
 **Solution**:
+
 1. Check browser console for errors
 2. Verify service worker is active
 3. Check that subscription was saved (query database)

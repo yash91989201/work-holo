@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import {
-  WebNotifications,
   PushNotifications,
+  WebNotifications,
 } from "@/components/settings/notifications";
 
 export const Route = createFileRoute(

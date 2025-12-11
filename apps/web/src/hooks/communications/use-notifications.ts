@@ -1,59 +1,13 @@
 import { createOptimisticAction, eq, useLiveQuery } from "@tanstack/react-db";
-import { useRouterState } from "@tanstack/react-router";
+import { useParams } from "@tanstack/react-router";
 import type { MarkNotificationAsReadInputType } from "@work-holo/api/lib/types";
 import { useEffect, useRef } from "react";
 import { messagesCollection, notificationsCollection } from "@/db/collections";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { orpcClient } from "@/utils/orpc";
 
-const CHANNEL_PATH_REGEX = /\/communication\/channels\/(?<channelId>[^/]+)/;
-
 export function useNotifications() {
   const { user } = useAuthedSession();
-
-  // Auto-subscribe to push notifications on mount
-  const hasSubscribedRef = useRef(false);
-  useEffect(() => {
-    if (hasSubscribedRef.current) return;
-    hasSubscribedRef.current = true;
-
-    // VitePWA handles service worker registration automatically
-    if ("Notification" in window && "serviceWorker" in navigator) {
-      // Wait a bit before subscribing to avoid blocking initial render
-      const timeoutId = setTimeout(async () => {
-        try {
-          // Wait for VitePWA's service worker to be ready
-          const registration = await navigator.serviceWorker.ready;
-          if (!registration) return;
-
-          const existingSubscription =
-            await registration.pushManager.getSubscription();
-          if (existingSubscription) return; // Already subscribed
-
-          // Request permission if not granted
-          if (Notification.permission === "default") {
-            const permission = await Notification.requestPermission();
-            if (permission !== "granted") return;
-          }
-
-          // Subscribe to push notifications
-          if (Notification.permission === "granted") {
-            const { subscribeToPushNotifications } = await import(
-              "@/lib/push-subscription"
-            );
-            await subscribeToPushNotifications();
-          }
-        } catch (error) {
-          console.error(
-            "Failed to auto-subscribe to push notifications:",
-            error
-          );
-        }
-      }, 2000);
-
-      return () => clearTimeout(timeoutId);
-    }
-  }, []);
 
   const { data, isLoading } = useLiveQuery(
     (q) =>
@@ -66,14 +20,11 @@ export function useNotifications() {
 
   const notifications = data ?? [];
 
-  const activeChannelId = useRouterState({
-    select: (state) => {
-      const path = state.location.pathname;
-      const match = path.match(CHANNEL_PATH_REGEX);
-
-      return match?.groups?.channelId ?? null;
-    },
-  });
+  const activeChannelId =
+    useParams({
+      from: "/(authenticated)/org/$slug/(modules)/communication/channels/$id",
+      shouldThrow: false,
+    })?.id ?? null;
 
   const unreadCount = notifications.filter(
     (notification) => notification.status === "unread"
@@ -90,6 +41,7 @@ export function useNotifications() {
       const soundPath = hasMention
         ? "/assets/sounds/mention.webm"
         : "/assets/sounds/notify.webm";
+
       const audio = new Audio(soundPath);
       audio.play().catch((error) => {
         console.error("Error playing notification sound:", error);
@@ -108,11 +60,6 @@ export function useNotifications() {
 
   useEffect(() => {
     if (isLoading) return;
-
-    const isTabFocused =
-      typeof document !== "undefined" &&
-      document.visibilityState === "visible" &&
-      document.hasFocus();
 
     const seenIds = seenNotificationIdsRef.current;
     const newNotifications = notifications.filter(
@@ -134,7 +81,7 @@ export function useNotifications() {
         notification.entityId
       ) {
         const message = messagesCollection.get(notification.entityId);
-        if (isTabFocused && message?.channelId === activeChannelId) {
+        if (message?.channelId === activeChannelId) {
           return false;
         }
       }
@@ -149,32 +96,10 @@ export function useNotifications() {
         ? "/assets/sounds/mention.webm"
         : "/assets/sounds/notify.webm";
 
-      if (isTabFocused) {
-        // Tab is focused - play audio normally
-        const audio = new Audio(soundPath);
-        audio.play().catch((error) => {
-          console.error("Error playing notification sound:", error);
-        });
-      } else if (
-        typeof Notification !== "undefined" &&
-        Notification.permission === "granted"
-      ) {
-        // Tab is not focused - use desktop notification with sound
-        const notificationTitle = hasMentionNotification
-          ? "New Mention"
-          : "New Notification";
-        const notificationBody =
-          newNotifications.length === 1
-            ? "You have a new notification"
-            : `You have ${newNotifications.length} new notifications`;
-
-        new Notification(notificationTitle, {
-          body: notificationBody,
-          icon: "/favicon.ico",
-          tag: "work-holo-notification",
-          silent: false,
-        });
-      }
+      const audio = new Audio(soundPath);
+      audio.play().catch((error) => {
+        console.error("Error playing notification sound:", error);
+      });
     }
 
     newNotifications.forEach((notification) => {

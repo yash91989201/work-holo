@@ -1,12 +1,16 @@
 import { pushSubscriptionTable } from "@work-holo/db/schema/communication";
 import { and, eq } from "drizzle-orm";
 import webpush from "web-push";
-import { z } from "zod";
 import { protectedProcedure, publicProcedure } from "../../index";
 import { generateTxId } from "../../lib/electric-proxy";
-import { getVapidPublicKey } from "../../lib/push-notifications";
 import {
   GetVapidPublicKeyOutput,
+  getVapidPublicKey,
+  RemovePushSubscriptionOutput,
+  SavePushSubscriptionOutput,
+  TestPushNotificationOutput,
+} from "../../lib/push-notifications";
+import {
   RemovePushSubscriptionInput,
   SavePushSubscriptionInput,
 } from "../../lib/schemas/push-subscription";
@@ -18,7 +22,7 @@ export const memberPushSubscriptionRouter = {
 
   savePushSubscription: protectedProcedure
     .input(SavePushSubscriptionInput)
-    .output(z.object({ success: z.boolean(), txid: z.number() }))
+    .output(SavePushSubscriptionOutput)
     .handler(async ({ context: { db, session }, input }) => {
       try {
         const { user } = session;
@@ -60,7 +64,7 @@ export const memberPushSubscriptionRouter = {
 
   removePushSubscription: protectedProcedure
     .input(RemovePushSubscriptionInput)
-    .output(z.object({ success: z.boolean(), txid: z.number() }))
+    .output(RemovePushSubscriptionOutput)
     .handler(async ({ context: { db, session }, input }) => {
       const { user } = session;
 
@@ -83,7 +87,7 @@ export const memberPushSubscriptionRouter = {
     }),
 
   testPushNotification: protectedProcedure
-    .output(z.object({ success: z.boolean(), sent: z.number() }))
+    .output(TestPushNotificationOutput)
     .handler(async ({ context: { db, session } }) => {
       try {
         const { user } = session;

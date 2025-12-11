@@ -14,7 +14,3 @@ export const SavePushSubscriptionInput = z.object({
 export const RemovePushSubscriptionInput = z.object({
   endpoint: z.string().url(),
 });
-
-export const GetVapidPublicKeyOutput = z.object({
-  publicKey: z.string(),
-});

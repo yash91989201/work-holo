@@ -123,34 +123,10 @@ export function useChannelMentions() {
     }
 
     if (mentionCount > prevMentionCountRef.current) {
-      const isTabFocused =
-        typeof document !== "undefined" &&
-        document.visibilityState === "visible" &&
-        document.hasFocus();
-
-      if (isTabFocused) {
-        // Tab is focused - play audio normally
-        const audio = new Audio("/assets/sounds/mention.webm");
-        audio.play().catch((error) => {
-          console.error("Error playing mention sound:", error);
-        });
-      } else if (
-        typeof Notification !== "undefined" &&
-        Notification.permission === "granted"
-      ) {
-        // Tab is not focused - use desktop notification with sound
-        const mentionText =
-          mentionCount - prevMentionCountRef.current === 1
-            ? "You have a new mention"
-            : `You have ${mentionCount - prevMentionCountRef.current} new mentions`;
-
-        new Notification("New Mention", {
-          body: mentionText,
-          icon: "/favicon.ico",
-          tag: "work-holo-mention",
-          silent: false,
-        });
-      }
+      const audio = new Audio("/assets/sounds/mention.webm");
+      audio.play().catch((error) => {
+        console.error("Error playing mention sound:", error);
+      });
     }
 
     prevMentionCountRef.current = mentionCount;
