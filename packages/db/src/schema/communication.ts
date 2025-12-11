@@ -253,6 +253,27 @@ export const notificationTable = pgTable("notification", {
     .notNull(),
 });
 
+export const pushSubscriptionTable = pgTable(
+  "pushSubscription",
+  {
+    id: cuid2().defaultRandom().primaryKey(),
+    userId: text()
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    endpoint: text().notNull(),
+    p256dh: text().notNull(),
+    auth: text().notNull(),
+    userAgent: text(),
+    createdAt: timestamp({ withTimezone: true })
+      .$defaultFn(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    uniqueIndex("unique_user_endpoint").on(table.userId, table.endpoint),
+    index("idx_push_subscription_user").on(table.userId),
+  ]
+);
+
 export const messageReadTable = pgTable("messageRead", {
   id: cuid2().defaultRandom().primaryKey(),
   messageId: text()
@@ -448,6 +469,17 @@ export const messageReactionTableRelations = relations(
     }),
     user: one(user, {
       fields: [messageReactionTable.userId],
+      references: [user.id],
+    }),
+  })
+);
+
+// Push subscription relations
+export const pushSubscriptionTableRelations = relations(
+  pushSubscriptionTable,
+  ({ one }) => ({
+    user: one(user, {
+      fields: [pushSubscriptionTable.userId],
       references: [user.id],
     }),
   })

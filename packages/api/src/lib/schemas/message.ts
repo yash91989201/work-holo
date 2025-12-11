@@ -252,6 +252,14 @@ export const MarkMentionSeenOutput = z.object({
   success: z.literal(true),
 });
 
+export const MarkAllMentionsSeenInput = z.object({
+  channelId: z.string(),
+});
+
+export const MarkAllMentionsSeenOutput = z.object({
+  txid: z.number(),
+});
+
 export const PinMessageInput = z.object({
   messageId: z.string(),
 });
