@@ -24,21 +24,17 @@ export default defineConfig({
         theme_color: "#0c0c0c",
       },
       pwaAssets: { disabled: false, config: true },
-      devOptions: { enabled: true },
-      workbox: {
-        clientsClaim: true,
-        skipWaiting: true,
-        // Clean up old caches on activation
-        cleanupOutdatedCaches: true,
-        // Ensure version.json is never cached
-        navigateFallbackDenylist: [/^\/version\.json/],
-        runtimeCaching: [
-          {
-            urlPattern: /^\/version\.json/,
-            handler: "NetworkOnly",
-          },
-        ],
+      devOptions: {
+        enabled: true,
+        navigateFallback: undefined,
       },
+      injectManifest: {
+        globPatterns: ["**/*.{js,css,html,ico,png,svg,webp,woff,woff2}"],
+        injectionPoint: undefined,
+      },
+      srcDir: "src",
+      filename: "sw.ts",
+      strategies: "injectManifest",
     }),
     viteVersionPlugin(),
   ],

@@ -2,10 +2,12 @@ import { ORPCError } from "@orpc/client";
 import {
   attachmentTable,
   channelMemberTable,
+  channelTable,
   messageMentionTable,
   messageReactionTable,
   messageTable,
   notificationTable,
+  pushSubscriptionTable,
   user as userTable,
 } from "@work-holo/db/schema/index";
 import {
@@ -18,6 +20,10 @@ import {
   or,
   sql,
 } from "drizzle-orm";
+import webpush from "web-push";
+import "../../lib/push-notifications";
+import { auth } from "@work-holo/auth";
+import { env } from "../../env";
 import { protectedProcedure } from "../../index";
 import { generateTxId } from "../../lib/electric-proxy";
 import {
@@ -36,6 +42,8 @@ import {
   GetPinnedMessagesInput,
   GetPinnedMessagesOutput,
   GetUnreadCountInput,
+  MarkAllMentionsSeenInput,
+  MarkAllMentionsSeenOutput,
   MarkMentionSeenInput,
   MarkMentionSeenOutput,
   PinMessageInput,
@@ -90,11 +98,23 @@ export const messageRouter = {
         context: {
           db,
           session: { user },
+          headers,
         },
         input,
       }) => {
         const { txid, message } = await db.transaction(async (tx) => {
           const txid = await generateTxId(tx);
+
+          const channel = await tx.query.channelTable.findFirst({
+            where: eq(channelTable.id, input.channelId),
+          });
+
+          if (!channel) {
+            throw new ORPCError("NOT_FOUND", {
+              message: "Channel not found",
+            });
+          }
+
           const [newMessage] = await tx
             .insert(messageTable)
             .values({
@@ -103,7 +123,6 @@ export const messageRouter = {
               content: input.content,
               type: input.type,
               parentMessageId: input.parentMessageId,
-              // mentions: input.mentions,
               senderId: user.id,
             })
             .returning();
@@ -152,7 +171,7 @@ export const messageRouter = {
               (mentionedUserId) => ({
                 userId: mentionedUserId,
                 type: "mention" as const,
-                title: `${user.name || user.email} mentioned you`,
+                title: `${user.name} mentioned you in ${channel.name}`,
                 message:
                   input.content?.slice(0, 200) ||
                   "You were mentioned in a message",
@@ -162,6 +181,60 @@ export const messageRouter = {
             );
 
             await tx.insert(notificationTable).values(mentionNotifications);
+            const org = await auth.api.getFullOrganization({
+              headers,
+            });
+
+            const url = `${env.CORS_ORIGIN}/org/${org?.slug}/communication/channels/${input.channelId}`;
+            // Send push notifications asynchronously (don't block the transaction)
+            Promise.resolve().then(async () => {
+              try {
+                const subscriptions = await db
+                  .select()
+                  .from(pushSubscriptionTable)
+                  .where(
+                    inArray(pushSubscriptionTable.userId, input.mentions || [])
+                  );
+
+                await Promise.allSettled(
+                  subscriptions.map(async (sub) => {
+                    try {
+                      await webpush.sendNotification(
+                        {
+                          endpoint: sub.endpoint,
+                          keys: { p256dh: sub.p256dh, auth: sub.auth },
+                        },
+                        JSON.stringify({
+                          title: "Work Holo",
+                          body: `${user.name} mentioned you in '${channel.name}' channel`,
+                          icon: "/favicon.ico",
+                          badge: "/favicon.ico",
+                          tag: "work-holo-mention",
+                          data: {
+                            type: "mention",
+                            url,
+                          },
+                        })
+                      );
+                    } catch (error: unknown) {
+                      // Remove invalid subscriptions (410 Gone or 404 Not Found)
+                      if (
+                        error &&
+                        typeof error === "object" &&
+                        "statusCode" in error &&
+                        (error.statusCode === 410 || error.statusCode === 404)
+                      ) {
+                        await db
+                          .delete(pushSubscriptionTable)
+                          .where(eq(pushSubscriptionTable.id, sub.id));
+                      }
+                    }
+                  })
+                );
+              } catch (error) {
+                console.error("Error sending push notifications:", error);
+              }
+            });
           }
 
           if (input.parentMessageId) {
@@ -213,6 +286,16 @@ export const messageRouter = {
             });
           }
 
+          const channel = await tx.query.channelTable.findFirst({
+            where: eq(channelTable.id, updatedMessage.channelId),
+          });
+
+          if (!channel) {
+            throw new ORPCError("NOT_FOUND", {
+              message: "Channel not found",
+            });
+          }
+
           if (input.mentions !== undefined) {
             await tx
               .delete(messageMentionTable)
@@ -240,9 +323,9 @@ export const messageRouter = {
                 (mentionedUserId) => ({
                   userId: mentionedUserId,
                   type: "mention" as const,
-                  title: `${user.name || user.email} mentioned you`,
+                  title: `${user.name} mentioned you in ${channel.name}`,
                   message:
-                    input.content?.slice(0, 200) ||
+                    input.content?.slice(0, 200) ??
                     "You were mentioned in a message",
                   entityId: updatedMessage.id,
                   entityType: "message",
@@ -250,6 +333,59 @@ export const messageRouter = {
               );
 
               await tx.insert(notificationTable).values(mentionNotifications);
+
+              // Send push notifications asynchronously (don't block the transaction)
+              Promise.resolve().then(async () => {
+                try {
+                  const subscriptions = await db
+                    .select()
+                    .from(pushSubscriptionTable)
+                    .where(
+                      inArray(
+                        pushSubscriptionTable.userId,
+                        input.mentions || []
+                      )
+                    );
+
+                  await Promise.allSettled(
+                    subscriptions.map(async (sub) => {
+                      try {
+                        await webpush.sendNotification(
+                          {
+                            endpoint: sub.endpoint,
+                            keys: { p256dh: sub.p256dh, auth: sub.auth },
+                          },
+                          JSON.stringify({
+                            title: "Work Holo",
+                            body: `${user.name} mentioned you in '${channel.name}' channel`,
+                            icon: "/favicon.ico",
+                            badge: "/favicon.ico",
+                            tag: "work-holo-mention",
+                            data: {
+                              messageId: updatedMessage.id,
+                              channelId: updatedMessage.channelId,
+                              type: "mention",
+                            },
+                          })
+                        );
+                      } catch (error: unknown) {
+                        if (
+                          error &&
+                          typeof error === "object" &&
+                          "statusCode" in error &&
+                          (error.statusCode === 410 || error.statusCode === 404)
+                        ) {
+                          await db
+                            .delete(pushSubscriptionTable)
+                            .where(eq(pushSubscriptionTable.id, sub.id));
+                        }
+                      }
+                    })
+                  );
+                } catch (error) {
+                  console.error("Error sending push notifications:", error);
+                }
+              });
             }
           }
 
@@ -606,6 +742,48 @@ export const messageRouter = {
       });
 
       return { txid, success: true };
+    }),
+
+  markAllMentionsSeen: protectedProcedure
+    .input(MarkAllMentionsSeenInput)
+    .output(MarkAllMentionsSeenOutput)
+    .handler(async ({ context: { db, session }, input }) => {
+      const { user } = session;
+
+      const { txid, count } = await db.transaction(async (tx) => {
+        const txid = await generateTxId(tx);
+
+        const mentionsToUpdate = await tx
+          .select({ id: messageMentionTable.id })
+          .from(messageMentionTable)
+          .innerJoin(
+            messageTable,
+            eq(messageMentionTable.messageId, messageTable.id)
+          )
+          .where(
+            and(
+              eq(messageMentionTable.mentionedUserId, user.id),
+              eq(messageMentionTable.isSeen, false),
+              eq(messageTable.channelId, input.channelId),
+              eq(messageTable.isDeleted, false)
+            )
+          );
+
+        if (mentionsToUpdate.length === 0) {
+          return { txid, count: 0 };
+        }
+
+        const mentionIds = mentionsToUpdate.map((m) => m.id);
+
+        await tx
+          .update(messageMentionTable)
+          .set({ isSeen: true })
+          .where(inArray(messageMentionTable.id, mentionIds));
+
+        return { txid };
+      });
+
+      return { txid, success: true, count };
     }),
 
   addReaction: protectedProcedure

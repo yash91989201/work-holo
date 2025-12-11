@@ -4,6 +4,8 @@ import { and, eq } from "drizzle-orm";
 import { protectedProcedure } from "../../index";
 import { generateTxId } from "../../lib/electric-proxy";
 import {
+  MarkAllNotificationsAsReadInput,
+  MarkAllNotificationsAsReadOutput,
   MarkNotificationAsReadInput,
   MarkNotificationAsReadOutput,
 } from "../../lib/schemas/notification";
@@ -49,5 +51,33 @@ export const memberNotificationRouter = {
       });
 
       return { txid, success: true };
+    }),
+
+  markAllAsRead: protectedProcedure
+    .input(MarkAllNotificationsAsReadInput)
+    .output(MarkAllNotificationsAsReadOutput)
+    .handler(async ({ context: { db, session } }) => {
+      const { user } = session;
+
+      const { txid } = await db.transaction(async (tx) => {
+        const txid = await generateTxId(tx);
+
+        await tx
+          .update(notificationTable)
+          .set({
+            status: "read",
+            readAt: new Date(),
+          })
+          .where(
+            and(
+              eq(notificationTable.userId, user.id),
+              eq(notificationTable.status, "unread")
+            )
+          );
+
+        return { txid };
+      });
+
+      return { txid };
     }),
 };

@@ -11,6 +11,7 @@
   "type": "module",
   "scripts": {},
   "devDependencies": {
+    "@types/web-push": "^3.6.4",
     "@work-holo/config": "workspace:*"
   },
   "peerDependencies": {
@@ -22,7 +23,7 @@
     "@orpc/openapi": "^1.12.2",
     "@orpc/server": "^1.12.2",
     "@orpc/zod": "^1.12.2",
-    "@supabase/supabase-js": "^2.87.0",
+    "@supabase/supabase-js": "^2.87.1",
     "@t3-oss/env-core": "^0.13.8",
     "@work-holo/auth": "workspace:*",
     "@work-holo/db": "workspace:*",
@@ -30,7 +31,8 @@
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.0",
     "drizzle-zod": "^0.8.3",
-    "hono": "^4.10.7",
+    "hono": "^4.10.8",
+    "web-push": "^3.6.7",
     "zod": "^4.1.13"
   }
 }
