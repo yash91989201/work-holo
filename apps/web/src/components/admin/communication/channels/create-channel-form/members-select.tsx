@@ -24,23 +24,21 @@ export const MembersSelect = () => {
 
   const { members, refetchTeamMembers, isRefetching } = useListOrgMembers();
 
-  const memberOptions: MultiSelectOption[] = members.map((member) => ({
-    label: member.user.email,
-    value: member.userId,
-    disabled: member.role !== "member",
-    icon: () => (
-      <Avatar className="size-6">
-        <AvatarImage src={member.user?.image || ""} />
-        <AvatarFallback>
-          {member.user.name.charAt(0).toUpperCase()}
-        </AvatarFallback>
-      </Avatar>
-    ),
-  }));
-
-  const nonMemberIds = members
-    .filter((m) => m.role !== "member")
-    .map((m) => m.userId);
+  const memberOptions: MultiSelectOption[] = members
+    .filter((m) => m.role === "member")
+    .map((member) => ({
+      label: member.user.email,
+      value: member.userId,
+      disabled: member.role !== "member",
+      icon: () => (
+        <Avatar className="size-6">
+          <AvatarImage src={member.user?.image || ""} />
+          <AvatarFallback>
+            {member.user.name.charAt(0).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+      ),
+    }));
 
   return (
     <FormField
@@ -79,7 +77,6 @@ export const MembersSelect = () => {
           <FormControl>
             <MultiSelect
               className="w-full"
-              defaultValue={nonMemberIds}
               maxCount={1}
               onValueChange={field.onChange}
               options={memberOptions}
