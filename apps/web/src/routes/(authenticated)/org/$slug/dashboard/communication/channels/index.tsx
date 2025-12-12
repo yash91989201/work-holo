@@ -1,5 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ChannelsListTable } from "@/components/admin/communication/channels/channels-list-table";
+import { Suspense } from "react";
+import {
+  ChannelsListTable,
+  ChannelsListTableSkeleton,
+} from "@/components/admin/communication/channels/channels-list-table";
 import { CreateChannelForm } from "@/components/admin/communication/channels/create-channel-form";
 
 export const Route = createFileRoute(
@@ -17,7 +21,9 @@ function RouteComponent() {
         <CreateChannelForm />
       </div>
 
-      <ChannelsListTable />
+      <Suspense fallback={<ChannelsListTableSkeleton />}>
+        <ChannelsListTable />
+      </Suspense>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { Link, useParams } from "@tanstack/react-router";
-import { AtSign, Info, Pin } from "lucide-react";
+import { AtSign, Info, Pin, X } from "lucide-react";
 import { NotificationSheet } from "@/components/shared/notification-sheet";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import {
@@ -9,7 +9,7 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import {
   Tooltip,
@@ -114,6 +114,14 @@ export function ChannelHeader() {
             </TooltipTrigger>
             <TooltipContent>Channel Info</TooltipContent>
           </Tooltip>
+
+          <Link
+            className={buttonVariants({ variant: "ghost", size: "icon" })}
+            params={{ slug }}
+            to="/org/$slug/communication/channels"
+          >
+            <X />
+          </Link>
         </div>
       </div>
     </header>
