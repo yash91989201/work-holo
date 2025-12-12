@@ -524,7 +524,7 @@ export const InvitationListTable = () => {
             <ChevronLeft />
           </Button>
           <div className="flex items-center justify-center font-medium text-sm">
-            Page {table.getState().pagination.pageIndex + 1} of{" "}
+            {table.getState().pagination.pageIndex + 1} /{" "}
             {table.getPageCount() || 1}
           </div>
           <Button
