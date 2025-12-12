@@ -90,6 +90,7 @@ export const usersCollection = createCollection(
     },
   })
 );
+
 export const attachmentsCollection = createCollection(
   electricCollectionOptions({
     getKey: (m) => m.id,
