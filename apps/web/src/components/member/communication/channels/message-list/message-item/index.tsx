@@ -159,7 +159,7 @@ export function MessageItem({
 
           {message.threadCount > 0 && (
             <Badge
-              className="cursor-pointer"
+              className="cursor-pointer select-none"
               onClick={toggleMessageThread}
               title={isMessageThreadActive ? "Close thread" : "Open thread"}
               variant={isMessageThreadActive ? "default" : "secondary"}
