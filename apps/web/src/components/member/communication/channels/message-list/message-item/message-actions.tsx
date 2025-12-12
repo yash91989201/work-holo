@@ -129,7 +129,8 @@ function DeleteMessage({ onDelete }: { onDelete: () => void }) {
           <AlertDialogTitle>Delete Message</AlertDialogTitle>
           <AlertDialogDescription>
             Are you sure you want to delete this message? Deleting this message
-            will also delete any related mentions, images or attachments
+            will also delete any related mentions, reactions, images or
+            attachments
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
