@@ -66,7 +66,7 @@ export const channelRouter = {
             });
           }
 
-          const nonMemberUsers = await tx.query.member.findMany({
+          const ownerAdminUsers = await tx.query.member.findMany({
             where: and(
               not(eq(member.role, "member")),
               eq(member.organizationId, orgId)
@@ -77,9 +77,18 @@ export const channelRouter = {
             },
           });
 
+          const ownerAdminChannelMembers = ownerAdminUsers.map((user) => ({
+            channelId: channel.id,
+            ...user,
+          }));
+
           if (input.type === "team" && input.teamId) {
+            const ownerAdminUsersIds = ownerAdminUsers.map((u) => u.userId);
             const teamMemberIds = await tx.query.teamMember.findMany({
-              where: eq(teamMember.teamId, input.teamId),
+              where: and(
+                eq(teamMember.teamId, input.teamId),
+                not(inArray(teamMember.userId, ownerAdminUsersIds))
+              ),
               columns: {
                 userId: true,
               },
@@ -91,22 +100,9 @@ export const channelRouter = {
               role: "member",
             }));
 
-            const nonMemberChannelMembers = nonMemberUsers.map(
-              ({ userId, role }) => ({
-                channelId: channel.id,
-                userId,
-                role,
-              })
-            );
-
-            const allChannelMembers = [
-              ...teamChannelMembers,
-              ...nonMemberChannelMembers,
-            ];
-
             await tx
               .insert(channelMemberTable)
-              .values(allChannelMembers)
+              .values([...teamChannelMembers, ...ownerAdminChannelMembers])
               .returning();
 
             return { txid, channel };
@@ -120,7 +116,7 @@ export const channelRouter = {
 
           await tx
             .insert(channelMemberTable)
-            .values(channelMembers)
+            .values([...channelMembers, ...ownerAdminChannelMembers])
             .returning();
 
           return { txid, channel };
@@ -131,7 +127,7 @@ export const channelRouter = {
           channel,
         };
       } catch (error) {
-        console.log(error);
+        console.error(error);
         throw new ORPCError("INTERNAL_SERVER_ERROR", {
           message: "An error occurred while creating the channel.",
         });
