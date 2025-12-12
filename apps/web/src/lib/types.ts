@@ -2,7 +2,10 @@
 // Run `bun run generate:types` to refresh
 import type { z } from "zod";
 import type { UpdateChannelFormSchema } from "@/lib/schemas/admin/channel";
-import type { InviteMemberFormSchema, UpdateMemberRoleSchema } from "@/lib/schemas/admin/member";
+import type {
+  InviteMemberFormSchema,
+  UpdateMemberRoleSchema,
+} from "@/lib/schemas/admin/member";
 import type { CreateTeamFormSchema } from "@/lib/schemas/admin/team";
 import type {
   AcceptInvitationFormSchema,
