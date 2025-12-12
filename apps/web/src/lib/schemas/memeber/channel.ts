@@ -26,7 +26,7 @@ export const CreateChannelFormSchema = z
   .refine(
     (data) => {
       if (data.type === "group") {
-        return data.memberIds.length >= 2;
+        return data.memberIds.length >= 1;
       }
 
       return true;
