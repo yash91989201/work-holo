@@ -15,6 +15,10 @@ import {
   ArrowUpDown,
   Building2,
   Calendar as CalendarIcon,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
   MoreHorizontal,
   Search,
   Trash2,
@@ -312,7 +316,7 @@ export const TeamList = () => {
             <PopoverTrigger asChild>
               <Button
                 className={cn(
-                  "w-60 justify-start text-left font-normal",
+                  "max-w-72 justify-start text-left font-normal",
                   !dateRange && "text-muted-foreground"
                 )}
                 variant={"outline"}
@@ -448,8 +452,7 @@ export const TeamList = () => {
             variant="outline"
           >
             <span className="sr-only">Go to first page</span>
-            <span className="hidden sm:block">First</span>
-            <span className="sm:hidden">«</span>
+            <ChevronsLeft />
           </Button>
           <Button
             className="h-8 px-2 lg:px-3"
@@ -458,11 +461,10 @@ export const TeamList = () => {
             variant="outline"
           >
             <span className="sr-only">Go to previous page</span>
-            <span className="hidden sm:block">Previous</span>
-            <span className="sm:hidden">‹</span>
+            <ChevronLeft />
           </Button>
           <div className="flex items-center justify-center font-medium text-sm">
-            Page {table.getState().pagination.pageIndex + 1} of{" "}
+            {table.getState().pagination.pageIndex + 1} /{" "}
             {table.getPageCount() || 1}
           </div>
           <Button
@@ -472,8 +474,7 @@ export const TeamList = () => {
             variant="outline"
           >
             <span className="sr-only">Go to next page</span>
-            <span className="hidden sm:block">Next</span>
-            <span className="sm:hidden">›</span>
+            <ChevronRight />
           </Button>
           <Button
             className="h-8 px-2 lg:px-3"
@@ -482,8 +483,7 @@ export const TeamList = () => {
             variant="outline"
           >
             <span className="sr-only">Go to last page</span>
-            <span className="hidden sm:block">Last</span>
-            <span className="sm:hidden">»</span>
+            <ChevronsRight />
           </Button>
         </div>
       </div>

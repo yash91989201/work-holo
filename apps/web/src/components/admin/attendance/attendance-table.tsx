@@ -587,7 +587,7 @@ export function AttendanceTable() {
                 <IconChevronLeft className="h-4 w-4" />
               </Button>
               <span className="text-sm">
-                Page {table.getState().pagination.pageIndex + 1} of{" "}
+                {table.getState().pagination.pageIndex + 1} /{" "}
                 {table.getPageCount()}
               </span>
               <Button

@@ -1,5 +1,12 @@
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
-import { Briefcase, CheckCircle, Clock, Coffee, LogOut } from "lucide-react";
+import {
+  Briefcase,
+  BriefcaseBusiness,
+  CheckCircle,
+  Clock,
+  Coffee,
+  LogOut,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -18,9 +25,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
-import { usePresenceHeartbeat } from "@/hooks/use-presence";
 import { queryUtils } from "@/utils/orpc";
 
 const formatDateTime = (value: Date | string | null | undefined) => {
@@ -123,35 +137,34 @@ export const MarkAttendance = () => {
   const hasCheckedOut = !!attendance?.checkOutTime;
   const isActionPending = isPunchingIn || isPunchingOut;
 
-  usePresenceHeartbeat({
-    enabled: hasCheckedIn && !hasCheckedOut,
-    punchedIn: hasCheckedIn && !hasCheckedOut,
-    onBreak: false,
-  });
-
   if (!hasCheckedIn) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Ready to Start?</CardTitle>
-          <CardDescription>Punch in to begin your workday.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button
-            className="bg-green-600 hover:bg-green-700"
-            disabled={isActionPending}
-            onClick={() => punchIn({})}
-            size="lg"
-          >
-            {isPunchingIn ? (
-              <Spinner className="mr-2" />
-            ) : (
-              <Clock className="mr-2 h-5 w-5" />
-            )}
-            <span>Punch In</span>
-          </Button>
-        </CardContent>
-      </Card>
+      <div className="w-full">
+        <Empty className="border">
+          <EmptyHeader>
+            <EmptyMedia>
+              <BriefcaseBusiness className="h-12 w-12 text-muted-foreground/50" />
+            </EmptyMedia>
+            <EmptyTitle>Ready to Start?</EmptyTitle>
+            <EmptyDescription>Punch in to begin your workday.</EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Button
+              className="bg-green-600 hover:bg-green-700"
+              disabled={isActionPending}
+              onClick={() => punchIn({})}
+              size="lg"
+            >
+              {isPunchingIn ? (
+                <Spinner className="mr-2" />
+              ) : (
+                <Clock className="mr-2 h-5 w-5" />
+              )}
+              <span>Punch In</span>
+            </Button>
+          </EmptyContent>
+        </Empty>
+      </div>
     );
   }
 
@@ -289,7 +302,7 @@ export const MarkAttendance = () => {
 };
 
 export const MarkAttendanceSkeleton = () => (
-  <Card>
+  <Card className="w-full">
     <CardHeader>
       <Skeleton className="h-7 w-48" />
       <Skeleton className="mt-2 h-4 w-64" />

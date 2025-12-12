@@ -9,6 +9,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { queryUtils } from "@/utils/orpc";
@@ -126,7 +132,34 @@ export function WorkBlocksList() {
   );
 
   if (!attendance?.checkInTime) {
-    return null;
+    return (
+      <div className="w-full">
+        <Empty className="border">
+          <EmptyMedia>
+            <Clock className="h-12 w-12 text-muted-foreground/50" />
+          </EmptyMedia>
+          <EmptyTitle>Not checked-in yet</EmptyTitle>
+          <EmptyDescription>
+            Punch-In to start your work session
+          </EmptyDescription>
+        </Empty>
+      </div>
+    );
+  }
+
+  if (!blocks || blocks.length === 0) {
+    return (
+      <div className="w-full">
+        <Empty className="border">
+          <EmptyMedia>
+            <Briefcase className="h-12 w-12 text-muted-foreground/50" />
+          </EmptyMedia>
+          <EmptyTitle>
+            Your work sessions will appear here once you start working.
+          </EmptyTitle>
+        </Empty>
+      </div>
+    );
   }
 
   return (
@@ -151,14 +184,14 @@ export function WorkBlocksList() {
               ))}
             </div>
           ) : (
-            <div className="flex h-[300px] items-center justify-center">
-              <div className="flex flex-col items-center gap-3 text-center">
+            <Empty>
+              <EmptyMedia>
                 <Briefcase className="h-12 w-12 text-muted-foreground/50" />
-                <p className="text-muted-foreground">
-                  Your work sessions will appear here once you start working.
-                </p>
-              </div>
-            </div>
+              </EmptyMedia>
+              <EmptyTitle>
+                Your work sessions will appear here once you start working.
+              </EmptyTitle>
+            </Empty>
           )}
         </ScrollArea>
       </CardContent>
@@ -168,7 +201,7 @@ export function WorkBlocksList() {
 
 export function WorkBlocksListSkeleton() {
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader>
         <Skeleton className="h-6 w-1/3" />
         <Skeleton className="mt-2 h-4 w-2/3" />
