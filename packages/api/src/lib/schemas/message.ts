@@ -288,3 +288,32 @@ export const GetMenionUsersInput = z.object({
 });
 
 export const GetMenionUsersOutput = z.array(UserSchema);
+
+// Mark messages as read input/output
+export const MarkMessagesAsReadInput = z.object({
+  channelId: z.string(),
+  messageIds: z.array(z.string()).min(1),
+});
+
+export const MarkMessagesAsReadOutput = z.object({
+  txid: z.number(),
+  success: z.literal(true),
+});
+
+// Get all message readers input/output
+export const GetAllMessageReadersInput = z.object({
+  messageId: z.string(),
+});
+
+export const GetAllMessageReadersOutput = z.object({
+  readers: z.array(
+    UserSchema.pick({
+      id: true,
+      name: true,
+      email: true,
+      image: true,
+    }).extend({
+      readAt: z.date(),
+    })
+  ),
+});

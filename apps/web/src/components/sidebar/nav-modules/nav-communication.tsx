@@ -1,7 +1,8 @@
 import { IconBroadcast } from "@tabler/icons-react";
 import { Link, useParams } from "@tanstack/react-router";
 import { ChevronRight, CircleAlert, Hash } from "lucide-react";
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { Badge } from "@/components/ui/badge";
 import {
   Collapsible,
   CollapsibleContent,
@@ -21,12 +22,14 @@ import {
   SidebarMenuSubItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { useChannelUnreadCounts } from "@/hooks/communications/use-channel-unread-counts";
 import { useUserChannels } from "@/hooks/communications/use-user-channels";
 import { cn } from "@/lib/utils";
 
-export function NavChannels() {
+function NavChannelsInner() {
   const { state, isMobile } = useSidebar();
   const { channels } = useUserChannels();
+  const { getUnreadCount } = useChannelUnreadCounts();
 
   const { slug } = useParams({
     from: "/(authenticated)/org/$slug",
@@ -92,24 +95,35 @@ export function NavChannels() {
                   )}
                   role="menu"
                 >
-                  {channels.map((channel) => (
-                    <SidebarMenuSubItem key={channel.id}>
-                      <SidebarMenuSubButton
-                        asChild
-                        className="[&>svg]:size-3"
-                        isActive={channel.id === params?.id}
-                      >
-                        <Link
-                          onClick={() => setOpen(false)}
-                          params={{ slug, id: channel.id }}
-                          to="/org/$slug/communication/channels/$id"
+                  {channels.map((channel) => {
+                    const unreadCount = getUnreadCount(channel.id);
+                    return (
+                      <SidebarMenuSubItem key={channel.id}>
+                        <SidebarMenuSubButton
+                          asChild
+                          className="[&>svg]:size-3"
+                          isActive={channel.id === params?.id}
                         >
-                          <Hash />
-                          <span>{channel.name}</span>
-                        </Link>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                  ))}
+                          <Link
+                            onClick={() => setOpen(false)}
+                            params={{ slug, id: channel.id }}
+                            to="/org/$slug/communication/channels/$id"
+                          >
+                            <Hash />
+                            <span className="flex-1">{channel.name}</span>
+                            {unreadCount > 0 && (
+                              <Badge
+                                className="ml-auto h-5 w-5 shrink-0 items-center justify-center rounded-full p-0"
+                                variant="default"
+                              >
+                                {unreadCount}
+                              </Badge>
+                            )}
+                          </Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                    );
+                  })}
                 </SidebarMenuSub>
               </div>
             </HoverCardContent>
@@ -144,25 +158,69 @@ export function NavChannels() {
         </CollapsibleTrigger>
         <CollapsibleContent>
           <SidebarMenuSub>
-            {channels.map((channel) => (
-              <SidebarMenuSubItem key={channel.id}>
-                <SidebarMenuSubButton
-                  asChild
-                  isActive={channel.id === params?.id}
-                >
-                  <Link
-                    params={{ slug, id: channel.id }}
-                    to="/org/$slug/communication/channels/$id"
+            {channels.map((channel) => {
+              const unreadCount = getUnreadCount(channel.id);
+              return (
+                <SidebarMenuSubItem key={channel.id}>
+                  <SidebarMenuSubButton
+                    asChild
+                    isActive={channel.id === params?.id}
                   >
-                    <Hash />
-                    <span>{channel.name}</span>
-                  </Link>
-                </SidebarMenuSubButton>
-              </SidebarMenuSubItem>
-            ))}
+                    <Link
+                      params={{ slug, id: channel.id }}
+                      to="/org/$slug/communication/channels/$id"
+                    >
+                      <Hash />
+                      <span className="flex-1">{channel.name}</span>
+                      {unreadCount > 0 && (
+                        <Badge
+                          className="ml-auto h-5 w-5 shrink-0 items-center justify-center rounded-full p-0"
+                          variant="default"
+                        >
+                          {unreadCount}
+                        </Badge>
+                      )}
+                    </Link>
+                  </SidebarMenuSubButton>
+                </SidebarMenuSubItem>
+              );
+            })}
           </SidebarMenuSub>
         </CollapsibleContent>
       </Collapsible>
+    </SidebarMenuItem>
+  );
+}
+
+export function NavChannels() {
+  return (
+    <Suspense fallback={<NavChannelsLoadingFallback />}>
+      <NavChannelsInner />
+    </Suspense>
+  );
+}
+
+function NavChannelsLoadingFallback() {
+  const { channels } = useUserChannels();
+  const { state, isMobile } = useSidebar();
+  const isPopover = state === "collapsed" && !isMobile;
+
+  if (channels.length === 0) {
+    return (
+      <SidebarMenuItem>
+        <SidebarMenuButton tooltip="No Channels">
+          {isPopover ? <CircleAlert /> : "No Channels"}
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    );
+  }
+
+  return (
+    <SidebarMenuItem>
+      <SidebarMenuButton aria-label="Channels" disabled>
+        <IconBroadcast aria-hidden="true" />
+        {!isPopover && <span>Channels</span>}
+      </SidebarMenuButton>
     </SidebarMenuItem>
   );
 }

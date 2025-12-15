@@ -2,9 +2,11 @@ import { ORPCError } from "@orpc/client";
 import {
   attachmentTable,
   channelMemberTable,
+  channelReadTable,
   channelTable,
   messageMentionTable,
   messageReactionTable,
+  messageReadTable,
   messageTable,
   notificationTable,
   pushSubscriptionTable,
@@ -27,12 +29,19 @@ import { env } from "../../env";
 import { protectedProcedure } from "../../index";
 import { generateTxId } from "../../lib/electric-proxy";
 import {
+  largeChannelReadersSql,
+  smallChannelReadersSql,
+} from "../../lib/prepared-sql";
+import { getQueueClient } from "../../lib/queue";
+import {
   AddReactionInput,
   AddReactionOutput,
   CreateMessageInput,
   CreateMessageOutput,
   DeleteMessageInput,
   DeleteMessageOutput,
+  GetAllMessageReadersInput,
+  GetAllMessageReadersOutput,
   GetChannelMessagesInput,
   GetChannelMessagesOutput,
   GetMenionUsersInput,
@@ -46,6 +55,8 @@ import {
   MarkAllMentionsSeenOutput,
   MarkMentionSeenInput,
   MarkMentionSeenOutput,
+  MarkMessagesAsReadInput,
+  MarkMessagesAsReadOutput,
   PinMessageInput,
   PinMessageOutput,
   RemoveReactionInput,
@@ -61,6 +72,12 @@ import {
   UpdateMessageOutput,
 } from "../../lib/schemas/message";
 import { supabase } from "../../lib/supabase";
+
+// Configuration: Maximum channel members for detailed read tracking
+// Channels with <= this many members will use messageRead table (detailed tracking)
+// Channels with > this many members will use messageReadSummary only (aggregated tracking)
+const MAX_MEMBERS_FOR_DETAILED_TRACKING =
+  Number(process.env.MAX_MEMBERS_FOR_DETAILED_TRACKING) || 25;
 
 export const messageRouter = {
   searchUsers: protectedProcedure
@@ -244,6 +261,26 @@ export const messageRouter = {
                 threadCount: sql`${messageTable.threadCount} + 1`,
               })
               .where(eq(messageTable.id, input.parentMessageId));
+          }
+
+          // Mark message as read for sender
+          // Get member count to determine tracking strategy
+          const memberCount = await tx
+            .select({ count: sql<number>`count(*)::int` })
+            .from(channelMemberTable)
+            .where(eq(channelMemberTable.channelId, input.channelId))
+            .then((result) => result[0]?.count ?? 0);
+
+          // Only insert messageRead for small channels
+          if (memberCount <= MAX_MEMBERS_FOR_DETAILED_TRACKING) {
+            await tx
+              .insert(messageReadTable)
+              .values({
+                messageId: newMessage.id,
+                userId: user.id,
+                readAt: new Date(),
+              })
+              .onConflictDoNothing();
           }
 
           return { txid, message: newMessage };
@@ -718,16 +755,28 @@ export const messageRouter = {
       const { txid } = await db.transaction(async (tx) => {
         const txid = await generateTxId(tx);
 
-        const mention = await tx.query.messageMentionTable.findFirst({
-          where: and(
-            eq(messageMentionTable.id, input.mentionId),
-            eq(messageMentionTable.mentionedUserId, user.id)
-          ),
-        });
+        const mention = await tx
+          .select({
+            id: messageMentionTable.id,
+            isSeen: messageMentionTable.isSeen,
+          })
+          .from(messageMentionTable)
+          .innerJoin(
+            messageTable,
+            eq(messageMentionTable.messageId, messageTable.id)
+          )
+          .where(
+            and(
+              eq(messageMentionTable.id, input.mentionId),
+              eq(messageMentionTable.mentionedUserId, user.id),
+              eq(messageTable.isDeleted, false)
+            )
+          )
+          .then((rows) => rows[0]);
 
         if (!mention) {
           throw new ORPCError("NOT_FOUND", {
-            message: "Mention not found.",
+            message: "Mention not found or message was deleted.",
           });
         }
 
@@ -859,5 +908,243 @@ export const messageRouter = {
         success: true,
         message: "Reaction removed successfully.",
       };
+    }),
+
+  markMessagesAsRead: protectedProcedure
+    .input(MarkMessagesAsReadInput)
+    .output(MarkMessagesAsReadOutput)
+    .handler(async ({ context, input }) => {
+      const { db, session } = context;
+      const userId = session.user.id;
+
+      const { txid, memberCount } = await db.transaction(async (tx) => {
+        const txid = await generateTxId(tx);
+
+        // Verify user is a member of the channel
+        const channelMember = await tx.query.channelMemberTable.findFirst({
+          where: and(
+            eq(channelMemberTable.channelId, input.channelId),
+            eq(channelMemberTable.userId, userId)
+          ),
+        });
+
+        if (!channelMember) {
+          throw new ORPCError("FORBIDDEN", {
+            message: "You are not a member of this channel.",
+          });
+        }
+
+        // Count channel members to determine tracking strategy
+        const memberCountResult = await tx
+          .select({ count: sql<number>`COUNT(*)` })
+          .from(channelMemberTable)
+          .where(eq(channelMemberTable.channelId, input.channelId));
+
+        const memberCount = Number(memberCountResult[0]?.count || 0);
+
+        // Get the latest message from the provided messageIds
+        const messages = await tx.query.messageTable.findMany({
+          where: and(
+            inArray(messageTable.id, input.messageIds),
+            eq(messageTable.channelId, input.channelId),
+            eq(messageTable.isDeleted, false)
+          ),
+          orderBy: [desc(messageTable.createdAt)],
+          columns: {
+            id: true,
+            createdAt: true,
+          },
+        });
+
+        if (messages.length === 0) {
+          return { txid, memberCount };
+        }
+
+        const latestMessage = messages[0];
+
+        if (!latestMessage) {
+          return { txid, memberCount };
+        }
+
+        // Use timestamp-based conditional update to prevent race conditions
+        // The comparison happens atomically in the database
+        await tx
+          .insert(channelReadTable)
+          .values({
+            channelId: input.channelId,
+            userId,
+            lastReadMessageId: latestMessage.id,
+            lastReadAt: new Date(latestMessage.createdAt),
+          })
+          .onConflictDoUpdate({
+            target: [channelReadTable.channelId, channelReadTable.userId],
+            set: {
+              // Only update if new message timestamp is newer than existing
+              lastReadMessageId: sql`
+                CASE
+                  WHEN ${sql.raw(
+                    `'${latestMessage.createdAt.toISOString()}'::timestamp`
+                  )} > COALESCE(${channelReadTable.lastReadAt}, '1970-01-01'::timestamp)
+                  THEN ${latestMessage.id}
+                  ELSE ${channelReadTable.lastReadMessageId}
+                END
+              `,
+              lastReadAt: sql`
+                CASE
+                  WHEN ${sql.raw(
+                    `'${latestMessage.createdAt.toISOString()}'::timestamp`
+                  )} > COALESCE(${channelReadTable.lastReadAt}, '1970-01-01'::timestamp)
+                  THEN ${sql.raw(
+                    `'${latestMessage.createdAt.toISOString()}'::timestamp`
+                  )}
+                  ELSE ${channelReadTable.lastReadAt}
+                END
+              `,
+            },
+          });
+
+        // Only insert into messageRead table for small channels (detailed tracking)
+        // For large channels, worker will update messageReadSummary directly
+        if (memberCount <= MAX_MEMBERS_FOR_DETAILED_TRACKING) {
+          // Only create read receipts for messages that exist and are not deleted
+          const messageReadValues = messages.map((message) => ({
+            messageId: message.id,
+            userId,
+            readAt: new Date(),
+          }));
+
+          if (messageReadValues.length > 0) {
+            await tx
+              .insert(messageReadTable)
+              .values(messageReadValues)
+              .onConflictDoNothing();
+          }
+        }
+
+        // Auto-mark related mentions as seen
+        const messageIdsArray = messages.map((m) => m.id);
+
+        if (messageIdsArray.length > 0) {
+          // Mark mentions as seen for the current user
+          await tx
+            .update(messageMentionTable)
+            .set({ isSeen: true })
+            .where(
+              and(
+                inArray(messageMentionTable.messageId, messageIdsArray),
+                eq(messageMentionTable.mentionedUserId, userId),
+                eq(messageMentionTable.isSeen, false)
+              )
+            );
+
+          // Mark mention notifications as read
+          await tx
+            .update(notificationTable)
+            .set({
+              status: "read",
+              readAt: new Date(),
+            })
+            .where(
+              and(
+                eq(notificationTable.userId, userId),
+                eq(notificationTable.type, "mention"),
+                inArray(notificationTable.entityId, messageIdsArray),
+                eq(notificationTable.status, "unread")
+              )
+            );
+        }
+
+        return { txid, memberCount };
+      });
+
+      // Publish to queue for background processing
+      // For small channels: process messageRead -> messageReadSummary
+      // For large channels: process channelRead -> messageReadSummary directly
+      try {
+        const queueClient = getQueueClient();
+        queueClient.publish("READ_RECEIPTS", {
+          type: "process_channel",
+          channelId: input.channelId,
+          memberCount,
+          timestamp: new Date().toISOString(),
+        });
+      } catch (error) {
+        // Log error but don't fail the request
+        // The worker will eventually process this channel anyway
+        console.error("Failed to publish to read receipts queue:", error);
+      }
+
+      return {
+        txid,
+        success: true,
+      };
+    }),
+
+  getAllMessageReaders: protectedProcedure
+    .input(GetAllMessageReadersInput)
+    .output(GetAllMessageReadersOutput)
+    .handler(async ({ context, input }) => {
+      const { db, session } = context;
+      const userId = session.user.id;
+
+      // Verify the message exists and user has access
+      const message = await db.query.messageTable.findFirst({
+        where: and(
+          eq(messageTable.id, input.messageId),
+          eq(messageTable.isDeleted, false)
+        ),
+        columns: {
+          id: true,
+          channelId: true,
+          createdAt: true,
+        },
+      });
+
+      if (!message) {
+        return { readers: [] };
+      }
+
+      // Verify user is a member of the channel
+      const channelMember = await db.query.channelMemberTable.findFirst({
+        where: and(
+          eq(channelMemberTable.channelId, message.channelId),
+          eq(channelMemberTable.userId, userId)
+        ),
+      });
+
+      if (!channelMember) {
+        throw new ORPCError("FORBIDDEN", {
+          message: "You do not have access to this message.",
+        });
+      }
+
+      // Check channel member count to determine tracking strategy
+      const memberCountResult = await db
+        .select({ count: sql<number>`COUNT(*)` })
+        .from(channelMemberTable)
+        .where(eq(channelMemberTable.channelId, message.channelId));
+
+      const memberCount = Number(memberCountResult[0]?.count || 0);
+
+      let readers: Array<{
+        id: string;
+        name: string;
+        email: string;
+        image: string | null;
+        readAt: Date;
+      }> = [];
+
+      if (memberCount <= MAX_MEMBERS_FOR_DETAILED_TRACKING) {
+        readers = await smallChannelReadersSql.execute({
+          messageId: input.messageId,
+        });
+      } else {
+        readers = await largeChannelReadersSql.execute({
+          channelId: message.channelId,
+          messageCreatedAt: message.createdAt,
+        });
+      }
+
+      return { readers };
     }),
 };

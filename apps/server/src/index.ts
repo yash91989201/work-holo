@@ -5,6 +5,7 @@ import { onError } from "@orpc/server";
 import { RPCHandler } from "@orpc/server/fetch";
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
 import { createContext } from "@work-holo/api/context";
+import { initializeQueueClient } from "@work-holo/api/lib/queue";
 import { electricRouter } from "@work-holo/api/routers/electric/index";
 import { appRouter } from "@work-holo/api/routers/index";
 import { auth } from "@work-holo/auth";
@@ -12,6 +13,8 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { env } from "@/env";
+
+initializeQueueClient(env.RABBITMQ_URL);
 
 const app = new Hono();
 

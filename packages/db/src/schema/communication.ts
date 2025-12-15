@@ -8,6 +8,7 @@ import {
   json,
   pgEnum,
   pgTable,
+  primaryKey,
   text,
   timestamp,
   uniqueIndex,
@@ -274,18 +275,93 @@ export const pushSubscriptionTable = pgTable(
   ]
 );
 
-export const messageReadTable = pgTable("messageRead", {
-  id: cuid2().defaultRandom().primaryKey(),
-  messageId: text()
-    .notNull()
-    .references(() => messageTable.id, { onDelete: "cascade" }),
-  userId: text()
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
-  readAt: timestamp({ withTimezone: true })
-    .$defaultFn(() => new Date())
-    .notNull(),
-});
+export const messageReadTable = pgTable(
+  "messageRead",
+  {
+    id: cuid2().defaultRandom().primaryKey(),
+    messageId: text()
+      .notNull()
+      .references(() => messageTable.id, { onDelete: "cascade" }),
+    userId: text()
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    readAt: timestamp({ withTimezone: true })
+      .$defaultFn(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    index("idx_message_read_message_user").on(table.messageId, table.userId),
+    uniqueIndex("unique_message_read_message_user").on(
+      table.messageId,
+      table.userId
+    ),
+  ]
+);
+
+export const channelReadTable = pgTable(
+  "channelRead",
+  {
+    channelId: text()
+      .notNull()
+      .references(() => channelTable.id, { onDelete: "cascade" }),
+    userId: text()
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    lastReadMessageId: text().references(() => messageTable.id, {
+      onDelete: "set null",
+    }),
+    lastReadAt: timestamp({ withTimezone: true }),
+  },
+  (table) => [
+    index("idx_channel_read_user").on(table.userId),
+    index("idx_channel_read_channel").on(table.channelId),
+    primaryKey({ columns: [table.userId, table.channelId] }),
+  ]
+);
+
+export const messageReadSummaryTable = pgTable(
+  "messageReadSummary",
+  {
+    id: cuid2().defaultRandom().primaryKey(),
+    messageId: text()
+      .notNull()
+      .references(() => messageTable.id, { onDelete: "cascade" })
+      .unique(),
+    readCount: integer().default(0).notNull(),
+    lastReadAt: timestamp({ withTimezone: true }),
+    recentReaders: json().$type<string[]>().default([]).notNull(),
+    createdAt: timestamp({ withTimezone: true })
+      .$defaultFn(() => new Date())
+      .notNull(),
+    updatedAt: timestamp({ withTimezone: true })
+      .$defaultFn(() => new Date())
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    index("idx_message_read_summary_message").on(table.messageId),
+    index("idx_message_read_summary_last_read").on(table.lastReadAt),
+  ]
+);
+
+export const channelReadProcessedWatermarkTable = pgTable(
+  "channelReadProcessedWatermark",
+  {
+    id: cuid2().defaultRandom().primaryKey(),
+    channelId: text()
+      .notNull()
+      .references(() => channelTable.id, { onDelete: "cascade" })
+      .unique(),
+    lastProcessedAt: timestamp({ withTimezone: true })
+      .$defaultFn(() => new Date())
+      .notNull(),
+    updatedAt: timestamp({ withTimezone: true })
+      .$defaultFn(() => new Date())
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [index("idx_channel_read_watermark_channel").on(table.channelId)]
+);
 
 export const messageReactionTable = pgTable(
   "messageReaction",
@@ -481,6 +557,47 @@ export const pushSubscriptionTableRelations = relations(
     user: one(user, {
       fields: [pushSubscriptionTable.userId],
       references: [user.id],
+    }),
+  })
+);
+
+// Channel read relations
+export const channelReadTableRelations = relations(
+  channelReadTable,
+  ({ one }) => ({
+    channel: one(channelTable, {
+      fields: [channelReadTable.channelId],
+      references: [channelTable.id],
+    }),
+    user: one(user, {
+      fields: [channelReadTable.userId],
+      references: [user.id],
+    }),
+    lastReadMessage: one(messageTable, {
+      fields: [channelReadTable.lastReadMessageId],
+      references: [messageTable.id],
+    }),
+  })
+);
+
+// Message read summary relations
+export const messageReadSummaryTableRelations = relations(
+  messageReadSummaryTable,
+  ({ one }) => ({
+    message: one(messageTable, {
+      fields: [messageReadSummaryTable.messageId],
+      references: [messageTable.id],
+    }),
+  })
+);
+
+// Channel read processed watermark relations
+export const channelReadProcessedWatermarkTableRelations = relations(
+  channelReadProcessedWatermarkTable,
+  ({ one }) => ({
+    channel: one(channelTable, {
+      fields: [channelReadProcessedWatermarkTable.channelId],
+      references: [channelTable.id],
     }),
   })
 );
