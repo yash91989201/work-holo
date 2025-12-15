@@ -1,0 +1,2 @@
+CREATE INDEX "idx_message_read_message_user" ON "messageRead" USING btree ("messageId","userId");--> statement-breakpoint
+CREATE UNIQUE INDEX "unique_message_read_message_user" ON "messageRead" USING btree ("messageId","userId");

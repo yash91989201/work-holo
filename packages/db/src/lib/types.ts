@@ -18,6 +18,12 @@ import type {
   ChannelMemberInsertSchema,
   ChannelMemberSchema,
   ChannelMemberUpdateSchema,
+  ChannelReadInsertSchema,
+  ChannelReadProcessedWatermarkInsertSchema,
+  ChannelReadProcessedWatermarkSchema,
+  ChannelReadProcessedWatermarkUpdateSchema,
+  ChannelReadSchema,
+  ChannelReadUpdateSchema,
   ChannelSchema,
   ChannelTypeSchema,
   ChannelUpdateSchema,
@@ -28,8 +34,17 @@ import type {
   MemberSchema,
   MemberUpdateSchema,
   MessageInsertSchema,
+  MessageMentionInsertSchema,
+  MessageMentionSchema,
+  MessageMentionUpdateSchema,
+  MessageReactionInsertSchema,
+  MessageReactionSchema,
+  MessageReactionUpdateSchema,
   MessageReadInsertSchema,
   MessageReadSchema,
+  MessageReadSummaryInsertSchema,
+  MessageReadSummarySchema,
+  MessageReadSummaryUpdateSchema,
   MessageReadUpdateSchema,
   MessageSchema,
   MessageUpdateSchema,
@@ -79,6 +94,18 @@ export type ChannelJoinRequestUpdateType = z.infer<
 export type ChannelMemberInsertType = z.infer<typeof ChannelMemberInsertSchema>;
 export type ChannelMemberType = z.infer<typeof ChannelMemberSchema>;
 export type ChannelMemberUpdateType = z.infer<typeof ChannelMemberUpdateSchema>;
+export type ChannelReadInsertType = z.infer<typeof ChannelReadInsertSchema>;
+export type ChannelReadProcessedWatermarkInsertType = z.infer<
+  typeof ChannelReadProcessedWatermarkInsertSchema
+>;
+export type ChannelReadProcessedWatermarkType = z.infer<
+  typeof ChannelReadProcessedWatermarkSchema
+>;
+export type ChannelReadProcessedWatermarkUpdateType = z.infer<
+  typeof ChannelReadProcessedWatermarkUpdateSchema
+>;
+export type ChannelReadType = z.infer<typeof ChannelReadSchema>;
+export type ChannelReadUpdateType = z.infer<typeof ChannelReadUpdateSchema>;
 export type ChannelType = z.infer<typeof ChannelSchema>;
 export type ChannelTypeType = z.infer<typeof ChannelTypeSchema>;
 export type ChannelUpdateType = z.infer<typeof ChannelUpdateSchema>;
@@ -89,7 +116,28 @@ export type MemberInsertType = z.infer<typeof MemberInsertSchema>;
 export type MemberType = z.infer<typeof MemberSchema>;
 export type MemberUpdateType = z.infer<typeof MemberUpdateSchema>;
 export type MessageInsertType = z.infer<typeof MessageInsertSchema>;
+export type MessageMentionInsertType = z.infer<
+  typeof MessageMentionInsertSchema
+>;
+export type MessageMentionType = z.infer<typeof MessageMentionSchema>;
+export type MessageMentionUpdateType = z.infer<
+  typeof MessageMentionUpdateSchema
+>;
+export type MessageReactionInsertType = z.infer<
+  typeof MessageReactionInsertSchema
+>;
+export type MessageReactionType = z.infer<typeof MessageReactionSchema>;
+export type MessageReactionUpdateType = z.infer<
+  typeof MessageReactionUpdateSchema
+>;
 export type MessageReadInsertType = z.infer<typeof MessageReadInsertSchema>;
+export type MessageReadSummaryInsertType = z.infer<
+  typeof MessageReadSummaryInsertSchema
+>;
+export type MessageReadSummaryType = z.infer<typeof MessageReadSummarySchema>;
+export type MessageReadSummaryUpdateType = z.infer<
+  typeof MessageReadSummaryUpdateSchema
+>;
 export type MessageReadType = z.infer<typeof MessageReadSchema>;
 export type MessageReadUpdateType = z.infer<typeof MessageReadUpdateSchema>;
 export type MessageType = z.infer<typeof MessageSchema>;

@@ -18,8 +18,10 @@ import {
 import {
   buildOrderedMessages,
   insertDateSeparators,
+  insertNewMessagesSeparator,
 } from "@/lib/communications/message";
 import { useChannelMessageHighlight } from "@/stores/channel-store";
+import { useChannelLastRead } from "./use-channel-last-read";
 
 export function useVirtualMessages() {
   const { id: channelId } = useParams({
@@ -37,7 +39,12 @@ export function useVirtualMessages() {
     isLoading,
   } = useMessages({ channelId });
 
-  const items = useMemo(() => insertDateSeparators(messages), [messages]);
+  const { lastReadMessageId } = useChannelLastRead();
+
+  const items = useMemo(() => {
+    const withDateSeparators = insertDateSeparators(messages);
+    return insertNewMessagesSeparator(withDateSeparators, lastReadMessageId);
+  }, [messages, lastReadMessageId]);
 
   const lastMessageIdRef = useRef<string | null>(null);
 
@@ -66,7 +73,7 @@ export function useVirtualMessages() {
   const { highlightedAt, highlightedMessageId, clearHighlightedMessage } =
     useChannelMessageHighlight();
 
-  // Initial scroll to bottom
+  // Initial scroll to bottom or to new messages separator
   useEffect(() => {
     const el = scrollRef.current;
     if (!(channelId && el)) return;
@@ -76,10 +83,23 @@ export function useVirtualMessages() {
 
     hasDoneInitialScrollRef.current = true;
 
+    // Check if there's a new messages separator
+    const newMessagesSeparatorIndex = items.findIndex(
+      (item) => "type" in item && item.type === "new-messages-separator"
+    );
+
     requestAnimationFrame(() => {
-      virtualizer.scrollToOffset(el.scrollHeight, { align: "end" });
+      if (newMessagesSeparatorIndex !== -1) {
+        // Scroll to new messages separator
+        virtualizer.scrollToIndex(newMessagesSeparatorIndex, {
+          align: "start",
+        });
+      } else {
+        // No new messages, scroll to bottom
+        virtualizer.scrollToOffset(el.scrollHeight, { align: "end" });
+      }
     });
-  }, [channelId, isLoading, messages.length, virtualizer]);
+  }, [channelId, isLoading, messages.length, items, virtualizer]);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -194,7 +214,12 @@ export function useVirtualMessages() {
     if (!highlightedMessageId) return;
 
     const targetIndex = items.findIndex((item) => {
-      if ("type" in item && item.type === "date-separator") return false;
+      if (
+        "type" in item &&
+        (item.type === "date-separator" ||
+          item.type === "new-messages-separator")
+      )
+        return false;
       return item.id === highlightedMessageId;
     });
 
@@ -252,7 +277,11 @@ export function useVirtualMessages() {
       targetDate.setHours(0, 0, 0, 0);
 
       return items.findIndex((item) => {
-        if ("type" in item && item.type === "date-separator") {
+        if (
+          "type" in item &&
+          (item.type === "date-separator" ||
+            item.type === "new-messages-separator")
+        ) {
           return false;
         }
         const messageDate = new Date(item.createdAt);

@@ -129,6 +129,11 @@ export function MentionsSidebar() {
                 );
               }
 
+              // Skip new-messages-separator if present
+              if ("type" in item && item.type === "new-messages-separator") {
+                return null;
+              }
+
               return <MentionMessageItem key={item.id} message={item} />;
             })}
           </div>

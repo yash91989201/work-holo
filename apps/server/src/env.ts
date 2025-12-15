@@ -3,6 +3,7 @@ import z from "zod";
 
 export const env = createEnv({
   server: {
+    RABBITMQ_URL: z.url(),
     ENV: z.string(),
     PORT: z.string().transform((val) => Number.parseInt(val, 10)),
     DATABASE_URL: z.url(),

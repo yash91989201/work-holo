@@ -1,11 +1,17 @@
 import { ArrowDownIcon, Loader2Icon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useMarkMessagesRead } from "@/hooks/communications/use-mark-messages-read";
 import { useVirtualMessages } from "@/hooks/communications/use-messages";
-import type { DateSeparator } from "@/lib/communications/message";
+import { useVisibleMessages } from "@/hooks/communications/use-visible-messages";
+import type {
+  DateSeparator,
+  NewMessagesSeparator as NewMessagesSeparatorType,
+} from "@/lib/communications/message";
 import { DateFilter } from "./date-filter";
 import { DateSeparator as DateSeparatorComponent } from "./date-separator";
 import { EmptyState } from "./empty-state";
 import { MessageItem } from "./message-item";
+import { NewMessagesSeparator } from "./new-messages-separator";
 
 function isDateSeparator(item: unknown): item is DateSeparator {
   return (
@@ -13,6 +19,17 @@ function isDateSeparator(item: unknown): item is DateSeparator {
     item !== null &&
     "type" in item &&
     item.type === "date-separator"
+  );
+}
+
+function isNewMessagesSeparator(
+  item: unknown
+): item is NewMessagesSeparatorType {
+  return (
+    typeof item === "object" &&
+    item !== null &&
+    "type" in item &&
+    item.type === "new-messages-separator"
   );
 }
 
@@ -33,6 +50,18 @@ export function MessageList() {
     dateRange,
     highlightedMessageId,
   } = useVirtualMessages();
+
+  // Track visible messages for read receipts
+  const { visibleMessageIds } = useVisibleMessages({
+    virtualizer,
+    items,
+    enabled: true,
+  });
+
+  // Mark visible messages as read
+  useMarkMessagesRead(visibleMessageIds, {
+    debounceMs: 500,
+  });
 
   if (isLoading && messages.length === 0) {
     return (
@@ -104,9 +133,22 @@ export function MessageList() {
                 );
               }
 
+              if (isNewMessagesSeparator(item)) {
+                return (
+                  <div
+                    data-index={virtualRow.index}
+                    key={virtualRow.key}
+                    ref={virtualizer.measureElement}
+                  >
+                    <NewMessagesSeparator />
+                  </div>
+                );
+              }
+
               return (
                 <div
                   className="px-3 py-1.5"
+                  data-id={item.id}
                   data-index={virtualRow.index}
                   key={virtualRow.key}
                   ref={virtualizer.measureElement}
