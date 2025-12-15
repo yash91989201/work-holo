@@ -118,6 +118,9 @@ class QueueClient {
   publish(queue: keyof typeof QUEUES, message: QueueMessage): boolean {
     if (!this.channel) {
       console.error("Cannot publish: Channel not initialized");
+      this.connect().catch((error) => {
+        console.error("Failed to reconnect before publishing:", error);
+      });
       return false;
     }
 
@@ -186,6 +189,16 @@ export function initializeQueueClient(
 ): QueueClient {
   if (!queueClient) {
     queueClient = new QueueClient(connectionString);
+    queueClient.connect().catch((error) => {
+      console.error("Failed to initialize queue connection:", error);
+    });
+    return queueClient;
+  }
+
+  if (!queueClient.isConnected()) {
+    queueClient.connect().catch((error) => {
+      console.error("Failed to reconnect queue client:", error);
+    });
   }
   return queueClient;
 }
