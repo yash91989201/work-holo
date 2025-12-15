@@ -42,3 +42,7 @@ const requireAdmin = o.middleware(async ({ context, next }) => {
 export const protectedProcedure = publicProcedure.use(requireAuth);
 
 export const adminProcedure = publicProcedure.use(requireAdmin);
+
+// Export queue initialization
+export { initializeQueue } from "./lib/queue-init";
+export { getQueueClient } from "./lib/queue";

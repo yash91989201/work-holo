@@ -61,11 +61,17 @@ export type DateSeparator = {
   displayDate: string;
 };
 
+export type NewMessagesSeparator = {
+  type: "new-messages-separator";
+  id: string;
+};
+
 export type MessageWithSender = ReturnType<typeof buildMessageWithAttachments>;
 
 export type MessageListItem<T extends MessageWithSender = MessageWithSender> =
   | T
-  | DateSeparator;
+  | DateSeparator
+  | NewMessagesSeparator;
 
 function formatDateSeparator(date: Date): string {
   const today = new Date();
@@ -124,6 +130,72 @@ export function insertDateSeparators<T extends MessageWithSender>(
 
     result.push(message);
   }
+
+  return result;
+}
+
+/**
+ * Insert a "new messages" separator before the first unread message
+ * Uses lastReadMessageId to find the position in the list
+ * Should be called after insertDateSeparators
+ */
+export function insertNewMessagesSeparator<T extends MessageWithSender>(
+  items: MessageListItem<T>[],
+  lastReadMessageId: string | null | undefined
+): MessageListItem<T>[] {
+  if (!lastReadMessageId) {
+    return items;
+  }
+
+  // Find the index of the last read message
+  let lastReadIndex = -1;
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i];
+
+    // Skip separators
+    if (
+      "type" in item &&
+      (item.type === "date-separator" || item.type === "new-messages-separator")
+    ) {
+      continue;
+    }
+
+    // Check if this is the last read message
+    if (item.id === lastReadMessageId) {
+      lastReadIndex = i;
+      break;
+    }
+  }
+
+  // If last read message not found or it's the last item, no separator needed
+  if (lastReadIndex === -1 || lastReadIndex === items.length - 1) {
+    return items;
+  }
+
+  // Find the next actual message after the last read one (skip date separators)
+  let insertIndex = lastReadIndex + 1;
+  while (insertIndex < items.length) {
+    const item = items[insertIndex];
+    if (
+      !("type" in item) ||
+      (item.type !== "date-separator" && item.type !== "new-messages-separator")
+    ) {
+      break;
+    }
+    insertIndex++;
+  }
+
+  // If we've reached the end, don't add separator
+  if (insertIndex >= items.length) {
+    return items;
+  }
+
+  // Insert the separator before the first unread message
+  const result = [...items];
+  result.splice(insertIndex, 0, {
+    type: "new-messages-separator",
+    id: "new-messages-separator",
+  });
 
   return result;
 }
