@@ -102,7 +102,11 @@ class QueueWorker {
 
     try {
       console.log(`Connecting to RabbitMQ: ${env.RABBITMQ_URL}`);
-      this.connection = await amqp.connect(env.RABBITMQ_URL);
+      this.connection = await amqp.connect(env.RABBITMQ_URL, {
+        tls: {
+          rejectUnauthorized: false,
+        },
+      });
 
       this.connection.on("error", (err) => {
         console.error("RabbitMQ connection error:", err);
