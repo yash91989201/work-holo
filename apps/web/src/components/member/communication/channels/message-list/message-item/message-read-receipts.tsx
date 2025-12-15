@@ -32,9 +32,11 @@ import { queryUtils } from "@/utils/orpc";
 export function MessageReadReceipts({
   messageId,
   isOwnMessage,
+  userId,
 }: {
   messageId: string;
   isOwnMessage: boolean;
+  userId: string;
 }) {
   const { data: summaryResult } = useLiveQuery((q) =>
     q
@@ -43,7 +45,9 @@ export function MessageReadReceipts({
   );
 
   const summary = summaryResult?.[0];
-  const recentReaderIds = summary?.recentReaders ?? [];
+  const recentReaderIds = (summary?.recentReaders ?? [])?.filter(
+    (readerId) => !isOwnMessage || readerId !== userId
+  );
 
   const { data: recentReaders } = useLiveQuery(
     (q) => {
@@ -97,7 +101,11 @@ export function MessageReadReceipts({
       </div>
 
       {readCount > 0 && (
-        <MessageReadersDialog messageId={messageId} readCount={readCount} />
+        <MessageReadersDialog
+          messageId={messageId}
+          readCount={readCount}
+          userId={userId}
+        />
       )}
     </div>
   );
@@ -106,9 +114,11 @@ export function MessageReadReceipts({
 function MessageReadersDialog({
   readCount,
   messageId,
+  userId,
 }: {
   readCount: number;
   messageId: string;
+  userId: string;
 }) {
   return (
     <Dialog>
@@ -127,7 +137,7 @@ function MessageReadersDialog({
 
         <ScrollArea className="max-h-96">
           <Suspense fallback={<MessageReadersListSkeleton />}>
-            <MessageReadersList messageId={messageId} />
+            <MessageReadersList messageId={messageId} userId={userId} />
           </Suspense>
         </ScrollArea>
       </DialogContent>
@@ -135,7 +145,13 @@ function MessageReadersDialog({
   );
 }
 
-function MessageReadersList({ messageId }: { messageId: string }) {
+function MessageReadersList({
+  messageId,
+  userId,
+}: {
+  messageId: string;
+  userId: string;
+}) {
   const { data: readers } = useSuspenseQuery(
     queryUtils.communication.message.getAllMessageReaders.queryOptions({
       input: { messageId },
@@ -155,9 +171,11 @@ function MessageReadersList({ messageId }: { messageId: string }) {
     );
   }
 
+  const messageReaders = readers.readers?.filter((r) => r.id !== userId);
+
   return (
     <ItemGroup className="gap-3">
-      {readers.readers.map((reader) => (
+      {messageReaders.map((reader) => (
         <Item className="p-0" key={reader.id}>
           <ItemMedia>
             <Avatar className="h-8 w-8">

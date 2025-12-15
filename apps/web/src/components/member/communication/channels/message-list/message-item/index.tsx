@@ -210,6 +210,7 @@ export function MessageItem({
           <MessageReadReceipts
             isOwnMessage={isOwnMessage}
             messageId={message.id}
+            userId={user.id}
           />
         )}
 
