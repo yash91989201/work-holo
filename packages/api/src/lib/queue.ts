@@ -44,7 +44,11 @@ class QueueClient {
 
     try {
       console.log("Connecting to RabbitMQ...");
-      this.connection = await amqp.connect(this.connectionString);
+      this.connection = await amqp.connect(this.connectionString, {
+        tls: {
+          rejectUnauthorized: false,
+        },
+      });
 
       this.connection.on("error", (err) => {
         console.error("RabbitMQ connection error:", err);
