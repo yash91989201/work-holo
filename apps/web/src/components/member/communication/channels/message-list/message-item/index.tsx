@@ -206,7 +206,7 @@ export function MessageItem({
           onRemoveReaction={handleReactionClick}
         />
 
-        {!isThreadMessage && (
+        {isOwnMessage && (
           <MessageReadReceipts
             isOwnMessage={isOwnMessage}
             messageId={message.id}
