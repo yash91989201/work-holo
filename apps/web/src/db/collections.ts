@@ -6,12 +6,15 @@ import {
   AttendanceSchema,
   ChannelJoinRequestSchema,
   ChannelMemberSchema,
+  ChannelReadProcessedWatermarkSchema,
+  ChannelReadSchema,
   ChannelSchema,
   InvitationSchema,
   MemberSchema,
   MessageMentionSchema,
   MessageReactionSchema,
   MessageReadSchema,
+  MessageReadSummarySchema,
   MessageSchema,
   NotificationSchema,
   OrganizationSchema,
@@ -337,6 +340,73 @@ export const channelJoinRequestsCollection = createCollection(
       url: `${ELECTRIC_SHAPE_BASE_URL}/channel-join-requests`,
       params: {
         table: "channelJoinRequest",
+      },
+      fetchClient,
+      parser: {
+        timestamptz: (s: string) => new Date(s),
+      },
+    },
+  })
+);
+
+export const channelReadCollection = createCollection(
+  electricCollectionOptions({
+    getKey: (cr) => `${cr.channelId}-${cr.userId}`,
+    schema: ChannelReadSchema,
+    shapeOptions: {
+      url: `${ELECTRIC_SHAPE_BASE_URL}/channel-read`,
+      params: {
+        table: "channelRead",
+      },
+      fetchClient,
+      parser: {
+        timestamptz: (s: string) => new Date(s),
+      },
+    },
+  })
+);
+
+export const messageReadSummaryCollection = createCollection(
+  electricCollectionOptions({
+    getKey: (mrs) => mrs.id,
+    schema: MessageReadSummarySchema,
+    shapeOptions: {
+      url: `${ELECTRIC_SHAPE_BASE_URL}/message-read-summary`,
+      params: {
+        table: "messageReadSummary",
+      },
+      fetchClient,
+      parser: {
+        timestamptz: (s: string) => new Date(s),
+      },
+      transformer: (row) => {
+        let recentReaders = row.recentReaders;
+
+        if (typeof recentReaders === "string") {
+          try {
+            recentReaders = JSON.parse(recentReaders);
+          } catch {
+            recentReaders = [];
+          }
+        }
+
+        return {
+          ...row,
+          recentReaders,
+        };
+      },
+    },
+  })
+);
+
+export const channelReadProcessedWatermarkCollection = createCollection(
+  electricCollectionOptions({
+    getKey: (crpw) => crpw.id,
+    schema: ChannelReadProcessedWatermarkSchema,
+    shapeOptions: {
+      url: `${ELECTRIC_SHAPE_BASE_URL}/channel-read-processed-watermark`,
+      params: {
+        table: "channelReadProcessedWatermark",
       },
       fetchClient,
       parser: {

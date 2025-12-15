@@ -6,9 +6,13 @@ import type {
 } from "@work-holo/api/lib/types";
 import {
   attachmentsCollection,
+  channelMembersCollection,
+  channelReadCollection,
   messageMentionsCollection,
   messageReactionsCollection,
+  messageReadCollection,
   messagesCollection,
+  notificationsCollection,
 } from "@/db/collections";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { orpcClient } from "@/utils/orpc";
@@ -19,6 +23,7 @@ export function useMessageMutations() {
   const createMessage = createOptimisticAction({
     onMutate: ({ message }: { message: CreateMessageInputType }) => {
       const messageId = crypto.randomUUID().toString();
+      const now = new Date();
 
       messagesCollection.insert({
         id: messageId,
@@ -28,8 +33,8 @@ export function useMessageMutations() {
         parentMessageId: message.parentMessageId ?? null,
         isEdited: false,
         isDeleted: false,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: now,
+        updatedAt: now,
         deletedAt: null,
         editedAt: null,
         isPinned: false,
@@ -54,8 +59,8 @@ export function useMessageMutations() {
             messageId,
             thumbnailUrl: null,
             uploadedBy: user.id,
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            createdAt: now,
+            updatedAt: now,
           });
         }
       }
@@ -68,7 +73,7 @@ export function useMessageMutations() {
             mentionedById: user.id,
             mentionedUserId,
             isSeen: false,
-            createdAt: new Date(),
+            createdAt: now,
           });
         }
       }
@@ -78,6 +83,26 @@ export function useMessageMutations() {
           draft.threadCount += 1;
         });
       }
+
+      // Mark message as read for sender
+      // Count members to determine tracking strategy
+      const memberCount = Array.from(channelMembersCollection.values()).filter(
+        (member) => member.channelId === message.channelId
+      ).length;
+
+      // Only insert messageRead for small channels (<=25 members)
+      if (memberCount <= 25) {
+        messageReadCollection.insert({
+          id: crypto.randomUUID().toString(),
+          messageId,
+          userId: user.id,
+          readAt: now,
+        });
+      }
+
+      // Note: We don't update channelRead here. It will be updated when markMessagesAsRead
+      // is called after the message becomes visible in the viewport.
+      // This prevents retroactively marking all older messages as read.
     },
     mutationFn: async ({ message }: { message: CreateMessageInputType }) => {
       const { txid } = await orpcClient.communication.message.create(message);
@@ -85,6 +110,7 @@ export function useMessageMutations() {
       await messagesCollection.utils.awaitTxId(txid);
       await attachmentsCollection.utils.awaitTxId(txid);
       await messageMentionsCollection.utils.awaitTxId(txid);
+      await messageReadCollection.utils.awaitTxId(txid);
     },
   });
 
@@ -282,6 +308,134 @@ export function useMessageMutations() {
     },
   });
 
+  const markMessagesAsRead = createOptimisticAction({
+    onMutate: ({
+      channelId,
+      messageIds,
+      userId,
+    }: {
+      channelId: string;
+      messageIds: string[];
+      userId: string;
+    }) => {
+      const now = new Date();
+
+      // Mark mentions as seen optimistically
+      messageMentionsCollection.forEach((mention) => {
+        if (
+          messageIds.includes(mention.messageId) &&
+          mention.mentionedUserId === userId &&
+          !mention.isSeen
+        ) {
+          messageMentionsCollection.update(mention.id, (draft) => {
+            draft.isSeen = true;
+          });
+        }
+      });
+
+      // Mark mention notifications as read optimistically
+      notificationsCollection.forEach((notification) => {
+        if (
+          notification.type === "mention" &&
+          notification.entityId &&
+          messageIds.includes(notification.entityId) &&
+          notification.userId === userId &&
+          notification.status === "unread"
+        ) {
+          notificationsCollection.update(notification.id, (draft) => {
+            draft.status = "read";
+            draft.readAt = now;
+          });
+        }
+      });
+
+      // Get the latest message from the provided messageIds
+      const messages = messageIds
+        .map((id) => messagesCollection.get(id))
+        .filter((msg): msg is NonNullable<typeof msg> => msg !== null)
+        .sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+
+      if (messages.length === 0) return;
+
+      const latestMessage = messages[0];
+
+      if (!latestMessage) return;
+
+      // Update channelRead watermark optimistically
+      const existingChannelRead = Array.from(
+        channelReadCollection.values()
+      ).find((read) => read.channelId === channelId && read.userId === userId);
+
+      if (existingChannelRead) {
+        // Only update if the new message is newer
+        const currentMessage = existingChannelRead.lastReadMessageId
+          ? messagesCollection.get(existingChannelRead.lastReadMessageId)
+          : null;
+
+        const shouldUpdate =
+          !currentMessage ||
+          new Date(latestMessage.createdAt) >
+            new Date(currentMessage.createdAt);
+
+        if (shouldUpdate) {
+          // Use composite key: channelId-userId
+          const compositeKey = `${channelId}-${userId}`;
+          channelReadCollection.update(compositeKey, (draft) => {
+            draft.lastReadMessageId = latestMessage.id;
+            draft.lastReadAt = new Date(latestMessage.createdAt);
+          });
+        }
+      } else {
+        // Create new channelRead record (no id needed, uses composite key)
+        channelReadCollection.insert({
+          channelId,
+          userId,
+          lastReadMessageId: latestMessage.id,
+          lastReadAt: new Date(latestMessage.createdAt),
+        });
+      }
+
+      // For small channels, also insert messageRead records
+      for (const message of messages) {
+        const alreadyRead = Array.from(messageReadCollection.values()).some(
+          (read) => read.messageId === message.id && read.userId === userId
+        );
+
+        if (!alreadyRead) {
+          messageReadCollection.insert({
+            id: crypto.randomUUID().toString(),
+            messageId: message.id,
+            userId,
+            readAt: now,
+          });
+        }
+      }
+    },
+    mutationFn: async ({
+      channelId,
+      messageIds,
+    }: {
+      channelId: string;
+      messageIds: string[];
+      userId: string;
+    }) => {
+      const { txid } =
+        await orpcClient.communication.message.markMessagesAsRead({
+          channelId,
+          messageIds,
+        });
+
+      // Wait for Electric Shape sync
+      await messageMentionsCollection.utils.awaitTxId(txid);
+      await notificationsCollection.utils.awaitTxId(txid);
+      await channelReadCollection.utils.awaitTxId(txid);
+      await messageReadCollection.utils.awaitTxId(txid);
+    },
+  });
+
   return {
     createMessage,
     updateMessage,
@@ -291,5 +445,6 @@ export function useMessageMutations() {
     addReaction,
     removeReaction,
     markMentionSeen,
+    markMessagesAsRead,
   };
 }

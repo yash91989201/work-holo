@@ -8,8 +8,8 @@ const SCHEMA_EXPORT_REGEX =
   /export\s+(?:const|var|let)\s+(\w+(?:Schema|Input|Output))\s*=/g;
 const SIMPLE_SCHEMA_REGEX = /Schema$/;
 
-const schemasDir = path.resolve("src/lib/schemas");
-const outputFile = path.resolve("src/lib/types.ts");
+const schemasDir = path.resolve("../lib/schemas");
+const outputFile = path.resolve("../lib/types.ts");
 
 // Ensure directories exist
 if (!fs.existsSync(schemasDir)) {
@@ -30,22 +30,15 @@ function getAllSchemaFiles(dir: string): string[] {
 }
 
 function extractSchemaNames(content: string): string[] {
-  // Match exported variables ending with Schema, Input, or Output
   return Array.from(content.matchAll(SCHEMA_EXPORT_REGEX))
     .map((match) => match[1])
     .filter((name): name is string => name !== undefined);
 }
 
 function getTypeName(schemaName: string): string {
-  // For schemas ending with "Schema", remove "Schema" and add "Type"
-  // This handles both simple DB schemas (UserSchema -> UserType)
-  // and operation schemas (AttendanceUpdateSchema -> AttendanceUpdateType)
   if (SIMPLE_SCHEMA_REGEX.test(schemaName)) {
     return `${schemaName.slice(0, -6)}Type`;
   }
-
-  // For all other schemas (Input, Output, etc.), keep the full name and add "Type"
-  // e.g., CreateChannelFormInput -> CreateChannelFormInputType
   return `${schemaName}Type`;
 }
 
@@ -68,13 +61,13 @@ function generateTypes() {
 
       if (schemaNames.length === 0) continue;
 
-      // Get relative path from schemas directory
       const relPath = path
         .relative(schemasDir, file)
         .replace(/\\/g, "/")
         .replace(TS_EXTENSION_REGEX, "");
 
-      const importPath = `@/lib/schemas/${relPath}`;
+      // FIXED: Correct relative import path
+      const importPath = `./schemas/${relPath}`;
 
       for (const schemaName of schemaNames) {
         const typeName = getTypeName(schemaName);
@@ -107,10 +100,8 @@ ${Array.from(types).sort().join("\n")}
   }
 }
 
-// Initial generation
 generateTypes();
 
-// Watch mode
 if (process.argv.includes("--watch") || process.argv.includes("-w")) {
   const watcher = chokidar.watch(schemasDir, {
     ignored: /(^|[/\\])node_modules[/\\]/,

@@ -1,5 +1,5 @@
 import type { MessageWithSenderType } from "@work-holo/api/lib/types";
-import { CornerDownRight, MessageSquareReply, Pin } from "lucide-react";
+import { CornerDownRight, MessageSquareReply, Pencil, Pin } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ import {
 import { MessageActions } from "./message-actions";
 import { MessageContent } from "./message-content";
 import { MessageReactions } from "./message-reactions";
+import { MessageReadReceipts } from "./message-read-receipts";
 
 interface MessageItemProps {
   message: MessageWithSenderType;
@@ -148,12 +149,15 @@ export function MessageItem({
             {timestamp.formatted}
           </span>
 
-          {message.isEdited && <Badge variant="secondary">edited</Badge>}
+          {message.isEdited && (
+            <Badge variant="secondary">
+              <Pencil className="size-3" />
+            </Badge>
+          )}
 
           {message.isPinned && (
             <Badge variant="secondary">
-              <Pin className="h-2.5 w-2.5" />
-              pinned
+              <Pin className="size-3" />
             </Badge>
           )}
 
@@ -185,7 +189,7 @@ export function MessageItem({
               canEdit={user.id === message.senderId && message.type === "text"}
               canPin={!isThreadMessage}
               canReply={!isThreadMessage}
-              isOwnMessage={user.id === message.senderId}
+              isOwnMessage={isOwnMessage}
               isPinned={message.isPinned}
               onDelete={handleDelete}
               onEdit={handleEditDialog}
@@ -201,6 +205,13 @@ export function MessageItem({
           onAddReaction={handleReact}
           onRemoveReaction={handleReactionClick}
         />
+
+        {!isThreadMessage && (
+          <MessageReadReceipts
+            isOwnMessage={isOwnMessage}
+            messageId={message.id}
+          />
+        )}
 
         {!isThreadMessage && message.parentMessageId && (
           <Button

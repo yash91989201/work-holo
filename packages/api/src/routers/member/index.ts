@@ -1,5 +1,6 @@
 import { memberAttendanceRouter } from "./attendance";
 import { memberChannelRouter } from "./channel";
+import { memberMessageRouter } from "./message";
 import { memberNotificationRouter } from "./notification";
 import { presenceRouter } from "./presence";
 import { memberPushSubscriptionRouter } from "./push-subscription";
@@ -12,4 +13,5 @@ export const memberRouter = {
   pushSubscription: memberPushSubscriptionRouter,
   workBlock: workBlockRouter,
   presence: presenceRouter,
+  message: memberMessageRouter,
 };
