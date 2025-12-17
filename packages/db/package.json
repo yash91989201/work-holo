@@ -18,6 +18,7 @@
   "devDependencies": {
     "@work-holo/config": "workspace:*",
     "drizzle-kit": "^0.31.8",
+    "chokidar": "^5.0.0",
     "supabase": "^2.67.1"
   },
   "peerDependencies": {
@@ -25,7 +26,6 @@
   },
   "dependencies": {
     "@t3-oss/env-core": "^0.13.10",
-    "chokidar": "^5.0.0",
     "dotenv": "^17.2.3",
     "drizzle-cuid2": "^2.2.0",
     "drizzle-orm": "^0.45.1",
