@@ -146,7 +146,6 @@ export const GetMessageOutput = MessageSchema.extend({
 export const SearchUsersInput = z.object({
   channelId: z.string(),
   query: z.string().max(50).default(""),
-  limit: z.number().min(1).max(20).default(10),
 });
 
 // Search users for mentions output

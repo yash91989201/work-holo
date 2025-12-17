@@ -83,7 +83,6 @@ export function MessageComposer({
           await orpcClient.communication.message.searchUsers({
             channelId,
             query,
-            limit: 10,
           });
 
         const channelMention = includeChannelMention ? [CHANNEL_MENTION] : [];
