@@ -93,16 +93,12 @@ export function useMessageMutations() {
       // Only insert messageRead for small channels (<=25 members)
       if (memberCount <= 25) {
         messageReadCollection.insert({
-          id: crypto.randomUUID().toString(),
+          id: crypto.randomUUID(),
           messageId,
           userId: user.id,
           readAt: now,
         });
       }
-
-      // Note: We don't update channelRead here. It will be updated when markMessagesAsRead
-      // is called after the message becomes visible in the viewport.
-      // This prevents retroactively marking all older messages as read.
     },
     mutationFn: async ({ message }: { message: CreateMessageInputType }) => {
       const { txid } = await orpcClient.communication.message.create(message);
