@@ -101,8 +101,7 @@ export const messageRouter = {
               ilike(userTable.email, `%${input.query}%`)
             )
           )
-        )
-        .limit(input.limit);
+        );
 
       return { users };
     }),
