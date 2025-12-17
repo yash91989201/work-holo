@@ -29,6 +29,32 @@ import {
 import { cn } from "@/lib/utils";
 import { queryUtils } from "@/utils/orpc";
 
+function formatReadTime(dateString: string) {
+  const date = new Date(dateString);
+  const today = new Date();
+  const isToday =
+    date.getDate() === today.getDate() &&
+    date.getMonth() === today.getMonth() &&
+    date.getFullYear() === today.getFullYear();
+
+  const time = date.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  if (isToday) {
+    return time;
+  }
+
+  const dateStr = date.toLocaleDateString([], {
+    month: "2-digit",
+    day: "2-digit",
+    year: "2-digit",
+  });
+
+  return `${time} ${dateStr}`;
+}
+
 export function MessageReadReceipts({
   messageId,
   isOwnMessage,
@@ -179,10 +205,7 @@ function MessageReadersList({ messageId }: { messageId: string }) {
           </ItemContent>
           <ItemContent className="flex-none text-right">
             <ItemDescription className="text-xs">
-              {new Date(reader.readAt).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
+              {formatReadTime(reader.readAt)}
             </ItemDescription>
           </ItemContent>
         </Item>
