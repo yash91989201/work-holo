@@ -1137,11 +1137,13 @@ export const messageRouter = {
       if (memberCount <= MAX_MEMBERS_FOR_DETAILED_TRACKING) {
         readers = await smallChannelReadersSql.execute({
           messageId: input.messageId,
+          currentUserId: userId,
         });
       } else {
         readers = await largeChannelReadersSql.execute({
           channelId: message.channelId,
           messageCreatedAt: message.createdAt,
+          currentUserId: userId,
         });
       }
 

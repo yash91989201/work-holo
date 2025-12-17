@@ -49,6 +49,8 @@ export function MessageReadReceipts({
     (readerId) => !isOwnMessage || readerId !== userId
   );
 
+  const readCount = Math.max((summary?.readCount ?? 0) - 1, 0);
+
   const { data: recentReaders } = useLiveQuery(
     (q) => {
       if (recentReaderIds.length === 0) {
@@ -73,8 +75,6 @@ export function MessageReadReceipts({
     },
     [recentReaderIds.join(",")]
   );
-
-  const readCount = recentReaderIds.length;
 
   if (readCount === 0) {
     return null;
@@ -101,11 +101,7 @@ export function MessageReadReceipts({
       </div>
 
       {readCount > 0 && (
-        <MessageReadersDialog
-          messageId={messageId}
-          readCount={readCount}
-          userId={userId}
-        />
+        <MessageReadersDialog messageId={messageId} readCount={readCount} />
       )}
     </div>
   );
@@ -114,11 +110,9 @@ export function MessageReadReceipts({
 function MessageReadersDialog({
   readCount,
   messageId,
-  userId,
 }: {
   readCount: number;
   messageId: string;
-  userId: string;
 }) {
   return (
     <Dialog>
@@ -137,7 +131,7 @@ function MessageReadersDialog({
 
         <ScrollArea className="max-h-96">
           <Suspense fallback={<MessageReadersListSkeleton />}>
-            <MessageReadersList messageId={messageId} userId={userId} />
+            <MessageReadersList messageId={messageId} />
           </Suspense>
         </ScrollArea>
       </DialogContent>
@@ -145,13 +139,7 @@ function MessageReadersDialog({
   );
 }
 
-function MessageReadersList({
-  messageId,
-  userId,
-}: {
-  messageId: string;
-  userId: string;
-}) {
+function MessageReadersList({ messageId }: { messageId: string }) {
   const { data: readers } = useSuspenseQuery(
     queryUtils.communication.message.getAllMessageReaders.queryOptions({
       input: { messageId },
@@ -171,12 +159,10 @@ function MessageReadersList({
     );
   }
 
-  const messageReaders = readers.readers?.filter((r) => r.id !== userId);
-
   return (
-    <ItemGroup className="gap-3">
-      {messageReaders.map((reader) => (
-        <Item className="p-0" key={reader.id}>
+    <ItemGroup>
+      {readers.readers.map((reader) => (
+        <Item key={reader.id}>
           <ItemMedia>
             <Avatar className="h-8 w-8">
               <AvatarImage alt={reader.name} src={reader.image || undefined} />
