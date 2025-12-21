@@ -2,7 +2,7 @@ name: "work-holo"
 
 services:
   electric:
-    image: docker.io/electricsql/electric:latest
+    image: docker.io/electricsql/electric:1.2.9
     environment:
       DATABASE_URL: postgresql://postgres:postgres@supabase_db_db:5432/postgres
       # Not suitable for production. Only use insecure mode in development or if you've otherwise secured the Electric API.
@@ -27,7 +27,7 @@ services:
   rabbitmq:
     image: rabbitmq:3-management-alpine
     ports:
-      - "5672:5672"   # AMQP port
+      - "5672:5672" # AMQP port
       - "15672:15672" # Management UI port
     networks:
       - supabase_network_db
@@ -41,44 +41,6 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-
-  read-receipt-worker:
-    build:
-      context: .
-      dockerfile: ./workers/read-receipt/Dockerfile
-    container_name: read-receipt-worker
-    restart: unless-stopped
-    networks:
-      - supabase_network_db
-    environment:
-      DATABASE_URL: postgresql://postgres:postgres@supabase_db_db:5432/postgres
-      RABBITMQ_URL: amqp://admin:admin@rabbitmq:5672
-      PREFETCH_COUNT: 5
-      READ_RECEIPT_BATCH_SIZE: 100
-      MAX_MEMBERS_FOR_DETAILED_TRACKING: 25
-      NODE_ENV: production
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "bun", "--version"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 512M
-        reservations:
-          cpus: '0.5'
-          memory: 256M
 
 networks:
   supabase_network_db:

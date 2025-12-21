@@ -19,7 +19,7 @@
     "@work-holo/config": "workspace:*",
     "drizzle-kit": "^0.31.8",
     "chokidar": "^5.0.0",
-    "supabase": "^2.67.2"
+    "supabase": "^2.67.3"
   },
   "peerDependencies": {
     "typescript": "^5.9.3"

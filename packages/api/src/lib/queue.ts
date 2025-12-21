@@ -1,11 +1,9 @@
 import amqp, { type Channel, type ChannelModel } from "amqplib";
 
-// Queue names
 export const QUEUES = {
   READ_RECEIPTS: "read_receipts",
 } as const;
 
-// Message types
 export interface ReadReceiptQueueMessage {
   type: "process_channel";
   channelId: string;
