@@ -99,6 +99,28 @@ export function useMessageMutations() {
           readAt: now,
         });
       }
+
+      // Update channel read watermark for sender so their own messages
+      // don't appear as unread/new-message separated items.
+      const existingChannelRead = Array.from(channelReadCollection.values()).find(
+        (read) =>
+          read.channelId === message.channelId && read.userId === user.id
+      );
+
+      if (existingChannelRead) {
+        const compositeKey = `${message.channelId}-${user.id}`;
+        channelReadCollection.update(compositeKey, (draft) => {
+          draft.lastReadMessageId = messageId;
+          draft.lastReadAt = now;
+        });
+      } else {
+        channelReadCollection.insert({
+          channelId: message.channelId,
+          userId: user.id,
+          lastReadMessageId: messageId,
+          lastReadAt: now,
+        });
+      }
     },
     mutationFn: async ({ message }: { message: CreateMessageInputType }) => {
       const { txid } = await orpcClient.communication.message.create(message);
