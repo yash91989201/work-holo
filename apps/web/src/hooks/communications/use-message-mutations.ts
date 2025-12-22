@@ -100,9 +100,9 @@ export function useMessageMutations() {
         });
       }
 
-      // Update channel read watermark for sender so their own messages
-      // don't appear as unread/new-message separated items.
-      const existingChannelRead = Array.from(channelReadCollection.values()).find(
+      const existingChannelRead = Array.from(
+        channelReadCollection.values()
+      ).find(
         (read) =>
           read.channelId === message.channelId && read.userId === user.id
       );
@@ -129,6 +129,8 @@ export function useMessageMutations() {
       await attachmentsCollection.utils.awaitTxId(txid);
       await messageMentionsCollection.utils.awaitTxId(txid);
       await messageReadCollection.utils.awaitTxId(txid);
+      await channelReadCollection.utils.awaitTxId(txid);
+      await notificationsCollection.utils.awaitTxId(txid);
     },
   });
 
@@ -399,20 +401,18 @@ export function useMessageMutations() {
             new Date(currentMessage.createdAt);
 
         if (shouldUpdate) {
-          // Use composite key: channelId-userId
           const compositeKey = `${channelId}-${userId}`;
           channelReadCollection.update(compositeKey, (draft) => {
             draft.lastReadMessageId = latestMessage.id;
-            draft.lastReadAt = new Date(latestMessage.createdAt);
+            draft.lastReadAt = new Date();
           });
         }
       } else {
-        // Create new channelRead record (no id needed, uses composite key)
         channelReadCollection.insert({
           channelId,
           userId,
           lastReadMessageId: latestMessage.id,
-          lastReadAt: new Date(latestMessage.createdAt),
+          lastReadAt: new Date(),
         });
       }
 

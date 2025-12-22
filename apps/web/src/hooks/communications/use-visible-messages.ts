@@ -19,9 +19,6 @@ interface UseVisibleMessagesOptions {
 
 /**
  * Hook to track which messages are currently visible in the viewport
- * Uses the virtualizer's visible items instead of IntersectionObserver
- * This is more reliable with virtual scrolling since the virtualizer
- * already knows which items are in view
  */
 export function useVisibleMessages(options: UseVisibleMessagesOptions) {
   const { virtualItems, items, enabled = true } = options;

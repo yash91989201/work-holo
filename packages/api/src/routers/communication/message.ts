@@ -14,6 +14,7 @@ import {
 } from "@work-holo/db/schema/index";
 import {
   and,
+  count,
   desc,
   eq,
   getTableColumns,
@@ -264,8 +265,9 @@ export const messageRouter = {
 
           // Mark message as read for sender
           // Get member count to determine tracking strategy
+          const readTimestamp = new Date();
           const memberCount = await tx
-            .select({ count: sql<number>`count(*)::int` })
+            .select({ count: count() })
             .from(channelMemberTable)
             .where(eq(channelMemberTable.channelId, input.channelId))
             .then((result) => result[0]?.count ?? 0);
@@ -277,10 +279,57 @@ export const messageRouter = {
               .values({
                 messageId: newMessage.id,
                 userId: user.id,
-                readAt: new Date(),
+                readAt: readTimestamp,
               })
               .onConflictDoNothing();
           }
+
+          const newMessageCreatedAtIso = newMessage.createdAt.toISOString();
+          const readTimestampIso = readTimestamp.toISOString();
+
+          await tx
+            .insert(channelReadTable)
+            .values({
+              channelId: input.channelId,
+              userId: user.id,
+              lastReadMessageId: newMessage.id,
+              lastReadAt: readTimestamp,
+            })
+            .onConflictDoUpdate({
+              target: [channelReadTable.channelId, channelReadTable.userId],
+              set: {
+                lastReadMessageId: sql`
+                  CASE
+                    WHEN ${sql.raw(`'${newMessageCreatedAtIso}'::timestamp`)} >
+                    COALESCE(
+                      (
+                        SELECT ${messageTable.createdAt}
+                        FROM ${messageTable}
+                        WHERE ${messageTable.id} = ${channelReadTable.lastReadMessageId}
+                      ),
+                      '1970-01-01'::timestamp
+                    )
+                    THEN ${newMessage.id}
+                    ELSE ${channelReadTable.lastReadMessageId}
+                  END
+                `,
+                lastReadAt: sql`
+                  CASE
+                    WHEN ${sql.raw(`'${newMessageCreatedAtIso}'::timestamp`)} >
+                    COALESCE(
+                      (
+                        SELECT ${messageTable.createdAt}
+                        FROM ${messageTable}
+                        WHERE ${messageTable.id} = ${channelReadTable.lastReadMessageId}
+                      ),
+                      '1970-01-01'::timestamp
+                    )
+                    THEN ${sql.raw(`'${readTimestampIso}'::timestamp`)}
+                    ELSE ${channelReadTable.lastReadAt}
+                  END
+                `,
+              },
+            });
 
           return { txid, message: newMessage };
         });
@@ -935,11 +984,11 @@ export const messageRouter = {
 
         // Count channel members to determine tracking strategy
         const memberCountResult = await tx
-          .select({ count: sql<number>`COUNT(*)` })
+          .select({ count: count() })
           .from(channelMemberTable)
           .where(eq(channelMemberTable.channelId, input.channelId));
 
-        const memberCount = Number(memberCountResult[0]?.count || 0);
+        const memberCount = Number(memberCountResult[0]?.count ?? 0);
 
         // Get the latest message from the provided messageIds
         const messages = await tx.query.messageTable.findMany({
@@ -952,6 +1001,7 @@ export const messageRouter = {
           columns: {
             id: true,
             createdAt: true,
+            senderId: true,
           },
         });
 
@@ -959,43 +1009,64 @@ export const messageRouter = {
           return { txid, memberCount };
         }
 
-        const latestMessage = messages[0];
+        const messagesFromOthers = messages.filter(
+          (message) => message.senderId !== userId
+        );
+
+        if (messagesFromOthers.length === 0) {
+          return { txid, memberCount };
+        }
+
+        const latestMessage = messagesFromOthers[0];
 
         if (!latestMessage) {
           return { txid, memberCount };
         }
 
+        const readTimestamp = new Date();
+        const latestMessageCreatedAt = latestMessage.createdAt.toISOString();
+        const readTimestampIso = readTimestamp.toISOString();
+
         // Use timestamp-based conditional update to prevent race conditions
-        // The comparison happens atomically in the database
+        // Compare against the createdAt of the currently stored last read message
         await tx
           .insert(channelReadTable)
           .values({
             channelId: input.channelId,
             userId,
             lastReadMessageId: latestMessage.id,
-            lastReadAt: new Date(latestMessage.createdAt),
+            lastReadAt: readTimestamp,
           })
           .onConflictDoUpdate({
             target: [channelReadTable.channelId, channelReadTable.userId],
             set: {
-              // Only update if new message timestamp is newer than existing
               lastReadMessageId: sql`
                 CASE
-                  WHEN ${sql.raw(
-                    `'${latestMessage.createdAt.toISOString()}'::timestamp`
-                  )} > COALESCE(${channelReadTable.lastReadAt}, '1970-01-01'::timestamp)
+                  WHEN ${sql.raw(`'${latestMessageCreatedAt}'::timestamp`)} >
+                  COALESCE(
+                    (
+                      SELECT ${messageTable.createdAt}
+                      FROM ${messageTable}
+                      WHERE ${messageTable.id} = ${channelReadTable.lastReadMessageId}
+                    ),
+                    '1970-01-01'::timestamp
+                  )
                   THEN ${latestMessage.id}
                   ELSE ${channelReadTable.lastReadMessageId}
                 END
               `,
               lastReadAt: sql`
                 CASE
-                  WHEN ${sql.raw(
-                    `'${latestMessage.createdAt.toISOString()}'::timestamp`
-                  )} > COALESCE(${channelReadTable.lastReadAt}, '1970-01-01'::timestamp)
-                  THEN ${sql.raw(
-                    `'${latestMessage.createdAt.toISOString()}'::timestamp`
-                  )}
+                  WHEN ${sql.raw(`'${latestMessageCreatedAt}'::timestamp`)} >
+                  COALESCE(
+                    (
+                      SELECT ${messageTable.createdAt}
+                      FROM ${messageTable}
+                      WHERE ${messageTable.id} = ${channelReadTable.lastReadMessageId}
+                    ),
+                    '1970-01-01'::timestamp
+                  )
+                  THEN ${sql.raw(`'${readTimestampIso}'::timestamp`)}
                   ELSE ${channelReadTable.lastReadAt}
                 END
               `,
@@ -1006,7 +1077,7 @@ export const messageRouter = {
         // For large channels, worker will update messageReadSummary directly
         if (memberCount <= MAX_MEMBERS_FOR_DETAILED_TRACKING) {
           // Only create read receipts for messages that exist and are not deleted
-          const messageReadValues = messages.map((message) => ({
+          const messageReadValues = messagesFromOthers.map((message) => ({
             messageId: message.id,
             userId,
             readAt: new Date(),
@@ -1021,7 +1092,7 @@ export const messageRouter = {
         }
 
         // Auto-mark related mentions as seen
-        const messageIdsArray = messages.map((m) => m.id);
+        const messageIdsArray = messagesFromOthers.map((m) => m.id);
 
         if (messageIdsArray.length > 0) {
           // Mark mentions as seen for the current user
