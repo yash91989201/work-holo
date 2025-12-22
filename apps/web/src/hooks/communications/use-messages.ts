@@ -209,7 +209,7 @@ export function useVirtualMessages() {
     return () => el.removeEventListener("scroll", onScroll);
   }, []);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <checking of highlighted at is required>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <checking of highlighted as is required>
   useEffect(() => {
     if (!highlightedMessageId) return;
 
