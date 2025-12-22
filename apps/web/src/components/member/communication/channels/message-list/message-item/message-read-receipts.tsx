@@ -1,7 +1,7 @@
 import { eq, inArray, useLiveQuery } from "@tanstack/react-db";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { CheckCheck } from "lucide-react";
-import { Suspense } from "react";
+import { Suspense, useMemo } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -64,15 +64,21 @@ export function MessageReadReceipts({
   isOwnMessage: boolean;
   userId: string;
 }) {
-  const { data: summaryResult } = useLiveQuery((q) =>
-    q
-      .from({ summary: messageReadSummaryCollection })
-      .where(({ summary }) => eq(summary.messageId, messageId))
+  const { data: summaryResult } = useLiveQuery(
+    (q) =>
+      q
+        .from({ summary: messageReadSummaryCollection })
+        .where(({ summary }) => eq(summary.messageId, messageId)),
+    [messageId]
   );
 
   const summary = summaryResult?.[0];
-  const recentReaderIds = (summary?.recentReaders ?? [])?.filter(
-    (readerId) => !isOwnMessage || readerId !== userId
+  const recentReaderIds = useMemo(
+    () =>
+      (summary?.recentReaders ?? [])?.filter(
+        (readerId) => !isOwnMessage || readerId !== userId
+      ),
+    [summary?.recentReaders, isOwnMessage, userId]
   );
 
   const readCount = Math.max((summary?.readCount ?? 0) - 1, 0);
