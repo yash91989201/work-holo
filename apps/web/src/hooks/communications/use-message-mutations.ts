@@ -372,7 +372,10 @@ export function useMessageMutations() {
       // Get the latest message from the provided messageIds
       const messages = messageIds
         .map((id) => messagesCollection.get(id))
-        .filter((msg): msg is NonNullable<typeof msg> => msg !== null)
+        .filter(
+          (msg): msg is NonNullable<typeof msg> =>
+            msg !== null && msg !== undefined
+        )
         .sort(
           (a, b) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()

@@ -23,7 +23,9 @@ export const smallChannelReadersSql = db
   })
   .from(messageReadTable)
   .innerJoin(userTable, eq(messageReadTable.userId, userTable.id))
-  .where(sql`${messageReadTable.messageId} = ${sql.placeholder("messageId")} AND ${messageReadTable.userId} != ${sql.placeholder("currentUserId")}`)
+  .where(
+    sql`${messageReadTable.messageId} = ${sql.placeholder("messageId")} AND ${messageReadTable.userId} != ${sql.placeholder("currentUserId")}`
+  )
   .orderBy(userTable.id, desc(messageReadTable.readAt))
   .prepare("get_small_channel_readers");
 
