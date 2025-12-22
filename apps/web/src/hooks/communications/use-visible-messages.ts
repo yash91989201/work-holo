@@ -1,12 +1,12 @@
-import type { Virtualizer } from "@tanstack/react-virtual";
+import type { VirtualItem } from "@tanstack/react-virtual";
 import { useEffect, useMemo, useState } from "react";
 import type { MessageListItem } from "@/lib/communications/message";
 
 interface UseVisibleMessagesOptions {
   /**
-   * The virtualizer instance from useVirtualizer
+   * The current virtual items from useVirtualizer
    */
-  virtualizer: Virtualizer<HTMLDivElement, Element>;
+  virtualItems: VirtualItem[];
   /**
    * All items in the list (including date separators)
    */
@@ -24,7 +24,7 @@ interface UseVisibleMessagesOptions {
  * already knows which items are in view
  */
 export function useVisibleMessages(options: UseVisibleMessagesOptions) {
-  const { virtualizer, items, enabled = true } = options;
+  const { virtualItems, items, enabled = true } = options;
 
   const [visibleMessageIds, setVisibleMessageIds] = useState<Set<string>>(
     new Set()
@@ -36,7 +36,6 @@ export function useVisibleMessages(options: UseVisibleMessagesOptions) {
       return new Set<string>();
     }
 
-    const virtualItems = virtualizer.getVirtualItems();
     const visibleIds = new Set<string>();
 
     for (const virtualItem of virtualItems) {
@@ -61,7 +60,7 @@ export function useVisibleMessages(options: UseVisibleMessagesOptions) {
     }
 
     return visibleIds;
-  }, [virtualizer, items, enabled]);
+  }, [virtualItems, items, enabled]);
 
   // Update state when calculated IDs change
   useEffect(() => {

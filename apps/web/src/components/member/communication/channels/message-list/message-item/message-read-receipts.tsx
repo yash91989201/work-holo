@@ -23,13 +23,14 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
+  messageReadCollection,
   messageReadSummaryCollection,
   usersCollection,
 } from "@/db/collections";
 import { cn } from "@/lib/utils";
 import { queryUtils } from "@/utils/orpc";
 
-function formatReadTime(dateString: string) {
+function formatReadTime(dateString: Date) {
   const date = new Date(dateString);
   const today = new Date();
   const isToday =
@@ -70,12 +71,53 @@ export function MessageReadReceipts({
       .where(({ summary }) => eq(summary.messageId, messageId))
   );
 
-  const summary = summaryResult?.[0];
-  const recentReaderIds = (summary?.recentReaders ?? [])?.filter(
-    (readerId) => !isOwnMessage || readerId !== userId
+  const { data: detailedReads } = useLiveQuery((q) =>
+    q
+      .from({ read: messageReadCollection })
+      .where(({ read }) => eq(read.messageId, messageId))
+      .select(({ read }) => ({
+        userId: read.userId,
+        readAt: read.readAt,
+      }))
   );
 
-  const readCount = Math.max((summary?.readCount ?? 0) - 1, 0);
+  const summary = summaryResult?.[0];
+  const summaryRecentReaderIds =
+    (summary?.recentReaders ?? []).filter(
+      (readerId) => !isOwnMessage || readerId !== userId
+    ) ?? [];
+
+  const summaryReadCount = Math.max(
+    (summary?.readCount ?? 0) - (isOwnMessage ? 1 : 0),
+    0
+  );
+
+  const sortedDetailedReads =
+    detailedReads
+      ?.slice()
+      .sort(
+        (a, b) => new Date(b.readAt).getTime() - new Date(a.readAt).getTime()
+      ) ?? [];
+
+  const detailedRecentReaderIds = sortedDetailedReads
+    .map((read) => read.userId)
+    .filter((readerId) => !isOwnMessage || readerId !== userId);
+
+  const detailedReadCount = Math.max(
+    (detailedReads?.length ?? 0) - (isOwnMessage ? 1 : 0),
+    0
+  );
+
+  // Avatars: prefer recent list from summary (shows who read most recently for large channels).
+  // Fallback to detailed list when summary is empty (small channels / before aggregation).
+  const recentReaderIds =
+    summaryRecentReaderIds.length > 0
+      ? summaryRecentReaderIds
+      : detailedRecentReaderIds;
+
+  // Count: prefer detailed (authoritative for small channels), else summary.
+  const readCount =
+    detailedReadCount > 0 ? detailedReadCount : summaryReadCount;
 
   const { data: recentReaders } = useLiveQuery(
     (q) => {
