@@ -53,7 +53,7 @@ export function MessageList() {
 
   // Track visible messages for read receipts
   const { visibleMessageIds } = useVisibleMessages({
-    virtualizer,
+    virtualItems,
     items,
     enabled: true,
   });
