@@ -197,35 +197,18 @@ class QueueWorker {
           const content = msg.content.toString();
           const message: QueueMessage = JSON.parse(content);
 
-          // Process the message
-          await handleMessage(message);
-
-          // Acknowledge successful processing
+          // Acknowledge the message immediately after parsing
+          // This prevents RabbitMQ timeout for long-running processing
           if (this.channel) {
             this.channel.ack(msg);
           }
+
+          // Process the message (can take as long as needed now)
+          await handleMessage(message);
         } catch (error) {
           console.error("Error processing message:", error);
-
-          // Reject and requeue the message for retry
-          if (this.channel) {
-            // Check if message has been retried too many times
-            const retryCount =
-              (msg.properties.headers?.["x-retry-count"] as number) || 0;
-
-            if (retryCount < 3) {
-              // Requeue with retry count
-              console.log(`Requeuing message (retry ${retryCount + 1}/3)`);
-              this.channel.nack(msg, false, true);
-            } else {
-              // Max retries reached, discard message
-              console.error(
-                "Max retries reached, discarding message:",
-                msg.content.toString()
-              );
-              this.channel.nack(msg, false, false);
-            }
-          }
+          // Message already acknowledged, so we just log the error
+          // The watermark ensures we don't lose progress on successful processing
         }
       },
       {
