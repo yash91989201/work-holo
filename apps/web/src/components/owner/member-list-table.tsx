@@ -26,6 +26,16 @@ import {
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -210,6 +220,69 @@ function UpdateMemberRole({
   );
 }
 
+function RemoveMember({
+  member,
+  open,
+  onOpenChange,
+}: {
+  member: MemberWithUserType;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  const [isRemoving, setIsRemoving] = useState(false);
+
+  const handleRemove = async () => {
+    setIsRemoving(true);
+    try {
+      await authClient.organization.removeMember({
+        memberIdOrEmail: member.id,
+      });
+
+      // Invalidate and refetch the member list
+      queryClient.invalidateQueries({
+        queryKey: queryUtils.admin.member.listMembers.queryKey(),
+      });
+
+      toast.success(
+        `${member.user.name} has been removed from the organization`
+      );
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Failed to remove member:", error);
+      toast.error("Failed to remove member");
+    } finally {
+      setIsRemoving(false);
+    }
+  };
+
+  return (
+    <AlertDialog onOpenChange={onOpenChange} open={open}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Remove member</AlertDialogTitle>
+          <AlertDialogDescription>
+            Are you sure you want to remove {member.user.name} from the
+            organization? This action cannot be undone.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={isRemoving}>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            disabled={isRemoving}
+            onClick={(e) => {
+              e.preventDefault();
+              handleRemove();
+            }}
+          >
+            {isRemoving ? "Removing..." : "Remove"}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
 export const MemberListTable = () => {
   const { user } = useAuthedSession();
 
@@ -226,6 +299,12 @@ export const MemberListTable = () => {
     useState<MemberWithUserType | null>(null);
 
   const [isUpdateRoleOpen, setIsUpdateRoleOpen] = useState(false);
+
+  const [removeMember, setRemoveMember] = useState<MemberWithUserType | null>(
+    null
+  );
+
+  const [isRemoveMemberOpen, setIsRemoveMemberOpen] = useState(false);
 
   // Data Fetching
   const {
@@ -360,6 +439,15 @@ export const MemberListTable = () => {
                     }}
                   >
                     Update role
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="text-destructive focus:text-destructive"
+                    onClick={() => {
+                      setRemoveMember(member);
+                      setIsRemoveMemberOpen(true);
+                    }}
+                  >
+                    Remove member
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -542,6 +630,19 @@ export const MemberListTable = () => {
             }
           }}
           open={isUpdateRoleOpen}
+        />
+      )}
+
+      {removeMember && (
+        <RemoveMember
+          member={removeMember}
+          onOpenChange={(open) => {
+            setIsRemoveMemberOpen(open);
+            if (!open) {
+              setRemoveMember(null);
+            }
+          }}
+          open={isRemoveMemberOpen}
         />
       )}
     </div>
