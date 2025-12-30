@@ -341,7 +341,7 @@ export const InvitationListTable = () => {
     mutationFn: async (invitation: InvitationRecord) => {
       const { data, error } = await authClient.organization.inviteMember({
         email: invitation.email,
-        role: "admin",
+        role: invitation.role,
         organizationId: orgId,
         resend: true,
       });
