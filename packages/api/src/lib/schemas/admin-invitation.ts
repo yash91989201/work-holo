@@ -2,7 +2,9 @@ import { invitation } from "@work-holo/db/schema/index";
 import { createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
-export const InvitationSelectSchema = createSelectSchema(invitation);
+export const InvitationSelectSchema = createSelectSchema(invitation).extend({
+  role: z.enum(["admin", "member"]),
+});
 
 export const ListInvitationsInput = z
   .object({
