@@ -29,12 +29,14 @@ export function ReactionPicker({ onSelectEmoji }: ReactionPickerProps) {
 
   return (
     <Popover onOpenChange={setOpen} open={open}>
-      <PopoverTrigger asChild>
-        <Button size="icon-sm" type="button" variant="ghost">
-          <SmilePlus />
-          <span className="sr-only">Add reaction</span>
-        </Button>
-      </PopoverTrigger>
+      <PopoverTrigger
+        render={
+          <Button size="icon-sm" type="button" variant="ghost">
+            <SmilePlus />
+            <span className="sr-only">Add reaction</span>
+          </Button>
+        }
+      />
       <PopoverContent
         align="center"
         alignOffset={-8}

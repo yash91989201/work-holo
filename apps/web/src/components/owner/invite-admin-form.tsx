@@ -68,9 +68,7 @@ export const InviteAdminForm = () => {
 
   return (
     <Dialog onOpenChange={onOpenChange} open={open}>
-      <DialogTrigger asChild>
-        <Button>Invite Admin</Button>
-      </DialogTrigger>
+      <DialogTrigger render={<Button>Invite Admin</Button>} />
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Invite Admin</DialogTitle>

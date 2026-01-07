@@ -50,7 +50,11 @@ export const TeamSelect = () => {
           <FormControl>
             <Select onValueChange={field.onChange} value={field.value}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select team" />
+                <SelectValue>
+                  {field.value
+                    ? teams.find((t) => t.id === field.value)?.name
+                    : "Select team"}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {teams.map((team) => (

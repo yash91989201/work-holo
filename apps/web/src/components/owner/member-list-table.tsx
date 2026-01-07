@@ -301,9 +301,9 @@ export const MemberListTable = () => {
               value={`${table.getState().pagination.pageSize}`}
             >
               <SelectTrigger className="h-8 w-[70px]">
-                <SelectValue
-                  placeholder={table.getState().pagination.pageSize}
-                />
+                <SelectValue>
+                  {table.getState().pagination.pageSize}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent side="top">
                 {[10, 20, 30, 40, 50].map((pageSize) => (

@@ -113,7 +113,7 @@ export function General() {
           <ItemActions>
             <Select>
               <SelectTrigger className="w-40">
-                <SelectValue placeholder="Select a view" />
+                <SelectValue>Select a view</SelectValue>
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
@@ -149,7 +149,7 @@ export function General() {
           <ItemActions>
             <Select>
               <SelectTrigger className="w-40">
-                <SelectValue placeholder="Select a day" />
+                <SelectValue>Select a day</SelectValue>
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
@@ -210,9 +210,15 @@ export function Interface() {
             <ItemDescription>Customize your interface theme.</ItemDescription>
           </ItemContent>
           <ItemActions>
-            <Select onValueChange={setTheme} value={theme || "system"}>
+            <Select
+              onValueChange={(value) => value && setTheme(value)}
+              value={theme || "system"}
+            >
               <SelectTrigger className="w-32" id="theme">
-                <SelectValue placeholder="Select theme" />
+                <SelectValue>
+                  {themeOptions.find((o) => o.value === theme)?.label ??
+                    "Select theme"}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {themeOptions.map((option) => (
@@ -236,9 +242,15 @@ export function Interface() {
             </ItemDescription>
           </ItemContent>
           <ItemActions>
-            <Select onValueChange={setFontFamily} value={fontFamily}>
+            <Select
+              onValueChange={(value) => value && setFontFamily(value)}
+              value={fontFamily}
+            >
               <SelectTrigger>
-                <SelectValue placeholder="Select font family" />
+                <SelectValue>
+                  {fontFamilyOptions.find((o) => o.value === fontFamily)
+                    ?.label ?? "Select font family"}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {fontFamilyOptions.map((option) => (
@@ -259,9 +271,15 @@ export function Interface() {
             </ItemDescription>
           </ItemContent>
           <ItemActions>
-            <Select onValueChange={setFontSize} value={fontSize}>
+            <Select
+              onValueChange={(value) => value && setFontSize(value as FontSize)}
+              value={fontSize}
+            >
               <SelectTrigger id="font-size">
-                <SelectValue placeholder="Select font size" />
+                <SelectValue>
+                  {fontSizeOptions.find((o) => o.value === fontSize)?.label ??
+                    "Select font size"}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {fontSizeOptions.map((option) => (
@@ -282,9 +300,17 @@ export function Interface() {
             </ItemDescription>
           </ItemContent>
           <ItemActions>
-            <Select onValueChange={setLetterSpacing} value={letterSpacing}>
+            <Select
+              onValueChange={(value) =>
+                value && setLetterSpacing(value as LetterSpacing)
+              }
+              value={letterSpacing}
+            >
               <SelectTrigger>
-                <SelectValue placeholder="Select letter spacing" />
+                <SelectValue>
+                  {letterSpacingOptions.find((o) => o.value === letterSpacing)
+                    ?.label ?? "Select letter spacing"}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {letterSpacingOptions.map((option) => (
@@ -303,9 +329,15 @@ export function Interface() {
             <ItemDescription>Set the gap between ui elements</ItemDescription>
           </ItemContent>
           <ItemActions>
-            <Select onValueChange={setSpacing} value={spacing}>
+            <Select
+              onValueChange={(value) => value && setSpacing(value as Spacing)}
+              value={spacing}
+            >
               <SelectTrigger id="spacing">
-                <SelectValue placeholder="Select spacing" />
+                <SelectValue>
+                  {spacingOptions.find((o) => o.value === spacing)?.label ??
+                    "Select spacing"}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {spacingOptions.map((option) => (
@@ -326,9 +358,15 @@ export function Interface() {
             </ItemDescription>
           </ItemContent>
           <ItemActions>
-            <Select onValueChange={setRadius} value={radius}>
+            <Select
+              onValueChange={(value) => value && setRadius(value as Radius)}
+              value={radius}
+            >
               <SelectTrigger id="radius">
-                <SelectValue placeholder="Select radius" />
+                <SelectValue>
+                  {radiusOptions.find((o) => o.value === radius)?.label ??
+                    "Select radius"}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {radiusOptions.map((option) => (

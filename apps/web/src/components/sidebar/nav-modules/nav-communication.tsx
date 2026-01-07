@@ -55,23 +55,24 @@ export function NavChannels() {
     return (
       <SidebarMenuItem>
         <Collapsible>
-          <HoverCard
-            closeDelay={100}
-            onOpenChange={setOpen}
-            open={open}
-            openDelay={50}
-          >
-            <HoverCardTrigger asChild>
-              <CollapsibleTrigger asChild>
-                <SidebarMenuButton
-                  aria-expanded="false"
-                  aria-haspopup="true"
-                  aria-label="Channels"
-                >
-                  <IconBroadcast aria-hidden="true" />
-                  <span className="sr-only text-balance text-sm">Channels</span>
-                </SidebarMenuButton>
-              </CollapsibleTrigger>
+          <HoverCard onOpenChange={setOpen} open={open}>
+            <HoverCardTrigger
+              closeDelay={100}
+              delay={50}
+              render={
+                <CollapsibleTrigger
+                  render={
+                    <SidebarMenuButton
+                      aria-expanded="false"
+                      aria-haspopup="true"
+                      aria-label="Channels"
+                    />
+                  }
+                />
+              }
+            >
+              <IconBroadcast aria-hidden="true" />
+              <span className="sr-only text-balance text-sm">Channels</span>
             </HoverCardTrigger>
             <HoverCardContent
               align="start"
@@ -95,18 +96,18 @@ export function NavChannels() {
                   {channels.map((channel) => (
                     <SidebarMenuSubItem key={channel.id}>
                       <SidebarMenuSubButton
-                        asChild
                         className="[&>svg]:size-3"
                         isActive={channel.id === params?.id}
+                        render={
+                          <Link
+                            onClick={() => setOpen(false)}
+                            params={{ slug, id: channel.id }}
+                            to="/org/$slug/communication/channels/$id"
+                          />
+                        }
                       >
-                        <Link
-                          onClick={() => setOpen(false)}
-                          params={{ slug, id: channel.id }}
-                          to="/org/$slug/communication/channels/$id"
-                        >
-                          <Hash />
-                          <span>{channel.name}</span>
-                        </Link>
+                        <Hash />
+                        <span>{channel.name}</span>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                   ))}
@@ -123,40 +124,44 @@ export function NavChannels() {
   return (
     <SidebarMenuItem>
       <Collapsible>
-        <CollapsibleTrigger asChild>
-          <SidebarMenuButton
-            aria-expanded="false"
-            aria-haspopup={channels.length ? "true" : undefined}
-            aria-label="Channels"
-          >
-            <IconBroadcast aria-hidden="true" />
-            <span>Channels</span>
-          </SidebarMenuButton>
+        <CollapsibleTrigger
+          render={
+            <SidebarMenuButton
+              aria-expanded="false"
+              aria-haspopup={channels.length ? "true" : undefined}
+              aria-label="Channels"
+            />
+          }
+        >
+          <IconBroadcast aria-hidden="true" />
+          <span>Channels</span>
         </CollapsibleTrigger>
-        <CollapsibleTrigger asChild>
-          <SidebarMenuAction
-            aria-label="Toggle Channels submenu"
-            className="cursor-pointer hover:bg-transparent data-[state=open]:rotate-90"
-          >
-            <ChevronRight aria-hidden="true" />
-            <span className="sr-only">Toggle</span>
-          </SidebarMenuAction>
+        <CollapsibleTrigger
+          render={
+            <SidebarMenuAction
+              aria-label="Toggle Channels submenu"
+              className="cursor-pointer hover:bg-transparent data-[state=open]:rotate-90"
+            />
+          }
+        >
+          <ChevronRight aria-hidden="true" />
+          <span className="sr-only">Toggle</span>
         </CollapsibleTrigger>
         <CollapsibleContent>
           <SidebarMenuSub>
             {channels.map((channel) => (
               <SidebarMenuSubItem key={channel.id}>
                 <SidebarMenuSubButton
-                  asChild
                   isActive={channel.id === params?.id}
+                  render={
+                    <Link
+                      params={{ slug, id: channel.id }}
+                      to="/org/$slug/communication/channels/$id"
+                    />
+                  }
                 >
-                  <Link
-                    params={{ slug, id: channel.id }}
-                    to="/org/$slug/communication/channels/$id"
-                  >
-                    <Hash />
-                    <span>{channel.name}</span>
-                  </Link>
+                  <Hash />
+                  <span>{channel.name}</span>
                 </SidebarMenuSubButton>
               </SidebarMenuSubItem>
             ))}

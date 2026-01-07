@@ -56,7 +56,6 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -220,30 +219,24 @@ export const ChannelsListTable = () => {
           const channel = row.original;
           return (
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button size="icon" variant="ghost">
-                  <MoreHorizontal />
-                </Button>
-              </DropdownMenuTrigger>
+              <DropdownMenuTrigger
+                render={
+                  <Button size="icon" variant="ghost">
+                    <MoreHorizontal />
+                  </Button>
+                }
+              />
               <DropdownMenuContent className="flex flex-col items-stretch gap-1.5">
-                <DropdownMenuItem asChild>
-                  <Suspense fallback={<Skeleton className="h-9" />}>
-                    <AddMemberDialog channelId={channel.id} />
-                  </Suspense>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Suspense fallback={<Skeleton className="h-9" />}>
-                    <RemoveMemberDialog channelId={channel.id} />
-                  </Suspense>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Suspense fallback={<Skeleton className="h-9" />}>
-                    <UpdateChannelDialog channelId={channel.id} />
-                  </Suspense>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild variant="destructive">
-                  <DeleteChannelDialog channelId={channel.id} />
-                </DropdownMenuItem>
+                <Suspense fallback={<Skeleton className="h-9" />}>
+                  <AddMemberDialog channelId={channel.id} />
+                </Suspense>
+                <Suspense fallback={<Skeleton className="h-9" />}>
+                  <RemoveMemberDialog channelId={channel.id} />
+                </Suspense>
+                <Suspense fallback={<Skeleton className="h-9" />}>
+                  <UpdateChannelDialog channelId={channel.id} />
+                </Suspense>
+                <DeleteChannelDialog channelId={channel.id} />
               </DropdownMenuContent>
             </DropdownMenu>
           );
@@ -362,9 +355,9 @@ export const ChannelsListTable = () => {
               value={`${table.getState().pagination.pageSize}`}
             >
               <SelectTrigger className="h-8 w-[70px]">
-                <SelectValue
-                  placeholder={table.getState().pagination.pageSize}
-                />
+                <SelectValue>
+                  {table.getState().pagination.pageSize}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent side="top">
                 {[10, 20, 30, 40, 50].map((pageSize) => (
@@ -483,15 +476,17 @@ export function AddMemberDialog({ channelId }: { channelId: string }) {
 
   return (
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
-      <DialogTrigger asChild>
-        <Button
-          className="flex items-center justify-start gap-1.5"
-          variant="ghost"
-        >
-          <UserRoundPlus className="size-4" />
-          Add Members
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger
+        render={
+          <Button
+            className="flex items-center justify-start gap-1.5"
+            variant="ghost"
+          >
+            <UserRoundPlus className="size-4" />
+            Add Members
+          </Button>
+        }
+      />
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add Members to Channel</DialogTitle>
@@ -645,15 +640,17 @@ export function RemoveMemberDialog({ channelId }: { channelId: string }) {
 
   return (
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
-      <DialogTrigger asChild>
-        <Button
-          className="flex items-center justify-start gap-1.5"
-          variant="ghost"
-        >
-          <UserMinus className="size-4" />
-          <span>Remove Members</span>
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger
+        render={
+          <Button
+            className="flex items-center justify-start gap-1.5"
+            variant="ghost"
+          >
+            <UserMinus className="size-4" />
+            <span>Remove Members</span>
+          </Button>
+        }
+      />
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Remove Members from Channel</DialogTitle>
@@ -773,9 +770,9 @@ export function DeleteChannelDialog({ channelId }: { channelId: string }) {
   );
   return (
     <AlertDialog onOpenChange={toggleDialog} open={dialog}>
-      <AlertDialogTrigger asChild>
-        <Button variant="destructive">Delete Channel</Button>
-      </AlertDialogTrigger>
+      <AlertDialogTrigger
+        render={<Button variant="destructive">Delete Channel</Button>}
+      />
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
@@ -857,15 +854,17 @@ export function UpdateChannelDialog({ channelId }: { channelId: string }) {
 
   return (
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
-      <DialogTrigger asChild>
-        <Button
-          className="flex items-center justify-start gap-1.5"
-          variant="ghost"
-        >
-          <Pencil className="size-4" />
-          Edit Channel
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger
+        render={
+          <Button
+            className="flex items-center justify-start gap-1.5"
+            variant="ghost"
+          >
+            <Pencil className="size-4" />
+            Edit Channel
+          </Button>
+        }
+      />
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Edit Channel</DialogTitle>

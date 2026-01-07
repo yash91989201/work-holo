@@ -250,11 +250,13 @@ const columns: ColumnDef<InvitationRecord>[] = [
 
       return (
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className="h-8 w-8 p-0" variant="ghost">
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
+          <DropdownMenuTrigger
+            render={
+              <Button className="h-8 w-8 p-0" variant="ghost">
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            }
+          />
           <DropdownMenuContent align="end" className="w-48">
             <DropdownMenuItem onClick={() => onCopy(invitation)}>
               <Copy className="mr-2 h-4 w-4" />
@@ -489,9 +491,9 @@ export const InvitationListTable = () => {
               value={`${table.getState().pagination.pageSize}`}
             >
               <SelectTrigger className="h-8 w-[70px]">
-                <SelectValue
-                  placeholder={table.getState().pagination.pageSize}
-                />
+                <SelectValue>
+                  {table.getState().pagination.pageSize}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent side="top">
                 {[10, 20, 30, 40, 50].map((pageSize) => (

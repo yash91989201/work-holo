@@ -334,18 +334,19 @@ export function MessageEditor({
               onOpenChange={setIsLinkPopoverOpen}
               open={isLinkPopoverOpen}
             >
-              <PopoverTrigger asChild>
-                <Toggle
-                  aria-label="Add a link"
-                  onPressedChange={handleAddLink}
-                  pressed={editor.isActive("link") || isLinkPopoverOpen}
-                  ref={linkToggleRef}
-                  size="sm"
-                  title="Insert Link (Ctrl+K)"
-                >
-                  <LinkIcon />
-                </Toggle>
-              </PopoverTrigger>
+              <PopoverTrigger
+                render={
+                  <Toggle
+                    aria-label="Add a link"
+                    onPressedChange={handleAddLink}
+                    pressed={editor.isActive("link") || isLinkPopoverOpen}
+                    size="sm"
+                    title="Insert Link (Ctrl+K)"
+                  >
+                    <LinkIcon />
+                  </Toggle>
+                }
+              />
               <PopoverContent align="start" className="w-80 p-2">
                 <InputGroup>
                   <InputGroupInput
@@ -409,35 +410,37 @@ export function MessageEditor({
           <div className="flex items-center gap-0.5">
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    aria-label={
-                      isRecording ? "Stop recording" : "Start voice message"
-                    }
-                    className={cn(
-                      "transition-all duration-200",
-                      isRecording && "relative"
-                    )}
-                    disabled={!onVoiceRecord || content.trim().length > 0}
-                    onClick={onVoiceRecord}
-                    size="icon-sm"
-                    title={
-                      content.trim().length > 0
-                        ? "Clear text to record audio"
-                        : isRecording
-                          ? "Stop recording"
-                          : "Start voice message"
-                    }
-                    variant="ghost"
-                  >
-                    <Mic
+                <TooltipTrigger
+                  render={
+                    <Button
+                      aria-label={
+                        isRecording ? "Stop recording" : "Start voice message"
+                      }
                       className={cn(
-                        content.trim().length > 0 && "opacity-50",
-                        isRecording && "text-red-500"
+                        "transition-all duration-200",
+                        isRecording && "relative"
                       )}
-                    />
-                  </Button>
-                </TooltipTrigger>
+                      disabled={!onVoiceRecord || content.trim().length > 0}
+                      onClick={onVoiceRecord}
+                      size="icon-sm"
+                      title={
+                        content.trim().length > 0
+                          ? "Clear text to record audio"
+                          : isRecording
+                            ? "Stop recording"
+                            : "Start voice message"
+                      }
+                      variant="ghost"
+                    >
+                      <Mic
+                        className={cn(
+                          content.trim().length > 0 && "opacity-50",
+                          isRecording && "text-red-500"
+                        )}
+                      />
+                    </Button>
+                  }
+                />
                 {content.trim().length > 0 && (
                   <TooltipContent>
                     <p>Clear text to record audio</p>
@@ -447,17 +450,19 @@ export function MessageEditor({
             </TooltipProvider>
 
             <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  className="transition-all duration-200"
-                  disabled={!onEmojiSelect || hasAudio}
-                  size="icon-sm"
-                  title="Add emoji"
-                  variant="ghost"
-                >
-                  <SmilePlus className={cn(hasAudio && "opacity-50")} />
-                </Button>
-              </PopoverTrigger>
+              <PopoverTrigger
+                render={
+                  <Button
+                    className="transition-all duration-200"
+                    disabled={!onEmojiSelect || hasAudio}
+                    size="icon-sm"
+                    title="Add emoji"
+                    variant="ghost"
+                  >
+                    <SmilePlus className={cn(hasAudio && "opacity-50")} />
+                  </Button>
+                }
+              />
               <PopoverContent align="start" className="w-80 p-0" side="top">
                 <EmojiPicker onEmojiSelect={onEmojiSelect || (() => {})}>
                   <EmojiPickerSearch

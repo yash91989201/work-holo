@@ -150,11 +150,13 @@ export const InvitationTable = ({ invitations }: InvitationTableProps) => {
                 </TableCell>
                 <TableCell>
                   <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button size="sm" variant="ghost">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
+                    <DropdownMenuTrigger
+                      render={
+                        <Button size="sm" variant="ghost">
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      }
+                    />
                     <DropdownMenuContent align="end">
                       {invitation.status === "pending" && (
                         <>

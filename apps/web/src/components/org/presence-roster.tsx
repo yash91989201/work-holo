@@ -152,7 +152,11 @@ export function PresenceRoster() {
             value={statusFilter}
           >
             <SelectTrigger className="w-40">
-              <SelectValue placeholder="Filter by status" />
+              <SelectValue>
+                {statusFilter === "all"
+                  ? "All Status"
+                  : (presenceConfig[statusFilter]?.label ?? "Filter by status")}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Status</SelectItem>

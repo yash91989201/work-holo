@@ -13,20 +13,18 @@ services:
     networks:
       - supabase_network_db
 
-  dragonfly:
-    image: docker.dragonflydb.io/dragonflydb/dragonfly:latest
+  redis:
+    image: redis:latest
     ports:
       - "6379:6379"
     networks:
       - supabase_network_db
-    ulimits:
-      memlock: -1
     volumes:
-      - dragonfly_data:/data
+      - redis_data:/data
 
 networks:
   supabase_network_db:
     external: true
 
 volumes:
-  dragonfly_data:
+  redis_data:

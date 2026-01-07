@@ -226,23 +226,29 @@ export const TeamList = () => {
           return (
             <div className="flex justify-end">
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button className="h-8 w-8 p-0" variant="ghost">
-                    <span className="sr-only">Open menu</span>
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
+                <DropdownMenuTrigger
+                  render={
+                    <Button className="h-8 w-8 p-0" variant="ghost">
+                      <span className="sr-only">Open menu</span>
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  }
+                />
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem asChild>
-                    <Suspense fallback={<Skeleton className="h-9 w-full" />}>
-                      <AddTeamMemberDialog teamId={team.id} />
-                    </Suspense>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Suspense fallback={<Skeleton className="h-9 w-full" />}>
-                      <RemoveTeamMemberDialog teamId={team.id} />
-                    </Suspense>
-                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    render={
+                      <Suspense fallback={<Skeleton className="h-9 w-full" />}>
+                        <AddTeamMemberDialog teamId={team.id} />
+                      </Suspense>
+                    }
+                  />
+                  <DropdownMenuItem
+                    render={
+                      <Suspense fallback={<Skeleton className="h-9 w-full" />}>
+                        <RemoveTeamMemberDialog teamId={team.id} />
+                      </Suspense>
+                    }
+                  />
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     className="text-destructive focus:text-destructive"
@@ -309,29 +315,31 @@ export const TeamList = () => {
           </InputGroup>
 
           <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                className={cn(
-                  "w-60 justify-start text-left font-normal",
-                  !dateRange && "text-muted-foreground"
-                )}
-                variant={"outline"}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {dateRange?.from ? (
-                  dateRange.to ? (
-                    <>
-                      {format(dateRange.from, "LLL dd, y")} -{" "}
-                      {format(dateRange.to, "LLL dd, y")}
-                    </>
+            <PopoverTrigger
+              render={
+                <Button
+                  className={cn(
+                    "w-60 justify-start text-left font-normal",
+                    !dateRange && "text-muted-foreground"
+                  )}
+                  variant={"outline"}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {dateRange?.from ? (
+                    dateRange.to ? (
+                      <>
+                        {format(dateRange.from, "LLL dd, y")} -{" "}
+                        {format(dateRange.to, "LLL dd, y")}
+                      </>
+                    ) : (
+                      format(dateRange.from, "LLL dd, y")
+                    )
                   ) : (
-                    format(dateRange.from, "LLL dd, y")
-                  )
-                ) : (
-                  <span>Filter by date</span>
-                )}
-              </Button>
-            </PopoverTrigger>
+                    <span>Filter by date</span>
+                  )}
+                </Button>
+              }
+            />
             <PopoverContent align="start" className="w-auto p-0">
               <Calendar
                 defaultMonth={dateRange?.from}
@@ -425,9 +433,9 @@ export const TeamList = () => {
               value={`${table.getState().pagination.pageSize}`}
             >
               <SelectTrigger className="h-8 w-[70px]">
-                <SelectValue
-                  placeholder={table.getState().pagination.pageSize}
-                />
+                <SelectValue>
+                  {table.getState().pagination.pageSize}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent side="top">
                 {[10, 20, 30, 40, 50].map((pageSize) => (

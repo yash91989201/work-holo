@@ -96,12 +96,14 @@ export const CreateChannelForm = () => {
 
   return (
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
-      <DialogTrigger asChild>
-        <Button>
-          <Plus />
-          <span>New channel</span>
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger
+        render={
+          <Button>
+            <Plus />
+            <span>New channel</span>
+          </Button>
+        }
+      />
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Create New Channel</DialogTitle>
@@ -160,7 +162,9 @@ export const CreateChannelForm = () => {
                   >
                     <FormControl>
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select channel type" />
+                        <SelectValue>
+                          {field.value || "Select channel type"}
+                        </SelectValue>
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>

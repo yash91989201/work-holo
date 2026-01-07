@@ -351,23 +351,25 @@ export function AttendanceTable() {
             {/* Action Buttons */}
             <div className="flex gap-2">
               <Popover onOpenChange={setFilterOpen} open={filterOpen}>
-                <PopoverTrigger asChild>
-                  <Button
-                    className={cn(
-                      activeFilterCount > 0 && "border-primary text-primary"
-                    )}
-                    size="sm"
-                    variant="outline"
-                  >
-                    <IconFilter className="mr-2 h-4 w-4" />
-                    Filter
-                    {activeFilterCount > 0 && (
-                      <Badge className="ml-2 h-5 min-w-5 px-1">
-                        {activeFilterCount}
-                      </Badge>
-                    )}
-                  </Button>
-                </PopoverTrigger>
+                <PopoverTrigger
+                  render={
+                    <Button
+                      className={cn(
+                        activeFilterCount > 0 && "border-primary text-primary"
+                      )}
+                      size="sm"
+                      variant="outline"
+                    >
+                      <IconFilter className="mr-2 h-4 w-4" />
+                      Filter
+                      {activeFilterCount > 0 && (
+                        <Badge className="ml-2 h-5 min-w-5 px-1">
+                          {activeFilterCount}
+                        </Badge>
+                      )}
+                    </Button>
+                  }
+                />
                 <PopoverContent align="end" className="w-auto p-0">
                   <div className="flex flex-col sm:flex-row">
                     <Calendar
@@ -400,7 +402,7 @@ export function AttendanceTable() {
                           value={selectedStatus}
                         >
                           <SelectTrigger className="w-full">
-                            <SelectValue placeholder="All statuses" />
+                            <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="present">Present</SelectItem>
@@ -550,10 +552,10 @@ export function AttendanceTable() {
                   }}
                   value={`${table.getState().pagination.pageSize}`}
                 >
-                  <SelectTrigger className="h-8 w-[70px]">
-                    <SelectValue
-                      placeholder={table.getState().pagination.pageSize}
-                    />
+                  <SelectTrigger className="h-8 w-17.5">
+                    <SelectValue>
+                      {table.getState().pagination.pageSize ?? "Rows"}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent side="top">
                     {[10, 20, 30, 40, 50].map((pageSize) => (

@@ -232,6 +232,7 @@ export function SignUpForm() {
             isCheckingAvailability ||
             isAvailable === false
           }
+          type="submit"
         >
           {isPending || form.formState.isSubmitting
             ? "Signing up..."

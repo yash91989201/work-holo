@@ -33,39 +33,48 @@ export function NavOps() {
         <SidebarGroupContent>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip="View Attendance">
-                <Link
-                  params={{ slug }}
-                  search={{ page: 1 }}
-                  to="/org/$slug/dashboard/attendance"
-                >
-                  <Calendar />
-                  <span>Attendance</span>
-                </Link>
+              <SidebarMenuButton
+                render={
+                  <Link
+                    params={{ slug }}
+                    search={{ page: 1 }}
+                    to="/org/$slug/dashboard/attendance"
+                  />
+                }
+                tooltip="View Attendance"
+              >
+                <Calendar />
+                <span>Attendance</span>
               </SidebarMenuButton>
               <SidebarMenuButton
-                asChild
+                render={
+                  <Link
+                    params={{ slug }}
+                    to="/org/$slug/dashboard/communication/channels"
+                  />
+                }
                 tooltip="Manage Communication Channels"
               >
-                <Link
-                  params={{ slug }}
-                  to="/org/$slug/dashboard/communication/channels"
-                >
-                  <IconBroadcast />
-                  <span>Channels</span>
-                </Link>
+                <IconBroadcast />
+                <span>Channels</span>
               </SidebarMenuButton>
-              <SidebarMenuButton asChild tooltip="Teams Management">
-                <Link params={{ slug }} to="/org/$slug/dashboard/teams">
-                  <IconBrandTeams />
-                  <span>Teams</span>
-                </Link>
+              <SidebarMenuButton
+                render={
+                  <Link params={{ slug }} to="/org/$slug/dashboard/teams" />
+                }
+                tooltip="Teams Management"
+              >
+                <IconBrandTeams />
+                <span>Teams</span>
               </SidebarMenuButton>
-              <SidebarMenuButton asChild tooltip="Members Management">
-                <Link params={{ slug }} to="/org/$slug/dashboard/members">
-                  <Users />
-                  <span>Members</span>
-                </Link>
+              <SidebarMenuButton
+                render={
+                  <Link params={{ slug }} to="/org/$slug/dashboard/members" />
+                }
+                tooltip="Members Management"
+              >
+                <Users />
+                <span>Members</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>

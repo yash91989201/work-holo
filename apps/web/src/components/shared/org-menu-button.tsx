@@ -14,13 +14,11 @@ export const OrgMenuButton = () => {
     return (
       <SidebarMenuItem>
         <SidebarMenuButton
-          asChild
           className="data-[slot=sidebar-menu-button]:p-1.5!"
+          render={<Link to="/" />}
         >
-          <Link to="/">
-            <IconInnerShadowTop className="size-5!" />
-            <span className="font-semibold text-base">Acme Inc.</span>
-          </Link>
+          <IconInnerShadowTop className="size-5!" />
+          <span className="font-semibold text-base">Acme Inc.</span>
         </SidebarMenuButton>
       </SidebarMenuItem>
     );
@@ -30,19 +28,22 @@ export const OrgMenuButton = () => {
 
   return (
     <SidebarMenuItem>
-      <SidebarMenuButton asChild tooltip={activeOrganization.name}>
-        <Link params={{ slug: activeOrganization.slug }} to="/org/$slug">
-          <Image
-            alt={activeOrganization.name}
-            className="rounded-sm"
-            height={24}
-            src={logo}
-            width={24}
-          />
-          <span className="font-semibold text-base group-data-[collapsible=icon]:hidden">
-            {activeOrganization.name}
-          </span>
-        </Link>
+      <SidebarMenuButton
+        render={
+          <Link params={{ slug: activeOrganization.slug }} to="/org/$slug" />
+        }
+        tooltip={activeOrganization.name}
+      >
+        <Image
+          alt={activeOrganization.name}
+          className="rounded-sm"
+          height={24}
+          src={logo}
+          width={24}
+        />
+        <span className="font-semibold text-base group-data-[collapsible=icon]:hidden">
+          {activeOrganization.name}
+        </span>
       </SidebarMenuButton>
     </SidebarMenuItem>
   );

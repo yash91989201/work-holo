@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cat:*)",
+      "Bash(grep:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "mcp__better-auth__search",
+      "WebSearch",
+      "mcp__better-auth__chat",
+      "Bash(bun run:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx ultracite:*)",
+      "mcp__shadcn__get_project_registries",
+      "mcp__shadcn__search_items_in_registries",
+      "mcp__shadcn__list_items_in_registries",
+      "mcp__shadcn__view_items_in_registries",
+      "mcp__shadcn__get_item_examples_from_registries",
+      "Bash(bun build:*)",
+      "Bash(tree:*)",
+      "Bash(bun add:*)",
+      "WebFetch(domain:vite-pwa-org.netlify.app)",
+      "WebFetch(domain:pushpad.xyz)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__get-library-docs",
+      "mcp__morph__edit_file",
+      "Bash(xargs cat:*)",
+      "Bash(bunx tsc:*)",
+      "mcp__morph-mcp__edit_file",
+      "mcp__morph-mcp__warpgrep_codebase_search"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": ["context7", "shadcn", "better-auth"]
+}

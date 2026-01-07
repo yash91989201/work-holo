@@ -151,21 +151,23 @@ export function LinkBubbleMenu({ editor }: LinkBubbleMenuProps) {
           <ExternalLink className="h-4 w-4" />
         </Button>
         <Popover onOpenChange={setIsEditPopoverOpen} open={isEditPopoverOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              className="h-9 rounded-none border-r"
-              onClick={() => {
-                setEditUrl(currentUrl || "");
-                setIsEditPopoverOpen(true);
-              }}
-              size="sm"
-              title="Edit link"
-              type="button"
-              variant="ghost"
-            >
-              <Pencil className="h-4 w-4" />
-            </Button>
-          </PopoverTrigger>
+          <PopoverTrigger
+            render={
+              <Button
+                className="h-9 rounded-none border-r"
+                onClick={() => {
+                  setEditUrl(currentUrl || "");
+                  setIsEditPopoverOpen(true);
+                }}
+                size="sm"
+                title="Edit link"
+                type="button"
+                variant="ghost"
+              >
+                <Pencil className="h-4 w-4" />
+              </Button>
+            }
+          />
           <PopoverContent align="start" className="w-80 p-2">
             <InputGroup>
               <InputGroupInput

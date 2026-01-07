@@ -212,14 +212,18 @@ export const CreateOrgForm = () => {
             </FormItem>
           )}
         />
-        <Button className="gap-1.5" disabled={form.formState.isSubmitting}>
+        <Button
+          className="gap-1.5"
+          disabled={form.formState.isSubmitting}
+          type="submit"
+        >
           {form.formState.isSubmitting ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin" />
               Creating...
             </>
           ) : (
-            "Create Organization"
+            "Create organization"
           )}
         </Button>
       </form>

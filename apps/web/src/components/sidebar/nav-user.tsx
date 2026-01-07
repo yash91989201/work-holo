@@ -2,6 +2,7 @@ import { IconDotsVertical, IconLogout } from "@tabler/icons-react";
 import { Link, linkOptions, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,7 +21,6 @@ import {
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { useMemberRole } from "@/hooks/use-member-role";
 import { authClient } from "@/lib/auth-client";
-import { Badge } from "../ui/badge";
 
 const accountItems = linkOptions([
   {
@@ -66,34 +66,29 @@ export function NavUser() {
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton size="lg">
-              <Avatar className="h-8 w-8 rounded-lg grayscale">
-                <AvatarImage alt={user.name} src={user?.image ?? undefined} />
-                <AvatarFallback className="rounded-lg">
-                  {initials}
-                </AvatarFallback>
-              </Avatar>
-              <div className="grid flex-1 gap-0.5 text-left text-sm leading-tight">
-                <div>
-                  <span className="truncate font-medium">{user.name} </span>
-                  <Badge variant="secondary">{role}</Badge>
-                </div>
-                <span className="truncate text-muted-foreground text-xs">
-                  {user.email}
-                </span>
+          <DropdownMenuTrigger render={<SidebarMenuButton size="lg" />}>
+            <Avatar className="h-8 w-8 rounded-lg grayscale">
+              <AvatarImage alt={user.name} src={user?.image ?? undefined} />
+              <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
+            </Avatar>
+            <div className="grid flex-1 gap-0.5 text-left text-sm leading-tight">
+              <div>
+                <span className="truncate font-medium">{user.name} </span>
+                <Badge variant="secondary">{role}</Badge>
               </div>
-              <IconDotsVertical className="ml-auto h-4 w-4" />
-            </SidebarMenuButton>
+              <span className="truncate text-muted-foreground text-xs">
+                {user.email}
+              </span>
+            </div>
+            <IconDotsVertical className="ml-auto h-4 w-4" />
           </DropdownMenuTrigger>
 
           <DropdownMenuContent
             align="end"
-            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
             side={isMobile ? "bottom" : "right"}
-            sideOffset={4}
+            sideOffset={12}
           >
-            <DropdownMenuLabel className="p-0 font-normal">
+            <div className="px-1.5 py-1 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage
@@ -115,7 +110,7 @@ export function NavUser() {
                   </span>
                 </div>
               </div>
-            </DropdownMenuLabel>
+            </div>
 
             <DropdownMenuSeparator />
 
@@ -126,8 +121,8 @@ export function NavUser() {
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               {accountItems.map((item) => (
-                <DropdownMenuItem asChild key={item.to}>
-                  <Link {...item}>{item.label}</Link>
+                <DropdownMenuItem key={item.to} render={<Link {...item} />}>
+                  {item.label}
                 </DropdownMenuItem>
               ))}
             </DropdownMenuGroup>

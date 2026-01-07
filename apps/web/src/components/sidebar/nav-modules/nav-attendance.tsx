@@ -18,11 +18,9 @@ export function NavAttendance() {
 
   return attendanceLinks.map((link) => (
     <SidebarMenuItem key={link.label}>
-      <SidebarMenuButton asChild tooltip={link.label}>
-        <Link {...link}>
-          {link.icon && <link.icon />}
-          <span>{link.label}</span>
-        </Link>
+      <SidebarMenuButton render={<Link {...link} />} tooltip={link.label}>
+        {link.icon && <link.icon />}
+        <span>{link.label}</span>
       </SidebarMenuButton>
     </SidebarMenuItem>
   ));

@@ -25,7 +25,7 @@ export const Members = ({
 }) => {
   const [showSearch, setShowSearch] = useState(false);
   const [query, setQuery] = useState("");
-  const [accordionValue, setAccordionValue] = useState<string>("members");
+  const [accordionValue, setAccordionValue] = useState<string[]>(["members"]);
   const [_isPending, startTransition] = useTransition();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -37,7 +37,7 @@ export const Members = ({
   }, [showSearch]);
 
   useEffect(() => {
-    if (accordionValue === "" && showSearch) {
+    if (accordionValue.length === 0 && showSearch) {
       setShowSearch(false);
     }
   }, [accordionValue, showSearch]);
@@ -45,10 +45,10 @@ export const Members = ({
   const handleSearchClick = (e: React.MouseEvent) => {
     e.stopPropagation();
 
-    const isAccordionClosed = accordionValue === "";
+    const isAccordionClosed = accordionValue.length === 0;
 
     if (isAccordionClosed) {
-      setAccordionValue("members");
+      setAccordionValue(["members"]);
       startTransition(() => {
         setTimeout(() => {
           setShowSearch(true);
@@ -61,9 +61,8 @@ export const Members = ({
 
   return (
     <Accordion
-      collapsible
-      onValueChange={setAccordionValue}
-      type="single"
+      multiple
+      onValueChange={(value) => setAccordionValue(value as string[])}
       value={accordionValue}
     >
       <AccordionItem value="members">

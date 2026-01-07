@@ -47,55 +47,68 @@ export function ChannelHeader() {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink asChild className="font-medium">
-                <Link params={{ slug }} to="/org/$slug/communication/channels">
-                  Channels
-                </Link>
-              </BreadcrumbLink>
+              <BreadcrumbLink
+                className="font-medium"
+                render={
+                  <Link
+                    params={{ slug }}
+                    to="/org/$slug/communication/channels"
+                  >
+                    Channels
+                  </Link>
+                }
+              />
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink asChild className="font-medium">
-                <Link
-                  params={{ slug, id: channelParams.id }}
-                  to="/org/$slug/communication/channels/$id"
-                >
-                  {channel.name}
-                </Link>
-              </BreadcrumbLink>
+              <BreadcrumbLink
+                className="font-medium"
+                render={
+                  <Link
+                    params={{ slug, id: channelParams.id }}
+                    to="/org/$slug/communication/channels/$id"
+                  >
+                    {channel.name}
+                  </Link>
+                }
+              />
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
 
         <div className="ml-auto flex items-center gap-3">
           <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                className="relative"
-                onClick={toggleMentionsSidebar}
-                size="icon-sm"
-                variant={mentionsOpen ? "secondary" : "ghost"}
-              >
-                <AtSign />
-                {unreadMentionCount > 0 && (
-                  <span className="-right-1 -top-1 pointer-events-none absolute inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1 font-semibold text-[10px] text-destructive-foreground leading-none">
-                    {unreadMentionCount > 99 ? "99+" : unreadMentionCount}
-                  </span>
-                )}
-              </Button>
-            </TooltipTrigger>
+            <TooltipTrigger
+              render={
+                <Button
+                  className="relative"
+                  onClick={toggleMentionsSidebar}
+                  size="icon-sm"
+                  variant={mentionsOpen ? "secondary" : "ghost"}
+                >
+                  <AtSign />
+                  {unreadMentionCount > 0 && (
+                    <span className="-right-1 -top-1 pointer-events-none absolute inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1 font-semibold text-[10px] text-destructive-foreground leading-none">
+                      {unreadMentionCount > 99 ? "99+" : unreadMentionCount}
+                    </span>
+                  )}
+                </Button>
+              }
+            />
             <TooltipContent>Mentions</TooltipContent>
           </Tooltip>
           <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                onClick={togglePinnedMessages}
-                size="icon-sm"
-                variant={isOpen ? "secondary" : "ghost"}
-              >
-                <Pin />
-              </Button>
-            </TooltipTrigger>
+            <TooltipTrigger
+              render={
+                <Button
+                  onClick={togglePinnedMessages}
+                  size="icon-sm"
+                  variant={isOpen ? "secondary" : "ghost"}
+                >
+                  <Pin />
+                </Button>
+              }
+            />
             <TooltipContent>
               {isOpen ? "Close pinned messages" : "View pinned messages"}
             </TooltipContent>
@@ -103,15 +116,17 @@ export function ChannelHeader() {
           <NotificationSheet />
           <ThemeToggle />
           <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                onClick={toggleInfoSidebar}
-                size="icon-sm"
-                variant="ghost"
-              >
-                <Info />
-              </Button>
-            </TooltipTrigger>
+            <TooltipTrigger
+              render={
+                <Button
+                  onClick={toggleInfoSidebar}
+                  size="icon-sm"
+                  variant="ghost"
+                >
+                  <Info />
+                </Button>
+              }
+            />
             <TooltipContent>Channel Info</TooltipContent>
           </Tooltip>
         </div>

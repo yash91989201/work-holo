@@ -29,12 +29,14 @@ export const ChannelMembersPopover = ({
 
   return (
     <Popover>
-      <PopoverTrigger asChild>
-        <Button className="gap-1" size="sm" variant="outline">
-          <Users className="h-3 w-3" />
-          {memberCount}
-        </Button>
-      </PopoverTrigger>
+      <PopoverTrigger
+        render={
+          <Button className="gap-1" size="sm" variant="outline">
+            <Users className="h-3 w-3" />
+            {memberCount}
+          </Button>
+        }
+      />
       <PopoverContent align="start" className="w-64">
         <div className="space-y-2">
           <h4 className="font-medium text-sm">Members ({memberCount})</h4>

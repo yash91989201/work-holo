@@ -49,7 +49,11 @@ export const TeamsDropdown = () => {
             <Select defaultValue={field.value} onValueChange={field.onChange}>
               <FormControl>
                 <SelectTrigger className="h-11 w-full">
-                  <SelectValue placeholder="Select a team" />
+                  <SelectValue>
+                    {field.value
+                      ? teams.find((t) => t.id === field.value)?.name
+                      : "Select a team"}
+                  </SelectValue>
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
@@ -65,11 +69,15 @@ export const TeamsDropdown = () => {
               <div className="flex h-11 w-full items-center justify-center rounded-md border border-input bg-background text-muted-foreground text-sm">
                 No teams available
               </div>
-              <Button asChild className="h-11 w-full" variant="outline">
-                <Link params={{ slug }} to="/org/$slug/dashboard/teams">
-                  Create Team
-                </Link>
-              </Button>
+              <Button
+                className="h-11 w-full"
+                render={
+                  <Link params={{ slug }} to="/org/$slug/dashboard/teams">
+                    Create Team
+                  </Link>
+                }
+                variant="outline"
+              />
             </div>
           )}
           <FormMessage />

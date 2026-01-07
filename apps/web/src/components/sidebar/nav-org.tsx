@@ -47,11 +47,12 @@ export function NavOrg() {
           <SidebarMenu>
             {items.map((item) => (
               <SidebarMenuItem key={item.label}>
-                <SidebarMenuButton asChild tooltip={item.label}>
-                  <Link {...item}>
-                    {item.icon && <item.icon />}
-                    <span>{item.label}</span>
-                  </Link>
+                <SidebarMenuButton
+                  render={<Link {...item} />}
+                  tooltip={item.label}
+                >
+                  {item.icon && <item.icon />}
+                  <span>{item.label}</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}

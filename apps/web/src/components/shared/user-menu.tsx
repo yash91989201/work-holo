@@ -20,16 +20,16 @@ export default function UserMenu() {
 
   if (!session) {
     return (
-      <Button asChild variant="outline">
-        <Link to="/login">LogIn</Link>
+      <Button render={<Link to="/login" />} variant="outline">
+        LogIn
       </Button>
     );
   }
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline">{session.user.name}</Button>
+      <DropdownMenuTrigger render={<Button variant="outline" />}>
+        {session.user.name}
       </DropdownMenuTrigger>
       <DropdownMenuContent className="space-y-1.5 bg-card">
         <DropdownMenuLabel className="space-y-1.5">
@@ -42,11 +42,11 @@ export default function UserMenu() {
           </p>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link to="/settings/account/preferences">Preferences</Link>
+        <DropdownMenuItem render={<Link to="/settings/account/preferences" />}>
+          Preferences
         </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link to="/settings/account/profile">Profile</Link>
+        <DropdownMenuItem render={<Link to="/settings/account/profile" />}>
+          Profile
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => {

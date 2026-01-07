@@ -240,11 +240,9 @@ function PresenceStatusDropdown() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <SidebarMenuButton disabled={isPending}>
-          <Target />
-          <span>{currentStatusLabel}</span>
-        </SidebarMenuButton>
+      <DropdownMenuTrigger render={<SidebarMenuButton disabled={isPending} />}>
+        <Target />
+        <span>{currentStatusLabel}</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="start"

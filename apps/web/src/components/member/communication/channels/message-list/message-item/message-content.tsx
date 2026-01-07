@@ -85,20 +85,20 @@ export function MessageContent({
               </div>
               {attachment.url && (
                 <Button
-                  asChild
                   className="shrink-0"
+                  render={
+                    <a
+                      download
+                      href={attachment.url}
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      <Download className="size-4" />
+                    </a>
+                  }
                   size="icon-sm"
                   variant="ghost"
-                >
-                  <a
-                    download
-                    href={attachment.url}
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
-                    <Download className="size-4" />
-                  </a>
-                </Button>
+                />
               )}
             </div>
           );
@@ -169,20 +169,20 @@ export function MessageContent({
                 </div>
                 {attachment.url && (
                   <Button
-                    asChild
                     className="shrink-0"
+                    render={
+                      <a
+                        download
+                        href={attachment.url}
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        <Download className="size-4" />
+                      </a>
+                    }
                     size="icon-sm"
                     variant="ghost"
-                  >
-                    <a
-                      download
-                      href={attachment.url}
-                      rel="noopener noreferrer"
-                      target="_blank"
-                    >
-                      <Download className="size-4" />
-                    </a>
-                  </Button>
+                  />
                 )}
               </div>
             );
@@ -208,17 +208,22 @@ function AudioPlayer({ url }: { url: string }) {
     <div className="flex w-[400px] items-center gap-2.5 rounded-lg border bg-background p-2.5">
       {/** biome-ignore lint/a11y/useMediaCaption: <track is not required here> */}
       <audio className="flex-1" controls ref={audioRef} src={url} />
-      <Button asChild className="shrink-0" size="icon-sm" variant="ghost">
-        <a
-          download
-          href={url}
-          rel="noopener noreferrer"
-          target="_blank"
-          title="Download audio"
-        >
-          <Download className="size-4" />
-        </a>
-      </Button>
+      <Button
+        className="shrink-0"
+        render={
+          <a
+            download
+            href={url}
+            rel="noopener noreferrer"
+            target="_blank"
+            title="Download audio"
+          >
+            <Download className="size-4" />
+          </a>
+        }
+        size="icon-sm"
+        variant="ghost"
+      />
     </div>
   );
 }
@@ -232,21 +237,21 @@ function VideoPlayer({ url }: { url: string }) {
       </video>
       <div className="absolute top-2 right-2 opacity-0 transition-opacity group-hover:opacity-100">
         <Button
-          asChild
           className="bg-background/90 backdrop-blur-sm hover:bg-background"
+          render={
+            <a
+              download
+              href={url}
+              rel="noopener noreferrer"
+              target="_blank"
+              title="Download video"
+            >
+              <Download className="size-4" />
+            </a>
+          }
           size="icon-sm"
           variant="secondary"
-        >
-          <a
-            download
-            href={url}
-            rel="noopener noreferrer"
-            target="_blank"
-            title="Download video"
-          >
-            <Download className="size-4" />
-          </a>
-        </Button>
+        />
       </div>
     </div>
   );
@@ -281,20 +286,20 @@ function ImagePreview({ url, fileName }: { url: string; fileName: string }) {
       />
       <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 transition-opacity group-hover:opacity-100">
         <Button
-          asChild
           className="bg-background/90 backdrop-blur-sm hover:bg-background"
+          render={
+            <a
+              href={url}
+              rel="noopener noreferrer"
+              target="_blank"
+              title="Open full size"
+            >
+              <Maximize2 className="size-4" />
+            </a>
+          }
           size="icon-sm"
           variant="secondary"
-        >
-          <a
-            href={url}
-            rel="noopener noreferrer"
-            target="_blank"
-            title="Open full size"
-          >
-            <Maximize2 className="size-4" />
-          </a>
-        </Button>
+        />
         <Button
           className="bg-background/90 backdrop-blur-sm hover:bg-background"
           onClick={handleDownload}

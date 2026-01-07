@@ -88,12 +88,14 @@ export function NotificationSheet() {
 
   return (
     <Sheet onOpenChange={setOpen} open={open}>
-      <SheetTrigger asChild>
-        <Button className="relative" size="icon" variant="ghost">
-          <Bell className="h-4 w-4" />
-          {triggerBadge}
-        </Button>
-      </SheetTrigger>
+      <SheetTrigger
+        render={
+          <Button className="relative" size="icon" variant="ghost">
+            <Bell className="h-4 w-4" />
+            {triggerBadge}
+          </Button>
+        }
+      />
       <SheetContent className="flex flex-col sm:max-w-md">
         <SheetHeader className="space-y-4">
           <div className="flex items-center justify-between">
@@ -208,7 +210,6 @@ function NotificationListItem({
 
   return (
     <Item
-      asChild
       className={cn(
         "items-start gap-3",
         notification.status === "unread" &&

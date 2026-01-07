@@ -65,7 +65,10 @@ export function AttendanceAnalyticsView() {
             value={range}
           >
             <SelectTrigger className="w-40">
-              <SelectValue placeholder="Select range" />
+              <SelectValue>
+                {RANGE_OPTIONS.find((o) => o.value === range)?.label ??
+                  "Select range"}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               {RANGE_OPTIONS.map((option) => (

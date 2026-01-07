@@ -71,12 +71,14 @@ export const InviteMemberForm = () => {
 
   return (
     <Dialog onOpenChange={setIsOpen} open={isOpen}>
-      <DialogTrigger asChild>
-        <Button>
-          <PlusIcon className="mr-2 h-4 w-4" />
-          Invite Member
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger
+        render={
+          <Button>
+            <PlusIcon className="mr-2 h-4 w-4" />
+            Invite Member
+          </Button>
+        }
+      />
       <DialogContent className="max-w-md">
         <DialogHeader className="text-center">
           <DialogTitle className="font-bold text-2xl">
