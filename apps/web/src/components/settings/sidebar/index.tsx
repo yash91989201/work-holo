@@ -45,11 +45,13 @@ function BackToOrgButton() {
   return (
     <SidebarMenuItem>
       <SidebarMenuButton
-        render={<Link params={{ slug: activeOrg }} to="/org/$slug" />}
-      >
-        <ArrowLeft />
-        <span>Back to Org</span>
-      </SidebarMenuButton>
+        render={
+          <Link params={{ slug: activeOrg }} to="/org/$slug">
+            <ArrowLeft />
+            <span>Back to Org</span>
+          </Link>
+        }
+      />
     </SidebarMenuItem>
   );
 }

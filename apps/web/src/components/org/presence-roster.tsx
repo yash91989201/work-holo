@@ -196,7 +196,7 @@ export function PresenceRoster() {
       </CardHeader>
 
       <CardContent className="p-0">
-        <ScrollArea className="h-[300px]">
+        <ScrollArea className="h-75">
           <div>
             {filteredAndSortedMembers && filteredAndSortedMembers.length > 0 ? (
               <ItemGroup>
@@ -274,11 +274,11 @@ export function PresenceRosterSkeleton() {
             <Skeleton className="h-6 w-40" />
             <Skeleton className="h-4 w-60" />
           </div>
-          <Skeleton className="h-9 w-[180px]" />
+          <Skeleton className="h-9 w-45" />
         </div>
       </CardHeader>
       <CardContent className="p-0">
-        <ScrollArea className="h-[600px]">
+        <ScrollArea className="h-150">
           <div className="space-y-1 px-6 pb-6">
             {[...new Array(5)].map((_, i) => (
               <div key={i.toString()}>

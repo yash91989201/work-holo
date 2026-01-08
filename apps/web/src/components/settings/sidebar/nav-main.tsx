@@ -39,22 +39,18 @@ const items = linkOptions([
 export function NavMain() {
   return (
     <SidebarGroup>
-      <SidebarGroupContent className="flex flex-col gap-2">
-        <SidebarMenu>
+      <SidebarGroupContent>
+        <SidebarMenu className="gap-1.5">
           {items.map((item) => (
             <SidebarMenuItem key={item.to}>
               <Link {...item}>
                 {({ isActive }) => (
-                  <SidebarMenuButton
-                    isActive={isActive}
-                    render={
-                      <div className="flex items-center gap-2">
-                        {item.icon && <item.icon />}
-                        <span>{item.label}</span>
-                      </div>
-                    }
-                    tooltip={item.label}
-                  />
+                  <SidebarMenuButton isActive={isActive} tooltip={item.label}>
+                    <div className="flex items-center gap-2">
+                      {item.icon && <item.icon />}
+                      <span>{item.label}</span>
+                    </div>
+                  </SidebarMenuButton>
                 )}
               </Link>
             </SidebarMenuItem>
