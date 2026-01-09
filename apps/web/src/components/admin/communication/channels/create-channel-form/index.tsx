@@ -53,7 +53,7 @@ export const CreateChannelForm = () => {
       teamId: undefined,
       memberIds: [],
       createdBy: user.id,
-    },
+    } satisfies CreateChannelFormType as CreateChannelFormType,
   });
 
   const { mutateAsync: createChannel } = useMutation(
