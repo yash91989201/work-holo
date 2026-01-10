@@ -1,4 +1,3 @@
-import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import {
   type ColumnDef,
@@ -28,8 +27,8 @@ import {
   X,
 } from "lucide-react";
 import { Suspense, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { z } from "zod";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -59,25 +58,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-// import {
-//   Form,
-//   FormControl,
-//   FormField,
-//   FormItem,
-//   FormLabel,
-//   FormMessage,
-// } from "@/components/ui/form";
-import {
-  Field,
-  FieldContent,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLegend,
-  FieldSeparator,
-  FieldSet,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { useAppForm } from "@/components/ui/form/hooks";
 import {
   InputGroup,
   InputGroupAddon,
@@ -101,8 +82,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useListOrgMembers } from "@/hooks/use-list-org-members";
-import { UpdateChannelFormSchema } from "@/lib/schemas/admin/channel";
-import type { UpdateChannelFormType } from "@/lib/types";
 import { queryClient, queryUtils } from "@/utils/orpc";
 import { ChannelMembersPopover } from "./channel-members-popover";
 
@@ -321,9 +300,9 @@ export const ChannelsListTable = () => {
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -750,18 +729,15 @@ export function RemoveMemberDialog({ channelId }: { channelId: string }) {
             >
               Cancel
             </Button>
-           
-            <form.Subscribe
-  selector={(state) => [state.canSubmit, state.isSubmitting]}
->
-  {([canSubmit, isSubmitting]) => (
-    <Button type="submit" disabled={!canSubmit}>
-      {isSubmitting && <Spinner className="mr-2 h-4 w-4" />}
-      Save
-    </Button>
-  )}
-</form.Subscribe>
-
+            <Button
+              disabled={isPending || selectedMemberIds.length === 0}
+              onClick={onSubmit}
+              type="button"
+              variant="destructive"
+            >
+              {isPending ? <Spinner className="mr-2 h-4 w-4" /> : null}
+              Remove Selected
+            </Button>
           </DialogFooter>
         </div>
       </DialogContent>
@@ -810,7 +786,24 @@ export function DeleteChannelDialog({ channelId }: { channelId: string }) {
   );
 }
 
-export function UpdateChannelDialog({ channelId }: { channelId: string }) {
+export const UpdateChannelFormSchema = z.object({
+  name: z.string().min(1, "Channel name is required"),
+  description: z.string().optional(),
+  isPrivate: z.boolean(),
+  users: z
+    .array(
+      z.object({
+        email: z.string().email(),
+      })
+    )
+    .min(1)
+    .max(5),
+});
+
+
+export type UpdateChannelFormType = z.infer<typeof UpdateChannelFormSchema>;
+
+export default function UpdateChannelDialog() {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const { data: channel, isLoading } = useSuspenseQuery(
@@ -818,32 +811,6 @@ export function UpdateChannelDialog({ channelId }: { channelId: string }) {
       input: { channelId },
     })
   );
-
-  // const form = useForm<UpdateChannelFormType>({
-  //   resolver: standardSchemaResolver(UpdateChannelFormSchema),
-  //   defaultValues: {
-  //     channelId,
-  //     name: channel.name,t
-  //     description: channel.description || "",
-  //   },
-  // });
-
-  const form = useForm({
-  defaultValues: {
-    name: channel.name,
-    description: channel.description ?? "",
-  },
-  validatorAdapter: standardSchemaValidator(),
-  onSubmit: async ({ value }) => {
-    await updateChannelMutation.mutateAsync({
-      channelId,
-      ...value,
-    });
-
-    toast.success("Channel updated");
-  },
-});
-
 
   const { mutateAsync: updateChannel, isPending } = useMutation(
     queryUtils.communication.channel.update.mutationOptions({
@@ -862,64 +829,36 @@ export function UpdateChannelDialog({ channelId }: { channelId: string }) {
     })
   );
 
-  // const onSubmit = async (data: UpdateChannelFormType) => {
-  //   const updateData = {
-  //     channelId,
-  //     ...(data.name !== undefined && data.name !== channel.name
-  //       ? { name: data.name }
-  //       : {}),
-  //     ...(data.description !== undefined &&
-  //     data.description !== channel.description
-  //       ? { description: data.description }
-  //       : {}),
-  //     ...(data.isPrivate !== undefined && data.isPrivate !== channel.isPrivate
-  //       ? { isPrivate: data.isPrivate }
-  //       : {}),
-  //   };
 
-  //   if (Object.keys(updateData).length === 1) {
-  //     toast.info("No changes to update");
-  //     return;
-  //   }
+  const form = useAppForm({
+    defaultValues: {
+      channelId,
+      name: channel.name,
+      description: channel.description ?? "",
+      isPrivate: channel.isPrivate,
+      users: channel.users ?? [{ email: "" }],
+    } satisfies UpdateChannelFormType as UpdateChannelFormType,
 
-  //   await updateChannel(updateData);
-  // };
-  <form.Field
-  name="name"
-  validators={{
-    onChange: UpdateChannelFormSchema.shape.name,
-  }}
->
-  {(field) => (
-    <>
-      <Input
-        value={field.state.value}
-        onChange={(e) => field.handleChange(e.target.value)}
-        onBlur={field.handleBlur}
-      />
-      <FieldError>{field.state.meta.errors}</FieldError>
-    </>
-  )}
-</form.Field>
 
-<form.Field
-  name="description"
-  validators={{
-    onChange: UpdateChannelFormSchema.shape.description,
-  }}
->
-  {(field) => (
-    <>
-      <Input
-        value={field.state.value}
-        onChange={(e) => field.handleChange(e.target.value)}
-        onBlur={field.handleBlur}
-      />
-      <FieldError>{field.state.meta.errors}</FieldError>
-    </>
-  )}
-</form.Field>
+    validators: {
+      onSubmit: ({ value }) => UpdateChannelFormSchema.safeParse(value),
+    },
 
+    onSubmit: async ({ value }) => {
+      const updateData = {
+        channelId,
+        ...(value.name !== channel.name ? { name: value.name } : {}),
+        ...(value.description !== channel.description
+          ? { description: value.description }
+          : {}),
+        ...(value.isPrivate !== channel.isPrivate
+          ? { isPrivate: value.isPrivate }
+          : {}),
+      };
+
+      await updateChannel(updateData);
+    },
+  });
 
   return (
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
@@ -932,6 +871,7 @@ export function UpdateChannelDialog({ channelId }: { channelId: string }) {
           Edit Channel
         </Button>
       </DialogTrigger>
+
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Edit Channel</DialogTitle>
@@ -939,51 +879,41 @@ export function UpdateChannelDialog({ channelId }: { channelId: string }) {
             Update the channel name, description, and privacy settings.
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-4">
-          <Form {...form}>
-            <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Channel Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter channel name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Enter channel description"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <DialogFooter>
-                <Button
-                  onClick={() => {
-                    setDialogOpen(false);
-                    form.reset();
-                  }}
-                  type="button"
-                  variant="outline"
-                >
-                  Cancel
-                </Button>
-                <Button disabled={isPending || isLoading}>
-                  {isPending ? (
+
+        <form
+          className="space-y-4"
+          onSubmit={(e) => {
+            e.preventDefault();
+            form.handleSubmit();
+          }}
+        >
+          <form.AppField name="name">
+            {(field) => <field.Input label="Channel Name" />}
+          </form.AppField>
+
+          {/* Description */}
+          <form.AppField name="description">
+            {(field) => <field.Input label="Enter Channel Description" />}
+          </form.AppField>
+
+          <DialogFooter>
+            <Button
+              onClick={() => {
+                setDialogOpen(false);
+                form.reset();
+              }}
+              type="button"
+              variant="outline"
+            >
+              Cancel
+            </Button>
+
+            <form.Subscribe
+              selector={(state) => [state.canSubmit, state.isSubmitting]}
+            >
+              {([canSubmit, isSubmitting]) => (
+                <Button disabled={!canSubmit || isPending || isLoading}>
+                  {isSubmitting || isPending ? (
                     <>
                       <Spinner className="mr-2 h-4 w-4" />
                       Updating...
@@ -992,10 +922,10 @@ export function UpdateChannelDialog({ channelId }: { channelId: string }) {
                     "Update Channel"
                   )}
                 </Button>
-              </DialogFooter>
-            </form>
-          </Form>
-        </div>
+              )}
+            </form.Subscribe>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );
