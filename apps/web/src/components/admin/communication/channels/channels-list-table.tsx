@@ -28,7 +28,6 @@ import {
 } from "lucide-react";
 import { Suspense, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { z } from "zod";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -82,6 +81,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useListOrgMembers } from "@/hooks/use-list-org-members";
+import { UpdateChannelFormSchema } from "@/lib/schemas/admin/channel";
+import type { UpdateChannelFormType } from "@/lib/types";
 import { queryClient, queryUtils } from "@/utils/orpc";
 import { ChannelMembersPopover } from "./channel-members-popover";
 
@@ -300,9 +301,9 @@ export const ChannelsListTable = () => {
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -786,24 +787,7 @@ export function DeleteChannelDialog({ channelId }: { channelId: string }) {
   );
 }
 
-export const UpdateChannelFormSchema = z.object({
-  name: z.string().min(1, "Channel name is required"),
-  description: z.string().optional(),
-  isPrivate: z.boolean(),
-  users: z
-    .array(
-      z.object({
-        email: z.string().email(),
-      })
-    )
-    .min(1)
-    .max(5),
-});
-
-
-export type UpdateChannelFormType = z.infer<typeof UpdateChannelFormSchema>;
-
-export default function UpdateChannelDialog() {
+export function UpdateChannelDialog({ channelId }: { channelId: string }) {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const { data: channel, isLoading } = useSuspenseQuery(
@@ -829,31 +813,28 @@ export default function UpdateChannelDialog() {
     })
   );
 
-
   const form = useAppForm({
     defaultValues: {
       channelId,
       name: channel.name,
       description: channel.description ?? "",
       isPrivate: channel.isPrivate,
-      users: channel.users ?? [{ email: "" }],
     } satisfies UpdateChannelFormType as UpdateChannelFormType,
 
-
     validators: {
-      onSubmit: ({ value }) => UpdateChannelFormSchema.safeParse(value),
+      onSubmit: UpdateChannelFormSchema,
     },
 
     onSubmit: async ({ value }) => {
       const updateData = {
         channelId,
-        ...(value.name !== channel.name ? { name: value.name } : {}),
-        ...(value.description !== channel.description
-          ? { description: value.description }
-          : {}),
-        ...(value.isPrivate !== channel.isPrivate
-          ? { isPrivate: value.isPrivate }
-          : {}),
+        ...(value.name !== channel.name && { name: value.name }),
+        ...(value.description !== channel.description && {
+          description: value.description,
+        }),
+        ...(value.isPrivate !== channel.isPrivate && {
+          isPrivate: value.isPrivate,
+        }),
       };
 
       await updateChannel(updateData);
@@ -912,7 +893,10 @@ export default function UpdateChannelDialog() {
               selector={(state) => [state.canSubmit, state.isSubmitting]}
             >
               {([canSubmit, isSubmitting]) => (
-                <Button disabled={!canSubmit || isPending || isLoading}>
+                <Button
+                  disabled={!canSubmit || isPending || isLoading}
+                  type="submit"
+                >
                   {isSubmitting || isPending ? (
                     <>
                       <Spinner className="mr-2 h-4 w-4" />
