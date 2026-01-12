@@ -77,6 +77,11 @@ export const adminInvitationRouter = {
       const total = totalRow?.count ?? 0;
       const pageCount = Math.ceil(total / perPage);
 
-      return { invitations, total, pageCount };
+      const mappedInvitations = invitations.map((inv) => ({
+        ...inv,
+        role: (inv.role as "admin" | "member") ?? "member",
+      }));
+
+      return { invitations: mappedInvitations, total, pageCount };
     }),
 };

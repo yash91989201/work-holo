@@ -17,9 +17,9 @@ export const env = createEnv({
         return trimmed;
       })
     ),
-    SUPABASE_URL: z.url(),
-    SUPABASE_PUBLISHABLE_KEY: z.string(),
-    SUPABASE_SECRET_KEY: z.string(),
+    S3_ENDPOINT: z.string(),
+    S3_ACCESS_KEY: z.string(),
+    S3_SECRET_KEY: z.string(),
     RESEND_API_KEY: z.string(),
   },
   runtimeEnv: process.env,
