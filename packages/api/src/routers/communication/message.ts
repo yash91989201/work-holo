@@ -72,7 +72,8 @@ import {
   UpdateMessageInput,
   UpdateMessageOutput,
 } from "../../lib/schemas/message";
-import { supabase } from "../../lib/supabase";
+import { deleteFile } from "../../lib/storage";
+import type { BucketName } from "../../lib/storage/types";
 
 // Configuration: Maximum channel members for detailed read tracking
 // Channels with <= this many members will use messageRead table (detailed tracking)
@@ -548,16 +549,17 @@ export const messageRouter = {
 
         if (message.attachments && message.attachments.length > 0) {
           for (const attachment of message.attachments) {
-            const bucket =
+            const bucket: BucketName =
               attachment.type === "audio"
                 ? "message-audio"
                 : "message-attachment";
 
-            const { error } = await supabase.storage
-              .from(bucket)
-              .remove([attachment.fileName]);
-
-            if (error) {
+            try {
+              await deleteFile({
+                bucket,
+                filePath: attachment.fileName,
+              });
+            } catch (error) {
               console.error(
                 `Failed to delete file ${attachment.fileName} from ${bucket}:`,
                 error
