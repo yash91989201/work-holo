@@ -1,153 +1,91 @@
-import { env } from "@work-holo/env/web";
-import { createRealtimeClient } from "@work-holo/realtime-client";
+import type { Channel } from "pusher-js";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuthedSession } from "@/hooks/use-authed-session";
-import { orpcClient } from "@/utils/orpc";
+import { getPusherClient } from "@/lib/pusher";
 
 export interface TypingUser {
   userId: string;
   userName: string;
 }
 
+interface TypingPayload {
+  userId: string;
+  userName: string;
+  isTyping: boolean;
+  timestamp: string;
+}
+
 export function useTypingIndicator(channelId: string) {
   const { user } = useAuthedSession();
   const [typingUsers, setTypingUsers] = useState<TypingUser[]>([]);
-  const clientRef = useRef<ReturnType<typeof createRealtimeClient> | null>(
-    null
-  );
-  const roomRef = useRef<ReturnType<
-    ReturnType<typeof createRealtimeClient>["room"]
-  > | null>(null);
+  const channelRef = useRef<Channel | null>(null);
   const typingTimeoutsRef = useRef<Map<string, NodeJS.Timeout>>(new Map());
 
-  const handleTypingBroadcast = useCallback(
-    (msg: { event: string; payload: Record<string, unknown> }) => {
-      if (msg.event !== "typing" || !user?.id) return;
+  useEffect(() => {
+    if (!user?.id) return;
 
-      const { userId, userName, isTyping } = msg.payload as {
-        userId: string;
-        userName: string;
-        isTyping: boolean;
-      };
+    const pusher = getPusherClient();
+    const channelName = `private-typing-${channelId}`;
+    const channel = pusher.subscribe(channelName);
+    channelRef.current = channel;
 
-      if (userId === user.id) return;
+    const handleTyping = (data: TypingPayload) => {
+      if (data.userId === user.id) return;
 
-      const existingTimeout = typingTimeoutsRef.current.get(userId);
+      const existingTimeout = typingTimeoutsRef.current.get(data.userId);
       if (existingTimeout) {
         clearTimeout(existingTimeout);
       }
 
-      if (isTyping) {
+      if (data.isTyping) {
         setTypingUsers((prev) => {
-          if (!prev.some((u) => u.userId === userId)) {
-            return [...prev, { userId, userName }];
+          if (!prev.some((u) => u.userId === data.userId)) {
+            return [...prev, { userId: data.userId, userName: data.userName }];
           }
           return prev;
         });
 
         const timeout = setTimeout(() => {
-          setTypingUsers((prev) => prev.filter((u) => u.userId !== userId));
-          typingTimeoutsRef.current.delete(userId);
+          setTypingUsers((prev) =>
+            prev.filter((u) => u.userId !== data.userId)
+          );
+          typingTimeoutsRef.current.delete(data.userId);
         }, 3000);
 
-        typingTimeoutsRef.current.set(userId, timeout);
+        typingTimeoutsRef.current.set(data.userId, timeout);
       } else {
-        setTypingUsers((prev) => prev.filter((u) => u.userId !== userId));
-        typingTimeoutsRef.current.delete(userId);
-      }
-    },
-    [user?.id]
-  );
-
-  useEffect(() => {
-    if (!user?.id) return;
-
-    let mounted = true;
-
-    const setupRealtime = async () => {
-      try {
-        const { grant, room: roomName } =
-          await orpcClient.realtime.issueTypingRoomGrant({
-            channelId,
-          });
-
-        if (!mounted) return;
-
-        const client = createRealtimeClient({
-          url: env.VITE_REALTIME_URL,
-          onError: (error) => {
-            console.error("Realtime error:", error);
-          },
-        });
-
-        const room = client.room({
-          name: roomName,
-          grant,
-          onRefreshGrant: async () => {
-            const refreshed = await orpcClient.realtime.issueTypingRoomGrant({
-              channelId,
-            });
-            return refreshed.grant;
-          },
-          onBroadcast: handleTypingBroadcast,
-        });
-
-        client.connect();
-
-        // Wait for server to send ready message before joining room
-        await client.waitForReady();
-
-        if (!mounted) return;
-
-        room.join();
-
-        // Wait for server to confirm room join before storing refs
-        await room.waitForJoin();
-
-        if (!mounted) return;
-
-        clientRef.current = client;
-        roomRef.current = room;
-      } catch (error) {
-        console.error("Failed to setup realtime:", error);
+        setTypingUsers((prev) => prev.filter((u) => u.userId !== data.userId));
+        typingTimeoutsRef.current.delete(data.userId);
       }
     };
 
-    setupRealtime();
+    channel.bind("client-typing", handleTyping);
 
     return () => {
-      mounted = false;
-
       for (const timeout of typingTimeoutsRef.current.values()) {
         clearTimeout(timeout);
       }
-
       typingTimeoutsRef.current.clear();
-
-      if (roomRef.current) {
-        roomRef.current.leave();
-        roomRef.current = null;
-      }
-
-      if (clientRef.current) {
-        clientRef.current.disconnect();
-        clientRef.current = null;
-      }
-
+      channel.unbind_all();
+      pusher.unsubscribe(channelName);
+      channelRef.current = null;
       setTypingUsers([]);
     };
-  }, [channelId, user?.id, handleTypingBroadcast]);
+  }, [channelId, user?.id]);
 
-  const broadcastTyping = (isTyping: boolean, userName: string) => {
-    if (!(roomRef.current && user?.id)) return;
+  const broadcastTyping = useCallback(
+    (isTyping: boolean, userName: string) => {
+      if (!(channelRef.current && user?.id)) return;
 
-    roomRef.current.broadcast("typing", {
-      userId: user.id,
-      userName,
-      isTyping,
-      timestamp: new Date().toISOString(),
-    });
-  };
+      channelRef.current.trigger("client-typing", {
+        userId: user.id,
+        userName,
+        isTyping,
+        timestamp: new Date().toISOString(),
+      });
+    },
+    [user?.id]
+  );
 
   return {
     typingUsers,

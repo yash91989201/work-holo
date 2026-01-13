@@ -1,62 +1,17 @@
-import { env } from "@work-holo/env/web";
-import { createRealtimeClient } from "@work-holo/realtime-client";
-import { useCallback, useEffect, useRef, useState } from "react";
+import type { Members, PresenceChannel } from "pusher-js";
+import { useEffect, useRef, useState } from "react";
 import { useAuthedSession } from "@/hooks/use-authed-session";
-import { orpcClient } from "@/utils/orpc";
+import { getPusherClient } from "@/lib/pusher";
+
+interface PresenceMember {
+  id: string;
+  info: { name: string };
+}
 
 export const useChannelPresence = (channelId: string | null) => {
   const { user } = useAuthedSession();
-  const clientRef = useRef<ReturnType<typeof createRealtimeClient> | null>(
-    null
-  );
-  const roomRef = useRef<ReturnType<
-    ReturnType<typeof createRealtimeClient>["room"]
-  > | null>(null);
+  const channelRef = useRef<PresenceChannel | null>(null);
   const [onlineUserIds, setOnlineUserIds] = useState<string[]>([]);
-
-  const handlePresenceSync = useCallback(
-    (message: {
-      presences: Array<{
-        connectionId: string;
-        state: Record<string, unknown>;
-      }>;
-    }) => {
-      const idsSet = new Set<string>();
-      for (const presence of message.presences) {
-        const userId = presence.state.user_id as string | undefined;
-        if (userId) {
-          idsSet.add(userId);
-        }
-      }
-      setOnlineUserIds(Array.from(idsSet));
-    },
-    []
-  );
-
-  const handlePresenceJoin = useCallback(
-    (message: { connectionId: string; state: Record<string, unknown> }) => {
-      const userId = message.state.user_id as string | undefined;
-      if (userId) {
-        setOnlineUserIds((prev) => {
-          if (prev.includes(userId)) {
-            return prev;
-          }
-          return [...prev, userId];
-        });
-      }
-    },
-    []
-  );
-
-  const handlePresenceLeave = useCallback(
-    (message: { connectionId: string; state?: Record<string, unknown> }) => {
-      const userId = message.state?.user_id as string | undefined;
-      if (userId) {
-        setOnlineUserIds((prev) => prev.filter((id) => id !== userId));
-      }
-    },
-    []
-  );
 
   useEffect(() => {
     if (!(channelId && user)) {
@@ -64,85 +19,37 @@ export const useChannelPresence = (channelId: string | null) => {
       return;
     }
 
-    let mounted = true;
+    const pusher = getPusherClient();
+    const channelName = `presence-channel-${channelId}`;
+    const channel = pusher.subscribe(channelName) as PresenceChannel;
+    channelRef.current = channel;
 
-    const setupRealtime = async () => {
-      try {
-        const { grant, room: roomName } =
-          await orpcClient.realtime.issuePresenceRoomGrant({
-            channelId,
-          });
+    channel.bind("pusher:subscription_succeeded", (members: Members) => {
+      const ids: string[] = [];
+      members.each((member: PresenceMember) => {
+        ids.push(member.id);
+      });
+      setOnlineUserIds(ids);
+    });
 
-        if (!mounted) return;
+    channel.bind("pusher:member_added", (member: PresenceMember) => {
+      setOnlineUserIds((prev) => {
+        if (prev.includes(member.id)) return prev;
+        return [...prev, member.id];
+      });
+    });
 
-        const client = createRealtimeClient({
-          url: env.VITE_REALTIME_URL,
-          onError: (error) => {
-            console.error("Presence realtime error:", error);
-          },
-        });
-
-        const room = client.room({
-          name: roomName,
-          grant,
-          onRefreshGrant: async () => {
-            const refreshed = await orpcClient.realtime.issuePresenceRoomGrant({
-              channelId,
-            });
-            return refreshed.grant;
-          },
-          onPresenceSync: handlePresenceSync,
-          onPresenceJoin: handlePresenceJoin,
-          onPresenceLeave: handlePresenceLeave,
-        });
-
-        client.connect();
-
-        // Wait for server to send ready message before joining room
-        await client.waitForReady();
-
-        if (!mounted) return;
-
-        room.join();
-
-        // Wait for server to confirm room join before tracking presence
-        await room.waitForJoin();
-
-        if (!mounted) return;
-
-        room.trackPresence({ user_id: user.id });
-
-        clientRef.current = client;
-        roomRef.current = room;
-      } catch (error) {
-        console.error("Failed to setup presence realtime:", error);
-      }
-    };
-
-    setupRealtime();
+    channel.bind("pusher:member_removed", (member: PresenceMember) => {
+      setOnlineUserIds((prev) => prev.filter((id) => id !== member.id));
+    });
 
     return () => {
-      mounted = false;
-
-      if (roomRef.current) {
-        roomRef.current.leave();
-        roomRef.current = null;
-      }
-
-      if (clientRef.current) {
-        clientRef.current.disconnect();
-        clientRef.current = null;
-      }
-
+      channel.unbind_all();
+      pusher.unsubscribe(channelName);
+      channelRef.current = null;
       setOnlineUserIds([]);
     };
-  }, [
-    channelId,
-    user?.id,
-    handlePresenceSync,
-    handlePresenceJoin,
-    handlePresenceLeave,
-  ]);
+  }, [channelId, user]);
 
   return {
     onlineUserIds,

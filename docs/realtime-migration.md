@@ -1,283 +1,259 @@
-# Supabase → Self‑Hosted Realtime Migration (work-holo)
+# Supabase → Soketi/Pusher Realtime Migration (work-holo)
 
 ## 1) Overview
-This refactor removes the remaining Supabase Realtime footprint and replaces realtime presence/typing with a **self-hosted WebSocket service** backed by **Redis Pub/Sub** and **JWT-based room grants**.
+
+This refactor removes the custom self-hosted WebSocket service and replaces realtime presence/typing with **Soketi** (open-source Pusher-compatible WebSocket server) using the **Pusher SDK**.
 
 **Primary goals**
-- Eliminate Supabase Realtime dependencies and config.
-- Provide a stable realtime protocol for:
-  - room join/leave
-  - broadcast (typing)
-  - presence tracking/sync
-- Make reconnection *reliable* by automatically:
-  - reconnecting
-  - rejoining rooms
-  - re-tracking presence
-  - refreshing **expired room grants** and retrying the join silently
+- Eliminate custom realtime server complexity
+- Use battle-tested Pusher protocol for:
+  - presence channels (who's online)
+  - private channels (typing indicators)
+  - client events (peer-to-peer messages)
+- Leverage Soketi for self-hosted, Pusher-compatible infrastructure
 
 **Repo layout (monorepo)**
-- `apps/realtime/` — Elysia (Bun) WebSocket server
-- `packages/realtime-client/` — Web client library
-- `packages/realtime-shared/` — Shared protocol (Zod + TS types)
-- `packages/realtime-api/` — Server-side utilities (grant verifier, registry, presence, redis adapter)
-- `packages/api/` — oRPC endpoints that issue grants
-- `apps/web/` — React hooks that use realtime client
+- `packages/api/src/lib/pusher.ts` — Server-side Pusher client
+- `packages/api/src/routers/realtime/` — Channel authorization endpoint
+- `apps/web/src/lib/pusher.ts` — Web client Pusher wrapper
+- `apps/web/src/hooks/communications/` — React hooks for presence/typing
 
 ---
 
 ## 2) Before vs After
 
-### Before (Supabase Realtime)
-- Client joined supabase channels via `supabase.channel(...)` (presence/broadcast)
-- Required Supabase env vars, package deps, and supabase CLI artifacts
+### Before (Custom WebSocket Server)
+- Custom Elysia WebSocket server in `apps/realtime/`
+- Custom protocol with JWT grants
+- Custom client library in `packages/realtime-client/`
+- Required maintaining WebSocket reconnection, room management, presence tracking
 
-### After (Self-hosted)
-- Client connects to `VITE_REALTIME_URL` WebSocket endpoint and joins rooms via protocol messages.
-- Authorization is via **short-lived JWT grants** issued by the API.
-- Server is stateless for membership checks at join time (validate JWT + room match).
+### After (Soketi + Pusher SDK)
+- Soketi runs as Docker container (Pusher-compatible)
+- Standard Pusher SDK handles connections, reconnection, channels
+- Server authorizes channels via `pusher.authorizeChannel()`
+- No custom protocol or client library needed
 
 ---
 
 ## 3) Architecture
 
-### 3.1 Server (`apps/realtime`)
-**Key file:** `apps/realtime/src/websocket.ts`
+### 3.1 Soketi Server (Docker)
 
-Responsibilities
-- Accept WebSocket connections at `/ws`.
-- Emit `ready` with `connectionId`.
-- Handle `room:join`, `room:leave`, `broadcast:send`, `presence:track`, `presence:untrack`, `ping`.
-- Verify join grants (`GrantVerifier`) and enforce room membership.
-- Use Redis Pub/Sub to broadcast messages across nodes.
-- Use `PresenceTracker` to read/write presence state in Redis.
+Soketi runs as a container in `docker-compose.yml`:
 
-Internal collaborators
-- `ConnectionRegistry` — tracks connections and room membership
-- `GrantVerifier` — validates JWT grant signature + room binding
-- `RedisAdapter` — publish/subscribe wrapper
-- `PresenceTracker` — presence state storage + retrieval
+```yaml
+soketi:
+  image: quay.io/soketi/soketi:1.6-16-debian
+  ports:
+    - "6001:6001"
+    - "9601:9601"
+  environment:
+    SOKETI_DEBUG: "1"
+    SOKETI_DEFAULT_APP_ID: work-holo
+    SOKETI_DEFAULT_APP_KEY: work-holo-key
+    SOKETI_DEFAULT_APP_SECRET: work-holo-secret
+    SOKETI_DEFAULT_APP_ENABLE_CLIENT_MESSAGES: "true"
+```
 
+### 3.2 Server (`packages/api`)
 
-### 3.2 Client (`packages/realtime-client`)
-**Key files**
-- `packages/realtime-client/src/client.ts` — message multiplexer + room management
-- `packages/realtime-client/src/room.ts` — per-room join/broadcast/presence + grant refresh
-- `packages/realtime-client/src/websocket.ts` — reconnect/transport wrapper
+**Pusher client:** `packages/api/src/lib/pusher.ts`
+- Initializes Pusher server SDK with Soketi connection details
+- Used to authorize private/presence channels
 
-Responsibilities
-- Maintain a WebSocket connection.
-- Manage multiple `Room` instances keyed by room name.
-- On reconnect, automatically rejoin existing rooms.
-- Restore presence tracking after room rejoin.
+**Authorization endpoint:** `packages/api/src/routers/realtime/index.ts`
+- Validates user is authenticated
+- Validates user has access to the channel
+- Returns `pusher.authorizeChannel()` response
 
+### 3.3 Web Client (`apps/web`)
 
-### 3.3 Shared protocol (`packages/realtime-shared`)
-**Key file:** `packages/realtime-shared/src/protocol.ts`
+**Pusher wrapper:** `apps/web/src/lib/pusher.ts`
+- Singleton Pusher client with custom authorizer
+- Authorizer calls API endpoint for channel auth
 
-- Zod schemas define a discriminated union `ClientMessage` and `ServerMessage`.
-- Errors are structured as:
-  - `{ type: "error", code: string, message: string, details?: Record<string, unknown> }`
+**Hooks:**
+- `use-channel-presence.ts` — Presence channel subscription
+- `use-typing-indicator.ts` — Private channel with client events
 
 ---
 
-## 4) Protocol & Message Flow
+## 4) Channel Naming Convention
 
-### 4.1 Typical join + broadcast
+| Purpose | Channel Pattern | Type |
+|---------|-----------------|------|
+| Presence (who's online) | `presence-channel-{channelId}` | Presence |
+| Typing indicators | `private-typing-{channelId}` | Private |
+
+**Client events must be prefixed with `client-`** (e.g., `client-typing`)
+
+---
+
+## 5) Protocol & Message Flow
+
+### 5.1 Presence Flow
+
 ```mermaid
 sequenceDiagram
   participant Web as Web App
   participant API as API (oRPC)
-  participant RT as Realtime (WS)
-  participant Redis as Redis
-
-  Web->>API: issueTypingRoomGrant({channelId})
-  API-->>Web: { room, grant }
-
-  Web->>RT: WS connect
-  RT-->>Web: {type:"ready", connectionId}
-
-  Web->>RT: {type:"room:join", room, grant}
-  RT-->>Web: {type:"room:joined", room}
-
-  Web->>RT: {type:"broadcast:send", room, event:"typing", payload}
-  RT->>Redis: publish(room, payload)
-  Redis-->>RT: deliver to subscribers
-  RT-->>Web: {type:"broadcast:event", room, event, payload, senderId}
+  participant Soketi as Soketi
+  
+  Web->>Soketi: Subscribe to presence-channel-{id}
+  Soketi->>Web: Auth required
+  Web->>API: POST /realtime.authorize
+  API-->>Web: { auth: "...", channel_data: {...} }
+  Web->>Soketi: Auth response
+  Soketi-->>Web: subscription_succeeded + members
+  Soketi-->>Web: member_added / member_removed
 ```
 
-### 4.2 Presence flow
-- Client joins a presence room
-- Client sends `presence:track` with `{ state: { user_id: ... } }`
-- Server:
-  - stores state
-  - notifies others (`presence:join`)
-  - returns `presence:sync` to sender
+### 5.2 Typing Flow
+
+```mermaid
+sequenceDiagram
+  participant A as User A
+  participant Soketi as Soketi
+  participant B as User B
+  
+  A->>Soketi: Subscribe to private-typing-{id}
+  B->>Soketi: Subscribe to private-typing-{id}
+  A->>Soketi: trigger("client-typing", {userId, isTyping})
+  Soketi-->>B: client-typing event
+```
 
 ---
 
-## 5) Grant Model (JWT room grants)
+## 6) Configuration / Environment
 
-### 5.1 Issuance (API)
-**Key file:** `packages/api/src/routers/realtime/index.ts`
+### Required env vars
 
-- Endpoints issue short-lived JWT grants.
-- Example use cases:
-  - presence room grant (caps: `presence`)
-  - typing room grant (caps: `broadcast`)
-- Shared signing secret: `REALTIME_GRANT_SECRET`
+**Web app** (`apps/web/.env`)
+```
+VITE_PUSHER_KEY=work-holo-key
+VITE_PUSHER_HOST=localhost
+VITE_PUSHER_PORT=6001
+```
 
-### 5.2 Verification (Realtime server)
-**Key file:** `apps/realtime/src/websocket.ts`
-
-- `handleRoomJoin()` verifies:
-  - JWT is valid
-  - JWT is bound to the requested room
-- On verification failure, server emits an error.
-
----
-
-## 6) Reconnect Restoration & Grant Refresh
-
-### 6.1 Reconnect restoration (rooms)
-**Key file:** `packages/realtime-client/src/client.ts`
-
-- When server sends `ready` (including after reconnect), client:
-  - stores new `connectionId`
-  - calls `room.rejoin()` for all known rooms
-
-### 6.2 Presence restoration
-**Key file:** `packages/realtime-client/src/room.ts`
-
-- `Room.trackPresence(state)` persists the last tracked state in memory.
-- After receiving `room:joined`, the room automatically re-sends `presence:track` with the saved state.
-
-### 6.3 Grant expiration + silent refresh
-Grants expire (~5 min). If the tab reconnects later, `room:join` can fail.
-
-Implemented behavior (silent, single retry):
-1. Server sends `error` with `code: "INVALID_GRANT"` and `details.room` (see below).
-2. Client routes the error to the matching `Room`.
-3. Room calls `onRefreshGrant()` to fetch a new grant.
-4. Room retries `room:join` once.
-5. Only if refresh/retry is not possible does the global `onError` run.
-
-**Server change (error context)**
-- `apps/realtime/src/websocket.ts`
-  - For join-related errors, includes:
-    - `details: { room: message.room, action: "room:join" }`
-
-**Client change (routing)**
-- `packages/realtime-client/src/client.ts`
-  - On `type: "error"`, checks `message.details?.room` and dispatches to that Room.
-
-**Room change (refresh + retry guard)**
-- `packages/realtime-client/src/room.ts`
-  - Stores grant in a mutable field: `private grant: string`
-  - Adds `hasRetriedJoinAfterRefresh` to avoid loops
-  - `handleJoinError(code)` returns whether it handled the error
+**API server** (`apps/server/.env`)
+```
+PUSHER_APP_ID=work-holo
+PUSHER_APP_KEY=work-holo-key
+PUSHER_APP_SECRET=work-holo-secret
+PUSHER_HOST=localhost
+PUSHER_PORT=6001
+```
 
 ---
 
 ## 7) Web App Integration
 
 ### 7.1 Presence hook
+
 **File:** `apps/web/src/hooks/communications/use-channel-presence.ts`
 
-- Requests initial grant via:
-  - `orpcClient.realtime.issuePresenceRoomGrant({ channelId })`
-- Creates room with:
-  - `onRefreshGrant: () => issuePresenceRoomGrant({ channelId }).grant`
-- Sequence:
-  - connect → waitForReady → join → waitForJoin → trackPresence
+```typescript
+const channel = pusherClient.subscribe(`presence-channel-${channelId}`);
+
+channel.bind("pusher:subscription_succeeded", (members) => {
+  // Initial member list
+});
+
+channel.bind("pusher:member_added", (member) => {
+  // User joined
+});
+
+channel.bind("pusher:member_removed", (member) => {
+  // User left
+});
+```
 
 ### 7.2 Typing hook
+
 **File:** `apps/web/src/hooks/communications/use-typing-indicator.ts`
 
-- Requests initial grant via:
-  - `orpcClient.realtime.issueTypingRoomGrant({ channelId })`
-- Creates room with:
-  - `onRefreshGrant: () => issueTypingRoomGrant({ channelId }).grant`
-- Broadcast typing via `room.broadcast("typing", payload)`.
+```typescript
+const channel = pusherClient.subscribe(`private-typing-${channelId}`);
+
+// Listen for typing events
+channel.bind("client-typing", ({ userId, isTyping }) => {
+  // Update typing state
+});
+
+// Send typing event
+channel.trigger("client-typing", { userId, isTyping: true });
+```
 
 ---
 
-## 8) Supabase Cleanup (what was removed)
+## 8) Removed Packages
 
-### 8.1 Web app
-- `apps/web/package.json`
-  - removed dependency: `@supabase/supabase-js`
-- `apps/web/vite.config.ts`
-  - removed manual chunk entry for supabase
-- `apps/web/.env.example`
-  - removed Supabase env placeholders (e.g. `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`)
-- `apps/web/src/lib/supabase/index.ts`
-  - removed legacy supabase wrapper
+The following were removed in this migration:
 
-### 8.2 Database package
-- `packages/db/package.json`
-  - removed `supabase` CLI dev dependency
-- `packages/db/supabase/`
-  - removed Supabase CLI config directory
-- `packages/db/src/lib/supabase/types.ts`
-  - removed Supabase-generated DB types
-
-### 8.3 Server app
-- `apps/server/package.json`
-  - removed `"trustedDependencies": ["supabase"]`
-- `apps/server/.env.example`
-  - removed Supabase env placeholders
+- `apps/realtime/` — Custom Elysia WebSocket server
+- `packages/realtime-client/` — Custom WebSocket client
+- `packages/realtime-shared/` — Shared protocol types
+- `packages/realtime-api/` — Server-side utilities
+- `packages/env/src/realtime.ts` — Realtime env schema
 
 ---
 
-## 9) Configuration / Environment
+## 9) How to Run Locally
 
-### Required env vars
-- **Realtime server** (`apps/realtime/.env`)
-  - `REALTIME_GRANT_SECRET` — JWT verification secret
-  - `REDIS_URL` — Redis connection
-- **API server** (`apps/server/.env`)
-  - `REALTIME_GRANT_SECRET` — JWT signing secret (must match realtime)
-- **Web app** (`apps/web/.env`)
-  - `VITE_REALTIME_URL` — WebSocket URL, e.g. `ws://localhost:3002/ws`
+1. Start Docker services:
+   ```bash
+   docker-compose up -d
+   ```
 
----
+2. Ensure env vars are set (see section 6)
 
-## 10) How to Run Locally
-1. Start Redis.
-2. Provide matching `REALTIME_GRANT_SECRET` in both API + realtime.
 3. Run dev:
-   - `bun run dev`
+   ```bash
+   bun run dev
+   ```
 
 ---
 
-## 11) Verification Checklist
+## 10) Verification Checklist
 
 ### Basic
-- [ ] WebSocket connects and receives `{type:"ready"}`.
-- [ ] Room join succeeds and `room:joined` is received.
-- [ ] Typing broadcast is received by other peers in room.
-- [ ] Presence sync/join/leave flows work.
+- [ ] Pusher client connects to Soketi
+- [ ] Presence channel subscription succeeds
+- [ ] Members list populated on subscription
+- [ ] member_added/member_removed events fire
 
-### Reconnect
-- [ ] Stop realtime server, restart it.
-- [ ] Client reconnects.
-- [ ] Client automatically rejoins rooms.
-- [ ] Presence is automatically re-tracked after rejoin.
+### Typing
+- [ ] Private channel subscription succeeds
+- [ ] client-typing events sent and received
+- [ ] Typing indicator shows/hides correctly
 
-### Grant expiry recovery
-- [ ] Wait past grant TTL (or simulate).
-- [ ] Trigger reconnect.
-- [ ] Initial `room:join` fails with `INVALID_GRANT`.
-- [ ] Client refreshes grant via `onRefreshGrant` and rejoins silently.
+### Reconnection
+- [ ] Stop Soketi, restart it
+- [ ] Client reconnects automatically
+- [ ] Channels resubscribed after reconnect
 
 ---
 
-## 12) Known Notes
-- Repo-wide `bun run check-types` currently reports unrelated existing TS issues in `apps/web`. The migration-specific files compile as part of the change, but the overall typecheck isn’t clean due to pre-existing errors.
+## 11) Production Considerations
+
+### Soketi Deployment
+- Use managed Pusher service OR self-host Soketi
+- Configure horizontal scaling with Redis adapter
+- Set proper app credentials (not defaults)
+
+### Security
+- Use TLS (wss://) in production
+- Rotate app secrets periodically
+- Validate channel access in authorization endpoint
 
 ---
 
-## 13) Future Improvements (optional)
-- Add `details.room` to more server errors (`NOT_IN_ROOM`, `LEAVE_FAILED`) for consistency.
-- Add explicit error codes for expired vs invalid grants if the verifier distinguishes them.
-- Add tests for reconnect + grant refresh flows.
+## 12) Migration from Previous Custom System
+
+If migrating from the previous custom realtime system:
+
+1. Remove old packages (already done)
+2. Update env vars (REALTIME_* → PUSHER_*)
+3. Update hooks to use Pusher SDK patterns
+4. Test presence and typing functionality

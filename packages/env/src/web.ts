@@ -6,9 +6,11 @@ export const env = createEnv({
   client: {
     VITE_WEB_URL: z.url(),
     VITE_SERVER_URL: z.url(),
-    VITE_REALTIME_URL: z.url(),
     VITE_IMAGE_TRANSFORMATION_URL: z.url(),
     VITE_ENV: z.enum(["development", "staging", "production"]),
+    VITE_PUSHER_KEY: z.string().min(1),
+    VITE_PUSHER_HOST: z.string().min(1),
+    VITE_PUSHER_PORT: z.coerce.number().default(6001),
   },
   runtimeEnv: import.meta.env,
   skipValidation: !!import.meta.env.SKIP_ENV_VALIDATION,
