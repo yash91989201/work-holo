@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { env } from "@work-holo/env/realtime";
 import {
   type Connection,
   ConnectionRegistry,
@@ -17,7 +18,6 @@ import {
   type ServerMessage,
 } from "@work-holo/realtime-shared";
 import { Elysia } from "elysia";
-import { env } from "./env";
 
 const registry = new ConnectionRegistry();
 const grantVerifier = new GrantVerifier(env.REALTIME_GRANT_SECRET);

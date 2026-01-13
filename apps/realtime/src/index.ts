@@ -1,4 +1,4 @@
-import { env } from "./env";
+import { env } from "@work-holo/env/realtime";
 import { app } from "./websocket";
 
 app.listen(env.PORT);

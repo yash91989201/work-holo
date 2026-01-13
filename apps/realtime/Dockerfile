@@ -8,10 +8,11 @@ WORKDIR /app
 
 COPY package.json bun.lock bunfig.toml ./
 
-COPY apps/realtime/package.json apps/realtime/
 COPY packages/config/package.json packages/config/
+COPY packages/env/package.json packages/env/
 COPY packages/realtime-api/package.json packages/realtime-api/
 COPY packages/realtime-shared/package.json packages/realtime-shared/
+COPY apps/realtime/package.json apps/realtime/
 
 RUN --mount=type=cache,target=/root/.bun/install/cache \
   bun install
@@ -20,14 +21,15 @@ FROM deps AS builder
 WORKDIR /app
 
 COPY packages/config packages/config
-
 COPY packages/realtime-shared/tsconfig.json packages/realtime-shared/
-COPY packages/realtime-shared/src packages/realtime-shared/src
-
 COPY packages/realtime-api/tsconfig.json packages/realtime-api/
-COPY packages/realtime-api/src packages/realtime-api/src
-
 COPY apps/realtime/tsconfig.json apps/realtime/
+
+COPY packages/env/tsconfig.json packages/env/
+
+COPY packages/env/src/realtime.ts packages/env/src/
+COPY packages/realtime-shared/src packages/realtime-shared/src
+COPY packages/realtime-api/src packages/realtime-api/src
 COPY apps/realtime/src apps/realtime/src
 
 RUN bun build \

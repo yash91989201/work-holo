@@ -7,11 +7,12 @@ FROM oven/bun:1.3.4-slim AS deps
 WORKDIR /app
 
 COPY package.json bun.lock bunfig.toml ./
-COPY apps/web/package.json apps/web/
 COPY packages/config/package.json packages/config/
-COPY packages/api/package.json packages/api/
-COPY packages/auth/package.json packages/auth/
+COPY packages/env/package.json packages/env/
 COPY packages/db/package.json packages/db/
+COPY packages/auth/package.json packages/auth/
+COPY packages/api/package.json packages/api/
+COPY apps/web/package.json apps/web/
 
 RUN --mount=type=cache,target=/root/.bun/install/cache \
   bun install
@@ -23,15 +24,16 @@ FROM deps AS builder
 WORKDIR /app
 
 COPY packages/config packages/config
+COPY packages/env/tsconfig.json packages/env/
 COPY packages/db/tsconfig.json packages/db/
 COPY packages/auth/tsconfig.json packages/auth/
 COPY packages/api/tsconfig.json packages/api/
 
-COPY packages/db/src packages/db/src
 COPY packages/db/drizzle.config.ts packages/db/
 
+COPY packages/env/src/server.ts packages/env/src/
+COPY packages/db/src packages/db/src
 COPY packages/auth/src packages/auth/src
-
 COPY packages/api/src packages/api/src
 
 COPY apps/web apps/web
@@ -47,12 +49,6 @@ ENV VITE_SERVER_URL=$VITE_SERVER_URL
 
 ARG VITE_IMAGE_TRANSFORMATION_URL
 ENV VITE_IMAGE_TRANSFORMATION_URL=$VITE_IMAGE_TRANSFORMATION_URL
-
-ARG VITE_SUPABASE_URL
-ENV VITE_SUPABASE_URL=$VITE_SUPABASE_URL
-
-ARG VITE_SUPABASE_PUBLISHABLE_KEY
-ENV VITE_SUPABASE_PUBLISHABLE_KEY=$VITE_SUPABASE_PUBLISHABLE_KEY
 
 WORKDIR /app/apps/web
 RUN bun run build

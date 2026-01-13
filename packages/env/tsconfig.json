@@ -1,0 +1,3 @@
+{
+  "extends": "@work-holo/config/tsconfig.base.json"
+}

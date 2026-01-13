@@ -10,11 +10,10 @@
     "start": "bun run dist/index.js"
   },
   "dependencies": {
-    "@t3-oss/env-core": "^0.13.10",
+    "@work-holo/env": "workspace:*",
     "@work-holo/api": "workspace:*",
     "@work-holo/auth": "workspace:*",
     "@work-holo/db": "workspace:*",
-    "zod": "^4.3.5",
     "hono": "^4.11.3",
     "@orpc/server": "^1.13.2",
     "@orpc/openapi": "^1.13.2",
