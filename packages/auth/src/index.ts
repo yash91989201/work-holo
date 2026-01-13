@@ -8,7 +8,6 @@ import {
   admin,
   emailOTP,
   haveIBeenPwned,
-  jwt,
   lastLoginMethod,
   magicLink,
   multiSession,
@@ -56,7 +55,6 @@ export const auth = betterAuth({
     haveIBeenPwned(),
     lastLoginMethod(),
     multiSession(),
-    jwt(),
     organization({
       teams: {
         enabled: true,
