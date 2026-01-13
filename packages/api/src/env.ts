@@ -7,7 +7,7 @@ export const env = createEnv({
     PUSHER_APP_ID: z.string().min(1),
     PUSHER_APP_KEY: z.string().min(1),
     PUSHER_APP_SECRET: z.string().min(1),
-    PUSHER_HOST: z.string().default("localhost"),
+    PUSHER_HOST: z.string(),
     PUSHER_PORT: z.coerce.number().default(6001),
     S3_ENDPOINT: z.string(),
     S3_ACCESS_KEY: z.string(),
