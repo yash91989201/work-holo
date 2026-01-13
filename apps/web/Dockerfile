@@ -14,7 +14,7 @@ COPY packages/auth/package.json packages/auth/
 COPY packages/api/package.json packages/api/
 COPY apps/web/package.json apps/web/
 COPY packages/realtime-shared/package.json packages/realtime-shared/
-COPY packages/realtime-shared/package.json packages/realtime-shared/
+COPY packages/realtime-client/package.json packages/realtime-client/
 
 RUN --mount=type=cache,target=/root/.bun/install/cache \
   bun install
