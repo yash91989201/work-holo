@@ -1,13 +1,8 @@
+import { env } from "@work-holo/env/web";
 import { createRealtimeClient } from "@work-holo/realtime-client";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { env } from "@/env";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { orpcClient } from "@/utils/orpc";
-
-interface PresencePayload {
-  user_id: string;
-  status?: "online" | "away" | "offline";
-}
 
 export const useChannelPresence = (channelId: string | null) => {
   const { user } = useAuthedSession();

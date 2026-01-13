@@ -1,5 +1,5 @@
+import { env } from "@work-holo/env/realtime";
 import { createRemoteJWKSet, jwtVerify } from "jose";
-import { env } from "./env";
 
 const JWKS = createRemoteJWKSet(new URL(env.AUTH_JWKS_URL));
 

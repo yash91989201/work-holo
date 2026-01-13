@@ -3,6 +3,7 @@ import { RPCLink } from "@orpc/client/fetch";
 import { createTanstackQueryUtils } from "@orpc/tanstack-query";
 import { QueryCache, QueryClient } from "@tanstack/react-query";
 import type { AppRouterClient } from "@work-holo/api/routers/index";
+import { env } from "@work-holo/env/native";
 import { authClient } from "@/lib/auth-client";
 
 export const queryClient = new QueryClient({
@@ -14,7 +15,7 @@ export const queryClient = new QueryClient({
 });
 
 export const link = new RPCLink({
-  url: `${process.env.EXPO_PUBLIC_SERVER_URL}/rpc`,
+  url: `${env.EXPO_PUBLIC_SERVER_URL}/rpc`,
   headers() {
     const headers = new Map<string, string>();
     const cookies = authClient.getCookie();

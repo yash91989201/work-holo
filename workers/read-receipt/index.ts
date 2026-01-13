@@ -1,6 +1,6 @@
 import { db } from "@work-holo/db";
+import { env } from "@work-holo/env/read-receipt";
 import amqp, { type Channel, type ChannelModel } from "amqplib";
-import { env } from "./env";
 import {
   cleanupMemberCountCache,
   processChannelReadReceiptsNow,

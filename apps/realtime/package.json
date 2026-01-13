@@ -8,10 +8,9 @@
     "start": "bun run src/index.ts"
   },
   "dependencies": {
-    "@t3-oss/env-core": "^0.13.10",
+    "@work-holo/env": "workspace:*",
     "@work-holo/realtime-api": "workspace:*",
     "@work-holo/realtime-shared": "workspace:*",
-    "zod": "^4.3.5",
     "elysia": "^1.4.21",
     "jose": "^6.1.3"
   },

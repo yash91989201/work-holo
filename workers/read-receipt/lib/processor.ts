@@ -7,16 +7,14 @@ import {
   messageReadTable,
   messageTable,
 } from "@work-holo/db/schema/index";
+import { env } from "@work-holo/env/read-receipt";
 import { and, count, eq, gt, isNotNull, isNull, sql } from "drizzle-orm";
-import { env } from "../env";
 
 const MAX_RECENT_READERS = 10;
 
-// Configuration from environment
 const MESSAGE_BATCH_SIZE = env.READ_RECEIPT_BATCH_SIZE;
 const MAX_MEMBERS_FOR_DETAILED_TRACKING = env.MAX_MEMBERS_FOR_DETAILED_TRACKING;
 
-// Cache for channel member counts (30 second TTL)
 const MEMBER_COUNT_CACHE_TTL = 30 * 1000; // 30 seconds in milliseconds
 const memberCountCache = new Map<
   string,
