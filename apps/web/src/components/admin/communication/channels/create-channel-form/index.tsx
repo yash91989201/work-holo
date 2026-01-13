@@ -1,8 +1,7 @@
-import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
+import { useStore } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { Loader, Plus } from "lucide-react";
 import { Suspense, useState } from "react";
-import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,15 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { useAppForm } from "@/components/ui/form/hooks";
 import {
   Select,
   SelectContent,
@@ -30,7 +21,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { CreateChannelFormSchema } from "@/lib/schemas/memeber/channel";
 import type { CreateChannelFormType } from "@/lib/types";
@@ -40,23 +30,9 @@ import { TeamSelect, TeamSelectSkeleton } from "./team-select";
 
 export const CreateChannelForm = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
-
   const { user } = useAuthedSession();
 
-  const form = useForm({
-    resolver: standardSchemaResolver(CreateChannelFormSchema),
-    defaultValues: {
-      name: "",
-      description: "",
-      isPublic: true,
-      type: "team",
-      teamId: undefined,
-      memberIds: [],
-      createdBy: user.id,
-    },
-  });
-
-  const { mutateAsync: createChannel } = useMutation(
+  const { mutateAsync: createChannel, isPending } = useMutation(
     queryUtils.communication.channel.create.mutationOptions({
       onSuccess: () => {
         queryClient.refetchQueries({
@@ -66,6 +42,7 @@ export const CreateChannelForm = () => {
         });
 
         toast.success("Channel created successfully");
+        setDialogOpen(false);
         form.reset();
       },
       onError: (error) => {
@@ -77,31 +54,39 @@ export const CreateChannelForm = () => {
     })
   );
 
-  const channelType = form.watch("type");
-
-  const onSubmit: SubmitHandler<CreateChannelFormType> = async (formData) => {
-    await createChannel(formData);
-
-    setDialogOpen(false);
-  };
-
-  const onReset = () => {
-    form.reset({
+  const form = useAppForm({
+    defaultValues: {
       name: "",
       description: "",
       isPublic: true,
       type: "team",
-    });
+      teamId: undefined,
+      memberIds: [],
+      createdBy: user.id,
+    } satisfies CreateChannelFormType as CreateChannelFormType,
+    validators: {
+      onSubmit: CreateChannelFormSchema,
+    },
+    onSubmit: async ({ value }) => {
+      await createChannel(value);
+    },
+  });
+
+  const channelType = useStore(form.store, (state) => state.values.type);
+
+  const onReset = () => {
+    form.reset();
   };
 
   return (
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
       <DialogTrigger asChild>
         <Button>
-          <Plus />
-          <span>New channel</span>
+          <Plus className="mr-1" />
+          New channel
         </Button>
       </DialogTrigger>
+
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Create New Channel</DialogTitle>
@@ -109,98 +94,74 @@ export const CreateChannelForm = () => {
             Create a new channel for your team to communicate and collaborate.
           </DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-          <form
-            className="space-y-4"
-            onReset={onReset}
-            onSubmit={form.handleSubmit(onSubmit)}
-          >
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Channel Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter channel name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Enter channel description"
-                      {...field}
-                      className="resize-none"
-                      rows={3}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Channel Type</FormLabel>
-                  <Select
-                    defaultValue={field.value}
-                    onValueChange={field.onChange}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select channel type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="team">Team</SelectItem>
-                      <SelectItem value="group">Group</SelectItem>
-                      {/* <SelectItem value="direct">Direct</SelectItem> */}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {channelType === "team" ? (
-              <Suspense fallback={<TeamSelectSkeleton />}>
-                <TeamSelect />
-              </Suspense>
-            ) : (
-              <Suspense fallback={<MembersSelectSkeleton />}>
-                <MembersSelect />
-              </Suspense>
+        <form
+          className="space-y-4"
+          onSubmit={(e) => {
+            e.preventDefault();
+            form.handleSubmit();
+          }}
+        >
+          <form.AppField name="name">
+            {(field) => (
+              <field.Input
+                label="Channel Name"
+                placeholder="Enter channel name"
+              />
             )}
+          </form.AppField>
 
-            <DialogFooter className="flex-row">
-              <Button type="reset" variant="outline">
-                Reset
-              </Button>
-              <Button disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? (
-                  <>
-                    <Loader className="mr-1.5 animate-spin" />
-                    <span>Creating ...</span>
-                  </>
-                ) : (
-                  <span>Create Channel</span>
-                )}
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
+          <form.AppField name="description">
+            {(field) => <field.Input label="Enter Channel Description" />}
+          </form.AppField>
+
+          <form.AppField name="type">
+            {(field) => (
+              <field.Select label="Channel Type">
+                <Select
+                  onValueChange={field.handleChange}
+                  value={field.state.value}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select channel type" />
+                  </SelectTrigger>
+
+                  <SelectContent>
+                    <SelectItem value="team">Team</SelectItem>
+                    <SelectItem value="group">Group</SelectItem>
+                  </SelectContent>
+                </Select>
+              </field.Select>
+            )}
+          </form.AppField>
+
+          {channelType === "team" ? (
+            <Suspense fallback={<TeamSelectSkeleton />}>
+              <TeamSelect />
+            </Suspense>
+          ) : (
+            <Suspense fallback={<MembersSelectSkeleton />}>
+              <MembersSelect />
+            </Suspense>
+          )}
+
+          <DialogFooter className="flex gap-2">
+            <Button onClick={onReset} type="button" variant="outline">
+              Reset
+            </Button>
+
+            <Button disabled={isPending} type="submit">
+              {isPending ? (
+                <>
+                  <Loader className="mr-1.5 animate-spin" />
+                  Creating...
+                </>
+              ) : (
+                "Create Channel"
+              )}
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );
