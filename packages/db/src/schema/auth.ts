@@ -216,14 +216,6 @@ export const invitation = pgTable(
   ]
 );
 
-export const jwks = pgTable("jwks", {
-  id: text("id").primaryKey(),
-  publicKey: text("publicKey").notNull(),
-  privateKey: text("privateKey").notNull(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  expiresAt: timestamp("expiresAt"),
-});
-
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),
