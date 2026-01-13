@@ -6,6 +6,7 @@ export const pusher = new Pusher({
   key: env.PUSHER_APP_KEY,
   secret: env.PUSHER_APP_SECRET,
   host: env.PUSHER_HOST,
-  port: String(env.PUSHER_PORT),
+  // FIX: Enable ports when deploying on k3s, disabled for now to work on coolify
+  // port: String(env.PUSHER_PORT),
   useTLS: env.ENV === "production",
 });
