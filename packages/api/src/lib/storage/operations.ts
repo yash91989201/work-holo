@@ -35,8 +35,7 @@ function generateFilePath(
 }
 
 function getPublicUrl(bucket: BucketName, filePath: string): string {
-  const baseUrl = env.S3_PUBLIC_URL || env.S3_ENDPOINT;
-  return `${baseUrl}/${bucket}/${filePath}`;
+  return `${env.S3_ENDPOINT}/${bucket}/${filePath}`;
 }
 
 function validateFileType(bucket: BucketName, contentType: string): boolean {

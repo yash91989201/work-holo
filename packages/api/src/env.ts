@@ -12,7 +12,6 @@ export const env = createEnv({
     S3_ENDPOINT: z.string(),
     S3_ACCESS_KEY: z.string(),
     S3_SECRET_KEY: z.string(),
-    S3_PUBLIC_URL: z.string().optional(),
     ELECTRIC_URL: z.url(),
     ELECTRIC_SECRET: z.string(),
     CORS_ORIGIN: z.string().transform((val) =>
