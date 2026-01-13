@@ -27,6 +27,7 @@ WORKDIR /app
 
 COPY packages/config packages/config
 COPY packages/env/tsconfig.json packages/env/
+COPY packages/env/src/web.ts packages/env/src/
 COPY packages/db/tsconfig.json packages/db/
 COPY packages/auth/tsconfig.json packages/auth/
 COPY packages/api/tsconfig.json packages/api/
