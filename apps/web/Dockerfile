@@ -13,6 +13,8 @@ COPY packages/db/package.json packages/db/
 COPY packages/auth/package.json packages/auth/
 COPY packages/api/package.json packages/api/
 COPY apps/web/package.json apps/web/
+COPY packages/realtime-shared/package.json packages/realtime-shared/
+COPY packages/realtime-shared/package.json packages/realtime-shared/
 
 RUN --mount=type=cache,target=/root/.bun/install/cache \
   bun install
@@ -28,6 +30,8 @@ COPY packages/env/tsconfig.json packages/env/
 COPY packages/db/tsconfig.json packages/db/
 COPY packages/auth/tsconfig.json packages/auth/
 COPY packages/api/tsconfig.json packages/api/
+COPY packages/realtime-shared/tsconfig.json packages/realtime-shared/
+COPY packages/realtime-client/tsconfig.json packages/realtime-client/
 
 COPY packages/db/drizzle.config.ts packages/db/
 
@@ -35,6 +39,8 @@ COPY packages/env/src/server.ts packages/env/src/
 COPY packages/db/src packages/db/src
 COPY packages/auth/src packages/auth/src
 COPY packages/api/src packages/api/src
+COPY packages/realtime-shared/src packages/realtime-shared/src
+COPY packages/realtime-client/src packages/realtime-client/src
 
 COPY apps/web apps/web
 
