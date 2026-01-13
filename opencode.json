@@ -11,11 +11,6 @@
       "command": ["npx", "shadcn@latest", "mcp"],
       "enabled": true
     },
-    "better-auth": {
-      "type": "remote",
-      "url": "https://mcp.chonkie.ai/better-auth/better-auth-builder/mcp",
-      "enabled": true
-    },
     "morph": {
       "type": "local",
       "command": ["npx", "-y", "@morphllm/morphmcp"],
