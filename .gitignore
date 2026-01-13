@@ -48,18 +48,3 @@ coverage
 .cache
 tmp
 temp
-
-# START Ruler Generated Files
-/.gemini/settings.json
-/.gemini/settings.json.bak
-/.mcp.json
-/.mcp.json.bak
-/.vscode/mcp.json
-/.vscode/mcp.json.bak
-/AGENTS.md
-/AGENTS.md.bak
-/CLAUDE.md
-/CLAUDE.md.bak
-/WARP.md
-/WARP.md.bak
-# END Ruler Generated Files
