@@ -13,6 +13,7 @@ COPY packages/db/package.json packages/db/
 COPY packages/auth/package.json packages/auth/
 COPY packages/api/package.json packages/api/
 COPY apps/server/package.json apps/server/
+COPY packages/realtime-shared/package.json packages/realtime-shared/
 
 # Use cache mount for Bun's cache
 RUN --mount=type=cache,target=/root/.bun/install/cache \
@@ -27,6 +28,7 @@ COPY packages/db/tsconfig.json packages/db/
 COPY packages/api/tsconfig.json packages/api/
 COPY packages/auth/tsconfig.json packages/auth/
 COPY apps/server/tsconfig.json apps/server/
+copy packages/realtime-shared/tsconfig.json packages/realtime-shared/
 
 COPY packages/db/drizzle.config.ts packages/db/
 COPY apps/server/tsdown.config.ts apps/server/
@@ -35,6 +37,7 @@ COPY packages/env/src/server.ts packages/env/src/
 COPY packages/db/src packages/db/src
 COPY packages/auth/src packages/auth/src
 COPY packages/api/src packages/api/src
+copy packages/realtime-shared/src packages/realtime-shared/src
 COPY apps/server/src apps/server/src
 
 # Build in parallel
