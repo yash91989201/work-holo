@@ -17,8 +17,7 @@ export function getPusherClient(): Pusher {
     wssPort: env.VITE_PUSHER_PORT,
     forceTLS: false,
     disableStats: true,
-    // TODO: temporary change to add xhr_streaming to make it work with coolify. change later
-    enabledTransports: ["ws", "wss", "xhr_streaming"],
+    enabledTransports: ["ws", "wss"],
     cluster: "mt1",
     authorizer: (channel) => ({
       authorize: async (socketId, callback) => {
