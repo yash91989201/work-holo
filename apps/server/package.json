@@ -10,16 +10,17 @@
     "start": "bun run dist/index.js"
   },
   "dependencies": {
-    "@work-holo/env": "workspace:*",
+    "@orpc/openapi": "^1.13.2",
+    "@orpc/server": "^1.13.2",
+    "@orpc/zod": "^1.13.2",
     "@work-holo/api": "workspace:*",
     "@work-holo/auth": "workspace:*",
     "@work-holo/db": "workspace:*",
-    "hono": "^4.11.3",
-    "@orpc/server": "^1.13.2",
-    "@orpc/openapi": "^1.13.2",
-    "@orpc/zod": "^1.13.2",
+    "@work-holo/env": "workspace:*",
     "better-auth": "^1.4.11",
-    "dotenv": "^17.2.3"
+    "dotenv": "^17.2.3",
+    "hono": "^4.11.3",
+    "pusher": "^5.3.2"
   },
   "devDependencies": {
     "typescript": "^5.9.3",
