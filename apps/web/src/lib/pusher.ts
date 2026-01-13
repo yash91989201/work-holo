@@ -13,8 +13,8 @@ export function getPusherClient(): Pusher {
 
   pusherClient = new Pusher(env.VITE_PUSHER_KEY, {
     wsHost: env.VITE_PUSHER_HOST,
-    wsPort: env.VITE_PUSHER_PORT,
-    wssPort: env.VITE_PUSHER_PORT,
+    // wsPort: env.VITE_PUSHER_PORT,
+    // wssPort: env.VITE_PUSHER_PORT,
     forceTLS: env.VITE_ENV === "production",
     disableStats: true,
     enabledTransports: ["ws", "wss"],
