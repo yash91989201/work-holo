@@ -3,6 +3,7 @@ import z from "zod";
 
 export const env = createEnv({
   server: {
+    ENV: z.enum(["development", "staging", "production"]),
     REDIS_URL: z.url(),
     PUSHER_APP_ID: z.string().min(1),
     PUSHER_APP_KEY: z.string().min(1),
