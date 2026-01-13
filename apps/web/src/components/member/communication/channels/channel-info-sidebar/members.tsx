@@ -92,7 +92,7 @@ export const Members = ({
               "overflow-hidden transition-[max-height,opacity,transform] duration-200 ease-out",
               showSearch
                 ? "max-h-16 translate-y-0 opacity-100"
-                : "-translate-y-1 max-h-0 opacity-0"
+                : "max-h-0 -translate-y-1 opacity-0"
             )}
           >
             <div className="p-3">

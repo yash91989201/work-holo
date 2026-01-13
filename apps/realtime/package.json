@@ -1,0 +1,24 @@
+{
+  "name": "realtime",
+  "main": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "check-types": "tsc -b",
+    "dev": "bun run --hot src/index.ts",
+    "start": "bun run src/index.ts"
+  },
+  "dependencies": {
+    "@t3-oss/env-core": "^0.13.10",
+    "@work-holo/realtime-api": "workspace:*",
+    "@work-holo/realtime-shared": "workspace:*",
+    "zod": "^4.3.5",
+    "elysia": "^1.4.21",
+    "jose": "^6.1.3"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.3.5",
+    "@work-holo/config": "workspace:*",
+    "bun-types": "^1.3.6",
+    "typescript": "^5.9.3"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "@work-holo/realtime-client",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "type": "module",
+  "scripts": {},
+  "devDependencies": {
+    "@work-holo/config": "workspace:*"
+  },
+  "peerDependencies": {
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@work-holo/realtime-shared": "workspace:*"
+  }
+}

@@ -79,7 +79,7 @@ export function NotificationSheet() {
   const triggerBadge = useMemo(
     () =>
       unreadCount > 0 ? (
-        <span className="-right-1 -top-1 pointer-events-none absolute inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 font-semibold text-[10px] text-destructive-foreground leading-none">
+        <span className="pointer-events-none absolute -top-1 -right-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 font-semibold text-[10px] text-destructive-foreground leading-none">
           {unreadCount > 99 ? "99+" : unreadCount}
         </span>
       ) : null,

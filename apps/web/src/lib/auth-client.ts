@@ -2,6 +2,7 @@ import { passkeyClient } from "@better-auth/passkey/client";
 import {
   adminClient,
   emailOTPClient,
+  jwtClient,
   lastLoginMethodClient,
   magicLinkClient,
   multiSessionClient,
@@ -24,6 +25,7 @@ export const authClient = createAuthClient({
     emailOTPClient(),
     lastLoginMethodClient(),
     multiSessionClient(),
+    jwtClient(),
     adminClient(),
     organizationClient({
       teams: {
