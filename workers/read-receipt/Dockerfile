@@ -28,7 +28,6 @@ COPY packages/env/src/read-receipt.ts packages/env/src/
 
 COPY workers/read-receipt/tsconfig.json workers/read-receipt/
 COPY workers/read-receipt/lib workers/read-receipt/lib
-COPY workers/read-receipt/env.ts workers/read-receipt/
 COPY workers/read-receipt/index.ts workers/read-receipt/
 
 WORKDIR /app/workers/read-receipt
