@@ -1,0 +1,14 @@
+{
+  "extends": "@work-holo/config/tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "dist",
+    "rootDirs": ["."],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "types": ["bun-types"],
+    "strictNullChecks": true
+  }
+}

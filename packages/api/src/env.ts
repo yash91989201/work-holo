@@ -4,6 +4,7 @@ import z from "zod";
 export const env = createEnv({
   server: {
     REDIS_URL: z.url(),
+    REALTIME_GRANT_SECRET: z.string().min(32),
     S3_ENDPOINT: z.string(),
     S3_ACCESS_KEY: z.string(),
     S3_SECRET_KEY: z.string(),

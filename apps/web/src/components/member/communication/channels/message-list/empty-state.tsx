@@ -15,7 +15,7 @@ export const EmptyState = () => (
         <EmptyMedia variant="icon">
           <div className="relative">
             <MessageCircle className="h-12 w-12 text-primary" />
-            <Sparkles className="-top-1 -right-1 absolute h-5 w-5 text-primary/70" />
+            <Sparkles className="absolute -top-1 -right-1 h-5 w-5 text-primary/70" />
           </div>
         </EmptyMedia>
         <EmptyTitle className="text-2xl">Welcome to the channel!</EmptyTitle>

@@ -215,7 +215,7 @@ export function PresenceRoster() {
                                 {initials}
                               </AvatarFallback>
                             </Avatar>
-                            <div className="-bottom-1.5 -right-1.5 absolute rounded-full border-2 border-background bg-background p-0.5">
+                            <div className="absolute -right-1.5 -bottom-1.5 rounded-full border-2 border-background bg-background p-0.5">
                               {config.icon}
                             </div>
                           </div>

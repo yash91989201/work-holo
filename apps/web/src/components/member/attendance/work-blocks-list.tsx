@@ -80,7 +80,7 @@ const WorkBlockItem = ({
   return (
     <div className="relative flex items-start">
       {!isLast && (
-        <div className="-ml-px absolute top-4 left-4 h-full w-0.5 bg-border" />
+        <div className="absolute top-4 left-4 -ml-px h-full w-0.5 bg-border" />
       )}
 
       <div className="z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-background ring-8 ring-card">

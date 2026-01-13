@@ -1,0 +1,27 @@
+export const HEARTBEAT_INTERVAL_MS = 30_000;
+export const HEARTBEAT_TIMEOUT_MS = 60_000;
+
+export const CONNECTION_TIMEOUT_MS = 60_000;
+
+export const RECONNECT_CONFIG = {
+  initialDelayMs: 1000,
+  maxDelayMs: 30_000,
+  multiplier: 1.5,
+  maxAttempts: Number.POSITIVE_INFINITY,
+} as const;
+
+export const JOIN_GRANT_TTL_SECONDS = 300;
+
+export const ERROR_CODES = {
+  INVALID_MESSAGE: "INVALID_MESSAGE",
+  AUTH_REQUIRED: "AUTH_REQUIRED",
+  INVALID_GRANT: "INVALID_GRANT",
+  GRANT_EXPIRED: "GRANT_EXPIRED",
+  ALREADY_IN_ROOM: "ALREADY_IN_ROOM",
+  NOT_IN_ROOM: "NOT_IN_ROOM",
+  ROOM_NOT_FOUND: "ROOM_NOT_FOUND",
+  UNAUTHORIZED: "UNAUTHORIZED",
+  INTERNAL_ERROR: "INTERNAL_ERROR",
+} as const;
+
+export type ErrorCode = (typeof ERROR_CODES)[keyof typeof ERROR_CODES];
