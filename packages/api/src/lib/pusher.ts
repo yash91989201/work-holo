@@ -7,5 +7,5 @@ export const pusher = new Pusher({
   secret: env.PUSHER_APP_SECRET,
   host: env.PUSHER_HOST,
   port: String(env.PUSHER_PORT),
-  useTLS: false,
+  useTLS: env.ENV === "production",
 });
