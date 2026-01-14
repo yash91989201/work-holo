@@ -21,8 +21,8 @@ export const CreateAttachmentInput = z.object({
     .max(100 * 1024 * 1024), // 100MB max
   mimeType: z.string().min(1).max(255),
   type: AttachmentTypeSchema,
-  supabaseStoragePath: z.string().min(1),
-  supabaseBucket: z.string().min(1),
+  storagePath: z.string().min(1),
+  bucket: z.string().min(1),
   thumbnailPath: z.string().optional(),
   isPublic: z.boolean().default(false),
 });
@@ -90,8 +90,8 @@ export const AttachmentOutput = z.object({
   fileSize: z.number(),
   mimeType: z.string(),
   type: AttachmentTypeSchema,
-  supabaseStoragePath: z.string(),
-  supabaseBucket: z.string(),
+  storagePath: z.string(),
+  bucket: z.string(),
   thumbnailPath: z.string().nullable(),
   uploadedBy: z.string(),
   uploaderName: z.string().nullable(),

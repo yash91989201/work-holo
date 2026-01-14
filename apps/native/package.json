@@ -21,6 +21,7 @@
     "@react-navigation/elements": "^2.8.4",
     "@tanstack/react-query": "^5.90.11",
     "@work-holo/api": "workspace:*",
+    "@work-holo/env": "workspace:*",
     "better-auth": "^1.4.3",
     "expo": "^54.0.28",
     "expo-constants": "~18.0.11",

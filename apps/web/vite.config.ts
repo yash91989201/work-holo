@@ -165,11 +165,6 @@ export default defineConfig({
           auth: ["better-auth"],
 
           // ---------------------------
-          // Supabase
-          // ---------------------------
-          supabase: ["@supabase/supabase-js"],
-
-          // ---------------------------
           // Electric SQL / Local-first DB
           // ---------------------------
           electric: ["@tanstack/electric-db-collection"],

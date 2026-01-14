@@ -1,6 +1,6 @@
 import { db } from "@work-holo/db";
+import { env } from "@work-holo/env/read-receipt";
 import amqp, { type Channel, type ChannelModel } from "amqplib";
-import { env } from "./env";
 import {
   cleanupMemberCountCache,
   processChannelReadReceiptsNow,
@@ -277,7 +277,7 @@ async function startWorker() {
   console.log("===========================================");
   console.log("Read Receipt Worker Starting...");
   console.log("===========================================");
-  console.log(`Environment: ${env.NODE_ENV}`);
+  console.log(`Environment: ${env.ENV}`);
   console.log(`RabbitMQ URL: ${env.RABBITMQ_URL}`);
   console.log(`Prefetch Count: ${PREFETCH_COUNT}`);
   console.log(`Batch Size: ${env.READ_RECEIPT_BATCH_SIZE}`);

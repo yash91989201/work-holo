@@ -1,80 +1,53 @@
-import type { RealtimeChannel } from "@supabase/supabase-js";
+import type { Members, PresenceChannel } from "pusher-js";
 import { useEffect, useRef, useState } from "react";
 import { useAuthedSession } from "@/hooks/use-authed-session";
-import { supabase } from "@/lib/supabase";
+import { getPusherClient } from "@/lib/pusher";
 
-interface PresencePayload {
-  user_id: string;
-  status?: "online" | "away" | "offline";
+interface PresenceMember {
+  id: string;
+  info: { name: string };
 }
 
 export const useChannelPresence = (channelId: string | null) => {
   const { user } = useAuthedSession();
-  const channelRef = useRef<RealtimeChannel | null>(null);
+  const channelRef = useRef<PresenceChannel | null>(null);
   const [onlineUserIds, setOnlineUserIds] = useState<string[]>([]);
 
   useEffect(() => {
-    if (channelRef.current) {
-      channelRef.current.unsubscribe();
-      channelRef.current = null;
-    }
-
     if (!(channelId && user)) {
       setOnlineUserIds([]);
       return;
     }
 
-    const presenceChannel = supabase
-      .channel(`org:channels:${channelId}:presence`)
-      .on("presence", { event: "sync" }, () => {
-        const state = presenceChannel.presenceState<PresencePayload>();
-        const idsSet = new Set<string>();
+    const pusher = getPusherClient();
+    const channelName = `presence-channel-${channelId}`;
+    const channel = pusher.subscribe(channelName) as PresenceChannel;
+    channelRef.current = channel;
 
-        for (const presences of Object.values(state)) {
-          for (const p of presences) {
-            if (p.user_id) idsSet.add(p.user_id);
-          }
-        }
-
-        setOnlineUserIds(Array.from(idsSet));
-      })
-      .on(
-        "presence",
-        { event: "join" },
-        ({ currentPresences }: { currentPresences: PresencePayload[] }) => {
-          setOnlineUserIds((prev) => {
-            const idsSet = new Set(prev);
-            for (const p of currentPresences) {
-              if (p.user_id) {
-                idsSet.add(p.user_id);
-              }
-            }
-            return Array.from(idsSet);
-          });
-        }
-      )
-      .on(
-        "presence",
-        { event: "leave" },
-        ({ leftPresences }: { leftPresences: PresencePayload[] }) => {
-          setOnlineUserIds((prev) =>
-            prev.filter((id) => !leftPresences.some((p) => p.user_id === id))
-          );
-        }
-      )
-      .subscribe(async (status) => {
-        if (status === "SUBSCRIBED") {
-          await presenceChannel.track({ user_id: user.id });
-        }
+    channel.bind("pusher:subscription_succeeded", (members: Members) => {
+      const ids: string[] = [];
+      members.each((member: PresenceMember) => {
+        ids.push(member.id);
       });
+      setOnlineUserIds(ids);
+    });
 
-    channelRef.current = presenceChannel;
+    channel.bind("pusher:member_added", (member: PresenceMember) => {
+      setOnlineUserIds((prev) => {
+        if (prev.includes(member.id)) return prev;
+        return [...prev, member.id];
+      });
+    });
+
+    channel.bind("pusher:member_removed", (member: PresenceMember) => {
+      setOnlineUserIds((prev) => prev.filter((id) => id !== member.id));
+    });
 
     return () => {
-      if (channelRef.current) {
-        channelRef.current.unsubscribe();
-        channelRef.current = null;
-      }
+      channel.unbind_all();
+      pusher.unsubscribe(channelName);
+      channelRef.current = null;
+      setOnlineUserIds([]);
     };
   }, [channelId, user]);
 

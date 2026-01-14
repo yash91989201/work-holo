@@ -3,9 +3,16 @@ import z from "zod";
 
 export const env = createEnv({
   server: {
+    ENV: z.enum(["development", "staging", "production"]),
     REDIS_URL: z.url(),
-    SUPABASE_URL: z.url(),
-    SUPABASE_SECRET_KEY: z.string(),
+    PUSHER_APP_ID: z.string().min(1),
+    PUSHER_APP_KEY: z.string().min(1),
+    PUSHER_APP_SECRET: z.string().min(1),
+    PUSHER_HOST: z.string(),
+    PUSHER_PORT: z.coerce.number().default(6001),
+    S3_ENDPOINT: z.string(),
+    S3_ACCESS_KEY: z.string(),
+    S3_SECRET_KEY: z.string(),
     ELECTRIC_URL: z.url(),
     ELECTRIC_SECRET: z.string(),
     CORS_ORIGIN: z.string().transform((val) =>

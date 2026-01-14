@@ -22,9 +22,9 @@ import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth-client";
 import { CreateOrgFormSchema } from "@/lib/schemas/org";
-import { supabase } from "@/lib/supabase";
 import type { CreateOrgFormType } from "@/lib/types";
 import { generateSlug } from "@/utils";
+import { uploadOrgLogo } from "@/utils/upload-helper";
 
 export const CreateOrgForm = () => {
   const navigate = useNavigate();
@@ -49,24 +49,7 @@ export const CreateOrgForm = () => {
 
       if (values.formState.logo) {
         const file = values.formState.logo;
-        const filePath = `${values.slug}/${file.name}`;
-
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from("org-logo")
-          .upload(filePath, file, {
-            cacheControl: "3600",
-            upsert: false,
-          });
-
-        if (uploadError) {
-          throw new Error(`File upload failed: ${uploadError.message}`);
-        }
-
-        const { data: urlData } = supabase.storage
-          .from("org-logo")
-          .getPublicUrl(uploadData.path);
-
-        logo = urlData.publicUrl;
+        logo = await uploadOrgLogo(file);
       }
 
       const { data: org, error } = await authClient.organization.create({
@@ -181,7 +164,7 @@ export const CreateOrgForm = () => {
                       }}
                     />
                     {isSlugValidating ? (
-                      <div className="-translate-y-1/2 absolute top-1/2 right-3">
+                      <div className="absolute top-1/2 right-3 -translate-y-1/2">
                         <Spinner />
                       </div>
                     ) : null}

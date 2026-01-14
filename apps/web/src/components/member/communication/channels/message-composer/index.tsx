@@ -5,11 +5,10 @@ import { useTypingIndicator } from "@/hooks/communications/use-typing-indicator"
 import { useAudioRecorder } from "@/hooks/use-audio-recorder";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { CHANNEL_MENTION, CHANNEL_MENTION_ID } from "@/lib/mentions";
-import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 import { useMaximizedMessageComposerActions } from "@/stores/channel-store";
 import { orpcClient } from "@/utils/orpc";
-import { uploadToSupabase } from "@/utils/upload-helper";
+import { uploadToStorage } from "@/utils/upload-helper";
 import { AttachmentPreviewList } from "./attachment-preview-list";
 import { AudioRecorder } from "./audio-recorder";
 import { MessageEditor } from "./message-editor";
@@ -195,38 +194,38 @@ export function MessageComposer({
       if (attachmentsToUpload.length > 0) {
         for (const attachment of attachmentsToUpload) {
           uploadPromises.push(
-            uploadToSupabase(
-              attachment.file,
-              "message-attachment",
-              user.id
-            ).then((uploaded) => {
-              const fileType = attachment.file.type;
-              let attachmentType:
-                | "image"
-                | "document"
-                | "video"
-                | "audio"
-                | "archive" = "document";
+            uploadToStorage(attachment.file, "message-attachment").then(
+              (uploaded) => {
+                const fileType = attachment.file.type;
+                let attachmentType:
+                  | "image"
+                  | "document"
+                  | "video"
+                  | "audio"
+                  | "archive" = "document";
 
-              if (fileType.startsWith("image/")) attachmentType = "image";
-              else if (fileType.startsWith("video/")) attachmentType = "video";
-              else if (fileType.startsWith("audio/")) attachmentType = "audio";
-              else if (
-                fileType.includes("zip") ||
-                fileType.includes("rar") ||
-                fileType.includes("7z")
-              )
-                attachmentType = "archive";
+                if (fileType.startsWith("image/")) attachmentType = "image";
+                else if (fileType.startsWith("video/"))
+                  attachmentType = "video";
+                else if (fileType.startsWith("audio/"))
+                  attachmentType = "audio";
+                else if (
+                  fileType.includes("zip") ||
+                  fileType.includes("rar") ||
+                  fileType.includes("7z")
+                )
+                  attachmentType = "archive";
 
-              return {
-                fileName: uploaded.fileName,
-                originalName: uploaded.originalName,
-                fileSize: uploaded.fileSize,
-                mimeType: uploaded.mimeType,
-                type: attachmentType,
-                url: uploaded.url,
-              };
-            })
+                return {
+                  fileName: uploaded.fileName,
+                  originalName: uploaded.originalName,
+                  fileSize: uploaded.fileSize,
+                  mimeType: uploaded.mimeType,
+                  type: attachmentType,
+                  url: uploaded.url,
+                };
+              }
+            )
           );
         }
       }
@@ -241,16 +240,14 @@ export function MessageComposer({
         );
 
         uploadPromises.push(
-          uploadToSupabase(audioFile, "message-audio", user.id).then(
-            (uploaded) => ({
-              fileName: uploaded.fileName,
-              originalName: uploaded.originalName,
-              fileSize: uploaded.fileSize,
-              mimeType: uploaded.mimeType,
-              type: "audio" as const,
-              url: uploaded.url,
-            })
-          )
+          uploadToStorage(audioFile, "message-audio").then((uploaded) => ({
+            fileName: uploaded.fileName,
+            originalName: uploaded.originalName,
+            fileSize: uploaded.fileSize,
+            mimeType: uploaded.mimeType,
+            type: "audio" as const,
+            url: uploaded.url,
+          }))
         );
       }
 
@@ -321,16 +318,13 @@ export function MessageComposer({
     async (id: string) => {
       const attachment = attachments.find((att) => att.id === id);
 
-      // If file was already uploaded to Supabase, delete it
+      // If file was already uploaded to storage, delete it via API
       if (attachment?.uploadedFileName) {
         try {
-          const { error } = await supabase.storage
-            .from("message-attachment")
-            .remove([attachment.uploadedFileName]);
-
-          if (error) {
-            console.error("Failed to delete attachment from Supabase:", error);
-          }
+          await orpcClient.storage.delete({
+            bucket: "message-attachment",
+            filePath: attachment.uploadedFileName,
+          });
         } catch (error) {
           console.error("Error deleting attachment:", error);
         }

@@ -11,11 +11,6 @@
       "command": ["npx", "shadcn@latest", "mcp"],
       "enabled": true
     },
-    "better-auth": {
-      "type": "remote",
-      "url": "https://mcp.chonkie.ai/better-auth/better-auth-builder/mcp",
-      "enabled": true
-    },
     "morph": {
       "type": "local",
       "command": ["npx", "-y", "@morphllm/morphmcp"],
@@ -23,6 +18,13 @@
       "environment": {
         "MORPH_API_KEY": "{env:MORPH_API_KEY}",
         "ENABLED_TOOLS": "edit_file,warpgrep_codebase_search"
+      }
+    },
+    "tavily": {
+      "command": ["npx", "-y", "tavily-mcp"],
+      "type": "local",
+      "environment": {
+        "TAVILY_API_KEY": "{env:TAVILY_API_KEY}"
       }
     }
   }
