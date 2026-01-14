@@ -19,7 +19,9 @@ services:
       - "-c"
       - "max_wal_senders=10"
       - "-c"
-      - "max_replication_slots=10"
+      - "max_replication_slots=12"
+      - "-c"
+      - "max_slot_wal_keep_size=4GB"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -105,7 +107,11 @@ services:
       SOKETI_DEFAULT_APP_SECRET: "work-holo-secret-must-be-32-chars"
       SOKETI_DEFAULT_APP_ENABLE_CLIENT_MESSAGES: "true"
     healthcheck:
-      test: ["CMD-SHELL", "node -e \"const http = require('http'); const req = http.request({hostname: 'localhost', port: 6001, path: '/', method: 'GET'}, (res) => { process.exit(res.statusCode === 200 || res.statusCode === 404 ? 0 : 1); }); req.on('error', () => process.exit(1)); req.end();\""]
+      test:
+        [
+          "CMD-SHELL",
+          'node -e "const http = require(''http''); const req = http.request({hostname: ''localhost'', port: 6001, path: ''/'', method: ''GET''}, (res) => { process.exit(res.statusCode === 200 || res.statusCode === 404 ? 0 : 1); }); req.on(''error'', () => process.exit(1)); req.end();"',
+        ]
       interval: 10s
       timeout: 5s
       retries: 3
