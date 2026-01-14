@@ -32,7 +32,10 @@ export const CreateChannelForm = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { user } = useAuthedSession();
 
+<<<<<<< HEAD
   // Mutation to create a channel
+=======
+>>>>>>> 2975589fb2bd0978c9dc51bdba58eaed20ef03e0
   const { mutateAsync: createChannel, isPending } = useMutation(
     queryUtils.communication.channel.create.mutationOptions({
       onSuccess: () => {
@@ -56,7 +59,10 @@ export const CreateChannelForm = () => {
     })
   );
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2975589fb2bd0978c9dc51bdba58eaed20ef03e0
   const form = useAppForm({
     defaultValues: {
       name: "",
@@ -128,11 +134,18 @@ export const CreateChannelForm = () => {
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select channel type" />
                   </SelectTrigger>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2975589fb2bd0978c9dc51bdba58eaed20ef03e0
                   <SelectContent>
                     <SelectItem value="team">Team</SelectItem>
                     <SelectItem value="group">Group</SelectItem>
                   </SelectContent>
+<<<<<<< HEAD
                   s
+=======
+>>>>>>> 2975589fb2bd0978c9dc51bdba58eaed20ef03e0
                 </Select>
               </field.Select>
             )}
@@ -140,6 +153,7 @@ export const CreateChannelForm = () => {
 
           {channelType === "team" ? (
             <Suspense fallback={<TeamSelectSkeleton />}>
+<<<<<<< HEAD
               <TeamSelect createChannel={createChannel} />
             </Suspense>
           ) : (
@@ -149,6 +163,14 @@ export const CreateChannelForm = () => {
 
 
 
+=======
+              <TeamSelect />
+            </Suspense>
+          ) : (
+            <Suspense fallback={<MembersSelectSkeleton />}>
+              <MembersSelect />
+            </Suspense>
+>>>>>>> 2975589fb2bd0978c9dc51bdba58eaed20ef03e0
           )}
 
           <DialogFooter className="flex gap-2">
