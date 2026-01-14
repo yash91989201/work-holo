@@ -3,7 +3,7 @@
 # ============================================
 # Dependencies stage
 # ============================================
-FROM oven/bun:1.3.4-slim AS deps
+FROM oven/bun:1.3.6-slim AS deps
 WORKDIR /app
 
 COPY package.json bun.lock bunfig.toml ./
