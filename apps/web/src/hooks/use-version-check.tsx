@@ -1,6 +1,6 @@
+import { env } from "@work-holo/env/web";
 import { useCallback, useEffect, useRef } from "react";
 import { toast } from "sonner";
-import { env } from "../env";
 
 interface VersionInfo {
   hash: string;

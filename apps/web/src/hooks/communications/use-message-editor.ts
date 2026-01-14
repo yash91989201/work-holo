@@ -10,8 +10,8 @@ import StarterKit from "@tiptap/starter-kit";
 import type { SuggestionOptions } from "@tiptap/suggestion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import z from "zod";
-import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
+import { uploadMessageImage } from "@/utils/upload-helper";
 
 const URL_REGEX = /^[a-zA-Z]+:\/\//;
 
@@ -45,25 +45,6 @@ interface UseMessageEditorOptions {
   AutoLinkPreview: unknown;
 }
 
-const uploadImageToSupabase = async (file: File): Promise<string> => {
-  const bucket = "message-image";
-  const fileExt = file.name.split(".").pop();
-  const randomPrefix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
-  const fileName = `${randomPrefix}.${fileExt}`;
-
-  const { data, error } = await supabase.storage
-    .from(bucket)
-    .upload(fileName, file);
-
-  if (error || !data) throw new Error("Upload failed");
-
-  const { data: publicData } = supabase.storage
-    .from(bucket)
-    .getPublicUrl(data.path);
-
-  return publicData.publicUrl;
-};
-
 export function useMessageEditor({
   content,
   onChange,
@@ -95,7 +76,7 @@ export function useMessageEditor({
       for (const file of files) {
         if (!file.type.startsWith("image/")) continue;
         try {
-          const url = await uploadImageToSupabase(file);
+          const url = await uploadMessageImage(file);
           if (url) {
             editorRef.current
               ?.chain()
@@ -201,7 +182,7 @@ export function useMessageEditor({
           event.preventDefault();
           const file = imageItem.getAsFile();
           if (file) {
-            uploadImageToSupabase(file)
+            uploadMessageImage(file)
               .then((url) => {
                 if (url) {
                   editorRef.current
@@ -225,7 +206,7 @@ export function useMessageEditor({
         if (imageFiles.length > 0) {
           event.preventDefault();
           for (const file of imageFiles) {
-            uploadImageToSupabase(file)
+            uploadMessageImage(file)
               .then((url) => {
                 if (url) {
                   editorRef.current

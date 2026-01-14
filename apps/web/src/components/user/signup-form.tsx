@@ -147,7 +147,7 @@ export function SignUpForm() {
                     }}
                   />
                   {isCheckingAvailability && (
-                    <div className="-translate-y-1/2 absolute top-1/2 right-3">
+                    <div className="absolute top-1/2 right-3 -translate-y-1/2">
                       <Loader2 className="size-4 animate-spin text-muted-foreground" />
                     </div>
                   )}

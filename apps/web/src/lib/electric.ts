@@ -1,4 +1,4 @@
-import { env } from "@/env";
+import { env } from "@work-holo/env/web";
 
 export const ELECTRIC_SHAPE_BASE_URL = `${env.VITE_SERVER_URL}/electric/shapes`;
 

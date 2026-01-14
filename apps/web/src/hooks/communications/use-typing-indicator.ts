@@ -1,99 +1,91 @@
-import type { RealtimeChannel } from "@supabase/supabase-js";
-import { useEffect, useRef, useState } from "react";
+import type { Channel } from "pusher-js";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuthedSession } from "@/hooks/use-authed-session";
-import { supabase } from "@/lib/supabase";
+import { getPusherClient } from "@/lib/pusher";
 
 export interface TypingUser {
   userId: string;
   userName: string;
 }
 
+interface TypingPayload {
+  userId: string;
+  userName: string;
+  isTyping: boolean;
+  timestamp: string;
+}
+
 export function useTypingIndicator(channelId: string) {
   const { user } = useAuthedSession();
   const [typingUsers, setTypingUsers] = useState<TypingUser[]>([]);
-  const channelRef = useRef<RealtimeChannel | null>(null);
+  const channelRef = useRef<Channel | null>(null);
   const typingTimeoutsRef = useRef<Map<string, NodeJS.Timeout>>(new Map());
 
   useEffect(() => {
     if (!user?.id) return;
 
-    const channelName = `typing:${channelId}`;
-    const channel = supabase
-      .channel(channelName, {
-        config: {
-          broadcast: { self: false },
-        },
-      })
-      .on("broadcast", { event: "typing" }, (payload) => {
-        const { userId, userName, isTyping } = payload.payload as {
-          userId: string;
-          userName: string;
-          isTyping: boolean;
-        };
-
-        // Ignore own typing events
-        if (userId === user.id) return;
-
-        // Clear existing timeout for this user
-        const existingTimeout = typingTimeoutsRef.current.get(userId);
-        if (existingTimeout) {
-          clearTimeout(existingTimeout);
-        }
-
-        if (isTyping) {
-          setTypingUsers((prev) => {
-            if (!prev.some((u) => u.userId === userId)) {
-              return [...prev, { userId, userName }];
-            }
-            return prev;
-          });
-
-          // Set timeout to clear typing indicator after 3 seconds
-          const timeout = setTimeout(() => {
-            setTypingUsers((prev) => prev.filter((u) => u.userId !== userId));
-            typingTimeoutsRef.current.delete(userId);
-          }, 3000);
-
-          typingTimeoutsRef.current.set(userId, timeout);
-        } else {
-          setTypingUsers((prev) => prev.filter((u) => u.userId !== userId));
-          typingTimeoutsRef.current.delete(userId);
-        }
-      })
-      .subscribe();
-
+    const pusher = getPusherClient();
+    const channelName = `private-typing-${channelId}`;
+    const channel = pusher.subscribe(channelName);
     channelRef.current = channel;
 
+    const handleTyping = (data: TypingPayload) => {
+      if (data.userId === user.id) return;
+
+      const existingTimeout = typingTimeoutsRef.current.get(data.userId);
+      if (existingTimeout) {
+        clearTimeout(existingTimeout);
+      }
+
+      if (data.isTyping) {
+        setTypingUsers((prev) => {
+          if (!prev.some((u) => u.userId === data.userId)) {
+            return [...prev, { userId: data.userId, userName: data.userName }];
+          }
+          return prev;
+        });
+
+        const timeout = setTimeout(() => {
+          setTypingUsers((prev) =>
+            prev.filter((u) => u.userId !== data.userId)
+          );
+          typingTimeoutsRef.current.delete(data.userId);
+        }, 3000);
+
+        typingTimeoutsRef.current.set(data.userId, timeout);
+      } else {
+        setTypingUsers((prev) => prev.filter((u) => u.userId !== data.userId));
+        typingTimeoutsRef.current.delete(data.userId);
+      }
+    };
+
+    channel.bind("client-typing", handleTyping);
+
     return () => {
-      // Clear all timeouts
       for (const timeout of typingTimeoutsRef.current.values()) {
         clearTimeout(timeout);
       }
-
       typingTimeoutsRef.current.clear();
-
-      if (channelRef.current) {
-        supabase.removeChannel(channelRef.current);
-        channelRef.current = null;
-      }
+      channel.unbind_all();
+      pusher.unsubscribe(channelName);
+      channelRef.current = null;
       setTypingUsers([]);
     };
   }, [channelId, user?.id]);
 
-  const broadcastTyping = (isTyping: boolean, userName: string) => {
-    if (!(channelRef.current && user?.id)) return;
+  const broadcastTyping = useCallback(
+    (isTyping: boolean, userName: string) => {
+      if (!(channelRef.current && user?.id)) return;
 
-    channelRef.current.send({
-      type: "broadcast",
-      event: "typing",
-      payload: {
+      channelRef.current.trigger("client-typing", {
         userId: user.id,
         userName,
         isTyping,
         timestamp: new Date().toISOString(),
-      },
-    });
-  };
+      });
+    },
+    [user?.id]
+  );
 
   return {
     typingUsers,
