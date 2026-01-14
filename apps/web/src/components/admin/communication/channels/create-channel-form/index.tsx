@@ -32,9 +32,11 @@ export const CreateChannelForm = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { user } = useAuthedSession();
 
+  // Mutation to create a channel
   const { mutateAsync: createChannel, isPending } = useMutation(
     queryUtils.communication.channel.create.mutationOptions({
       onSuccess: () => {
+        // Refetch channels list
         queryClient.refetchQueries({
           queryKey: queryUtils.communication.channel.list.queryKey({
             input: {},
@@ -53,6 +55,7 @@ export const CreateChannelForm = () => {
       },
     })
   );
+
 
   const form = useAppForm({
     defaultValues: {
@@ -125,11 +128,11 @@ export const CreateChannelForm = () => {
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select channel type" />
                   </SelectTrigger>
-
                   <SelectContent>
                     <SelectItem value="team">Team</SelectItem>
                     <SelectItem value="group">Group</SelectItem>
                   </SelectContent>
+                  s
                 </Select>
               </field.Select>
             )}
@@ -137,12 +140,15 @@ export const CreateChannelForm = () => {
 
           {channelType === "team" ? (
             <Suspense fallback={<TeamSelectSkeleton />}>
-              <TeamSelect />
+              <TeamSelect createChannel={createChannel} />
             </Suspense>
           ) : (
             <Suspense fallback={<MembersSelectSkeleton />}>
-              <MembersSelect />
+              <MembersSelect createChannel={createChannel} />
             </Suspense>
+
+
+
           )}
 
           <DialogFooter className="flex gap-2">

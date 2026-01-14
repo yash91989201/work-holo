@@ -1,3 +1,4 @@
+import { useMutation } from "@tanstack/react-query";
 import { Card, useThemeColor } from "heroui-native";
 import { useState } from "react";
 import {
@@ -7,88 +8,122 @@ import {
   TextInput,
   View,
 } from "react-native";
+import type { z } from "zod";
+import { useAppForm } from "@/components/ui/form/hooks"; // path check
 import { authClient } from "@/lib/auth-client";
+import { SignInSchema } from "@/lib/schemas/auth";
 import { queryClient } from "@/utils/orpc";
 
-function SignIn() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+type SignInForm = z.infer<typeof SignInSchema>;
+type SignInError = { error?: { message?: string } } | unknown;
+
+export function SignIn() {
   const [error, setError] = useState<string | null>(null);
 
   const mutedColor = useThemeColor("muted");
-  const accentColor = useThemeColor("accent");
   const foregroundColor = useThemeColor("foreground");
+  const accentColor = useThemeColor("accent");
   const dangerColor = useThemeColor("danger");
 
-  async function handleLogin() {
-    setIsLoading(true);
-    setError(null);
-
-    await authClient.signIn.email(
-      {
-        email,
-        password,
-      },
-      {
-        onError(error) {
-          setError(error.error?.message || "Failed to sign in");
-          setIsLoading(false);
-        },
-        onSuccess() {
-          setEmail("");
-          setPassword("");
-          queryClient.refetchQueries();
-        },
-        onFinished() {
-          setIsLoading(false);
-        },
+  // ---------------- Mutation ----------------
+  const signInMutation = useMutation({
+    mutationKey: ["signin"],
+    mutationFn: (values: SignInForm) => authClient.signIn.email(values),
+    onError: (err: SignInError) => {
+      if (typeof err === "object" && err !== null && "error" in err) {
+        setError((err as any).error?.message ?? "Failed to sign in");
+      } else {
+        setError("Failed to sign in");
       }
-    );
-  }
+    },
+    onSuccess: () => {
+      form.reset();
+      queryClient.refetchQueries();
+      setError(null);
+    },
+  });
+
+  // ---------------- App Form ----------------
+  const form = useAppForm({
+    defaultValues: { email: "", password: "" },
+    validators: SignInSchema,
+    onSubmit: async (values: SignInForm) => {
+      await signInMutation.mutateAsync(values);
+    },
+  });
 
   return (
-    <Card className="mt-6 p-4" variant="secondary">
-      <Card.Title className="mb-4">Sign In</Card.Title>
+    <Card style={{ marginTop: 24, padding: 16 }} variant="secondary">
+      <Card.Title style={{ marginBottom: 16 }}>Sign In</Card.Title>
 
-      {error ? (
-        <View className="mb-4 rounded-lg bg-danger/10 p-3">
-          <Text className="text-danger text-sm">{error}</Text>
+      {error && (
+        <View
+          style={{
+            marginBottom: 16,
+            padding: 12,
+            borderRadius: 8,
+            backgroundColor: `${dangerColor}20`,
+          }}
+        >
+          <Text style={{ color: dangerColor, fontSize: 14 }}>{error}</Text>
         </View>
-      ) : null}
+      )}
 
       <TextInput
         autoCapitalize="none"
-        className="mb-3 rounded-lg border border-divider bg-surface px-4 py-3 text-foreground"
         keyboardType="email-address"
-        onChangeText={setEmail}
+        onChangeText={(text) => form.setFieldValue("email", text)}
         placeholder="Email"
         placeholderTextColor={mutedColor}
-        value={email}
+        style={{
+          marginBottom: 12,
+          borderRadius: 8,
+          borderWidth: 1,
+          borderColor: mutedColor,
+          paddingHorizontal: 16,
+          paddingVertical: 12,
+          color: foregroundColor,
+        }}
+        value={form.values.email}
       />
 
       <TextInput
-        className="mb-4 rounded-lg border border-divider bg-surface px-4 py-3 text-foreground"
-        onChangeText={setPassword}
+        onChangeText={(text) => form.setFieldValue("password", text)}
         placeholder="Password"
         placeholderTextColor={mutedColor}
         secureTextEntry
-        value={password}
+        style={{
+          marginBottom: 16,
+          borderRadius: 8,
+          borderWidth: 1,
+          borderColor: mutedColor,
+          paddingHorizontal: 16,
+          paddingVertical: 12,
+          color: foregroundColor,
+        }}
+        value={form.values.password}
       />
 
       <Pressable
-        className="flex-row items-center justify-center rounded-lg bg-accent p-4 active:opacity-70"
-        disabled={isLoading}
-        onPress={handleLogin}
+        disabled={signInMutation.isLoading}
+        onPress={form.handleSubmit}
+        style={{
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+          borderRadius: 8,
+          backgroundColor: accentColor,
+          paddingVertical: 12,
+        }}
       >
-        {isLoading ? (
+        {signInMutation.isLoading ? (
           <ActivityIndicator color={foregroundColor} size="small" />
         ) : (
-          <Text className="font-medium text-foreground">Sign In</Text>
+          <Text style={{ color: foregroundColor, fontWeight: "500" }}>
+            Sign In
+          </Text>
         )}
       </Pressable>
     </Card>
   );
 }
-
-export { SignIn };

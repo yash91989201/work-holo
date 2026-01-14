@@ -1,174 +1,148 @@
-# Complex / Nested Form Implementation Instructions
 
-This document explains how to implement **nested or multi-section forms** using **React Hook Form**, **Zod**, **standardSchemaResolver**, and **shadcn/ui**.
+import React from "react";
+import { ChevronDown, RefreshCw, User, Users } from "lucide-react";
+import { useFormContext } from "./FormContext";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar";
+import { Badge } from "./ui/Badge";
+import { Button } from "./ui/Button";
+import { MultiSelect, type MultiSelectOption } from "./ui/MultiSelect";
+import { useListOrgMembers } from "../hooks/use-list-org-members";
+import { cn } from "../lib/utils";
 
----
+/**
+ * Migration Notes:
+ * 1. Replaced RHF's useFormContext with a custom TanStack Form Context provider version.
+ * 2. Replaced form.watch("type") with form.useStore(state => state.values.type).
+ * 3. Replaced <FormField> (RHF component) with <form.Field> (TanStack Form field primitive).
+ * 4. Maintained all existing UI and logic functionalities.
+ */
 
-## 📂 Project Structure
+export const MembersSelect = () => {
+  const form = useFormContext();
+  
+  // Use TanStack's useStore to watch specific values
+  const channelType = form.useStore((state) => state.values.type);
 
-- **Schemas** → `src/lib/schemas/`
-- **Types** → `src/lib/types/` (inferred with `z.infer`)
-- **Subcomponents** → each section in its own file (e.g., `ExamDetailsCard`, `ExamQuestionsSection`).
+  const { members, refetchTeamMembers, isRefetching } = useListOrgMembers();
 
----
-
-## 🧩 Schema & Types
-
-- Define schemas in `src/lib/schemas/`.
-- Always suffix with `FormSchema` (e.g., `CreateExamFormSchema`).
-- Export inferred types in `src/lib/types` (auto-generated from schemas):
-
-```ts
-export type CreateExamFormSchemaType = z.infer<typeof CreateExamFormSchema>;
-```
-
----
-
-## 🛠 Setup with useForm & useFormContext
-
-At the root:
-
-```ts
-const form = useForm<CreateExamFormSchemaType>({
-  resolver: standardSchemaResolver(CreateExamFormSchema),
-  defaultValues: { certification: "", questions: [] },
-});
-```
-
-In subcomponents:
-
-```ts
-const form = useFormContext<CreateExamFormSchemaType>();
-```
-
----
-
-## 🧱 Dynamic Fields (useFieldArray)
-
-- Use `useFieldArray` for lists (e.g., questions, options).
-- Always handle ordering when adding/removing.
-
----
-
-## 🔄 Mutations & Submissions
-
-- Use `useMutation(queryUtils.*.mutationOptions())`.
-- Transform form data in `onSubmit` if necessary (e.g., generating IDs, aggregating totals).
-
----
-
-## 🔒 UX Rules
-
-1. **Buttons**
-   - Default is submit → omit `type` when intended for form submission.
-   - Use `type="button"` for add/remove actions.
-   - Use `type="reset"` for resets.
-2. **Subcomponents** → must consume context via `useFormContext`.
-3. **Cards** → use `<Card>` to structure large sections.
-4. **Validation & Messages** → always use `<FormMessage />` under each field.
-
----
-
-## 📝 Boilerplate (Complex Form)
-
-```tsx
-"use client";
-
-import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
-import { useMutation } from "@tanstack/react-query";
-import { type SubmitHandler, useForm, useFormContext, useFieldArray } from "react-hook-form";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { ExampleNestedFormSchema } from "@/lib/schemas/example-nested";
-import type { ExampleNestedFormType } from "@/lib/types";
-import { queryUtils } from "@/utils/orpc";
-
-export function ExampleNestedForm() {
-  const form = useForm<ExampleNestedFormType>({
-    resolver: standardSchemaResolver(ExampleNestedFormSchema),
-    defaultValues: { title: "", items: [{ name: "", quantity: 1 }] },
-  });
-
-  const { mutateAsync: createExample } = useMutation(
-    queryUtils.example.createNested.mutationOptions({
-      onSuccess: () => toast.success("Form submitted successfully"),
-      onError: (err) => toast.error(err.message),
-    })
-  );
-
-  const onSubmit: SubmitHandler<ExampleNestedFormType> = async (values) => {
-    await createExample(values);
-  };
+  const memberOptions: MultiSelectOption[] = members
+    .filter((m) => m.role === "member")
+    .map((member) => ({
+      label: member.user.email,
+      value: member.userId,
+      disabled: member.role !== "member",
+      icon: () => (
+        <Avatar className="h-5 w-5">
+          <AvatarImage src={member.user?.image || ""} />
+          <AvatarFallback>
+            {member.user.name.charAt(0).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+      ),
+    }));
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Title</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter title" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+    <form.Field
+      name="memberIds"
+      children={(field) => (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                Members
+              </span>
+              <Badge variant="secondary" className="flex items-center gap-1">
+                {channelType === "direct" ? (
+                  <>
+                    <span>1</span>
+                    <User className="h-3 w-3" />
+                  </>
+                ) : (
+                  <>
+                    <span>1+</span>
+                    <Users className="h-3 w-3" />
+                  </>
+                )}
+              </Badge>
+            </div>
+            <Button
+              className="h-6 w-6 rounded-sm"
+              disabled={isRefetching}
+              onClick={(e) => {
+                e.preventDefault();
+                refetchTeamMembers();
+              }}
+              size="icon"
+              type="button"
+              variant="outline"
+            >
+              <RefreshCw
+                className={cn("h-3 w-3", isRefetching && "animate-spin")}
+              />
+            </Button>
+          </div>
+          
+          <MultiSelect
+            className="w-full"
+            onValueChange={(val) => field.handleChange(val)}
+            options={memberOptions}
+            placeholder="Select channel members"
+            value={field.state.value}
+          />
+
+          {field.state.meta.errors.length > 0 && (
+            <p className="text-[0.8rem] font-medium text-red-500">
+              {field.state.meta.errors.join(", ")}
+            </p>
           )}
-        />
-        <ItemsSection />
-        <Button>Submit</Button>
-      </form>
-    </Form>
+        </div>
+      )}
+    />
   );
-}
+};
 
-function ItemsSection() {
-  const form = useFormContext<ExampleNestedFormType>();
-  const { fields, append, remove } = useFieldArray({ control: form.control, name: "items" });
+export function MembersSelectSkeleton() {
+  const form = useFormContext();
+  const channelType = form.useStore((state) => state.values.type);
 
   return (
-    <Card className="p-4 space-y-4">
-      {fields.map((field, index) => (
-        <div key={field.id} className="flex gap-4 items-end">
-          <FormField
-            control={form.control}
-            name={`items.${index}.name`}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Item Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter item name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium leading-none">Members</span>
+          <Badge variant="secondary" className="flex items-center gap-1">
+            {channelType === "direct" ? (
+              <>
+                <span>1</span>
+                <User className="h-3 w-3" />
+              </>
+            ) : (
+              <>
+                <span>1+</span>
+                <Users className="h-3 w-3" />
+              </>
             )}
-          />
-          <FormField
-            control={form.control}
-            name={`items.${index}.quantity`}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Quantity</FormLabel>
-                <FormControl>
-                  <Input type="number" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button type="button" variant="destructive" onClick={() => remove(index)}>
-            Remove
-          </Button>
+          </Badge>
         </div>
-      ))}
-      <Button type="button" onClick={() => append({ name: "", quantity: 1 })}>
-        Add Item
-      </Button>
-    </Card>
+        <Button
+          className="h-6 w-6 rounded-sm"
+          disabled
+          size="icon"
+          type="button"
+          variant="outline"
+        >
+          <RefreshCw className="h-3 w-3" />
+        </Button>
+      </div>
+      
+      <div className="animate-pulse">
+        <div className="flex h-10 cursor-progress items-center justify-between rounded-md border border-slate-200 px-3">
+          <p className="text-slate-400 text-sm">
+            Select channel members
+          </p>
+          <ChevronDown className="h-4 w-4 opacity-50" />
+        </div>
+      </div>
+    </div>
   );
 }
-```

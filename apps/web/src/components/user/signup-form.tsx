@@ -1,19 +1,11 @@
-import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
+import { useStore } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { useAppForm } from "@/components/ui/form/hooks";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 import { SignUpFormSchema } from "@/lib/schemas/auth";
@@ -24,16 +16,14 @@ export function SignUpForm() {
 
   const { mutateAsync: signup, isPending } = useMutation({
     mutationKey: ["signup"],
-    mutationFn: async (values: SignUpFormType) =>
-      await authClient.signUp.email(values),
+    mutationFn: (values: SignUpFormType) => authClient.signUp.email(values),
   });
 
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
   const [isCheckingAvailability, setIsCheckingAvailability] = useState(false);
   const [usernameError, setUsernameError] = useState<string | null>(null);
 
-  const form = useForm<SignUpFormType>({
-    resolver: standardSchemaResolver(SignUpFormSchema),
+  const form = useAppForm({
     defaultValues: {
       name: "",
       username: "",
@@ -41,203 +31,262 @@ export function SignUpForm() {
       email: "",
       password: "",
       confirmPassword: "",
+    } satisfies SignUpFormType,
+    validators: {
+      onSubmit: SignUpFormSchema,
+    },
+    onSubmit: async ({ value }) => {
+      if (isCheckingAvailability || isAvailable === false) return;
+
+      const res = await signup(value);
+
+      if (res.error) {
+        toast.error(res.error.message);
+        return;
+      }
+
+      navigate({ to: "/org/new" });
     },
   });
 
-  const username = form.watch("username");
+  const username = useStore(form.store, (state) => state.values.username);
 
-  // Debounced username availability check
   useEffect(() => {
-    // Skip checking if username is empty
     if (!username) {
-      setIsCheckingAvailability(false);
       setIsAvailable(null);
       setUsernameError(null);
+      setIsCheckingAvailability(false);
       return;
     }
 
-    // Debounce the availability check
     setIsCheckingAvailability(true);
-    const timeoutId = setTimeout(async () => {
-      try {
-        const { data: response, error: checkError } =
-          await authClient.isUsernameAvailable({
-            username,
-          });
 
-        if (checkError) {
+    const timeout = setTimeout(async () => {
+      try {
+        const { data, error } = await authClient.isUsernameAvailable({
+          username,
+        });
+
+        if (error || !data) {
           setIsAvailable(false);
-          setUsernameError("Unable to verify username availability");
+          setUsernameError("Unable to verify username");
         } else {
-          setIsAvailable(response?.available ?? false);
-          if (!response?.available) {
-            setUsernameError("This username is already taken");
-          }
+          setIsAvailable(data.available);
+          setUsernameError(
+            data.available ? null : "This username is already taken"
+          );
         }
       } catch {
         setIsAvailable(false);
-        setUsernameError("Unable to verify username availability");
+        setUsernameError("Unable to verify username");
       } finally {
         setIsCheckingAvailability(false);
       }
     }, 300);
 
-    return () => {
-      clearTimeout(timeoutId);
-      setIsCheckingAvailability(false);
-    };
+    return () => clearTimeout(timeout);
   }, [username]);
 
-  const onSubmit: SubmitHandler<SignUpFormType> = async (values) => {
-    // Don't submit if username is unavailable or still checking
-    if (isCheckingAvailability || isAvailable === false) {
-      return;
-    }
+  const getId = (name: string) => `signup-${name}`;
 
-    const signupRes = await signup(values);
-    if (signupRes.error !== null) {
-      toast.error(signupRes.error.message);
-      return;
-    }
-
-    navigate({
-      to: "/org/new",
-    });
+  const getFieldError = (field: any) => {
+    const error = field.state.meta.errors?.[0];
+    return error ? String(error.message ?? error) : null;
   };
 
   return (
-    <Form {...form}>
-      <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter your full name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    <form
+      className="space-y-4"
+      onSubmit={(e) => {
+        e.preventDefault();
+        form.handleSubmit();
+      }}
+    >
+      {/* Name */}
+      <form.Field name="name">
+        {(field) => {
+          const id = getId(field.name);
+          const errorMessage = getFieldError(field);
 
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <div className="relative">
-                  <Input
-                    placeholder="Enter unique username"
-                    {...field}
-                    className={
-                      usernameError && isAvailable === false
-                        ? "border-destructive"
-                        : isAvailable === true
-                          ? "border-green-600"
-                          : ""
-                    }
-                    onChange={(e) => {
-                      field.onChange(e.target.value);
-                      setUsernameError(null);
-                      setIsAvailable(null);
-                    }}
-                  />
-                  {isCheckingAvailability && (
-                    <div className="absolute top-1/2 right-3 -translate-y-1/2">
-                      <Loader2 className="size-4 animate-spin text-muted-foreground" />
-                    </div>
-                  )}
-                </div>
-              </FormControl>
-              <FormMessage />
-              {usernameError && isAvailable === false && (
+          return (
+            <div>
+              <label className="font-medium text-sm" htmlFor={id}>
+                Name
+              </label>
+              <Input
+                id={id}
+                onChange={(e) => field.handleChange(e.target.value)}
+                value={field.state.value}
+              />
+              {errorMessage && (
+                <p className="text-destructive text-xs">{errorMessage}</p>
+              )}
+            </div>
+          );
+        }}
+      </form.Field>
+
+      {/* Username */}
+      <form.Field name="username">
+        {(field) => {
+          const id = getId(field.name);
+          const errorMessage = getFieldError(field);
+
+          return (
+            <div>
+              <label className="font-medium text-sm" htmlFor={id}>
+                Username
+              </label>
+              <div className="relative">
+                <Input
+                  className={
+                    isAvailable === false
+                      ? "border-destructive"
+                      : isAvailable === true
+                        ? "border-green-600"
+                        : ""
+                  }
+                  id={id}
+                  onChange={(e) => {
+                    field.handleChange(e.target.value);
+                    setIsAvailable(null);
+                    setUsernameError(null);
+                  }}
+                  placeholder="Enter unique username"
+                  value={field.state.value}
+                />
+                {isCheckingAvailability && (
+                  <Loader2 className="absolute top-1/2 right-3 size-4 -translate-y-1/2 animate-spin text-muted-foreground" />
+                )}
+              </div>
+
+              {usernameError && (
                 <p className="text-destructive text-xs">{usernameError}</p>
               )}
               {isAvailable === true && !usernameError && (
                 <p className="text-green-600 text-xs">Username is available</p>
               )}
-            </FormItem>
-          )}
-        />
 
-        <FormField
-          control={form.control}
-          name="displayUsername"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Display Username</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter display username" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+              {errorMessage && (
+                <p className="text-destructive text-xs">{errorMessage}</p>
+              )}
+            </div>
+          );
+        }}
+      </form.Field>
 
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter your email" type="email" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Enter your password"
-                  type="password"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="confirmPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Confirm Password</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Confirm your password"
-                  type="password"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button
-          disabled={
-            isPending ||
-            form.formState.isSubmitting ||
-            isCheckingAvailability ||
-            isAvailable === false
-          }
-        >
-          {isPending || form.formState.isSubmitting
-            ? "Signing up..."
-            : "Sign Up"}
-        </Button>
-      </form>
-    </Form>
+      {/* Display Username */}
+      <form.Field name="displayUsername">
+        {(field) => {
+          const id = getId(field.name);
+          const errorMessage = getFieldError(field);
+
+          return (
+            <div>
+              <label className="font-medium text-sm" htmlFor={id}>
+                Display Username
+              </label>
+              <Input
+                id={id}
+                onChange={(e) => field.handleChange(e.target.value)}
+                value={field.state.value}
+              />
+              {errorMessage && (
+                <p className="text-destructive text-xs">{errorMessage}</p>
+              )}
+            </div>
+          );
+        }}
+      </form.Field>
+
+      {/* Email */}
+      <form.Field name="email">
+        {(field) => {
+          const id = getId(field.name);
+          const errorMessage = getFieldError(field);
+
+          return (
+            <div>
+              <label className="font-medium text-sm" htmlFor={id}>
+                Email
+              </label>
+              <Input
+                id={id}
+                onChange={(e) => field.handleChange(e.target.value)}
+                type="email"
+                value={field.state.value}
+              />
+              {errorMessage && (
+                <p className="text-destructive text-xs">{errorMessage}</p>
+              )}
+            </div>
+          );
+        }}
+      </form.Field>
+
+      {/* Password */}
+      <form.Field name="password">
+        {(field) => {
+          const id = getId(field.name);
+          const errorMessage = getFieldError(field);
+
+          return (
+            <div>
+              <label className="font-medium text-sm" htmlFor={id}>
+                Password
+              </label>
+              <Input
+                id={id}
+                onChange={(e) => field.handleChange(e.target.value)}
+                type="password"
+                value={field.state.value}
+              />
+              {errorMessage && (
+                <p className="text-destructive text-xs">{errorMessage}</p>
+              )}
+            </div>
+          );
+        }}
+      </form.Field>
+
+      {/* Confirm Password */}
+      <form.Field name="confirmPassword">
+        {(field) => {
+          const id = getId(field.name);
+          const errorMessage = getFieldError(field);
+
+          return (
+            <div>
+              <label className="font-medium text-sm" htmlFor={id}>
+                Confirm Password
+              </label>
+              <Input
+                id={id}
+                onChange={(e) => field.handleChange(e.target.value)}
+                type="password"
+                value={field.state.value}
+              />
+              {errorMessage && (
+                <p className="text-destructive text-xs">{errorMessage}</p>
+              )}
+            </div>
+          );
+        }}
+      </form.Field>
+
+      {/* Submit */}
+      <Button
+        className="w-full"
+        disabled={
+          isPending ||
+          form.state.isSubmitting ||
+          isCheckingAvailability ||
+          isAvailable === false
+        }
+        type="submit"
+      >
+        {isPending || form.state.isSubmitting ? "Signing up..." : "Sign Up"}
+      </Button>
+    </form>
   );
 }
