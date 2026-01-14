@@ -7,52 +7,53 @@ import { useActiveMemberRole } from "@/hooks/use-active-member-role";
 import { useActiveOrganization } from "@/hooks/use-active-organization";
 
 export const OrgMenuButton = () => {
-  const role = useActiveMemberRole();
-  const activeOrganization = useActiveOrganization();
+	const role = useActiveMemberRole();
+	const activeOrganization = useActiveOrganization();
 
-  if (activeOrganization === null || role === undefined) {
-    return (
-      <SidebarMenuItem>
-        <SidebarMenuButton
-          asChild
-          className="data-[slot=sidebar-menu-button]:p-1.5!"
-        >
-          <Link to="/">
-            <IconInnerShadowTop className="size-5!" />
-            <span className="font-semibold text-base">Acme Inc.</span>
-          </Link>
-        </SidebarMenuButton>
-      </SidebarMenuItem>
-    );
-  }
+	if (activeOrganization === null || role === undefined) {
+		return (
+			<SidebarMenuItem>
+				<SidebarMenuButton
+					className="data-[slot=sidebar-menu-button]:p-1.5!"
+					render={<Link to="/" />}
+				>
+					<IconInnerShadowTop className="size-5!" />
+					<span className="font-semibold text-base">Acme Inc.</span>
+				</SidebarMenuButton>
+			</SidebarMenuItem>
+		);
+	}
 
-  const logo = activeOrganization.logo ?? "/logo.webp";
+	const logo = activeOrganization.logo ?? "/logo.webp";
 
-  return (
-    <SidebarMenuItem>
-      <SidebarMenuButton asChild tooltip={activeOrganization.name}>
-        <Link params={{ slug: activeOrganization.slug }} to="/org/$slug">
-          <Image
-            alt={activeOrganization.name}
-            className="rounded-sm"
-            height={24}
-            src={logo}
-            width={24}
-          />
-          <span className="font-semibold text-base group-data-[collapsible=icon]:hidden">
-            {activeOrganization.name}
-          </span>
-        </Link>
-      </SidebarMenuButton>
-    </SidebarMenuItem>
-  );
+	return (
+		<SidebarMenuItem>
+			<SidebarMenuButton
+				render={
+					<Link params={{ slug: activeOrganization.slug }} to="/org/$slug" />
+				}
+				tooltip={activeOrganization.name}
+			>
+				<Image
+					alt={activeOrganization.name}
+					className="rounded-sm"
+					height={24}
+					src={logo}
+					width={24}
+				/>
+				<span className="font-semibold text-base group-data-[collapsible=icon]:hidden">
+					{activeOrganization.name}
+				</span>
+			</SidebarMenuButton>
+		</SidebarMenuItem>
+	);
 };
 
 export const OrgMenuButtonSkeleton = () => (
-  <SidebarMenuItem>
-    <SidebarMenuButton disabled>
-      <Skeleton className="size-8" />
-      <Skeleton className="h-8 w-full" />
-    </SidebarMenuButton>
-  </SidebarMenuItem>
+	<SidebarMenuItem>
+		<SidebarMenuButton disabled>
+			<Skeleton className="size-8" />
+			<Skeleton className="h-8 w-full" />
+		</SidebarMenuButton>
+	</SidebarMenuItem>
 );

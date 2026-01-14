@@ -5,18 +5,18 @@ import { type SubmitHandler, useForm } from "react-hook-form";
 import { Image } from "@/components/shared/image";
 import { Button } from "@/components/ui/button";
 import {
-  Dropzone,
-  DropzoneContent,
-  DropzoneEmptyState,
+	Dropzone,
+	DropzoneContent,
+	DropzoneEmptyState,
 } from "@/components/ui/dropzone";
 import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+	Form,
+	FormControl,
+	FormDescription,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
@@ -27,185 +27,189 @@ import { generateSlug } from "@/utils";
 import { uploadOrgLogo } from "@/utils/upload-helper";
 
 export const CreateOrgForm = () => {
-  const navigate = useNavigate();
+	const navigate = useNavigate();
 
-  const form = useForm<CreateOrgFormType>({
-    resolver: zodResolver(CreateOrgFormSchema),
-    defaultValues: {
-      name: "",
-      slug: "",
-      formState: {
-        slugLocked: true,
-      },
-    },
-  });
+	const form = useForm<CreateOrgFormType>({
+		resolver: zodResolver(CreateOrgFormSchema),
+		defaultValues: {
+			name: "",
+			slug: "",
+			formState: {
+				slugLocked: true,
+			},
+		},
+	});
 
-  const slugLocked = form.watch("formState.slugLocked");
-  const isSlugValidating = form.formState.validatingFields?.slug;
+	const slugLocked = form.watch("formState.slugLocked");
+	const isSlugValidating = form.formState.validatingFields?.slug;
 
-  const onSubmit: SubmitHandler<CreateOrgFormType> = async (values) => {
-    try {
-      let logo = values.logo;
+	const onSubmit: SubmitHandler<CreateOrgFormType> = async (values) => {
+		try {
+			let logo = values.logo;
 
-      if (values.formState.logo) {
-        const file = values.formState.logo;
-        logo = await uploadOrgLogo(file);
-      }
+			if (values.formState.logo) {
+				const file = values.formState.logo;
+				logo = await uploadOrgLogo(file);
+			}
 
-      const { data: org, error } = await authClient.organization.create({
-        ...values,
-        logo,
-      });
+			const { data: org, error } = await authClient.organization.create({
+				...values,
+				logo,
+			});
 
-      if (error !== null) {
-        throw new Error(error.message);
-      }
+			if (error !== null) {
+				throw new Error(error.message);
+			}
 
-      if (org === null) {
-        throw new Error("Organization creation failed, please try again.");
-      }
+			if (org === null) {
+				throw new Error("Organization creation failed, please try again.");
+			}
 
-      navigate({
-        to: "/org/$slug/manage",
-        params: {
-          slug: org.slug,
-        },
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  };
+			navigate({
+				to: "/org/$slug/manage",
+				params: {
+					slug: org.slug,
+				},
+			});
+		} catch (error) {
+			console.error(error);
+		}
+	};
 
-  return (
-    <Form {...form}>
-      <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="flex flex-col items-center space-y-4">
-          <Image
-            alt="Work Holo"
-            className="rounded-lg"
-            height={120}
-            src="/logo.webp"
-            width={120}
-          />
-        </div>
-        <FormField
-          control={form.control}
-          name="formState.logo"
-          render={({ field: { onChange, value, ...field } }) => (
-            <FormItem>
-              <FormLabel>Organization Logo</FormLabel>
-              <FormControl>
-                <Dropzone
-                  accept={{ "image/*": [] }}
-                  maxFiles={1}
-                  maxSize={5 * 1024 * 1024}
-                  onDrop={(acceptedFiles) => {
-                    if (acceptedFiles.length > 0) {
-                      onChange(acceptedFiles[0]);
-                    }
-                  }}
-                  src={value ? [value] : undefined}
-                  {...field}
-                >
-                  <DropzoneEmptyState />
-                  <DropzoneContent />
-                </Dropzone>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Organization Name</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Acme Inc."
-                  {...field}
-                  onChange={(e) => {
-                    field.onChange(e);
+	return (
+		<Form {...form}>
+			<form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+				<div className="flex flex-col items-center space-y-4">
+					<Image
+						alt="Work Holo"
+						className="rounded-lg"
+						height={120}
+						src="/logo.webp"
+						width={120}
+					/>
+				</div>
+				<FormField
+					control={form.control}
+					name="formState.logo"
+					render={({ field: { onChange, value, ...field } }) => (
+						<FormItem>
+							<FormLabel>Organization Logo</FormLabel>
+							<FormControl>
+								<Dropzone
+									accept={{ "image/*": [] }}
+									maxFiles={1}
+									maxSize={5 * 1024 * 1024}
+									onDrop={(acceptedFiles) => {
+										if (acceptedFiles.length > 0) {
+											onChange(acceptedFiles[0]);
+										}
+									}}
+									src={value ? [value] : undefined}
+									{...field}
+								>
+									<DropzoneEmptyState />
+									<DropzoneContent />
+								</Dropzone>
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name="name"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Organization Name</FormLabel>
+							<FormControl>
+								<Input
+									placeholder="Acme Inc."
+									{...field}
+									onChange={(e) => {
+										field.onChange(e);
 
-                    if (slugLocked) {
-                      const newSlug = generateSlug(e.target.value || "");
-                      form.setValue("slug", newSlug, {
-                        shouldDirty: true,
-                        shouldTouch: true,
-                        shouldValidate: true,
-                      });
-                    }
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="slug"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>URL Slug</FormLabel>
-              <FormControl>
-                <div className="flex items-center gap-2">
-                  <div className="relative flex-1">
-                    <Input
-                      placeholder="acme-inc"
-                      {...field}
-                      disabled={!!slugLocked}
-                      onBlur={field.onBlur}
-                      onChange={(e) => {
-                        if (!slugLocked) {
-                          field.onChange(e);
-                        }
-                      }}
-                    />
-                    {isSlugValidating ? (
-                      <div className="absolute top-1/2 right-3 -translate-y-1/2">
-                        <Spinner />
-                      </div>
-                    ) : null}
-                  </div>
-                  <Button
-                    aria-label={slugLocked ? "Unlock slug" : "Lock slug"}
-                    onClick={() => {
-                      const nextLocked = !slugLocked;
+										if (slugLocked) {
+											const newSlug = generateSlug(e.target.value || "");
+											form.setValue("slug", newSlug, {
+												shouldDirty: true,
+												shouldTouch: true,
+												shouldValidate: true,
+											});
+										}
+									}}
+								/>
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name="slug"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>URL Slug</FormLabel>
+							<FormControl>
+								<div className="flex items-center gap-2">
+									<div className="relative flex-1">
+										<Input
+											placeholder="acme-inc"
+											{...field}
+											disabled={!!slugLocked}
+											onBlur={field.onBlur}
+											onChange={(e) => {
+												if (!slugLocked) {
+													field.onChange(e);
+												}
+											}}
+										/>
+										{isSlugValidating ? (
+											<div className="absolute top-1/2 right-3 -translate-y-1/2">
+												<Spinner />
+											</div>
+										) : null}
+									</div>
+									<Button
+										aria-label={slugLocked ? "Unlock slug" : "Lock slug"}
+										onClick={() => {
+											const nextLocked = !slugLocked;
 
-                      form.setValue("formState.slugLocked", nextLocked, {
-                        shouldDirty: true,
-                        shouldTouch: true,
-                      });
-                    }}
-                    size="icon"
-                    type="button"
-                    variant="outline"
-                  >
-                    {slugLocked ? <Lock size={16} /> : <Unlock size={16} />}
-                  </Button>
-                </div>
-              </FormControl>
-              <FormDescription>
-                This will be a unique name for your Organization. Only a-z, 0-9
-                and hypens are allowed.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button className="gap-1.5" disabled={form.formState.isSubmitting}>
-          {form.formState.isSubmitting ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin" />
-              Creating...
-            </>
-          ) : (
-            "Create Organization"
-          )}
-        </Button>
-      </form>
-    </Form>
-  );
+											form.setValue("formState.slugLocked", nextLocked, {
+												shouldDirty: true,
+												shouldTouch: true,
+											});
+										}}
+										size="icon"
+										type="button"
+										variant="outline"
+									>
+										{slugLocked ? <Lock size={16} /> : <Unlock size={16} />}
+									</Button>
+								</div>
+							</FormControl>
+							<FormDescription>
+								This will be a unique name for your Organization. Only a-z, 0-9
+								and hypens are allowed.
+							</FormDescription>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<Button
+					className="gap-1.5"
+					disabled={form.formState.isSubmitting}
+					type="submit"
+				>
+					{form.formState.isSubmitting ? (
+						<>
+							<Loader2 className="h-4 w-4 animate-spin" />
+							Creating...
+						</>
+					) : (
+						"Create organization"
+					)}
+				</Button>
+			</form>
+		</Form>
+	);
 };

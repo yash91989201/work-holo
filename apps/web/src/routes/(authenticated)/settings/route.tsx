@@ -3,24 +3,16 @@ import { SettingsSidebar } from "@/components/settings/sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 export const Route = createFileRoute("/(authenticated)/settings")({
-  component: RouteComponent,
+	component: RouteComponent,
 });
 
 function RouteComponent() {
-  return (
-    <SidebarProvider
-      defaultOpen={true}
-      style={
-        {
-          "--sidebar-width": "calc(var(--spacing) * 72)",
-          "--header-height": "calc(var(--spacing) * 12)",
-        } as React.CSSProperties
-      }
-    >
-      <SettingsSidebar variant="sidebar" />
-      <SidebarInset>
-        <Outlet />
-      </SidebarInset>
-    </SidebarProvider>
-  );
+	return (
+		<SidebarProvider defaultOpen={true}>
+			<SettingsSidebar variant="sidebar" />
+			<SidebarInset>
+				<Outlet />
+			</SidebarInset>
+		</SidebarProvider>
+	);
 }
