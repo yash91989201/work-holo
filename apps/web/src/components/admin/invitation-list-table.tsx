@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-table";
 import { useDebounce } from "@uidotdev/usehooks";
 import type { InvitationSelectSchema } from "@work-holo/api/lib/schemas/admin-invitation";
+import { env } from "@work-holo/env/web";
 import {
   AlertCircle,
   ArrowUpDown,
@@ -61,7 +62,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { env } from "@/env";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { authClient } from "@/lib/auth-client";
 import { getRoleBadgeVariant, getStatusBadgeVariant } from "@/lib/org";

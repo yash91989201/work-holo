@@ -4,7 +4,9 @@ import z from "zod";
 export const env = createEnv({
   server: {
     RABBITMQ_URL: z.string(),
-    ENV: z.string(),
+    ENV: z
+      .enum(["development", "staging", "testing", "production"])
+      .default("development"),
     PORT: z.string().transform((val) => Number.parseInt(val, 10)),
     DATABASE_URL: z.url(),
     BETTER_AUTH_SECRET: z.string(),
@@ -17,9 +19,9 @@ export const env = createEnv({
         return trimmed;
       })
     ),
-    SUPABASE_URL: z.url(),
-    SUPABASE_PUBLISHABLE_KEY: z.string(),
-    SUPABASE_SECRET_KEY: z.string(),
+    S3_ENDPOINT: z.string(),
+    S3_ACCESS_KEY: z.string(),
+    S3_SECRET_KEY: z.string(),
     RESEND_API_KEY: z.string(),
   },
   runtimeEnv: process.env,

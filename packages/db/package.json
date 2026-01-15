@@ -18,8 +18,7 @@
   "devDependencies": {
     "@work-holo/config": "workspace:*",
     "drizzle-kit": "^0.31.8",
-    "chokidar": "^5.0.0",
-    "supabase": "^2.67.3"
+    "chokidar": "^5.0.0"
   },
   "peerDependencies": {
     "typescript": "^5.9.3"
@@ -30,6 +29,6 @@
     "drizzle-cuid2": "^2.2.0",
     "drizzle-orm": "^0.45.1",
     "drizzle-zod": "^0.8.3",
-    "zod": "^4.2.1"
+    "zod": "^4.3.5"
   }
 }

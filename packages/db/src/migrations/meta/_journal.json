@@ -57,6 +57,13 @@
       "when": 1765627211247,
       "tag": "0007_pretty_annihilus",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1768235323843,
+      "tag": "0008_vengeful_gargoyle",
+      "breakpoints": true
     }
   ]
 }

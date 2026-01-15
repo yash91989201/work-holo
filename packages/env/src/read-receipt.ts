@@ -12,9 +12,9 @@ export const env = createEnv({
       .int()
       .positive()
       .default(25),
-    NODE_ENV: z
-      .enum(["development", "production", "test"])
-      .default("production"),
+    ENV: z
+      .enum(["development", "staging", "testing", "production"])
+      .default("development"),
   },
   runtimeEnv: process.env,
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,

@@ -1,4 +1,11 @@
-import { supabase } from "@/lib/supabase";
+import { orpcClient } from "./orpc";
+
+export type StorageBucket =
+  | "message-attachment"
+  | "message-audio"
+  | "message-image"
+  | "user-profile"
+  | "org-logo";
 
 export interface UploadResult {
   fileName: string;
@@ -6,37 +13,42 @@ export interface UploadResult {
   fileSize: number;
   mimeType: string;
   url: string;
-  bucket: string;
+  bucket: StorageBucket;
 }
 
-export async function uploadToSupabase(
-  file: File,
-  bucket: "message-attachment" | "message-audio" | "user-profile",
-  userId: string
-): Promise<UploadResult> {
-  const fileExt = file.name.split(".").pop();
-
-  // For user-profile, use a simpler path structure that overwrites
-  const fileName =
-    bucket === "user-profile"
-      ? `${userId}/avatar.${fileExt}`
-      : `${userId}/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-
-  const { error } = await supabase.storage.from(bucket).upload(fileName, file, {
-    cacheControl: "3600",
-    upsert: bucket === "user-profile", // Allow overwriting for profile images
+async function uploadFileWithPresignedUrl(
+  uploadUrl: string,
+  file: File
+): Promise<void> {
+  const response = await fetch(uploadUrl, {
+    method: "PUT",
+    body: file,
+    headers: {
+      "Content-Type": file.type,
+    },
   });
 
-  if (error) {
-    throw new Error(`Upload failed: ${error.message}`);
+  if (!response.ok) {
+    throw new Error(`Upload failed with status: ${response.status}`);
   }
+}
 
-  const {
-    data: { publicUrl },
-  } = supabase.storage.from(bucket).getPublicUrl(fileName);
+export async function uploadToStorage(
+  file: File,
+  bucket: StorageBucket
+): Promise<UploadResult> {
+  const { uploadUrl, publicUrl, filePath } =
+    await orpcClient.storage.getUploadUrl({
+      bucket,
+      fileName: file.name,
+      contentType: file.type,
+      fileSize: file.size,
+    });
+
+  await uploadFileWithPresignedUrl(uploadUrl, file);
 
   return {
-    fileName,
+    fileName: filePath,
     originalName: file.name,
     fileSize: file.size,
     mimeType: file.type,
@@ -45,11 +57,20 @@ export async function uploadToSupabase(
   };
 }
 
-// Helper for profile image upload specifically
 export async function uploadProfileImage(
   file: File,
-  userId: string
+  _userId: string
 ): Promise<string> {
-  const result = await uploadToSupabase(file, "user-profile", userId);
+  const result = await uploadToStorage(file, "user-profile");
+  return result.url;
+}
+
+export async function uploadMessageImage(file: File): Promise<string> {
+  const result = await uploadToStorage(file, "message-image");
+  return result.url;
+}
+
+export async function uploadOrgLogo(file: File): Promise<string> {
+  const result = await uploadToStorage(file, "org-logo");
   return result.url;
 }

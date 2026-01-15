@@ -121,7 +121,7 @@ export function MessageReadReceipts({
         isOwnMessage ? "flex-row" : "flex-row-reverse"
       )}
     >
-      <div className="-space-x-2 flex *:data-[slot=avatar]:size-6 *:data-[slot=avatar]:ring-1 *:data-[slot=avatar]:ring-background *:data-[slot=avatar]:grayscale">
+      <div className="flex -space-x-2 *:data-[slot=avatar]:size-6 *:data-[slot=avatar]:ring-1 *:data-[slot=avatar]:ring-background *:data-[slot=avatar]:grayscale">
         {displayedReaders.map((reader) => (
           <Avatar key={reader.id}>
             <AvatarImage alt={reader.name} src={reader.image ?? undefined} />
