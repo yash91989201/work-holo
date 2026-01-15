@@ -2,76 +2,76 @@
 // Run `bun run generate:types` to refresh
 import type { z } from "zod";
 import type {
-  AccountInsertSchema,
-  AccountSchema,
-  AccountUpdateSchema,
-  AttachmentInsertSchema,
-  AttachmentSchema,
-  AttachmentUpdateSchema,
-  AttendanceInsertSchema,
-  AttendanceSchema,
-  AttendanceUpdateSchema,
-  ChannelInsertSchema,
-  ChannelJoinRequestInsertSchema,
-  ChannelJoinRequestSchema,
-  ChannelJoinRequestUpdateSchema,
-  ChannelMemberInsertSchema,
-  ChannelMemberSchema,
-  ChannelMemberUpdateSchema,
-  ChannelReadInsertSchema,
-  ChannelReadProcessedWatermarkInsertSchema,
-  ChannelReadProcessedWatermarkSchema,
-  ChannelReadProcessedWatermarkUpdateSchema,
-  ChannelReadSchema,
-  ChannelReadUpdateSchema,
-  ChannelSchema,
-  ChannelTypeSchema,
-  ChannelUpdateSchema,
-  InvitationInsertSchema,
-  InvitationSchema,
-  InvitationUpdateSchema,
-  MemberInsertSchema,
-  MemberSchema,
-  MemberUpdateSchema,
-  MessageInsertSchema,
-  MessageMentionInsertSchema,
-  MessageMentionSchema,
-  MessageMentionUpdateSchema,
-  MessageReactionInsertSchema,
-  MessageReactionSchema,
-  MessageReactionUpdateSchema,
-  MessageReadInsertSchema,
-  MessageReadSchema,
-  MessageReadSummaryInsertSchema,
-  MessageReadSummarySchema,
-  MessageReadSummaryUpdateSchema,
-  MessageReadUpdateSchema,
-  MessageSchema,
-  MessageUpdateSchema,
-  NotificationInsertSchema,
-  NotificationSchema,
-  NotificationUpdateSchema,
-  OrganizationInsertSchema,
-  OrganizationSchema,
-  OrganizationUpdateSchema,
-  SessionInsertSchema,
-  SessionSchema,
-  SessionUpdateSchema,
-  TeamInsertSchema,
-  TeamMemberInsertSchema,
-  TeamMemberSchema,
-  TeamMemberUpdateSchema,
-  TeamSchema,
-  TeamUpdateSchema,
-  UserInsertSchema,
-  UserSchema,
-  UserUpdateSchema,
-  VerificationInsertSchema,
-  VerificationSchema,
-  VerificationUpdateSchema,
-  WorkBlockInsertSchema,
-  WorkBlockSchema,
-  WorkBlockUpdateSchema,
+	AccountInsertSchema,
+	AccountSchema,
+	AccountUpdateSchema,
+	AttachmentInsertSchema,
+	AttachmentSchema,
+	AttachmentUpdateSchema,
+	AttendanceInsertSchema,
+	AttendanceSchema,
+	AttendanceUpdateSchema,
+	ChannelInsertSchema,
+	ChannelJoinRequestInsertSchema,
+	ChannelJoinRequestSchema,
+	ChannelJoinRequestUpdateSchema,
+	ChannelMemberInsertSchema,
+	ChannelMemberSchema,
+	ChannelMemberUpdateSchema,
+	ChannelReadInsertSchema,
+	ChannelReadProcessedWatermarkInsertSchema,
+	ChannelReadProcessedWatermarkSchema,
+	ChannelReadProcessedWatermarkUpdateSchema,
+	ChannelReadSchema,
+	ChannelReadUpdateSchema,
+	ChannelSchema,
+	ChannelTypeSchema,
+	ChannelUpdateSchema,
+	InvitationInsertSchema,
+	InvitationSchema,
+	InvitationUpdateSchema,
+	MemberInsertSchema,
+	MemberSchema,
+	MemberUpdateSchema,
+	MessageInsertSchema,
+	MessageMentionInsertSchema,
+	MessageMentionSchema,
+	MessageMentionUpdateSchema,
+	MessageReactionInsertSchema,
+	MessageReactionSchema,
+	MessageReactionUpdateSchema,
+	MessageReadInsertSchema,
+	MessageReadSchema,
+	MessageReadSummaryInsertSchema,
+	MessageReadSummarySchema,
+	MessageReadSummaryUpdateSchema,
+	MessageReadUpdateSchema,
+	MessageSchema,
+	MessageUpdateSchema,
+	NotificationInsertSchema,
+	NotificationSchema,
+	NotificationUpdateSchema,
+	OrganizationInsertSchema,
+	OrganizationSchema,
+	OrganizationUpdateSchema,
+	SessionInsertSchema,
+	SessionSchema,
+	SessionUpdateSchema,
+	TeamInsertSchema,
+	TeamMemberInsertSchema,
+	TeamMemberSchema,
+	TeamMemberUpdateSchema,
+	TeamSchema,
+	TeamUpdateSchema,
+	UserInsertSchema,
+	UserSchema,
+	UserUpdateSchema,
+	VerificationInsertSchema,
+	VerificationSchema,
+	VerificationUpdateSchema,
+	WorkBlockInsertSchema,
+	WorkBlockSchema,
+	WorkBlockUpdateSchema,
 } from "./schemas/db-tables";
 
 export type AccountInsertType = z.infer<typeof AccountInsertSchema>;
@@ -85,24 +85,24 @@ export type AttendanceType = z.infer<typeof AttendanceSchema>;
 export type AttendanceUpdateType = z.infer<typeof AttendanceUpdateSchema>;
 export type ChannelInsertType = z.infer<typeof ChannelInsertSchema>;
 export type ChannelJoinRequestInsertType = z.infer<
-  typeof ChannelJoinRequestInsertSchema
+	typeof ChannelJoinRequestInsertSchema
 >;
 export type ChannelJoinRequestType = z.infer<typeof ChannelJoinRequestSchema>;
 export type ChannelJoinRequestUpdateType = z.infer<
-  typeof ChannelJoinRequestUpdateSchema
+	typeof ChannelJoinRequestUpdateSchema
 >;
 export type ChannelMemberInsertType = z.infer<typeof ChannelMemberInsertSchema>;
 export type ChannelMemberType = z.infer<typeof ChannelMemberSchema>;
 export type ChannelMemberUpdateType = z.infer<typeof ChannelMemberUpdateSchema>;
 export type ChannelReadInsertType = z.infer<typeof ChannelReadInsertSchema>;
 export type ChannelReadProcessedWatermarkInsertType = z.infer<
-  typeof ChannelReadProcessedWatermarkInsertSchema
+	typeof ChannelReadProcessedWatermarkInsertSchema
 >;
 export type ChannelReadProcessedWatermarkType = z.infer<
-  typeof ChannelReadProcessedWatermarkSchema
+	typeof ChannelReadProcessedWatermarkSchema
 >;
 export type ChannelReadProcessedWatermarkUpdateType = z.infer<
-  typeof ChannelReadProcessedWatermarkUpdateSchema
+	typeof ChannelReadProcessedWatermarkUpdateSchema
 >;
 export type ChannelReadType = z.infer<typeof ChannelReadSchema>;
 export type ChannelReadUpdateType = z.infer<typeof ChannelReadUpdateSchema>;
@@ -117,26 +117,26 @@ export type MemberType = z.infer<typeof MemberSchema>;
 export type MemberUpdateType = z.infer<typeof MemberUpdateSchema>;
 export type MessageInsertType = z.infer<typeof MessageInsertSchema>;
 export type MessageMentionInsertType = z.infer<
-  typeof MessageMentionInsertSchema
+	typeof MessageMentionInsertSchema
 >;
 export type MessageMentionType = z.infer<typeof MessageMentionSchema>;
 export type MessageMentionUpdateType = z.infer<
-  typeof MessageMentionUpdateSchema
+	typeof MessageMentionUpdateSchema
 >;
 export type MessageReactionInsertType = z.infer<
-  typeof MessageReactionInsertSchema
+	typeof MessageReactionInsertSchema
 >;
 export type MessageReactionType = z.infer<typeof MessageReactionSchema>;
 export type MessageReactionUpdateType = z.infer<
-  typeof MessageReactionUpdateSchema
+	typeof MessageReactionUpdateSchema
 >;
 export type MessageReadInsertType = z.infer<typeof MessageReadInsertSchema>;
 export type MessageReadSummaryInsertType = z.infer<
-  typeof MessageReadSummaryInsertSchema
+	typeof MessageReadSummaryInsertSchema
 >;
 export type MessageReadSummaryType = z.infer<typeof MessageReadSummarySchema>;
 export type MessageReadSummaryUpdateType = z.infer<
-  typeof MessageReadSummaryUpdateSchema
+	typeof MessageReadSummaryUpdateSchema
 >;
 export type MessageReadType = z.infer<typeof MessageReadSchema>;
 export type MessageReadUpdateType = z.infer<typeof MessageReadUpdateSchema>;

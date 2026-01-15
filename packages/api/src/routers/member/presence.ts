@@ -1,91 +1,91 @@
 import { ORPCError } from "@orpc/server";
 import {
-  GetOrgPresenceInput,
-  GetOrgPresenceOutput,
-  HeartbeatInput,
-  HeartbeatOutput,
-  SetManualStatusInput,
-  SetManualStatusOutput,
+	GetOrgPresenceInput,
+	GetOrgPresenceOutput,
+	HeartbeatInput,
+	HeartbeatOutput,
+	SetManualStatusInput,
+	SetManualStatusOutput,
 } from "@work-holo/api/lib/schemas/presence";
 import { member } from "@work-holo/db/schema/index";
 import { eq } from "drizzle-orm";
 import { protectedProcedure } from "../../index";
 import {
-  getPresenceForUsers,
-  setManualStatus,
-  updatePresence,
+	getPresenceForUsers,
+	setManualStatus,
+	updatePresence,
 } from "../../lib/presence";
 
 export const presenceRouter = {
-  heartbeat: protectedProcedure
-    .input(HeartbeatInput)
-    .output(HeartbeatOutput)
-    .handler(async ({ input, context: { session, redis } }) => {
-      const user = session.user;
+	heartbeat: protectedProcedure
+		.input(HeartbeatInput)
+		.output(HeartbeatOutput)
+		.handler(async ({ input, context: { session, redis } }) => {
+			const user = session.user;
 
-      if (!redis) {
-        throw new ORPCError("INTERNAL_SERVER_ERROR", {
-          message: "Presence service is not available.",
-        });
-      }
+			if (!redis) {
+				throw new ORPCError("INTERNAL_SERVER_ERROR", {
+					message: "Presence service is not available.",
+				});
+			}
 
-      const status = await updatePresence(redis, user.id, input.orgId, {
-        punchedIn: input.punchedIn,
-        onBreak: input.onBreak,
-        inCall: input.inCall,
-        inMeeting: input.inMeeting,
-        isTabFocused: input.isTabFocused,
-        isIdle: input.isIdle,
-        manualStatus: input.manualStatus ?? null,
-      });
+			const status = await updatePresence(redis, user.id, input.orgId, {
+				punchedIn: input.punchedIn,
+				onBreak: input.onBreak,
+				inCall: input.inCall,
+				inMeeting: input.inMeeting,
+				isTabFocused: input.isTabFocused,
+				isIdle: input.isIdle,
+				manualStatus: input.manualStatus ?? null,
+			});
 
-      return { status };
-    }),
+			return { status };
+		}),
 
-  setManualStatus: protectedProcedure
-    .input(SetManualStatusInput)
-    .output(SetManualStatusOutput)
-    .handler(async ({ input, context: { session, redis } }) => {
-      const user = session.user;
+	setManualStatus: protectedProcedure
+		.input(SetManualStatusInput)
+		.output(SetManualStatusOutput)
+		.handler(async ({ input, context: { session, redis } }) => {
+			const user = session.user;
 
-      if (!redis) {
-        throw new ORPCError("INTERNAL_SERVER_ERROR", {
-          message: "Presence service is not available.",
-        });
-      }
+			if (!redis) {
+				throw new ORPCError("INTERNAL_SERVER_ERROR", {
+					message: "Presence service is not available.",
+				});
+			}
 
-      await setManualStatus(redis, user.id, input.orgId, input.status);
+			await setManualStatus(redis, user.id, input.orgId, input.status);
 
-      return { ok: true };
-    }),
+			return { ok: true };
+		}),
 
-  getOrgPresence: protectedProcedure
-    .input(GetOrgPresenceInput)
-    .output(GetOrgPresenceOutput)
-    .handler(async ({ input, context: { db, redis } }) => {
-      if (!redis) {
-        throw new ORPCError("INTERNAL_SERVER_ERROR", {
-          message: "Presence service is not available.",
-        });
-      }
+	getOrgPresence: protectedProcedure
+		.input(GetOrgPresenceInput)
+		.output(GetOrgPresenceOutput)
+		.handler(async ({ input, context: { db, redis } }) => {
+			if (!redis) {
+				throw new ORPCError("INTERNAL_SERVER_ERROR", {
+					message: "Presence service is not available.",
+				});
+			}
 
-      // Fetch all members in the organization
-      const members = await db.query.member.findMany({
-        where: eq(member.organizationId, input.orgId),
-        columns: {
-          userId: true,
-        },
-      });
+			// Fetch all members in the organization
+			const members = await db.query.member.findMany({
+				where: eq(member.organizationId, input.orgId),
+				columns: {
+					userId: true,
+				},
+			});
 
-      const userIds = members.map((m) => m.userId);
+			const userIds = members.map((m) => m.userId);
 
-      if (userIds.length === 0) {
-        return { presence: {} };
-      }
+			if (userIds.length === 0) {
+				return { presence: {} };
+			}
 
-      // Fetch presence for all users
-      const presence = await getPresenceForUsers(redis, userIds);
+			// Fetch presence for all users
+			const presence = await getPresenceForUsers(redis, userIds);
 
-      return { presence };
-    }),
+			return { presence };
+		}),
 };

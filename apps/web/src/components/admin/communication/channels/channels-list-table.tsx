@@ -1,4 +1,3 @@
-import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import {
 	type ColumnDef,
@@ -28,7 +27,6 @@ import {
 	X,
 } from "lucide-react";
 import { Suspense, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import {
 	AlertDialog,
@@ -59,14 +57,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from "@/components/ui/form";
+import { useAppForm } from "@/components/ui/form/hooks";
 import { Input } from "@/components/ui/input";
 import {
 	InputGroup,
@@ -92,7 +83,6 @@ import {
 } from "@/components/ui/table";
 import { useListOrgMembers } from "@/hooks/use-list-org-members";
 import { UpdateChannelFormSchema } from "@/lib/schemas/admin/channel";
-import type { UpdateChannelFormType } from "@/lib/types";
 import { queryClient, queryUtils } from "@/utils/orpc";
 import { ChannelMembersPopover } from "./channel-members-popover";
 
@@ -821,15 +811,6 @@ export function UpdateChannelDialog({ channelId }: { channelId: string }) {
 		})
 	);
 
-	const form = useForm<UpdateChannelFormType>({
-		resolver: standardSchemaResolver(UpdateChannelFormSchema),
-		defaultValues: {
-			channelId,
-			name: channel.name,
-			description: channel.description || "",
-		},
-	});
-
 	const { mutateAsync: updateChannel, isPending } = useMutation(
 		queryUtils.communication.channel.update.mutationOptions({
 			onSuccess: () => {
@@ -847,28 +828,39 @@ export function UpdateChannelDialog({ channelId }: { channelId: string }) {
 		})
 	);
 
-	const onSubmit = async (data: UpdateChannelFormType) => {
-		const updateData = {
+	const form = useAppForm({
+		defaultValues: {
 			channelId,
-			...(data.name !== undefined && data.name !== channel.name
-				? { name: data.name }
-				: {}),
-			...(data.description !== undefined &&
-			data.description !== channel.description
-				? { description: data.description }
-				: {}),
-			...(data.isPrivate !== undefined && data.isPrivate !== channel.isPrivate
-				? { isPrivate: data.isPrivate }
-				: {}),
-		};
+			name: channel.name,
+			description: channel.description || "",
+			isPrivate: channel.isPrivate,
+		},
+		validators: {
+			onSubmit: (value) => UpdateChannelFormSchema.parse(value),
+		},
+		onSubmit: async ({ value: data }) => {
+			const updateData = {
+				channelId,
+				...(data.name !== undefined && data.name !== channel.name
+					? { name: data.name }
+					: {}),
+				...(data.description !== undefined &&
+				data.description !== channel.description
+					? { description: data.description }
+					: {}),
+				...(data.isPrivate !== undefined && data.isPrivate !== channel.isPrivate
+					? { isPrivate: data.isPrivate }
+					: {}),
+			};
 
-		if (Object.keys(updateData).length === 1) {
-			toast.info("No changes to update");
-			return;
-		}
+			if (Object.keys(updateData).length === 1) {
+				toast.info("No changes to update");
+				return;
+			}
 
-		await updateChannel(updateData);
-	};
+			await updateChannel(updateData);
+		},
+	});
 
 	return (
 		<Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
@@ -891,37 +883,51 @@ export function UpdateChannelDialog({ channelId }: { channelId: string }) {
 					</DialogDescription>
 				</DialogHeader>
 				<div className="space-y-4">
-					<Form {...form}>
-						<form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-							<FormField
-								control={form.control}
-								name="name"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Channel Name</FormLabel>
-										<FormControl>
-											<Input placeholder="Enter channel name" {...field} />
-										</FormControl>
-										<FormMessage />
-									</FormItem>
+					<form.AppForm>
+						<form className="space-y-4" onSubmit={form.handleSubmit}>
+							<form.AppField name="name">
+								{(field) => (
+									<div className="space-y-2">
+										<label className="font-medium text-sm" htmlFor="name">
+											Channel Name
+										</label>
+										<Input
+											id="name"
+											onChange={(e) => field.handleChange(e.target.value)}
+											placeholder="Enter channel name"
+											value={field.state.value}
+										/>
+										{field.state.meta.errors.length > 0 && (
+											<p className="text-destructive text-sm">
+												{field.state.meta.errors[0]}
+											</p>
+										)}
+									</div>
 								)}
-							/>
-							<FormField
-								control={form.control}
-								name="description"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Description</FormLabel>
-										<FormControl>
-											<Input
-												placeholder="Enter channel description"
-												{...field}
-											/>
-										</FormControl>
-										<FormMessage />
-									</FormItem>
+							</form.AppField>
+							<form.AppField name="description">
+								{(field) => (
+									<div className="space-y-2">
+										<label
+											className="font-medium text-sm"
+											htmlFor="description"
+										>
+											Description
+										</label>
+										<Input
+											id="description"
+											onChange={(e) => field.handleChange(e.target.value)}
+											placeholder="Enter channel description"
+											value={field.state.value}
+										/>
+										{field.state.meta.errors.length > 0 && (
+											<p className="text-destructive text-sm">
+												{field.state.meta.errors[0]}
+											</p>
+										)}
+									</div>
 								)}
-							/>
+							</form.AppField>
 							<DialogFooter>
 								<Button
 									onClick={() => {
@@ -945,7 +951,7 @@ export function UpdateChannelDialog({ channelId }: { channelId: string }) {
 								</Button>
 							</DialogFooter>
 						</form>
-					</Form>
+					</form.AppForm>
 				</div>
 			</DialogContent>
 		</Dialog>

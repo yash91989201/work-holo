@@ -5,76 +5,76 @@ import parse from "html-react-parser";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
-  Item,
-  ItemActions,
-  ItemContent,
-  ItemDescription,
-  ItemMedia,
-  ItemTitle,
+	Item,
+	ItemActions,
+	ItemContent,
+	ItemDescription,
+	ItemMedia,
+	ItemTitle,
 } from "@/components/ui/item";
 import { formatMessageTimestamp } from "@/lib/utils";
 import { useChannelMessageHighlight } from "@/stores/channel-store";
 
 interface MentionMessageItemProps {
-  message: MessageWithSenderType & {
-    channel: { id: string; name: string };
-    mention: {
-      id: string;
-      isSeen: boolean;
-    };
-  };
+	message: MessageWithSenderType & {
+		channel: { id: string; name: string };
+		mention: {
+			id: string;
+			isSeen: boolean;
+		};
+	};
 }
 
 export function MentionMessageItem({ message }: MentionMessageItemProps) {
-  const { highlightMessage } = useChannelMessageHighlight();
+	const { highlightMessage } = useChannelMessageHighlight();
 
-  const { slug } = useParams({
-    from: "/(authenticated)/org/$slug/(modules)/communication/channels/$id",
-  });
+	const { slug } = useParams({
+		from: "/(authenticated)/org/$slug/(modules)/communication/channels/$id",
+	});
 
-  const timestamp = formatMessageTimestamp(message.createdAt);
+	const timestamp = formatMessageTimestamp(message.createdAt);
 
-  const handleViewMention = () => {
-    highlightMessage(message.id);
-  };
+	const handleViewMention = () => {
+		highlightMessage(message.id);
+	};
 
-  return (
-    <Item variant="outline">
-      <ItemMedia variant="image">
-        <Avatar className="h-10 w-10">
-          <AvatarImage
-            alt={message.sender.name}
-            src={message.sender.image || undefined}
-          />
-          <AvatarFallback className="bg-linear-to-br from-primary/20 to-primary/10 font-medium text-primary text-xs">
-            {message.sender.name.slice(0, 2).toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
-      </ItemMedia>
-      <ItemContent>
-        <ItemTitle>
-          {message.sender.name} mentioned you
-          <span className="font-normal text-muted-foreground text-xs">
-            {timestamp.formatted}
-          </span>
-        </ItemTitle>
-        {message.content && (
-          <ItemDescription className="line-clamp-2">
-            {parse(DOMPurify.sanitize(message.content))}
-          </ItemDescription>
-        )}
-      </ItemContent>
-      <ItemActions>
-        <Link
-          onClick={handleViewMention}
-          params={{ slug, id: message.channel.id }}
-          to="/org/$slug/communication/channels/$id"
-        >
-          <Button size="sm" variant="secondary">
-            View
-          </Button>
-        </Link>
-      </ItemActions>
-    </Item>
-  );
+	return (
+		<Item variant="outline">
+			<ItemMedia variant="image">
+				<Avatar className="h-10 w-10">
+					<AvatarImage
+						alt={message.sender.name}
+						src={message.sender.image || undefined}
+					/>
+					<AvatarFallback className="bg-linear-to-br from-primary/20 to-primary/10 font-medium text-primary text-xs">
+						{message.sender.name.slice(0, 2).toUpperCase()}
+					</AvatarFallback>
+				</Avatar>
+			</ItemMedia>
+			<ItemContent>
+				<ItemTitle>
+					{message.sender.name} mentioned you
+					<span className="font-normal text-muted-foreground text-xs">
+						{timestamp.formatted}
+					</span>
+				</ItemTitle>
+				{message.content && (
+					<ItemDescription className="line-clamp-2">
+						{parse(DOMPurify.sanitize(message.content))}
+					</ItemDescription>
+				)}
+			</ItemContent>
+			<ItemActions>
+				<Link
+					onClick={handleViewMention}
+					params={{ slug, id: message.channel.id }}
+					to="/org/$slug/communication/channels/$id"
+				>
+					<Button size="sm" variant="secondary">
+						View
+					</Button>
+				</Link>
+			</ItemActions>
+		</Item>
+	);
 }

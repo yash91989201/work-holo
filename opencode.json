@@ -1,6 +1,13 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
+    "tanstack": {
+      "url": "https://tanstack.com/api/mcp",
+      "type": "remote",
+      "headers": {
+        "Authorization": "Bearer {env:TANSTACK_API_KEY}"
+      }
+    },
     "context7": {
       "type": "local",
       "command": ["npx", "-y", "@upstash/context7-mcp"],

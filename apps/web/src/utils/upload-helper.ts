@@ -1,76 +1,76 @@
 import { orpcClient } from "./orpc";
 
 export type StorageBucket =
-  | "message-attachment"
-  | "message-audio"
-  | "message-image"
-  | "user-profile"
-  | "org-logo";
+	| "message-attachment"
+	| "message-audio"
+	| "message-image"
+	| "user-profile"
+	| "org-logo";
 
 export interface UploadResult {
-  fileName: string;
-  originalName: string;
-  fileSize: number;
-  mimeType: string;
-  url: string;
-  bucket: StorageBucket;
+	fileName: string;
+	originalName: string;
+	fileSize: number;
+	mimeType: string;
+	url: string;
+	bucket: StorageBucket;
 }
 
 async function uploadFileWithPresignedUrl(
-  uploadUrl: string,
-  file: File
+	uploadUrl: string,
+	file: File
 ): Promise<void> {
-  const response = await fetch(uploadUrl, {
-    method: "PUT",
-    body: file,
-    headers: {
-      "Content-Type": file.type,
-    },
-  });
+	const response = await fetch(uploadUrl, {
+		method: "PUT",
+		body: file,
+		headers: {
+			"Content-Type": file.type,
+		},
+	});
 
-  if (!response.ok) {
-    throw new Error(`Upload failed with status: ${response.status}`);
-  }
+	if (!response.ok) {
+		throw new Error(`Upload failed with status: ${response.status}`);
+	}
 }
 
 export async function uploadToStorage(
-  file: File,
-  bucket: StorageBucket
+	file: File,
+	bucket: StorageBucket
 ): Promise<UploadResult> {
-  const { uploadUrl, publicUrl, filePath } =
-    await orpcClient.storage.getUploadUrl({
-      bucket,
-      fileName: file.name,
-      contentType: file.type,
-      fileSize: file.size,
-    });
+	const { uploadUrl, publicUrl, filePath } =
+		await orpcClient.storage.getUploadUrl({
+			bucket,
+			fileName: file.name,
+			contentType: file.type,
+			fileSize: file.size,
+		});
 
-  await uploadFileWithPresignedUrl(uploadUrl, file);
+	await uploadFileWithPresignedUrl(uploadUrl, file);
 
-  return {
-    fileName: filePath,
-    originalName: file.name,
-    fileSize: file.size,
-    mimeType: file.type,
-    url: publicUrl,
-    bucket,
-  };
+	return {
+		fileName: filePath,
+		originalName: file.name,
+		fileSize: file.size,
+		mimeType: file.type,
+		url: publicUrl,
+		bucket,
+	};
 }
 
 export async function uploadProfileImage(
-  file: File,
-  _userId: string
+	file: File,
+	_userId: string
 ): Promise<string> {
-  const result = await uploadToStorage(file, "user-profile");
-  return result.url;
+	const result = await uploadToStorage(file, "user-profile");
+	return result.url;
 }
 
 export async function uploadMessageImage(file: File): Promise<string> {
-  const result = await uploadToStorage(file, "message-image");
-  return result.url;
+	const result = await uploadToStorage(file, "message-image");
+	return result.url;
 }
 
 export async function uploadOrgLogo(file: File): Promise<string> {
-  const result = await uploadToStorage(file, "org-logo");
-  return result.url;
+	const result = await uploadToStorage(file, "org-logo");
+	return result.url;
 }

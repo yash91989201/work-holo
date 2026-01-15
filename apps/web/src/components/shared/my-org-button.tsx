@@ -6,33 +6,33 @@ import { useActiveOrgSlug } from "@/hooks/use-active-org-slug";
 import { useSession } from "@/hooks/use-session";
 
 export function MyOrgButton() {
-  const slug = useActiveOrgSlug();
-  const session = useSession();
-  const role = useActiveMemberRole();
+	const slug = useActiveOrgSlug();
+	const session = useSession();
+	const role = useActiveMemberRole();
 
-  if (!(session && role)) {
-    return null;
-  }
+	if (!(session && role)) {
+		return null;
+	}
 
-  if (!slug) {
-    return (
-      <Link className={buttonVariants({ variant: "outline" })} to="/org/new">
-        Create Org
-      </Link>
-    );
-  }
+	if (!slug) {
+		return (
+			<Link className={buttonVariants({ variant: "outline" })} to="/org/new">
+				Create Org
+			</Link>
+		);
+	}
 
-  return (
-    <Link
-      className={buttonVariants({ variant: "outline" })}
-      params={{ slug }}
-      to="/org/$slug"
-    >
-      My Org
-    </Link>
-  );
+	return (
+		<Link
+			className={buttonVariants({ variant: "outline" })}
+			params={{ slug }}
+			to="/org/$slug"
+		>
+			My Org
+		</Link>
+	);
 }
 
 export function MyOrgButtonSkeleton() {
-  return <Skeleton className="h-9 w-20" />;
+	return <Skeleton className="h-9 w-20" />;
 }

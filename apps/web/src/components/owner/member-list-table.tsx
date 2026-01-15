@@ -1,4 +1,3 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import {
 	type ColumnDef,
@@ -24,7 +23,6 @@ import {
 	User,
 } from "lucide-react";
 import { useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import {
 	AlertDialog,
@@ -53,14 +51,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from "@/components/ui/form";
+import { useAppForm } from "@/components/ui/form/hooks";
 import {
 	InputGroup,
 	InputGroupAddon,
@@ -85,7 +76,6 @@ import {
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { authClient } from "@/lib/auth-client";
 import { UpdateMemberRoleSchema } from "@/lib/schemas/admin/member";
-import type { UpdateMemberRoleFormType } from "@/lib/types";
 import { queryClient, queryUtils } from "@/utils/orpc";
 
 const getRoleBadgeVariant = (role: string) => {
@@ -123,35 +113,36 @@ function UpdateMemberRole({
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
 }) {
-	const form = useForm<UpdateMemberRoleFormType>({
-		resolver: zodResolver(UpdateMemberRoleSchema),
+	const form = useAppForm({
 		defaultValues: {
 			role: member.role as "admin" | "member",
 		},
+		validators: {
+			onSubmit: (value) => UpdateMemberRoleSchema.parse(value),
+		},
+		onSubmit: async ({ value: data }) => {
+			try {
+				// Use better-auth organization client to update member role
+				await authClient.organization.updateMemberRole({
+					memberId: member.id,
+					role: data.role,
+				});
+
+				// Invalidate and refetch the member list
+				queryClient.invalidateQueries({
+					queryKey: queryUtils.admin.member.listMembers.queryKey(),
+				});
+
+				toast.success(`Member role updated to ${data.role}`);
+				onOpenChange(false);
+			} catch (error) {
+				console.error("Failed to update member role:", error);
+				toast.error("Failed to update member role");
+			}
+		},
 	});
 
-	const isLoading = form.formState.isSubmitting;
-
-	const onSubmit = async (data: UpdateMemberRoleFormType) => {
-		try {
-			// Use better-auth organization client to update member role
-			await authClient.organization.updateMemberRole({
-				memberId: member.id,
-				role: data.role,
-			});
-
-			// Invalidate and refetch the member list
-			queryClient.invalidateQueries({
-				queryKey: queryUtils.admin.member.listMembers.queryKey(),
-			});
-
-			toast.success(`Member role updated to ${data.role}`);
-			onOpenChange(false);
-		} catch (error) {
-			console.error("Failed to update member role:", error);
-			toast.error("Failed to update member role");
-		}
-	};
+	const isLoading = form.state.isSubmitting;
 
 	return (
 		<Dialog onOpenChange={onOpenChange} open={open}>
@@ -163,23 +154,23 @@ function UpdateMemberRole({
 					</DialogDescription>
 				</DialogHeader>
 
-				<Form {...form}>
-					<form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-						<FormField
-							control={form.control}
-							name="role"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Role</FormLabel>
+				<form.AppForm>
+					<form className="space-y-4" onSubmit={form.handleSubmit}>
+						<form.AppField name="role">
+							{(field) => (
+								<div className="space-y-2">
+									<label className="font-medium text-sm" htmlFor="role">
+										Role
+									</label>
 									<Select
-										defaultValue={field.value}
-										onValueChange={field.onChange}
+										defaultValue={field.state.value}
+										onValueChange={(value) => {
+											if (value) field.handleChange(value);
+										}}
 									>
-										<FormControl>
-											<SelectTrigger>
-												<SelectValue>Select a role</SelectValue>
-											</SelectTrigger>
-										</FormControl>
+										<SelectTrigger id="role">
+											<SelectValue>Select a role</SelectValue>
+										</SelectTrigger>
 										<SelectContent>
 											<SelectItem value="admin">
 												<div className="flex items-center gap-2">
@@ -195,10 +186,14 @@ function UpdateMemberRole({
 											</SelectItem>
 										</SelectContent>
 									</Select>
-									<FormMessage />
-								</FormItem>
+									{field.state.meta.errors.length > 0 && (
+										<p className="text-destructive text-sm">
+											{field.state.meta.errors[0]}
+										</p>
+									)}
+								</div>
 							)}
-						/>
+						</form.AppField>
 
 						<DialogFooter>
 							<Button
@@ -214,7 +209,7 @@ function UpdateMemberRole({
 							</Button>
 						</DialogFooter>
 					</form>
-				</Form>
+				</form.AppForm>
 			</DialogContent>
 		</Dialog>
 	);

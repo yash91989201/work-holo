@@ -1,148 +1,119 @@
-import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate, useParams, useSearch } from "@tanstack/react-router";
 import { Loader } from "lucide-react";
-import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { useAppForm } from "@/components/ui/form/hooks";
 import { acceptOrgInvitation } from "@/lib/auth/invitation";
 import { AcceptInvitationFormSchema } from "@/lib/schemas/auth";
 import type { AcceptInvitationFormType } from "@/lib/types";
 
 export function AcceptInvitationForm() {
-  const navigate = useNavigate();
+	const navigate = useNavigate();
 
-  const { id: invitationId } = useParams({
-    from: "/(auth)/accept-invitation/$id",
-  });
+	const { id: invitationId } = useParams({
+		from: "/(auth)/accept-invitation/$id",
+	});
 
-  const { email } = useSearch({
-    from: "/(auth)/accept-invitation/$id",
-  });
+	const { email } = useSearch({
+		from: "/(auth)/accept-invitation/$id",
+	});
 
-  const form = useForm<AcceptInvitationFormType>({
-    resolver: standardSchemaResolver(AcceptInvitationFormSchema),
-    defaultValues: {
-      email,
-      name: "",
-      password: "",
-      invitationId,
-    },
-  });
+	const { mutateAsync: acceptInvitation, isPending } = useMutation({
+		mutationKey: ["acceptInvitation", invitationId],
+		mutationFn: (formValues: AcceptInvitationFormType) =>
+			acceptOrgInvitation({ ...formValues, invitationId }),
+		onSuccess: (slug) => {
+			toast.success("Invitation accepted successfully!");
 
-  const { mutateAsync: acceptInvitation, isPending } = useMutation({
-    mutationKey: ["acceptInvitation", invitationId],
-    mutationFn: (formValues: AcceptInvitationFormType) =>
-      acceptOrgInvitation({ ...formValues, invitationId }),
-    onSuccess: (slug) => {
-      toast.success("Invitation accepted successfully!");
+			if (slug) {
+				navigate({
+					to: "/org/$slug",
+					params: { slug },
+				});
+				return;
+			}
 
-      if (slug) {
-        navigate({
-          to: "/org/$slug",
-          params: { slug },
-        });
-        return;
-      }
+			navigate({
+				to: "/org/new",
+			});
+		},
+		onError: (error) => {
+			const message =
+				error instanceof Error ? error.message : "Failed to accept invitation";
 
-      navigate({
-        to: "/org/new",
-      });
-    },
-    onError: (error) => {
-      const message =
-        error instanceof Error ? error.message : "Failed to accept invitation";
+			form.setFieldMeta("password", (prev) => ({
+				...prev,
+				errorMap: {
+					onSubmit: message,
+				},
+			}));
+			toast.error(message);
+		},
+	});
 
-      form.setError("password", { message });
-      toast.error(message);
-    },
-  });
+	const form = useAppForm({
+		defaultValues: {
+			email,
+			name: "",
+			password: "",
+			invitationId,
+		} satisfies AcceptInvitationFormType as AcceptInvitationFormType,
+		validators: {
+			onSubmit: AcceptInvitationFormSchema,
+		},
+		onSubmit: async ({ value }) => {
+			await acceptInvitation({ ...value, invitationId });
+		},
+	});
 
-  const onSubmit: SubmitHandler<AcceptInvitationFormType> = async (values) => {
-    form.clearErrors();
-    await acceptInvitation({ ...values, invitationId });
-  };
+	const formDisabled = isPending || form.state.isSubmitting;
 
-  const formDisabled = isPending || form.formState.isSubmitting;
+	return (
+		<form className="space-y-4" onSubmit={form.handleSubmit}>
+			<form.AppField name="name">
+				{(field) => (
+					<field.Input
+						autoComplete="name"
+						disabled={formDisabled}
+						label="Name"
+						placeholder="Your full name"
+					/>
+				)}
+			</form.AppField>
 
-  return (
-    <Form {...form}>
-      <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input
-                  autoComplete="name"
-                  disabled={formDisabled}
-                  placeholder="Your full name"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+			<form.AppField name="email">
+				{(field) => (
+					<field.Input disabled label="Email" readOnly type="email" />
+				)}
+			</form.AppField>
 
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input disabled readOnly type="email" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+			<form.AppField name="password">
+				{(field) => (
+					<field.Input
+						autoComplete="new-password"
+						disabled={formDisabled}
+						label="Password"
+						placeholder="Create a password"
+						type="password"
+					/>
+				)}
+			</form.AppField>
 
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input
-                  autoComplete="new-password"
-                  disabled={formDisabled}
-                  placeholder="Create a password"
-                  type="password"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+			<form.AppField name="invitationId">
+				{(field) => <input hidden type="hidden" value={field.state.value} />}
+			</form.AppField>
 
-        <input hidden type="hidden" {...form.register("invitationId")} />
-
-        <Button className="w-full" disabled={formDisabled}>
-          {form.formState.isSubmitting ? (
-            <>
-              <Loader className="h-4 w-4 animate-spin" />
-              <span>Accepting...</span>
-            </>
-          ) : (
-            <span>Accept Invite</span>
-          )}
-        </Button>
-      </form>
-    </Form>
-  );
+			<Button className="w-full" disabled={formDisabled}>
+				{form.state.isSubmitting ? (
+					<>
+						<Loader className="h-4 w-4 animate-spin" />
+						<span>Accepting...</span>
+					</>
+				) : (
+					<span>Accept Invite</span>
+				)}
+			</Button>
+		</form>
+	);
 }

@@ -3,69 +3,69 @@ import { useEffect, useMemo, useState } from "react";
 import type { MessageListItem } from "@/lib/communications/message";
 
 interface UseVisibleMessagesOptions {
-  /**
-   * The current virtual items from useVirtualizer
-   */
-  virtualItems: VirtualItem[];
-  /**
-   * All items in the list (including date separators)
-   */
-  items: MessageListItem[];
-  /**
-   * Whether to enable tracking
-   */
-  enabled?: boolean;
+	/**
+	 * The current virtual items from useVirtualizer
+	 */
+	virtualItems: VirtualItem[];
+	/**
+	 * All items in the list (including date separators)
+	 */
+	items: MessageListItem[];
+	/**
+	 * Whether to enable tracking
+	 */
+	enabled?: boolean;
 }
 
 /**
  * Hook to track which messages are currently visible in the viewport
  */
 export function useVisibleMessages(options: UseVisibleMessagesOptions) {
-  const { virtualItems, items, enabled = true } = options;
+	const { virtualItems, items, enabled = true } = options;
 
-  const [visibleMessageIds, setVisibleMessageIds] = useState<Set<string>>(
-    new Set()
-  );
+	const [visibleMessageIds, setVisibleMessageIds] = useState<Set<string>>(
+		new Set()
+	);
 
-  // Calculate visible message IDs from virtual items
-  const calculatedVisibleIds = useMemo(() => {
-    if (!enabled) {
-      return new Set<string>();
-    }
+	// Calculate visible message IDs from virtual items
+	const calculatedVisibleIds = useMemo(() => {
+		if (!enabled) {
+			return new Set<string>();
+		}
 
-    const visibleIds = new Set<string>();
+		const visibleIds = new Set<string>();
 
-    for (const virtualItem of virtualItems) {
-      const item = items[virtualItem.index];
+		for (const virtualItem of virtualItems) {
+			const item = items[virtualItem.index];
 
-      // Skip if no item
-      if (!item) {
-        continue;
-      }
+			// Skip if no item
+			if (!item) {
+				continue;
+			}
 
-      // Skip separators, only track actual messages
-      // Separators have a "type" property (date-separator or new-messages-separator)
-      if (
-        "type" in item &&
-        (item.type === "date-separator" ||
-          item.type === "new-messages-separator")
-      ) {
-        continue;
-      }
+			// Skip separators, only track actual messages
+			// Separators have a "type" property (date-separator or new-messages-separator)
+			if (
+				"type" in item &&
+				(item.type === "date-separator" ||
+					item.type === "new-messages-separator")
+			) {
+				continue;
+			}
 
-      visibleIds.add(item.id);
-    }
+			visibleIds.add(item.id);
+		}
 
-    return visibleIds;
-  }, [virtualItems, items, enabled]);
+		return visibleIds;
+	}, [virtualItems, items, enabled]);
 
-  // Update state when calculated IDs change
-  useEffect(() => {
-    setVisibleMessageIds(calculatedVisibleIds);
-  }, [calculatedVisibleIds]);
+	// Update state when calculated IDs change
+	useEffect(() => {
+		setVisibleMessageIds(calculatedVisibleIds);
+	}, [calculatedVisibleIds]);
 
-  return {
-    visibleMessageIds,
-    visibleCount: visibleMessageIds.size,
-  };
+	return {
+		visibleMessageIds,
+		visibleCount: visibleMessageIds.size,
+	};
 }

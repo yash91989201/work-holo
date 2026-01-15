@@ -8,35 +8,35 @@ export const o = os.$context<Context>();
 export const publicProcedure = o;
 
 const requireAuth = o.middleware(({ context, next }) => {
-  if (!context.session?.user) {
-    throw new ORPCError("UNAUTHORIZED");
-  }
+	if (!context.session?.user) {
+		throw new ORPCError("UNAUTHORIZED");
+	}
 
-  return next({
-    context: {
-      session: context.session,
-    },
-  });
+	return next({
+		context: {
+			session: context.session,
+		},
+	});
 });
 
 const requireAdmin = o.middleware(async ({ context, next }) => {
-  if (!context.session?.user) {
-    throw new ORPCError("UNAUTHORIZED");
-  }
+	if (!context.session?.user) {
+		throw new ORPCError("UNAUTHORIZED");
+	}
 
-  const userMember = await context.db.query.member.findFirst({
-    where: eq(member.userId, context.session.user.id),
-  });
+	const userMember = await context.db.query.member.findFirst({
+		where: eq(member.userId, context.session.user.id),
+	});
 
-  if (!userMember) {
-    throw new ORPCError("FORBIDDEN");
-  }
+	if (!userMember) {
+		throw new ORPCError("FORBIDDEN");
+	}
 
-  if (userMember.role !== "admin") {
-    throw new ORPCError("FORBIDDEN");
-  }
+	if (userMember.role !== "admin") {
+		throw new ORPCError("FORBIDDEN");
+	}
 
-  return next();
+	return next();
 });
 
 export const protectedProcedure = publicProcedure.use(requireAuth);

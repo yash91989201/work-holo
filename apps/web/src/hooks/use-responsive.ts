@@ -5,71 +5,71 @@ export const TABLET_BREAKPOINT = 1024;
 export const DESKTOP_BREAKPOINT = 1280;
 
 export function useIsMobile() {
-  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(
-    undefined
-  );
+	const [isMobile, setIsMobile] = React.useState<boolean | undefined>(
+		undefined
+	);
 
-  React.useEffect(() => {
-    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
-    const onChange = () => {
-      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
-    };
-    mql.addEventListener("change", onChange);
-    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
-    return () => mql.removeEventListener("change", onChange);
-  }, []);
+	React.useEffect(() => {
+		const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+		const onChange = () => {
+			setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+		};
+		mql.addEventListener("change", onChange);
+		setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+		return () => mql.removeEventListener("change", onChange);
+	}, []);
 
-  return !!isMobile;
+	return !!isMobile;
 }
 
 export function useIsTablet() {
-  const [isTablet, setIsTablet] = React.useState<boolean | undefined>(
-    undefined
-  );
+	const [isTablet, setIsTablet] = React.useState<boolean | undefined>(
+		undefined
+	);
 
-  React.useEffect(() => {
-    const width = window.innerWidth;
-    const mql = window.matchMedia(
-      `(min-width: ${MOBILE_BREAKPOINT}px) and (max-width: ${TABLET_BREAKPOINT - 1}px)`
-    );
-    const onChange = () => {
-      const width = window.innerWidth;
-      setIsTablet(width >= MOBILE_BREAKPOINT && width < TABLET_BREAKPOINT);
-    };
-    mql.addEventListener("change", onChange);
-    setIsTablet(width >= MOBILE_BREAKPOINT && width < TABLET_BREAKPOINT);
-    return () => mql.removeEventListener("change", onChange);
-  }, []);
+	React.useEffect(() => {
+		const width = window.innerWidth;
+		const mql = window.matchMedia(
+			`(min-width: ${MOBILE_BREAKPOINT}px) and (max-width: ${TABLET_BREAKPOINT - 1}px)`
+		);
+		const onChange = () => {
+			const width = window.innerWidth;
+			setIsTablet(width >= MOBILE_BREAKPOINT && width < TABLET_BREAKPOINT);
+		};
+		mql.addEventListener("change", onChange);
+		setIsTablet(width >= MOBILE_BREAKPOINT && width < TABLET_BREAKPOINT);
+		return () => mql.removeEventListener("change", onChange);
+	}, []);
 
-  return !!isTablet;
+	return !!isTablet;
 }
 
 export function useIsDesktop() {
-  const [isDesktop, setIsDesktop] = React.useState<boolean | undefined>(
-    undefined
-  );
+	const [isDesktop, setIsDesktop] = React.useState<boolean | undefined>(
+		undefined
+	);
 
-  React.useEffect(() => {
-    const mql = window.matchMedia(`(min-width: ${TABLET_BREAKPOINT}px)`);
-    const onChange = () => {
-      setIsDesktop(window.innerWidth >= TABLET_BREAKPOINT);
-    };
-    mql.addEventListener("change", onChange);
-    setIsDesktop(window.innerWidth >= TABLET_BREAKPOINT);
-    return () => mql.removeEventListener("change", onChange);
-  }, []);
+	React.useEffect(() => {
+		const mql = window.matchMedia(`(min-width: ${TABLET_BREAKPOINT}px)`);
+		const onChange = () => {
+			setIsDesktop(window.innerWidth >= TABLET_BREAKPOINT);
+		};
+		mql.addEventListener("change", onChange);
+		setIsDesktop(window.innerWidth >= TABLET_BREAKPOINT);
+		return () => mql.removeEventListener("change", onChange);
+	}, []);
 
-  return !!isDesktop;
+	return !!isDesktop;
 }
 
 export function useResponsive() {
-  const isMobile = useIsMobile();
-  const isTablet = useIsTablet();
-  const isDesktop = useIsDesktop();
+	const isMobile = useIsMobile();
+	const isTablet = useIsTablet();
+	const isDesktop = useIsDesktop();
 
-  return {
-    isMobile,
-    isTablet,
-    isDesktop,
-  };
+	return {
+		isMobile,
+		isTablet,
+		isDesktop,
+	};
 }

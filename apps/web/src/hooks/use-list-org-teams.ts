@@ -3,26 +3,26 @@ import { getAuthQueryKey } from "@/lib/auth/query-keys";
 import { authClient } from "@/lib/auth-client";
 
 export function useListOrgTeams() {
-  const {
-    data: teams,
-    refetch: refetchTeams,
-    isRefetching,
-  } = useSuspenseQuery({
-    queryKey: getAuthQueryKey.organization.teams("current"),
-    queryFn: async () => {
-      const { data, error } = await authClient.organization.listTeams();
+	const {
+		data: teams,
+		refetch: refetchTeams,
+		isRefetching,
+	} = useSuspenseQuery({
+		queryKey: getAuthQueryKey.organization.teams("current"),
+		queryFn: async () => {
+			const { data, error } = await authClient.organization.listTeams();
 
-      if (error !== null) {
-        return [];
-      }
+			if (error !== null) {
+				return [];
+			}
 
-      return data;
-    },
-  });
+			return data;
+		},
+	});
 
-  return {
-    teams,
-    refetchTeams,
-    isRefetching,
-  };
+	return {
+		teams,
+		refetchTeams,
+		isRefetching,
+	};
 }

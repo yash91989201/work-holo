@@ -1,23 +1,23 @@
 import { createFileRoute } from "@tanstack/react-router";
 import {
-  AttendanceAnalyticsView,
-  RANGE_OPTIONS,
-  rangeToInput,
+	AttendanceAnalyticsView,
+	RANGE_OPTIONS,
+	rangeToInput,
 } from "@/components/member/attendance/attendance-analytics-view";
 
 export const Route = createFileRoute(
-  "/(authenticated)/org/$slug/dashboard/attendance/analytics"
+	"/(authenticated)/org/$slug/dashboard/attendance/analytics"
 )({
-  beforeLoad: ({ context: { queryClient, queryUtils } }) => {
-    queryClient.prefetchQuery(
-      queryUtils.member.attendance.getAnalytics.queryOptions({
-        input: rangeToInput(RANGE_OPTIONS[0].value),
-      })
-    );
-  },
-  component: RouteComponent,
+	beforeLoad: ({ context: { queryClient, queryUtils } }) => {
+		queryClient.prefetchQuery(
+			queryUtils.member.attendance.getAnalytics.queryOptions({
+				input: rangeToInput(RANGE_OPTIONS[0].value),
+			})
+		);
+	},
+	component: RouteComponent,
 });
 
 function RouteComponent() {
-  return <AttendanceAnalyticsView />;
+	return <AttendanceAnalyticsView />;
 }

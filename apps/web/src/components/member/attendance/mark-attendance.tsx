@@ -1,319 +1,319 @@
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import {
-  Briefcase,
-  BriefcaseBusiness,
-  CheckCircle,
-  Clock,
-  Coffee,
-  LogOut,
+	Briefcase,
+	BriefcaseBusiness,
+	CheckCircle,
+	Clock,
+	Coffee,
+	LogOut,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
 } from "@/components/ui/card";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
 } from "@/components/ui/dialog";
 import {
-  Empty,
-  EmptyContent,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
+	Empty,
+	EmptyContent,
+	EmptyDescription,
+	EmptyHeader,
+	EmptyMedia,
+	EmptyTitle,
 } from "@/components/ui/empty";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
 import { queryUtils } from "@/utils/orpc";
 
 const formatDateTime = (value: Date | string | null | undefined) => {
-  if (!value) return "N/A";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "N/A";
-  return new Intl.DateTimeFormat(undefined, {
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(date);
+	if (!value) return "N/A";
+	const date = new Date(value);
+	if (Number.isNaN(date.getTime())) return "N/A";
+	return new Intl.DateTimeFormat(undefined, {
+		hour: "2-digit",
+		minute: "2-digit",
+	}).format(date);
 };
 
 const calculateWorkDuration = (
-  checkIn: Date | string | null | undefined,
-  checkOut: Date | string | null | undefined
+	checkIn: Date | string | null | undefined,
+	checkOut: Date | string | null | undefined
 ) => {
-  if (!checkIn) return 0;
-  const start = new Date(checkIn);
-  const end = checkOut ? new Date(checkOut) : new Date();
-  return Math.floor((end.getTime() - start.getTime()) / (1000 * 60));
+	if (!checkIn) return 0;
+	const start = new Date(checkIn);
+	const end = checkOut ? new Date(checkOut) : new Date();
+	return Math.floor((end.getTime() - start.getTime()) / (1000 * 60));
 };
 
 const formatDuration = (minutes = 0) => {
-  const hrs = Math.floor(minutes / 60);
-  const mins = minutes % 60;
-  if (hrs === 0) return `${mins}m`;
-  return `${hrs}h ${mins}m`;
+	const hrs = Math.floor(minutes / 60);
+	const mins = minutes % 60;
+	if (hrs === 0) return `${mins}m`;
+	return `${hrs}h ${mins}m`;
 };
 
 const StatCard = ({
-  icon,
-  label,
-  value,
+	icon,
+	label,
+	value,
 }: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
+	icon: React.ReactNode;
+	label: string;
+	value: string;
 }) => (
-  <div className="flex items-center gap-3 rounded-lg border bg-background p-4">
-    <div className="rounded-full bg-muted p-2">{icon}</div>
-    <div>
-      <p className="text-muted-foreground text-sm">{label}</p>
-      <p className="font-semibold text-lg">{value}</p>
-    </div>
-  </div>
+	<div className="flex items-center gap-3 rounded-lg border bg-background p-4">
+		<div className="rounded-full bg-muted p-2">{icon}</div>
+		<div>
+			<p className="text-muted-foreground text-sm">{label}</p>
+			<p className="font-semibold text-lg">{value}</p>
+		</div>
+	</div>
 );
 
 export const MarkAttendance = () => {
-  const { data: attendance, refetch } = useSuspenseQuery(
-    queryUtils.member.attendance.getStatus.queryOptions({})
-  );
+	const { data: attendance, refetch } = useSuspenseQuery(
+		queryUtils.member.attendance.getStatus.queryOptions({})
+	);
 
-  const { mutateAsync: punchIn, isPending: isPunchingIn } = useMutation(
-    queryUtils.member.attendance.punchIn.mutationOptions({
-      onSuccess: async () => {
-        toast.success("Checked in successfully!");
-        await refetch();
-      },
-    })
-  );
+	const { mutateAsync: punchIn, isPending: isPunchingIn } = useMutation(
+		queryUtils.member.attendance.punchIn.mutationOptions({
+			onSuccess: async () => {
+				toast.success("Checked in successfully!");
+				await refetch();
+			},
+		})
+	);
 
-  const { mutateAsync: punchOut, isPending: isPunchingOut } = useMutation(
-    queryUtils.member.attendance.punchOut.mutationOptions({
-      onSuccess: async () => {
-        toast.success("Checked out successfully!");
-        setShowPunchOutDialog(false);
-        await refetch();
-      },
-      onError: (error) => {
-        toast.error(error.message);
-        setShowPunchOutDialog(false);
-      },
-    })
-  );
+	const { mutateAsync: punchOut, isPending: isPunchingOut } = useMutation(
+		queryUtils.member.attendance.punchOut.mutationOptions({
+			onSuccess: async () => {
+				toast.success("Checked out successfully!");
+				setShowPunchOutDialog(false);
+				await refetch();
+			},
+			onError: (error) => {
+				toast.error(error.message);
+				setShowPunchOutDialog(false);
+			},
+		})
+	);
 
-  const [showPunchOutDialog, setShowPunchOutDialog] = useState(false);
+	const [showPunchOutDialog, setShowPunchOutDialog] = useState(false);
 
-  const handlePunchOut = () => {
-    setShowPunchOutDialog(true);
-  };
+	const handlePunchOut = () => {
+		setShowPunchOutDialog(true);
+	};
 
-  const confirmPunchOut = async () => {
-    await punchOut({});
-  };
+	const confirmPunchOut = async () => {
+		await punchOut({});
+	};
 
-  const [, setCurrentTime] = useState(new Date());
+	const [, setCurrentTime] = useState(new Date());
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      // only rerender if checked in and not out
-      if (attendance?.checkInTime && !attendance?.checkOutTime) {
-        setCurrentTime(new Date());
-      }
-    }, 1000 * 60); // every minute
+	useEffect(() => {
+		const timer = setInterval(() => {
+			// only rerender if checked in and not out
+			if (attendance?.checkInTime && !attendance?.checkOutTime) {
+				setCurrentTime(new Date());
+			}
+		}, 1000 * 60); // every minute
 
-    return () => clearInterval(timer);
-  }, [attendance]);
+		return () => clearInterval(timer);
+	}, [attendance]);
 
-  const hasCheckedIn = !!attendance?.checkInTime;
-  const hasCheckedOut = !!attendance?.checkOutTime;
-  const isActionPending = isPunchingIn || isPunchingOut;
+	const hasCheckedIn = !!attendance?.checkInTime;
+	const hasCheckedOut = !!attendance?.checkOutTime;
+	const isActionPending = isPunchingIn || isPunchingOut;
 
-  if (!hasCheckedIn) {
-    return (
-      <div className="w-full">
-        <Empty className="border">
-          <EmptyHeader>
-            <EmptyMedia>
-              <BriefcaseBusiness className="h-12 w-12 text-muted-foreground/50" />
-            </EmptyMedia>
-            <EmptyTitle>Ready to Start?</EmptyTitle>
-            <EmptyDescription>Punch in to begin your workday.</EmptyDescription>
-          </EmptyHeader>
-          <EmptyContent>
-            <Button
-              className="bg-green-600 hover:bg-green-700"
-              disabled={isActionPending}
-              onClick={() => punchIn({})}
-              size="lg"
-            >
-              {isPunchingIn ? (
-                <Spinner className="mr-2" />
-              ) : (
-                <Clock className="mr-2 h-5 w-5" />
-              )}
-              <span>Punch In</span>
-            </Button>
-          </EmptyContent>
-        </Empty>
-      </div>
-    );
-  }
+	if (!hasCheckedIn) {
+		return (
+			<div className="w-full">
+				<Empty className="border">
+					<EmptyHeader>
+						<EmptyMedia>
+							<BriefcaseBusiness className="h-12 w-12 text-muted-foreground/50" />
+						</EmptyMedia>
+						<EmptyTitle>Ready to Start?</EmptyTitle>
+						<EmptyDescription>Punch in to begin your workday.</EmptyDescription>
+					</EmptyHeader>
+					<EmptyContent>
+						<Button
+							className="bg-green-600 hover:bg-green-700"
+							disabled={isActionPending}
+							onClick={() => punchIn({})}
+							size="lg"
+						>
+							{isPunchingIn ? (
+								<Spinner className="mr-2" />
+							) : (
+								<Clock className="mr-2 h-5 w-5" />
+							)}
+							<span>Punch In</span>
+						</Button>
+					</EmptyContent>
+				</Empty>
+			</div>
+		);
+	}
 
-  if (hasCheckedIn && !hasCheckedOut) {
-    const totalMinutes = calculateWorkDuration(attendance.checkInTime, null);
-    const breakMinutes = attendance.breakDuration ?? 0;
-    const workMinutes = totalMinutes - breakMinutes;
+	if (hasCheckedIn && !hasCheckedOut) {
+		const totalMinutes = calculateWorkDuration(attendance.checkInTime, null);
+		const breakMinutes = attendance.breakDuration ?? 0;
+		const workMinutes = totalMinutes - breakMinutes;
 
-    return (
-      <>
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle>Work Session in Progress</CardTitle>
-            <CardDescription>You are currently punched in.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid grid-cols-1 gap-4">
-              <StatCard
-                icon={<Clock className="text-blue-500" />}
-                label="Checked In"
-                value={formatDateTime(attendance.checkInTime)}
-              />
-              <StatCard
-                icon={<Briefcase className="text-green-500" />}
-                label="Total Work Time"
-                value={formatDuration(workMinutes)}
-              />
-              <StatCard
-                icon={<Coffee className="text-orange-500" />}
-                label="Break Time"
-                value={formatDuration(breakMinutes)}
-              />
-            </div>
-            <Button
-              className="bg-red-600 hover:bg-red-700"
-              disabled={isActionPending}
-              onClick={handlePunchOut}
-              size="lg"
-            >
-              {isPunchingOut ? (
-                <Spinner className="mr-2" />
-              ) : (
-                <LogOut className="mr-2 h-5 w-5" />
-              )}
-              <span>Punch Out</span>
-            </Button>
-          </CardContent>
-        </Card>
+		return (
+			<>
+				<Card className="w-full">
+					<CardHeader>
+						<CardTitle>Work Session in Progress</CardTitle>
+						<CardDescription>You are currently punched in.</CardDescription>
+					</CardHeader>
+					<CardContent className="space-y-6">
+						<div className="grid grid-cols-1 gap-4">
+							<StatCard
+								icon={<Clock className="text-blue-500" />}
+								label="Checked In"
+								value={formatDateTime(attendance.checkInTime)}
+							/>
+							<StatCard
+								icon={<Briefcase className="text-green-500" />}
+								label="Total Work Time"
+								value={formatDuration(workMinutes)}
+							/>
+							<StatCard
+								icon={<Coffee className="text-orange-500" />}
+								label="Break Time"
+								value={formatDuration(breakMinutes)}
+							/>
+						</div>
+						<Button
+							className="bg-red-600 hover:bg-red-700"
+							disabled={isActionPending}
+							onClick={handlePunchOut}
+							size="lg"
+						>
+							{isPunchingOut ? (
+								<Spinner className="mr-2" />
+							) : (
+								<LogOut className="mr-2 h-5 w-5" />
+							)}
+							<span>Punch Out</span>
+						</Button>
+					</CardContent>
+				</Card>
 
-        <Dialog onOpenChange={setShowPunchOutDialog} open={showPunchOutDialog}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Confirm Punch Out</DialogTitle>
-              <DialogDescription>
-                Confirm punch out? This action cannot be undone, preventing
-                further check-ins today. Unfinished work sessions will be
-                automatically paused.
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-              <Button
-                disabled={isPunchingOut}
-                onClick={() => setShowPunchOutDialog(false)}
-                variant="outline"
-              >
-                Cancel
-              </Button>
-              <Button
-                disabled={isPunchingOut}
-                onClick={confirmPunchOut}
-                variant="destructive"
-              >
-                {isPunchingOut ? (
-                  <>
-                    <Spinner className="mr-2 h-4 w-4" />
-                    Punching Out...
-                  </>
-                ) : (
-                  "Confirm Punch Out"
-                )}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </>
-    );
-  }
+				<Dialog onOpenChange={setShowPunchOutDialog} open={showPunchOutDialog}>
+					<DialogContent>
+						<DialogHeader>
+							<DialogTitle>Confirm Punch Out</DialogTitle>
+							<DialogDescription>
+								Confirm punch out? This action cannot be undone, preventing
+								further check-ins today. Unfinished work sessions will be
+								automatically paused.
+							</DialogDescription>
+						</DialogHeader>
+						<DialogFooter>
+							<Button
+								disabled={isPunchingOut}
+								onClick={() => setShowPunchOutDialog(false)}
+								variant="outline"
+							>
+								Cancel
+							</Button>
+							<Button
+								disabled={isPunchingOut}
+								onClick={confirmPunchOut}
+								variant="destructive"
+							>
+								{isPunchingOut ? (
+									<>
+										<Spinner className="mr-2 h-4 w-4" />
+										Punching Out...
+									</>
+								) : (
+									"Confirm Punch Out"
+								)}
+							</Button>
+						</DialogFooter>
+					</DialogContent>
+				</Dialog>
+			</>
+		);
+	}
 
-  // hasCheckedIn && hasCheckedOut
-  const totalMinutes = calculateWorkDuration(
-    attendance.checkInTime,
-    attendance.checkOutTime
-  );
-  const breakMinutes = attendance.breakDuration ?? 0;
-  const workMinutes = totalMinutes - breakMinutes;
+	// hasCheckedIn && hasCheckedOut
+	const totalMinutes = calculateWorkDuration(
+		attendance.checkInTime,
+		attendance.checkOutTime
+	);
+	const breakMinutes = attendance.breakDuration ?? 0;
+	const workMinutes = totalMinutes - breakMinutes;
 
-  return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle>Day Complete!</CardTitle>
-        <CardDescription>Here's a summary of your workday.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <StatCard
-            icon={<Clock className="text-blue-500" />}
-            label="Checked In"
-            value={formatDateTime(attendance.checkInTime)}
-          />
-          <StatCard
-            icon={<LogOut className="text-red-500" />}
-            label="Checked Out"
-            value={formatDateTime(attendance.checkOutTime)}
-          />
-          <StatCard
-            icon={<Briefcase className="text-green-500" />}
-            label="Total Work Time"
-            value={formatDuration(workMinutes)}
-          />
-          <StatCard
-            icon={<Coffee className="text-orange-500" />}
-            label="Break Time"
-            value={formatDuration(breakMinutes)}
-          />
-        </div>
-        <div className="mt-6 flex items-center gap-3 rounded-lg bg-green-50 p-4 text-green-800 dark:bg-green-950 dark:text-green-300">
-          <CheckCircle className="h-6 w-6" />
-          <p className="font-medium">
-            You have successfully punched out for the day. Great work!
-          </p>
-        </div>
-      </CardContent>
-    </Card>
-  );
+	return (
+		<Card className="w-full">
+			<CardHeader>
+				<CardTitle>Day Complete!</CardTitle>
+				<CardDescription>Here's a summary of your workday.</CardDescription>
+			</CardHeader>
+			<CardContent>
+				<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+					<StatCard
+						icon={<Clock className="text-blue-500" />}
+						label="Checked In"
+						value={formatDateTime(attendance.checkInTime)}
+					/>
+					<StatCard
+						icon={<LogOut className="text-red-500" />}
+						label="Checked Out"
+						value={formatDateTime(attendance.checkOutTime)}
+					/>
+					<StatCard
+						icon={<Briefcase className="text-green-500" />}
+						label="Total Work Time"
+						value={formatDuration(workMinutes)}
+					/>
+					<StatCard
+						icon={<Coffee className="text-orange-500" />}
+						label="Break Time"
+						value={formatDuration(breakMinutes)}
+					/>
+				</div>
+				<div className="mt-6 flex items-center gap-3 rounded-lg bg-green-50 p-4 text-green-800 dark:bg-green-950 dark:text-green-300">
+					<CheckCircle className="h-6 w-6" />
+					<p className="font-medium">
+						You have successfully punched out for the day. Great work!
+					</p>
+				</div>
+			</CardContent>
+		</Card>
+	);
 };
 
 export const MarkAttendanceSkeleton = () => (
-  <Card className="w-full">
-    <CardHeader>
-      <Skeleton className="h-7 w-48" />
-      <Skeleton className="mt-2 h-4 w-64" />
-    </CardHeader>
-    <CardContent className="space-y-6">
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-        <Skeleton className="h-20 w-full" />
-        <Skeleton className="h-20 w-full" />
-        <Skeleton className="h-20 w-full" />
-      </div>
-      <Skeleton className="h-12 w-full" />
-    </CardContent>
-  </Card>
+	<Card className="w-full">
+		<CardHeader>
+			<Skeleton className="h-7 w-48" />
+			<Skeleton className="mt-2 h-4 w-64" />
+		</CardHeader>
+		<CardContent className="space-y-6">
+			<div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+				<Skeleton className="h-20 w-full" />
+				<Skeleton className="h-20 w-full" />
+				<Skeleton className="h-20 w-full" />
+			</div>
+			<Skeleton className="h-12 w-full" />
+		</CardContent>
+	</Card>
 );

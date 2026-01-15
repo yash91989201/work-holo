@@ -5,45 +5,45 @@ import type { RedisClient } from "bun";
 import type { Context as HonoContext } from "hono";
 
 export type CreateContextOptions = {
-  context: HonoContext;
+	context: HonoContext;
 };
 
 export type Context = {
-  headers: Headers;
-  session: Awaited<ReturnType<typeof auth.api.getSession>>;
-  db: typeof db;
-  redis: RedisClient;
+	headers: Headers;
+	session: Awaited<ReturnType<typeof auth.api.getSession>>;
+	db: typeof db;
+	redis: RedisClient;
 };
 
 export type ElectricContext = Omit<Context, "redis">;
 
 export async function createContext({
-  context,
+	context,
 }: CreateContextOptions): Promise<Context> {
-  const session = await auth.api.getSession({
-    headers: context.req.raw.headers,
-  });
+	const session = await auth.api.getSession({
+		headers: context.req.raw.headers,
+	});
 
-  const redis = await getRedisClient();
+	const redis = await getRedisClient();
 
-  return {
-    headers: context.req.raw.headers,
-    session,
-    db,
-    redis,
-  };
+	return {
+		headers: context.req.raw.headers,
+		session,
+		db,
+		redis,
+	};
 }
 
 export async function createElectricContext({
-  context,
+	context,
 }: CreateContextOptions): Promise<ElectricContext> {
-  const session = await auth.api.getSession({
-    headers: context.req.raw.headers,
-  });
+	const session = await auth.api.getSession({
+		headers: context.req.raw.headers,
+	});
 
-  return {
-    headers: context.req.raw.headers,
-    session,
-    db,
-  };
+	return {
+		headers: context.req.raw.headers,
+		session,
+		db,
+	};
 }

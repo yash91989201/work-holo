@@ -1,304 +1,304 @@
 import {
-  and,
-  eq,
-  isNull,
-  useLiveInfiniteQuery,
-  useLiveSuspenseQuery,
+	and,
+	eq,
+	isNull,
+	useLiveInfiniteQuery,
+	useLiveSuspenseQuery,
 } from "@tanstack/react-db";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import {
-  useCallback,
-  useEffect,
-  useEffectEvent,
-  useMemo,
-  useRef,
-  useState,
+	useCallback,
+	useEffect,
+	useEffectEvent,
+	useMemo,
+	useRef,
+	useState,
 } from "react";
 import {
-  attachmentsCollection,
-  channelsCollection,
-  messagesCollection,
-  usersCollection,
+	attachmentsCollection,
+	channelsCollection,
+	messagesCollection,
+	usersCollection,
 } from "@/db/collections";
 import { buildMessageWithAttachments } from "@/lib/communications/message";
 
 export function useVirtualMessageThread({ messageId }: { messageId: string }) {
-  const scrollRef = useRef<HTMLDivElement | null>(null);
+	const scrollRef = useRef<HTMLDivElement | null>(null);
 
-  const {
-    message,
-    threadMessages,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-  } = useMessageThread({ messageId });
+	const {
+		message,
+		threadMessages,
+		fetchNextPage,
+		hasNextPage,
+		isFetchingNextPage,
+		isLoading,
+	} = useMessageThread({ messageId });
 
-  const hasDoneInitialScrollRef = useRef(false);
-  const prevMessageIdRef = useRef<string | null>(null);
+	const hasDoneInitialScrollRef = useRef(false);
+	const prevMessageIdRef = useRef<string | null>(null);
 
-  const loadMoreAnchorRef = useRef<{
-    prevScrollHeight: number;
-    prevScrollTop: number;
-  } | null>(null);
+	const loadMoreAnchorRef = useRef<{
+		prevScrollHeight: number;
+		prevScrollTop: number;
+	} | null>(null);
 
-  const virtualizer = useVirtualizer({
-    count: threadMessages.length,
-    getScrollElement: () => scrollRef.current,
-    estimateSize: () => 160,
-    overscan: 25,
-  });
+	const virtualizer = useVirtualizer({
+		count: threadMessages.length,
+		getScrollElement: () => scrollRef.current,
+		estimateSize: () => 160,
+		overscan: 25,
+	});
 
-  const virtualItems = virtualizer.getVirtualItems();
-  const totalSize = virtualizer.getTotalSize();
+	const virtualItems = virtualizer.getVirtualItems();
+	const totalSize = virtualizer.getTotalSize();
 
-  const [showScrollButton, setShowScrollButton] = useState(false);
+	const [showScrollButton, setShowScrollButton] = useState(false);
 
-  useEffect(() => {
-    if (!messageId) return;
+	useEffect(() => {
+		if (!messageId) return;
 
-    if (prevMessageIdRef.current !== messageId) {
-      prevMessageIdRef.current = messageId;
-      hasDoneInitialScrollRef.current = false;
-      loadMoreAnchorRef.current = null;
-      setShowScrollButton(false);
-    }
-  }, [messageId]);
+		if (prevMessageIdRef.current !== messageId) {
+			prevMessageIdRef.current = messageId;
+			hasDoneInitialScrollRef.current = false;
+			loadMoreAnchorRef.current = null;
+			setShowScrollButton(false);
+		}
+	}, [messageId]);
 
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!(messageId && el)) return;
-    if (isLoading) return;
-    if (threadMessages.length === 0) return;
-    if (hasDoneInitialScrollRef.current) return;
+	useEffect(() => {
+		const el = scrollRef.current;
+		if (!(messageId && el)) return;
+		if (isLoading) return;
+		if (threadMessages.length === 0) return;
+		if (hasDoneInitialScrollRef.current) return;
 
-    hasDoneInitialScrollRef.current = true;
+		hasDoneInitialScrollRef.current = true;
 
-    requestAnimationFrame(() => {
-      virtualizer.scrollToOffset(el.scrollHeight, { align: "end" });
-    });
-  }, [messageId, isLoading, threadMessages.length, virtualizer]);
+		requestAnimationFrame(() => {
+			virtualizer.scrollToOffset(el.scrollHeight, { align: "end" });
+		});
+	}, [messageId, isLoading, threadMessages.length, virtualizer]);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: Need to track message count changes
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    if (isFetchingNextPage) return;
-    if (!loadMoreAnchorRef.current) return;
+	// biome-ignore lint/correctness/useExhaustiveDependencies: Need to track message count changes
+	useEffect(() => {
+		const el = scrollRef.current;
+		if (!el) return;
+		if (isFetchingNextPage) return;
+		if (!loadMoreAnchorRef.current) return;
 
-    const frameId = requestAnimationFrame(() => {
-      const anchor = loadMoreAnchorRef.current;
-      if (!anchor) return;
+		const frameId = requestAnimationFrame(() => {
+			const anchor = loadMoreAnchorRef.current;
+			if (!anchor) return;
 
-      const newScrollHeight = el.scrollHeight;
-      const diff = newScrollHeight - anchor.prevScrollHeight;
+			const newScrollHeight = el.scrollHeight;
+			const diff = newScrollHeight - anchor.prevScrollHeight;
 
-      const newScrollTop = anchor.prevScrollTop + diff;
+			const newScrollTop = anchor.prevScrollTop + diff;
 
-      virtualizer.scrollToOffset(newScrollTop, { align: "start" });
+			virtualizer.scrollToOffset(newScrollTop, { align: "start" });
 
-      loadMoreAnchorRef.current = null;
-    });
+			loadMoreAnchorRef.current = null;
+		});
 
-    return () => cancelAnimationFrame(frameId);
-  }, [isFetchingNextPage, threadMessages.length, virtualizer]);
+		return () => cancelAnimationFrame(frameId);
+	}, [isFetchingNextPage, threadMessages.length, virtualizer]);
 
-  const handleScroll = useEffectEvent(() => {
-    const el = scrollRef.current;
-    if (!el) return;
+	const handleScroll = useEffectEvent(() => {
+		const el = scrollRef.current;
+		if (!el) return;
 
-    const scrollThreshold = el.clientHeight * 0.1;
-    const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
+		const scrollThreshold = el.clientHeight * 0.1;
+		const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
 
-    setShowScrollButton(distanceFromBottom > 100);
+		setShowScrollButton(distanceFromBottom > 100);
 
-    if (!hasNextPage || isFetchingNextPage) return;
-    if (loadMoreAnchorRef.current) return;
+		if (!hasNextPage || isFetchingNextPage) return;
+		if (loadMoreAnchorRef.current) return;
 
-    const firstItem = virtualizer.getVirtualItems()[0];
-    if (!firstItem) return;
+		const firstItem = virtualizer.getVirtualItems()[0];
+		if (!firstItem) return;
 
-    if (firstItem.index === 0 && el.scrollTop <= scrollThreshold) {
-      loadMoreAnchorRef.current = {
-        prevScrollHeight: el.scrollHeight,
-        prevScrollTop: el.scrollTop,
-      };
+		if (firstItem.index === 0 && el.scrollTop <= scrollThreshold) {
+			loadMoreAnchorRef.current = {
+				prevScrollHeight: el.scrollHeight,
+				prevScrollTop: el.scrollTop,
+			};
 
-      fetchNextPage();
-    }
-  });
+			fetchNextPage();
+		}
+	});
 
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
+	useEffect(() => {
+		const el = scrollRef.current;
+		if (!el) return;
 
-    const onScroll = () => {
-      handleScroll();
-    };
+		const onScroll = () => {
+			handleScroll();
+		};
 
-    el.addEventListener("scroll", onScroll);
+		el.addEventListener("scroll", onScroll);
 
-    const checkInitialScroll = () => {
-      if (!el) return;
-      const distanceFromBottom =
-        el.scrollHeight - el.scrollTop - el.clientHeight;
-      setShowScrollButton(distanceFromBottom > 100);
-    };
+		const checkInitialScroll = () => {
+			if (!el) return;
+			const distanceFromBottom =
+				el.scrollHeight - el.scrollTop - el.clientHeight;
+			setShowScrollButton(distanceFromBottom > 100);
+		};
 
-    checkInitialScroll();
+		checkInitialScroll();
 
-    return () => el.removeEventListener("scroll", onScroll);
-  }, []);
+		return () => el.removeEventListener("scroll", onScroll);
+	}, []);
 
-  const scrollToBottom = useCallback(() => {
-    const el = scrollRef.current;
-    if (!el) return;
+	const scrollToBottom = useCallback(() => {
+		const el = scrollRef.current;
+		if (!el) return;
 
-    requestAnimationFrame(() => {
-      virtualizer.scrollToOffset(el.scrollHeight, {
-        align: "end",
-        behavior: "smooth",
-      });
-    });
-  }, [virtualizer]);
+		requestAnimationFrame(() => {
+			virtualizer.scrollToOffset(el.scrollHeight, {
+				align: "end",
+				behavior: "smooth",
+			});
+		});
+	}, [virtualizer]);
 
-  return {
-    scrollRef,
-    virtualizer,
-    virtualItems,
-    totalSize,
-    message,
-    threadMessages,
-    isLoading,
-    isFetchingNextPage,
-    hasNextPage,
-    showScrollButton,
-    scrollToBottom,
-  };
+	return {
+		scrollRef,
+		virtualizer,
+		virtualItems,
+		totalSize,
+		message,
+		threadMessages,
+		isLoading,
+		isFetchingNextPage,
+		hasNextPage,
+		showScrollButton,
+		scrollToBottom,
+	};
 }
 
 const PAGE_SIZE = 100;
 
 export function useMessageThread({ messageId }: { messageId: string }) {
-  const { data: messageRows } = useLiveSuspenseQuery(
-    (q) =>
-      q
-        .from({ message: messagesCollection })
-        .innerJoin({ sender: usersCollection }, ({ message, sender }) =>
-          eq(message.senderId, sender.id)
-        )
-        .innerJoin({ channel: channelsCollection }, ({ message, channel }) =>
-          eq(message.channelId, channel.id)
-        )
-        .leftJoin(
-          { attachment: attachmentsCollection },
-          ({ message, attachment }) => eq(attachment.messageId, message.id)
-        )
-        .where(({ message }) =>
-          and(eq(message.id, messageId), eq(message.isDeleted, false))
-        )
-        .select(({ message, sender, attachment, channel }) => ({
-          message,
-          sender,
-          attachment,
-          channel,
-        })),
-    [messageId]
-  );
+	const { data: messageRows } = useLiveSuspenseQuery(
+		(q) =>
+			q
+				.from({ message: messagesCollection })
+				.innerJoin({ sender: usersCollection }, ({ message, sender }) =>
+					eq(message.senderId, sender.id)
+				)
+				.innerJoin({ channel: channelsCollection }, ({ message, channel }) =>
+					eq(message.channelId, channel.id)
+				)
+				.leftJoin(
+					{ attachment: attachmentsCollection },
+					({ message, attachment }) => eq(attachment.messageId, message.id)
+				)
+				.where(({ message }) =>
+					and(eq(message.id, messageId), eq(message.isDeleted, false))
+				)
+				.select(({ message, sender, attachment, channel }) => ({
+					message,
+					sender,
+					attachment,
+					channel,
+				})),
+		[messageId]
+	);
 
-  const { pages, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useLiveInfiniteQuery(
-      (q) =>
-        q
-          .from({ message: messagesCollection })
-          .innerJoin({ sender: usersCollection }, ({ message, sender }) =>
-            eq(message.senderId, sender.id)
-          )
-          .innerJoin({ channel: channelsCollection }, ({ message, channel }) =>
-            eq(message.channelId, channel.id)
-          )
-          .leftJoin(
-            { attachment: attachmentsCollection },
-            ({ message, attachment }) => eq(attachment.messageId, message.id)
-          )
-          .where(({ message }) =>
-            and(
-              eq(message.parentMessageId, messageId),
-              isNull(message.deletedAt)
-            )
-          )
-          .orderBy(({ message }) => message.createdAt, "desc")
-          .select(({ message, sender, attachment, channel }) => ({
-            message,
-            sender,
-            attachment,
-            channel,
-          })),
-      {
-        pageSize: PAGE_SIZE,
-        getNextPageParam: (lastPage, allPages) =>
-          lastPage.length === PAGE_SIZE ? allPages.length : undefined,
-      },
-      [messageId]
-    );
+	const { pages, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+		useLiveInfiniteQuery(
+			(q) =>
+				q
+					.from({ message: messagesCollection })
+					.innerJoin({ sender: usersCollection }, ({ message, sender }) =>
+						eq(message.senderId, sender.id)
+					)
+					.innerJoin({ channel: channelsCollection }, ({ message, channel }) =>
+						eq(message.channelId, channel.id)
+					)
+					.leftJoin(
+						{ attachment: attachmentsCollection },
+						({ message, attachment }) => eq(attachment.messageId, message.id)
+					)
+					.where(({ message }) =>
+						and(
+							eq(message.parentMessageId, messageId),
+							isNull(message.deletedAt)
+						)
+					)
+					.orderBy(({ message }) => message.createdAt, "desc")
+					.select(({ message, sender, attachment, channel }) => ({
+						message,
+						sender,
+						attachment,
+						channel,
+					})),
+			{
+				pageSize: PAGE_SIZE,
+				getNextPageParam: (lastPage, allPages) =>
+					lastPage.length === PAGE_SIZE ? allPages.length : undefined,
+			},
+			[messageId]
+		);
 
-  const message = useMemo(() => {
-    if (!messageRows.length) return;
+	const message = useMemo(() => {
+		if (!messageRows.length) return;
 
-    const messageMap = new Map<
-      string,
-      ReturnType<typeof buildMessageWithAttachments>
-    >();
+		const messageMap = new Map<
+			string,
+			ReturnType<typeof buildMessageWithAttachments>
+		>();
 
-    for (const { message, sender, attachment, channel } of messageRows) {
-      let entry = messageMap.get(message.id);
-      if (!entry) {
-        entry = buildMessageWithAttachments(message, sender, channel);
-        messageMap.set(message.id, entry);
-      }
-      if (attachment) {
-        entry.attachments.push(attachment);
-      }
-    }
+		for (const { message, sender, attachment, channel } of messageRows) {
+			let entry = messageMap.get(message.id);
+			if (!entry) {
+				entry = buildMessageWithAttachments(message, sender, channel);
+				messageMap.set(message.id, entry);
+			}
+			if (attachment) {
+				entry.attachments.push(attachment);
+			}
+		}
 
-    return Array.from(messageMap.values())[0];
-  }, [messageRows]);
+		return Array.from(messageMap.values())[0];
+	}, [messageRows]);
 
-  const rowsWithExtra = useMemo(() => (pages ? pages.flat() : []), [pages]);
+	const rowsWithExtra = useMemo(() => (pages ? pages.flat() : []), [pages]);
 
-  const threadMessages = useMemo(() => {
-    const map = new Map<
-      string,
-      ReturnType<typeof buildMessageWithAttachments>
-    >();
+	const threadMessages = useMemo(() => {
+		const map = new Map<
+			string,
+			ReturnType<typeof buildMessageWithAttachments>
+		>();
 
-    for (const { message, sender, attachment, channel } of rowsWithExtra) {
-      let entry = map.get(message.id);
+		for (const { message, sender, attachment, channel } of rowsWithExtra) {
+			let entry = map.get(message.id);
 
-      if (!entry) {
-        entry = buildMessageWithAttachments(message, sender, channel);
-        map.set(message.id, entry);
-      }
+			if (!entry) {
+				entry = buildMessageWithAttachments(message, sender, channel);
+				map.set(message.id, entry);
+			}
 
-      if (attachment) {
-        entry.attachments.push(attachment);
-      }
-    }
+			if (attachment) {
+				entry.attachments.push(attachment);
+			}
+		}
 
-    const ordered = Array.from(map.values()).sort(
-      (a, b) =>
-        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-    );
+		const ordered = Array.from(map.values()).sort(
+			(a, b) =>
+				new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+		);
 
-    return ordered;
-  }, [rowsWithExtra]);
+		return ordered;
+	}, [rowsWithExtra]);
 
-  return {
-    message,
-    threadMessages,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading,
-  };
+	return {
+		message,
+		threadMessages,
+		fetchNextPage,
+		hasNextPage,
+		isFetchingNextPage,
+		isLoading,
+	};
 }

@@ -5,78 +5,78 @@ import type { MentionListRef } from "./mention-list";
 import { MentionList } from "./mention-list";
 
 export const createMentionSuggestion = (
-  fetchUsers: (query: string) => Promise<
-    Array<{
-      id: string;
-      name: string | null;
-      email: string;
-      image: string | null;
-    }>
-  >
+	fetchUsers: (query: string) => Promise<
+		Array<{
+			id: string;
+			name: string | null;
+			email: string;
+			image: string | null;
+		}>
+	>
 ): Omit<SuggestionOptions, "editor"> => ({
-  char: "@",
+	char: "@",
 
-  items: async ({ query }) => {
-    const users = await fetchUsers(query);
-    return users.slice(0, 10);
-  },
+	items: async ({ query }) => {
+		const users = await fetchUsers(query);
+		return users.slice(0, 10);
+	},
 
-  render: () => {
-    let component:
-      | (ReactRenderer<typeof MentionList> & { ref: MentionListRef | null })
-      | null = null;
+	render: () => {
+		let component:
+			| (ReactRenderer<typeof MentionList> & { ref: MentionListRef | null })
+			| null = null;
 
-    let popup: TippyInstance[] | null = null;
+		let popup: TippyInstance[] | null = null;
 
-    return {
-      onStart(props: SuggestionProps) {
-        component = new ReactRenderer(MentionList, {
-          props,
-          editor: props.editor,
-        }) as typeof component;
+		return {
+			onStart(props: SuggestionProps) {
+				component = new ReactRenderer(MentionList, {
+					props,
+					editor: props.editor,
+				}) as typeof component;
 
-        if (!props.clientRect || component === null) return;
+				if (!props.clientRect || component === null) return;
 
-        popup = tippy("body", {
-          getReferenceClientRect: props.clientRect as () => DOMRect,
-          appendTo: () => document.body,
-          content: component.element,
-          showOnCreate: true,
-          interactive: true,
-          trigger: "manual",
-          placement: "bottom-start",
-        });
-      },
+				popup = tippy("body", {
+					getReferenceClientRect: props.clientRect as () => DOMRect,
+					appendTo: () => document.body,
+					content: component.element,
+					showOnCreate: true,
+					interactive: true,
+					trigger: "manual",
+					placement: "bottom-start",
+				});
+			},
 
-      onUpdate(props: SuggestionProps) {
-        if (!component) return;
-        component.updateProps(props);
+			onUpdate(props: SuggestionProps) {
+				if (!component) return;
+				component.updateProps(props);
 
-        if (props.clientRect) {
-          popup?.[0]?.setProps({
-            getReferenceClientRect: props.clientRect as () => DOMRect,
-          });
-        }
-      },
+				if (props.clientRect) {
+					popup?.[0]?.setProps({
+						getReferenceClientRect: props.clientRect as () => DOMRect,
+					});
+				}
+			},
 
-      onKeyDown(props) {
-        if (!component) return false;
+			onKeyDown(props) {
+				if (!component) return false;
 
-        if (props.event.key === "Escape") {
-          popup?.[0]?.hide();
-          return true;
-        }
+				if (props.event.key === "Escape") {
+					popup?.[0]?.hide();
+					return true;
+				}
 
-        // Let the MentionList component handle all keyboard events
-        return component.ref?.onKeyDown(props.event) ?? false;
-      },
+				// Let the MentionList component handle all keyboard events
+				return component.ref?.onKeyDown(props.event) ?? false;
+			},
 
-      onExit() {
-        popup?.[0]?.destroy();
-        component?.destroy();
-        popup = null;
-        component = null;
-      },
-    };
-  },
+			onExit() {
+				popup?.[0]?.destroy();
+				component?.destroy();
+				popup = null;
+				component = null;
+			},
+		};
+	},
 });

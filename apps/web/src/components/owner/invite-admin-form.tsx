@@ -1,7 +1,5 @@
-import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
-import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,15 +11,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormLabel,
-	FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { useAppForm } from "@/components/ui/form/hooks";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { getAuthQueryKey } from "@/lib/auth/query-keys";
 import { authClient } from "@/lib/auth-client";
@@ -34,37 +24,38 @@ export const InviteAdminForm = () => {
 	const { session } = useAuthedSession();
 	const orgId = session.activeOrganizationId ?? "";
 
-	const form = useForm({
-		resolver: standardSchemaResolver(InviteAdminFormSchema),
+	const form = useAppForm({
 		defaultValues: {
 			email: "",
+		} satisfies InviteAdminFormType as InviteAdminFormType,
+		validators: {
+			onSubmit: InviteAdminFormSchema,
+		},
+		onSubmit: async ({ value: formData }) => {
+			try {
+				const { data: _, error } = await authClient.organization.inviteMember({
+					email: formData.email,
+					role: "admin",
+				});
+
+				if (error != null) {
+					throw new Error(error.message);
+				}
+
+				queryClient.invalidateQueries({
+					queryKey: getAuthQueryKey.organization.invitations(orgId),
+				});
+
+				toast.success("Admin invitation sent successfully");
+				form.reset();
+				onOpenChange(false);
+			} catch (error) {
+				toast.error(
+					error instanceof Error ? error.message : "Something went wrong"
+				);
+			}
 		},
 	});
-
-	const onSubmit: SubmitHandler<InviteAdminFormType> = async (formData) => {
-		try {
-			const { data: _, error } = await authClient.organization.inviteMember({
-				email: formData.email,
-				role: "admin",
-			});
-
-			if (error != null) {
-				throw new Error(error.message);
-			}
-
-			queryClient.invalidateQueries({
-				queryKey: getAuthQueryKey.organization.invitations(orgId),
-			});
-
-			toast.success("Admin invitation sent successfully");
-			form.reset();
-			onOpenChange(false);
-		} catch (error) {
-			toast.error(
-				error instanceof Error ? error.message : "Something went wrong"
-			);
-		}
-	};
 
 	return (
 		<Dialog onOpenChange={onOpenChange} open={open}>
@@ -76,46 +67,36 @@ export const InviteAdminForm = () => {
 						Send an invitation to a new admin member
 					</DialogDescription>
 				</DialogHeader>
-				<Form {...form}>
-					<form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-						<FormField
-							control={form.control}
-							name="email"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Email</FormLabel>
-									<FormControl>
-										<Input
-											placeholder="admin@example.com"
-											type="email"
-											{...field}
-										/>
-									</FormControl>
-									<FormMessage />
-								</FormItem>
+				<form className="space-y-4" onSubmit={form.handleSubmit}>
+					<form.AppField name="email">
+						{(field) => (
+							<field.Input
+								label="Email"
+								placeholder="admin@example.com"
+								type="email"
+							/>
+						)}
+					</form.AppField>
+					<DialogFooter>
+						<Button
+							onClick={() => onOpenChange(false)}
+							type="button"
+							variant="outline"
+						>
+							Cancel
+						</Button>
+						<Button disabled={form.state.isSubmitting} type="submit">
+							{form.state.isSubmitting ? (
+								<>
+									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+									Sending Invitation...
+								</>
+							) : (
+								<span>Send Invitation</span>
 							)}
-						/>
-						<DialogFooter>
-							<Button
-								onClick={() => onOpenChange(false)}
-								type="button"
-								variant="outline"
-							>
-								Cancel
-							</Button>
-							<Button disabled={form.formState.isSubmitting} type="submit">
-								{form.formState.isSubmitting ? (
-									<>
-										<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-										Sending Invitation...
-									</>
-								) : (
-									<span>Send Invitation</span>
-								)}
-							</Button>
-						</DialogFooter>
-					</form>
-				</Form>
+						</Button>
+					</DialogFooter>
+				</form>
 			</DialogContent>
 		</Dialog>
 	);

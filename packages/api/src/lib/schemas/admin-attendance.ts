@@ -9,102 +9,102 @@ export const AttendanceSelectSchema = createSelectSchema(attendanceTable);
 export const GetAttendanceStatsInput = z.object({});
 
 export const GetAttendanceStatsOutput = z.object({
-  totalMembers: z.number(),
-  presentToday: z.number(),
+	totalMembers: z.number(),
+	presentToday: z.number(),
 });
 
 export type GetAttendanceStatsInputType = z.infer<
-  typeof GetAttendanceStatsInput
+	typeof GetAttendanceStatsInput
 >;
 export type GetAttendanceStatsOutputType = z.infer<
-  typeof GetAttendanceStatsOutput
+	typeof GetAttendanceStatsOutput
 >;
 
 // List attendance records input/output
 export const ListAttendanceRecordsInput = z
-  .object({
-    page: z.number().min(1).default(1),
-    perPage: z.number().min(1).max(100).default(10),
-    search: z.string().optional(),
-    filters: z
-      .object({
-        date: z.date().optional(),
-        startDate: z.date().optional(),
-        endDate: z.date().optional(),
-        status: z
-          .enum([
-            "present",
-            "absent",
-            "late",
-            "excused",
-            "partial",
-            "holiday",
-            "sick_leave",
-            "work_from_home",
-          ])
-          .optional(),
-      })
-      .optional(),
-    sorting: z
-      .array(
-        z.object({
-          id: z.string(),
-          desc: z.boolean(),
-        })
-      )
-      .optional(),
-  })
-  .optional()
-  .default({ page: 1, perPage: 10 });
+	.object({
+		page: z.number().min(1).default(1),
+		perPage: z.number().min(1).max(100).default(10),
+		search: z.string().optional(),
+		filters: z
+			.object({
+				date: z.date().optional(),
+				startDate: z.date().optional(),
+				endDate: z.date().optional(),
+				status: z
+					.enum([
+						"present",
+						"absent",
+						"late",
+						"excused",
+						"partial",
+						"holiday",
+						"sick_leave",
+						"work_from_home",
+					])
+					.optional(),
+			})
+			.optional(),
+		sorting: z
+			.array(
+				z.object({
+					id: z.string(),
+					desc: z.boolean(),
+				})
+			)
+			.optional(),
+	})
+	.optional()
+	.default({ page: 1, perPage: 10 });
 
 export const AttendanceRecordWithUserSchema = AttendanceSelectSchema.extend({
-  user: z.object({
-    id: z.string(),
-    name: z.string().nullable(),
-    email: z.string(),
-    image: z.string().nullable(),
-  }),
+	user: z.object({
+		id: z.string(),
+		name: z.string().nullable(),
+		email: z.string(),
+		image: z.string().nullable(),
+	}),
 });
 
 export const ListAttendanceRecordsOutput = z.object({
-  records: z.array(AttendanceRecordWithUserSchema),
-  pagination: z.object({
-    page: z.number(),
-    perPage: z.number(),
-    total: z.number(),
-    totalPages: z.number(),
-  }),
+	records: z.array(AttendanceRecordWithUserSchema),
+	pagination: z.object({
+		page: z.number(),
+		perPage: z.number(),
+		total: z.number(),
+		totalPages: z.number(),
+	}),
 });
 
 export type ListAttendanceRecordsInputType = z.infer<
-  typeof ListAttendanceRecordsInput
+	typeof ListAttendanceRecordsInput
 >;
 export type ListAttendanceRecordsOutputType = z.infer<
-  typeof ListAttendanceRecordsOutput
+	typeof ListAttendanceRecordsOutput
 >;
 
 // Get attendance detail input/output
 export const GetAttendanceDetailInput = z.object({
-  attendanceId: z.string().min(1, "Attendance ID is required"),
+	attendanceId: z.string().min(1, "Attendance ID is required"),
 });
 
 export const GetAttendanceDetailOutput = AttendanceRecordWithUserSchema.extend({
-  workBlocks: z.array(
-    z.object({
-      id: z.string(),
-      startedAt: z.date(),
-      endedAt: z.date().nullable(),
-      durationMinutes: z.number().nullable(),
-      endReason: z
-        .enum(["manual", "break", "punch_out", "idle_timeout"])
-        .nullable(),
-    })
-  ),
+	workBlocks: z.array(
+		z.object({
+			id: z.string(),
+			startedAt: z.date(),
+			endedAt: z.date().nullable(),
+			durationMinutes: z.number().nullable(),
+			endReason: z
+				.enum(["manual", "break", "punch_out", "idle_timeout"])
+				.nullable(),
+		})
+	),
 });
 
 export type GetAttendanceDetailInputType = z.infer<
-  typeof GetAttendanceDetailInput
+	typeof GetAttendanceDetailInput
 >;
 export type GetAttendanceDetailOutputType = z.infer<
-  typeof GetAttendanceDetailOutput
+	typeof GetAttendanceDetailOutput
 >;

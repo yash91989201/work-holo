@@ -6,19 +6,19 @@ import { FormSelect } from "./form-select";
 import { FormTextarea } from "./form-textarea";
 
 const { fieldContext, formContext, useFieldContext, useFormContext } =
-  createFormHookContexts();
+	createFormHookContexts();
 
-const { useAppForm } = createFormHook({
-  fieldComponents: {
-    Input: FormInput,
-    Textarea: FormTextarea,
-    Select: FormSelect,
-    Checkbox: FormCheckbox,
-    FileInput: FormFileInput,
-  },
-  formComponents: {},
-  fieldContext,
-  formContext,
+const { useAppForm, withForm } = createFormHook({
+	fieldComponents: {
+		Input: FormInput,
+		Textarea: FormTextarea,
+		Select: FormSelect,
+		Checkbox: FormCheckbox,
+		FileInput: FormFileInput,
+	},
+	formComponents: {},
+	fieldContext,
+	formContext,
 });
 
-export { useAppForm, useFieldContext, useFormContext };
+export { useAppForm, withForm, useFieldContext, useFormContext };

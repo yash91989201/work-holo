@@ -15,452 +15,452 @@ import { MessageEditor } from "./message-editor";
 import { TypingIndicator } from "./typing-indicator";
 
 interface AttachmentPreview {
-  file: File;
-  id: string;
-  uploadedFileName?: string;
+	file: File;
+	id: string;
+	uploadedFileName?: string;
 }
 
 interface MessageAttachment {
-  fileName: string;
-  originalName: string;
-  fileSize: number;
-  mimeType: string;
-  type: "image" | "document" | "video" | "audio" | "archive";
-  url: string;
+	fileName: string;
+	originalName: string;
+	fileSize: number;
+	mimeType: string;
+	type: "image" | "document" | "video" | "audio" | "archive";
+	url: string;
 }
 
 interface MessageComposerProps {
-  channelId: string;
-  className?: string;
-  parentMessageId?: string;
-  placeholder?: string;
-  showHelpText?: boolean;
-  onSendSuccess?: () => void;
-  onMaximize?: (content: string) => void;
-  initialContent?: string;
+	channelId: string;
+	className?: string;
+	parentMessageId?: string;
+	placeholder?: string;
+	showHelpText?: boolean;
+	onSendSuccess?: () => void;
+	onMaximize?: (content: string) => void;
+	initialContent?: string;
 }
 
 export function MessageComposer({
-  channelId,
-  className,
-  parentMessageId,
-  onSendSuccess,
-  onMaximize,
-  initialContent = "",
+	channelId,
+	className,
+	parentMessageId,
+	onSendSuccess,
+	onMaximize,
+	initialContent = "",
 }: MessageComposerProps) {
-  const { user } = useAuthedSession();
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+	const { user } = useAuthedSession();
+	const fileInputRef = useRef<HTMLInputElement>(null);
+	const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const [text, setText] = useState(initialContent);
-  const [isEditorMaximized, setIsEditorMaximized] = useState(false);
-  const [attachments, setAttachments] = useState<AttachmentPreview[]>([]);
-  const { openMaximizedMessageComposer } = useMaximizedMessageComposerActions();
+	const [text, setText] = useState(initialContent);
+	const [isEditorMaximized, setIsEditorMaximized] = useState(false);
+	const [attachments, setAttachments] = useState<AttachmentPreview[]>([]);
+	const { openMaximizedMessageComposer } = useMaximizedMessageComposerActions();
 
-  const {
-    isRecording,
-    audioBlob,
-    audioUrl,
-    duration,
-    startRecording,
-    stopRecording,
-    cancelRecording,
-  } = useAudioRecorder();
+	const {
+		isRecording,
+		audioBlob,
+		audioUrl,
+		duration,
+		startRecording,
+		stopRecording,
+		cancelRecording,
+	} = useAudioRecorder();
 
-  const { createMessage } = useMessageMutations();
-  const { typingUsers, broadcastTyping } = useTypingIndicator(channelId);
+	const { createMessage } = useMessageMutations();
+	const { typingUsers, broadcastTyping } = useTypingIndicator(channelId);
 
-  const fetchUsers = useCallback(
-    async (query: string) => {
-      const normalizedQuery = query.trim().toLowerCase();
-      const includeChannelMention =
-        normalizedQuery.length === 0 ||
-        "channel".startsWith(normalizedQuery.replace("@", ""));
+	const fetchUsers = useCallback(
+		async (query: string) => {
+			const normalizedQuery = query.trim().toLowerCase();
+			const includeChannelMention =
+				normalizedQuery.length === 0 ||
+				"channel".startsWith(normalizedQuery.replace("@", ""));
 
-      try {
-        const { users = [] } =
-          await orpcClient.communication.message.searchUsers({
-            channelId,
-            query,
-          });
+			try {
+				const { users = [] } =
+					await orpcClient.communication.message.searchUsers({
+						channelId,
+						query,
+					});
 
-        const channelMention = includeChannelMention ? [CHANNEL_MENTION] : [];
+				const channelMention = includeChannelMention ? [CHANNEL_MENTION] : [];
 
-        return [...channelMention, ...users.filter((su) => su.id !== user.id)];
-      } catch (error) {
-        console.error("Error fetching mention users:", error);
-        const channelMention = includeChannelMention ? [CHANNEL_MENTION] : [];
-        return channelMention;
-      }
-    },
-    [channelId, user.id]
-  );
+				return [...channelMention, ...users.filter((su) => su.id !== user.id)];
+			} catch (error) {
+				console.error("Error fetching mention users:", error);
+				const channelMention = includeChannelMention ? [CHANNEL_MENTION] : [];
+				return channelMention;
+			}
+		},
+		[channelId, user.id]
+	);
 
-  const handleTypingBroadcast = useCallback(
-    (content: string) => {
-      if (!user?.name) return;
+	const handleTypingBroadcast = useCallback(
+		(content: string) => {
+			if (!user?.name) return;
 
-      if (content.trim()) {
-        broadcastTyping(true, user.name);
+			if (content.trim()) {
+				broadcastTyping(true, user.name);
 
-        if (typingTimeoutRef.current) {
-          clearTimeout(typingTimeoutRef.current);
-        }
+				if (typingTimeoutRef.current) {
+					clearTimeout(typingTimeoutRef.current);
+				}
 
-        typingTimeoutRef.current = setTimeout(() => {
-          broadcastTyping(false, user.name);
-        }, 3000);
-      } else {
-        broadcastTyping(false, user.name);
-        if (typingTimeoutRef.current) {
-          clearTimeout(typingTimeoutRef.current);
-        }
-      }
-    },
-    [broadcastTyping, user?.name]
-  );
+				typingTimeoutRef.current = setTimeout(() => {
+					broadcastTyping(false, user.name);
+				}, 3000);
+			} else {
+				broadcastTyping(false, user.name);
+				if (typingTimeoutRef.current) {
+					clearTimeout(typingTimeoutRef.current);
+				}
+			}
+		},
+		[broadcastTyping, user?.name]
+	);
 
-  const handleMarkdownChange = useCallback(
-    (content: string) => {
-      setText(content);
-      handleTypingBroadcast(content);
-    },
-    [handleTypingBroadcast]
-  );
+	const handleMarkdownChange = useCallback(
+		(content: string) => {
+			setText(content);
+			handleTypingBroadcast(content);
+		},
+		[handleTypingBroadcast]
+	);
 
-  const handleSubmit = useCallback(async () => {
-    const hasText = text.trim().length > 0;
-    const hasAttachments = attachments.length > 0;
-    const hasAudio = audioBlob !== null;
+	const handleSubmit = useCallback(async () => {
+		const hasText = text.trim().length > 0;
+		const hasAttachments = attachments.length > 0;
+		const hasAudio = audioBlob !== null;
 
-    if (!(hasText || hasAttachments || hasAudio)) return;
+		if (!(hasText || hasAttachments || hasAudio)) return;
 
-    // Clear UI immediately for better UX
-    const textToSend = hasText ? text.trim() : undefined;
-    const attachmentsToUpload = [...attachments];
-    const audioBlobToUpload = audioBlob;
+		// Clear UI immediately for better UX
+		const textToSend = hasText ? text.trim() : undefined;
+		const attachmentsToUpload = [...attachments];
+		const audioBlobToUpload = audioBlob;
 
-    setText("");
-    setAttachments([]);
-    cancelRecording();
-    broadcastTyping(false, user.name);
+		setText("");
+		setAttachments([]);
+		cancelRecording();
+		broadcastTyping(false, user.name);
 
-    if (typingTimeoutRef.current) {
-      clearTimeout(typingTimeoutRef.current);
-    }
+		if (typingTimeoutRef.current) {
+			clearTimeout(typingTimeoutRef.current);
+		}
 
-    try {
-      const mentionRegex =
-        /<span[^>]*data-type="mention"[^>]*data-id="([^"]+)"[^>]*>/g;
-      const mentionUserIds = new Set<string>();
-      let match: RegExpExecArray | null;
+		try {
+			const mentionRegex =
+				/<span[^>]*data-type="mention"[^>]*data-id="([^"]+)"[^>]*>/g;
+			const mentionUserIds = new Set<string>();
+			let match: RegExpExecArray | null;
 
-      while (true) {
-        match = mentionRegex.exec(textToSend || "");
-        if (match === null) break;
-        mentionUserIds.add(match[1]);
-      }
+			while (true) {
+				match = mentionRegex.exec(textToSend || "");
+				if (match === null) break;
+				mentionUserIds.add(match[1]);
+			}
 
-      if (mentionUserIds.has(CHANNEL_MENTION_ID)) {
-        try {
-          const channelMembers =
-            await orpcClient.communication.channel.listMembers({
-              channelId,
-            });
+			if (mentionUserIds.has(CHANNEL_MENTION_ID)) {
+				try {
+					const channelMembers =
+						await orpcClient.communication.channel.listMembers({
+							channelId,
+						});
 
-          for (const member of channelMembers) {
-            if (member.id !== user.id) {
-              mentionUserIds.add(member.id);
-            }
-          }
-        } catch (error) {
-          console.error("Error fetching channel members for mention:", error);
-        }
+					for (const member of channelMembers) {
+						if (member.id !== user.id) {
+							mentionUserIds.add(member.id);
+						}
+					}
+				} catch (error) {
+					console.error("Error fetching channel members for mention:", error);
+				}
 
-        mentionUserIds.delete(CHANNEL_MENTION_ID);
-      }
+				mentionUserIds.delete(CHANNEL_MENTION_ID);
+			}
 
-      // Determine message type
-      let messageType: "text" | "attachment" | "audio" = "text";
-      if (!textToSend && audioBlobToUpload) {
-        messageType = "audio";
-      } else if (!textToSend && attachmentsToUpload.length > 0) {
-        messageType = "attachment";
-      }
+			// Determine message type
+			let messageType: "text" | "attachment" | "audio" = "text";
+			if (!textToSend && audioBlobToUpload) {
+				messageType = "audio";
+			} else if (!textToSend && attachmentsToUpload.length > 0) {
+				messageType = "attachment";
+			}
 
-      // Upload attachments and audio in parallel
-      const uploadPromises: Promise<MessageAttachment>[] = [];
+			// Upload attachments and audio in parallel
+			const uploadPromises: Promise<MessageAttachment>[] = [];
 
-      if (attachmentsToUpload.length > 0) {
-        for (const attachment of attachmentsToUpload) {
-          uploadPromises.push(
-            uploadToStorage(attachment.file, "message-attachment").then(
-              (uploaded) => {
-                const fileType = attachment.file.type;
-                let attachmentType:
-                  | "image"
-                  | "document"
-                  | "video"
-                  | "audio"
-                  | "archive" = "document";
+			if (attachmentsToUpload.length > 0) {
+				for (const attachment of attachmentsToUpload) {
+					uploadPromises.push(
+						uploadToStorage(attachment.file, "message-attachment").then(
+							(uploaded) => {
+								const fileType = attachment.file.type;
+								let attachmentType:
+									| "image"
+									| "document"
+									| "video"
+									| "audio"
+									| "archive" = "document";
 
-                if (fileType.startsWith("image/")) attachmentType = "image";
-                else if (fileType.startsWith("video/"))
-                  attachmentType = "video";
-                else if (fileType.startsWith("audio/"))
-                  attachmentType = "audio";
-                else if (
-                  fileType.includes("zip") ||
-                  fileType.includes("rar") ||
-                  fileType.includes("7z")
-                )
-                  attachmentType = "archive";
+								if (fileType.startsWith("image/")) attachmentType = "image";
+								else if (fileType.startsWith("video/"))
+									attachmentType = "video";
+								else if (fileType.startsWith("audio/"))
+									attachmentType = "audio";
+								else if (
+									fileType.includes("zip") ||
+									fileType.includes("rar") ||
+									fileType.includes("7z")
+								)
+									attachmentType = "archive";
 
-                return {
-                  fileName: uploaded.fileName,
-                  originalName: uploaded.originalName,
-                  fileSize: uploaded.fileSize,
-                  mimeType: uploaded.mimeType,
-                  type: attachmentType,
-                  url: uploaded.url,
-                };
-              }
-            )
-          );
-        }
-      }
+								return {
+									fileName: uploaded.fileName,
+									originalName: uploaded.originalName,
+									fileSize: uploaded.fileSize,
+									mimeType: uploaded.mimeType,
+									type: attachmentType,
+									url: uploaded.url,
+								};
+							}
+						)
+					);
+				}
+			}
 
-      if (audioBlobToUpload) {
-        const audioFile = new File(
-          [audioBlobToUpload],
-          `audio-${Date.now()}.webm`,
-          {
-            type: "audio/webm",
-          }
-        );
+			if (audioBlobToUpload) {
+				const audioFile = new File(
+					[audioBlobToUpload],
+					`audio-${Date.now()}.webm`,
+					{
+						type: "audio/webm",
+					}
+				);
 
-        uploadPromises.push(
-          uploadToStorage(audioFile, "message-audio").then((uploaded) => ({
-            fileName: uploaded.fileName,
-            originalName: uploaded.originalName,
-            fileSize: uploaded.fileSize,
-            mimeType: uploaded.mimeType,
-            type: "audio" as const,
-            url: uploaded.url,
-          }))
-        );
-      }
+				uploadPromises.push(
+					uploadToStorage(audioFile, "message-audio").then((uploaded) => ({
+						fileName: uploaded.fileName,
+						originalName: uploaded.originalName,
+						fileSize: uploaded.fileSize,
+						mimeType: uploaded.mimeType,
+						type: "audio" as const,
+						url: uploaded.url,
+					}))
+				);
+			}
 
-      // Wait for all uploads to complete
-      const uploadedAttachments =
-        uploadPromises.length > 0 ? await Promise.all(uploadPromises) : [];
+			// Wait for all uploads to complete
+			const uploadedAttachments =
+				uploadPromises.length > 0 ? await Promise.all(uploadPromises) : [];
 
-      const messageData = {
-        channelId,
-        content: textToSend,
-        mentions:
-          mentionUserIds.size > 0 ? Array.from(mentionUserIds) : undefined,
-        parentMessageId,
-        type: messageType,
-        attachments:
-          uploadedAttachments.length > 0 ? uploadedAttachments : undefined,
-      };
+			const messageData = {
+				channelId,
+				content: textToSend,
+				mentions:
+					mentionUserIds.size > 0 ? Array.from(mentionUserIds) : undefined,
+				parentMessageId,
+				type: messageType,
+				attachments:
+					uploadedAttachments.length > 0 ? uploadedAttachments : undefined,
+			};
 
-      createMessage({ message: messageData });
+			createMessage({ message: messageData });
 
-      onSendSuccess?.();
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to send message"
-      );
-    }
-  }, [
-    text,
-    attachments,
-    audioBlob,
-    channelId,
-    createMessage,
-    broadcastTyping,
-    user.name,
-    user.id,
-    parentMessageId,
-    onSendSuccess,
-    cancelRecording,
-  ]);
+			onSendSuccess?.();
+		} catch (error) {
+			toast.error(
+				error instanceof Error ? error.message : "Failed to send message"
+			);
+		}
+	}, [
+		text,
+		attachments,
+		audioBlob,
+		channelId,
+		createMessage,
+		broadcastTyping,
+		user.name,
+		user.id,
+		parentMessageId,
+		onSendSuccess,
+		cancelRecording,
+	]);
 
-  const handleEmojiSelect = useCallback(
-    (emoji: { emoji: string; label: string }) => {
-      const newMessage = text + emoji.emoji;
-      setText(newMessage);
-    },
-    [text]
-  );
+	const handleEmojiSelect = useCallback(
+		(emoji: { emoji: string; label: string }) => {
+			const newMessage = text + emoji.emoji;
+			setText(newMessage);
+		},
+		[text]
+	);
 
-  const handleFileUpload = useCallback((files?: FileList) => {
-    const filesToAdd = files || fileInputRef.current?.files;
-    if (!filesToAdd) return;
+	const handleFileUpload = useCallback((files?: FileList) => {
+		const filesToAdd = files || fileInputRef.current?.files;
+		if (!filesToAdd) return;
 
-    const newAttachments: AttachmentPreview[] = Array.from(filesToAdd).map(
-      (file) => ({
-        file,
-        id: `${Date.now()}-${Math.random()}`,
-      })
-    );
+		const newAttachments: AttachmentPreview[] = Array.from(filesToAdd).map(
+			(file) => ({
+				file,
+				id: `${Date.now()}-${Math.random()}`,
+			})
+		);
 
-    setAttachments((prev) => [...prev, ...newAttachments]);
+		setAttachments((prev) => [...prev, ...newAttachments]);
 
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  }, []);
+		if (fileInputRef.current) {
+			fileInputRef.current.value = "";
+		}
+	}, []);
 
-  const handleRemoveAttachment = useCallback(
-    async (id: string) => {
-      const attachment = attachments.find((att) => att.id === id);
+	const handleRemoveAttachment = useCallback(
+		async (id: string) => {
+			const attachment = attachments.find((att) => att.id === id);
 
-      // If file was already uploaded to storage, delete it via API
-      if (attachment?.uploadedFileName) {
-        try {
-          await orpcClient.storage.delete({
-            bucket: "message-attachment",
-            filePath: attachment.uploadedFileName,
-          });
-        } catch (error) {
-          console.error("Error deleting attachment:", error);
-        }
-      }
+			// If file was already uploaded to storage, delete it via API
+			if (attachment?.uploadedFileName) {
+				try {
+					await orpcClient.storage.delete({
+						bucket: "message-attachment",
+						filePath: attachment.uploadedFileName,
+					});
+				} catch (error) {
+					console.error("Error deleting attachment:", error);
+				}
+			}
 
-      setAttachments((prev) => prev.filter((att) => att.id !== id));
-    },
-    [attachments]
-  );
+			setAttachments((prev) => prev.filter((att) => att.id !== id));
+		},
+		[attachments]
+	);
 
-  const handleVoiceRecord = useCallback(async () => {
-    if (isRecording) {
-      stopRecording();
-    } else {
-      await startRecording();
-    }
-  }, [isRecording, startRecording, stopRecording]);
+	const handleVoiceRecord = useCallback(async () => {
+		if (isRecording) {
+			stopRecording();
+		} else {
+			await startRecording();
+		}
+	}, [isRecording, startRecording, stopRecording]);
 
-  const handleAudioSend = useCallback(() => {
-    handleSubmit();
-  }, [handleSubmit]);
+	const handleAudioSend = useCallback(() => {
+		handleSubmit();
+	}, [handleSubmit]);
 
-  const handleAudioCancel = useCallback(() => {
-    cancelRecording();
-  }, [cancelRecording]);
+	const handleAudioCancel = useCallback(() => {
+		cancelRecording();
+	}, [cancelRecording]);
 
-  const handleMaximize = useCallback(() => {
-    if (onMaximize) {
-      onMaximize(text);
-      return;
-    }
+	const handleMaximize = useCallback(() => {
+		if (onMaximize) {
+			onMaximize(text);
+			return;
+		}
 
-    setIsEditorMaximized(true);
-    openMaximizedMessageComposer({
-      content: text,
-      parentMessageId: parentMessageId ?? null,
-      onComplete: (result) => {
-        setIsEditorMaximized(false);
+		setIsEditorMaximized(true);
+		openMaximizedMessageComposer({
+			content: text,
+			parentMessageId: parentMessageId ?? null,
+			onComplete: (result) => {
+				setIsEditorMaximized(false);
 
-        if (result.action === "cancel") {
-          if (typeof result.content === "string") {
-            setText(result.content);
-            handleTypingBroadcast(result.content);
-          }
-          return;
-        }
+				if (result.action === "cancel") {
+					if (typeof result.content === "string") {
+						setText(result.content);
+						handleTypingBroadcast(result.content);
+					}
+					return;
+				}
 
-        setText("");
-        setAttachments([]);
-        cancelRecording();
-        if (user?.name) {
-          broadcastTyping(false, user.name);
-        }
-      },
-    });
-  }, [
-    onMaximize,
-    text,
-    openMaximizedMessageComposer,
-    parentMessageId,
-    handleTypingBroadcast,
-    cancelRecording,
-    user?.name,
-    broadcastTyping,
-  ]);
+				setText("");
+				setAttachments([]);
+				cancelRecording();
+				if (user?.name) {
+					broadcastTyping(false, user.name);
+				}
+			},
+		});
+	}, [
+		onMaximize,
+		text,
+		openMaximizedMessageComposer,
+		parentMessageId,
+		handleTypingBroadcast,
+		cancelRecording,
+		user?.name,
+		broadcastTyping,
+	]);
 
-  // Sync text when initialContent changes (for thread replies)
-  useEffect(() => {
-    setText(initialContent);
-  }, [initialContent]);
+	// Sync text when initialContent changes (for thread replies)
+	useEffect(() => {
+		setText(initialContent);
+	}, [initialContent]);
 
-  return (
-    <>
-      <input
-        accept="*/*"
-        className="hidden"
-        multiple
-        onChange={(e) => handleFileUpload(e.target.files || undefined)}
-        ref={fileInputRef}
-        type="file"
-      />
+	return (
+		<>
+			<input
+				accept="*/*"
+				className="hidden"
+				multiple
+				onChange={(e) => handleFileUpload(e.target.files || undefined)}
+				ref={fileInputRef}
+				type="file"
+			/>
 
-      <div
-        className={cn(
-          "relative min-w-0 overflow-x-hidden bg-background",
-          className
-        )}
-      >
-        <div className="min-w-0">
-          <div className="relative min-w-0">
-            {typingUsers.length > 0 && (
-              <div className="border-b px-4 py-2">
-                <TypingIndicator typingUsers={typingUsers} />
-              </div>
-            )}
+			<div
+				className={cn(
+					"relative min-w-0 overflow-x-hidden bg-background",
+					className
+				)}
+			>
+				<div className="min-w-0">
+					<div className="relative min-w-0">
+						{typingUsers.length > 0 && (
+							<div className="border-b px-4 py-2">
+								<TypingIndicator typingUsers={typingUsers} />
+							</div>
+						)}
 
-            {attachments.length > 0 && (
-              <AttachmentPreviewList
-                attachments={attachments}
-                onRemove={handleRemoveAttachment}
-              />
-            )}
+						{attachments.length > 0 && (
+							<AttachmentPreviewList
+								attachments={attachments}
+								onRemove={handleRemoveAttachment}
+							/>
+						)}
 
-            {(isRecording || audioUrl) && (
-              <div className="border-b p-3">
-                <AudioRecorder
-                  audioUrl={audioUrl}
-                  duration={duration}
-                  isRecording={isRecording}
-                  onCancel={handleAudioCancel}
-                  onSend={handleAudioSend}
-                  onStart={startRecording}
-                  onStop={stopRecording}
-                />
-              </div>
-            )}
+						{(isRecording || audioUrl) && (
+							<div className="border-b p-3">
+								<AudioRecorder
+									audioUrl={audioUrl}
+									duration={duration}
+									isRecording={isRecording}
+									onCancel={handleAudioCancel}
+									onSend={handleAudioSend}
+									onStart={startRecording}
+									onStop={stopRecording}
+								/>
+							</div>
+						)}
 
-            <MessageEditor
-              content={text}
-              disabled={isRecording || audioUrl !== null}
-              fetchUsers={fetchUsers}
-              hasAttachments={attachments.length > 0}
-              hasAudio={audioUrl !== null}
-              isCreatingMessage={false}
-              isMaximized={onMaximize ? false : isEditorMaximized}
-              isRecording={isRecording}
-              onChange={handleMarkdownChange}
-              onEmojiSelect={handleEmojiSelect}
-              onFileUpload={() => fileInputRef.current?.click()}
-              onMaximize={handleMaximize}
-              onSubmit={handleSubmit}
-              onVoiceRecord={handleVoiceRecord}
-            />
-          </div>
-        </div>
-      </div>
-    </>
-  );
+						<MessageEditor
+							content={text}
+							disabled={isRecording || audioUrl !== null}
+							fetchUsers={fetchUsers}
+							hasAttachments={attachments.length > 0}
+							hasAudio={audioUrl !== null}
+							isCreatingMessage={false}
+							isMaximized={onMaximize ? false : isEditorMaximized}
+							isRecording={isRecording}
+							onChange={handleMarkdownChange}
+							onEmojiSelect={handleEmojiSelect}
+							onFileUpload={() => fileInputRef.current?.click()}
+							onMaximize={handleMaximize}
+							onSubmit={handleSubmit}
+							onVoiceRecord={handleVoiceRecord}
+						/>
+					</div>
+				</div>
+			</div>
+		</>
+	);
 }

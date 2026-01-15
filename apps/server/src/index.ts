@@ -20,13 +20,13 @@ const app = new Hono();
 
 app.use(logger());
 app.use(
-  "/*",
-  cors({
-    origin: env.CORS_ORIGIN,
-    allowMethods: ["GET", "POST", "OPTIONS"],
-    allowHeaders: ["Content-Type", "Authorization", "user-agent"],
-    credentials: true,
-  })
+	"/*",
+	cors({
+		origin: env.CORS_ORIGIN,
+		allowMethods: ["GET", "POST", "OPTIONS"],
+		allowHeaders: ["Content-Type", "Authorization", "user-agent"],
+		credentials: true,
+	})
 );
 
 app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));
@@ -34,54 +34,54 @@ app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));
 app.route("/electric", electricRouter);
 
 export const apiHandler = new OpenAPIHandler(appRouter, {
-  plugins: [
-    new OpenAPIReferencePlugin({
-      schemaConverters: [new ZodToJsonSchemaConverter()],
-    }),
-  ],
-  interceptors: [
-    onError((error) => {
-      console.error(error);
-    }),
-  ],
+	plugins: [
+		new OpenAPIReferencePlugin({
+			schemaConverters: [new ZodToJsonSchemaConverter()],
+		}),
+	],
+	interceptors: [
+		onError((error) => {
+			console.error(error);
+		}),
+	],
 });
 
 export const rpcHandler = new RPCHandler(appRouter, {
-  interceptors: [
-    onError((error) => {
-      console.error(error);
-    }),
-  ],
+	interceptors: [
+		onError((error) => {
+			console.error(error);
+		}),
+	],
 });
 
 app.use("/*", async (c, next) => {
-  const context = await createContext({ context: c });
+	const context = await createContext({ context: c });
 
-  const rpcResult = await rpcHandler.handle(c.req.raw, {
-    prefix: "/rpc",
-    context,
-  });
+	const rpcResult = await rpcHandler.handle(c.req.raw, {
+		prefix: "/rpc",
+		context,
+	});
 
-  if (rpcResult.matched) {
-    return new Response(rpcResult.response.body, rpcResult.response);
-  }
+	if (rpcResult.matched) {
+		return new Response(rpcResult.response.body, rpcResult.response);
+	}
 
-  const apiResult = await apiHandler.handle(c.req.raw, {
-    prefix: "/api-reference",
-    context,
-  });
+	const apiResult = await apiHandler.handle(c.req.raw, {
+		prefix: "/api-reference",
+		context,
+	});
 
-  if (apiResult.matched) {
-    return new Response(apiResult.response.body, apiResult.response);
-  }
+	if (apiResult.matched) {
+		return new Response(apiResult.response.body, apiResult.response);
+	}
 
-  await next();
+	await next();
 });
 
 app.get("/", (c) => c.text("OK"));
 
 export default {
-  fetch: app.fetch,
-  port: env.PORT,
-  idleTimeout: 255,
+	fetch: app.fetch,
+	port: env.PORT,
+	idleTimeout: 255,
 };

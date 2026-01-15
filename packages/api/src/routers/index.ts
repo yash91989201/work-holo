@@ -7,12 +7,12 @@ import { realtimeRouter } from "./realtime";
 import { storageRouter } from "./storage";
 
 export const appRouter = {
-  healthCheck: publicProcedure.handler(() => "OK"),
-  member: memberRouter,
-  communication: communicationRouter,
-  admin: adminRouter,
-  storage: storageRouter,
-  realtime: realtimeRouter,
+	healthCheck: publicProcedure.handler(() => "OK"),
+	member: memberRouter,
+	communication: communicationRouter,
+	admin: adminRouter,
+	storage: storageRouter,
+	realtime: realtimeRouter,
 };
 
 export type AppRouter = typeof appRouter;

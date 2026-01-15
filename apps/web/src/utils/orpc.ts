@@ -7,27 +7,27 @@ import { env } from "@work-holo/env/web";
 import { toast } from "sonner";
 
 export const queryClient = new QueryClient({
-  queryCache: new QueryCache({
-    onError: (error) => {
-      toast.error(`Error: ${error.message}`, {
-        action: {
-          label: "retry",
-          onClick: () => {
-            queryClient.invalidateQueries();
-          },
-        },
-      });
-    },
-  }),
+	queryCache: new QueryCache({
+		onError: (error) => {
+			toast.error(`Error: ${error.message}`, {
+				action: {
+					label: "retry",
+					onClick: () => {
+						queryClient.invalidateQueries();
+					},
+				},
+			});
+		},
+	}),
 });
 
 export const link = new RPCLink({
-  url: `${env.VITE_SERVER_URL}/rpc`,
-  fetch: (url, options) =>
-    fetch(url, {
-      ...options,
-      credentials: "include",
-    }),
+	url: `${env.VITE_SERVER_URL}/rpc`,
+	fetch: (url, options) =>
+		fetch(url, {
+			...options,
+			credentials: "include",
+		}),
 });
 
 export const orpcClient: AppRouterClient = createORPCClient(link);

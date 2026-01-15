@@ -5,98 +5,98 @@ import { messagesCollection, notificationsCollection } from "@/db/collections";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 
 export function useNotificationSound() {
-  const { user } = useAuthedSession();
+	const { user } = useAuthedSession();
 
-  const { data: notifications, isLoading } = useLiveQuery(
-    (q) =>
-      q
-        .from({ notification: notificationsCollection })
-        .where(({ notification }) => eq(notification.userId, user.id))
-        .where(({ notification }) => eq(notification.status, "unread"))
-        .orderBy(({ notification }) => notification.createdAt, "desc"),
-    [user.id]
-  );
+	const { data: notifications, isLoading } = useLiveQuery(
+		(q) =>
+			q
+				.from({ notification: notificationsCollection })
+				.where(({ notification }) => eq(notification.userId, user.id))
+				.where(({ notification }) => eq(notification.status, "unread"))
+				.orderBy(({ notification }) => notification.createdAt, "desc"),
+		[user.id]
+	);
 
-  const activeChannelId =
-    useParams({
-      from: "/(authenticated)/org/$slug/(modules)/communication/channels/$id",
-      shouldThrow: false,
-    })?.id ?? null;
+	const activeChannelId =
+		useParams({
+			from: "/(authenticated)/org/$slug/(modules)/communication/channels/$id",
+			shouldThrow: false,
+		})?.id ?? null;
 
-  const seenNotificationIdsRef = useRef<Set<string>>(new Set());
-  const isFirstLoadRef = useRef(true);
+	const seenNotificationIdsRef = useRef<Set<string>>(new Set());
+	const isFirstLoadRef = useRef(true);
 
-  // Play sound when service worker requests it (Chromium on Linux won't play system sound)
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      if (event.data?.type !== "PLAY_NOTIFICATION_SOUND") return;
-      const hasMention = Boolean(event.data?.payload?.hasMention);
-      const soundPath = hasMention
-        ? "/assets/sounds/mention.webm"
-        : "/assets/sounds/notify.webm";
+	// Play sound when service worker requests it (Chromium on Linux won't play system sound)
+	useEffect(() => {
+		const handleMessage = (event: MessageEvent) => {
+			if (event.data?.type !== "PLAY_NOTIFICATION_SOUND") return;
+			const hasMention = Boolean(event.data?.payload?.hasMention);
+			const soundPath = hasMention
+				? "/assets/sounds/mention.webm"
+				: "/assets/sounds/notify.webm";
 
-      const audio = new Audio(soundPath);
-      audio.play().catch((error) => {
-        console.error("Error playing notification sound:", error);
-      });
-    };
+			const audio = new Audio(soundPath);
+			audio.play().catch((error) => {
+				console.error("Error playing notification sound:", error);
+			});
+		};
 
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.addEventListener("message", handleMessage);
-      return () => {
-        navigator.serviceWorker.removeEventListener("message", handleMessage);
-      };
-    }
+		if ("serviceWorker" in navigator) {
+			navigator.serviceWorker.addEventListener("message", handleMessage);
+			return () => {
+				navigator.serviceWorker.removeEventListener("message", handleMessage);
+			};
+		}
 
-    return;
-  }, []);
+		return;
+	}, []);
 
-  useEffect(() => {
-    if (isLoading || !notifications) return;
+	useEffect(() => {
+		if (isLoading || !notifications) return;
 
-    const seenIds = seenNotificationIdsRef.current;
-    const newNotifications = notifications.filter(
-      (notification) => !seenIds.has(notification.id)
-    );
+		const seenIds = seenNotificationIdsRef.current;
+		const newNotifications = notifications.filter(
+			(notification) => !seenIds.has(notification.id)
+		);
 
-    if (isFirstLoadRef.current) {
-      isFirstLoadRef.current = false;
-      newNotifications.forEach((notification) => {
-        seenIds.add(notification.id);
-      });
-      return;
-    }
+		if (isFirstLoadRef.current) {
+			isFirstLoadRef.current = false;
+			newNotifications.forEach((notification) => {
+				seenIds.add(notification.id);
+			});
+			return;
+		}
 
-    const shouldPlaySound = newNotifications.some((notification) => {
-      if (
-        notification.type === "mention" &&
-        activeChannelId &&
-        notification.entityId
-      ) {
-        const message = messagesCollection.get(notification.entityId);
-        if (message?.channelId === activeChannelId) {
-          return false;
-        }
-      }
-      return true;
-    });
+		const shouldPlaySound = newNotifications.some((notification) => {
+			if (
+				notification.type === "mention" &&
+				activeChannelId &&
+				notification.entityId
+			) {
+				const message = messagesCollection.get(notification.entityId);
+				if (message?.channelId === activeChannelId) {
+					return false;
+				}
+			}
+			return true;
+		});
 
-    if (shouldPlaySound && newNotifications.length > 0) {
-      const hasMentionNotification = newNotifications.some(
-        (notification) => notification.type === "mention"
-      );
-      const soundPath = hasMentionNotification
-        ? "/assets/sounds/mention.webm"
-        : "/assets/sounds/notify.webm";
+		if (shouldPlaySound && newNotifications.length > 0) {
+			const hasMentionNotification = newNotifications.some(
+				(notification) => notification.type === "mention"
+			);
+			const soundPath = hasMentionNotification
+				? "/assets/sounds/mention.webm"
+				: "/assets/sounds/notify.webm";
 
-      const audio = new Audio(soundPath);
-      audio.play().catch((error) => {
-        console.error("Error playing notification sound:", error);
-      });
-    }
+			const audio = new Audio(soundPath);
+			audio.play().catch((error) => {
+				console.error("Error playing notification sound:", error);
+			});
+		}
 
-    newNotifications.forEach((notification) => {
-      seenIds.add(notification.id);
-    });
-  }, [activeChannelId, isLoading, notifications]);
+		newNotifications.forEach((notification) => {
+			seenIds.add(notification.id);
+		});
+	}, [activeChannelId, isLoading, notifications]);
 }

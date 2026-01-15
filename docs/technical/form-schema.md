@@ -1,6 +1,6 @@
 # Form Schema Design Instructions
 
-This document explains how to design and organize **schemas and types** for forms using **Zod** and how they integrate with **React Hook Form**.
+This document explains how to design and organize **schemas and types** for forms using **Zod** and how they integrate with **TanStack Form**.
 
 ---
 
@@ -56,24 +56,33 @@ export type CreateExamFormSchemaType = z.infer<typeof CreateExamFormSchema>;
 ```
 
 This ensures:
-- Type safety inside `useForm<T>()`.
+- Type safety through TypeScript inference.
 - Autocompletion for fields.
 - Types always stay in sync with schemas.
 
+**Note**: While types are auto-generated, TanStack Form infers types from `defaultValues` at runtime, so explicit type parameters are rarely needed.
+
 ---
 
-## 🔄 Integration with React Hook Form
+## 🔄 Integration with TanStack Form
 
 When defining a form:
 
 ```ts
-const form = useForm<LogInFormType>({
-  resolver: standardSchemaResolver(LogInFormSchema),
+const form = useAppForm({
+  defaultValues: {
+    email: "",
+    password: "",
+  },
+  validators: {
+    onSubmit: (value) => LogInFormSchema.parse(value),
+  },
 });
 ```
 
 This guarantees:
 - All validation is synced with Zod.
+- Type safety through TypeScript inference from `defaultValues`.
 - No raw `z.*` calls inside components.
 
 ---

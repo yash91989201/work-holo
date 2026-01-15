@@ -33,30 +33,24 @@ export function NavOps() {
 				<SidebarGroupContent>
 					<SidebarMenu>
 						<SidebarMenuItem>
-							<SidebarMenuButton
-								render={
-									<Link
-										params={{ slug }}
-										search={{ page: 1 }}
-										to="/org/$slug/dashboard/attendance"
-									/>
-								}
-								tooltip="View Attendance"
-							>
-								<Calendar />
-								<span>Attendance</span>
+							<SidebarMenuButton tooltip="View Attendance">
+								<Link
+									params={{ slug }}
+									search={{ page: 1 }}
+									to="/org/$slug/dashboard/attendance"
+								>
+									<Calendar />
+									<span>Attendance</span>
+								</Link>
 							</SidebarMenuButton>
-							<SidebarMenuButton
-								render={
-									<Link
-										params={{ slug }}
-										to="/org/$slug/dashboard/communication/channels"
-									/>
-								}
-								tooltip="Manage Communication Channels"
-							>
-								<IconBroadcast />
-								<span>Channels</span>
+							<SidebarMenuButton tooltip="Manage Communication Channels">
+								<Link
+									params={{ slug }}
+									to="/org/$slug/dashboard/communication/channels"
+								>
+									<IconBroadcast />
+									<span>Channels</span>
+								</Link>
 							</SidebarMenuButton>
 							<SidebarMenuButton
 								render={

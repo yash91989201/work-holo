@@ -1,141 +1,116 @@
 import { ChevronDown, RefreshCw, User, Users } from "lucide-react";
-import { useFormContext } from "react-hook-form";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { withForm } from "@/components/ui/form/hooks";
 import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  MultiSelect,
-  type MultiSelectOption,
+	MultiSelect,
+	type MultiSelectOption,
 } from "@/components/ui/multi-select";
 import { useListOrgMembers } from "@/hooks/use-list-org-members";
-import type { CreateChannelFormType } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { channelFormOpts } from "./form-options";
 
-export const MembersSelect = () => {
-  const form = useFormContext<CreateChannelFormType>();
-  const channelType = form.watch("type");
+export const MembersSelect = withForm({
+	...channelFormOpts,
+	render({ form }) {
+		const { members, refetchTeamMembers, isRefetching } = useListOrgMembers();
 
-  const { members, refetchTeamMembers, isRefetching } = useListOrgMembers();
+		const memberOptions: MultiSelectOption[] = members
+			.filter((m) => m.role === "member")
+			.map((member) => ({
+				label: member.user.email,
+				value: member.userId,
+				disabled: member.role !== "member",
+				icon: () => (
+					<Avatar className="size-6">
+						<AvatarImage src={member.user?.image || ""} />
+						<AvatarFallback>
+							{member.user.name.charAt(0).toUpperCase()}
+						</AvatarFallback>
+					</Avatar>
+				),
+			}));
 
-  const memberOptions: MultiSelectOption[] = members
-    .filter((m) => m.role === "member")
-    .map((member) => ({
-      label: member.user.email,
-      value: member.userId,
-      disabled: member.role !== "member",
-      icon: () => (
-        <Avatar className="size-6">
-          <AvatarImage src={member.user?.image || ""} />
-          <AvatarFallback>
-            {member.user.name.charAt(0).toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
-      ),
-    }));
-
-  return (
-    <FormField
-      control={form.control}
-      name="memberIds"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>
-            <span className="flex-1">Members</span>
-            <Badge className="ml-2" variant="secondary">
-              {channelType === "direct" ? (
-                <>
-                  <span>1</span>
-                  <User />
-                </>
-              ) : (
-                <>
-                  <span>1+</span>
-                  <Users />
-                </>
-              )}
-            </Badge>
-            <Button
-              className="size-6 rounded-sm"
-              disabled={isRefetching}
-              onClick={() => refetchTeamMembers()}
-              size="icon"
-              type="button"
-              variant="outline"
-            >
-              <RefreshCw
-                className={cn("size-3", isRefetching && "animate-spin")}
-              />
-            </Button>
-          </FormLabel>
-          <FormControl>
-            <MultiSelect
-              className="w-full"
-              maxCount={1}
-              onValueChange={field.onChange}
-              options={memberOptions}
-              placeholder="Select channel members"
-              value={field.value}
-            />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  );
-};
+		return (
+			<form.Subscribe selector={(state) => state.values.type}>
+				{(channelType) => (
+					<form.AppField mode="array" name="memberIds">
+						{(field) => (
+							<div className="space-y-2">
+								<div className="flex items-center gap-2">
+									<span className="flex-1 font-medium text-sm">Members</span>
+									<Badge className="ml-2" variant="secondary">
+										{channelType === "direct" ? (
+											<>
+												<span>1</span>
+												<User />
+											</>
+										) : (
+											<>
+												<span>1+</span>
+												<Users />
+											</>
+										)}
+									</Badge>
+									<Button
+										className="size-6 rounded-sm"
+										disabled={isRefetching}
+										onClick={() => refetchTeamMembers()}
+										size="icon"
+										type="button"
+										variant="outline"
+									>
+										<RefreshCw
+											className={cn("size-3", isRefetching && "animate-spin")}
+										/>
+									</Button>
+								</div>
+								<MultiSelect
+									className="w-full"
+									maxCount={1}
+									onValueChange={field.handleChange}
+									options={memberOptions}
+									placeholder="Select channel members"
+									value={field.state.value}
+								/>
+								{field.state.meta.errors.length > 0 && (
+									<p className="font-medium text-destructive text-sm">
+										{field.state.meta.errors.join(", ")}
+									</p>
+								)}
+							</div>
+						)}
+					</form.AppField>
+				)}
+			</form.Subscribe>
+		);
+	},
+});
 
 export function MembersSelectSkeleton() {
-  const form = useFormContext<CreateChannelFormType>();
-  const channelType = form.watch("type");
-  return (
-    <FormField
-      control={form.control}
-      name="memberIds"
-      render={() => (
-        <FormItem>
-          <FormLabel>
-            <span className="flex-1">Members</span>
-            <Badge className="ml-2" variant="secondary">
-              {channelType === "direct" ? (
-                <>
-                  <span>1</span>
-                  <User />
-                </>
-              ) : (
-                <>
-                  <span>1+</span>
-                  <Users />
-                </>
-              )}
-            </Badge>
-            <Button
-              className="size-6 rounded-sm"
-              disabled
-              size="icon"
-              type="button"
-              variant="outline"
-            >
-              <RefreshCw className="size-3" />
-            </Button>
-          </FormLabel>
-          <FormControl className="animate-pulse">
-            <div className="flex h-10 cursor-progress items-center justify-between rounded-md border px-3">
-              <p className="text-muted-foreground text-sm">
-                Select channel members
-              </p>
-              <ChevronDown className="size-4" />
-            </div>
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  );
+	return (
+		<div className="space-y-2">
+			<div className="flex items-center gap-2">
+				<span className="flex-1 font-medium text-sm">Members</span>
+				<Badge className="ml-2" variant="secondary">
+					<span>1+</span>
+					<Users />
+				</Badge>
+				<Button
+					className="size-6 rounded-sm"
+					disabled
+					size="icon"
+					type="button"
+					variant="outline"
+				>
+					<RefreshCw className="size-3" />
+				</Button>
+			</div>
+			<div className="flex h-10 animate-pulse cursor-progress items-center justify-between rounded-md border px-3">
+				<p className="text-muted-foreground text-sm">Select channel members</p>
+				<ChevronDown className="size-4" />
+			</div>
+		</div>
+	);
 }

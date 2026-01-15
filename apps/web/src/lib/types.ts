@@ -3,34 +3,34 @@
 import type { z } from "zod";
 import type { UpdateChannelFormSchema } from "@/lib/schemas/admin/channel";
 import type {
-  InviteMemberFormSchema,
-  UpdateMemberRoleSchema,
+	InviteMemberFormSchema,
+	UpdateMemberRoleSchema,
 } from "@/lib/schemas/admin/member";
 import type { CreateTeamFormSchema } from "@/lib/schemas/admin/team";
 import type {
-  AcceptInvitationFormSchema,
-  LogInFormSchema,
-  SignUpFormSchema,
+	AcceptInvitationFormSchema,
+	LogInFormSchema,
+	SignUpFormSchema,
 } from "@/lib/schemas/auth";
 import type { AddMemberFormSchema } from "@/lib/schemas/memeber/add-member";
 import type {
-  CreateChannelFormSchema,
-  ModifyChannelMembersSchema,
+	CreateChannelFormSchema,
+	ModifyChannelMembersSchema,
 } from "@/lib/schemas/memeber/channel";
 import type { JoinChannelRequestFormSchema } from "@/lib/schemas/memeber/join-channel-request";
 import type { CreateOrgFormSchema } from "@/lib/schemas/org";
 import type { InviteAdminFormSchema } from "@/lib/schemas/owner/index";
 import type {
-  ProfileEmailSchema,
-  ProfileImageSchema,
-  ProfileNameSchema,
-  ProfileUsernameFormatSchema,
-  ProfileUsernameSchema,
+	ProfileEmailSchema,
+	ProfileImageSchema,
+	ProfileNameSchema,
+	ProfileUsernameFormatSchema,
+	ProfileUsernameSchema,
 } from "@/lib/schemas/settings/profile";
 import type { ChangePasswordFormSchema } from "@/lib/schemas/settings/security";
 
 export type AcceptInvitationFormType = z.infer<
-  typeof AcceptInvitationFormSchema
+	typeof AcceptInvitationFormSchema
 >;
 export type AddMemberFormType = z.infer<typeof AddMemberFormSchema>;
 export type ChangePasswordFormType = z.infer<typeof ChangePasswordFormSchema>;
@@ -41,17 +41,17 @@ export type InviteAdminFormType = z.infer<typeof InviteAdminFormSchema>;
 export type InviteMemberFormType = z.infer<typeof InviteMemberFormSchema>;
 export type UpdateMemberRoleFormType = z.infer<typeof UpdateMemberRoleSchema>;
 export type JoinChannelRequestFormType = z.infer<
-  typeof JoinChannelRequestFormSchema
+	typeof JoinChannelRequestFormSchema
 >;
 export type LogInFormType = z.infer<typeof LogInFormSchema>;
 export type ModifyChannelMembersType = z.infer<
-  typeof ModifyChannelMembersSchema
+	typeof ModifyChannelMembersSchema
 >;
 export type ProfileEmailType = z.infer<typeof ProfileEmailSchema>;
 export type ProfileImageType = z.infer<typeof ProfileImageSchema>;
 export type ProfileNameType = z.infer<typeof ProfileNameSchema>;
 export type ProfileUsernameFormatType = z.infer<
-  typeof ProfileUsernameFormatSchema
+	typeof ProfileUsernameFormatSchema
 >;
 export type ProfileUsernameType = z.infer<typeof ProfileUsernameSchema>;
 export type SignUpFormType = z.infer<typeof SignUpFormSchema>;

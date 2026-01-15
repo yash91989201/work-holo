@@ -8,45 +8,45 @@ import { pusher } from "../../lib/pusher";
 const CHANNEL_ID_REGEX = /(?:presence-channel-|private-typing-)(.+)/;
 
 export const realtimeRouter = {
-  authorize: protectedProcedure
-    .input(
-      z.object({
-        socketId: z.string(),
-        channelName: z.string(),
-      })
-    )
-    .handler(async ({ input, context }) => {
-      const { socketId, channelName } = input;
-      const userId = context.session.user.id;
-      const userName = context.session.user.name ?? "Anonymous";
+	authorize: protectedProcedure
+		.input(
+			z.object({
+				socketId: z.string(),
+				channelName: z.string(),
+			})
+		)
+		.handler(async ({ input, context }) => {
+			const { socketId, channelName } = input;
+			const userId = context.session.user.id;
+			const userName = context.session.user.name ?? "Anonymous";
 
-      const channelIdMatch = channelName.match(CHANNEL_ID_REGEX);
-      if (!channelIdMatch?.[1]) {
-        throw new Error("Invalid channel name");
-      }
-      const channelId = channelIdMatch[1];
+			const channelIdMatch = channelName.match(CHANNEL_ID_REGEX);
+			if (!channelIdMatch?.[1]) {
+				throw new Error("Invalid channel name");
+			}
+			const channelId = channelIdMatch[1];
 
-      const membership = await db.query.channelMemberTable.findFirst({
-        where: and(
-          eq(channelMemberTable.channelId, channelId),
-          eq(channelMemberTable.userId, userId)
-        ),
-      });
+			const membership = await db.query.channelMemberTable.findFirst({
+				where: and(
+					eq(channelMemberTable.channelId, channelId),
+					eq(channelMemberTable.userId, userId)
+				),
+			});
 
-      if (!membership) {
-        throw new Error("Not a member of this channel");
-      }
+			if (!membership) {
+				throw new Error("Not a member of this channel");
+			}
 
-      if (channelName.startsWith("presence-")) {
-        const presenceData = {
-          user_id: userId,
-          user_info: {
-            name: userName,
-          },
-        };
-        return pusher.authorizeChannel(socketId, channelName, presenceData);
-      }
+			if (channelName.startsWith("presence-")) {
+				const presenceData = {
+					user_id: userId,
+					user_info: {
+						name: userName,
+					},
+				};
+				return pusher.authorizeChannel(socketId, channelName, presenceData);
+			}
 
-      return pusher.authorizeChannel(socketId, channelName);
-    }),
+			return pusher.authorizeChannel(socketId, channelName);
+		}),
 };

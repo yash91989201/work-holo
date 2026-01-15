@@ -4,73 +4,73 @@ import { authClient } from "@/lib/auth-client";
 export type UserRole = "owner" | "admin" | "member";
 
 export function hasRequiredRole(
-  userRole: UserRole | null,
-  requiredRole: UserRole
+	userRole: UserRole | null,
+	requiredRole: UserRole
 ): boolean {
-  if (!userRole) return false;
+	if (!userRole) return false;
 
-  const roleHierarchy: Record<UserRole, number> = {
-    member: 1,
-    admin: 2,
-    owner: 3,
-  };
+	const roleHierarchy: Record<UserRole, number> = {
+		member: 1,
+		admin: 2,
+		owner: 3,
+	};
 
-  return roleHierarchy[userRole] >= roleHierarchy[requiredRole];
+	return roleHierarchy[userRole] >= roleHierarchy[requiredRole];
 }
 
 export function getRoleHierarchy(minRole: UserRole): UserRole[] {
-  const allRoles: UserRole[] = ["member", "admin", "owner"];
-  const roleHierarchy: Record<UserRole, number> = {
-    member: 1,
-    admin: 2,
-    owner: 3,
-  };
+	const allRoles: UserRole[] = ["member", "admin", "owner"];
+	const roleHierarchy: Record<UserRole, number> = {
+		member: 1,
+		admin: 2,
+		owner: 3,
+	};
 
-  return allRoles.filter(
-    (role) => roleHierarchy[role] >= roleHierarchy[minRole]
-  );
+	return allRoles.filter(
+		(role) => roleHierarchy[role] >= roleHierarchy[minRole]
+	);
 }
 
 export async function requireRole(
-  orgSlug: string,
-  requiredRole: UserRole
+	orgSlug: string,
+	requiredRole: UserRole
 ): Promise<UserRole> {
-  const { data, error } = await authClient.organization.getActiveMemberRole();
+	const { data, error } = await authClient.organization.getActiveMemberRole();
 
-  if (error !== null) {
-    throw redirect({
-      to: "/login",
-    });
-  }
+	if (error !== null) {
+		throw redirect({
+			to: "/login",
+		});
+	}
 
-  const userRole = data.role as UserRole;
-  if (!hasRequiredRole(userRole, requiredRole)) {
-    throw redirect({
-      to: "/org/$slug",
-      params: { slug: orgSlug },
-    });
-  }
+	const userRole = data.role as UserRole;
+	if (!hasRequiredRole(userRole, requiredRole)) {
+		throw redirect({
+			to: "/org/$slug",
+			params: { slug: orgSlug },
+		});
+	}
 
-  return userRole as UserRole;
+	return userRole as UserRole;
 }
 
 export async function requireOrganizationMember(): Promise<UserRole> {
-  const { data, error } = await authClient.organization.getActiveMemberRole();
+	const { data, error } = await authClient.organization.getActiveMemberRole();
 
-  if (error !== null) {
-    throw redirect({
-      to: "/login",
-    });
-  }
+	if (error !== null) {
+		throw redirect({
+			to: "/login",
+		});
+	}
 
-  const userRole = data.role as UserRole;
+	const userRole = data.role as UserRole;
 
-  if (!userRole) {
-    // Redirect to organizations list if not a member
-    throw redirect({
-      to: "/org/new",
-    });
-  }
+	if (!userRole) {
+		// Redirect to organizations list if not a member
+		throw redirect({
+			to: "/org/new",
+		});
+	}
 
-  return userRole;
+	return userRole;
 }

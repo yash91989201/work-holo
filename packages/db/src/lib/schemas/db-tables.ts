@@ -1,48 +1,48 @@
 import {
-  createInsertSchema,
-  createSelectSchema,
-  createUpdateSchema,
+	createInsertSchema,
+	createSelectSchema,
+	createUpdateSchema,
 } from "drizzle-zod";
 import z from "zod";
 import { attendanceTable, workBlockTable } from "../../schema/attendance";
 import {
-  account,
-  invitation,
-  member,
-  organization,
-  session,
-  team,
-  teamMember,
-  user,
-  verification,
+	account,
+	invitation,
+	member,
+	organization,
+	session,
+	team,
+	teamMember,
+	user,
+	verification,
 } from "../../schema/auth";
 import {
-  attachmentTable,
-  channelJoinRequestTable,
-  channelMemberTable,
-  channelReadProcessedWatermarkTable,
-  channelReadTable,
-  channelTable,
-  messageMentionTable,
-  messageReactionTable,
-  messageReadSummaryTable,
-  messageReadTable,
-  messageTable,
-  notificationTable,
+	attachmentTable,
+	channelJoinRequestTable,
+	channelMemberTable,
+	channelReadProcessedWatermarkTable,
+	channelReadTable,
+	channelTable,
+	messageMentionTable,
+	messageReactionTable,
+	messageReadSummaryTable,
+	messageReadTable,
+	messageTable,
+	notificationTable,
 } from "../../schema/communication";
 
 export const AccountSchema = createSelectSchema(account);
 export const UserSchema = createSelectSchema(user, {
-  image: z.url().nullable().optional(),
-  username: z.string().nullable().optional(),
-  displayUsername: z.string().nullable().optional(),
-  phoneNumber: z.string().nullable().optional(),
-  phoneNumberVerified: z.boolean().nullable().optional(),
-  role: z.string().nullable().optional(),
-  banned: z.boolean().nullable().optional(),
-  banReason: z.string().nullable().optional(),
-  banExpires: z.date().nullable().optional(),
-  twoFactorEnabled: z.boolean().nullable().optional(),
+	image: z.url().nullable().optional(),
+	username: z.string().nullable().optional(),
+	displayUsername: z.string().nullable().optional(),
+	phoneNumber: z.string().nullable().optional(),
+	phoneNumberVerified: z.boolean().nullable().optional(),
+	role: z.string().nullable().optional(),
+	banned: z.boolean().nullable().optional(),
+	banReason: z.string().nullable().optional(),
+	banExpires: z.date().nullable().optional(),
+	twoFactorEnabled: z.boolean().nullable().optional(),
 });
 export const SessionSchema = createSelectSchema(session);
 export const InvitationSchema = createSelectSchema(invitation);
@@ -90,9 +90,9 @@ export const MessageReadSchema = createSelectSchema(messageReadTable);
 export const ChannelUpdateSchema = createUpdateSchema(channelTable);
 export const ChannelMemberUpdateSchema = createUpdateSchema(channelMemberTable);
 export const MessageMentionUpdateSchema =
-  createUpdateSchema(messageMentionTable);
+	createUpdateSchema(messageMentionTable);
 export const MessageReactionUpdateSchema =
-  createUpdateSchema(messageReactionTable);
+	createUpdateSchema(messageReactionTable);
 export const MessageUpdateSchema = createUpdateSchema(messageTable);
 export const AttachmentUpdateSchema = createUpdateSchema(attachmentTable);
 export const NotificationUpdateSchema = createUpdateSchema(notificationTable);
@@ -101,9 +101,9 @@ export const MessageReadUpdateSchema = createUpdateSchema(messageReadTable);
 export const ChannelInsertSchema = createInsertSchema(channelTable);
 export const ChannelMemberInsertSchema = createInsertSchema(channelMemberTable);
 export const MessageMentionInsertSchema =
-  createInsertSchema(messageMentionTable);
+	createInsertSchema(messageMentionTable);
 export const MessageReactionInsertSchema =
-  createInsertSchema(messageReactionTable);
+	createInsertSchema(messageReactionTable);
 export const MessageInsertSchema = createInsertSchema(messageTable);
 export const AttachmentInsertSchema = createInsertSchema(attachmentTable);
 export const NotificationInsertSchema = createInsertSchema(notificationTable);
@@ -111,13 +111,13 @@ export const MessageReadInsertSchema = createInsertSchema(messageReadTable);
 
 export const ChannelTypeSchema = ChannelSchema.shape.type;
 export const ChannelJoinRequestSchema = createSelectSchema(
-  channelJoinRequestTable
+	channelJoinRequestTable
 );
 export const ChannelJoinRequestUpdateSchema = createUpdateSchema(
-  channelJoinRequestTable
+	channelJoinRequestTable
 );
 export const ChannelJoinRequestInsertSchema = createInsertSchema(
-  channelJoinRequestTable
+	channelJoinRequestTable
 );
 
 export const ChannelReadSchema = createSelectSchema(channelReadTable);
@@ -125,22 +125,22 @@ export const ChannelReadUpdateSchema = createUpdateSchema(channelReadTable);
 export const ChannelReadInsertSchema = createInsertSchema(channelReadTable);
 
 export const MessageReadSummarySchema = createSelectSchema(
-  messageReadSummaryTable
+	messageReadSummaryTable
 );
 
 export const MessageReadSummaryUpdateSchema = createUpdateSchema(
-  messageReadSummaryTable
+	messageReadSummaryTable
 );
 export const MessageReadSummaryInsertSchema = createInsertSchema(
-  messageReadSummaryTable
+	messageReadSummaryTable
 );
 
 export const ChannelReadProcessedWatermarkSchema = createSelectSchema(
-  channelReadProcessedWatermarkTable
+	channelReadProcessedWatermarkTable
 );
 export const ChannelReadProcessedWatermarkUpdateSchema = createUpdateSchema(
-  channelReadProcessedWatermarkTable
+	channelReadProcessedWatermarkTable
 );
 export const ChannelReadProcessedWatermarkInsertSchema = createInsertSchema(
-  channelReadProcessedWatermarkTable
+	channelReadProcessedWatermarkTable
 );

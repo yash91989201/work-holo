@@ -1,51 +1,51 @@
 import { useEffect, useState } from "react";
 
 export function useNotificationPermission() {
-  const [permission, setPermission] = useState<NotificationPermission>(
-    typeof Notification !== "undefined" ? Notification.permission : "default"
-  );
+	const [permission, setPermission] = useState<NotificationPermission>(
+		typeof Notification !== "undefined" ? Notification.permission : "default"
+	);
 
-  useEffect(() => {
-    if (typeof Notification === "undefined") return;
+	useEffect(() => {
+		if (typeof Notification === "undefined") return;
 
-    const handlePermissionChange = () => {
-      setPermission(Notification.permission);
-    };
+		const handlePermissionChange = () => {
+			setPermission(Notification.permission);
+		};
 
-    // Listen for permission changes
-    if ("permissions" in navigator) {
-      navigator.permissions
-        .query({ name: "notifications" })
-        .then((permissionStatus) => {
-          permissionStatus.addEventListener("change", handlePermissionChange);
-          return () => {
-            permissionStatus.removeEventListener(
-              "change",
-              handlePermissionChange
-            );
-          };
-        })
-        .catch(() => {
-          // Some browsers don't support querying notification permission
-        });
-    }
-  }, []);
+		// Listen for permission changes
+		if ("permissions" in navigator) {
+			navigator.permissions
+				.query({ name: "notifications" })
+				.then((permissionStatus) => {
+					permissionStatus.addEventListener("change", handlePermissionChange);
+					return () => {
+						permissionStatus.removeEventListener(
+							"change",
+							handlePermissionChange
+						);
+					};
+				})
+				.catch(() => {
+					// Some browsers don't support querying notification permission
+				});
+		}
+	}, []);
 
-  const requestPermission = async () => {
-    if (typeof Notification === "undefined") {
-      return "denied";
-    }
+	const requestPermission = async () => {
+		if (typeof Notification === "undefined") {
+			return "denied";
+		}
 
-    const result = await Notification.requestPermission();
-    setPermission(result);
-    return result;
-  };
+		const result = await Notification.requestPermission();
+		setPermission(result);
+		return result;
+	};
 
-  return {
-    permission,
-    requestPermission,
-    isGranted: permission === "granted",
-    isDenied: permission === "denied",
-    isDefault: permission === "default",
-  };
+	return {
+		permission,
+		requestPermission,
+		isGranted: permission === "granted",
+		isDenied: permission === "denied",
+		isDefault: permission === "default",
+	};
 }
