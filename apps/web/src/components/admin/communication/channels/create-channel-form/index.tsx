@@ -75,14 +75,13 @@ export const CreateChannelForm = () => {
 
 	return (
 		<Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
-			<DialogTrigger
-				render={
-					<Button>
-						<Plus />
-						<span>New channel</span>
-					</Button>
-				}
-			/>
+			<DialogTrigger asChild>
+				<Button>
+					<Plus />
+					<span>New channel</span>
+				</Button>
+			</DialogTrigger>
+
 			<DialogContent className="sm:max-w-106">
 				<DialogHeader>
 					<DialogTitle>Create New Channel</DialogTitle>
