@@ -210,47 +210,44 @@ export const ChannelsListTable = () => {
 					const channel = row.original;
 					return (
 						<DropdownMenu>
-							<DropdownMenuTrigger
-								render={
-									<Button size="icon" variant="ghost">
-										<MoreHorizontal />
-									</Button>
-								}
-							/>
+							<DropdownMenuTrigger asChild>
+								<Button size="icon" variant="ghost">
+									<MoreHorizontal />
+								</Button>
+							</DropdownMenuTrigger>
+
 							<DropdownMenuContent className="flex flex-col items-stretch gap-1.5">
+								<DropdownMenuItem asChild>
+									<Suspense fallback={<Skeleton className="h-9" />}>
+										<AddMemberDialog channelId={channel.id} />
+									</Suspense>
+								</DropdownMenuItem>
+
+								<DropdownMenuItem asChild>
+									<Suspense fallback={<Skeleton className="h-9" />}>
+										<RemoveMemberDialog channelId={channel.id} />
+									</Suspense>
+								</DropdownMenuItem>
+
+								<DropdownMenuItem asChild>
+									<Suspense fallback={<Skeleton className="h-9" />}>
+										<UpdateChannelDialog channelId={channel.id} />
+									</Suspense>
+								</DropdownMenuItem>
+
 								<DropdownMenuItem
-									render={
-										<Suspense fallback={<Skeleton className="h-9" />}>
-											<AddMemberDialog channelId={channel.id} />
-										</Suspense>
-									}
-								/>
-								<DropdownMenuItem
-									render={
-										<Suspense fallback={<Skeleton className="h-9" />}>
-											<RemoveMemberDialog channelId={channel.id} />
-										</Suspense>
-									}
-								/>
-								<DropdownMenuItem
-									render={
-										<Suspense fallback={<Skeleton className="h-9" />}>
-											<UpdateChannelDialog channelId={channel.id} />
-										</Suspense>
-									}
-								/>
-								<DropdownMenuItem
-									render={<DeleteChannelDialog channelId={channel.id} />}
-									variant="destructive"
-								/>
+									asChild
+									className="text-destructive focus:text-destructive"
+								>
+									<DeleteChannelDialog channelId={channel.id} />
+								</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>
 					);
 				},
 			},
-		],
-		[]
 	);
+
 
 	const table = useReactTable({
 		data: channels,
@@ -310,9 +307,9 @@ export const ChannelsListTable = () => {
 										{header.isPlaceholder
 											? null
 											: flexRender(
-													header.column.columnDef.header,
-													header.getContext()
-												)}
+												header.column.columnDef.header,
+												header.getContext()
+											)}
 									</TableHead>
 								))}
 							</TableRow>
@@ -481,18 +478,18 @@ export function AddMemberDialog({ channelId }: { channelId: string }) {
 	};
 
 	return (
-		<Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
-			<DialogTrigger
-				render={
-					<Button
-						className="flex items-center justify-start gap-1.5"
-						variant="ghost"
-					>
-						<UserRoundPlus className="size-4" />
-						Add Members
-					</Button>
-				}
-			/>
+		<Dialog onOpenChange={setDialogOpen} open={dialogOpen} >
+			<DialogTrigger asChild>
+				<Button
+					className="flex items-center justify-start gap-1.5"
+					variant="ghost"
+				>
+					<UserRoundPlus className="size-4" />
+					Add Members
+				</Button>
+			</DialogTrigger>
+
+
 			<DialogContent className="sm:max-w-105">
 				<DialogHeader>
 					<DialogTitle>Add Members to Channel</DialogTitle>
@@ -593,7 +590,7 @@ export function AddMemberDialog({ channelId }: { channelId: string }) {
 					</DialogFooter>
 				</div>
 			</DialogContent>
-		</Dialog>
+		</Dialog >
 	);
 }
 
@@ -646,17 +643,17 @@ export function RemoveMemberDialog({ channelId }: { channelId: string }) {
 
 	return (
 		<Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
-			<DialogTrigger
-				render={
-					<Button
-						className="flex items-center justify-start gap-1.5"
-						variant="ghost"
-					>
-						<UserMinus className="size-4" />
-						<span>Remove Members</span>
-					</Button>
-				}
-			/>
+			<DialogTrigger asChild>
+				<Button
+					className="flex items-center justify-start gap-1.5"
+					variant="ghost"
+				>
+					<UserMinus className="size-4" />
+					<span>Remove Members</span>
+				</Button>
+			</DialogTrigger>
+
+
 			<DialogContent>
 				<DialogHeader>
 					<DialogTitle>Remove Members from Channel</DialogTitle>
@@ -845,7 +842,7 @@ export function UpdateChannelDialog({ channelId }: { channelId: string }) {
 					? { name: data.name }
 					: {}),
 				...(data.description !== undefined &&
-				data.description !== channel.description
+					data.description !== channel.description
 					? { description: data.description }
 					: {}),
 				...(data.isPrivate !== undefined && data.isPrivate !== channel.isPrivate
@@ -864,17 +861,16 @@ export function UpdateChannelDialog({ channelId }: { channelId: string }) {
 
 	return (
 		<Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
-			<DialogTrigger
-				render={
-					<Button
-						className="flex items-center justify-start gap-1.5"
-						variant="ghost"
-					>
-						<Pencil className="size-4" />
-						Edit Channel
-					</Button>
-				}
-			/>
+			<DialogTrigger asChild>
+				<Button
+					className="flex items-center justify-start gap-1.5"
+					variant="ghost"
+				>
+					<Pencil className="size-4" />
+					Edit Channel
+				</Button>
+			</DialogTrigger>
+
 			<DialogContent className="sm:max-w-105">
 				<DialogHeader>
 					<DialogTitle>Edit Channel</DialogTitle>

@@ -65,20 +65,19 @@ export const TeamsDropdown = withForm({
 								)}
 							</>
 						) : (
-							<div className="space-y-2">
-								<div className="flex h-11 w-full items-center justify-center rounded-md border border-input bg-background text-muted-foreground text-sm">
-									No teams available
+							<div className="space-y-3">
+								<div className="flex flex-col items-center justify-center gap-1 rounded-md border border-dashed p-4 text-sm text-muted-foreground">
+									<span>No teams yet</span>
+									<span className="text-xs">Create your first team to get started</span>
 								</div>
-								<Button
-									className="h-11 w-full"
-									render={
-										<Link params={{ slug }} to="/org/$slug/dashboard/teams">
-											Create Team
-										</Link>
-									}
-									variant="outline"
-								/>
+
+								<Button asChild variant="outline" className="h-11 w-full">
+									<Link to="/org/$slug/dashboard/teams" params={{ slug }}>
+										Create Team
+									</Link>
+								</Button>
 							</div>
+
 						)}
 					</div>
 				)}
