@@ -8,7 +8,7 @@ import { FormTextarea } from "./form-textarea";
 const { fieldContext, formContext, useFieldContext, useFormContext } =
   createFormHookContexts();
 
-const { useAppForm } = createFormHook({
+const { useAppForm, withForm, withFieldGroup } = createFormHook({
   fieldComponents: {
     Input: FormInput,
     Textarea: FormTextarea,
@@ -21,4 +21,10 @@ const { useAppForm } = createFormHook({
   formContext,
 });
 
-export { useAppForm, useFieldContext, useFormContext };
+export {
+  useAppForm,
+  useFieldContext,
+  useFormContext,
+  withForm,
+  withFieldGroup,
+};
