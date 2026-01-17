@@ -1,207 +1,169 @@
-import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useMutation } from "@tanstack/react-query";
+import { useStore } from "@tanstack/react-store";
 import { Loader, Plus } from "lucide-react";
 import { Suspense, useState } from "react";
-import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { useAppForm } from "@/components/ui/form/hooks";
+import { SelectItem } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { CreateChannelFormSchema } from "@/lib/schemas/memeber/channel";
-import type { CreateChannelFormType } from "@/lib/types";
 import { queryClient, queryUtils } from "@/utils/orpc";
+import { channelFormOpts } from "./form-options";
 import { MembersSelect, MembersSelectSkeleton } from "./members-select";
 import { TeamSelect, TeamSelectSkeleton } from "./team-select";
 
 export const CreateChannelForm = () => {
-  const [dialogOpen, setDialogOpen] = useState(false);
+	const [dialogOpen, setDialogOpen] = useState(false);
 
-  const { user } = useAuthedSession();
+	const { user } = useAuthedSession();
 
-  const form = useForm({
-    resolver: standardSchemaResolver(CreateChannelFormSchema),
-    defaultValues: {
-      name: "",
-      description: "",
-      isPublic: true,
-      type: "team",
-      teamId: undefined,
-      memberIds: [],
-      createdBy: user.id,
-    },
-  });
+	const { mutateAsync: createChannel } = useMutation(
+		queryUtils.communication.channel.create.mutationOptions({
+			onSuccess: () => {
+				queryClient.refetchQueries({
+					queryKey: queryUtils.communication.channel.list.queryKey({
+						input: {},
+					}),
+				});
 
-  const { mutateAsync: createChannel } = useMutation(
-    queryUtils.communication.channel.create.mutationOptions({
-      onSuccess: () => {
-        queryClient.refetchQueries({
-          queryKey: queryUtils.communication.channel.list.queryKey({
-            input: {},
-          }),
-        });
+				toast.success("Channel created successfully");
+				form.reset();
+			},
+			onError: (error) => {
+				toast.message("Failed to create channel", {
+					description:
+						error instanceof Error ? error.message : "Unknown error occurred",
+				});
+			},
+		})
+	);
 
-        toast.success("Channel created successfully");
-        form.reset();
-      },
-      onError: (error) => {
-        toast.message("Failed to create channel", {
-          description:
-            error instanceof Error ? error.message : "Unknown error occurred",
-        });
-      },
-    })
-  );
+	const form = useAppForm({
+		...channelFormOpts,
+		defaultValues: {
+			...channelFormOpts.defaultValues,
+			createdBy: user.id,
+		},
+		validators: {
+			onSubmit: (value) => CreateChannelFormSchema.parse(value),
+		},
+		onSubmit: async ({ value: formData }) => {
+			await createChannel(formData);
+			setDialogOpen(false);
+		},
+	});
 
-  const channelType = form.watch("type");
+	const channelType = useStore(form.store, (state) => state.values.type);
 
-  const onSubmit: SubmitHandler<CreateChannelFormType> = async (formData) => {
-    await createChannel(formData);
+	const onReset = () => {
+		form.reset({
+			...channelFormOpts.defaultValues,
+			createdBy: user.id,
+		});
+	};
 
-    setDialogOpen(false);
-  };
+	return (
+		<Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
+			<DialogTrigger
+				render={
+					<Button>
+						<Plus />
+						<span>New channel</span>
+					</Button>
+				}
+			/>
+			<DialogContent className="sm:max-w-106">
+				<DialogHeader>
+					<DialogTitle>Create New Channel</DialogTitle>
+					<DialogDescription>
+						Create a new channel for your team to communicate and collaborate.
+					</DialogDescription>
+				</DialogHeader>
+				<form.AppForm>
+					<form
+						className="space-y-4"
+						onReset={onReset}
+						onSubmit={form.handleSubmit}
+					>
+						<form.AppField name="name">
+							{(field) => (
+								<field.Input
+									label="Channel Name"
+									placeholder="Enter channel name"
+								/>
+							)}
+						</form.AppField>
 
-  const onReset = () => {
-    form.reset({
-      name: "",
-      description: "",
-      isPublic: true,
-      type: "team",
-    });
-  };
+						<form.AppField name="description">
+							{(field) => (
+								<div className="space-y-2">
+									<span className="font-medium text-sm">Description</span>
+									<Textarea
+										className="resize-none"
+										onChange={(e) =>
+											field.handleChange(e.target.value || undefined)
+										}
+										placeholder="Enter channel description"
+										rows={3}
+										value={field.state.value ?? ""}
+									/>
+									{field.state.meta.errors.length > 0 && (
+										<p className="text-destructive text-xs">
+											{field.state.meta.errors[0]}
+										</p>
+									)}
+								</div>
+							)}
+						</form.AppField>
 
-  return (
-    <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
-      <DialogTrigger asChild>
-        <Button>
-          <Plus />
-          <span>New channel</span>
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Create New Channel</DialogTitle>
-          <DialogDescription>
-            Create a new channel for your team to communicate and collaborate.
-          </DialogDescription>
-        </DialogHeader>
-        <Form {...form}>
-          <form
-            className="space-y-4"
-            onReset={onReset}
-            onSubmit={form.handleSubmit(onSubmit)}
-          >
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Channel Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter channel name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+						<form.AppField name="type">
+							{(field) => (
+								<field.Select label="Channel Type">
+									<SelectItem value="team">Team</SelectItem>
+									<SelectItem value="group">Group</SelectItem>
+								</field.Select>
+							)}
+						</form.AppField>
 
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Enter channel description"
-                      {...field}
-                      className="resize-none"
-                      rows={3}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+						{channelType === "team" ? (
+							<Suspense fallback={<TeamSelectSkeleton />}>
+								<TeamSelect form={form} />
+							</Suspense>
+						) : (
+							<Suspense fallback={<MembersSelectSkeleton />}>
+								<MembersSelect form={form} />
+							</Suspense>
+						)}
 
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Channel Type</FormLabel>
-                  <Select
-                    defaultValue={field.value}
-                    onValueChange={field.onChange}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select channel type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="team">Team</SelectItem>
-                      <SelectItem value="group">Group</SelectItem>
-                      {/* <SelectItem value="direct">Direct</SelectItem> */}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {channelType === "team" ? (
-              <Suspense fallback={<TeamSelectSkeleton />}>
-                <TeamSelect />
-              </Suspense>
-            ) : (
-              <Suspense fallback={<MembersSelectSkeleton />}>
-                <MembersSelect />
-              </Suspense>
-            )}
-
-            <DialogFooter className="flex-row">
-              <Button type="reset" variant="outline">
-                Reset
-              </Button>
-              <Button disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? (
-                  <>
-                    <Loader className="mr-1.5 animate-spin" />
-                    <span>Creating ...</span>
-                  </>
-                ) : (
-                  <span>Create Channel</span>
-                )}
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
-  );
+						<DialogFooter className="flex-row">
+							<Button type="reset" variant="outline">
+								Reset
+							</Button>
+							<Button disabled={form.state.isSubmitting}>
+								{form.state.isSubmitting ? (
+									<>
+										<Loader className="mr-1.5 animate-spin" />
+										<span>Creating ...</span>
+									</>
+								) : (
+									<span>Create Channel</span>
+								)}
+							</Button>
+						</DialogFooter>
+					</form>
+				</form.AppForm>
+			</DialogContent>
+		</Dialog>
+	);
 };
