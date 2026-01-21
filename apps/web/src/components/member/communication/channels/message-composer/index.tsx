@@ -70,6 +70,21 @@ export function MessageComposer({
   const { createMessage } = useMessageMutations();
   const { typingUsers, broadcastTyping } = useTypingIndicator(channelId);
 
+  const mentionDebounceRef = useRef<{
+    timeoutId: NodeJS.Timeout | null;
+    lastQuery: string;
+    cachedResults: Array<{
+      id: string;
+      name: string | null;
+      email: string;
+      image: string | null;
+    }>;
+  }>({
+    timeoutId: null,
+    lastQuery: "",
+    cachedResults: [],
+  });
+
   const fetchUsers = useCallback(
     async (query: string) => {
       const normalizedQuery = query.trim().toLowerCase();
@@ -77,21 +92,68 @@ export function MessageComposer({
         normalizedQuery.length === 0 ||
         "channel".startsWith(normalizedQuery.replace("@", ""));
 
-      try {
-        const { users = [] } =
-          await orpcClient.communication.message.searchUsers({
-            channelId,
-            query,
-          });
+      const debounceState = mentionDebounceRef.current;
 
-        const channelMention = includeChannelMention ? [CHANNEL_MENTION] : [];
-
-        return [...channelMention, ...users.filter((su) => su.id !== user.id)];
-      } catch (error) {
-        console.error("Error fetching mention users:", error);
-        const channelMention = includeChannelMention ? [CHANNEL_MENTION] : [];
-        return channelMention;
+      if (debounceState.timeoutId) {
+        clearTimeout(debounceState.timeoutId);
+        debounceState.timeoutId = null;
       }
+
+      if (normalizedQuery.length === 0) {
+        try {
+          const { users = [] } =
+            await orpcClient.communication.message.searchUsers({
+              channelId,
+              query,
+            });
+
+          const channelMention = includeChannelMention ? [CHANNEL_MENTION] : [];
+          const result = [
+            ...channelMention,
+            ...users.filter((su) => su.id !== user.id),
+          ];
+          debounceState.cachedResults = result;
+          debounceState.lastQuery = query;
+          return result;
+        } catch (error) {
+          console.error("Error fetching mention users:", error);
+          const channelMention = includeChannelMention ? [CHANNEL_MENTION] : [];
+          return channelMention;
+        }
+      }
+
+      return new Promise<
+        Array<{
+          id: string;
+          name: string | null;
+          email: string;
+          image: string | null;
+        }>
+      >((resolve) => {
+        debounceState.timeoutId = setTimeout(async () => {
+          try {
+            const { users = [] } =
+              await orpcClient.communication.message.searchUsers({
+                channelId,
+                query,
+              });
+
+            const channelMention = includeChannelMention
+              ? [CHANNEL_MENTION]
+              : [];
+            const result = [
+              ...channelMention,
+              ...users.filter((su) => su.id !== user.id),
+            ];
+            debounceState.cachedResults = result;
+            debounceState.lastQuery = query;
+            resolve(result);
+          } catch (error) {
+            console.error("Error fetching mention users:", error);
+            resolve(debounceState.cachedResults);
+          }
+        }, 300);
+      });
     },
     [channelId, user.id]
   );
