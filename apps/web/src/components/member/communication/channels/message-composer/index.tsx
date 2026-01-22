@@ -1,3 +1,4 @@
+import { useAsyncDebouncer } from "@tanstack/react-pacer";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useMessageMutations } from "@/hooks/communications/use-message-mutations";
@@ -81,26 +82,6 @@ export function MessageComposer({
   const { createMessage } = useMessageMutations();
   const { typingUsers, broadcastTyping } = useTypingIndicator(channelId);
 
-  const mentionDebounceRef = useRef<{
-    timeoutId: NodeJS.Timeout | null;
-    lastQuery: string;
-    cachedResults: MentionUser[];
-  }>({
-    timeoutId: null,
-    lastQuery: "",
-    cachedResults: [],
-  });
-
-  useEffect(() => {
-    return () => {
-      const debounceState = mentionDebounceRef.current;
-      if (debounceState.timeoutId) {
-        clearTimeout(debounceState.timeoutId);
-        debounceState.timeoutId = null;
-      }
-    };
-  }, []);
-
   const fetchMentionUsersFromApi = useCallback(
     async (
       query: string,
@@ -118,6 +99,15 @@ export function MessageComposer({
     [channelId, user.id]
   );
 
+  const mentionUserSearchDebouncer = useAsyncDebouncer(
+    (query: string, includeChannelMention: boolean) =>
+      fetchMentionUsersFromApi(query, includeChannelMention),
+    {
+      key: `mention-user-search:${channelId}`,
+      wait: MENTION_DEBOUNCE_DELAY_MS,
+    }
+  );
+
   const fetchUsers = useCallback(
     async (query: string): Promise<MentionUser[]> => {
       const normalizedQuery = query.trim().toLowerCase();
@@ -125,52 +115,37 @@ export function MessageComposer({
         normalizedQuery.length === 0 ||
         "channel".startsWith(normalizedQuery.replace("@", ""));
 
-      const debounceState = mentionDebounceRef.current;
+      const channelMention = includeChannelMention ? [CHANNEL_MENTION] : [];
 
-      if (debounceState.timeoutId) {
-        clearTimeout(debounceState.timeoutId);
-        debounceState.timeoutId = null;
-      }
-
-      if (
-        debounceState.lastQuery === query &&
-        debounceState.cachedResults.length > 0
-      ) {
-        return debounceState.cachedResults;
+      const { lastArgs, lastResult } = mentionUserSearchDebouncer.store.state;
+      if (lastArgs && lastResult) {
+        const [lastQuery, lastIncludeChannelMention] = lastArgs;
+        if (lastQuery === query && lastIncludeChannelMention === includeChannelMention) {
+          const cached = await lastResult;
+          if (cached.length > 0) return cached;
+        }
       }
 
       if (normalizedQuery.length === 0) {
         try {
-          const result = await fetchMentionUsersFromApi(
-            query,
-            includeChannelMention
-          );
-          debounceState.cachedResults = result;
-          debounceState.lastQuery = query;
-          return result;
+          return await fetchMentionUsersFromApi(query, includeChannelMention);
         } catch {
-          const channelMention = includeChannelMention ? [CHANNEL_MENTION] : [];
           return channelMention;
         }
       }
 
-      return new Promise<MentionUser[]>((resolve) => {
-        debounceState.timeoutId = setTimeout(async () => {
-          try {
-            const result = await fetchMentionUsersFromApi(
-              query,
-              includeChannelMention
-            );
-            debounceState.cachedResults = result;
-            debounceState.lastQuery = query;
-            resolve(result);
-          } catch {
-            resolve(debounceState.cachedResults);
-          }
-        }, MENTION_DEBOUNCE_DELAY_MS);
-      });
+      try {
+        const result = await mentionUserSearchDebouncer.maybeExecute(
+          query,
+          includeChannelMention
+        );
+        const resolved = result ? await result : undefined;
+        return resolved ?? channelMention;
+      } catch {
+        return channelMention;
+      }
     },
-    [fetchMentionUsersFromApi]
+    [fetchMentionUsersFromApi, mentionUserSearchDebouncer]
   );
 
   const handleTypingBroadcast = useCallback(
