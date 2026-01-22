@@ -77,7 +77,10 @@ export const InviteMemberForm = () => {
 				</DialogHeader>
 				<div className="space-y-6">
 					<form.AppForm>
-						<form className="space-y-4" onSubmit={form.handleSubmit}>
+						<form className="space-y-4" onSubmit={(e) => {
+							e.preventDefault();
+							form.handleSubmit();
+						}}>
 							<form.AppField name="email">
 								{(field) => (
 									<field.Input

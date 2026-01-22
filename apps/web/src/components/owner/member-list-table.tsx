@@ -504,9 +504,9 @@ export const MemberListTable = () => {
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -619,32 +619,36 @@ export const MemberListTable = () => {
         </div>
       </div>
 
-      {updateRoleMember && (
-        <UpdateMemberRole
-          member={updateRoleMember}
-          onOpenChange={(open) => {
-            setIsUpdateRoleOpen(open);
-            if (!open) {
-              setUpdateRoleMember(null);
-            }
-          }}
-          open={isUpdateRoleOpen}
-        />
-      )}
+      {
+        updateRoleMember && (
+          <UpdateMemberRole
+            member={updateRoleMember}
+            onOpenChange={(open) => {
+              setIsUpdateRoleOpen(open);
+              if (!open) {
+                setUpdateRoleMember(null);
+              }
+            }}
+            open={isUpdateRoleOpen}
+          />
+        )
+      }
 
-      {removeMember && (
-        <RemoveMember
-          member={removeMember}
-          onOpenChange={(open) => {
-            setIsRemoveMemberOpen(open);
-            if (!open) {
-              setRemoveMember(null);
-            }
-          }}
-          open={isRemoveMemberOpen}
-        />
-      )}
-    </div>
+      {
+        removeMember && (
+          <RemoveMember
+            member={removeMember}
+            onOpenChange={(open) => {
+              setIsRemoveMemberOpen(open);
+              if (!open) {
+                setRemoveMember(null);
+              }
+            }}
+            open={isRemoveMemberOpen}
+          />
+        )
+      }
+    </div >
   );
 };
 

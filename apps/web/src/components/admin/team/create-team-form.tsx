@@ -24,28 +24,30 @@ const baseModules = [
 export const CreateTeamForm = () => {
   const [open, setOpen] = React.useState(false);
 
+  // Initialize form
   const form = useAppForm({
     defaultValues: {
       name: "",
-      modules: [...baseModules.map((module) => module.id)],
+      modules: baseModules.map((m) => m.id),
     },
-    validators: {
-      onSubmit: (value) => CreateTeamFormSchema.parse(value),
-    },
-    onSubmit: async ({ value: formData }) => {
+    onSubmit: async ({ value }) => {
       try {
-        const { data, error } = await authClient.organization.createTeam({
-          name: formData.name,
+        // Parse value with Zod schema to validate
+        const parsed = CreateTeamFormSchema.parse({
+          name: value.name ?? "",
+          modules: Array.isArray(value.modules) ? value.modules : [],
         });
 
-        if (error !== null) {
-          throw new Error(error.message);
-        }
+        // Call API to create team
+        const { data, error } = await authClient.organization.createTeam({
+          name: parsed.name,
 
-        if (data === null) {
-          throw new Error("Failed to create team");
-        }
+        });
 
+        if (error) throw new Error(error.message);
+        if (!data) throw new Error("Failed to create team");
+
+        // Refresh team list
         queryClient.refetchQueries({
           queryKey: queryUtils.admin.team.listTeams.queryKey({}),
         });
@@ -53,99 +55,106 @@ export const CreateTeamForm = () => {
         toast.success(`${data.name} team created successfully`);
         form.reset();
         setOpen(false);
-      } catch (error) {
-        toast.error(
-          error instanceof Error ? error.message : "Something went wrong"
-        );
+      } catch (err: any) {
+        // Handle Zod validation errors
+        if (err?.errors) {
+          err.errors.forEach((e: any) => {
+            toast.error(e.message);
+          });
+        } else {
+          toast.error(err instanceof Error ? err.message : "Something went wrong");
+        }
       }
     },
   });
 
+  // Prevent page reload
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    form.handleSubmit(e);
+  };
+
   return (
-    <Dialog onOpenChange={setOpen} open={open}>
-      <DialogTrigger>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
         <Button className="gap-1.5">
           <Plus className="h-4 w-4" />
           Create Team
         </Button>
       </DialogTrigger>
+
       <DialogContent className="sm:max-w-md">
         <DialogHeader className="text-center">
-          <DialogTitle className="font-bold text-2xl">
-            Create New Team
-          </DialogTitle>
+          <DialogTitle className="font-bold text-2xl">Create New Team</DialogTitle>
           <DialogDescription className="text-muted-foreground">
             Create a new team to organize your members and projects
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-6">
-          <form className="space-y-4" onSubmit={form.handleSubmit}>
-            <form.AppField name="name">
-              {(field) => (
+
+        <form className="space-y-4" onSubmit={handleSubmit}>
+          {/* Team Name */}
+          <form.AppField name="name">
+            {(field) => (
+              <div>
                 <field.Input
-                  className="h-11"
                   label="Team Name"
-                  placeholder="Enter team name (e.g., Development, Design)"
+                  placeholder="Enter team name"
+                  value={field.state.value ?? ""}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  className="h-11"
                 />
-              )}
-            </form.AppField>
+                {field.state.meta.errors.length > 0 && (
+                  <p className="text-destructive text-xs">{field.state.meta.errors[0]}</p>
+                )}
+              </div>
+            )}
+          </form.AppField>
 
-            <form.AppField name="modules">
-              {(field) => (
-                <div className="space-y-2">
-                  <label className="font-medium text-sm">Base Modules</label>
-                  <div className="space-y-3">
-                    {baseModules.map((module) => (
-                      <div
-                        className="flex flex-row items-start space-x-3 space-y-0"
-                        key={module.id}
-                      >
-                        <Checkbox
-                          checked={(field.state.value || []).includes(
-                            module.id
-                          )}
-                          disabled
-                          onCheckedChange={(checked) => {
-                            const currentValues = field.state.value || [];
-                            const newValue = checked
-                              ? [...currentValues, module.id]
-                              : currentValues.filter(
-                                  (value) => value !== module.id
-                                );
-                            field.handleChange(newValue);
-                          }}
-                        />
-                        <label className="font-normal text-sm">
-                          {module.name}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                  {field.state.meta.errors.length > 0 && (
-                    <p className="text-destructive text-xs">
-                      {field.state.meta.errors[0]}
-                    </p>
-                  )}
+          {/* Base Modules */}
+          <form.AppField name="modules">
+            {(field) => (
+              <div className="space-y-2">
+                <label className="font-medium text-sm">Base Modules</label>
+                <div className="space-y-3">
+                  {baseModules.map((module) => (
+                    <div key={module.id} className="flex items-center space-x-3">
+                      <Checkbox
+                        checked={(field.state.value ?? []).includes(module.id)}
+                        onCheckedChange={(checked) => {
+                          const current = field.state.value ?? [];
+                          const next = checked
+                            ? [...current, module.id]
+                            : current.filter((v) => v !== module.id);
+                          field.handleChange(next);
+                        }}
+                      />
+                      <span className="text-sm">{module.name}</span>
+                    </div>
+                  ))}
                 </div>
-              )}
-            </form.AppField>
+                {field.state.meta.errors.length > 0 && (
+                  <p className="text-destructive text-xs">{field.state.meta.errors[0]}</p>
+                )}
+              </div>
+            )}
+          </form.AppField>
 
-            <Button
-              className="h-11 w-full font-medium"
-              disabled={form.state.isSubmitting}
-              type="submit"
-            >
-              {form.state.isSubmitting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  <span>Creating Team...</span>
-                </>
-              ) : (
-                <span>Create Team</span>
-              )}
-            </Button>
-          </form>
-        </div>
+          {/* Submit */}
+          <Button
+            type="submit"
+            className="h-11 w-full font-medium"
+            disabled={form.state.isSubmitting}
+          >
+            {form.state.isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Creating Team...
+              </>
+            ) : (
+              "Create Team"
+            )}
+          </Button>
+        </form>
       </DialogContent>
     </Dialog>
   );
