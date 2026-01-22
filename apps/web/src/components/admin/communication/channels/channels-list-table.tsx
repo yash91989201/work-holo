@@ -244,8 +244,8 @@ export const ChannelsListTable = () => {
                 >
                   <DeleteChannelDialog channelId={channel.id} />
                 </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+              </DropdownMenuContent >
+            </DropdownMenu >
           );
         },
       },
@@ -311,9 +311,9 @@ export const ChannelsListTable = () => {
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -834,9 +834,7 @@ export function UpdateChannelDialog({ channelId }: { channelId: string }) {
       description: channel.description || "",
       isPrivate: channel.isPrivate,
     },
-    validators: {
-      onSubmit: (value) => UpdateChannelFormSchema.parse(value),
-    },
+
     onSubmit: async ({ value: data }) => {
       const updateData = {
         channelId,
@@ -844,7 +842,7 @@ export function UpdateChannelDialog({ channelId }: { channelId: string }) {
           ? { name: data.name }
           : {}),
         ...(data.description !== undefined &&
-        data.description !== channel.description
+          data.description !== channel.description
           ? { description: data.description }
           : {}),
         ...(data.isPrivate !== undefined && data.isPrivate !== channel.isPrivate
@@ -882,7 +880,10 @@ export function UpdateChannelDialog({ channelId }: { channelId: string }) {
         </DialogHeader>
         <div className="space-y-4">
           <form.AppForm>
-            <form className="space-y-4" onSubmit={form.handleSubmit}>
+            <form className="space-y-4" onSubmit={(e) => {
+              e.preventDefault();
+              form.handleSubmit();
+            }}>
               <form.AppField name="name">
                 {(field) => (
                   <div className="space-y-2">
@@ -955,6 +956,7 @@ export function UpdateChannelDialog({ channelId }: { channelId: string }) {
     </Dialog>
   );
 }
+
 
 export const ChannelsListTableSkeleton = () => (
   <div className="space-y-4">

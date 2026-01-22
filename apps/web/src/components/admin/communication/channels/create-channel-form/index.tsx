@@ -55,9 +55,8 @@ export const CreateChannelForm = () => {
 			...channelFormOpts.defaultValues,
 			createdBy: user.id,
 		},
-		validators: {
-			onSubmit: (value) => CreateChannelFormSchema.parse(value),
-		},
+
+
 		onSubmit: async ({ value: formData }) => {
 			await createChannel(formData);
 			setDialogOpen(false);
@@ -93,7 +92,12 @@ export const CreateChannelForm = () => {
 					<form
 						className="space-y-4"
 						onReset={onReset}
-						onSubmit={form.handleSubmit}
+						onSubmit={(e) => {
+							e.preventDefault();
+							form.handleSubmit();
+						}}
+
+
 					>
 						<form.AppField name="name">
 							{(field) => (

@@ -115,7 +115,7 @@ export function AttendanceTrendChart({ dailyTrends }: Props) {
                 y={8}
               />
               <ChartLegend
-                content={<ChartLegendContent payload={data} />}
+                content={<ChartLegendContent />}
                 verticalAlign="bottom"
               />
             </AreaChart>

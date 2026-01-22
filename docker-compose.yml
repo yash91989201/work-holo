@@ -44,6 +44,7 @@ services:
       - "6379:6379"
     ulimits:
       memlock: -1
+    command: dragonfly --logtostderr --proactor_threads=3 --maxmemory=1GB
     volumes:
       - dragonfly_data:/data
 

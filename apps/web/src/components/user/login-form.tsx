@@ -11,15 +11,16 @@ export function LogInForm() {
 
 	const { mutateAsync: login, isPending } = useMutation({
 		mutationKey: ["login"],
-		mutationFn: async (values: LogInFormType) =>
-			await authClient.signIn.email(values),
+		mutationFn: async (values: LogInFormType) => {
+			return authClient.signIn.email(values);
+		},
 	});
 
 	const form = useAppForm({
 		defaultValues: {
 			email: "",
 			password: "",
-		} satisfies LogInFormType as LogInFormType,
+		},
 		validators: {
 			onSubmit: LogInFormSchema,
 		},
@@ -27,42 +28,41 @@ export function LogInForm() {
 			try {
 				const loginResult = await login(value);
 
-				if (loginResult.error) {
+				if (loginResult?.error) {
 					throw new Error(loginResult.error.message);
 				}
 
-				const { data: orgs, error: orgListError } =
+				const { data: orgs, error } =
 					await authClient.organization.list();
 
-				if (orgListError !== null) {
-					throw new Error(orgListError.message);
+				if (error) {
+					throw new Error(error.message);
 				}
 
-				const org = orgs[0];
+				// If user has an org
+				if (orgs && orgs.length > 0) {
+					const org = orgs[0];
 
-				await authClient.organization.setActive({
-					organizationId: org.id,
-					organizationSlug: org.slug,
-				});
+					await authClient.organization.setActive({
+						organizationId: org.id,
+						organizationSlug: org.slug,
+					});
 
-				if (org) {
 					navigate({
 						to: "/org/$slug/attendance",
-						params: {
-							slug: org.slug,
-						},
+						params: { slug: org.slug },
 					});
 					return;
 				}
 
-				navigate({
-					to: "/org/new",
-				});
-			} catch (error) {
+				// If no org exists
+				navigate({ to: "/org/new" });
+			} catch (err) {
 				form.setFieldMeta("email", (prev) => ({
 					...prev,
 					errorMap: {
-						onSubmit: error instanceof Error ? error.message : "Login failed",
+						onSubmit:
+							err instanceof Error ? err.message : "Login failed",
 					},
 				}));
 			}
@@ -70,23 +70,41 @@ export function LogInForm() {
 	});
 
 	return (
-		<form className="space-y-4" onSubmit={form.handleSubmit}>
+		<form
+			className="space-y-4"
+			onSubmit={(e) => {
+				e.preventDefault(); // 🔐 PREVENT URL LEAK
+				form.handleSubmit();
+			}}
+		>
 			<form.AppField name="email">
 				{(field) => (
-					<field.Input label="Email" placeholder="Enter your email" />
+					<field.Input
+						label="Email"
+						placeholder="Enter your email"
+						type="email"
+					/>
 				)}
 			</form.AppField>
+
 			<form.AppField name="password">
 				{(field) => (
 					<field.Input
 						label="Password"
-						placeholder="Enter your password"
 						type="password"
+						placeholder="Enter your password"
 					/>
 				)}
 			</form.AppField>
-			<Button disabled={isPending || form.state.isSubmitting}>
-				{isPending || form.state.isSubmitting ? "Logging in..." : "Log In"}
+
+			<Button
+				type="submit"
+				disabled={isPending || form.state.isSubmitting}
+				className="w-full"
+			>
+				{isPending || form.state.isSubmitting
+					? "Logging in..."
+					: "Log In"}
 			</Button>
 		</form>
 	);
