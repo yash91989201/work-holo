@@ -14,6 +14,17 @@ import { AudioRecorder } from "./audio-recorder";
 import { MessageEditor } from "./message-editor";
 import { TypingIndicator } from "./typing-indicator";
 
+/** Debounce delay for mention user search API calls (in milliseconds) */
+const MENTION_DEBOUNCE_DELAY_MS = 300;
+
+/** User type for mention autocomplete results */
+type MentionUser = {
+  id: string;
+  name: string | null;
+  email: string;
+  image: string | null;
+};
+
 interface AttachmentPreview {
   file: File;
   id: string;
@@ -73,20 +84,42 @@ export function MessageComposer({
   const mentionDebounceRef = useRef<{
     timeoutId: NodeJS.Timeout | null;
     lastQuery: string;
-    cachedResults: Array<{
-      id: string;
-      name: string | null;
-      email: string;
-      image: string | null;
-    }>;
+    cachedResults: MentionUser[];
   }>({
     timeoutId: null,
     lastQuery: "",
     cachedResults: [],
   });
 
+  useEffect(() => {
+    return () => {
+      const debounceState = mentionDebounceRef.current;
+      if (debounceState.timeoutId) {
+        clearTimeout(debounceState.timeoutId);
+        debounceState.timeoutId = null;
+      }
+    };
+  }, []);
+
+  const fetchMentionUsersFromApi = useCallback(
+    async (
+      query: string,
+      includeChannelMention: boolean
+    ): Promise<MentionUser[]> => {
+      const { users = [] } =
+        await orpcClient.communication.message.searchUsers({
+          channelId,
+          query,
+        });
+
+      const channelMention = includeChannelMention ? [CHANNEL_MENTION] : [];
+      return [...channelMention, ...users.filter((su) => su.id !== user.id)];
+    },
+    [channelId, user.id]
+  );
+
   const fetchUsers = useCallback(
-    async (query: string) => {
+    async (query: string): Promise<MentionUser[]> => {
       const normalizedQuery = query.trim().toLowerCase();
       const includeChannelMention =
         normalizedQuery.length === 0 ||
@@ -99,63 +132,45 @@ export function MessageComposer({
         debounceState.timeoutId = null;
       }
 
+      if (
+        debounceState.lastQuery === query &&
+        debounceState.cachedResults.length > 0
+      ) {
+        return debounceState.cachedResults;
+      }
+
       if (normalizedQuery.length === 0) {
         try {
-          const { users = [] } =
-            await orpcClient.communication.message.searchUsers({
-              channelId,
-              query,
-            });
-
-          const channelMention = includeChannelMention ? [CHANNEL_MENTION] : [];
-          const result = [
-            ...channelMention,
-            ...users.filter((su) => su.id !== user.id),
-          ];
+          const result = await fetchMentionUsersFromApi(
+            query,
+            includeChannelMention
+          );
           debounceState.cachedResults = result;
           debounceState.lastQuery = query;
           return result;
-        } catch (error) {
-          console.error("Error fetching mention users:", error);
+        } catch {
           const channelMention = includeChannelMention ? [CHANNEL_MENTION] : [];
           return channelMention;
         }
       }
 
-      return new Promise<
-        Array<{
-          id: string;
-          name: string | null;
-          email: string;
-          image: string | null;
-        }>
-      >((resolve) => {
+      return new Promise<MentionUser[]>((resolve) => {
         debounceState.timeoutId = setTimeout(async () => {
           try {
-            const { users = [] } =
-              await orpcClient.communication.message.searchUsers({
-                channelId,
-                query,
-              });
-
-            const channelMention = includeChannelMention
-              ? [CHANNEL_MENTION]
-              : [];
-            const result = [
-              ...channelMention,
-              ...users.filter((su) => su.id !== user.id),
-            ];
+            const result = await fetchMentionUsersFromApi(
+              query,
+              includeChannelMention
+            );
             debounceState.cachedResults = result;
             debounceState.lastQuery = query;
             resolve(result);
-          } catch (error) {
-            console.error("Error fetching mention users:", error);
+          } catch {
             resolve(debounceState.cachedResults);
           }
-        }, 300);
+        }, MENTION_DEBOUNCE_DELAY_MS);
       });
     },
-    [channelId, user.id]
+    [fetchMentionUsersFromApi]
   );
 
   const handleTypingBroadcast = useCallback(
