@@ -93,10 +93,9 @@ export const MentionList = forwardRef<MentionListRef, MentionListProps>(
             className={cn(
               "flex w-full items-center gap-3 rounded-md px-3 py-2 text-left transition-colors",
 
-              // 🔑 FORCE VISIBILITY (fixes white text issue)
+              // (fixes white text issue)
               "!text-foreground font-semibold",
 
-              // hover + selected (BACKGROUND ONLY)
               index === selectedIndex
                 ? "bg-accent"
                 : "hover:bg-accent/50"
