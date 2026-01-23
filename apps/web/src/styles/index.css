@@ -432,7 +432,9 @@ body {
 [frimousse-row] {
   padding-inline: 12px;
   scroll-margin-block: 12px;
+  color: var(--foreground);
 }
+
 
 [frimousse-emoji] {
   display: flex;

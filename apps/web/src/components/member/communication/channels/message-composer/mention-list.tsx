@@ -22,7 +22,6 @@ export interface MentionListRef {
   onKeyDown: (event: KeyboardEvent) => boolean;
 }
 
-// biome-ignore lint/nursery/noReactForwardRef: <required here>
 export const MentionList = forwardRef<MentionListRef, MentionListProps>(
   (props, ref) => {
     const { items, command } = props;
@@ -77,8 +76,8 @@ export const MentionList = forwardRef<MentionListRef, MentionListProps>(
     if (items.length === 0) {
       return (
         <div className="rounded-lg border bg-popover p-2 shadow-md">
-          <div className="px-2 py-1.5 text-muted-foreground text-sm">
-            No users found
+          <div className="px-2 py-1.5 text-sm text-foreground">
+            Loading users...
           </div>
         </div>
       );
@@ -88,29 +87,39 @@ export const MentionList = forwardRef<MentionListRef, MentionListProps>(
       <div className="min-w-[280px] rounded-lg border bg-popover p-1 shadow-md">
         {items.map((item, index) => (
           <button
+            key={item.id}
+            type="button"
+            onClick={() => selectItem(index)}
             className={cn(
-              "flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm transition-colors",
+              "flex w-full items-center gap-3 rounded-md px-3 py-2 text-left transition-colors",
+
+              // 🔑 FORCE VISIBILITY (fixes white text issue)
+              "!text-foreground font-semibold",
+
+              // hover + selected (BACKGROUND ONLY)
               index === selectedIndex
-                ? "bg-accent text-accent-foreground"
+                ? "bg-accent"
                 : "hover:bg-accent/50"
             )}
-            key={item.id}
-            onClick={() => selectItem(index)}
-            type="button"
           >
+            {/* Avatar */}
             <Avatar className="h-8 w-8 shrink-0">
               <AvatarImage alt={item.name} src={item.image || undefined} />
-              <AvatarFallback className="text-xs">
-                {item.name?.[0]?.toUpperCase() || item.email[0]?.toUpperCase()}
+              <AvatarFallback className="text-xs font-bold">
+                {item.name?.[0]?.toUpperCase() ||
+                  item.email[0]?.toUpperCase()}
               </AvatarFallback>
             </Avatar>
 
             <div className="flex min-w-0 flex-1 flex-col">
-              <span className="truncate font-medium">
+              {/* Name – bold & visible */}
+              <span className="truncate font-bold text-sm">
                 {item.name || item.email}
               </span>
+
+              {/* Email – subtle but NOT light */}
               {item.name && (
-                <span className="truncate text-muted-foreground text-xs">
+                <span className="truncate text-sm text-zinc-600 dark:text-zinc-400">
                   {item.email}
                 </span>
               )}
