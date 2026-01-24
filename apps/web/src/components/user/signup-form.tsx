@@ -1,7 +1,8 @@
 import { useNavigate } from "@tanstack/react-router";
+import { useMutation } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
-
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useAppForm } from "@/components/ui/form/hooks";
 import { authClient } from "@/lib/auth-client";
@@ -10,6 +11,17 @@ import type { SignUpFormType } from "@/lib/types";
 
 export function SignUpForm() {
 	const navigate = useNavigate();
+
+	const { mutateAsync: signup } = useMutation({
+		mutationKey: ["signup"],
+		mutationFn: async (values: SignUpFormType) =>
+			await authClient.signUp.email(values),
+	});
+
+
+	const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
+	const [isCheckingAvailability, setIsCheckingAvailability] = useState(false);
+	const [usernameError, setUsernameError] = useState<string | null>(null);
 
 	const form = useAppForm({
 		defaultValues: {
@@ -26,35 +38,18 @@ export function SignUpForm() {
 		},
 
 		onSubmit: async ({ value }) => {
+
+			if (isCheckingAvailability || isAvailable === false) {
+				return;
+			}
+
 			try {
-				/* 1️⃣ Signup */
-				const signupRes = await authClient.signUp.email(value);
+				const signupRes = await signup(value);
 				if (signupRes.error) {
 					throw new Error(signupRes.error.message);
 				}
 
-				/* 2️⃣ Create org */
-				const { data: org, error } =
-					await authClient.organization.create({
-						name: `${value.name}'s Organization`,
-						slug: value.username,
-					});
-
-				if (error || !org) {
-					throw new Error("Failed to create organization");
-				}
-
-				/* 3️⃣ Set active org */
-				await authClient.organization.setActive({
-					organizationId: org.id,
-					organizationSlug: org.slug,
-				});
-
-				/* 4️⃣ Navigate */
-				navigate({
-					to: "/org/$slug/manage",
-					params: { slug: org.slug },
-				});
+				navigate({ to: "/org/new" });
 			} catch (err) {
 				toast.error(
 					err instanceof Error ? err.message : "Signup failed"
@@ -62,6 +57,64 @@ export function SignUpForm() {
 			}
 		},
 	});
+
+
+	useEffect(() => {
+		let timeoutId: NodeJS.Timeout;
+
+		const checkAvailability = async (usernameValue: string) => {
+			if (!usernameValue) {
+				setIsAvailable(null);
+				setUsernameError(null);
+				setIsCheckingAvailability(false);
+				return;
+			}
+
+			setIsCheckingAvailability(true);
+			try {
+				const { data, error } =
+					await authClient.isUsernameAvailable({
+						username: usernameValue,
+					});
+
+				if (error) {
+					setIsAvailable(false);
+					setUsernameError("Unable to verify username availability");
+				} else {
+					setIsAvailable(data?.available ?? false);
+					setUsernameError(
+						data?.available ? null : "This username is already taken"
+					);
+				}
+			} catch {
+				setIsAvailable(false);
+				setUsernameError("Unable to verify username availability");
+			} finally {
+				setIsCheckingAvailability(false);
+			}
+		};
+
+		const unsubscribe = form.store.subscribe(() => {
+			const username = form.store.state.values.username;
+			clearTimeout(timeoutId);
+
+			if (!username) {
+				setIsAvailable(null);
+				setUsernameError(null);
+				setIsCheckingAvailability(false);
+				return;
+			}
+
+			timeoutId = setTimeout(() => {
+				checkAvailability(username);
+			}, 300);
+		});
+
+		return () => {
+			unsubscribe();
+			clearTimeout(timeoutId);
+		};
+	}, [form.store]);
 
 	return (
 		<form
@@ -77,10 +130,9 @@ export function SignUpForm() {
 				)}
 			</form.AppField>
 
-
 			<form.AppField
-				asyncDebounceMs={400}
 				name="username"
+				asyncDebounceMs={400}
 				validators={{
 					onChange: ({ value }) => {
 						if (!value) return "Username is required";
@@ -89,59 +141,53 @@ export function SignUpForm() {
 						if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(value)) {
 							return "Only lowercase letters, numbers and - allowed";
 						}
-						return undefined;
 					},
 					onChangeAsync: async ({ value }) => {
-						if (!value || value.length < 4) return undefined;
+						if (!value || value.length < 4) return;
 
 						try {
 							const { data, error } =
-								await authClient.isUsernameAvailable({ username: value });
+								await authClient.isUsernameAvailable({
+									username: value,
+								});
 
-							if (error || data?.available !== true) {
+							if (error || !data?.available) {
 								return "Username already taken";
 							}
-							return undefined;
 						} catch {
 							return "Failed to check username availability";
 						}
 					},
 				}}
 			>
-				{(field) => {
-					const invalid =
-						field.state.meta.isTouched && !field.state.meta.isValid;
+				{(field) => (
+					<div className="space-y-1">
+						<field.Input
+							label="Username"
+							placeholder="Enter unique_username"
+						/>
 
-					return (
-						<div className="space-y-1">
-							<field.Input
-								label="Username"
-								aria-invalid={invalid}
-								placeholder="unique_username"
-							/>
+						{field.state.meta.isValidating && (
+							<p className="text-xs flex items-center gap-1">
+								<Loader2 className="size-3 animate-spin" />
+								Checking availability
+							</p>
+						)}
 
-							{field.state.meta.isValidating && (
-								<p className="text-xs flex items-center gap-1">
-									<Loader2 className="size-3 animate-spin" />
-									Checking availability
-								</p>
-							)}
-
-							{field.state.meta.errors.length > 0 && (
-								<p className="text-xs text-destructive">
-									{field.state.meta.errors.join(", ")}
-								</p>
-							)}
-						</div>
-					);
-				}}
+						{field.state.meta.errors.length > 0 && (
+							<p className="text-xs text-destructive">
+								{field.state.meta.errors.join(", ")}
+							</p>
+						)}
+					</div>
+				)}
 			</form.AppField>
 
 			<form.AppField name="displayUsername">
 				{(field) => (
 					<field.Input
 						label="Display Username"
-						placeholder="Public name"
+						placeholder="Enter display username"
 					/>
 				)}
 			</form.AppField>
@@ -151,33 +197,31 @@ export function SignUpForm() {
 					<field.Input
 						label="Email"
 						type="email"
-						placeholder="Email address"
+						placeholder="Enter email address"
 					/>
 				)}
 			</form.AppField>
 
 			<form.AppField name="password">
 				{(field) => (
-					<field.Input
-						label="Password"
-						type="password"
-					/>
+					<field.Input label="Password" type="password" />
 				)}
 			</form.AppField>
 
 			<form.AppField name="confirmPassword">
 				{(field) => (
-					<field.Input
-						label="Confirm Password"
-						type="password"
-					/>
+					<field.Input label="Confirm Password" type="password" />
 				)}
 			</form.AppField>
 
 			<Button
 				type="submit"
 				className="w-full gap-1.5"
-				disabled={form.state.isSubmitting}
+				disabled={
+					form.state.isSubmitting ||
+					isCheckingAvailability ||
+					isAvailable === false
+				}
 			>
 				{form.state.isSubmitting ? (
 					<>
