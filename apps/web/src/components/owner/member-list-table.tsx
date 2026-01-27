@@ -51,6 +51,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { FieldGroup } from "@/components/ui/field";
 import { useAppForm } from "@/components/ui/form/hooks";
 import {
   InputGroup,
@@ -65,6 +66,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Spinner } from "@/components/ui/spinner";
 import {
   Table,
   TableBody,
@@ -76,8 +78,8 @@ import {
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { authClient } from "@/lib/auth-client";
 import { UpdateMemberRoleSchema } from "@/lib/schemas/admin/member";
-import type { UpdateMemberRoleFormType } from "@/lib/types";
 import { queryClient, queryUtils } from "@/utils/orpc";
+import type { UpdateMemberRoleFormType } from "@/lib/types";
 
 const getRoleBadgeVariant = (role: string) => {
   switch (role) {
@@ -117,19 +119,17 @@ function UpdateMemberRole({
   const form = useAppForm({
     defaultValues: {
       role: member.role as "admin" | "member",
-    },
+    } satisfies UpdateMemberRoleFormType as UpdateMemberRoleFormType,
     validators: {
-      onSubmit: (value) => UpdateMemberRoleSchema.parse(value),
+      onSubmit: UpdateMemberRoleSchema,
     },
     onSubmit: async ({ value: data }) => {
       try {
-        // Use better-auth organization client to update member role
         await authClient.organization.updateMemberRole({
           memberId: member.id,
           role: data.role,
         });
 
-        // Invalidate and refetch the member list
         queryClient.invalidateQueries({
           queryKey: queryUtils.admin.member.listMembers.queryKey(),
         });
@@ -143,8 +143,6 @@ function UpdateMemberRole({
     },
   });
 
-  const isLoading = form.state.isSubmitting;
-
   return (
     <Dialog onOpenChange={onOpenChange} open={open}>
       <DialogContent className="sm:max-w-105">
@@ -156,61 +154,65 @@ function UpdateMemberRole({
         </DialogHeader>
 
         <form.AppForm>
-          <form className="space-y-4" onSubmit={form.handleSubmit}>
-            <form.AppField name="role">
-              {(field) => (
-                <div className="space-y-2">
-                  <label className="font-medium text-sm" htmlFor="role">
-                    Role
-                  </label>
-                  <Select
-                    defaultValue={field.state.value}
-                    onValueChange={(value) => {
-                      if (value)
-                        field.handleChange(
-                          value as UpdateMemberRoleFormType["role"]
-                        );
-                    }}
-                  >
-                    <SelectTrigger id="role">
-                      <SelectValue>Select a role</SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="admin">
-                        <div className="flex items-center gap-2">
-                          <Shield className="h-4 w-4" />
-                          Admin
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="member">
-                        <div className="flex items-center gap-2">
-                          <User className="h-4 w-4" />
-                          Member
-                        </div>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {field.state.meta.errors.length > 0 && (
-                    <p className="text-destructive text-sm">
-                      {field.state.meta.errors[0]}
-                    </p>
-                  )}
-                </div>
-              )}
-            </form.AppField>
+          <form
+            className="space-y-4"
+            onSubmit={(e) => {
+              e.preventDefault();
+              form.handleSubmit();
+            }}
+          >
+            <FieldGroup>
+              <form.AppField name="role">
+                {(field) => (
+                  <field.Select label="Role" placeholder="Select a role">
+                    <SelectItem value="admin">
+                      <div className="flex items-center gap-2">
+                        <Shield className="h-4 w-4" />
+                        Admin
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="member">
+                      <div className="flex items-center gap-2">
+                        <User className="h-4 w-4" />
+                        Member
+                      </div>
+                    </SelectItem>
+                  </field.Select>
+                )}
+              </form.AppField>
+            </FieldGroup>
 
             <DialogFooter>
               <Button
-                disabled={isLoading}
                 onClick={() => onOpenChange(false)}
                 type="button"
                 variant="outline"
               >
                 Cancel
               </Button>
-              <Button disabled={isLoading} type="submit">
-                {isLoading ? "Updating..." : "Update Role"}
-              </Button>
+              <form.Subscribe
+                selector={(state) => [
+                  state.canSubmit,
+                  state.isValidating,
+                  state.isSubmitting,
+                ]}
+              >
+                {([canSubmit, isValidating, isSubmitting]) => (
+                  <Button
+                    disabled={!canSubmit || isValidating || isSubmitting}
+                    type="submit"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Spinner />
+                        Updating...
+                      </>
+                    ) : (
+                      "Update Role"
+                    )}
+                  </Button>
+                )}
+              </form.Subscribe>
             </DialogFooter>
           </form>
         </form.AppForm>
@@ -504,9 +506,9 @@ export const MemberListTable = () => {
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -619,36 +621,32 @@ export const MemberListTable = () => {
         </div>
       </div>
 
-      {
-        updateRoleMember && (
-          <UpdateMemberRole
-            member={updateRoleMember}
-            onOpenChange={(open) => {
-              setIsUpdateRoleOpen(open);
-              if (!open) {
-                setUpdateRoleMember(null);
-              }
-            }}
-            open={isUpdateRoleOpen}
-          />
-        )
-      }
+      {updateRoleMember && (
+        <UpdateMemberRole
+          member={updateRoleMember}
+          onOpenChange={(open) => {
+            setIsUpdateRoleOpen(open);
+            if (!open) {
+              setUpdateRoleMember(null);
+            }
+          }}
+          open={isUpdateRoleOpen}
+        />
+      )}
 
-      {
-        removeMember && (
-          <RemoveMember
-            member={removeMember}
-            onOpenChange={(open) => {
-              setIsRemoveMemberOpen(open);
-              if (!open) {
-                setRemoveMember(null);
-              }
-            }}
-            open={isRemoveMemberOpen}
-          />
-        )
-      }
-    </div >
+      {removeMember && (
+        <RemoveMember
+          member={removeMember}
+          onOpenChange={(open) => {
+            setIsRemoveMemberOpen(open);
+            if (!open) {
+              setRemoveMember(null);
+            }
+          }}
+          open={isRemoveMemberOpen}
+        />
+      )}
+    </div>
   );
 };
 

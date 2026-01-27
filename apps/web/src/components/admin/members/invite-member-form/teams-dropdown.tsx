@@ -2,86 +2,62 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, useParams } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { withForm } from "@/components/ui/form/hooks";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
+import { SelectItem } from "@/components/ui/select";
 import { authClient } from "@/lib/auth-client";
 import { inviteFormOpts } from "./form-options";
 
 export const TeamsDropdown = withForm({
-	...inviteFormOpts,
-	render({ form }) {
-		const { slug } = useParams({
-			from: "/(authenticated)/org/$slug",
-		});
+  ...inviteFormOpts,
+  render({ form }) {
+    const { slug } = useParams({
+      from: "/(authenticated)/org/$slug",
+    });
 
-		const { data: teams } = useSuspenseQuery({
-			queryKey: ["teams"],
-			queryFn: async () => {
-				const { data, error } = await authClient.organization.listTeams();
+    const { data: teams } = useSuspenseQuery({
+      queryKey: ["teams"],
+      queryFn: async () => {
+        const { data, error } = await authClient.organization.listTeams();
 
-				if (error !== null) {
-					return [];
-				}
+        if (error !== null) {
+          return [];
+        }
 
-				return data;
-			},
-		});
+        return data;
+      },
+    });
 
-		return (
-			<form.AppField name="teamId">
-				{(field) => (
-					<div className="space-y-2">
-						<span className="font-medium text-sm">Team</span>
-						{teams.length > 0 ? (
-							<>
-								<Select
-									defaultValue={field.state.value}
-									onValueChange={(value) => field.handleChange(value ?? "")}
-								>
-									<SelectTrigger className="h-11 w-full">
-										<SelectValue>
-											{field.state.value
-												? teams.find((t) => t.id === field.state.value)?.name
-												: "Select a team"}
-										</SelectValue>
-									</SelectTrigger>
-									<SelectContent>
-										{teams.map((team) => (
-											<SelectItem key={team.id} value={team.id}>
-												{team.name}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-								{field.state.meta.errors.length > 0 && (
-									<p className="font-medium text-destructive text-sm">
-										{field.state.meta.errors.join(", ")}
-									</p>
-								)}
-							</>
-						) : (
-							<div className="space-y-3">
-								<div className="flex flex-col items-center justify-center gap-1 rounded-md border border-dashed p-4 text-sm text-muted-foreground">
-									<span>No teams yet</span>
-									<span className="text-xs">Create your first team to get started</span>
-								</div>
+    if (teams.length === 0) {
+      return (
+        <div className="space-y-3">
+          <span className="font-medium text-sm">Team</span>
+          <div className="flex flex-col items-center justify-center gap-1 rounded-md border border-dashed p-4 text-muted-foreground text-sm">
+            <span>No teams yet</span>
+            <span className="text-xs">
+              Create your first team to get started
+            </span>
+          </div>
 
-								<Button asChild variant="outline" className="h-11 w-full">
-									<Link to="/org/$slug/dashboard/teams" params={{ slug }}>
-										Create Team
-									</Link>
-								</Button>
-							</div>
+          <Button asChild className="h-11 w-full" variant="outline">
+            <Link params={{ slug }} to="/org/$slug/dashboard/teams">
+              Create Team
+            </Link>
+          </Button>
+        </div>
+      );
+    }
 
-						)}
-					</div>
-				)}
-			</form.AppField>
-		);
-	},
+    return (
+      <form.AppField name="teamId">
+        {(field) => (
+          <field.Select label="Team" placeholder="Select a team">
+            {teams.map((team) => (
+              <SelectItem key={team.id} value={team.id}>
+                {team.name}
+              </SelectItem>
+            ))}
+          </field.Select>
+        )}
+      </form.AppField>
+    );
+  },
 });

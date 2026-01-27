@@ -62,8 +62,6 @@ export const MentionSuggestions = ({
 
     return filteredUsers.map((user, index) => (
       <Command.Item
-        key={user.id}
-        onSelect={() => handleSelect(user)}
         className={cn(
           "group relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none",
           "hover:bg-accent hover:text-accent-foreground",
@@ -71,6 +69,8 @@ export const MentionSuggestions = ({
           "[&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
           selectedIndex === index && "bg-accent text-accent-foreground"
         )}
+        key={user.id}
+        onSelect={() => handleSelect(user)}
       >
         <Avatar className="mr-2 h-6 w-6">
           <AvatarImage
@@ -83,9 +83,7 @@ export const MentionSuggestions = ({
         </Avatar>
 
         <div className="min-w-0 flex-1">
-          <div className="truncate font-medium">
-            {user.name || user.email}
-          </div>
+          <div className="truncate font-medium">{user.name || user.email}</div>
 
           {user.name && (
             <div className="truncate text-foreground/70 text-xs group-hover:text-foreground/70">
@@ -106,13 +104,13 @@ export const MentionSuggestions = ({
 
   return (
     <div
-      ref={ref}
       className={cn(
         "absolute bottom-full left-0 z-50 mb-2 max-h-60 w-64 overflow-y-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md",
         "data-[state=closed]:animate-out data-[state=open]:animate-in",
         "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
         "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95"
       )}
+      ref={ref}
     >
       <Command shouldFilter={false}>
         <Command.List>{renderContent()}</Command.List>
