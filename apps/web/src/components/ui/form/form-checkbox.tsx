@@ -1,14 +1,19 @@
+import type * as React from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FormBase, type FormControlProps } from "./form-base";
 import { useFieldContext } from "./hooks";
 
-export function FormCheckbox(props: FormControlProps) {
+type FormCheckboxProps = React.ComponentProps<typeof Checkbox> &
+  FormControlProps;
+
+export function FormCheckbox(props: FormCheckboxProps) {
   const field = useFieldContext<boolean>();
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
   return (
     <FormBase {...props} controlFirst horizontal>
       <Checkbox
+        {...props}
         aria-invalid={isInvalid}
         checked={field.state.value}
         id={field.name}

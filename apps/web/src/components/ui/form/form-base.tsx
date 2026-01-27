@@ -28,14 +28,20 @@ export function FormBase({
 }: FormBaseProps) {
   const field = useFieldContext();
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+
   const labelElement = (
     <>
       <FieldLabel htmlFor={field.name}>{label}</FieldLabel>
       {description && <FieldDescription>{description}</FieldDescription>}
     </>
   );
+
   const errorElem = isInvalid && (
-    <FieldError errors={field.state.meta.errors} />
+    <FieldError
+      errors={field.state.meta.errors.map((error) =>
+        typeof error === "string" ? { message: error } : error
+      )}
+    />
   );
 
   return (

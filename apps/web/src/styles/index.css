@@ -432,6 +432,7 @@ body {
 [frimousse-row] {
   padding-inline: 12px;
   scroll-margin-block: 12px;
+  color: var(--foreground);
 }
 
 [frimousse-emoji] {
@@ -507,12 +508,39 @@ body {
   @apply cursor-pointer transition-colors hover:bg-primary/20;
 }
 
-.tippy-box {
-  @apply bg-popover text-popover-foreground;
+.tippy-content {
+  @apply p-1.5 bg-background rounded-md;
 }
 
-.tippy-content {
-  @apply p-0;
+/* Tippy.js base styles for mention dropdown */
+.tippy-box {
+  @apply rounded-lg border border-border bg-popover shadow-md;
+  z-index: 9999;
+}
+
+.tippy-box[data-theme~="mention"] {
+  @apply rounded-lg border border-border bg-popover shadow-md;
+}
+
+.tippy-box[data-theme~="mention"] .tippy-content {
+  @apply p-0 bg-popover overflow-hidden;
+}
+
+/* Arrow styling for tippy */
+.tippy-box[data-placement^="top"] > .tippy-arrow::before {
+  @apply border-t-border;
+}
+
+.tippy-box[data-placement^="bottom"] > .tippy-arrow::before {
+  @apply border-b-border;
+}
+
+.tippy-box[data-placement^="left"] > .tippy-arrow::before {
+  @apply border-l-border;
+}
+
+.tippy-box[data-placement^="right"] > .tippy-arrow::before {
+  @apply border-r-border;
 }
 
 /* Force word wrapping in editor to prevent horizontal scroll */

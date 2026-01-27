@@ -1,7 +1,5 @@
-import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
-import { Loader2, PlusIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import { Suspense, useState } from "react";
-import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,62 +10,50 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { useAppForm } from "@/components/ui/form/hooks";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useAuthedSession } from "@/hooks/use-authed-session";
-import { getAuthQueryKey } from "@/lib/auth/query-keys";
+import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth-client";
 import { InviteMemberFormSchema } from "@/lib/schemas/admin/member";
-import type { InviteMemberFormType } from "@/lib/types";
-import { queryClient } from "@/utils/orpc";
+import { queryClient, queryUtils } from "@/utils/orpc";
+import { inviteFormOpts } from "./form-options";
 import { TeamsDropdown } from "./teams-dropdown";
 
 export const InviteMemberForm = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { session } = useAuthedSession();
-  const orgId = session.activeOrganizationId ?? "";
 
-  const form = useForm({
-    resolver: standardSchemaResolver(InviteMemberFormSchema),
-    defaultValues: {
-      email: "",
-      teamId: "",
+  const form = useAppForm({
+    ...inviteFormOpts,
+    validators: {
+      onSubmit: InviteMemberFormSchema,
+    },
+    onSubmit: async ({ value: formData }) => {
+      try {
+        const { data: _, error } = await authClient.organization.inviteMember({
+          ...formData,
+          role: "member",
+        });
+
+        if (error !== null) {
+          throw new Error(error.message);
+        }
+
+        queryClient.invalidateQueries({
+          queryKey: queryUtils.admin.invitation.listInvitations.queryKey({
+            input: {},
+          }),
+        });
+
+        toast.success("Member invitation sent successfully");
+        form.reset();
+        setIsOpen(false);
+      } catch (error) {
+        toast.error(
+          error instanceof Error ? error.message : "Something went wrong"
+        );
+      }
     },
   });
-
-  const onSubmit: SubmitHandler<InviteMemberFormType> = async (formData) => {
-    try {
-      const { data: _, error } = await authClient.organization.inviteMember({
-        email: formData.email,
-        role: "member",
-        teamId: formData.teamId,
-      });
-
-      if (error !== null) {
-        throw new Error(error.message);
-      }
-
-      queryClient.invalidateQueries({
-        queryKey: getAuthQueryKey.organization.invitations(orgId),
-      });
-
-      toast.success("Member invitation sent successfully");
-      form.reset();
-      setIsOpen(false);
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Something went wrong"
-      );
-    }
-  };
 
   return (
     <Dialog onOpenChange={setIsOpen} open={isOpen}>
@@ -77,6 +63,7 @@ export const InviteMemberForm = () => {
           Invite Member
         </Button>
       </DialogTrigger>
+
       <DialogContent className="max-w-md">
         <DialogHeader className="text-center">
           <DialogTitle className="font-bold text-2xl">
@@ -87,43 +74,54 @@ export const InviteMemberForm = () => {
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-6">
-          <Form {...form}>
-            <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="font-medium text-sm">
-                      Email Address
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        className="h-11"
-                        placeholder="Enter member's email address"
-                        type="email"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+          <form.AppForm>
+            <form
+              className="space-y-4"
+              onSubmit={(e) => {
+                e.preventDefault();
+                form.handleSubmit();
+              }}
+            >
+              <form.AppField name="email">
+                {(field) => (
+                  <field.Input
+                    className="h-11"
+                    label="Email Address"
+                    placeholder="Enter member's email address"
+                    type="email"
+                  />
                 )}
-              />
+              </form.AppField>
+
               <Suspense fallback={<Skeleton className="h-9 w-full" />}>
-                <TeamsDropdown />
+                <TeamsDropdown form={form} />
               </Suspense>
-              <Button disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    <span>Sending Invitation...</span>
-                  </>
-                ) : (
-                  <span>Send Invitation</span>
+
+              <form.Subscribe
+                selector={(state) => [
+                  state.canSubmit,
+                  state.isValidating,
+                  state.isSubmitting,
+                ]}
+              >
+                {([canSubmit, isValidating, isSubmitting]) => (
+                  <Button
+                    disabled={!canSubmit || isValidating || isSubmitting}
+                    type="submit"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Spinner />
+                        Sending Invitation...
+                      </>
+                    ) : (
+                      "Send Invitation"
+                    )}
+                  </Button>
                 )}
-              </Button>
+              </form.Subscribe>
             </form>
-          </Form>
+          </form.AppForm>
         </div>
       </DialogContent>
     </Dialog>

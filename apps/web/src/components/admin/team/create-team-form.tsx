@@ -1,7 +1,5 @@
-import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
-import { Loader2, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import React from "react";
-import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -14,17 +12,16 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+  FieldError,
+  FieldGroup,
+  FieldLegend,
+  FieldSet,
+} from "@/components/ui/field";
+import { useAppForm } from "@/components/ui/form/hooks";
+import { Label } from "@/components/ui/label";
+import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth-client";
 import { CreateTeamFormSchema } from "@/lib/schemas/admin/team";
-import type { CreateTeamFormType } from "@/lib/types";
 import { queryClient, queryUtils } from "@/utils/orpc";
 
 const baseModules = [
@@ -34,28 +31,25 @@ const baseModules = [
 
 export const CreateTeamForm = () => {
   const [open, setOpen] = React.useState(false);
-  const form = useForm({
-    resolver: standardSchemaResolver(CreateTeamFormSchema),
+
+  // Initialize form
+  const form = useAppForm({
     defaultValues: {
       name: "",
-      modules: [...baseModules.map((module) => module.id)],
+      modules: baseModules.map((m) => m.id),
     },
-  });
-
-  const onSubmit: SubmitHandler<CreateTeamFormType> = async (formData) => {
-    try {
+    validators: {
+      onSubmit: CreateTeamFormSchema,
+    },
+    onSubmit: async ({ value }) => {
       const { data, error } = await authClient.organization.createTeam({
-        name: formData.name,
+        name: value.name,
       });
 
-      if (error !== null) {
-        throw new Error(error.message);
-      }
+      if (error) throw new Error(error.message);
+      if (!data) throw new Error("Failed to create team");
 
-      if (data === null) {
-        throw new Error("Failed to create team");
-      }
-
+      // Refresh team list
       queryClient.refetchQueries({
         queryKey: queryUtils.admin.team.listTeams.queryKey({}),
       });
@@ -63,12 +57,8 @@ export const CreateTeamForm = () => {
       toast.success(`${data.name} team created successfully`);
       form.reset();
       setOpen(false);
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Something went wrong"
-      );
-    }
-  };
+    },
+  });
 
   return (
     <Dialog onOpenChange={setOpen} open={open}>
@@ -78,6 +68,7 @@ export const CreateTeamForm = () => {
           Create Team
         </Button>
       </DialogTrigger>
+
       <DialogContent className="sm:max-w-md">
         <DialogHeader className="text-center">
           <DialogTitle className="font-bold text-2xl">
@@ -87,97 +78,103 @@ export const CreateTeamForm = () => {
             Create a new team to organize your members and projects
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-6">
-          <Form {...form}>
-            <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="font-medium text-sm">
-                      Team Name
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        className="h-11"
-                        placeholder="Enter team name (e.g., Development, Design)"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+
+        <form.AppForm>
+          <form
+            className="space-y-4"
+            onSubmit={(e) => {
+              e.preventDefault();
+              form.handleSubmit();
+            }}
+          >
+            <FieldGroup>
+              <form.AppField name="name">
+                {(field) => (
+                  <field.Input
+                    className="h-11"
+                    label="Team Name"
+                    placeholder="Enter team name"
+                  />
                 )}
-              />
-              <FormField
-                control={form.control}
-                name="modules"
-                render={() => (
-                  <FormItem>
-                    <FormLabel className="font-medium text-sm">
-                      Base Modules
-                    </FormLabel>
-                    <div className="space-y-3">
-                      {baseModules.map((module) => (
-                        <FormField
-                          control={form.control}
-                          key={module.id}
-                          name="modules"
-                          render={({ field }) => (
-                            <FormItem
-                              className="flex flex-row items-start space-x-3 space-y-0"
+              </form.AppField>
+
+              <form.AppField mode="array" name="modules">
+                {(field) => {
+                  const isInvalid =
+                    field.state.meta.isTouched && !field.state.meta.isValid;
+
+                  return (
+                    <FieldSet data-invalid={isInvalid}>
+                      <FieldLegend variant="label">Base Modules</FieldLegend>
+                      <div className="space-y-3" data-slot="checkbox-group">
+                        {baseModules.map((module) => {
+                          const isChecked = (field.state.value ?? []).includes(
+                            module.id
+                          );
+
+                          const checkboxId = `module-${module.id}`;
+
+                          return (
+                            <div
+                              className="flex items-center space-x-3"
                               key={module.id}
                             >
-                              <FormControl>
-                                <Checkbox
-                                  checked={(field.value || []).includes(
-                                    module.id
-                                  )}
-                                  disabled
-                                  onCheckedChange={(checked) => {
-                                    const currentValues = field.value || [];
-                                    return checked
-                                      ? field.onChange([
-                                          ...currentValues,
-                                          module.id,
-                                        ])
-                                      : field.onChange(
-                                          currentValues.filter(
-                                            (value) => value !== module.id
-                                          )
-                                        );
-                                  }}
-                                />
-                              </FormControl>
-                              <FormLabel className="font-normal text-sm">
+                              <Checkbox
+                                checked={isChecked}
+                                id={checkboxId}
+                                onCheckedChange={(checked) => {
+                                  const current = field.state.value ?? [];
+                                  const next = checked
+                                    ? [...current, module.id]
+                                    : current.filter((v) => v !== module.id);
+                                  field.handleChange(next);
+                                }}
+                              />
+                              <Label
+                                className="font-normal text-sm"
+                                htmlFor={checkboxId}
+                              >
                                 {module.name}
-                              </FormLabel>
-                            </FormItem>
-                          )}
-                        />
-                      ))}
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button
-                className="h-11 w-full font-medium"
-                disabled={form.formState.isSubmitting}
-                type="submit"
-              >
-                {form.formState.isSubmitting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    <span>Creating Team...</span>
-                  </>
-                ) : (
-                  <span>Create Team</span>
-                )}
-              </Button>
-            </form>
-          </Form>
-        </div>
+                              </Label>
+                            </div>
+                          );
+                        })}
+                      </div>
+                      {isInvalid && (
+                        <FieldError errors={field.state.meta.errors} />
+                      )}
+                    </FieldSet>
+                  );
+                }}
+              </form.AppField>
+            </FieldGroup>
+
+            <form.Subscribe
+              selector={(state) => [
+                state.canSubmit,
+                state.isValidating,
+                state.isSubmitting,
+              ]}
+            >
+              {([canSubmit, isValidating, isSubmitting]) => (
+                <Button
+                  className="h-11 w-full font-medium"
+                  disabled={!canSubmit || isValidating || isSubmitting}
+                  type="submit"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Spinner />
+                      Creating Team...
+                    </>
+                  ) : (
+                    "Create Team"
+                  )}
+                </Button>
+              )}
+            </form.Subscribe>
+          </form>
+        </form.AppForm>
       </DialogContent>
     </Dialog>
   );
