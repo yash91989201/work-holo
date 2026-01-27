@@ -6,6 +6,14 @@ import {
   useState,
 } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item";
 import { cn } from "@/lib/utils";
 
 export interface MentionListProps {
@@ -75,8 +83,8 @@ export const MentionList = forwardRef<MentionListRef, MentionListProps>(
 
     if (items.length === 0) {
       return (
-        <div className="rounded-lg border bg-popover p-2 shadow-md">
-          <div className="px-2 py-1.5 text-sm text-foreground">
+        <div className="rounded-lg border border-border bg-popover p-2 shadow-md">
+          <div className="px-2 py-1.5 text-muted-foreground text-sm">
             Loading users...
           </div>
         </div>
@@ -84,48 +92,36 @@ export const MentionList = forwardRef<MentionListRef, MentionListProps>(
     }
 
     return (
-      <div className="min-w-[280px] rounded-lg border bg-popover p-1 shadow-md">
+      <ItemGroup className="min-w-70 rounded-lg border border-border bg-popover shadow-md">
         {items.map((item, index) => (
-          <button
-            key={item.id}
-            type="button"
-            onClick={() => selectItem(index)}
+          <Item
             className={cn(
-              "flex w-full items-center gap-3 rounded-md px-3 py-2 text-left transition-colors",
-
-              // (fixes white text issue)
-              "!text-foreground font-semibold",
-
-              index === selectedIndex
-                ? "bg-accent"
-                : "hover:bg-accent/50"
+              "cursor-pointer transition-colors",
+              index === selectedIndex ? "bg-accent" : "hover:bg-accent/50"
             )}
+            key={item.id}
+            onClick={() => selectItem(index)}
+            size="sm"
           >
-            {/* Avatar */}
-            <Avatar className="h-8 w-8 shrink-0">
-              <AvatarImage alt={item.name} src={item.image || undefined} />
-              <AvatarFallback className="text-xs font-bold">
-                {item.name?.[0]?.toUpperCase() ||
-                  item.email[0]?.toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
+            <ItemMedia variant="image">
+              <Avatar className="h-8 w-8">
+                <AvatarImage alt={item.name} src={item.image ?? undefined} />
+                <AvatarFallback className="font-bold text-xs">
+                  {item.name?.[0]?.toUpperCase() ||
+                    item.email[0]?.toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            </ItemMedia>
 
-            <div className="flex min-w-0 flex-1 flex-col">
-              {/* Name – bold & visible */}
-              <span className="truncate font-bold text-sm">
-                {item.name || item.email}
-              </span>
-
-              {/* Email – subtle but NOT light */}
-              {item.name && (
-                <span className="truncate text-sm text-zinc-600 dark:text-zinc-400">
-                  {item.email}
-                </span>
-              )}
-            </div>
-          </button>
+            <ItemContent>
+              <ItemTitle>{item.name}</ItemTitle>
+              <ItemDescription className="line-clamp-1">
+                {item.email}
+              </ItemDescription>
+            </ItemContent>
+          </Item>
         ))}
-      </div>
+      </ItemGroup>
     );
   }
 );
