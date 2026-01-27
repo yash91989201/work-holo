@@ -44,7 +44,10 @@ export const createMentionSuggestion = (
           showOnCreate: true,
           interactive: true,
           trigger: "manual",
-          placement: "bottom-start",
+          placement: "auto",
+          theme: "mention",
+          animation: true,
+          animateFill: true,
         });
       },
 
