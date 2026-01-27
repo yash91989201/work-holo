@@ -106,15 +106,14 @@ export const MentionList = forwardRef<MentionListRef, MentionListProps>(
             <ItemMedia variant="image">
               <Avatar className="h-8 w-8">
                 <AvatarImage alt={item.name} src={item.image ?? undefined} />
-                <AvatarFallback className="font-bold text-xs">
-                  {item.name?.[0]?.toUpperCase() ||
-                    item.email[0]?.toUpperCase()}
+                <AvatarFallback className="font-bold text-foreground text-xs">
+                  {item.name[0]?.toUpperCase()}
                 </AvatarFallback>
               </Avatar>
             </ItemMedia>
 
             <ItemContent>
-              <ItemTitle>{item.name}</ItemTitle>
+              <ItemTitle className="text-foreground">{item.name}</ItemTitle>
               <ItemDescription className="line-clamp-1">
                 {item.email}
               </ItemDescription>
