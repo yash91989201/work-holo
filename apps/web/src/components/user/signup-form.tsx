@@ -1,237 +1,143 @@
-import { useNavigate } from "@tanstack/react-router";
+import { formOptions } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { FieldGroup } from "@/components/ui/field";
 import { useAppForm } from "@/components/ui/form/hooks";
+import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth-client";
 import { SignUpFormSchema } from "@/lib/schemas/auth";
 import type { SignUpFormType } from "@/lib/types";
 
+const formOpts = formOptions({
+  defaultValues: {
+    name: "",
+    username: "",
+    displayUsername: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  } satisfies SignUpFormType as SignUpFormType,
+});
+
 export function SignUpForm() {
-	const navigate = useNavigate();
+  const navigate = useNavigate();
 
-	const { mutateAsync: signup } = useMutation({
-		mutationKey: ["signup"],
-		mutationFn: async (values: SignUpFormType) =>
-			await authClient.signUp.email(values),
-	});
+  const { mutateAsync: signup } = useMutation({
+    mutationKey: ["signup"],
+    mutationFn: async (values: SignUpFormType) =>
+      await authClient.signUp.email(values),
+  });
 
+  const form = useAppForm({
+    ...formOpts,
+    validators: {
+      onSubmit: SignUpFormSchema,
+    },
+    onSubmit: async ({ value }) => {
+      try {
+        const signupRes = await signup(value);
+        if (signupRes.error) {
+          throw new Error(signupRes.error.message);
+        }
 
-	const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
-	const [isCheckingAvailability, setIsCheckingAvailability] = useState(false);
-	const [usernameError, setUsernameError] = useState<string | null>(null);
+        navigate({ to: "/org/new" });
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : "Signup failed");
+      }
+    },
+  });
 
-	const form = useAppForm({
-		defaultValues: {
-			name: "",
-			username: "",
-			displayUsername: "",
-			email: "",
-			password: "",
-			confirmPassword: "",
-		} satisfies SignUpFormType as SignUpFormType,
+  return (
+    <form.AppForm>
+      <form
+        className="space-y-4"
+        onSubmit={(e) => {
+          e.preventDefault();
+          form.handleSubmit();
+        }}
+      >
+        <FieldGroup>
+          <form.AppField name="name">
+            {(field) => <field.Input label="Name" placeholder="Full name" />}
+          </form.AppField>
 
-		validators: {
-			onSubmit: SignUpFormSchema,
-		},
+          <form.AppField
+            name="username"
+            validators={{
+              onChangeAsyncDebounceMs: 500,
+              onChangeAsync: async ({ value }) => {
+                const result =
+                  await SignUpFormSchema.shape.username.safeParseAsync(value);
 
-		onSubmit: async ({ value }) => {
+                return result.success
+                  ? undefined
+                  : result.error.issues[0]?.message;
+              },
+            }}
+          >
+            {(field) => (
+              <field.InputGroup label="Username">
+                <field.InputGroupInput placeholder="Enter unique username" />
+                <field.InputGroupSpinner />
+              </field.InputGroup>
+            )}
+          </form.AppField>
 
-			if (isCheckingAvailability || isAvailable === false) {
-				return;
-			}
+          <form.AppField name="displayUsername">
+            {(field) => (
+              <field.Input
+                label="Display Username"
+                placeholder="Enter display username"
+              />
+            )}
+          </form.AppField>
 
-			try {
-				const signupRes = await signup(value);
-				if (signupRes.error) {
-					throw new Error(signupRes.error.message);
-				}
+          <form.AppField name="email">
+            {(field) => (
+              <field.Input
+                label="Email"
+                placeholder="Enter email address"
+                type="email"
+              />
+            )}
+          </form.AppField>
 
-				navigate({ to: "/org/new" });
-			} catch (err) {
-				toast.error(
-					err instanceof Error ? err.message : "Signup failed"
-				);
-			}
-		},
-	});
+          <form.AppField name="password">
+            {(field) => <field.Input label="Password" type="password" />}
+          </form.AppField>
 
+          <form.AppField name="confirmPassword">
+            {(field) => <field.Input label="Confirm Password" type="password" />}
+          </form.AppField>
 
-	useEffect(() => {
-		let timeoutId: NodeJS.Timeout;
-
-		const checkAvailability = async (usernameValue: string) => {
-			if (!usernameValue) {
-				setIsAvailable(null);
-				setUsernameError(null);
-				setIsCheckingAvailability(false);
-				return;
-			}
-
-			setIsCheckingAvailability(true);
-			try {
-				const { data, error } =
-					await authClient.isUsernameAvailable({
-						username: usernameValue,
-					});
-
-				if (error) {
-					setIsAvailable(false);
-					setUsernameError("Unable to verify username availability");
-				} else {
-					setIsAvailable(data?.available ?? false);
-					setUsernameError(
-						data?.available ? null : "This username is already taken"
-					);
-				}
-			} catch {
-				setIsAvailable(false);
-				setUsernameError("Unable to verify username availability");
-			} finally {
-				setIsCheckingAvailability(false);
-			}
-		};
-
-		const unsubscribe = form.store.subscribe(() => {
-			const username = form.store.state.values.username;
-			clearTimeout(timeoutId);
-
-			if (!username) {
-				setIsAvailable(null);
-				setUsernameError(null);
-				setIsCheckingAvailability(false);
-				return;
-			}
-
-			timeoutId = setTimeout(() => {
-				checkAvailability(username);
-			}, 300);
-		});
-
-		return () => {
-			unsubscribe();
-			clearTimeout(timeoutId);
-		};
-	}, [form.store]);
-
-	return (
-		<form
-			className="space-y-4"
-			onSubmit={(e) => {
-				e.preventDefault();
-				form.handleSubmit();
-			}}
-		>
-			<form.AppField name="name">
-				{(field) => (
-					<field.Input label="Name" placeholder="Full name" />
-				)}
-			</form.AppField>
-
-			<form.AppField
-				name="username"
-				asyncDebounceMs={400}
-				validators={{
-					onChange: ({ value }) => {
-						if (!value) return "Username is required";
-						if (value.length < 4) return "Minimum 4 characters";
-						if (value.length > 40) return "Maximum 40 characters";
-						if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(value)) {
-							return "Only lowercase letters, numbers and - allowed";
-						}
-					},
-					onChangeAsync: async ({ value }) => {
-						if (!value || value.length < 4) return;
-
-						try {
-							const { data, error } =
-								await authClient.isUsernameAvailable({
-									username: value,
-								});
-
-							if (error || !data?.available) {
-								return "Username already taken";
-							}
-						} catch {
-							return "Failed to check username availability";
-						}
-					},
-				}}
-			>
-				{(field) => (
-					<div className="space-y-1">
-						<field.Input
-							label="Username"
-							placeholder="Enter unique_username"
-						/>
-
-						{field.state.meta.isValidating && (
-							<p className="text-xs flex items-center gap-1">
-								<Loader2 className="size-3 animate-spin" />
-								Checking availability
-							</p>
-						)}
-
-						{field.state.meta.errors.length > 0 && (
-							<p className="text-xs text-destructive">
-								{field.state.meta.errors.join(", ")}
-							</p>
-						)}
-					</div>
-				)}
-			</form.AppField>
-
-			<form.AppField name="displayUsername">
-				{(field) => (
-					<field.Input
-						label="Display Username"
-						placeholder="Enter display username"
-					/>
-				)}
-			</form.AppField>
-
-			<form.AppField name="email">
-				{(field) => (
-					<field.Input
-						label="Email"
-						type="email"
-						placeholder="Enter email address"
-					/>
-				)}
-			</form.AppField>
-
-			<form.AppField name="password">
-				{(field) => (
-					<field.Input label="Password" type="password" />
-				)}
-			</form.AppField>
-
-			<form.AppField name="confirmPassword">
-				{(field) => (
-					<field.Input label="Confirm Password" type="password" />
-				)}
-			</form.AppField>
-
-			<Button
-				type="submit"
-				className="w-full gap-1.5"
-				disabled={
-					form.state.isSubmitting ||
-					isCheckingAvailability ||
-					isAvailable === false
-				}
-			>
-				{form.state.isSubmitting ? (
-					<>
-						<Loader2 className="h-4 w-4 animate-spin" />
-						Creating account…
-					</>
-				) : (
-					"Create Account"
-				)}
-			</Button>
-		</form>
-	);
+          <form.Subscribe
+            selector={(state) => [
+              state.canSubmit,
+              state.isValidating,
+              state.isSubmitting,
+            ]}
+          >
+            {([canSubmit, isValidating, isSubmitting]) => (
+              <Button
+                className="w-full gap-1.5"
+                disabled={!canSubmit || isValidating || isSubmitting}
+                type="submit"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Spinner />
+                    Signing up...
+                  </>
+                ) : (
+                  "Sign up"
+                )}
+              </Button>
+            )}
+          </form.Subscribe>
+        </FieldGroup>
+      </form>
+    </form.AppForm>
+  );
 }

@@ -1,19 +1,25 @@
+import { formOptions } from "@tanstack/react-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { FieldGroup } from "@/components/ui/field";
 import { useAppForm } from "@/components/ui/form/hooks";
+import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth-client";
 import { ChangePasswordFormSchema } from "@/lib/schemas/settings/security";
 import type { ChangePasswordFormType } from "@/lib/types";
 
+const formOpts = formOptions({
+  defaultValues: {
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+    revokeOtherSessions: false,
+  } satisfies ChangePasswordFormType as ChangePasswordFormType,
+});
+
 export function ChangePasswordForm() {
   const form = useAppForm({
-    defaultValues: {
-      currentPassword: "",
-      newPassword: "",
-      confirmPassword: "",
-      revokeOtherSessions: false,
-    } satisfies ChangePasswordFormType as ChangePasswordFormType,
+    ...formOpts,
     validators: {
       onSubmit: ChangePasswordFormSchema,
     },
@@ -39,20 +45,26 @@ export function ChangePasswordForm() {
     },
   });
 
-  const isSubmitting = form.state.isSubmitting;
-
   return (
     <div className="space-y-3">
       <h3>Change password</h3>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          form.handleSubmit();
-        }}
-      >
-        <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
-          <FieldGroup className="p-6">
-            <form.AppField name="currentPassword">
+      <form.AppForm>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            form.handleSubmit();
+          }}
+        >
+          <FieldGroup className="rounded-xl border bg-card p-6 text-card-foreground shadow-sm">
+            <form.AppField
+              name="currentPassword"
+              validators={{
+                onChange: ({ value }) => {
+                  if (!value) return "Current password is required";
+                  return undefined;
+                },
+              }}
+            >
               {(field) => (
                 <field.Input
                   autoComplete="current-password"
@@ -62,7 +74,17 @@ export function ChangePasswordForm() {
               )}
             </form.AppField>
 
-            <form.AppField name="newPassword">
+            <form.AppField
+              name="newPassword"
+              validators={{
+                onChange: ({ value }) => {
+                  if (!value) return "New password is required";
+                  if (value.length < 8)
+                    return "Password must be at least 8 characters long";
+                  return undefined;
+                },
+              }}
+            >
               {(field) => (
                 <field.Input
                   autoComplete="new-password"
@@ -73,7 +95,19 @@ export function ChangePasswordForm() {
               )}
             </form.AppField>
 
-            <form.AppField name="confirmPassword">
+            <form.AppField
+              name="confirmPassword"
+              validators={{
+                onChangeListenTo: ["newPassword"],
+                onChange: ({ value, fieldApi }) => {
+                  if (!value) return "Please confirm your new password";
+                  const newPassword =
+                    fieldApi.form.getFieldValue("newPassword");
+                  if (value !== newPassword) return "Passwords do not match";
+                  return undefined;
+                },
+              }}
+            >
               {(field) => (
                 <field.Input
                   autoComplete="new-password"
@@ -88,13 +122,33 @@ export function ChangePasswordForm() {
             </form.AppField>
 
             <div className="flex justify-end">
-              <Button disabled={isSubmitting}>
-                {isSubmitting ? "Updating password..." : "Update password"}
-              </Button>
+              <form.Subscribe
+                selector={(state) => [
+                  state.canSubmit,
+                  state.isValidating,
+                  state.isSubmitting,
+                ]}
+              >
+                {([canSubmit, isValidating, isSubmitting]) => (
+                  <Button
+                    disabled={!canSubmit || isValidating || isSubmitting}
+                    type="submit"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Spinner />
+                        Updating password...
+                      </>
+                    ) : (
+                      "Update password"
+                    )}
+                  </Button>
+                )}
+              </form.Subscribe>
             </div>
           </FieldGroup>
-        </div>
-      </form>
+        </form>
+      </form.AppForm>
     </div>
   );
 }

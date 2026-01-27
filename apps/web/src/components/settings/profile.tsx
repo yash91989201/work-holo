@@ -18,6 +18,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { FieldGroup } from "@/components/ui/field";
 import { useAppForm } from "@/components/ui/form/hooks";
 import { Input } from "@/components/ui/input";
 import {
@@ -29,6 +30,7 @@ import {
 } from "@/components/ui/item";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Spinner } from "@/components/ui/spinner";
 import { useProfileMutation } from "@/hooks/use-profile-mutation";
 import { useSession } from "@/hooks/use-session";
 import { authClient } from "@/lib/auth-client";
@@ -247,33 +249,58 @@ function EmailUpdateDialog({
             effect.
           </DialogDescription>
         </DialogHeader>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            form.handleSubmit();
-          }}
-        >
-          <form.AppField name="email">
-            {(field) => (
-              <field.Input
-                description="Enter your new email address"
-                label="Email"
-              />
-            )}
-          </form.AppField>
-          <DialogFooter className="mt-4">
-            <Button
-              onClick={() => onOpenChange(false)}
-              type="button"
-              variant="outline"
-            >
-              Cancel
-            </Button>
-            <Button disabled={form.state.isSubmitting} type="submit">
-              {form.state.isSubmitting ? "Updating..." : "Update Email"}
-            </Button>
-          </DialogFooter>
-        </form>
+        <form.AppForm>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              form.handleSubmit();
+            }}
+          >
+            <FieldGroup>
+              <form.AppField name="email">
+                {(field) => (
+                  <field.Input
+                    description="Enter your new email address"
+                    label="Email"
+                    type="email"
+                  />
+                )}
+              </form.AppField>
+            </FieldGroup>
+            <DialogFooter className="mt-4">
+              <Button
+                onClick={() => onOpenChange(false)}
+                type="button"
+                variant="outline"
+              >
+                Cancel
+              </Button>
+              <form.Subscribe
+                selector={(state) => [
+                  state.canSubmit,
+                  state.isValidating,
+                  state.isSubmitting,
+                ]}
+              >
+                {([canSubmit, isValidating, isSubmitting]) => (
+                  <Button
+                    disabled={!canSubmit || isValidating || isSubmitting}
+                    type="submit"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Spinner />
+                        Updating...
+                      </>
+                    ) : (
+                      "Update Email"
+                    )}
+                  </Button>
+                )}
+              </form.Subscribe>
+            </DialogFooter>
+          </form>
+        </form.AppForm>
       </DialogContent>
     </Dialog>
   );

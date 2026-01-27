@@ -55,29 +55,26 @@ export function AttendanceTrendChart({ dailyTrends }: Props) {
       </CardHeader>
 
       <CardContent>
-        {!hasDays ? (
-          <EmptyState />
-        ) : (
+        {hasDays ? (
           <ChartContainer config={chartConfig}>
             <AreaChart accessibilityLayer data={data}>
               <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.3} />
 
               <XAxis
-                dataKey="label"
                 axisLine={false}
+                dataKey="label"
                 tickLine={false}
                 tickMargin={8}
               />
 
               <YAxis
-                width={40}
                 axisLine={false}
-                tickLine={false}
                 tickFormatter={(value: number) => `${value}h`}
+                tickLine={false}
+                width={40}
               />
 
               <ChartTooltip
-                cursor={{ strokeDasharray: "4 4" }}
                 content={
                   <ChartTooltipContent
                     indicator="dot"
@@ -85,46 +82,49 @@ export function AttendanceTrendChart({ dailyTrends }: Props) {
                     labelFormatter={(label) => `Day ${label}`}
                   />
                 }
+                cursor={{ strokeDasharray: "4 4" }}
               />
 
               <Area
+                activeDot={{ r: 3 }}
                 dataKey="hours"
-                type="monotone"
-                stroke="var(--color-hours)"
                 fill="var(--color-hours)"
                 fillOpacity={0.12}
+                stroke="var(--color-hours)"
                 strokeWidth={2}
-                activeDot={{ r: 3 }}
+                type="monotone"
               />
 
               <Area
+                activeDot={{ r: 3 }}
                 dataKey="breaks"
-                type="monotone"
-                stroke="var(--color-breaks)"
                 fill="var(--color-breaks)"
                 fillOpacity={0.08}
+                stroke="var(--color-breaks)"
                 strokeWidth={2}
-                activeDot={{ r: 3 }}
+                type="monotone"
               />
 
               <ReferenceLine
-                y={8}
-                strokeDasharray="5 5"
-                stroke="hsl(0, 0%, 65%)"
                 label={{
                   value: "Target 8h",
                   position: "insideTopRight",
                   fontSize: 10,
                   fill: "var(--muted-foreground)",
                 }}
+                stroke="hsl(0, 0%, 65%)"
+                strokeDasharray="5 5"
+                y={8}
               />
 
               <ChartLegend
+                content={<ChartLegendContent payload={data} />}
                 verticalAlign="bottom"
-                content={<ChartLegendContent />}
               />
             </AreaChart>
           </ChartContainer>
+        ) : (
+          <EmptyState />
         )}
       </CardContent>
     </Card>
@@ -133,8 +133,8 @@ export function AttendanceTrendChart({ dailyTrends }: Props) {
 
 function EmptyState() {
   return (
-    <div className="flex h-[260px] flex-col justify-center rounded-lg border bg-muted/40 p-6 text-center">
-      <p className="text-sm font-medium">No data available</p>
+    <div className="flex h-65 flex-col justify-center rounded-lg border bg-muted/40 p-6 text-center">
+      <p className="font-medium text-sm">No data available</p>
       <p className="mt-1 text-muted-foreground text-sm">
         No working hours recorded for this range. Try a different timeframe or
         start logging attendance to see trends.

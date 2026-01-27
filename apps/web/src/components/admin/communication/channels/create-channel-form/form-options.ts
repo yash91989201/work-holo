@@ -1,13 +1,14 @@
 import { formOptions } from "@tanstack/react-form";
+import type { CreateChannelFormType } from "@/lib/types";
 
 export const channelFormOpts = formOptions({
-    defaultValues: {
-        name: "",
-        description: undefined as string | undefined,
-        isPublic: true,
-        type: "team" as "team" | "group" | "direct",
-        teamId: undefined as string | undefined,
-        memberIds: [] as string[],
-        createdBy: "",
-    },
+  defaultValues: {
+    name: "",
+    description: undefined,
+    isPublic: true,
+    type: "team",
+    teamId: undefined,
+    memberIds: [],
+    createdBy: "",
+  } satisfies CreateChannelFormType as CreateChannelFormType,
 });
