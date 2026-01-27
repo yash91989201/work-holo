@@ -10,10 +10,10 @@ import {
 import { auth } from "@work-holo/auth";
 import { team } from "@work-holo/db/schema/index";
 import { and, asc, count, desc, eq, gte, like, lte } from "drizzle-orm";
-import { protectedProcedure } from "../../index";
+import { orgAdminProcedure } from "../../index";
 
 export const adminTeamRouter = {
-  listTeams: protectedProcedure
+  listTeams: orgAdminProcedure
     .input(ListTeamsInput)
     .output(ListTeamsOutput)
     .handler(async ({ input, context: { db, session } }) => {
@@ -94,7 +94,7 @@ export const adminTeamRouter = {
       return { teams, total, pageCount };
     }),
 
-  addMember: protectedProcedure
+  addMember: orgAdminProcedure
     .input(AddMemberInput)
     .output(AddMemberOutput)
     .handler(async ({ input: { teamId, userIds }, context: { headers } }) => {
@@ -151,7 +151,7 @@ export const adminTeamRouter = {
       }
     }),
 
-  removeMember: protectedProcedure
+  removeMember: orgAdminProcedure
     .input(RemoveMemberInput)
     .output(RemoveMemberOutput)
     .handler(async ({ input: { teamId, userIds }, context: { headers } }) => {

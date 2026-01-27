@@ -2,14 +2,14 @@ import { ORPCError } from "@orpc/client";
 import { invitation } from "@work-holo/db/schema/index";
 import type { SQL } from "drizzle-orm";
 import { and, asc, count, desc, eq, ilike } from "drizzle-orm";
-import { protectedProcedure } from "../../index";
+import { orgAdminProcedure } from "../../index";
 import {
   ListInvitationsInput,
   ListInvitationsOutput,
 } from "../../lib/schemas/admin-invitation";
 
 export const adminInvitationRouter = {
-  listInvitations: protectedProcedure
+  listInvitations: orgAdminProcedure
     .input(ListInvitationsInput)
     .output(ListInvitationsOutput)
     .handler(async ({ input, context: { db, session } }) => {

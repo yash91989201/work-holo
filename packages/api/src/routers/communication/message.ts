@@ -27,13 +27,17 @@ import webpush from "web-push";
 import "../../lib/push-notifications";
 import { auth } from "@work-holo/auth";
 import { env } from "../../env";
-import { protectedProcedure } from "../../index";
+import { orgMemberProcedure } from "../../index";
 import { generateTxId } from "../../lib/electric-proxy";
 import {
   largeChannelReadersSql,
   smallChannelReadersSql,
 } from "../../lib/prepared-sql";
 import { getQueueClient } from "../../lib/queue";
+import {
+  verifyChannelMembership,
+  verifyMessageChannelMembership,
+} from "./helpers";
 import {
   AddReactionInput,
   AddReactionOutput,
@@ -82,11 +86,12 @@ const MAX_MEMBERS_FOR_DETAILED_TRACKING =
   Number(process.env.MAX_MEMBERS_FOR_DETAILED_TRACKING) || 25;
 
 export const messageRouter = {
-  searchUsers: protectedProcedure
+  searchUsers: orgMemberProcedure
     .input(SearchUsersInput)
     .output(SearchUsersOutput)
-    .handler(async ({ input, context }) => {
-      const users = await context.db
+    .handler(async ({ input, context: { db, session, orgId } }) => {
+      await verifyChannelMembership(db, input.channelId, session!.user.id, orgId!);
+      const users = await db
         .select({
           id: userTable.id,
           name: userTable.name,
@@ -108,7 +113,7 @@ export const messageRouter = {
       return { users };
     }),
 
-  create: protectedProcedure
+  create: orgMemberProcedure
     .input(CreateMessageInput)
     .output(CreateMessageOutput)
     .handler(
@@ -117,9 +122,11 @@ export const messageRouter = {
           db,
           session: { user },
           headers,
+          orgId,
         },
         input,
       }) => {
+        await verifyChannelMembership(db, input.channelId, user.id, orgId!);
         const { txid, message } = await db.transaction(async (tx) => {
           const txid = await generateTxId(tx);
 
@@ -339,7 +346,7 @@ export const messageRouter = {
       }
     ),
 
-  update: protectedProcedure
+  update: orgMemberProcedure
     .input(UpdateMessageInput)
     .output(UpdateMessageOutput)
     .handler(
@@ -488,11 +495,12 @@ export const messageRouter = {
       }
     ),
 
-  getChannelMessages: protectedProcedure
+  getChannelMessages: orgMemberProcedure
     .input(GetChannelMessagesInput)
     .output(GetChannelMessagesOutput)
-    .handler(async ({ input, context }) => {
-      const messages = await context.db.query.messageTable.findMany({
+    .handler(async ({ input, context: { db, session, orgId } }) => {
+      await verifyChannelMembership(db, input.channelId, session!.user.id, orgId!);
+      const messages = await db.query.messageTable.findMany({
         where: and(
           eq(messageTable.channelId, input.channelId),
           eq(messageTable.isDeleted, false)
@@ -519,11 +527,11 @@ export const messageRouter = {
       };
     }),
 
-  delete: protectedProcedure
+  delete: orgMemberProcedure
     .input(DeleteMessageInput)
     .output(DeleteMessageOutput)
-    .handler(async ({ input, context }) => {
-      const { db } = context;
+    .handler(async ({ input, context: { db, session, orgId } }) => {
+      await verifyMessageChannelMembership(db, input.messageId, session!.user.id, orgId!);
 
       const { txid } = await db.transaction(async (tx) => {
         const txid = await generateTxId(tx);
@@ -588,11 +596,11 @@ export const messageRouter = {
       };
     }),
 
-  getUnreadCount: protectedProcedure
+  getUnreadCount: orgMemberProcedure
     .input(GetUnreadCountInput)
     .output(UnreadCountOutput)
-    .handler(async ({ input, context }) => {
-      const { db, session } = context;
+    .handler(async ({ input, context: { db, session, orgId } }) => {
+      await verifyChannelMembership(db, input.channelId, session!.user.id, orgId!);
       const currentUser = session.user;
 
       const membership = await db.query.channelMemberTable.findFirst({
@@ -630,11 +638,12 @@ export const messageRouter = {
       return { count: result?.count ?? 0 };
     }),
 
-  search: protectedProcedure
+  search: orgMemberProcedure
     .input(SearchMessagesInput)
     .output(SearchMessageOutput)
-    .handler(async ({ input, context }) => {
-      const messages = await context.db
+    .handler(async ({ input, context: { db, session, orgId } }) => {
+      await verifyChannelMembership(db, input.channelId, session!.user.id, orgId!);
+      const messages = await db
         .select({
           ...getTableColumns(messageTable),
           sender: {
@@ -663,11 +672,12 @@ export const messageRouter = {
       };
     }),
 
-  get: protectedProcedure
+  get: orgMemberProcedure
     .input(GetMessageInput)
     .output(GetMessageOutput)
-    .handler(async ({ input, context }) => {
-      const message = await context.db.query.messageTable.findFirst({
+    .handler(async ({ input, context: { db, session, orgId } }) => {
+      await verifyMessageChannelMembership(db, input.messageId, session!.user.id, orgId!);
+      const message = await db.query.messageTable.findFirst({
         where: eq(messageTable.id, input.messageId),
         with: {
           sender: {
@@ -683,10 +693,11 @@ export const messageRouter = {
       return message;
     }),
 
-  getParent: protectedProcedure
+  getParent: orgMemberProcedure
     .input(GetMessageInput)
     .output(GetMessageOutput)
-    .handler(async ({ input, context: { db } }) => {
+    .handler(async ({ input, context: { db, session, orgId } }) => {
+      await verifyMessageChannelMembership(db, input.messageId, session!.user.id, orgId!);
       const parentMessage = await db.query.messageTable.findFirst({
         where: eq(messageTable.parentMessageId, input.messageId),
         with: {
@@ -703,7 +714,7 @@ export const messageRouter = {
       return parentMessage;
     }),
 
-  pin: protectedProcedure
+  pin: orgMemberProcedure
     .input(PinMessageInput)
     .output(PinMessageOutput)
     .handler(
@@ -711,9 +722,11 @@ export const messageRouter = {
         context: {
           db,
           session: { user },
+          orgId,
         },
         input,
       }) => {
+        await verifyMessageChannelMembership(db, input.messageId, user.id, orgId!);
         const { txid } = await db.transaction(async (tx) => {
           const txid = await generateTxId(tx);
 
@@ -735,7 +748,7 @@ export const messageRouter = {
         };
       }
     ),
-  unPin: protectedProcedure
+  unPin: orgMemberProcedure
     .input(UnPinMessageInput)
     .output(UnPinMessageOutput)
     .handler(async ({ context: { db }, input }) => {
@@ -759,10 +772,11 @@ export const messageRouter = {
         txid,
       };
     }),
-  getPinnedMessages: protectedProcedure
+  getPinnedMessages: orgMemberProcedure
     .input(GetPinnedMessagesInput)
     .output(GetPinnedMessagesOutput)
-    .handler(async ({ context, input }) => {
+    .handler(async ({ context: { db, session, orgId }, input }) => {
+      await verifyChannelMembership(db, input.channelId, session!.user.id, orgId!);
       const baseConditions = [
         eq(messageTable.isPinned, true),
         eq(messageTable.channelId, input.channelId),
@@ -777,7 +791,7 @@ export const messageRouter = {
         }
       }
 
-      const pinnedMessages = await context.db.query.messageTable.findMany({
+      const pinnedMessages = await db.query.messageTable.findMany({
         where: and(...baseConditions),
         with: {
           sender: true,
@@ -786,7 +800,7 @@ export const messageRouter = {
 
       return pinnedMessages;
     }),
-  getMentionUsers: protectedProcedure
+  getMentionUsers: orgMemberProcedure
     .input(GetMenionUsersInput)
     .output(GetMenionUsersOutput)
     .handler(async ({ context: { db }, input }) => {
@@ -796,7 +810,7 @@ export const messageRouter = {
 
       return users;
     }),
-  markMentionSeen: protectedProcedure
+  markMentionSeen: orgMemberProcedure
     .input(MarkMentionSeenInput)
     .output(MarkMentionSeenOutput)
     .handler(async ({ context: { db, session }, input }) => {
@@ -843,7 +857,7 @@ export const messageRouter = {
       return { txid, success: true };
     }),
 
-  markAllMentionsSeen: protectedProcedure
+  markAllMentionsSeen: orgMemberProcedure
     .input(MarkAllMentionsSeenInput)
     .output(MarkAllMentionsSeenOutput)
     .handler(async ({ context: { db, session }, input }) => {
@@ -885,11 +899,11 @@ export const messageRouter = {
       return { txid, success: true, count };
     }),
 
-  addReaction: protectedProcedure
+  addReaction: orgMemberProcedure
     .input(AddReactionInput)
     .output(AddReactionOutput)
-    .handler(async ({ context, input }) => {
-      const { db, session } = context;
+    .handler(async ({ context: { db, session, orgId }, input }) => {
+      await verifyMessageChannelMembership(db, input.messageId, session!.user.id, orgId!);
       const userId = session.user.id;
 
       const { txid } = await db.transaction(async (tx) => {
@@ -931,12 +945,29 @@ export const messageRouter = {
       };
     }),
 
-  removeReaction: protectedProcedure
+  removeReaction: orgMemberProcedure
     .input(RemoveReactionInput)
     .output(RemoveReactionOutput)
-    .handler(async ({ context, input }) => {
-      const { db, session } = context;
+    .handler(async ({ context: { db, session, orgId }, input }) => {
       const userId = session.user.id;
+
+      // First get the reaction to find the messageId
+      const reaction = await db.query.messageReactionTable.findFirst({
+        where: and(
+          eq(messageReactionTable.id, input.reactionId),
+          eq(messageReactionTable.userId, userId)
+        ),
+        columns: { messageId: true },
+      });
+
+      if (!reaction) {
+        throw new ORPCError("NOT_FOUND", {
+          message: "Reaction not found or you don't have permission to remove it.",
+        });
+      }
+
+      // Verify channel membership via message
+      await verifyMessageChannelMembership(db, reaction.messageId, userId, orgId!);
 
       const { txid } = await db.transaction(async (tx) => {
         const txid = await generateTxId(tx);
@@ -960,11 +991,11 @@ export const messageRouter = {
       };
     }),
 
-  markMessagesAsRead: protectedProcedure
+  markMessagesAsRead: orgMemberProcedure
     .input(MarkMessagesAsReadInput)
     .output(MarkMessagesAsReadOutput)
-    .handler(async ({ context, input }) => {
-      const { db, session } = context;
+    .handler(async ({ context: { db, session, orgId }, input }) => {
+      await verifyChannelMembership(db, input.channelId, session!.user.id, orgId!);
       const userId = session.user.id;
 
       const { txid, memberCount } = await db.transaction(async (tx) => {
@@ -1152,11 +1183,11 @@ export const messageRouter = {
       };
     }),
 
-  getAllMessageReaders: protectedProcedure
+  getAllMessageReaders: orgMemberProcedure
     .input(GetAllMessageReadersInput)
     .output(GetAllMessageReadersOutput)
-    .handler(async ({ context, input }) => {
-      const { db, session } = context;
+    .handler(async ({ context: { db, session, orgId }, input }) => {
+      await verifyMessageChannelMembership(db, input.messageId, session!.user.id, orgId!);
       const userId = session.user.id;
 
       // Verify the message exists and user has access

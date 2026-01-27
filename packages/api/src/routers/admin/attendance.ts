@@ -18,7 +18,7 @@ import {
   lte,
   or,
 } from "drizzle-orm";
-import { protectedProcedure } from "../../index";
+import { orgAdminProcedure } from "../../index";
 import {
   GetAttendanceDetailInput,
   GetAttendanceDetailOutput,
@@ -29,7 +29,7 @@ import {
 } from "../../lib/schemas/admin-attendance";
 
 export const adminAttendanceRouter = {
-  getAttendanceStats: protectedProcedure
+  getAttendanceStats: orgAdminProcedure
     .input(GetAttendanceStatsInput)
     .output(GetAttendanceStatsOutput)
     .handler(async ({ context: { db, session } }) => {
@@ -75,7 +75,7 @@ export const adminAttendanceRouter = {
       };
     }),
 
-  listAttendanceRecords: protectedProcedure
+  listAttendanceRecords: orgAdminProcedure
     .input(ListAttendanceRecordsInput)
     .output(ListAttendanceRecordsOutput)
     .handler(async ({ input, context: { db, session } }) => {
@@ -210,7 +210,7 @@ export const adminAttendanceRouter = {
       };
     }),
 
-  getAttendanceDetail: protectedProcedure
+  getAttendanceDetail: orgAdminProcedure
     .input(GetAttendanceDetailInput)
     .output(GetAttendanceDetailOutput)
     .handler(async ({ input, context: { db, session } }) => {

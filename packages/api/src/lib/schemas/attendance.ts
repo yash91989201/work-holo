@@ -28,9 +28,7 @@ export const AddBreakDurationOutput = z.object({
 });
 
 // Get today's attendance input
-export const GetTodayInput = z.object({
-  orgId: z.string(),
-});
+export const GetTodayInput = z.object({});
 
 export const GetTodayOutput = AttendanceSchema.nullable();
 

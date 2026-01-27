@@ -9,7 +9,7 @@ import {
 } from "@work-holo/api/lib/schemas/presence";
 import { member } from "@work-holo/db/schema/index";
 import { eq } from "drizzle-orm";
-import { protectedProcedure } from "../../index";
+import { orgMemberProcedure } from "../../index";
 import {
   getPresenceForUsers,
   setManualStatus,
@@ -17,11 +17,11 @@ import {
 } from "../../lib/presence";
 
 export const presenceRouter = {
-  heartbeat: protectedProcedure
+  heartbeat: orgMemberProcedure
     .input(HeartbeatInput)
     .output(HeartbeatOutput)
-    .handler(async ({ input, context: { session, redis } }) => {
-      const user = session.user;
+    .handler(async ({ input, context: { session, redis, orgId } }) => {
+      const user = session!.user;
 
       if (!redis) {
         throw new ORPCError("INTERNAL_SERVER_ERROR", {
@@ -29,7 +29,7 @@ export const presenceRouter = {
         });
       }
 
-      const status = await updatePresence(redis, user.id, input.orgId, {
+      const status = await updatePresence(redis, user.id, orgId!, {
         punchedIn: input.punchedIn,
         onBreak: input.onBreak,
         inCall: input.inCall,
@@ -42,11 +42,11 @@ export const presenceRouter = {
       return { status };
     }),
 
-  setManualStatus: protectedProcedure
+  setManualStatus: orgMemberProcedure
     .input(SetManualStatusInput)
     .output(SetManualStatusOutput)
-    .handler(async ({ input, context: { session, redis } }) => {
-      const user = session.user;
+    .handler(async ({ input, context: { session, redis, orgId } }) => {
+      const user = session!.user;
 
       if (!redis) {
         throw new ORPCError("INTERNAL_SERVER_ERROR", {
@@ -54,15 +54,15 @@ export const presenceRouter = {
         });
       }
 
-      await setManualStatus(redis, user.id, input.orgId, input.status);
+      await setManualStatus(redis, user.id, orgId!, input.status);
 
       return { ok: true };
     }),
 
-  getOrgPresence: protectedProcedure
+  getOrgPresence: orgMemberProcedure
     .input(GetOrgPresenceInput)
     .output(GetOrgPresenceOutput)
-    .handler(async ({ input, context: { db, redis } }) => {
+    .handler(async ({ context: { db, redis, orgId } }) => {
       if (!redis) {
         throw new ORPCError("INTERNAL_SERVER_ERROR", {
           message: "Presence service is not available.",
@@ -71,7 +71,7 @@ export const presenceRouter = {
 
       // Fetch all members in the organization
       const members = await db.query.member.findMany({
-        where: eq(member.organizationId, input.orgId),
+        where: eq(member.organizationId, orgId!),
         columns: {
           userId: true,
         },
