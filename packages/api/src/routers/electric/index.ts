@@ -40,44 +40,98 @@ electricRouter.use("*", async (c, next) => {
 });
 
 electricRouter.get("/shapes/messages", requireAuth, async (c) => {
-  const originUrl = prepareElectricUrl(c.req.url);
+  const context = c.get("context") as ElectricContext;
+  const orgId = context.session?.session.activeOrganizationId;
+  const userId = context.session?.user.id;
 
+  if (!orgId) {
+    return c.json({ error: "No active organization" }, 401);
+  }
+
+  const originUrl = prepareElectricUrl(c.req.url);
   originUrl.searchParams.set("table", "message");
+
+  // Only messages from channels user is member of in active org
+  const filter = `"channelId" IN (SELECT id FROM channel WHERE "organizationId" = '${orgId}' AND id IN (SELECT "channelId" FROM "channelMember" WHERE "userId" = '${userId}'))`;
+  originUrl.searchParams.set("where", filter);
 
   const res = await sendProxyResponse(originUrl);
   return res;
 });
 
 electricRouter.get("/shapes/message-mentions", requireAuth, async (c) => {
-  const originUrl = prepareElectricUrl(c.req.url);
+  const context = c.get("context") as ElectricContext;
+  const orgId = context.session?.session.activeOrganizationId;
+  const userId = context.session?.user.id;
 
+  if (!orgId) {
+    return c.json({ error: "No active organization" }, 401);
+  }
+
+  const originUrl = prepareElectricUrl(c.req.url);
   originUrl.searchParams.set("table", '"messageMention"');
+
+  // Only mentions from messages in user's channels
+  const filter = `"messageId" IN (SELECT id FROM message WHERE "channelId" IN (SELECT id FROM channel WHERE "organizationId" = '${orgId}' AND id IN (SELECT "channelId" FROM "channelMember" WHERE "userId" = '${userId}')))`;
+  originUrl.searchParams.set("where", filter);
 
   const res = await sendProxyResponse(originUrl);
   return res;
 });
 
 electricRouter.get("/shapes/message-reactions", requireAuth, async (c) => {
-  const originUrl = prepareElectricUrl(c.req.url);
+  const context = c.get("context") as ElectricContext;
+  const orgId = context.session?.session.activeOrganizationId;
+  const userId = context.session?.user.id;
 
+  if (!orgId) {
+    return c.json({ error: "No active organization" }, 401);
+  }
+
+  const originUrl = prepareElectricUrl(c.req.url);
   originUrl.searchParams.set("table", '"messageReaction"');
+
+  // Only reactions from messages in user's channels
+  const filter = `"messageId" IN (SELECT id FROM message WHERE "channelId" IN (SELECT id FROM channel WHERE "organizationId" = '${orgId}' AND id IN (SELECT "channelId" FROM "channelMember" WHERE "userId" = '${userId}')))`;
+  originUrl.searchParams.set("where", filter);
 
   const res = await sendProxyResponse(originUrl);
   return res;
 });
 
 electricRouter.get("/shapes/users", requireAuth, (c) => {
-  const originUrl = prepareElectricUrl(c.req.url);
+  const context = c.get("context") as ElectricContext;
+  const orgId = context.session?.session.activeOrganizationId;
 
+  if (!orgId) {
+    return c.json({ error: "No active organization" }, 401);
+  }
+
+  const originUrl = prepareElectricUrl(c.req.url);
   originUrl.searchParams.set("table", "user");
+
+  // Only users who are members of the active org
+  const filter = `id IN (SELECT "userId" FROM member WHERE "organizationId" = '${orgId}')`;
+  originUrl.searchParams.set("where", filter);
 
   return sendProxyResponse(originUrl);
 });
 
 electricRouter.get("/shapes/attachments", requireAuth, (c) => {
-  const originUrl = prepareElectricUrl(c.req.url);
+  const context = c.get("context") as ElectricContext;
+  const orgId = context.session?.session.activeOrganizationId;
+  const userId = context.session?.user.id;
 
+  if (!orgId) {
+    return c.json({ error: "No active organization" }, 401);
+  }
+
+  const originUrl = prepareElectricUrl(c.req.url);
   originUrl.searchParams.set("table", "attachment");
+
+  // Only attachments from messages in user's channels
+  const filter = `"messageId" IN (SELECT id FROM message WHERE "channelId" IN (SELECT id FROM channel WHERE "organizationId" = '${orgId}' AND id IN (SELECT "channelId" FROM "channelMember" WHERE "userId" = '${userId}')))`;
+  originUrl.searchParams.set("where", filter);
 
   return sendProxyResponse(originUrl);
 });
@@ -180,11 +234,18 @@ electricRouter.get("/shapes/verifications", requireAuth, (c) => {
 
 electricRouter.get("/shapes/attendance", requireAuth, (c) => {
   const context = c.get("context") as ElectricContext;
-  const originUrl = prepareElectricUrl(c.req.url);
+  const orgId = context.session?.session.activeOrganizationId;
+  const userId = context.session?.user.id;
 
+  if (!orgId) {
+    return c.json({ error: "No active organization" }, 401);
+  }
+
+  const originUrl = prepareElectricUrl(c.req.url);
   originUrl.searchParams.set("table", "attendance");
-  // Users can see their own attendance and potentially attendance for their organization
-  const filter = `"userId" = '${context.session?.user.id}' OR "organizationId" = '${context.session?.session.activeOrganizationId}'`;
+
+  // User's own attendance in active org only
+  const filter = `"userId" = '${userId}' AND "organizationId" = '${orgId}'`;
   originUrl.searchParams.set("where", filter);
 
   return sendProxyResponse(originUrl);
@@ -192,20 +253,38 @@ electricRouter.get("/shapes/attendance", requireAuth, (c) => {
 
 electricRouter.get("/shapes/channels", requireAuth, (c) => {
   const context = c.get("context") as ElectricContext;
-  const originUrl = prepareElectricUrl(c.req.url);
+  const orgId = context.session?.session.activeOrganizationId;
+  const userId = context.session?.user.id;
 
+  if (!orgId) {
+    return c.json({ error: "No active organization" }, 401);
+  }
+
+  const originUrl = prepareElectricUrl(c.req.url);
   originUrl.searchParams.set("table", "channel");
-  // Users can see channels in their organization
-  const filter = `"organizationId" = '${context.session?.session.activeOrganizationId}'`;
+
+  // Only channels user is member of in active org
+  const filter = `"organizationId" = '${orgId}' AND id IN (SELECT "channelId" FROM "channelMember" WHERE "userId" = '${userId}')`;
   originUrl.searchParams.set("where", filter);
 
   return sendProxyResponse(originUrl);
 });
 
 electricRouter.get("/shapes/channel-members", requireAuth, (c) => {
-  const originUrl = prepareElectricUrl(c.req.url);
+  const context = c.get("context") as ElectricContext;
+  const orgId = context.session?.session.activeOrganizationId;
+  const userId = context.session?.user.id;
 
+  if (!orgId) {
+    return c.json({ error: "No active organization" }, 401);
+  }
+
+  const originUrl = prepareElectricUrl(c.req.url);
   originUrl.searchParams.set("table", '"channelMember"');
+
+  // Only members of channels user can see
+  const filter = `"channelId" IN (SELECT id FROM channel WHERE "organizationId" = '${orgId}' AND id IN (SELECT "channelId" FROM "channelMember" WHERE "userId" = '${userId}'))`;
+  originUrl.searchParams.set("where", filter);
 
   return sendProxyResponse(originUrl);
 });

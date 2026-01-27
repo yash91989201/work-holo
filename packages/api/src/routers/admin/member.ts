@@ -11,14 +11,14 @@ import {
   ilike,
   or,
 } from "drizzle-orm";
-import { protectedProcedure } from "../../index";
+import { orgAdminProcedure } from "../../index";
 import {
   ListMembersInput,
   ListMembersOutput,
 } from "../../lib/schemas/admin-member";
 
 export const adminMemberRouter = {
-  listMembers: protectedProcedure
+  listMembers: orgAdminProcedure
     .input(ListMembersInput)
     .output(ListMembersOutput)
     .handler(async ({ input, context: { db, session } }) => {

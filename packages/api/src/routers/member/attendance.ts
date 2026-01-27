@@ -6,7 +6,7 @@ import {
   workBlockTable,
 } from "@work-holo/db/schema/index";
 import { and, asc, eq, gte, isNull, lte } from "drizzle-orm";
-import { protectedProcedure } from "../../index";
+import { orgMemberProcedure } from "../../index";
 import {
   AddBreakDurationInput,
   AddBreakDurationOutput,
@@ -23,7 +23,7 @@ import {
 } from "../../lib/schemas/attendance";
 
 export const memberAttendanceRouter = {
-  punchIn: protectedProcedure
+  punchIn: orgMemberProcedure
     .input(MemberPunchInInput)
     .output(MemberPunchInOutput)
     .handler(async ({ input, context: { db, session } }) => {
@@ -88,7 +88,7 @@ export const memberAttendanceRouter = {
       return attendance;
     }),
 
-  punchOut: protectedProcedure
+  punchOut: orgMemberProcedure
     .input(MemberPunchOutInput)
     .output(MemberPunchOutOutput)
     .handler(async ({ input, context }) => {
@@ -181,7 +181,7 @@ export const memberAttendanceRouter = {
       return updatedAttendance;
     }),
 
-  getStatus: protectedProcedure
+  getStatus: orgMemberProcedure
     .output(MemberAttendanceStatusOutput.nullable())
     .handler(async ({ context }) => {
       const { db, session } = context;
@@ -226,7 +226,7 @@ export const memberAttendanceRouter = {
       return attendance;
     }),
 
-  addBreakDuration: protectedProcedure
+  addBreakDuration: orgMemberProcedure
     .input(AddBreakDurationInput)
     .output(AddBreakDurationOutput)
     .handler(async ({ input, context: { db, session } }) => {
@@ -268,16 +268,16 @@ export const memberAttendanceRouter = {
       };
     }),
 
-  getToday: protectedProcedure
+  getToday: orgMemberProcedure
     .input(GetTodayInput)
     .output(GetTodayOutput)
-    .handler(async ({ input, context: { db, session } }) => {
-      const user = session.user;
+    .handler(async ({ context: { db, session, orgId } }) => {
+      const user = session!.user;
       const today = new Date();
 
       const attendance = await db.query.attendanceTable.findFirst({
         where: and(
-          eq(attendanceTable.organizationId, input.orgId),
+          eq(attendanceTable.organizationId, orgId!),
           eq(attendanceTable.userId, user.id),
           eq(attendanceTable.date, today),
           eq(attendanceTable.isDeleted, false)
@@ -287,7 +287,7 @@ export const memberAttendanceRouter = {
       return attendance ?? null;
     }),
 
-  getAnalytics: protectedProcedure
+  getAnalytics: orgMemberProcedure
     .input(AttendanceAnalyticsInput.optional())
     .output(AttendanceAnalyticsOutput)
     .handler(async ({ input, context: { db, session } }) => {
