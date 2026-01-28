@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "typescript": "^5.9.3",
-    "@types/bun": "^1.3.6",
+    "@types/bun": "^1.3.7",
     "tsdown": "^0.20.1",
     "@work-holo/config": "workspace:*"
   }
