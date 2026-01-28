@@ -21,7 +21,7 @@ export const presenceRouter = {
     .input(HeartbeatInput)
     .output(HeartbeatOutput)
     .handler(async ({ input, context: { session, redis, orgId } }) => {
-      const user = session!.user;
+      const user = session.user;
 
       if (!redis) {
         throw new ORPCError("INTERNAL_SERVER_ERROR", {
@@ -29,7 +29,7 @@ export const presenceRouter = {
         });
       }
 
-      const status = await updatePresence(redis, user.id, orgId!, {
+      const status = await updatePresence(redis, user.id, orgId, {
         punchedIn: input.punchedIn,
         onBreak: input.onBreak,
         inCall: input.inCall,
@@ -46,7 +46,7 @@ export const presenceRouter = {
     .input(SetManualStatusInput)
     .output(SetManualStatusOutput)
     .handler(async ({ input, context: { session, redis, orgId } }) => {
-      const user = session!.user;
+      const user = session.user;
 
       if (!redis) {
         throw new ORPCError("INTERNAL_SERVER_ERROR", {
@@ -54,7 +54,7 @@ export const presenceRouter = {
         });
       }
 
-      await setManualStatus(redis, user.id, orgId!, input.status);
+      await setManualStatus(redis, user.id, orgId, input.status);
 
       return { ok: true };
     }),
@@ -71,7 +71,7 @@ export const presenceRouter = {
 
       // Fetch all members in the organization
       const members = await db.query.member.findMany({
-        where: eq(member.organizationId, orgId!),
+        where: eq(member.organizationId, orgId),
         columns: {
           userId: true,
         },

@@ -35,10 +35,6 @@ import {
 } from "../../lib/prepared-sql";
 import { getQueueClient } from "../../lib/queue";
 import {
-  verifyChannelMembership,
-  verifyMessageChannelMembership,
-} from "./helpers";
-import {
   AddReactionInput,
   AddReactionOutput,
   CreateMessageInput,
@@ -78,6 +74,10 @@ import {
 } from "../../lib/schemas/message";
 import { deleteFile } from "../../lib/storage";
 import type { BucketName } from "../../lib/storage/types";
+import {
+  verifyChannelMembership,
+  verifyMessageChannelMembership,
+} from "./helpers";
 
 // Configuration: Maximum channel members for detailed read tracking
 // Channels with <= this many members will use messageRead table (detailed tracking)
@@ -90,7 +90,12 @@ export const messageRouter = {
     .input(SearchUsersInput)
     .output(SearchUsersOutput)
     .handler(async ({ input, context: { db, session, orgId } }) => {
-      await verifyChannelMembership(db, input.channelId, session!.user.id, orgId!);
+      await verifyChannelMembership(
+        db,
+        input.channelId,
+        session.user.id,
+        orgId
+      );
       const users = await db
         .select({
           id: userTable.id,
@@ -126,7 +131,7 @@ export const messageRouter = {
         },
         input,
       }) => {
-        await verifyChannelMembership(db, input.channelId, user.id, orgId!);
+        await verifyChannelMembership(db, input.channelId, user.id, orgId);
         const { txid, message } = await db.transaction(async (tx) => {
           const txid = await generateTxId(tx);
 
@@ -499,7 +504,12 @@ export const messageRouter = {
     .input(GetChannelMessagesInput)
     .output(GetChannelMessagesOutput)
     .handler(async ({ input, context: { db, session, orgId } }) => {
-      await verifyChannelMembership(db, input.channelId, session!.user.id, orgId!);
+      await verifyChannelMembership(
+        db,
+        input.channelId,
+        session.user.id,
+        orgId
+      );
       const messages = await db.query.messageTable.findMany({
         where: and(
           eq(messageTable.channelId, input.channelId),
@@ -531,7 +541,12 @@ export const messageRouter = {
     .input(DeleteMessageInput)
     .output(DeleteMessageOutput)
     .handler(async ({ input, context: { db, session, orgId } }) => {
-      await verifyMessageChannelMembership(db, input.messageId, session!.user.id, orgId!);
+      await verifyMessageChannelMembership(
+        db,
+        input.messageId,
+        session.user.id,
+        orgId
+      );
 
       const { txid } = await db.transaction(async (tx) => {
         const txid = await generateTxId(tx);
@@ -600,7 +615,12 @@ export const messageRouter = {
     .input(GetUnreadCountInput)
     .output(UnreadCountOutput)
     .handler(async ({ input, context: { db, session, orgId } }) => {
-      await verifyChannelMembership(db, input.channelId, session!.user.id, orgId!);
+      await verifyChannelMembership(
+        db,
+        input.channelId,
+        session.user.id,
+        orgId
+      );
       const currentUser = session.user;
 
       const membership = await db.query.channelMemberTable.findFirst({
@@ -642,7 +662,12 @@ export const messageRouter = {
     .input(SearchMessagesInput)
     .output(SearchMessageOutput)
     .handler(async ({ input, context: { db, session, orgId } }) => {
-      await verifyChannelMembership(db, input.channelId, session!.user.id, orgId!);
+      await verifyChannelMembership(
+        db,
+        input.channelId,
+        session.user.id,
+        orgId
+      );
       const messages = await db
         .select({
           ...getTableColumns(messageTable),
@@ -676,7 +701,12 @@ export const messageRouter = {
     .input(GetMessageInput)
     .output(GetMessageOutput)
     .handler(async ({ input, context: { db, session, orgId } }) => {
-      await verifyMessageChannelMembership(db, input.messageId, session!.user.id, orgId!);
+      await verifyMessageChannelMembership(
+        db,
+        input.messageId,
+        session.user.id,
+        orgId
+      );
       const message = await db.query.messageTable.findFirst({
         where: eq(messageTable.id, input.messageId),
         with: {
@@ -697,7 +727,12 @@ export const messageRouter = {
     .input(GetMessageInput)
     .output(GetMessageOutput)
     .handler(async ({ input, context: { db, session, orgId } }) => {
-      await verifyMessageChannelMembership(db, input.messageId, session!.user.id, orgId!);
+      await verifyMessageChannelMembership(
+        db,
+        input.messageId,
+        session.user.id,
+        orgId
+      );
       const parentMessage = await db.query.messageTable.findFirst({
         where: eq(messageTable.parentMessageId, input.messageId),
         with: {
@@ -726,7 +761,12 @@ export const messageRouter = {
         },
         input,
       }) => {
-        await verifyMessageChannelMembership(db, input.messageId, user.id, orgId!);
+        await verifyMessageChannelMembership(
+          db,
+          input.messageId,
+          user.id,
+          orgId
+        );
         const { txid } = await db.transaction(async (tx) => {
           const txid = await generateTxId(tx);
 
@@ -776,7 +816,12 @@ export const messageRouter = {
     .input(GetPinnedMessagesInput)
     .output(GetPinnedMessagesOutput)
     .handler(async ({ context: { db, session, orgId }, input }) => {
-      await verifyChannelMembership(db, input.channelId, session!.user.id, orgId!);
+      await verifyChannelMembership(
+        db,
+        input.channelId,
+        session.user.id,
+        orgId
+      );
       const baseConditions = [
         eq(messageTable.isPinned, true),
         eq(messageTable.channelId, input.channelId),
@@ -903,7 +948,12 @@ export const messageRouter = {
     .input(AddReactionInput)
     .output(AddReactionOutput)
     .handler(async ({ context: { db, session, orgId }, input }) => {
-      await verifyMessageChannelMembership(db, input.messageId, session!.user.id, orgId!);
+      await verifyMessageChannelMembership(
+        db,
+        input.messageId,
+        session.user.id,
+        orgId
+      );
       const userId = session.user.id;
 
       const { txid } = await db.transaction(async (tx) => {
@@ -962,12 +1012,18 @@ export const messageRouter = {
 
       if (!reaction) {
         throw new ORPCError("NOT_FOUND", {
-          message: "Reaction not found or you don't have permission to remove it.",
+          message:
+            "Reaction not found or you don't have permission to remove it.",
         });
       }
 
       // Verify channel membership via message
-      await verifyMessageChannelMembership(db, reaction.messageId, userId, orgId!);
+      await verifyMessageChannelMembership(
+        db,
+        reaction.messageId,
+        userId,
+        orgId
+      );
 
       const { txid } = await db.transaction(async (tx) => {
         const txid = await generateTxId(tx);
@@ -995,7 +1051,12 @@ export const messageRouter = {
     .input(MarkMessagesAsReadInput)
     .output(MarkMessagesAsReadOutput)
     .handler(async ({ context: { db, session, orgId }, input }) => {
-      await verifyChannelMembership(db, input.channelId, session!.user.id, orgId!);
+      await verifyChannelMembership(
+        db,
+        input.channelId,
+        session.user.id,
+        orgId
+      );
       const userId = session.user.id;
 
       const { txid, memberCount } = await db.transaction(async (tx) => {
@@ -1187,7 +1248,12 @@ export const messageRouter = {
     .input(GetAllMessageReadersInput)
     .output(GetAllMessageReadersOutput)
     .handler(async ({ context: { db, session, orgId }, input }) => {
-      await verifyMessageChannelMembership(db, input.messageId, session!.user.id, orgId!);
+      await verifyMessageChannelMembership(
+        db,
+        input.messageId,
+        session.user.id,
+        orgId
+      );
       const userId = session.user.id;
 
       // Verify the message exists and user has access

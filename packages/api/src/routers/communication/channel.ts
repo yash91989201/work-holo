@@ -91,7 +91,7 @@ export const channelRouter = {
             .insert(channelTable)
             .values({
               ...input,
-              organizationId: orgId!,
+              organizationId: orgId,
             })
             .returning();
 
@@ -104,7 +104,7 @@ export const channelRouter = {
           const ownerAdminUsers = await tx.query.member.findMany({
             where: and(
               not(eq(member.role, "member")),
-              eq(member.organizationId, orgId!)
+              eq(member.organizationId, orgId)
             ),
             columns: {
               userId: true,
@@ -173,7 +173,12 @@ export const channelRouter = {
     .input(UpdateChannelInput)
     .output(ChannelSchema)
     .handler(async ({ input, context: { db, session, orgId } }) => {
-      await verifyChannelMembership(db, input.channelId, session!.user.id, orgId!);
+      await verifyChannelMembership(
+        db,
+        input.channelId,
+        session.user.id,
+        orgId
+      );
       const [updatedChannel] = await db
         .update(channelTable)
         .set(input)
@@ -193,7 +198,12 @@ export const channelRouter = {
     .input(GetChannelInput)
     .output(GetChannelOutput)
     .handler(async ({ context: { db, session, orgId }, input }) => {
-      await verifyChannelMembership(db, input.channelId, session!.user.id, orgId!);
+      await verifyChannelMembership(
+        db,
+        input.channelId,
+        session.user.id,
+        orgId
+      );
       const channel = await db.query.channelTable.findFirst({
         where: eq(channelTable.id, input.channelId),
         with: {
@@ -214,13 +224,13 @@ export const channelRouter = {
     .input(ListChannelsInput)
     .output(ListChannelsOutput)
     .handler(async ({ context: { db, session, orgId }, input }) => {
-      const userId = session!.user.id;
+      const userId = session.user.id;
       const { page, limit, search, filters, sorting } = input;
       const offset = (page - 1) * limit;
 
       // Base conditions: org match + user is channel member
       const conditions = [
-        eq(channelTable.organizationId, orgId!),
+        eq(channelTable.organizationId, orgId),
         // CRITICAL: Only show channels user is member of
         inArray(
           channelTable.id,
@@ -294,7 +304,12 @@ export const channelRouter = {
     .input(ListChannelMembersInput)
     .output(ListChannelMembersOutput)
     .handler(async ({ input, context: { db, session, orgId } }) => {
-      await verifyChannelMembership(db, input.channelId, session!.user.id, orgId!);
+      await verifyChannelMembership(
+        db,
+        input.channelId,
+        session.user.id,
+        orgId
+      );
       const filter = input?.filter;
       const members = await db
         .select({
@@ -331,7 +346,7 @@ export const channelRouter = {
       const isMember = await db.query.channelMemberTable.findFirst({
         where: and(
           eq(channelMemberTable.channelId, input.channelId),
-          eq(channelMemberTable.userId, session!.user.id)
+          eq(channelMemberTable.userId, session.user.id)
         ),
       });
 
@@ -342,7 +357,12 @@ export const channelRouter = {
     .input(ModifyChannelMembersInput)
     .output(SuccessOutput)
     .handler(async ({ context: { db, session, orgId }, input }) => {
-      await verifyChannelMembership(db, input.channelId, session!.user.id, orgId!);
+      await verifyChannelMembership(
+        db,
+        input.channelId,
+        session.user.id,
+        orgId
+      );
       const channelMembers = input.memberIds.map((memberId) => ({
         channelId: input.channelId,
         userId: memberId,
@@ -360,7 +380,12 @@ export const channelRouter = {
     .input(ModifyChannelMembersInput)
     .output(SuccessOutput)
     .handler(async ({ context: { db, session, orgId }, input }) => {
-      await verifyChannelMembership(db, input.channelId, session!.user.id, orgId!);
+      await verifyChannelMembership(
+        db,
+        input.channelId,
+        session.user.id,
+        orgId
+      );
       await db
         .delete(channelMemberTable)
         .where(
@@ -392,7 +417,7 @@ export const channelRouter = {
         .insert(channelJoinRequestTable)
         .values({
           channelId: input.channelId,
-          userId: session!.user.id,
+          userId: session.user.id,
           note: input.note,
         })
         .returning();
@@ -409,7 +434,12 @@ export const channelRouter = {
     .input(ListJoinRequestInput)
     .output(ListJoinRequestOutput)
     .handler(async ({ context: { db, session, orgId }, input }) => {
-      await verifyChannelMembership(db, input.channelId, session!.user.id, orgId!);
+      await verifyChannelMembership(
+        db,
+        input.channelId,
+        session.user.id,
+        orgId
+      );
       const joinRequests = await db.query.channelJoinRequestTable.findMany({
         where: eq(channelJoinRequestTable.channelId, input.channelId),
         with: {
@@ -424,7 +454,12 @@ export const channelRouter = {
     .input(DeleteChannelInput)
     .output(DeletechannelOutput)
     .handler(async ({ input, context: { db, session, orgId } }) => {
-      await verifyChannelMembership(db, input.channelId, session!.user.id, orgId!);
+      await verifyChannelMembership(
+        db,
+        input.channelId,
+        session.user.id,
+        orgId
+      );
 
       const { txid } = await db.transaction(async (tx) => {
         const txid = await generateTxId(tx);
@@ -432,7 +467,7 @@ export const channelRouter = {
         const channel = await tx.query.channelTable.findFirst({
           where: and(
             eq(channelTable.id, input.channelId),
-            eq(channelTable.organizationId, orgId!)
+            eq(channelTable.organizationId, orgId)
           ),
         });
 
