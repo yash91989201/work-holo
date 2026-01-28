@@ -58,7 +58,6 @@ export function MaximizedMessageComposer() {
           await orpcClient.communication.message.searchUsers({
             channelId,
             query,
-            limit: 10,
           });
 
         return users;
