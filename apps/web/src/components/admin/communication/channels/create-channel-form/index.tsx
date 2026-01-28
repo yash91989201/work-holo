@@ -67,19 +67,6 @@ export const CreateChannelForm = () => {
 
   const channelType = useStore(form.store, (state) => state.values.type);
 
-  const onReset = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    form.reset({
-      ...channelFormOpts.defaultValues,
-      createdBy: user.id,
-    });
-  };
-
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    form.handleSubmit();
-  };
-
   return (
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
       <DialogTrigger asChild>
@@ -97,7 +84,20 @@ export const CreateChannelForm = () => {
           </DialogDescription>
         </DialogHeader>
         <form.AppForm>
-          <form className="space-y-4" onReset={onReset} onSubmit={onSubmit}>
+          <form
+            className="space-y-4"
+            onReset={(e) => {
+              e.preventDefault();
+              form.reset({
+                ...channelFormOpts.defaultValues,
+                createdBy: user.id,
+              });
+            }}
+            onSubmit={(e) => {
+              e.preventDefault();
+              form.handleSubmit();
+            }}
+          >
             <FieldGroup>
               <form.AppField name="name">
                 {(field) => (
