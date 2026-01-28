@@ -124,9 +124,9 @@ function WorkBlockToggle() {
       onSuccess: async () => {
         toast.success("Work session paused");
         // Set status to away when pausing work
-          await setManualStatus({
-            status: "away",
-          });
+        await setManualStatus({
+          status: "away",
+        });
         await Promise.all([refetchAttendance(), refetchBlock()]);
       },
       onError: (error) => {
@@ -185,7 +185,7 @@ function PresenceStatusDropdown() {
 
   const { data: orgPresence } = useQuery(
     queryUtils.member.presence.getOrgPresence.queryOptions({
-      input: { },
+      input: {},
       refetchInterval: 5000,
     })
   );
