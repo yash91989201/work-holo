@@ -272,12 +272,12 @@ export const memberAttendanceRouter = {
     .input(GetTodayInput)
     .output(GetTodayOutput)
     .handler(async ({ context: { db, session, orgId } }) => {
-      const user = session!.user;
+      const user = session.user;
       const today = new Date();
 
       const attendance = await db.query.attendanceTable.findFirst({
         where: and(
-          eq(attendanceTable.organizationId, orgId!),
+          eq(attendanceTable.organizationId, orgId),
           eq(attendanceTable.userId, user.id),
           eq(attendanceTable.date, today),
           eq(attendanceTable.isDeleted, false)

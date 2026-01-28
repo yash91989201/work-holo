@@ -1,9 +1,13 @@
 // Helper function to verify channel membership for message operations
 // This can be imported and reused across message router endpoints
 import { ORPCError } from "@orpc/server";
-import type { Context } from "../../context";
-import { channelMemberTable, channelTable, messageTable } from "@work-holo/db/schema/index";
+import {
+  channelMemberTable,
+  channelTable,
+  messageTable,
+} from "@work-holo/db/schema/index";
 import { and, eq } from "drizzle-orm";
+import type { Context } from "../../context";
 
 /**
  * Verifies user is a member of the specified channel
