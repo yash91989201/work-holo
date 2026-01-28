@@ -16,19 +16,12 @@ export const adminTeamRouter = {
   listTeams: orgAdminProcedure
     .input(ListTeamsInput)
     .output(ListTeamsOutput)
-    .handler(async ({ input, context: { db, session } }) => {
-      const organizationId = session.session.activeOrganizationId;
-
-      if (!organizationId)
-        throw new ORPCError("BAD_REQUEST", {
-          message: "No active organization",
-        });
-
+    .handler(async ({ input, context: { db, orgId } }) => {
       const { page, limit, search, filters, sorting } = input;
       const offset = (page - 1) * limit;
 
       // Build where clause
-      const conditions = [eq(team.organizationId, organizationId)];
+      const conditions = [eq(team.organizationId, orgId)];
 
       if (search) {
         conditions.push(like(team.name, `%${search}%`));

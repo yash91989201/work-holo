@@ -1,4 +1,3 @@
-import { ORPCError } from "@orpc/client";
 import { member, user } from "@work-holo/db/schema/index";
 import type { SQL } from "drizzle-orm";
 import {
@@ -21,18 +20,11 @@ export const adminMemberRouter = {
   listMembers: orgAdminProcedure
     .input(ListMembersInput)
     .output(ListMembersOutput)
-    .handler(async ({ input, context: { db, session } }) => {
-      const organizationId = session.session.activeOrganizationId;
-      if (!organizationId) {
-        throw new ORPCError("BAD_REQUEST", {
-          message: "No active organization",
-        });
-      }
-
+    .handler(async ({ input, context: { db, orgId } }) => {
       const { page, perPage, search, filters, sorting } = input;
       const offset = (page - 1) * perPage;
 
-      const conditions = [eq(member.organizationId, organizationId)];
+      const conditions = [eq(member.organizationId, orgId)];
 
       if (filters?.role) {
         conditions.push(eq(member.role, filters.role));

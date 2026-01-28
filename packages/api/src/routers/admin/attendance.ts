@@ -32,21 +32,14 @@ export const adminAttendanceRouter = {
   getAttendanceStats: orgAdminProcedure
     .input(GetAttendanceStatsInput)
     .output(GetAttendanceStatsOutput)
-    .handler(async ({ context: { db, session } }) => {
-      const organizationId = session.session.activeOrganizationId;
-      if (!organizationId) {
-        throw new ORPCError("UNAUTHORIZED", {
-          message: "Unauthorized",
-        });
-      }
-
+    .handler(async ({ context: { db, orgId } }) => {
       // Get total members count
       const [totalMembersRow] = await db
         .select({
           count: count(),
         })
         .from(member)
-        .where(eq(member.organizationId, organizationId));
+        .where(eq(member.organizationId, orgId));
 
       const totalMembers = totalMembersRow?.count ?? 0;
 
@@ -61,7 +54,7 @@ export const adminAttendanceRouter = {
         .from(attendanceTable)
         .where(
           and(
-            eq(attendanceTable.organizationId, organizationId),
+            eq(attendanceTable.organizationId, orgId),
             eq(attendanceTable.date, today),
             eq(attendanceTable.isDeleted, false)
           )
@@ -78,14 +71,7 @@ export const adminAttendanceRouter = {
   listAttendanceRecords: orgAdminProcedure
     .input(ListAttendanceRecordsInput)
     .output(ListAttendanceRecordsOutput)
-    .handler(async ({ input, context: { db, session } }) => {
-      const organizationId = session.session.activeOrganizationId;
-      if (!organizationId) {
-        throw new ORPCError("UNAUTHORIZED", {
-          message: "Unauthorized",
-        });
-      }
-
+    .handler(async ({ input, context: { db, orgId } }) => {
       const { page, perPage, search, filters, sorting } = input;
       const offset = (page - 1) * perPage;
 
@@ -97,7 +83,7 @@ export const adminAttendanceRouter = {
 
       // Build where conditions
       const conditions = [
-        eq(attendanceTable.organizationId, organizationId),
+        eq(attendanceTable.organizationId, orgId),
         eq(attendanceTable.isDeleted, false),
       ];
 
@@ -213,14 +199,7 @@ export const adminAttendanceRouter = {
   getAttendanceDetail: orgAdminProcedure
     .input(GetAttendanceDetailInput)
     .output(GetAttendanceDetailOutput)
-    .handler(async ({ input, context: { db, session } }) => {
-      const organizationId = session.session.activeOrganizationId;
-      if (!organizationId) {
-        throw new ORPCError("UNAUTHORIZED", {
-          message: "Unauthorized",
-        });
-      }
-
+    .handler(async ({ input, context: { db, orgId } }) => {
       const { attendanceId } = input;
 
       const [record] = await db
@@ -238,7 +217,7 @@ export const adminAttendanceRouter = {
         .where(
           and(
             eq(attendanceTable.id, attendanceId),
-            eq(attendanceTable.organizationId, organizationId),
+            eq(attendanceTable.organizationId, orgId),
             eq(attendanceTable.isDeleted, false)
           )
         );
