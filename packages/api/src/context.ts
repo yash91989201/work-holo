@@ -13,6 +13,11 @@ export type Context = {
   session: Awaited<ReturnType<typeof auth.api.getSession>>;
   db: typeof db;
   redis: RedisClient;
+  orgId?: string;
+  orgMembership?: {
+    memberId: string;
+    role: string;
+  };
 };
 
 export type ElectricContext = Omit<Context, "redis">;

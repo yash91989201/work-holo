@@ -16,7 +16,6 @@ export const ManualStatusSchema = z.enum(["dnd", "busy", "away"]).nullable();
 
 // Heartbeat input
 export const HeartbeatInput = z.object({
-  orgId: z.string(),
   punchedIn: z.boolean(),
   onBreak: z.boolean(),
   inCall: z.boolean(),
@@ -32,7 +31,6 @@ export const HeartbeatOutput = z.object({
 
 // Set manual status input
 export const SetManualStatusInput = z.object({
-  orgId: z.string(),
   status: ManualStatusSchema,
 });
 
@@ -41,9 +39,7 @@ export const SetManualStatusOutput = z.object({
 });
 
 // Get org presence input
-export const GetOrgPresenceInput = z.object({
-  orgId: z.string(),
-});
+export const GetOrgPresenceInput = z.object({});
 
 export const PresenceDataSchema = z.object({
   status: PresenceStatusSchema,
