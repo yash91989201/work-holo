@@ -141,7 +141,7 @@ export default defineConfig({
           // ---------------------------
           // Forms & Validation
           // ---------------------------
-          forms: ["react-hook-form", "@hookform/resolvers", "zod"],
+          forms: ["react-hook-form", "zod"],
 
           // ---------------------------
           // Data Handling / Utils

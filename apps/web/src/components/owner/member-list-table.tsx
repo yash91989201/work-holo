@@ -1,4 +1,3 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   type ColumnDef,
@@ -24,7 +23,6 @@ import {
   User,
 } from "lucide-react";
 import { useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -53,14 +51,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { FieldGroup } from "@/components/ui/field";
+import { useAppForm } from "@/components/ui/form/hooks";
 import {
   InputGroup,
   InputGroupAddon,
@@ -74,6 +66,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Spinner } from "@/components/ui/spinner";
 import {
   Table,
   TableBody,
@@ -85,8 +78,8 @@ import {
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { authClient } from "@/lib/auth-client";
 import { UpdateMemberRoleSchema } from "@/lib/schemas/admin/member";
-import type { UpdateMemberRoleFormType } from "@/lib/types";
 import { queryClient, queryUtils } from "@/utils/orpc";
+import type { UpdateMemberRoleFormType } from "@/lib/types";
 
 const getRoleBadgeVariant = (role: string) => {
   switch (role) {
@@ -123,39 +116,36 @@ function UpdateMemberRole({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
-  const form = useForm<UpdateMemberRoleFormType>({
-    resolver: zodResolver(UpdateMemberRoleSchema),
+  const form = useAppForm({
     defaultValues: {
       role: member.role as "admin" | "member",
+    } satisfies UpdateMemberRoleFormType as UpdateMemberRoleFormType,
+    validators: {
+      onSubmit: UpdateMemberRoleSchema,
+    },
+    onSubmit: async ({ value: data }) => {
+      try {
+        await authClient.organization.updateMemberRole({
+          memberId: member.id,
+          role: data.role,
+        });
+
+        queryClient.invalidateQueries({
+          queryKey: queryUtils.admin.member.listMembers.queryKey(),
+        });
+
+        toast.success(`Member role updated to ${data.role}`);
+        onOpenChange(false);
+      } catch (error) {
+        console.error("Failed to update member role:", error);
+        toast.error("Failed to update member role");
+      }
     },
   });
 
-  const isLoading = form.formState.isSubmitting;
-
-  const onSubmit = async (data: UpdateMemberRoleFormType) => {
-    try {
-      // Use better-auth organization client to update member role
-      await authClient.organization.updateMemberRole({
-        memberId: member.id,
-        role: data.role,
-      });
-
-      // Invalidate and refetch the member list
-      queryClient.invalidateQueries({
-        queryKey: queryUtils.admin.member.listMembers.queryKey(),
-      });
-
-      toast.success(`Member role updated to ${data.role}`);
-      onOpenChange(false);
-    } catch (error) {
-      console.error("Failed to update member role:", error);
-      toast.error("Failed to update member role");
-    }
-  };
-
   return (
     <Dialog onOpenChange={onOpenChange} open={open}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-105">
         <DialogHeader>
           <DialogTitle>Update member role</DialogTitle>
           <DialogDescription>
@@ -163,58 +153,69 @@ function UpdateMemberRole({
           </DialogDescription>
         </DialogHeader>
 
-        <Form {...form}>
-          <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-            <FormField
-              control={form.control}
-              name="role"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Role</FormLabel>
-                  <Select
-                    defaultValue={field.value}
-                    onValueChange={field.onChange}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a role" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="admin">
-                        <div className="flex items-center gap-2">
-                          <Shield className="h-4 w-4" />
-                          Admin
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="member">
-                        <div className="flex items-center gap-2">
-                          <User className="h-4 w-4" />
-                          Member
-                        </div>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+        <form.AppForm>
+          <form
+            className="space-y-4"
+            onSubmit={(e) => {
+              e.preventDefault();
+              form.handleSubmit();
+            }}
+          >
+            <FieldGroup>
+              <form.AppField name="role">
+                {(field) => (
+                  <field.Select label="Role" placeholder="Select a role">
+                    <SelectItem value="admin">
+                      <div className="flex items-center gap-2">
+                        <Shield className="h-4 w-4" />
+                        Admin
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="member">
+                      <div className="flex items-center gap-2">
+                        <User className="h-4 w-4" />
+                        Member
+                      </div>
+                    </SelectItem>
+                  </field.Select>
+                )}
+              </form.AppField>
+            </FieldGroup>
 
             <DialogFooter>
               <Button
-                disabled={isLoading}
                 onClick={() => onOpenChange(false)}
                 type="button"
                 variant="outline"
               >
                 Cancel
               </Button>
-              <Button disabled={isLoading} type="submit">
-                {isLoading ? "Updating..." : "Update Role"}
-              </Button>
+              <form.Subscribe
+                selector={(state) => [
+                  state.canSubmit,
+                  state.isValidating,
+                  state.isSubmitting,
+                ]}
+              >
+                {([canSubmit, isValidating, isSubmitting]) => (
+                  <Button
+                    disabled={!canSubmit || isValidating || isSubmitting}
+                    type="submit"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Spinner />
+                        Updating...
+                      </>
+                    ) : (
+                      "Update Role"
+                    )}
+                  </Button>
+                )}
+              </form.Subscribe>
             </DialogFooter>
           </form>
-        </Form>
+        </form.AppForm>
       </DialogContent>
     </Dialog>
   );
@@ -425,7 +426,7 @@ export const MemberListTable = () => {
           return (
             <div className="text-right">
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
+                <DropdownMenuTrigger>
                   <Button className="h-8 w-8 p-0" variant="ghost">
                     <span className="sr-only">Open menu</span>
                     <MoreHorizontal className="h-4 w-4" />
@@ -559,10 +560,10 @@ export const MemberListTable = () => {
               }}
               value={`${table.getState().pagination.pageSize}`}
             >
-              <SelectTrigger className="h-8 w-[70px]">
-                <SelectValue
-                  placeholder={table.getState().pagination.pageSize}
-                />
+              <SelectTrigger className="h-8 w-16">
+                <SelectValue>
+                  {table.getState().pagination.pageSize}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent side="top">
                 {[10, 20, 30, 40, 50].map((pageSize) => (

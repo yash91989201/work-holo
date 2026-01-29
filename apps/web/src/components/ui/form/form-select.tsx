@@ -8,10 +8,20 @@ import {
 import { FormBase, type FormControlProps } from "./form-base";
 import { useFieldContext } from "./hooks";
 
+type FormSelectProps = FormControlProps & {
+  children: ReactNode;
+  className?: string;
+  size?: "sm" | "default";
+  placeholder?: string;
+};
+
 export function FormSelect({
   children,
+  className,
+  size,
+  placeholder,
   ...props
-}: FormControlProps & { children: ReactNode }) {
+}: FormSelectProps) {
   const field = useFieldContext<string>();
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
 
@@ -23,10 +33,12 @@ export function FormSelect({
       >
         <SelectTrigger
           aria-invalid={isInvalid}
+          className={className}
           id={field.name}
           onBlur={field.handleBlur}
+          size={size}
         >
-          <SelectValue />
+          <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>{children}</SelectContent>
       </Select>
