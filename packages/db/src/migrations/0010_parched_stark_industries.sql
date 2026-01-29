@@ -1,0 +1,1 @@
+ALTER TABLE "messageReaction" ALTER COLUMN "messageId" SET DATA TYPE varchar(24);

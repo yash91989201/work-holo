@@ -8,7 +8,6 @@ import {
   pgTable,
   text,
   timestamp,
-  varchar,
 } from "drizzle-orm/pg-core";
 import { organization, team, user } from "./auth";
 
@@ -94,7 +93,7 @@ export const endReasonEnum = pgEnum("endReason", [
 // Work block table for tracking continuous working sessions
 export const workBlockTable = pgTable("workBlock", {
   id: cuid2().defaultRandom().primaryKey(),
-  attendanceId: varchar({ length: 24 })
+  attendanceId: cuid2()
     .notNull()
     .references(() => attendanceTable.id, { onDelete: "cascade" }),
   userId: text()
