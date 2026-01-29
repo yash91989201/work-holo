@@ -33,7 +33,7 @@ export const CreateOrgForm = () => {
   const form = useAppForm({
     ...createOrgFormOpts,
     validators: {
-      onSubmit: CreateOrgFormSchema,
+      onSubmitAsync: CreateOrgFormSchema,
     },
     onSubmit: async ({ value: { formState, ...formData } }) => {
       try {
@@ -76,7 +76,13 @@ export const CreateOrgForm = () => {
 
   return (
     <form.AppForm>
-      <form className="space-y-4" onSubmit={form.handleSubmit}>
+      <form
+        className="space-y-4"
+        onSubmit={(e) => {
+          e.preventDefault();
+          form.handleSubmit();
+        }}
+      >
         <div className="flex flex-col items-center space-y-4">
           <Image
             alt="Work Holo"
