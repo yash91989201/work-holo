@@ -27,7 +27,7 @@ export function PinnedMessagesSidebar() {
       className={cn(
         "flex h-full min-w-0 shrink-0 flex-col overflow-hidden bg-background/95 backdrop-blur-sm transition-[width,opacity] duration-300 ease-in-out supports-backdrop-filter:bg-background/60",
         isOpen
-          ? "w-full max-w-full border-l opacity-100 shadow-lg sm:w-[560px]"
+          ? "w-full max-w-full border-l opacity-100 shadow-lg sm:w-140"
           : "w-0 max-w-0 opacity-0"
       )}
     >

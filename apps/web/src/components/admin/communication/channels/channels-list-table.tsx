@@ -1,4 +1,3 @@
-import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import {
   type ColumnDef,
@@ -28,7 +27,6 @@ import {
   X,
 } from "lucide-react";
 import { Suspense, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -42,7 +40,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
@@ -59,15 +57,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { FieldGroup } from "@/components/ui/field";
+import { useAppForm } from "@/components/ui/form/hooks";
 import {
   InputGroup,
   InputGroupAddon,
@@ -91,8 +82,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useListOrgMembers } from "@/hooks/use-list-org-members";
-import { UpdateChannelFormSchema } from "@/lib/schemas/admin/channel";
-import type { UpdateChannelFormType } from "@/lib/types";
 import { queryClient, queryUtils } from "@/utils/orpc";
 import { ChannelMembersPopover } from "./channel-members-popover";
 
@@ -148,11 +137,13 @@ export const ChannelsListTable = () => {
               </div>
               <div>
                 <div className="font-medium">{channel.name}</div>
+
                 {channel.description && (
                   <div className="text-muted-foreground text-sm">
                     {channel.description}
                   </div>
                 )}
+
                 {channel.isPrivate && (
                   <Badge className="mt-1 text-xs" variant="outline">
                     Private
@@ -218,6 +209,7 @@ export const ChannelsListTable = () => {
         header: "Actions",
         cell: ({ row }) => {
           const channel = row.original;
+
           return (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -225,23 +217,30 @@ export const ChannelsListTable = () => {
                   <MoreHorizontal />
                 </Button>
               </DropdownMenuTrigger>
+
               <DropdownMenuContent className="flex flex-col items-stretch gap-1.5">
                 <DropdownMenuItem asChild>
                   <Suspense fallback={<Skeleton className="h-9" />}>
                     <AddMemberDialog channelId={channel.id} />
                   </Suspense>
                 </DropdownMenuItem>
+
                 <DropdownMenuItem asChild>
                   <Suspense fallback={<Skeleton className="h-9" />}>
                     <RemoveMemberDialog channelId={channel.id} />
                   </Suspense>
                 </DropdownMenuItem>
+
                 <DropdownMenuItem asChild>
                   <Suspense fallback={<Skeleton className="h-9" />}>
                     <UpdateChannelDialog channelId={channel.id} />
                   </Suspense>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild variant="destructive">
+
+                <DropdownMenuItem
+                  asChild
+                  className="text-destructive focus:text-destructive"
+                >
                   <DeleteChannelDialog channelId={channel.id} />
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -361,10 +360,10 @@ export const ChannelsListTable = () => {
               }}
               value={`${table.getState().pagination.pageSize}`}
             >
-              <SelectTrigger className="h-8 w-[70px]">
-                <SelectValue
-                  placeholder={table.getState().pagination.pageSize}
-                />
+              <SelectTrigger className="h-8 w-18">
+                <SelectValue>
+                  {table.getState().pagination.pageSize}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent side="top">
                 {[10, 20, 30, 40, 50].map((pageSize) => (
@@ -492,7 +491,8 @@ export function AddMemberDialog({ channelId }: { channelId: string }) {
           Add Members
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+
+      <DialogContent className="sm:max-w-105">
         <DialogHeader>
           <DialogTitle>Add Members to Channel</DialogTitle>
           <DialogDescription>
@@ -654,6 +654,7 @@ export function RemoveMemberDialog({ channelId }: { channelId: string }) {
           <span>Remove Members</span>
         </Button>
       </DialogTrigger>
+
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Remove Members from Channel</DialogTitle>
@@ -773,8 +774,10 @@ export function DeleteChannelDialog({ channelId }: { channelId: string }) {
   );
   return (
     <AlertDialog onOpenChange={toggleDialog} open={dialog}>
-      <AlertDialogTrigger asChild>
-        <Button variant="destructive">Delete Channel</Button>
+      <AlertDialogTrigger
+        className={buttonVariants({ variant: "destructive" })}
+      >
+        Delete Channel
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
@@ -800,22 +803,13 @@ export function DeleteChannelDialog({ channelId }: { channelId: string }) {
 export function UpdateChannelDialog({ channelId }: { channelId: string }) {
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const { data: channel, isLoading } = useSuspenseQuery(
+  const { data: channel } = useSuspenseQuery(
     queryUtils.communication.channel.get.queryOptions({
       input: { channelId },
     })
   );
 
-  const form = useForm<UpdateChannelFormType>({
-    resolver: standardSchemaResolver(UpdateChannelFormSchema),
-    defaultValues: {
-      channelId,
-      name: channel.name,
-      description: channel.description || "",
-    },
-  });
-
-  const { mutateAsync: updateChannel, isPending } = useMutation(
+  const { mutateAsync: updateChannel } = useMutation(
     queryUtils.communication.channel.update.mutationOptions({
       onSuccess: () => {
         toast.success("Channel updated successfully");
@@ -832,28 +826,37 @@ export function UpdateChannelDialog({ channelId }: { channelId: string }) {
     })
   );
 
-  const onSubmit = async (data: UpdateChannelFormType) => {
-    const updateData = {
+  const form = useAppForm({
+    defaultValues: {
       channelId,
-      ...(data.name !== undefined && data.name !== channel.name
-        ? { name: data.name }
-        : {}),
-      ...(data.description !== undefined &&
-      data.description !== channel.description
-        ? { description: data.description }
-        : {}),
-      ...(data.isPrivate !== undefined && data.isPrivate !== channel.isPrivate
-        ? { isPrivate: data.isPrivate }
-        : {}),
-    };
+      name: channel.name,
+      description: channel.description || "",
+      isPrivate: channel.isPrivate,
+    },
 
-    if (Object.keys(updateData).length === 1) {
-      toast.info("No changes to update");
-      return;
-    }
+    onSubmit: async ({ value: data }) => {
+      const updateData = {
+        channelId,
+        ...(data.name !== undefined && data.name !== channel.name
+          ? { name: data.name }
+          : {}),
+        ...(data.description !== undefined &&
+        data.description !== channel.description
+          ? { description: data.description }
+          : {}),
+        ...(data.isPrivate !== undefined && data.isPrivate !== channel.isPrivate
+          ? { isPrivate: data.isPrivate }
+          : {}),
+      };
 
-    await updateChannel(updateData);
-  };
+      if (Object.keys(updateData).length === 1) {
+        toast.info("No changes to update");
+        return;
+      }
+
+      await updateChannel(updateData);
+    },
+  });
 
   return (
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
@@ -866,70 +869,72 @@ export function UpdateChannelDialog({ channelId }: { channelId: string }) {
           Edit Channel
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+
+      <DialogContent className="sm:max-w-105">
         <DialogHeader>
           <DialogTitle>Edit Channel</DialogTitle>
           <DialogDescription>
             Update the channel name, description, and privacy settings.
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-4">
-          <Form {...form}>
-            <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Channel Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter channel name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+        <form.AppForm>
+          <form
+            className="space-y-4"
+            onSubmit={(e) => {
+              e.preventDefault();
+              form.handleSubmit();
+            }}
+          >
+            <FieldGroup>
+              <form.AppField name="name">
+                {(field) => (
+                  <field.Input
+                    label="Channel Name"
+                    placeholder="Enter channel name"
+                  />
                 )}
-              />
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Enter channel description"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+              </form.AppField>
+
+              <form.AppField name="description">
+                {(field) => (
+                  <field.Input
+                    label="Description"
+                    placeholder="Enter channel description"
+                  />
                 )}
-              />
-              <DialogFooter>
-                <Button
-                  onClick={() => {
-                    setDialogOpen(false);
-                    form.reset();
-                  }}
-                  type="button"
-                  variant="outline"
-                >
-                  Cancel
-                </Button>
-                <Button disabled={isPending || isLoading}>
-                  {isPending ? (
-                    <>
-                      <Spinner className="mr-2 h-4 w-4" />
-                      Updating...
-                    </>
-                  ) : (
-                    "Update Channel"
-                  )}
-                </Button>
-              </DialogFooter>
-            </form>
-          </Form>
-        </div>
+              </form.AppField>
+            </FieldGroup>
+
+            <DialogFooter>
+              <Button
+                onClick={() => {
+                  setDialogOpen(false);
+                  form.reset();
+                }}
+                type="button"
+                variant="outline"
+              >
+                Cancel
+              </Button>
+              <form.Subscribe
+                selector={(state) => [state.canSubmit, state.isSubmitting]}
+              >
+                {([canSubmit, isSubmitting]) => (
+                  <Button disabled={!canSubmit || isSubmitting} type="submit">
+                    {isSubmitting ? (
+                      <>
+                        <Spinner />
+                        Updating...
+                      </>
+                    ) : (
+                      "Update Channel"
+                    )}
+                  </Button>
+                )}
+              </form.Subscribe>
+            </DialogFooter>
+          </form>
+        </form.AppForm>
       </DialogContent>
     </Dialog>
   );

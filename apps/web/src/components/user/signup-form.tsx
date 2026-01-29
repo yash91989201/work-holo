@@ -1,243 +1,143 @@
-import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
+import { formOptions } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
-import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { FieldGroup } from "@/components/ui/field";
+import { useAppForm } from "@/components/ui/form/hooks";
+import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth-client";
 import { SignUpFormSchema } from "@/lib/schemas/auth";
 import type { SignUpFormType } from "@/lib/types";
 
+const formOpts = formOptions({
+  defaultValues: {
+    name: "",
+    username: "",
+    displayUsername: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  } satisfies SignUpFormType as SignUpFormType,
+});
+
 export function SignUpForm() {
   const navigate = useNavigate();
 
-  const { mutateAsync: signup, isPending } = useMutation({
+  const { mutateAsync: signup } = useMutation({
     mutationKey: ["signup"],
     mutationFn: async (values: SignUpFormType) =>
       await authClient.signUp.email(values),
   });
 
-  const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
-  const [isCheckingAvailability, setIsCheckingAvailability] = useState(false);
-  const [usernameError, setUsernameError] = useState<string | null>(null);
+  const form = useAppForm({
+    ...formOpts,
+    validators: {
+      onSubmit: SignUpFormSchema,
+    },
+    onSubmit: async ({ value }) => {
+      try {
+        const signupRes = await signup(value);
+        if (signupRes.error) {
+          throw new Error(signupRes.error.message);
+        }
 
-  const form = useForm<SignUpFormType>({
-    resolver: standardSchemaResolver(SignUpFormSchema),
-    defaultValues: {
-      name: "",
-      username: "",
-      displayUsername: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
+        navigate({ to: "/org/new" });
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : "Signup failed");
+      }
     },
   });
 
-  const username = form.watch("username");
-
-  // Debounced username availability check
-  useEffect(() => {
-    // Skip checking if username is empty
-    if (!username) {
-      setIsCheckingAvailability(false);
-      setIsAvailable(null);
-      setUsernameError(null);
-      return;
-    }
-
-    // Debounce the availability check
-    setIsCheckingAvailability(true);
-    const timeoutId = setTimeout(async () => {
-      try {
-        const { data: response, error: checkError } =
-          await authClient.isUsernameAvailable({
-            username,
-          });
-
-        if (checkError) {
-          setIsAvailable(false);
-          setUsernameError("Unable to verify username availability");
-        } else {
-          setIsAvailable(response?.available ?? false);
-          if (!response?.available) {
-            setUsernameError("This username is already taken");
-          }
-        }
-      } catch {
-        setIsAvailable(false);
-        setUsernameError("Unable to verify username availability");
-      } finally {
-        setIsCheckingAvailability(false);
-      }
-    }, 300);
-
-    return () => {
-      clearTimeout(timeoutId);
-      setIsCheckingAvailability(false);
-    };
-  }, [username]);
-
-  const onSubmit: SubmitHandler<SignUpFormType> = async (values) => {
-    // Don't submit if username is unavailable or still checking
-    if (isCheckingAvailability || isAvailable === false) {
-      return;
-    }
-
-    const signupRes = await signup(values);
-    if (signupRes.error !== null) {
-      toast.error(signupRes.error.message);
-      return;
-    }
-
-    navigate({
-      to: "/org/new",
-    });
-  };
-
   return (
-    <Form {...form}>
-      <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter your full name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    <form.AppForm>
+      <form
+        className="space-y-4"
+        onSubmit={(e) => {
+          e.preventDefault();
+          form.handleSubmit();
+        }}
+      >
+        <FieldGroup>
+          <form.AppField name="name">
+            {(field) => <field.Input label="Name" placeholder="Full name" />}
+          </form.AppField>
 
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <div className="relative">
-                  <Input
-                    placeholder="Enter unique username"
-                    {...field}
-                    className={
-                      usernameError && isAvailable === false
-                        ? "border-destructive"
-                        : isAvailable === true
-                          ? "border-green-600"
-                          : ""
-                    }
-                    onChange={(e) => {
-                      field.onChange(e.target.value);
-                      setUsernameError(null);
-                      setIsAvailable(null);
-                    }}
-                  />
-                  {isCheckingAvailability && (
-                    <div className="absolute top-1/2 right-3 -translate-y-1/2">
-                      <Loader2 className="size-4 animate-spin text-muted-foreground" />
-                    </div>
-                  )}
-                </div>
-              </FormControl>
-              <FormMessage />
-              {usernameError && isAvailable === false && (
-                <p className="text-destructive text-xs">{usernameError}</p>
-              )}
-              {isAvailable === true && !usernameError && (
-                <p className="text-green-600 text-xs">Username is available</p>
-              )}
-            </FormItem>
-          )}
-        />
+          <form.AppField
+            name="username"
+            validators={{
+              onChangeAsyncDebounceMs: 500,
+              onChangeAsync: async ({ value }) => {
+                const result =
+                  await SignUpFormSchema.shape.username.safeParseAsync(value);
 
-        <FormField
-          control={form.control}
-          name="displayUsername"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Display Username</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter display username" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                return result.success
+                  ? undefined
+                  : result.error.issues[0]?.message;
+              },
+            }}
+          >
+            {(field) => (
+              <field.InputGroup label="Username">
+                <field.InputGroupInput placeholder="Enter unique username" />
+                <field.InputGroupSpinner />
+              </field.InputGroup>
+            )}
+          </form.AppField>
 
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter your email" type="email" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Enter your password"
-                  type="password"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="confirmPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Confirm Password</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Confirm your password"
-                  type="password"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button
-          disabled={
-            isPending ||
-            form.formState.isSubmitting ||
-            isCheckingAvailability ||
-            isAvailable === false
-          }
-        >
-          {isPending || form.formState.isSubmitting
-            ? "Signing up..."
-            : "Sign Up"}
-        </Button>
+          <form.AppField name="displayUsername">
+            {(field) => (
+              <field.Input
+                label="Display Username"
+                placeholder="Enter display username"
+              />
+            )}
+          </form.AppField>
+
+          <form.AppField name="email">
+            {(field) => (
+              <field.Input
+                label="Email"
+                placeholder="Enter email address"
+                type="email"
+              />
+            )}
+          </form.AppField>
+
+          <form.AppField name="password">
+            {(field) => <field.Input label="Password" type="password" />}
+          </form.AppField>
+
+          <form.AppField name="confirmPassword">
+            {(field) => <field.Input label="Confirm Password" type="password" />}
+          </form.AppField>
+
+          <form.Subscribe
+            selector={(state) => [
+              state.canSubmit,
+              state.isValidating,
+              state.isSubmitting,
+            ]}
+          >
+            {([canSubmit, isValidating, isSubmitting]) => (
+              <Button
+                className="w-full gap-1.5"
+                disabled={!canSubmit || isValidating || isSubmitting}
+                type="submit"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Spinner />
+                    Signing up...
+                  </>
+                ) : (
+                  "Sign up"
+                )}
+              </Button>
+            )}
+          </form.Subscribe>
+        </FieldGroup>
       </form>
-    </Form>
+    </form.AppForm>
   );
 }

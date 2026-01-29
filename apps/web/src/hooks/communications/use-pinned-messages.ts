@@ -11,6 +11,7 @@ import {
 } from "react";
 import {
   attachmentsCollection,
+  channelsCollection,
   messagesCollection,
   usersCollection,
 } from "@/db/collections";
@@ -186,6 +187,9 @@ export function usePinnedMessages({ channelId }: { channelId: string }) {
       (q) =>
         q
           .from({ message: messagesCollection })
+          .innerJoin({ channel: channelsCollection }, ({ message, channel }) =>
+            eq(message.channelId, channel.id)
+          )
           .innerJoin({ sender: usersCollection }, ({ message, sender }) =>
             eq(message.senderId, sender.id)
           )
@@ -201,10 +205,11 @@ export function usePinnedMessages({ channelId }: { channelId: string }) {
             )
           )
           .orderBy(({ message }) => message.pinnedAt, "desc")
-          .select(({ message, sender, attachment }) => ({
+          .select(({ message, sender, attachment, channel }) => ({
             message,
             sender,
             attachment,
+            channel,
           })),
       {
         pageSize: PAGE_SIZE,
@@ -222,11 +227,11 @@ export function usePinnedMessages({ channelId }: { channelId: string }) {
       ReturnType<typeof buildMessageWithAttachments>
     >();
 
-    for (const { message, sender, attachment } of rowsWithExtra) {
+    for (const { message, sender, attachment, channel } of rowsWithExtra) {
       let entry = map.get(message.id);
 
       if (!entry) {
-        entry = buildMessageWithAttachments(message, sender);
+        entry = buildMessageWithAttachments(message, sender, channel);
         map.set(message.id, entry);
       }
 

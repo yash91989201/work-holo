@@ -5,7 +5,7 @@ export const CreateChannelFormSchema = z
     name: z.string().min(3).max(64),
     description: z.string().min(4).max(128).optional(),
     type: z.enum(["team", "group", "direct"]),
-    isPublic: z.boolean().default(true),
+    isPublic: z.boolean(),
     memberIds: z.array(z.string()),
     createdBy: z.string(),
     teamId: z.string().optional(),

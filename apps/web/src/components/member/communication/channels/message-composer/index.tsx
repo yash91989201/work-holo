@@ -1,3 +1,4 @@
+import { useAsyncDebouncer } from "@tanstack/react-pacer";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useMessageMutations } from "@/hooks/communications/use-message-mutations";
@@ -13,6 +14,17 @@ import { AttachmentPreviewList } from "./attachment-preview-list";
 import { AudioRecorder } from "./audio-recorder";
 import { MessageEditor } from "./message-editor";
 import { TypingIndicator } from "./typing-indicator";
+
+/** Debounce delay for mention user search API calls (in milliseconds) */
+const MENTION_DEBOUNCE_DELAY_MS = 300;
+
+/** User type for mention autocomplete results */
+type MentionUser = {
+  id: string;
+  name: string | null;
+  email: string;
+  image: string | null;
+};
 
 interface AttachmentPreview {
   file: File;
@@ -70,30 +82,70 @@ export function MessageComposer({
   const { createMessage } = useMessageMutations();
   const { typingUsers, broadcastTyping } = useTypingIndicator(channelId);
 
+  const fetchMentionUsersFromApi = useCallback(
+    async (
+      query: string,
+      includeChannelMention: boolean
+    ): Promise<MentionUser[]> => {
+      const { users = [] } =
+        await orpcClient.communication.message.searchUsers({
+          channelId,
+          query,
+        });
+
+      const channelMention = includeChannelMention ? [CHANNEL_MENTION] : [];
+      return [...channelMention, ...users.filter((su) => su.id !== user.id)];
+    },
+    [channelId, user.id]
+  );
+
+  const mentionUserSearchDebouncer = useAsyncDebouncer(
+    (query: string, includeChannelMention: boolean) =>
+      fetchMentionUsersFromApi(query, includeChannelMention),
+    {
+      key: `mention-user-search:${channelId}`,
+      wait: MENTION_DEBOUNCE_DELAY_MS,
+    }
+  );
+
   const fetchUsers = useCallback(
-    async (query: string) => {
+    async (query: string): Promise<MentionUser[]> => {
       const normalizedQuery = query.trim().toLowerCase();
       const includeChannelMention =
         normalizedQuery.length === 0 ||
         "channel".startsWith(normalizedQuery.replace("@", ""));
 
+      const channelMention = includeChannelMention ? [CHANNEL_MENTION] : [];
+
+      const { lastArgs, lastResult } = mentionUserSearchDebouncer.store.state;
+      if (lastArgs && lastResult) {
+        const [lastQuery, lastIncludeChannelMention] = lastArgs;
+        if (lastQuery === query && lastIncludeChannelMention === includeChannelMention) {
+          const cached = await lastResult;
+          if (cached.length > 0) return cached;
+        }
+      }
+
+      if (normalizedQuery.length === 0) {
+        try {
+          return await fetchMentionUsersFromApi(query, includeChannelMention);
+        } catch {
+          return channelMention;
+        }
+      }
+
       try {
-        const { users = [] } =
-          await orpcClient.communication.message.searchUsers({
-            channelId,
-            query,
-          });
-
-        const channelMention = includeChannelMention ? [CHANNEL_MENTION] : [];
-
-        return [...channelMention, ...users.filter((su) => su.id !== user.id)];
-      } catch (error) {
-        console.error("Error fetching mention users:", error);
-        const channelMention = includeChannelMention ? [CHANNEL_MENTION] : [];
+        const result = await mentionUserSearchDebouncer.maybeExecute(
+          query,
+          includeChannelMention
+        );
+        const resolved = result ? await result : undefined;
+        return resolved ?? channelMention;
+      } catch {
         return channelMention;
       }
     },
-    [channelId, user.id]
+    [fetchMentionUsersFromApi, mentionUserSearchDebouncer]
   );
 
   const handleTypingBroadcast = useCallback(

@@ -405,7 +405,6 @@ export const InvitationListTable = () => {
 
   return (
     <div className="w-full rounded-md border bg-card text-card-foreground shadow-sm">
-      {/* Header */}
       <div className="flex items-center justify-between gap-4 border-b p-4">
         <div className="flex flex-1 items-center gap-2">
           <InputGroup className="w-full max-w-sm">
@@ -488,7 +487,7 @@ export const InvitationListTable = () => {
               }}
               value={`${table.getState().pagination.pageSize}`}
             >
-              <SelectTrigger className="h-8 w-[70px]">
+              <SelectTrigger className="h-8 w-18">
                 <SelectValue
                   placeholder={table.getState().pagination.pageSize}
                 />
@@ -566,7 +565,7 @@ export const InvitationListTableSkeleton = () => (
             <TableHead>Role</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Expires</TableHead>
-            <TableHead className="w-[100px]">Actions</TableHead>
+            <TableHead className="w-25">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
