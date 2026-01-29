@@ -24,6 +24,7 @@ export interface MentionListProps {
     image?: string | null;
   }>;
   command: (item: { id: string; label: string }) => void;
+  loading: boolean;
 }
 
 export interface MentionListRef {
@@ -32,7 +33,7 @@ export interface MentionListRef {
 
 export const MentionList = forwardRef<MentionListRef, MentionListProps>(
   (props, ref) => {
-    const { items, command } = props;
+    const { items, command, loading } = props;
     const [selectedIndex, setSelectedIndex] = useState(0);
 
     const selectItem = useCallback(
@@ -81,15 +82,26 @@ export const MentionList = forwardRef<MentionListRef, MentionListProps>(
       },
     }));
 
-    if (items.length === 0) {
-      return (
-        <div className="rounded-lg border border-border bg-popover p-2 shadow-md">
-          <div className="px-2 py-1.5 text-muted-foreground text-sm">
-            Loading users...
-          </div>
-        </div>
-      );
-    }
+   if (loading) {
+  return (
+    <div className="rounded-lg border border-border bg-popover p-2 shadow-md">
+      <div className="px-2 py-1.5 text-muted-foreground text-sm">
+        Loading users...
+      </div>
+    </div>
+  );
+}
+
+if (!loading && items.length === 0) {
+  return (
+    <div className="rounded-lg border border-border bg-popover p-2 shadow-md">
+      <div className="px-2 py-1.5 text-muted-foreground text-sm">
+        User not found
+      </div>
+    </div>
+  );
+}
+
 
     return (
       <ItemGroup className="min-w-70 rounded-lg border border-border bg-popover shadow-md">
