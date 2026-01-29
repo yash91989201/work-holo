@@ -124,12 +124,9 @@ function WorkBlockToggle() {
       onSuccess: async () => {
         toast.success("Work session paused");
         // Set status to away when pausing work
-        if (attendance?.organizationId) {
-          await setManualStatus({
-            orgId: attendance.organizationId,
-            status: "away",
-          });
-        }
+        await setManualStatus({
+          status: "away",
+        });
         await Promise.all([refetchAttendance(), refetchBlock()]);
       },
       onError: (error) => {
@@ -188,8 +185,7 @@ function PresenceStatusDropdown() {
 
   const { data: orgPresence } = useQuery(
     queryUtils.member.presence.getOrgPresence.queryOptions({
-      input: { orgId: attendance?.organizationId ?? "" },
-      enabled: !!attendance?.organizationId,
+      input: {},
       refetchInterval: 5000,
     })
   );
@@ -205,10 +201,7 @@ function PresenceStatusDropdown() {
   }
 
   const handleStatusChange = async (status: "dnd" | "busy" | "away" | null) => {
-    const orgId = attendance?.organizationId;
-    if (!orgId) return;
-
-    await setManualStatus({ orgId, status });
+    await setManualStatus({ status });
     toast.success("Status updated");
   };
 

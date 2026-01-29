@@ -1,13 +1,13 @@
 import { ORPCError, os } from "@orpc/server";
 import { member } from "@work-holo/db/schema/auth";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import type { Context } from "./context";
 
 export const o = os.$context<Context>();
 
 export const publicProcedure = o;
 
-const requireAuth = o.middleware(({ context, next }) => {
+export const protectedProcedure = publicProcedure.use(({ context, next }) => {
   if (!context.session?.user) {
     throw new ORPCError("UNAUTHORIZED");
   }
@@ -19,26 +19,73 @@ const requireAuth = o.middleware(({ context, next }) => {
   });
 });
 
-const requireAdmin = o.middleware(async ({ context, next }) => {
-  if (!context.session?.user) {
-    throw new ORPCError("UNAUTHORIZED");
+export const orgProcedure = protectedProcedure.use(({ context, next }) => {
+  const activeOrganizationId = context.session.session.activeOrganizationId;
+
+  if (!activeOrganizationId) {
+    throw new ORPCError("UNAUTHORIZED", {
+      message: "No active organization selected",
+    });
   }
 
-  const userMember = await context.db.query.member.findFirst({
-    where: eq(member.userId, context.session.user.id),
+  return next({
+    context: {
+      orgId: activeOrganizationId,
+    },
   });
+});
 
-  if (!userMember) {
-    throw new ORPCError("FORBIDDEN");
+export const orgMemberProcedure = orgProcedure.use(
+  async ({ context, next }) => {
+    const membership = await context.db.query.member.findFirst({
+      where: and(
+        eq(member.organizationId, context.orgId),
+        eq(member.userId, context.session.user.id)
+      ),
+      columns: {
+        id: true,
+        role: true,
+      },
+    });
+
+    if (!membership) {
+      throw new ORPCError("FORBIDDEN", {
+        message: "You are not a member of this organization",
+      });
+    }
+
+    return next({
+      context: {
+        orgMembership: {
+          memberId: membership.id,
+          role: membership.role,
+        },
+      },
+    });
   }
+);
 
-  if (userMember.role !== "admin") {
-    throw new ORPCError("FORBIDDEN");
+export const orgAdminProcedure = orgMemberProcedure.use(({ context, next }) => {
+  const { role } = context.orgMembership;
+
+  if (role !== "admin" && role !== "owner") {
+    throw new ORPCError("FORBIDDEN", {
+      message: "Organization admin or owner role required",
+    });
   }
 
   return next();
 });
 
-export const protectedProcedure = publicProcedure.use(requireAuth);
+// Platform admin procedure (does not bypass org/channel checks)
+export const platformAdminProcedure = protectedProcedure.use(
+  ({ context, next }) => {
+    if (context.session.user.role !== "admin") {
+      throw new ORPCError("FORBIDDEN", {
+        message: "Platform admin role required",
+      });
+    }
 
-export const adminProcedure = publicProcedure.use(requireAdmin);
+    return next();
+  }
+);

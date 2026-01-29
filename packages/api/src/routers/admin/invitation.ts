@@ -1,29 +1,21 @@
-import { ORPCError } from "@orpc/client";
 import { invitation } from "@work-holo/db/schema/index";
 import type { SQL } from "drizzle-orm";
 import { and, asc, count, desc, eq, ilike } from "drizzle-orm";
-import { protectedProcedure } from "../../index";
+import { orgAdminProcedure } from "../../index";
 import {
   ListInvitationsInput,
   ListInvitationsOutput,
 } from "../../lib/schemas/admin-invitation";
 
 export const adminInvitationRouter = {
-  listInvitations: protectedProcedure
+  listInvitations: orgAdminProcedure
     .input(ListInvitationsInput)
     .output(ListInvitationsOutput)
-    .handler(async ({ input, context: { db, session } }) => {
-      const organizationId = session.session.activeOrganizationId;
-      if (!organizationId) {
-        throw new ORPCError("BAD_REQUEST", {
-          message: "No active organization",
-        });
-      }
-
+    .handler(async ({ input, context: { db, orgId } }) => {
       const { page, perPage, search, filters, sorting } = input;
       const offset = (page - 1) * perPage;
 
-      const conditions = [eq(invitation.organizationId, organizationId)];
+      const conditions = [eq(invitation.organizationId, orgId)];
 
       if (filters?.role) {
         conditions.push(eq(invitation.role, filters.role));
