@@ -50,11 +50,10 @@ export function usePresenceHeartbeat({
       }
 
       // Send heartbeat when user becomes active (throttled)
-      if (enabled && organization?.id) {
+      if (enabled) {
         lastHeartbeatRef.current = now;
         const isIdle = false;
         sendHeartbeat({
-          orgId: organization.id,
           punchedIn,
           onBreak,
           inCall,
@@ -71,12 +70,11 @@ export function usePresenceHeartbeat({
       isTabFocusedRef.current = newFocusState;
 
       // Send immediate heartbeat when tab becomes focused
-      if (newFocusState && enabled && organization?.id) {
+      if (newFocusState && enabled) {
         const now = Date.now();
         lastActivityRef.current = now;
         lastHeartbeatRef.current = now; // ADD THIS LINE
         sendHeartbeat({
-          orgId: organization.id,
           punchedIn,
           onBreak,
           inCall,
@@ -101,7 +99,6 @@ export function usePresenceHeartbeat({
     };
   }, [
     enabled,
-    organization?.id,
     punchedIn,
     onBreak,
     inCall,
@@ -112,7 +109,7 @@ export function usePresenceHeartbeat({
 
   // Send heartbeat
   useEffect(() => {
-    if (!(enabled && organization?.id)) return;
+    if (!enabled) return;
 
     const sendPresenceUpdate = () => {
       const now = Date.now();
@@ -120,7 +117,6 @@ export function usePresenceHeartbeat({
       const isIdle = idleTime > 60 * 1000; // 1 minute
 
       sendHeartbeat({
-        orgId: organization.id,
         punchedIn,
         onBreak,
         inCall,
@@ -143,7 +139,6 @@ export function usePresenceHeartbeat({
     return () => clearInterval(interval);
   }, [
     enabled,
-    organization?.id,
     punchedIn,
     onBreak,
     inCall,
@@ -155,16 +150,13 @@ export function usePresenceHeartbeat({
 }
 
 export function useSetManualStatus() {
-  const organization = useActiveOrganization();
   return useMutation(
     queryUtils.member.presence.setManualStatus.mutationOptions({
       onSuccess: async () => {
         // Immediately refetch the org presence data to update UI
         await queryClient.refetchQueries({
           queryKey: queryUtils.member.presence.getOrgPresence.queryKey({
-            input: {
-              orgId: organization?.id ?? "",
-            },
+            input: { },
           }),
           exact: true,
         });
@@ -174,14 +166,9 @@ export function useSetManualStatus() {
 }
 
 export function useOrgPresence() {
-  const organization = useActiveOrganization();
-
   return useQuery(
     queryUtils.member.presence.getOrgPresence.queryOptions({
-      input: {
-        orgId: organization?.id ?? "",
-      },
-      enabled: !!organization?.id,
+      input: { },
       refetchInterval: 30_000,
     })
   );

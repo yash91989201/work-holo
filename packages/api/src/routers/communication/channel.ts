@@ -10,7 +10,8 @@ import {
   user as userTable,
 } from "@work-holo/db/schema/index";
 import { and, asc, count, desc, eq, inArray, like, not } from "drizzle-orm";
-import { protectedProcedure } from "../../index";
+import type { Context } from "../../context";
+import { orgAdminProcedure, orgMemberProcedure } from "../../index";
 import { generateTxId } from "../../lib/electric-proxy";
 import {
   ChannelJoinRequestInput,
@@ -34,21 +35,55 @@ import {
   UpdateChannelInput,
 } from "../../lib/schemas/channel";
 
+/**
+ * Verifies user is a member of the specified channel
+ * @throws ORPCError if not a member or channel doesn't belong to org
+ */
+async function verifyChannelMembership(
+  db: Context["db"],
+  channelId: string,
+  userId: string,
+  orgId: string
+) {
+  // First verify channel belongs to org
+  const channel = await db.query.channelTable.findFirst({
+    where: eq(channelTable.id, channelId),
+    columns: { organizationId: true },
+  });
+
+  if (!channel) {
+    throw new ORPCError("NOT_FOUND", {
+      message: "Channel not found",
+    });
+  }
+
+  if (channel.organizationId !== orgId) {
+    throw new ORPCError("FORBIDDEN", {
+      message: "Channel does not belong to your organization",
+    });
+  }
+
+  // Verify user is channel member
+  const membership = await db.query.channelMemberTable.findFirst({
+    where: and(
+      eq(channelMemberTable.channelId, channelId),
+      eq(channelMemberTable.userId, userId)
+    ),
+  });
+
+  if (!membership) {
+    throw new ORPCError("FORBIDDEN", {
+      message: "You are not a member of this channel",
+    });
+  }
+}
+
 export const channelRouter = {
-  create: protectedProcedure
+  create: orgMemberProcedure
     .input(CreateChannelInput)
     .output(CreateChannelOutput)
-    .handler(async ({ input, context }) => {
+    .handler(async ({ input, context: { db, orgId } }) => {
       try {
-        const { db, session } = context;
-        const orgId = session.session.activeOrganizationId;
-
-        if (!orgId) {
-          throw new ORPCError("NOT_FOUND", {
-            message: "Organization not found.",
-          });
-        }
-
         const { txid, channel } = await db.transaction(async (tx) => {
           const txid = await generateTxId(tx);
 
@@ -134,11 +169,17 @@ export const channelRouter = {
       }
     }),
 
-  update: protectedProcedure
+  update: orgMemberProcedure
     .input(UpdateChannelInput)
     .output(ChannelSchema)
-    .handler(async ({ input, context }) => {
-      const [updatedChannel] = await context.db
+    .handler(async ({ input, context: { db, session, orgId } }) => {
+      await verifyChannelMembership(
+        db,
+        input.channelId,
+        session.user.id,
+        orgId
+      );
+      const [updatedChannel] = await db
         .update(channelTable)
         .set(input)
         .where(eq(channelTable.id, input.channelId))
@@ -153,11 +194,17 @@ export const channelRouter = {
       return updatedChannel;
     }),
 
-  get: protectedProcedure
+  get: orgMemberProcedure
     .input(GetChannelInput)
     .output(GetChannelOutput)
-    .handler(async ({ context, input }) => {
-      const channel = await context.db.query.channelTable.findFirst({
+    .handler(async ({ context: { db, session, orgId }, input }) => {
+      await verifyChannelMembership(
+        db,
+        input.channelId,
+        session.user.id,
+        orgId
+      );
+      const channel = await db.query.channelTable.findFirst({
         where: eq(channelTable.id, input.channelId),
         with: {
           creator: true,
@@ -173,16 +220,26 @@ export const channelRouter = {
       return channel;
     }),
 
-  list: protectedProcedure
+  list: orgMemberProcedure
     .input(ListChannelsInput)
     .output(ListChannelsOutput)
-    .handler(async ({ context, input }) => {
-      const orgId = context.session.session.activeOrganizationId ?? "";
-
+    .handler(async ({ context: { db, session, orgId }, input }) => {
+      const userId = session.user.id;
       const { page, limit, search, filters, sorting } = input;
       const offset = (page - 1) * limit;
 
-      const conditions = [eq(channelTable.organizationId, orgId)];
+      // Base conditions: org match + user is channel member
+      const conditions = [
+        eq(channelTable.organizationId, orgId),
+        // CRITICAL: Only show channels user is member of
+        inArray(
+          channelTable.id,
+          db
+            .select({ channelId: channelMemberTable.channelId })
+            .from(channelMemberTable)
+            .where(eq(channelMemberTable.userId, userId))
+        ),
+      ];
 
       if (search) {
         conditions.push(like(channelTable.name, `%${search}%`));
@@ -219,7 +276,7 @@ export const channelRouter = {
         });
       }
 
-      const channels = await context.db.query.channelTable.findMany({
+      const channels = await db.query.channelTable.findMany({
         where: whereClause,
         limit,
         offset,
@@ -229,7 +286,7 @@ export const channelRouter = {
         },
       });
 
-      const totalResult = await context.db
+      const totalResult = await db
         .select({ count: count() })
         .from(channelTable)
         .where(whereClause);
@@ -243,12 +300,18 @@ export const channelRouter = {
       };
     }),
 
-  listMembers: protectedProcedure
+  listMembers: orgMemberProcedure
     .input(ListChannelMembersInput)
     .output(ListChannelMembersOutput)
-    .handler(async ({ input, context }) => {
+    .handler(async ({ input, context: { db, session, orgId } }) => {
+      await verifyChannelMembership(
+        db,
+        input.channelId,
+        session.user.id,
+        orgId
+      );
       const filter = input?.filter;
-      const members = await context.db
+      const members = await db
         .select({
           id: userTable.id,
           name: userTable.name,
@@ -268,30 +331,44 @@ export const channelRouter = {
 
       return members;
     }),
-  isMember: protectedProcedure
+  isMember: orgMemberProcedure
     .input(IsChannelMemberInput)
     .output(IsChannelMemberOutput)
-    .handler(async ({ input, context }) => {
-      const isMember = await context.db.query.channelMemberTable.findFirst({
+    .handler(async ({ input, context: { db, session, orgId } }) => {
+      // Verify channel belongs to org
+      const channel = await db.query.channelTable.findFirst({
+        where: eq(channelTable.id, input.channelId),
+        columns: { organizationId: true },
+      });
+      if (!channel || channel.organizationId !== orgId) {
+        throw new ORPCError("NOT_FOUND", { message: "Channel not found" });
+      }
+      const isMember = await db.query.channelMemberTable.findFirst({
         where: and(
           eq(channelMemberTable.channelId, input.channelId),
-          eq(channelMemberTable.userId, context.session.user.id)
+          eq(channelMemberTable.userId, session.user.id)
         ),
       });
 
       return typeof isMember !== "undefined";
     }),
 
-  addMembers: protectedProcedure
+  addMembers: orgAdminProcedure
     .input(ModifyChannelMembersInput)
     .output(SuccessOutput)
-    .handler(async ({ context, input }) => {
+    .handler(async ({ context: { db, session, orgId }, input }) => {
+      await verifyChannelMembership(
+        db,
+        input.channelId,
+        session.user.id,
+        orgId
+      );
       const channelMembers = input.memberIds.map((memberId) => ({
         channelId: input.channelId,
         userId: memberId,
       }));
 
-      await context.db.insert(channelMemberTable).values(channelMembers);
+      await db.insert(channelMemberTable).values(channelMembers);
 
       return {
         success: true,
@@ -299,11 +376,17 @@ export const channelRouter = {
       };
     }),
 
-  removeMembers: protectedProcedure
+  removeMembers: orgAdminProcedure
     .input(ModifyChannelMembersInput)
     .output(SuccessOutput)
-    .handler(async ({ context, input }) => {
-      await context.db
+    .handler(async ({ context: { db, session, orgId }, input }) => {
+      await verifyChannelMembership(
+        db,
+        input.channelId,
+        session.user.id,
+        orgId
+      );
+      await db
         .delete(channelMemberTable)
         .where(
           and(
@@ -318,15 +401,23 @@ export const channelRouter = {
       };
     }),
 
-  joinRequest: protectedProcedure
+  joinRequest: orgMemberProcedure
     .input(ChannelJoinRequestInput)
     .output(ChannelJoinRequestOutput)
-    .handler(async ({ input, context }) => {
-      const [newRequest] = await context.db
+    .handler(async ({ input, context: { db, session, orgId } }) => {
+      // Verify channel belongs to org
+      const channel = await db.query.channelTable.findFirst({
+        where: eq(channelTable.id, input.channelId),
+        columns: { organizationId: true },
+      });
+      if (!channel || channel.organizationId !== orgId) {
+        throw new ORPCError("NOT_FOUND", { message: "Channel not found" });
+      }
+      const [newRequest] = await db
         .insert(channelJoinRequestTable)
         .values({
           channelId: input.channelId,
-          userId: context.session.user.id,
+          userId: session.user.id,
           note: input.note,
         })
         .returning();
@@ -339,10 +430,16 @@ export const channelRouter = {
 
       return newRequest;
     }),
-  listJoinRequests: protectedProcedure
+  listJoinRequests: orgAdminProcedure
     .input(ListJoinRequestInput)
     .output(ListJoinRequestOutput)
-    .handler(async ({ context: { db }, input }) => {
+    .handler(async ({ context: { db, session, orgId }, input }) => {
+      await verifyChannelMembership(
+        db,
+        input.channelId,
+        session.user.id,
+        orgId
+      );
       const joinRequests = await db.query.channelJoinRequestTable.findMany({
         where: eq(channelJoinRequestTable.channelId, input.channelId),
         with: {
@@ -353,18 +450,16 @@ export const channelRouter = {
       return joinRequests;
     }),
 
-  delete: protectedProcedure
+  delete: orgAdminProcedure
     .input(DeleteChannelInput)
     .output(DeletechannelOutput)
-    .handler(async ({ input, context }) => {
-      const { db, session } = context;
-      const orgId = session.session.activeOrganizationId;
-
-      if (!orgId) {
-        throw new ORPCError("NOT_FOUND", {
-          message: "Organization not found.",
-        });
-      }
+    .handler(async ({ input, context: { db, session, orgId } }) => {
+      await verifyChannelMembership(
+        db,
+        input.channelId,
+        session.user.id,
+        orgId
+      );
 
       const { txid } = await db.transaction(async (tx) => {
         const txid = await generateTxId(tx);

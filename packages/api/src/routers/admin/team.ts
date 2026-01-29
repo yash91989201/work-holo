@@ -10,25 +10,18 @@ import {
 import { auth } from "@work-holo/auth";
 import { team } from "@work-holo/db/schema/index";
 import { and, asc, count, desc, eq, gte, like, lte } from "drizzle-orm";
-import { protectedProcedure } from "../../index";
+import { orgAdminProcedure } from "../../index";
 
 export const adminTeamRouter = {
-  listTeams: protectedProcedure
+  listTeams: orgAdminProcedure
     .input(ListTeamsInput)
     .output(ListTeamsOutput)
-    .handler(async ({ input, context: { db, session } }) => {
-      const organizationId = session.session.activeOrganizationId;
-
-      if (!organizationId)
-        throw new ORPCError("BAD_REQUEST", {
-          message: "No active organization",
-        });
-
+    .handler(async ({ input, context: { db, orgId } }) => {
       const { page, limit, search, filters, sorting } = input;
       const offset = (page - 1) * limit;
 
       // Build where clause
-      const conditions = [eq(team.organizationId, organizationId)];
+      const conditions = [eq(team.organizationId, orgId)];
 
       if (search) {
         conditions.push(like(team.name, `%${search}%`));
@@ -94,7 +87,7 @@ export const adminTeamRouter = {
       return { teams, total, pageCount };
     }),
 
-  addMember: protectedProcedure
+  addMember: orgAdminProcedure
     .input(AddMemberInput)
     .output(AddMemberOutput)
     .handler(async ({ input: { teamId, userIds }, context: { headers } }) => {
@@ -151,7 +144,7 @@ export const adminTeamRouter = {
       }
     }),
 
-  removeMember: protectedProcedure
+  removeMember: orgAdminProcedure
     .input(RemoveMemberInput)
     .output(RemoveMemberOutput)
     .handler(async ({ input: { teamId, userIds }, context: { headers } }) => {

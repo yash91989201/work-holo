@@ -1,3 +1,5 @@
+import { member } from "@work-holo/db/schema/auth";
+import { and, eq } from "drizzle-orm";
 import type { MiddlewareHandler } from "hono";
 import { Hono } from "hono";
 import type { ElectricContext } from "../../context";
@@ -13,12 +15,38 @@ type ElectricEnv = {
   };
 };
 
-// Middleware to check authentication
 const requireAuth: MiddlewareHandler<ElectricEnv> = async (c, next) => {
-  const context = c.get("context");
+  const context = c.var.context;
 
   if (!context.session?.user) {
     return c.json({ error: "Unauthorized" }, 401);
+  }
+
+  await next();
+};
+
+const requireOrgMember: MiddlewareHandler<ElectricEnv> = async (c, next) => {
+  const context = c.var.context;
+
+  if (!context.session?.user) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+
+  const orgId = context.session.session.activeOrganizationId;
+
+  if (!orgId) {
+    return c.json({ error: "No active organization" }, 401);
+  }
+
+  const membership = await context.db.query.member.findFirst({
+    where: and(
+      eq(member.organizationId, orgId),
+      eq(member.userId, context.session.user.id)
+    ),
+  });
+
+  if (!membership) {
+    return c.json({ error: "You are not a member of this organization" }, 403);
   }
 
   await next();
@@ -32,58 +60,86 @@ const sendProxyResponse = async (originUrl: URL) => {
   return response;
 };
 
-// Inject context into all routes
 electricRouter.use("*", async (c, next) => {
   const context = await createElectricContext({ context: c });
   c.set("context", context);
   await next();
 });
 
-electricRouter.get("/shapes/messages", requireAuth, async (c) => {
-  const originUrl = prepareElectricUrl(c.req.url);
+electricRouter.get("/shapes/messages", requireOrgMember, async (c) => {
+  const context = c.var.context;
+  const orgId = context.session?.session.activeOrganizationId;
+  const userId = context.session?.user.id;
 
+  const originUrl = prepareElectricUrl(c.req.url);
   originUrl.searchParams.set("table", "message");
 
+  const filter = `"channelId" IN (SELECT id FROM channel WHERE "organizationId" = '${orgId}' AND id IN (SELECT "channelId" FROM "channelMember" WHERE "userId" = '${userId}'))`;
+  originUrl.searchParams.set("where", filter);
+
   const res = await sendProxyResponse(originUrl);
   return res;
 });
 
-electricRouter.get("/shapes/message-mentions", requireAuth, async (c) => {
-  const originUrl = prepareElectricUrl(c.req.url);
+electricRouter.get("/shapes/message-mentions", requireOrgMember, async (c) => {
+  const context = c.var.context;
+  const orgId = context.session?.session.activeOrganizationId;
+  const userId = context.session?.user.id;
 
+  const originUrl = prepareElectricUrl(c.req.url);
   originUrl.searchParams.set("table", '"messageMention"');
 
+  const filter = `"messageId" IN (SELECT id FROM message WHERE "channelId" IN (SELECT id FROM channel WHERE "organizationId" = '${orgId}' AND id IN (SELECT "channelId" FROM "channelMember" WHERE "userId" = '${userId}')))`;
+  originUrl.searchParams.set("where", filter);
+
   const res = await sendProxyResponse(originUrl);
   return res;
 });
 
-electricRouter.get("/shapes/message-reactions", requireAuth, async (c) => {
-  const originUrl = prepareElectricUrl(c.req.url);
+electricRouter.get("/shapes/message-reactions", requireOrgMember, async (c) => {
+  const context = c.var.context;
+  const orgId = context.session?.session.activeOrganizationId;
+  const userId = context.session?.user.id;
 
+  const originUrl = prepareElectricUrl(c.req.url);
   originUrl.searchParams.set("table", '"messageReaction"');
 
+  const filter = `"messageId" IN (SELECT id FROM message WHERE "channelId" IN (SELECT id FROM channel WHERE "organizationId" = '${orgId}' AND id IN (SELECT "channelId" FROM "channelMember" WHERE "userId" = '${userId}')))`;
+  originUrl.searchParams.set("where", filter);
+
   const res = await sendProxyResponse(originUrl);
   return res;
 });
 
-electricRouter.get("/shapes/users", requireAuth, (c) => {
-  const originUrl = prepareElectricUrl(c.req.url);
+electricRouter.get("/shapes/users", requireOrgMember, (c) => {
+  const context = c.var.context;
+  const orgId = context.session?.session.activeOrganizationId;
 
+  const originUrl = prepareElectricUrl(c.req.url);
   originUrl.searchParams.set("table", "user");
+
+  const filter = `id IN (SELECT "userId" FROM member WHERE "organizationId" = '${orgId}')`;
+  originUrl.searchParams.set("where", filter);
 
   return sendProxyResponse(originUrl);
 });
 
-electricRouter.get("/shapes/attachments", requireAuth, (c) => {
-  const originUrl = prepareElectricUrl(c.req.url);
+electricRouter.get("/shapes/attachments", requireOrgMember, (c) => {
+  const context = c.var.context;
+  const orgId = context.session?.session.activeOrganizationId;
+  const userId = context.session?.user.id;
 
+  const originUrl = prepareElectricUrl(c.req.url);
   originUrl.searchParams.set("table", "attachment");
+
+  const filter = `"messageId" IN (SELECT id FROM message WHERE "channelId" IN (SELECT id FROM channel WHERE "organizationId" = '${orgId}' AND id IN (SELECT "channelId" FROM "channelMember" WHERE "userId" = '${userId}')))`;
+  originUrl.searchParams.set("where", filter);
 
   return sendProxyResponse(originUrl);
 });
 
 electricRouter.get("/shapes/accounts", requireAuth, (c) => {
-  const context = c.get("context") as ElectricContext;
+  const context = c.var.context;
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", "account");
@@ -95,7 +151,7 @@ electricRouter.get("/shapes/accounts", requireAuth, (c) => {
 });
 
 electricRouter.get("/shapes/sessions", requireAuth, (c) => {
-  const context = c.get("context") as ElectricContext;
+  const context = c.var.context;
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", "session");
@@ -106,8 +162,8 @@ electricRouter.get("/shapes/sessions", requireAuth, (c) => {
   return sendProxyResponse(originUrl);
 });
 
-electricRouter.get("/shapes/invitations", requireAuth, (c) => {
-  const context = c.get("context") as ElectricContext;
+electricRouter.get("/shapes/invitations", requireOrgMember, (c) => {
+  const context = c.var.context;
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", "invitation");
@@ -118,8 +174,8 @@ electricRouter.get("/shapes/invitations", requireAuth, (c) => {
   return sendProxyResponse(originUrl);
 });
 
-electricRouter.get("/shapes/members", requireAuth, (c) => {
-  const context = c.get("context") as ElectricContext;
+electricRouter.get("/shapes/members", requireOrgMember, (c) => {
+  const context = c.var.context;
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", "member");
@@ -131,7 +187,7 @@ electricRouter.get("/shapes/members", requireAuth, (c) => {
 });
 
 electricRouter.get("/shapes/organizations", requireAuth, (c) => {
-  const context = c.get("context") as ElectricContext;
+  const context = c.var.context;
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", "organization");
@@ -142,8 +198,8 @@ electricRouter.get("/shapes/organizations", requireAuth, (c) => {
   return sendProxyResponse(originUrl);
 });
 
-electricRouter.get("/shapes/teams", requireAuth, (c) => {
-  const context = c.get("context") as ElectricContext;
+electricRouter.get("/shapes/teams", requireOrgMember, (c) => {
+  const context = c.var.context;
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", "team");
@@ -154,8 +210,8 @@ electricRouter.get("/shapes/teams", requireAuth, (c) => {
   return sendProxyResponse(originUrl);
 });
 
-electricRouter.get("/shapes/team-members", requireAuth, (c) => {
-  const context = c.get("context") as ElectricContext;
+electricRouter.get("/shapes/team-members", requireOrgMember, (c) => {
+  const context = c.var.context;
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", '"teamMember"');
@@ -167,7 +223,7 @@ electricRouter.get("/shapes/team-members", requireAuth, (c) => {
 });
 
 electricRouter.get("/shapes/verifications", requireAuth, (c) => {
-  const context = c.get("context") as ElectricContext;
+  const context = c.var.context;
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", "verification");
@@ -178,40 +234,53 @@ electricRouter.get("/shapes/verifications", requireAuth, (c) => {
   return sendProxyResponse(originUrl);
 });
 
-electricRouter.get("/shapes/attendance", requireAuth, (c) => {
-  const context = c.get("context") as ElectricContext;
-  const originUrl = prepareElectricUrl(c.req.url);
+electricRouter.get("/shapes/attendance", requireOrgMember, (c) => {
+  const context = c.var.context;
+  const orgId = context.session?.session.activeOrganizationId;
+  const userId = context.session?.user.id;
 
+  const originUrl = prepareElectricUrl(c.req.url);
   originUrl.searchParams.set("table", "attendance");
-  // Users can see their own attendance and potentially attendance for their organization
-  const filter = `"userId" = '${context.session?.user.id}' OR "organizationId" = '${context.session?.session.activeOrganizationId}'`;
+
+  // User's own attendance in active org only
+  const filter = `"userId" = '${userId}' AND "organizationId" = '${orgId}'`;
   originUrl.searchParams.set("where", filter);
 
   return sendProxyResponse(originUrl);
 });
 
-electricRouter.get("/shapes/channels", requireAuth, (c) => {
-  const context = c.get("context") as ElectricContext;
-  const originUrl = prepareElectricUrl(c.req.url);
+electricRouter.get("/shapes/channels", requireOrgMember, (c) => {
+  const context = c.var.context;
+  const orgId = context.session?.session.activeOrganizationId;
+  const userId = context.session?.user.id;
 
+  const originUrl = prepareElectricUrl(c.req.url);
   originUrl.searchParams.set("table", "channel");
-  // Users can see channels in their organization
-  const filter = `"organizationId" = '${context.session?.session.activeOrganizationId}'`;
+
+  // Only channels user is member of in active org
+  const filter = `"organizationId" = '${orgId}' AND id IN (SELECT "channelId" FROM "channelMember" WHERE "userId" = '${userId}')`;
   originUrl.searchParams.set("where", filter);
 
   return sendProxyResponse(originUrl);
 });
 
-electricRouter.get("/shapes/channel-members", requireAuth, (c) => {
-  const originUrl = prepareElectricUrl(c.req.url);
+electricRouter.get("/shapes/channel-members", requireOrgMember, (c) => {
+  const context = c.var.context;
+  const orgId = context.session?.session.activeOrganizationId;
+  const userId = context.session?.user.id;
 
+  const originUrl = prepareElectricUrl(c.req.url);
   originUrl.searchParams.set("table", '"channelMember"');
+
+  // Only members of channels user can see
+  const filter = `"channelId" IN (SELECT id FROM channel WHERE "organizationId" = '${orgId}' AND id IN (SELECT "channelId" FROM "channelMember" WHERE "userId" = '${userId}'))`;
+  originUrl.searchParams.set("where", filter);
 
   return sendProxyResponse(originUrl);
 });
 
 electricRouter.get("/shapes/notifications", requireAuth, (c) => {
-  const context = c.get("context") as ElectricContext;
+  const context = c.var.context;
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", "notification");
@@ -223,7 +292,7 @@ electricRouter.get("/shapes/notifications", requireAuth, (c) => {
 });
 
 electricRouter.get("/shapes/message-read", requireAuth, (c) => {
-  const context = c.get("context") as ElectricContext;
+  const context = c.var.context;
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", '"messageRead"');
@@ -243,7 +312,7 @@ electricRouter.get("/shapes/channel-join-requests", requireAuth, (c) => {
 });
 
 electricRouter.get("/shapes/channel-read", requireAuth, (c) => {
-  const context = c.get("context") as ElectricContext;
+  const context = c.var.context;
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", '"channelRead"');
@@ -279,7 +348,7 @@ electricRouter.get(
 );
 
 electricRouter.get("/shapes/push-subscriptions", requireAuth, (c) => {
-  const context = c.get("context") as ElectricContext;
+  const context = c.var.context;
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", '"pushSubscription"');
