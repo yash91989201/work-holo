@@ -33,7 +33,7 @@ export function SignUpForm() {
   const form = useAppForm({
     ...formOpts,
     validators: {
-      onSubmit: SignUpFormSchema,
+      onSubmitAsync: SignUpFormSchema,
     },
     onSubmit: async ({ value }) => {
       try {
