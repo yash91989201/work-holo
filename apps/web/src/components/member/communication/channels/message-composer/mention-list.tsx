@@ -82,26 +82,29 @@ export const MentionList = forwardRef<MentionListRef, MentionListProps>(
       },
     }));
 
-   if (loading) {
-  return (
-    <div className="rounded-lg border border-border bg-popover p-2 shadow-md">
-      <div className="px-2 py-1.5 text-muted-foreground text-sm">
-        Loading users...
-      </div>
-    </div>
-  );
-}
+    if (loading) {
+      return (
+        <ItemGroup className="min-w-70 rounded-lg border border-border bg-popover shadow-md">
+          <Item className="cursor-not-allowed opacity-60" size="sm">
+            <ItemContent>
+              <ItemDescription>Searching users...</ItemDescription>
+            </ItemContent>
+          </Item>
+        </ItemGroup>
+      );
+    }
 
-if (!loading && items.length === 0) {
-  return (
-    <div className="rounded-lg border border-border bg-popover p-2 shadow-md">
-      <div className="px-2 py-1.5 text-muted-foreground text-sm">
-        User not found
-      </div>
-    </div>
-  );
-}
-
+    if (!loading && items.length === 0) {
+      return (
+        <ItemGroup className="min-w-70 rounded-lg border border-border bg-popover shadow-md">
+          <Item className="cursor-not-allowed opacity-60" size="sm">
+            <ItemContent>
+              <ItemDescription>User not found</ItemDescription>
+            </ItemContent>
+          </Item>
+        </ItemGroup>
+      );
+    }
 
     return (
       <ItemGroup className="min-w-70 rounded-lg border border-border bg-popover shadow-md">
