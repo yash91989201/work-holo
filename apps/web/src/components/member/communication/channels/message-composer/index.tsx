@@ -87,11 +87,12 @@ export function MessageComposer({
       query: string,
       includeChannelMention: boolean
     ): Promise<MentionUser[]> => {
-      const { users = [] } =
-        await orpcClient.communication.message.searchUsers({
+      const { users = [] } = await orpcClient.communication.message.searchUsers(
+        {
           channelId,
           query,
-        });
+        }
+      );
 
       const channelMention = includeChannelMention ? [CHANNEL_MENTION] : [];
       return [...channelMention, ...users.filter((su) => su.id !== user.id)];
@@ -120,7 +121,10 @@ export function MessageComposer({
       const { lastArgs, lastResult } = mentionUserSearchDebouncer.store.state;
       if (lastArgs && lastResult) {
         const [lastQuery, lastIncludeChannelMention] = lastArgs;
-        if (lastQuery === query && lastIncludeChannelMention === includeChannelMention) {
+        if (
+          lastQuery === query &&
+          lastIncludeChannelMention === includeChannelMention
+        ) {
           const cached = await lastResult;
           if (cached.length > 0) return cached;
         }
@@ -139,8 +143,8 @@ export function MessageComposer({
           query,
           includeChannelMention
         );
-        const resolved = result ? await result : undefined;
-        return resolved ?? channelMention;
+
+        return result ?? channelMention;
       } catch {
         return channelMention;
       }
