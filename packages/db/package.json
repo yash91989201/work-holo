@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@t3-oss/env-core": "^0.13.10",
+    "casbin": "^5.48.0",
     "dotenv": "^17.2.3",
     "drizzle-cuid2": "^2.2.0",
     "drizzle-orm": "^0.45.1",

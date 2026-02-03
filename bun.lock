@@ -226,6 +226,7 @@
         "amqplib": "^0.10.9",
         "casbin": "^5.48.0",
         "dotenv": "^17.2.3",
+        "drizzle-adapter": "^1.4.0",
         "drizzle-orm": "^0.45.1",
         "drizzle-zod": "^0.8.3",
         "hono": "^4.11.7",
@@ -273,6 +274,7 @@
       "name": "@work-holo/db",
       "dependencies": {
         "@t3-oss/env-core": "^0.13.10",
+        "casbin": "^5.48.0",
         "dotenv": "^17.2.3",
         "drizzle-cuid2": "^2.2.0",
         "drizzle-orm": "^0.45.1",
@@ -1951,6 +1953,8 @@
     "dotenv": ["dotenv@17.2.3", "", {}, "sha512-JVUnt+DUIzu87TABbhPmNfVdBDt18BLOWjMUFJMSi/Qqg7NTYtabbvSNJGOJ7afbRuv9D/lngizHtP7QyLQ+9w=="],
 
     "dotenv-expand": ["dotenv-expand@11.0.7", "", { "dependencies": { "dotenv": "^16.4.5" } }, "sha512-zIHwmZPRshsCdpMDyVsqGmgyP0yT8GAgXUnkdAoJisxvf33k7yO6OuoKmcTGuXPWSsm8Oh88nZicRLA9Y0rUeA=="],
+
+    "drizzle-adapter": ["drizzle-adapter@1.4.0", "", { "peerDependencies": { "casbin": "^5.0.0", "drizzle-orm": ">=0.29.0" } }, "sha512-UU4ZcGYIZeSSdfZaTlZBUNjQ+Aj1T64QsB/ayBsskHo6bRQiw5fbX3CSyc7yllTCZ+jE5207EKvwAJpHgT2nNw=="],
 
     "drizzle-cuid2": ["drizzle-cuid2@2.2.0", "", { "dependencies": { "@paralleldrive/cuid2": "^2.2.2" }, "peerDependencies": { "drizzle-orm": ">=0.28.3" } }, "sha512-LvTzxJhEocN/AWgJvio/JlPMKQ7tTjeogNBRo9TauEH0gu8yaMkDWPmN8NTIO/mrD4pwH44Lt0BJQ81NTtGhAw=="],
 

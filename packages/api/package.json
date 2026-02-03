@@ -30,6 +30,7 @@
     "amqplib": "^0.10.9",
     "casbin": "^5.48.0",
     "dotenv": "^17.2.3",
+    "drizzle-adapter": "^1.4.0",
     "drizzle-orm": "^0.45.1",
     "drizzle-zod": "^0.8.3",
     "hono": "^4.11.7",
