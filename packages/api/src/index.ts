@@ -2,6 +2,7 @@ import { ORPCError, os } from "@orpc/server";
 import { member } from "@work-holo/db/schema/auth";
 import { and, eq } from "drizzle-orm";
 import type { Context } from "./context";
+import { PermissionContext } from "./lib/casbin/permission.service";
 
 export const o = os.$context<Context>();
 
@@ -54,12 +55,19 @@ export const orgMemberProcedure = orgProcedure.use(
       });
     }
 
+    const permission = await PermissionContext.create(
+      membership.role,
+      context.session.user.id,
+      context.db
+    );
+
     return next({
       context: {
         orgMembership: {
           memberId: membership.id,
           role: membership.role,
         },
+        permission,
       },
     });
   }

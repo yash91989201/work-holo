@@ -1,3 +1,4 @@
+import type { PermissionContext } from "@work-holo/api/lib/casbin/permission.service";
 import { getRedisClient } from "@work-holo/api/lib/redis";
 import { auth } from "@work-holo/auth";
 import { db } from "@work-holo/db";
@@ -18,6 +19,7 @@ export type Context = {
     memberId: string;
     role: string;
   };
+  permission?: PermissionContext;
 };
 
 export type ElectricContext = Omit<Context, "redis">;

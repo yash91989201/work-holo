@@ -42,3 +42,13 @@ export const ListMembersOutput = z.object({
   total: z.number(),
   pageCount: z.number(),
 });
+
+export const UpdateRoleInput = z.object({
+  memberId: z.string(),
+  role: z.enum(["owner", "admin", "team_admin", "team_lead", "member"]),
+});
+
+export const UpdateRoleOutput = z.object({
+  success: z.boolean(),
+  message: z.string(),
+});

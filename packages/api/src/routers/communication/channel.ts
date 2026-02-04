@@ -77,12 +77,48 @@ async function verifyChannelMembership(
     });
   }
 }
+function getChannelOrderBy(sorting?: Array<{ id: string; desc: boolean }>) {
+  if (!sorting || sorting.length === 0) {
+    return [desc(channelTable.createdAt)];
+  }
+
+  return sorting.map((sort) => {
+    const direction = sort.desc ? desc : asc;
+
+    switch (sort.id) {
+      case "name":
+        return direction(channelTable.name);
+      case "createdAt":
+        return direction(channelTable.createdAt);
+      case "type":
+        return direction(channelTable.type);
+      default:
+        return desc(channelTable.createdAt);
+    }
+  });
+}
 
 export const channelRouter = {
   create: orgMemberProcedure
     .input(CreateChannelInput)
     .output(CreateChannelOutput)
-    .handler(async ({ input, context: { db, orgId } }) => {
+    .handler(async ({ input, context: { db, orgId, permission } }) => {
+      if (!permission) {
+        throw new ORPCError("FORBIDDEN", {
+          message: "Permission context not available",
+        });
+      }
+
+      permission.check("channel", "create");
+
+      if (
+        input.type === "team" &&
+        input.teamId &&
+        permission.role === "team_admin"
+      ) {
+        await permission.verifyTeamOwnership(input.teamId);
+      }
+
       try {
         const { txid, channel } = await db.transaction(async (tx) => {
           const txid = await generateTxId(tx);
@@ -260,22 +296,7 @@ export const channelRouter = {
       const whereClause =
         conditions.length > 1 ? and(...conditions) : conditions[0];
 
-      let orderBy = [desc(channelTable.createdAt)];
-
-      if (sorting && sorting.length > 0) {
-        orderBy = sorting.map((sort) => {
-          if (sort.id === "name")
-            return sort.desc ? desc(channelTable.name) : asc(channelTable.name);
-          if (sort.id === "createdAt")
-            return sort.desc
-              ? desc(channelTable.createdAt)
-              : asc(channelTable.createdAt);
-          if (sort.id === "type")
-            return sort.desc ? desc(channelTable.type) : asc(channelTable.type);
-          return desc(channelTable.createdAt);
-        });
-      }
-
+      const orderBy = getChannelOrderBy(sorting);
       const channels = await db.query.channelTable.findMany({
         where: whereClause,
         limit,
@@ -450,10 +471,16 @@ export const channelRouter = {
       return joinRequests;
     }),
 
-  delete: orgAdminProcedure
+  delete: orgMemberProcedure
     .input(DeleteChannelInput)
     .output(DeletechannelOutput)
-    .handler(async ({ input, context: { db, session, orgId } }) => {
+    .handler(async ({ input, context: { db, session, orgId, permission } }) => {
+      if (!permission)
+        throw new ORPCError("FORBIDDEN", {
+          message: "Permission context not available",
+        });
+      permission.check("channel", "delete");
+
       await verifyChannelMembership(
         db,
         input.channelId,
@@ -475,6 +502,10 @@ export const channelRouter = {
           throw new ORPCError("NOT_FOUND", {
             message: "Channel not found or you do not have access to it.",
           });
+        }
+
+        if (channel.teamId && permission.role === "team_admin") {
+          await permission.verifyTeamOwnership(channel.teamId);
         }
 
         await tx

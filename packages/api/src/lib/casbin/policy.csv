@@ -1,0 +1,81 @@
+# Owner - full organization control
+p, owner, org, create
+p, owner, org, delete
+p, owner, role, assign_owner
+p, owner, role, assign_admin
+p, owner, role, assign_team_admin
+p, owner, role, assign_team_lead
+p, owner, user, create
+p, owner, user, delete
+p, owner, team, create
+p, owner, team, delete
+p, owner, team, update
+p, owner, team, access
+p, owner, team, add_members
+p, owner, channel, create
+p, owner, channel, delete
+p, owner, channel, access
+p, owner, message, moderate
+p, owner, attendance, view_all
+p, owner, attendance, view_team
+p, owner, attendance, view_self
+p, owner, dashboard, org
+p, owner, dashboard, team
+p, owner, dashboard, personal
+
+# Admin - full org access (cannot create/delete org or assign owner/admin)
+p, admin, role, assign_team_admin
+p, admin, role, assign_team_lead
+p, admin, user, create
+p, admin, user, delete
+p, admin, team, create
+p, admin, team, delete
+p, admin, team, update
+p, admin, team, access
+p, admin, team, add_members
+p, admin, channel, create
+p, admin, channel, delete
+p, admin, channel, access
+p, admin, message, moderate
+p, admin, attendance, view_all
+p, admin, attendance, view_team
+p, admin, attendance, view_self
+p, admin, dashboard, org
+p, admin, dashboard, team
+p, admin, dashboard, personal
+
+# Team Admin - scoped to own teams (ownership enforced in code via team.createdBy)
+p, team_admin, role, assign_team_lead
+p, team_admin, user, create
+p, team_admin, user, delete
+p, team_admin, team, create
+p, team_admin, team, delete
+p, team_admin, team, update
+p, team_admin, team, access
+p, team_admin, team, add_members
+p, team_admin, channel, create
+p, team_admin, channel, delete
+p, team_admin, channel, access
+p, team_admin, message, moderate
+p, team_admin, attendance, view_team
+p, team_admin, attendance, view_self
+p, team_admin, dashboard, team
+p, team_admin, dashboard, personal
+
+# Team Lead - scoped to assigned team (membership enforced in code via teamMember.role)
+p, team_lead, user, create
+p, team_lead, team, update
+p, team_lead, team, access
+p, team_lead, team, add_members
+p, team_lead, channel, access
+p, team_lead, message, moderate
+p, team_lead, attendance, view_team
+p, team_lead, attendance, view_self
+p, team_lead, dashboard, team
+p, team_lead, dashboard, personal
+
+# Member - basic access to assigned resources only
+p, member, team, access
+p, member, channel, access
+p, member, attendance, view_self
+p, member, dashboard, personal

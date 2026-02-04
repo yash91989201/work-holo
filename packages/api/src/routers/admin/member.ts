@@ -1,3 +1,4 @@
+import { ORPCError } from "@orpc/server";
 import { member, user } from "@work-holo/db/schema/index";
 import type { SQL } from "drizzle-orm";
 import {
@@ -14,6 +15,8 @@ import { orgAdminProcedure } from "../../index";
 import {
   ListMembersInput,
   ListMembersOutput,
+  UpdateRoleInput,
+  UpdateRoleOutput,
 } from "../../lib/schemas/admin-member";
 
 export const adminMemberRouter = {
@@ -88,5 +91,41 @@ export const adminMemberRouter = {
       const pageCount = Math.ceil(total / perPage);
 
       return { members, total, pageCount };
+    }),
+
+  updateRole: orgAdminProcedure
+    .input(UpdateRoleInput)
+    .output(UpdateRoleOutput)
+    .handler(async ({ input, context: { db, orgMembership, permission } }) => {
+      if (!permission) {
+        throw new ORPCError("FORBIDDEN", {
+          message: "Permission context not available",
+        });
+      }
+
+      if (input.memberId === orgMembership.memberId) {
+        throw new ORPCError("FORBIDDEN", {
+          message: "You cannot change your own role",
+        });
+      }
+
+      permission.validateRoleAssignment(input.role);
+
+      const [updated] = await db
+        .update(member)
+        .set({ role: input.role })
+        .where(eq(member.id, input.memberId))
+        .returning();
+
+      if (!updated) {
+        throw new ORPCError("NOT_FOUND", {
+          message: "Member not found",
+        });
+      }
+
+      return {
+        success: true,
+        message: `Member role updated to '${input.role}'`,
+      };
     }),
 };

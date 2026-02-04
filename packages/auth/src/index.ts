@@ -62,6 +62,24 @@ export const auth = betterAuth({
           enabled: false,
         },
       },
+      schema: {
+        team: {
+          additionalFields: {
+            createdBy: {
+              type: "string",
+            },
+          },
+        },
+        teamMember: {
+          additionalFields: {
+            role: {
+              type: "string",
+              defaultValue: "member",
+            },
+          },
+        },
+        // biome-ignore lint/suspicious/noExplicitAny: Better-Auth types don't expose teamMember.additionalFields
+      } as any,
       // sendInvitationEmail(data) {
       //   const invitationLink = `${env.WEB_URL}/accept-invitation/${data.id}?email=${data.email}`;
       //

@@ -72,3 +72,35 @@ export const RemoveMemberOutput = z.object({
   message: z.string(),
   removedCount: z.number(),
 });
+
+export const CreateTeamInput = z.object({
+  name: z.string().min(1, "Team name is required"),
+});
+
+export const CreateTeamOutput = z.object({
+  id: z.string(),
+  name: z.string(),
+  organizationId: z.string(),
+  createdBy: z.string().nullable(),
+  createdAt: z.date(),
+});
+
+export const DeleteTeamInput = z.object({
+  teamId: z.string(),
+});
+
+export const DeleteTeamOutput = z.object({
+  success: z.boolean(),
+  message: z.string(),
+});
+
+export const UpdateTeamMemberRoleInput = z.object({
+  teamId: z.string(),
+  userId: z.string(),
+  role: z.enum(["member", "team_lead"]),
+});
+
+export const UpdateTeamMemberRoleOutput = z.object({
+  success: z.boolean(),
+  message: z.string(),
+});

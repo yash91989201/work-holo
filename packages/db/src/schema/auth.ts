@@ -148,6 +148,9 @@ export const team = pgTable(
     organizationId: text("organizationId")
       .notNull()
       .references(() => organization.id, { onDelete: "cascade" }),
+    createdBy: text("createdBy").references(() => user.id, {
+      onDelete: "set null",
+    }),
     createdAt: timestamp("createdAt").notNull(),
     updatedAt: timestamp("updatedAt").$onUpdate(
       () => /* @__PURE__ */ new Date()
@@ -166,6 +169,7 @@ export const teamMember = pgTable(
     userId: text("userId")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
+    role: text("role").default("member").notNull(),
     createdAt: timestamp("createdAt"),
   },
   (table) => [

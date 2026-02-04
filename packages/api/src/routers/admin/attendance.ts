@@ -15,10 +15,11 @@ import {
   getTableColumns,
   gte,
   ilike,
+  inArray,
   lte,
   or,
 } from "drizzle-orm";
-import { orgAdminProcedure } from "../../index";
+import { orgAdminProcedure, orgMemberProcedure } from "../../index";
 import {
   GetAttendanceDetailInput,
   GetAttendanceDetailOutput,
@@ -68,10 +69,18 @@ export const adminAttendanceRouter = {
       };
     }),
 
-  listAttendanceRecords: orgAdminProcedure
+  listAttendanceRecords: orgMemberProcedure
     .input(ListAttendanceRecordsInput)
     .output(ListAttendanceRecordsOutput)
-    .handler(async ({ input, context: { db, orgId } }) => {
+    .handler(async ({ input, context: { db, orgId, permission } }) => {
+      if (!permission) {
+        throw new ORPCError("FORBIDDEN", {
+          message: "Permission context not available",
+        });
+      }
+
+      permission.check("attendance", "view_team");
+
       const { page, perPage, search, filters, sorting } = input;
       const offset = (page - 1) * perPage;
 
@@ -86,6 +95,18 @@ export const adminAttendanceRouter = {
         eq(attendanceTable.organizationId, orgId),
         eq(attendanceTable.isDeleted, false),
       ];
+
+      // Team scope: non-owner/admin only see their accessible teams
+      const accessibleTeamIds = await permission.getAccessibleTeamIds();
+      if (accessibleTeamIds !== null) {
+        if (accessibleTeamIds.length === 0) {
+          return {
+            records: [],
+            pagination: { page, perPage, total: 0, totalPages: 0 },
+          };
+        }
+        conditions.push(inArray(attendanceTable.teamId, accessibleTeamIds));
+      }
 
       // Handle date filtering (single date or date range)
       if (date) {
@@ -196,11 +217,28 @@ export const adminAttendanceRouter = {
       };
     }),
 
-  getAttendanceDetail: orgAdminProcedure
+  getAttendanceDetail: orgMemberProcedure
     .input(GetAttendanceDetailInput)
     .output(GetAttendanceDetailOutput)
-    .handler(async ({ input, context: { db, orgId } }) => {
+    .handler(async ({ input, context: { db, orgId, permission } }) => {
+      if (!permission) {
+        throw new ORPCError("FORBIDDEN", {
+          message: "Permission context not available",
+        });
+      }
+      permission.check("attendance", "view_team");
+
       const { attendanceId } = input;
+
+      const accessibleTeamIds = await permission.getAccessibleTeamIds();
+      const conditions = [
+        eq(attendanceTable.id, attendanceId),
+        eq(attendanceTable.organizationId, orgId),
+        eq(attendanceTable.isDeleted, false),
+      ];
+      if (accessibleTeamIds !== null) {
+        conditions.push(inArray(attendanceTable.teamId, accessibleTeamIds));
+      }
 
       const [record] = await db
         .select({
@@ -214,13 +252,7 @@ export const adminAttendanceRouter = {
         })
         .from(attendanceTable)
         .innerJoin(user, eq(attendanceTable.userId, user.id))
-        .where(
-          and(
-            eq(attendanceTable.id, attendanceId),
-            eq(attendanceTable.organizationId, orgId),
-            eq(attendanceTable.isDeleted, false)
-          )
-        );
+        .where(and(...conditions));
 
       if (!record) {
         throw new ORPCError("NOT_FOUND", {
