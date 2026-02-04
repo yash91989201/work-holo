@@ -1,3 +1,183 @@
+@import "./index.css";
+
+/* Custom mention styles */
+.mention {
+  @apply inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-sm font-medium transition-colors;
+}
+
+.mention:hover {
+  @apply cursor-pointer;
+}
+
+.mention-avatar {
+  @apply h-4 w-4 rounded-full;
+}
+
+.mention-text {
+  @apply whitespace-nowrap;
+}
+
+/* Channel mention styles */
+.mention-channel {
+  @apply bg-blue-500/20 text-blue-600 font-semibold;
+}
+
+.mention-channel:hover {
+  @apply bg-blue-500/30;
+}
+
+/* Dark mode mention styles */
+.dark .mention {
+  @apply bg-primary/20 text-primary-foreground;
+}
+
+.dark .mention:hover {
+  @apply bg-primary/30;
+}
+
+.dark .mention-channel {
+  @apply bg-blue-500/30 text-blue-400;
+}
+
+.dark .mention-channel:hover {
+  @apply bg-blue-500/40;
+}
+
+.ProseMirror {
+  @apply focus:outline-none;
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  @apply text-muted-foreground/70;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+  font-size: 0.95rem;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+.ProseMirror ul,
+.ProseMirror ol {
+  @apply pl-6;
+}
+
+.ProseMirror ul {
+  @apply list-disc;
+}
+
+.ProseMirror ol {
+  @apply list-decimal;
+}
+
+.ProseMirror code {
+  @apply rounded bg-muted px-1.5 py-0.5 font-mono text-sm;
+}
+
+.ProseMirror strong {
+  @apply font-bold;
+}
+
+.ProseMirror em {
+  @apply italic;
+}
+
+.ProseMirror s {
+  @apply line-through;
+}
+
+.ProseMirror u {
+  @apply underline;
+}
+
+.ProseMirror a {
+  @apply text-primary-foreground underline transition-colors hover:text-primary-foreground/80;
+  @apply cursor-pointer;
+}
+
+.ProseMirror .mention {
+  @apply inline-flex items-center gap-1 rounded-md bg-primary/10 px-1.5 py-0.5 font-medium text-primary;
+  @apply cursor-pointer transition-colors hover:bg-primary/20;
+}
+
+.tippy-content {
+  @apply p-1.5 bg-background rounded-md;
+}
+
+/* Tippy.js base styles for mention dropdown */
+.tippy-box {
+  @apply rounded-lg border border-border bg-popover shadow-md;
+  z-index: 9999;
+}
+
+.tippy-box[data-theme~="mention"] {
+  @apply rounded-lg border border-border bg-popover shadow-md;
+}
+
+.tippy-box[data-theme~="mention"] .tippy-content {
+  @apply p-0 bg-popover overflow-hidden;
+}
+
+/* Arrow styling for tippy */
+.tippy-box[data-placement^="top"] > .tippy-arrow::before {
+  @apply border-t-border;
+}
+
+.tippy-box[data-placement^="bottom"] > .tippy-arrow::before {
+  @apply border-b-border;
+}
+
+.tippy-box[data-placement^="left"] > .tippy-arrow::before {
+  @apply border-l-border;
+}
+
+.tippy-box[data-placement^="right"] > .tippy-arrow::before {
+  @apply border-r-border;
+}
+
+/* Force word wrapping in editor to prevent horizontal scroll */
+.ProseMirror {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.ProseMirror * {
+  max-width: 100%;
+}
+
+/* Ensure long links wrap properly */
+.ProseMirror a {
+  word-break: break-all;
+  overflow-wrap: anywhere;
+}
+
+/* Ensure code blocks wrap */
+.ProseMirror code {
+  word-break: break-all;
+  white-space: pre-wrap;
+}
+
+/* Ensure pre-formatted text wraps */
+.ProseMirror pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* Smooth animations for message composer */
+.ProseMirror {
+  transition: background-color 0.2s ease;
+}
+
+.ProseMirror:focus-visible {
+  background-color: hsl(var(--accent) / 0.05);
+}
+
+/* Smooth toggle states */
+[data-slot="toggle"][data-state="on"] {
+  transform: translateY(-1px);
+}
+
 .tiptap {
   :first-child {
     margin-top: 0;
