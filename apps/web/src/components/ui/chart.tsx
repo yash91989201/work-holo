@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import * as RechartsPrimitive from "recharts";
 
@@ -308,14 +306,13 @@ function ChartLegendContent({
   );
 }
 
-// Helper to extract item config from a payload.
 function getPayloadConfigFromPayload(
   config: ChartConfig,
   payload: unknown,
   key: string
 ) {
   if (typeof payload !== "object" || payload === null) {
-    return;
+    return undefined;
   }
 
   const payloadPayload =
