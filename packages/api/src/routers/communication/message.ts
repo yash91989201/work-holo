@@ -4,6 +4,7 @@ import {
   channelMemberTable,
   channelReadTable,
   channelTable,
+  member,
   messageMentionTable,
   messageReactionTable,
   messageReadTable,
@@ -359,11 +360,38 @@ export const messageRouter = {
         context: {
           db,
           session: { user },
+          orgId,
         },
         input,
       }) => {
+        // Verify user is a member of the channel containing this message
+        await verifyMessageChannelMembership(
+          db,
+          input.messageId,
+          user.id,
+          orgId
+        );
+
         const { txid, message } = await db.transaction(async (tx) => {
           const txid = await generateTxId(tx);
+
+          // Verify message ownership
+          const existingMessage = await tx.query.messageTable.findFirst({
+            where: eq(messageTable.id, input.messageId),
+            columns: { senderId: true },
+          });
+
+          if (!existingMessage) {
+            throw new ORPCError("NOT_FOUND", {
+              message: "Message not found",
+            });
+          }
+
+          if (existingMessage.senderId !== user.id) {
+            throw new ORPCError("FORBIDDEN", {
+              message: "You can only edit your own messages",
+            });
+          }
 
           const [updatedMessage] = await tx
             .update(messageTable)
@@ -791,7 +819,35 @@ export const messageRouter = {
   unPin: orgMemberProcedure
     .input(UnPinMessageInput)
     .output(UnPinMessageOutput)
-    .handler(async ({ context: { db }, input }) => {
+    .handler(async ({ context: { db, session, orgId, permission }, input }) => {
+      await verifyMessageChannelMembership(
+        db,
+        input.messageId,
+        session.user.id,
+        orgId
+      );
+
+      const message = await db.query.messageTable.findFirst({
+        where: eq(messageTable.id, input.messageId),
+        columns: { senderId: true, pinnedBy: true },
+      });
+
+      if (!message) {
+        throw new ORPCError("NOT_FOUND", {
+          message: "Message not found",
+        });
+      }
+
+      const canModerate = permission?.can("message", "moderate");
+      const isPinner = message.pinnedBy === session.user.id;
+
+      if (!(canModerate || isPinner)) {
+        throw new ORPCError("FORBIDDEN", {
+          message:
+            "You can only unpin messages you pinned or have moderator permissions",
+        });
+      }
+
       const { txid } = await db.transaction(async (tx) => {
         const txid = await generateTxId(tx);
 
@@ -848,10 +904,27 @@ export const messageRouter = {
   getMentionUsers: orgMemberProcedure
     .input(GetMenionUsersInput)
     .output(GetMenionUsersOutput)
-    .handler(async ({ context: { db }, input }) => {
-      const users = await db.query.user.findMany({
-        where: inArray(userTable.id, input.userIds),
-      });
+    .handler(async ({ context: { db, orgId }, input }) => {
+      const users = await db
+        .select({
+          id: userTable.id,
+          name: userTable.name,
+          email: userTable.email,
+          emailVerified: userTable.emailVerified,
+          image: userTable.image,
+          createdAt: userTable.createdAt,
+          updatedAt: userTable.updatedAt,
+          role: userTable.role,
+          username: userTable.username,
+        })
+        .from(userTable)
+        .innerJoin(member, eq(member.userId, userTable.id))
+        .where(
+          and(
+            inArray(userTable.id, input.userIds),
+            eq(member.organizationId, orgId)
+          )
+        );
 
       return users;
     }),
