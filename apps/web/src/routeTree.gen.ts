@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as publicRouteRouteImport } from './routes/(public)/route'
 import { Route as authenticatedRouteRouteImport } from './routes/(authenticated)/route'
 import { Route as publicIndexRouteImport } from './routes/(public)/index'
+import { Route as publicComponentsTestRouteImport } from './routes/(public)/componentsTest'
 import { Route as authSignupRouteImport } from './routes/(auth)/signup'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as authenticatedSettingsRouteRouteImport } from './routes/(authenticated)/settings/route'
@@ -48,6 +49,11 @@ const authenticatedRouteRoute = authenticatedRouteRouteImport.update({
 const publicIndexRoute = publicIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => publicRouteRoute,
+} as any)
+const publicComponentsTestRoute = publicComponentsTestRouteImport.update({
+  id: '/componentsTest',
+  path: '/componentsTest',
   getParentRoute: () => publicRouteRoute,
 } as any)
 const authSignupRoute = authSignupRouteImport.update({
@@ -196,6 +202,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof authenticatedSettingsRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/signup': typeof authSignupRoute
+  '/componentsTest': typeof publicComponentsTestRoute
   '/': typeof publicIndexRoute
   '/org/$slug': typeof authenticatedOrgSlugRouteRouteWithChildren
   '/accept-invitation/$id': typeof authAcceptInvitationIdRoute
@@ -223,6 +230,7 @@ export interface FileRoutesByTo {
   '/settings': typeof authenticatedSettingsRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/signup': typeof authSignupRoute
+  '/componentsTest': typeof publicComponentsTestRoute
   '/': typeof publicIndexRoute
   '/accept-invitation/$id': typeof authAcceptInvitationIdRoute
   '/org/new': typeof authenticatedOrgNewRoute
@@ -250,6 +258,7 @@ export interface FileRoutesById {
   '/(authenticated)/settings': typeof authenticatedSettingsRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/signup': typeof authSignupRoute
+  '/(public)/componentsTest': typeof publicComponentsTestRoute
   '/(public)/': typeof publicIndexRoute
   '/(authenticated)/org/$slug': typeof authenticatedOrgSlugRouteRouteWithChildren
   '/(auth)/accept-invitation/$id': typeof authAcceptInvitationIdRoute
@@ -279,6 +288,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/login'
     | '/signup'
+    | '/componentsTest'
     | '/'
     | '/org/$slug'
     | '/accept-invitation/$id'
@@ -306,6 +316,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/login'
     | '/signup'
+    | '/componentsTest'
     | '/'
     | '/accept-invitation/$id'
     | '/org/new'
@@ -332,6 +343,7 @@ export interface FileRouteTypes {
     | '/(authenticated)/settings'
     | '/(auth)/login'
     | '/(auth)/signup'
+    | '/(public)/componentsTest'
     | '/(public)/'
     | '/(authenticated)/org/$slug'
     | '/(auth)/accept-invitation/$id'
@@ -385,6 +397,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof publicIndexRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/componentsTest': {
+      id: '/(public)/componentsTest'
+      path: '/componentsTest'
+      fullPath: '/componentsTest'
+      preLoaderRoute: typeof publicComponentsTestRouteImport
       parentRoute: typeof publicRouteRoute
     }
     '/(auth)/signup': {
@@ -674,10 +693,12 @@ const authenticatedRouteRouteWithChildren =
   authenticatedRouteRoute._addFileChildren(authenticatedRouteRouteChildren)
 
 interface publicRouteRouteChildren {
+  publicComponentsTestRoute: typeof publicComponentsTestRoute
   publicIndexRoute: typeof publicIndexRoute
 }
 
 const publicRouteRouteChildren: publicRouteRouteChildren = {
+  publicComponentsTestRoute: publicComponentsTestRoute,
   publicIndexRoute: publicIndexRoute,
 }
 
