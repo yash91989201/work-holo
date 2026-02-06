@@ -97,12 +97,6 @@ export const adminMemberRouter = {
     .input(UpdateRoleInput)
     .output(UpdateRoleOutput)
     .handler(async ({ input, context: { db, orgMembership, permission } }) => {
-      if (!permission) {
-        throw new ORPCError("FORBIDDEN", {
-          message: "Permission context not available",
-        });
-      }
-
       if (input.memberId === orgMembership.memberId) {
         throw new ORPCError("FORBIDDEN", {
           message: "You cannot change your own role",

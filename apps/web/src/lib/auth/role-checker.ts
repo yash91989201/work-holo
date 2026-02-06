@@ -1,7 +1,12 @@
 import { redirect } from "@tanstack/react-router";
 import { authClient } from "@/lib/auth-client";
 
-export type UserRole = "owner" | "admin" | "member";
+export type UserRole =
+  | "owner"
+  | "admin"
+  | "team_admin"
+  | "team_lead"
+  | "member";
 
 export function hasRequiredRole(
   userRole: UserRole | null,
@@ -11,19 +16,29 @@ export function hasRequiredRole(
 
   const roleHierarchy: Record<UserRole, number> = {
     member: 1,
-    admin: 2,
-    owner: 3,
+    team_lead: 2,
+    team_admin: 3,
+    admin: 4,
+    owner: 5,
   };
 
   return roleHierarchy[userRole] >= roleHierarchy[requiredRole];
 }
 
 export function getRoleHierarchy(minRole: UserRole): UserRole[] {
-  const allRoles: UserRole[] = ["member", "admin", "owner"];
+  const allRoles: UserRole[] = [
+    "member",
+    "team_lead",
+    "team_admin",
+    "admin",
+    "owner",
+  ];
   const roleHierarchy: Record<UserRole, number> = {
     member: 1,
-    admin: 2,
-    owner: 3,
+    team_lead: 2,
+    team_admin: 3,
+    admin: 4,
+    owner: 5,
   };
 
   return allRoles.filter(

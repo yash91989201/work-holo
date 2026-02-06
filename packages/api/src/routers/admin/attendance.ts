@@ -73,12 +73,6 @@ export const adminAttendanceRouter = {
     .input(ListAttendanceRecordsInput)
     .output(ListAttendanceRecordsOutput)
     .handler(async ({ input, context: { db, orgId, permission } }) => {
-      if (!permission) {
-        throw new ORPCError("FORBIDDEN", {
-          message: "Permission context not available",
-        });
-      }
-
       permission.check("attendance", "view_team");
 
       const { page, perPage, search, filters, sorting } = input;
@@ -221,11 +215,6 @@ export const adminAttendanceRouter = {
     .input(GetAttendanceDetailInput)
     .output(GetAttendanceDetailOutput)
     .handler(async ({ input, context: { db, orgId, permission } }) => {
-      if (!permission) {
-        throw new ORPCError("FORBIDDEN", {
-          message: "Permission context not available",
-        });
-      }
       permission.check("attendance", "view_team");
 
       const { attendanceId } = input;

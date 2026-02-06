@@ -103,12 +103,6 @@ export const channelRouter = {
     .input(CreateChannelInput)
     .output(CreateChannelOutput)
     .handler(async ({ input, context: { db, orgId, permission } }) => {
-      if (!permission) {
-        throw new ORPCError("FORBIDDEN", {
-          message: "Permission context not available",
-        });
-      }
-
       permission.check("channel", "create");
 
       if (
@@ -475,10 +469,6 @@ export const channelRouter = {
     .input(DeleteChannelInput)
     .output(DeletechannelOutput)
     .handler(async ({ input, context: { db, session, orgId, permission } }) => {
-      if (!permission)
-        throw new ORPCError("FORBIDDEN", {
-          message: "Permission context not available",
-        });
       permission.check("channel", "delete");
 
       await verifyChannelMembership(

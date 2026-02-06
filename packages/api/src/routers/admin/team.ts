@@ -38,12 +38,6 @@ export const adminTeamRouter = {
         input,
         context: { db, session, orgId, headers, permission },
       }) => {
-        if (!permission) {
-          throw new ORPCError("FORBIDDEN", {
-            message: "Permission context not available",
-          });
-        }
-
         permission.check("team", "create");
 
         const createdTeam = (await auth.api.createTeam({
@@ -76,12 +70,6 @@ export const adminTeamRouter = {
     .input(DeleteTeamInput)
     .output(DeleteTeamOutput)
     .handler(async ({ input, context: { headers, permission } }) => {
-      if (!permission) {
-        throw new ORPCError("FORBIDDEN", {
-          message: "Permission context not available",
-        });
-      }
-
       permission.check("team", "delete");
       await permission.checkTeamScope(input.teamId, "delete");
 
@@ -98,12 +86,6 @@ export const adminTeamRouter = {
     .input(ListTeamsInput)
     .output(ListTeamsOutput)
     .handler(async ({ input, context: { db, orgId, permission } }) => {
-      if (!permission) {
-        throw new ORPCError("FORBIDDEN", {
-          message: "Permission context not available",
-        });
-      }
-
       permission.check("team", "access");
 
       const { page, limit, search, filters, sorting } = input;
@@ -182,12 +164,6 @@ export const adminTeamRouter = {
         input: { teamId, userIds },
         context: { headers, permission },
       }) => {
-        if (!permission) {
-          throw new ORPCError("FORBIDDEN", {
-            message: "Permission context not available",
-          });
-        }
-
         await permission.checkTeamScope(teamId, "add_members");
 
         let addedCount = 0;
@@ -235,12 +211,6 @@ export const adminTeamRouter = {
         input: { teamId, userIds },
         context: { headers, permission },
       }) => {
-        if (!permission) {
-          throw new ORPCError("FORBIDDEN", {
-            message: "Permission context not available",
-          });
-        }
-
         await permission.checkTeamScope(teamId, "add_members");
 
         let removedCount = 0;
@@ -284,12 +254,6 @@ export const adminTeamRouter = {
     .input(UpdateTeamMemberRoleInput)
     .output(UpdateTeamMemberRoleOutput)
     .handler(async ({ input, context: { db, orgId, permission } }) => {
-      if (!permission) {
-        throw new ORPCError("FORBIDDEN", {
-          message: "Permission context not available",
-        });
-      }
-
       // Only roles that can assign_team_lead may promote
       if (input.role === "team_lead") {
         permission.check("role", "assign_team_lead");
