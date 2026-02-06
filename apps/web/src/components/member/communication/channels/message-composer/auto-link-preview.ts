@@ -3,75 +3,74 @@ import { Plugin, PluginKey } from "@tiptap/pm/state";
 
 export const AutoLinkPreview = Extension.create({
   name: "autoLinkPreview",
+
   addProseMirrorPlugins() {
     return [
       new Plugin({
         key: new PluginKey("autoLinkPreview"),
-        appendTransaction: (transactions, oldState, newState) => {
-          // Check if there was a text input
-          const docChanged = transactions.some((tr) => tr.docChanged);
-          if (!docChanged) return null;
 
-          // Find newly created links
-          const { doc } = newState;
-          const { doc: oldDoc } = oldState;
+        appendTransaction(transactions, oldState, newState) {
+          if (!transactions.some((tr) => tr.docChanged)) {
+            return null;
+          }
 
-          let tr = newState.tr;
-          let modified = false;
+          const { doc, schema } = newState;
+          const oldDoc = oldState.doc;
+          const inserts: Array<{ pos: number; url: string }> = [];
 
           doc.descendants((node, pos) => {
-            // Check if this is a paragraph with a link mark
+            if (!node.isText) return;
+
+            const linkMark = node.marks.find(
+              (m) => m.type.name === "link" && m.attrs?.href
+            );
+            if (!linkMark) return;
+
+            const url = linkMark.attrs.href;
+
+            // Skip if link already existed
+            const existedBefore = oldDoc
+              .nodeAt(pos)
+              ?.marks.some(
+                (m) => m.type.name === "link" && m.attrs.href === url
+              );
+
+            if (existedBefore) return;
+
+            const $pos = doc.resolve(pos);
+            if ($pos.parent.type.name !== "paragraph") return;
+
+            const paragraphEnd = $pos.end();
+
+            // Skip if preview already exists
+            const nextNode = doc.nodeAt(paragraphEnd);
             if (
-              node.type.name === "text" &&
-              node.marks.some((mark) => mark.type.name === "link")
+              nextNode?.type.name === "linkPreview" &&
+              nextNode.attrs.url === url
             ) {
-              const linkMark = node.marks.find(
-                (mark) => mark.type.name === "link"
-              );
-              if (!linkMark) return;
-
-              const url = linkMark.attrs.href;
-
-              // Check if this link was just created
-              const oldNode = oldDoc.nodeAt(pos);
-              const wasLink = oldNode?.marks.some(
-                (mark) => mark.type.name === "link" && mark.attrs.href === url
-              );
-
-              // If this is a new link, check if we should add a preview
-              if (!wasLink && url) {
-                // Check if there's already a preview for this URL right after
-                const nextPos = pos + node.nodeSize;
-                const nextNode = doc.nodeAt(nextPos);
-
-                const hasPreview =
-                  nextNode?.type.name === "linkPreview" &&
-                  nextNode?.attrs.url === url;
-
-                if (!hasPreview) {
-                  // Find the end of the paragraph
-                  const parent = doc.resolve(pos).parent;
-                  let paragraphEnd = pos + node.nodeSize;
-
-                  if (parent.type.name === "paragraph") {
-                    paragraphEnd = pos + parent.nodeSize - 1;
-                  }
-
-                  // Insert a new paragraph and then the preview
-                  const linkPreviewType = newState.schema.nodes.linkPreview;
-                  if (linkPreviewType) {
-                    const paragraph = newState.schema.nodes.paragraph?.create();
-                    const preview = linkPreviewType.create({ url });
-
-                    tr = tr.insert(paragraphEnd, [paragraph, preview]);
-                    modified = true;
-                  }
-                }
-              }
+              return;
             }
+
+            inserts.push({ pos: paragraphEnd, url });
           });
 
-          return modified ? tr : null;
+          if (!inserts.length) return null;
+
+          const tr = newState.tr;
+
+          // Insert bottom → top to avoid shifting
+          inserts
+            .sort((a, b) => b.pos - a.pos)
+            .forEach(({ pos, url }) => {
+              const paragraph = schema.nodes.paragraph?.create();
+              const preview = schema.nodes.linkPreview?.create({ url });
+
+              if (paragraph && preview) {
+                tr.insert(pos, [paragraph, preview]);
+              }
+            });
+
+          return tr.docChanged ? tr : null;
         },
       }),
     ];
