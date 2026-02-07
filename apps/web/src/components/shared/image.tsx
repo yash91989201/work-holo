@@ -53,8 +53,9 @@ const buildImageUrl = (options: {
   params.set("quality", quality.toString());
   params.set("format", format);
 
-  const baseUrl = env.VITE_IMAGE_TRANSFORMATION_URL || "";
-  const encodedSrc = encodeURIComponent(`${window.location.origin}${src}`);
+  const baseUrl = env.VITE_IMAGE_TRANSFORMATION_URL;
+  const websiteUrl = env.VITE_WEB_URL.replace(/\/$/, "");
+  const encodedSrc = encodeURIComponent(`${websiteUrl}${src}`);
 
   return `${baseUrl}/image/${encodedSrc}?${params}`;
 };
