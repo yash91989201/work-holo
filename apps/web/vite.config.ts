@@ -150,7 +150,6 @@ export default defineConfig({
             "date-fns",
             "dompurify",
             "html-react-parser",
-            "react-lazy-load-image-component",
             "react-dropzone",
           ],
 
