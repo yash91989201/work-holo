@@ -6,6 +6,14 @@ import {
   useState,
 } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item";
 import { cn } from "@/lib/utils";
 
 export interface MentionListProps {
@@ -16,16 +24,16 @@ export interface MentionListProps {
     image?: string | null;
   }>;
   command: (item: { id: string; label: string }) => void;
+  loading: boolean;
 }
 
 export interface MentionListRef {
   onKeyDown: (event: KeyboardEvent) => boolean;
 }
 
-// biome-ignore lint/nursery/noReactForwardRef: <required here>
 export const MentionList = forwardRef<MentionListRef, MentionListProps>(
   (props, ref) => {
-    const { items, command } = props;
+    const { items, command, loading } = props;
     const [selectedIndex, setSelectedIndex] = useState(0);
 
     const selectItem = useCallback(
@@ -74,50 +82,60 @@ export const MentionList = forwardRef<MentionListRef, MentionListProps>(
       },
     }));
 
-    if (items.length === 0) {
+    if (loading) {
       return (
-        <div className="rounded-lg border bg-popover p-2 shadow-md">
-          <div className="px-2 py-1.5 text-muted-foreground text-sm">
-            No users found
-          </div>
-        </div>
+        <ItemGroup className="min-w-70 rounded-lg border border-border bg-popover shadow-md">
+          <Item className="cursor-not-allowed opacity-60" size="sm">
+            <ItemContent>
+              <ItemDescription>Searching users...</ItemDescription>
+            </ItemContent>
+          </Item>
+        </ItemGroup>
+      );
+    }
+
+    if (!loading && items.length === 0) {
+      return (
+        <ItemGroup className="min-w-70 rounded-lg border border-border bg-popover shadow-md">
+          <Item className="cursor-not-allowed opacity-60" size="sm">
+            <ItemContent>
+              <ItemDescription>User not found</ItemDescription>
+            </ItemContent>
+          </Item>
+        </ItemGroup>
       );
     }
 
     return (
-      <div className="min-w-[280px] rounded-lg border bg-popover p-1 shadow-md">
+      <ItemGroup className="min-w-70 rounded-lg border border-border bg-popover shadow-md">
         {items.map((item, index) => (
-          <button
+          <Item
             className={cn(
-              "flex w-full items-center gap-3 rounded-md px-3 py-2 text-left text-sm transition-colors",
-              index === selectedIndex
-                ? "bg-accent text-accent-foreground"
-                : "hover:bg-accent/50"
+              "cursor-pointer transition-colors",
+              index === selectedIndex ? "bg-accent" : "hover:bg-accent/50"
             )}
             key={item.id}
             onClick={() => selectItem(index)}
-            type="button"
+            size="sm"
           >
-            <Avatar className="h-8 w-8 shrink-0">
-              <AvatarImage alt={item.name} src={item.image || undefined} />
-              <AvatarFallback className="text-xs">
-                {item.name?.[0]?.toUpperCase() || item.email[0]?.toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
+            <ItemMedia variant="image">
+              <Avatar className="h-8 w-8">
+                <AvatarImage alt={item.name} src={item.image ?? undefined} />
+                <AvatarFallback className="font-bold text-foreground text-xs">
+                  {item.name[0]?.toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            </ItemMedia>
 
-            <div className="flex min-w-0 flex-1 flex-col">
-              <span className="truncate font-medium">
-                {item.name || item.email}
-              </span>
-              {item.name && (
-                <span className="truncate text-muted-foreground text-xs">
-                  {item.email}
-                </span>
-              )}
-            </div>
-          </button>
+            <ItemContent>
+              <ItemTitle className="text-foreground">{item.name}</ItemTitle>
+              <ItemDescription className="line-clamp-1">
+                {item.email}
+              </ItemDescription>
+            </ItemContent>
+          </Item>
         ))}
-      </div>
+      </ItemGroup>
     );
   }
 );

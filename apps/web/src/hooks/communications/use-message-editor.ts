@@ -12,6 +12,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import z from "zod";
 import { cn } from "@/lib/utils";
 import { uploadMessageImage } from "@/utils/upload-helper";
+import type { AnyExtension } from "@tiptap/core";
 
 const URL_REGEX = /^[a-zA-Z]+:\/\//;
 
@@ -41,8 +42,8 @@ interface UseMessageEditorOptions {
       }>
     >
   ) => Omit<SuggestionOptions, "editor">;
-  LinkPreviewNode: unknown;
-  AutoLinkPreview: unknown;
+  LinkPreviewNode: AnyExtension;
+  AutoLinkPreview: AnyExtension;
 }
 
 export function useMessageEditor({
@@ -178,7 +179,8 @@ export function useMessageEditor({
       handlePaste: (_view, event) => {
         const items = Array.from(event.clipboardData?.items ?? []);
         const imageItem = items.find((i) => i.type.startsWith("image/"));
-        if (imageItem) {
+        if (!imageItem) return false;
+        {
           event.preventDefault();
           const file = imageItem.getAsFile();
           if (file) {
@@ -198,7 +200,6 @@ export function useMessageEditor({
           }
           return true;
         }
-        return false;
       },
       handleDrop: (_view, event) => {
         const files = Array.from(event.dataTransfer?.files ?? []);

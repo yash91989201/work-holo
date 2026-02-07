@@ -141,7 +141,7 @@ export default defineConfig({
           // ---------------------------
           // Forms & Validation
           // ---------------------------
-          forms: ["react-hook-form", "@hookform/resolvers", "zod"],
+          forms: ["zod"],
 
           // ---------------------------
           // Data Handling / Utils
@@ -150,7 +150,6 @@ export default defineConfig({
             "date-fns",
             "dompurify",
             "html-react-parser",
-            "react-lazy-load-image-component",
             "react-dropzone",
           ],
 

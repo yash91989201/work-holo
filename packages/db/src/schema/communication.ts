@@ -83,7 +83,7 @@ export const channelMemberTable = pgTable(
   "channelMember",
   {
     id: cuid2().defaultRandom().primaryKey(),
-    channelId: text()
+    channelId: cuid2()
       .notNull()
       .references(() => channelTable.id, { onDelete: "cascade" }),
     userId: text()
@@ -103,7 +103,7 @@ export const channelMemberTable = pgTable(
 
 export const channelJoinRequestTable = pgTable("channelJoinRequest", {
   id: cuid2().defaultRandom().primaryKey(),
-  channelId: text()
+  channelId: cuid2()
     .notNull()
     .references(() => channelTable.id, { onDelete: "cascade" }),
   userId: text()
@@ -131,7 +131,7 @@ export const messageTable = pgTable(
   "message",
   {
     id: cuid2().defaultRandom().primaryKey(),
-    channelId: text()
+    channelId: cuid2()
       .references(() => channelTable.id, {
         onDelete: "cascade",
       })
@@ -145,7 +145,7 @@ export const messageTable = pgTable(
     }),
     content: text(),
     type: messageTypeEnum().notNull().default("text"),
-    parentMessageId: text(),
+    parentMessageId: cuid2(),
     threadCount: integer().default(0).notNull(),
     isEdited: boolean().default(false).notNull(),
     editedAt: timestamp({ withTimezone: true }),
@@ -185,7 +185,7 @@ export const messageMentionTable = pgTable(
   "messageMention",
   {
     id: cuid2().defaultRandom().primaryKey(),
-    messageId: text()
+    messageId: cuid2()
       .notNull()
       .references(() => messageTable.id, { onDelete: "cascade" }),
     mentionedById: text()
@@ -211,7 +211,7 @@ export const messageMentionTable = pgTable(
 
 export const attachmentTable = pgTable("attachment", {
   id: cuid2().defaultRandom().primaryKey(),
-  messageId: text()
+  messageId: cuid2()
     .notNull()
     .references(() => messageTable.id, { onDelete: "cascade" }),
   fileName: text().notNull(),
@@ -301,13 +301,13 @@ export const messageReadTable = pgTable(
 export const channelReadTable = pgTable(
   "channelRead",
   {
-    channelId: text()
+    channelId: cuid2()
       .notNull()
       .references(() => channelTable.id, { onDelete: "cascade" }),
     userId: text()
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
-    lastReadMessageId: text().references(() => messageTable.id, {
+    lastReadMessageId: cuid2().references(() => messageTable.id, {
       onDelete: "set null",
     }),
     lastReadAt: timestamp({ withTimezone: true }),
@@ -323,7 +323,7 @@ export const messageReadSummaryTable = pgTable(
   "messageReadSummary",
   {
     id: cuid2().defaultRandom().primaryKey(),
-    messageId: text()
+    messageId: cuid2()
       .notNull()
       .references(() => messageTable.id, { onDelete: "cascade" })
       .unique(),
@@ -348,7 +348,7 @@ export const channelReadProcessedWatermarkTable = pgTable(
   "channelReadProcessedWatermark",
   {
     id: cuid2().defaultRandom().primaryKey(),
-    channelId: text()
+    channelId: cuid2()
       .notNull()
       .references(() => channelTable.id, { onDelete: "cascade" })
       .unique(),
@@ -367,7 +367,7 @@ export const messageReactionTable = pgTable(
   "messageReaction",
   {
     id: cuid2().defaultRandom().primaryKey(),
-    messageId: text()
+    messageId: cuid2()
       .notNull()
       .references(() => messageTable.id, { onDelete: "cascade" }),
     userId: text()

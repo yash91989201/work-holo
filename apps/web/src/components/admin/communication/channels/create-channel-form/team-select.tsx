@@ -1,13 +1,6 @@
 import { ChevronDown, RefreshCw } from "lucide-react";
-import { useFormContext } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { withForm } from "@/components/ui/form/hooks";
 import {
   Select,
   SelectContent,
@@ -16,39 +9,39 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useListOrgTeams } from "@/hooks/use-list-org-teams";
-import type { CreateChannelFormType } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { channelFormOpts } from "./form-options";
 
-export const TeamSelect = () => {
-  const form = useFormContext<CreateChannelFormType>();
+export const TeamSelect = withForm({
+  ...channelFormOpts,
+  render({ form }) {
+    const { teams, refetchTeams, isRefetching } = useListOrgTeams();
 
-  const { teams, refetchTeams, isRefetching } = useListOrgTeams();
-
-  return (
-    <FormField
-      control={form.control}
-      name="teamId"
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>
-            <span className="flex-1">Teams</span>
-            <Button
-              className="size-6 rounded-sm"
-              disabled={isRefetching}
-              onClick={() => refetchTeams()}
-              size="icon"
-              type="button"
-              variant="outline"
+    return (
+      <form.AppField name="teamId">
+        {(field) => (
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <span className="flex-1 font-medium text-sm">Teams</span>
+              <Button
+                className="size-6 rounded-sm"
+                disabled={isRefetching}
+                onClick={() => refetchTeams()}
+                size="icon"
+                type="button"
+                variant="outline"
+              >
+                <RefreshCw
+                  className={cn("size-3", {
+                    "animate-spin": isRefetching,
+                  })}
+                />
+              </Button>
+            </div>
+            <Select
+              onValueChange={(value) => field.handleChange(value ?? undefined)}
+              value={field.state.value ?? ""}
             >
-              <RefreshCw
-                className={cn("size-3", {
-                  "animate-spin": isRefetching,
-                })}
-              />
-            </Button>
-          </FormLabel>
-          <FormControl>
-            <Select onValueChange={field.onChange} value={field.value}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select team" />
               </SelectTrigger>
@@ -60,43 +53,32 @@ export const TeamSelect = () => {
                 ))}
               </SelectContent>
             </Select>
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  );
-};
+          </div>
+        )}
+      </form.AppField>
+    );
+  },
+});
 
 export function TeamSelectSkeleton() {
-  const form = useFormContext<CreateChannelFormType>();
   return (
-    <FormField
-      control={form.control}
-      name="memberIds"
-      render={() => (
-        <FormItem>
-          <FormLabel>
-            <span className="flex-1">Teams</span>
-            <Button
-              className="size-6 rounded-sm"
-              disabled
-              size="icon"
-              type="button"
-              variant="outline"
-            >
-              <RefreshCw className="size-3" />
-            </Button>
-          </FormLabel>
-          <FormControl className="animate-pulse">
-            <div className="flex h-10 cursor-progress items-center justify-between rounded-md border px-3">
-              <p className="text-muted-foreground text-sm">Select a team</p>
-              <ChevronDown className="size-4" />
-            </div>
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
+    <div className="space-y-2">
+      <div className="flex items-center gap-2">
+        <span className="flex-1 font-medium text-sm">Teams</span>
+        <Button
+          className="size-6 rounded-sm"
+          disabled
+          size="icon"
+          type="button"
+          variant="outline"
+        >
+          <RefreshCw className="size-3" />
+        </Button>
+      </div>
+      <div className="flex h-10 animate-pulse cursor-progress items-center justify-between rounded-md border px-3">
+        <p className="text-muted-foreground text-sm">Select a team</p>
+        <ChevronDown className="size-4" />
+      </div>
+    </div>
   );
 }

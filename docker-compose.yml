@@ -35,6 +35,7 @@ services:
       # Not suitable for production. Only use insecure mode in development or if you've otherwise secured the Electric API.
       # See https://electric-sql.com/docs/guides/security
       ELECTRIC_INSECURE: true
+      ELECTRIC_FEATURE_FLAGS: allow_subqueries,tagged_subqueries
     ports:
       - "5003:3000"
 
@@ -44,6 +45,7 @@ services:
       - "6379:6379"
     ulimits:
       memlock: -1
+    command: dragonfly --logtostderr --proactor_threads=3 --maxmemory=1GB
     volumes:
       - dragonfly_data:/data
 

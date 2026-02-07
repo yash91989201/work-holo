@@ -208,15 +208,15 @@ export interface FileRoutesByFullPath {
   '/settings/account/sessions': typeof authenticatedSettingsAccountSessionsRoute
   '/org/$slug/': typeof authenticatedOrgSlugIndexRoute
   '/org/$slug/dashboard/': typeof authenticatedOrgSlugDashboardIndexRoute
-  '/org/$slug/manage': typeof authenticatedOrgSlugManageIndexRoute
+  '/org/$slug/manage/': typeof authenticatedOrgSlugManageIndexRoute
   '/org/$slug/dashboard/attendance/analytics': typeof authenticatedOrgSlugDashboardAttendanceAnalyticsRoute
-  '/org/$slug/attendance': typeof authenticatedOrgSlugmodulesAttendanceIndexRoute
-  '/org/$slug/dashboard/attendance': typeof authenticatedOrgSlugDashboardAttendanceIndexRoute
-  '/org/$slug/dashboard/members': typeof authenticatedOrgSlugDashboardMembersIndexRoute
-  '/org/$slug/dashboard/teams': typeof authenticatedOrgSlugDashboardTeamsIndexRoute
+  '/org/$slug/attendance/': typeof authenticatedOrgSlugmodulesAttendanceIndexRoute
+  '/org/$slug/dashboard/attendance/': typeof authenticatedOrgSlugDashboardAttendanceIndexRoute
+  '/org/$slug/dashboard/members/': typeof authenticatedOrgSlugDashboardMembersIndexRoute
+  '/org/$slug/dashboard/teams/': typeof authenticatedOrgSlugDashboardTeamsIndexRoute
   '/org/$slug/communication/channels/$id': typeof authenticatedOrgSlugmodulesCommunicationChannelsIdRouteRouteWithChildren
-  '/org/$slug/communication/channels': typeof authenticatedOrgSlugmodulesCommunicationChannelsIndexRoute
-  '/org/$slug/dashboard/communication/channels': typeof authenticatedOrgSlugDashboardCommunicationChannelsIndexRoute
+  '/org/$slug/communication/channels/': typeof authenticatedOrgSlugmodulesCommunicationChannelsIndexRoute
+  '/org/$slug/dashboard/communication/channels/': typeof authenticatedOrgSlugDashboardCommunicationChannelsIndexRoute
   '/org/$slug/communication/channels/$id/': typeof authenticatedOrgSlugmodulesCommunicationChannelsIdIndexRoute
 }
 export interface FileRoutesByTo {
@@ -291,15 +291,15 @@ export interface FileRouteTypes {
     | '/settings/account/sessions'
     | '/org/$slug/'
     | '/org/$slug/dashboard/'
-    | '/org/$slug/manage'
+    | '/org/$slug/manage/'
     | '/org/$slug/dashboard/attendance/analytics'
-    | '/org/$slug/attendance'
-    | '/org/$slug/dashboard/attendance'
-    | '/org/$slug/dashboard/members'
-    | '/org/$slug/dashboard/teams'
+    | '/org/$slug/attendance/'
+    | '/org/$slug/dashboard/attendance/'
+    | '/org/$slug/dashboard/members/'
+    | '/org/$slug/dashboard/teams/'
     | '/org/$slug/communication/channels/$id'
-    | '/org/$slug/communication/channels'
-    | '/org/$slug/dashboard/communication/channels'
+    | '/org/$slug/communication/channels/'
+    | '/org/$slug/dashboard/communication/channels/'
     | '/org/$slug/communication/channels/$id/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -481,7 +481,7 @@ declare module '@tanstack/react-router' {
     '/(authenticated)/org/$slug/manage/': {
       id: '/(authenticated)/org/$slug/manage/'
       path: '/manage'
-      fullPath: '/org/$slug/manage'
+      fullPath: '/org/$slug/manage/'
       preLoaderRoute: typeof authenticatedOrgSlugManageIndexRouteImport
       parentRoute: typeof authenticatedOrgSlugRouteRoute
     }
@@ -495,28 +495,28 @@ declare module '@tanstack/react-router' {
     '/(authenticated)/org/$slug/dashboard/teams/': {
       id: '/(authenticated)/org/$slug/dashboard/teams/'
       path: '/teams'
-      fullPath: '/org/$slug/dashboard/teams'
+      fullPath: '/org/$slug/dashboard/teams/'
       preLoaderRoute: typeof authenticatedOrgSlugDashboardTeamsIndexRouteImport
       parentRoute: typeof authenticatedOrgSlugDashboardRouteRoute
     }
     '/(authenticated)/org/$slug/dashboard/members/': {
       id: '/(authenticated)/org/$slug/dashboard/members/'
       path: '/members'
-      fullPath: '/org/$slug/dashboard/members'
+      fullPath: '/org/$slug/dashboard/members/'
       preLoaderRoute: typeof authenticatedOrgSlugDashboardMembersIndexRouteImport
       parentRoute: typeof authenticatedOrgSlugDashboardRouteRoute
     }
     '/(authenticated)/org/$slug/dashboard/attendance/': {
       id: '/(authenticated)/org/$slug/dashboard/attendance/'
       path: '/attendance'
-      fullPath: '/org/$slug/dashboard/attendance'
+      fullPath: '/org/$slug/dashboard/attendance/'
       preLoaderRoute: typeof authenticatedOrgSlugDashboardAttendanceIndexRouteImport
       parentRoute: typeof authenticatedOrgSlugDashboardRouteRoute
     }
     '/(authenticated)/org/$slug/(modules)/attendance/': {
       id: '/(authenticated)/org/$slug/(modules)/attendance/'
       path: '/attendance'
-      fullPath: '/org/$slug/attendance'
+      fullPath: '/org/$slug/attendance/'
       preLoaderRoute: typeof authenticatedOrgSlugmodulesAttendanceIndexRouteImport
       parentRoute: typeof authenticatedOrgSlugRouteRoute
     }
@@ -530,14 +530,14 @@ declare module '@tanstack/react-router' {
     '/(authenticated)/org/$slug/dashboard/communication/channels/': {
       id: '/(authenticated)/org/$slug/dashboard/communication/channels/'
       path: '/communication/channels'
-      fullPath: '/org/$slug/dashboard/communication/channels'
+      fullPath: '/org/$slug/dashboard/communication/channels/'
       preLoaderRoute: typeof authenticatedOrgSlugDashboardCommunicationChannelsIndexRouteImport
       parentRoute: typeof authenticatedOrgSlugDashboardRouteRoute
     }
     '/(authenticated)/org/$slug/(modules)/communication/channels/': {
       id: '/(authenticated)/org/$slug/(modules)/communication/channels/'
       path: '/communication/channels'
-      fullPath: '/org/$slug/communication/channels'
+      fullPath: '/org/$slug/communication/channels/'
       preLoaderRoute: typeof authenticatedOrgSlugmodulesCommunicationChannelsIndexRouteImport
       parentRoute: typeof authenticatedOrgSlugRouteRoute
     }

@@ -2,11 +2,10 @@ import { ORPCError } from "@orpc/server";
 import type { AttendanceUpdateType } from "@work-holo/db/lib/types";
 import {
   attendanceTable,
-  member,
   workBlockTable,
 } from "@work-holo/db/schema/index";
 import { and, asc, eq, gte, isNull, lte } from "drizzle-orm";
-import { protectedProcedure } from "../../index";
+import { orgMemberProcedure } from "../../index";
 import {
   AddBreakDurationInput,
   AddBreakDurationOutput,
@@ -23,21 +22,14 @@ import {
 } from "../../lib/schemas/attendance";
 
 export const memberAttendanceRouter = {
-  punchIn: protectedProcedure
+  punchIn: orgMemberProcedure
     .input(MemberPunchInInput)
     .output(MemberPunchInOutput)
-    .handler(async ({ input, context: { db, session } }) => {
+    .handler(async ({ input, context: { db, session, orgId } }) => {
       const user = session.user;
-      const orgId = session.session.activeOrganizationId;
       const teamId = session.session.activeTeamId ?? null;
 
       const now = new Date();
-
-      if (!orgId) {
-        throw new ORPCError("NOT_FOUND", {
-          message: "Organization not found.",
-        });
-      }
 
       const existingAttendance = await db.query.attendanceTable.findFirst({
         where: and(
@@ -88,20 +80,13 @@ export const memberAttendanceRouter = {
       return attendance;
     }),
 
-  punchOut: protectedProcedure
+  punchOut: orgMemberProcedure
     .input(MemberPunchOutInput)
     .output(MemberPunchOutOutput)
     .handler(async ({ input, context }) => {
-      const { db, session } = context;
+      const { db, session, orgId } = context;
       const user = session.user;
-      const orgId = session.session.activeOrganizationId;
       const now = new Date();
-
-      if (!orgId) {
-        throw new ORPCError("NOT_FOUND", {
-          message: "Organization not found.",
-        });
-      }
 
       const attendance = await db.query.attendanceTable.findFirst({
         where: and(
@@ -181,33 +166,11 @@ export const memberAttendanceRouter = {
       return updatedAttendance;
     }),
 
-  getStatus: protectedProcedure
+  getStatus: orgMemberProcedure
     .output(MemberAttendanceStatusOutput.nullable())
     .handler(async ({ context }) => {
-      const { db, session } = context;
+      const { db, session, orgId } = context;
       const user = session.user;
-      const orgId = session.session.activeOrganizationId;
-
-      if (!orgId) {
-        throw new ORPCError("NOT_FOUND", {
-          message: "Organization not found.",
-        });
-      }
-
-      const membership = await db.query.member.findFirst({
-        columns: { id: true },
-        where: and(
-          eq(member.organizationId, orgId),
-          eq(member.userId, user.id)
-        ),
-      });
-
-      if (!membership) {
-        throw new ORPCError("FORBIDDEN", {
-          message: "You are not a member of this organization.",
-        });
-      }
-
       const today = new Date();
 
       const attendance = await db.query.attendanceTable.findFirst({
@@ -226,7 +189,7 @@ export const memberAttendanceRouter = {
       return attendance;
     }),
 
-  addBreakDuration: protectedProcedure
+  addBreakDuration: orgMemberProcedure
     .input(AddBreakDurationInput)
     .output(AddBreakDurationOutput)
     .handler(async ({ input, context: { db, session } }) => {
@@ -268,16 +231,16 @@ export const memberAttendanceRouter = {
       };
     }),
 
-  getToday: protectedProcedure
+  getToday: orgMemberProcedure
     .input(GetTodayInput)
     .output(GetTodayOutput)
-    .handler(async ({ input, context: { db, session } }) => {
+    .handler(async ({ context: { db, session, orgId } }) => {
       const user = session.user;
       const today = new Date();
 
       const attendance = await db.query.attendanceTable.findFirst({
         where: and(
-          eq(attendanceTable.organizationId, input.orgId),
+          eq(attendanceTable.organizationId, orgId),
           eq(attendanceTable.userId, user.id),
           eq(attendanceTable.date, today),
           eq(attendanceTable.isDeleted, false)
@@ -287,18 +250,11 @@ export const memberAttendanceRouter = {
       return attendance ?? null;
     }),
 
-  getAnalytics: protectedProcedure
+  getAnalytics: orgMemberProcedure
     .input(AttendanceAnalyticsInput.optional())
     .output(AttendanceAnalyticsOutput)
-    .handler(async ({ input, context: { db, session } }) => {
+    .handler(async ({ input, context: { db, session, orgId } }) => {
       const user = session.user;
-      const organizationId = session.session.activeOrganizationId;
-
-      if (!organizationId) {
-        throw new ORPCError("UNAUTHORIZED", {
-          message: "Organization not found.",
-        });
-      }
 
       const today = new Date();
       const startDate = input?.startDate
@@ -317,7 +273,7 @@ export const memberAttendanceRouter = {
         .from(attendanceTable)
         .where(
           and(
-            eq(attendanceTable.organizationId, organizationId),
+            eq(attendanceTable.organizationId, orgId),
             eq(attendanceTable.userId, user.id),
             eq(attendanceTable.isDeleted, false),
             gte(attendanceTable.date, rangeStart),

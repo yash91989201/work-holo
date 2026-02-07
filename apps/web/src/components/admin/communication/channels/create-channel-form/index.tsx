@@ -1,8 +1,7 @@
-import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useMutation } from "@tanstack/react-query";
-import { Loader, Plus } from "lucide-react";
+import { useStore } from "@tanstack/react-store";
+import { Plus } from "lucide-react";
 import { Suspense, useState } from "react";
-import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,27 +13,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
+import { FieldGroup } from "@/components/ui/field";
+import { useAppForm } from "@/components/ui/form/hooks";
+import { SelectItem } from "@/components/ui/select";
+import { Spinner } from "@/components/ui/spinner";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { CreateChannelFormSchema } from "@/lib/schemas/memeber/channel";
-import type { CreateChannelFormType } from "@/lib/types";
 import { queryClient, queryUtils } from "@/utils/orpc";
+import { channelFormOpts } from "./form-options";
 import { MembersSelect, MembersSelectSkeleton } from "./members-select";
 import { TeamSelect, TeamSelectSkeleton } from "./team-select";
 
@@ -42,19 +28,6 @@ export const CreateChannelForm = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const { user } = useAuthedSession();
-
-  const form = useForm({
-    resolver: standardSchemaResolver(CreateChannelFormSchema),
-    defaultValues: {
-      name: "",
-      description: "",
-      isPublic: true,
-      type: "team",
-      teamId: undefined,
-      memberIds: [],
-      createdBy: user.id,
-    },
-  });
 
   const { mutateAsync: createChannel } = useMutation(
     queryUtils.communication.channel.create.mutationOptions({
@@ -77,22 +50,22 @@ export const CreateChannelForm = () => {
     })
   );
 
-  const channelType = form.watch("type");
+  const form = useAppForm({
+    ...channelFormOpts,
+    defaultValues: {
+      ...channelFormOpts.defaultValues,
+      createdBy: user.id,
+    },
+    validators: {
+      onSubmit: CreateChannelFormSchema,
+    },
+    onSubmit: async ({ value: formData }) => {
+      await createChannel(formData);
+      setDialogOpen(false);
+    },
+  });
 
-  const onSubmit: SubmitHandler<CreateChannelFormType> = async (formData) => {
-    await createChannel(formData);
-
-    setDialogOpen(false);
-  };
-
-  const onReset = () => {
-    form.reset({
-      name: "",
-      description: "",
-      isPublic: true,
-      type: "team",
-    });
-  };
+  const channelType = useStore(form.store, (state) => state.values.type);
 
   return (
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
@@ -102,105 +75,96 @@ export const CreateChannelForm = () => {
           <span>New channel</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+
+      <DialogContent className="sm:max-w-106">
         <DialogHeader>
           <DialogTitle>Create New Channel</DialogTitle>
           <DialogDescription>
             Create a new channel for your team to communicate and collaborate.
           </DialogDescription>
         </DialogHeader>
-        <Form {...form}>
+        <form.AppForm>
           <form
             className="space-y-4"
-            onReset={onReset}
-            onSubmit={form.handleSubmit(onSubmit)}
+            onReset={(e) => {
+              e.preventDefault();
+              form.reset({
+                ...channelFormOpts.defaultValues,
+                createdBy: user.id,
+              });
+            }}
+            onSubmit={(e) => {
+              e.preventDefault();
+              form.handleSubmit();
+            }}
           >
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Channel Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter channel name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <FieldGroup>
+              <form.AppField name="name">
+                {(field) => (
+                  <field.Input
+                    label="Channel Name"
+                    placeholder="Enter channel name"
+                  />
+                )}
+              </form.AppField>
 
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Enter channel description"
-                      {...field}
-                      className="resize-none"
-                      rows={3}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <form.AppField name="description">
+                {(field) => (
+                  <field.Textarea
+                    className="resize-none"
+                    label="Description"
+                    placeholder="Enter channel description"
+                    rows={3}
+                  />
+                )}
+              </form.AppField>
 
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Channel Type</FormLabel>
-                  <Select
-                    defaultValue={field.value}
-                    onValueChange={field.onChange}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select channel type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="team">Team</SelectItem>
-                      <SelectItem value="group">Group</SelectItem>
-                      {/* <SelectItem value="direct">Direct</SelectItem> */}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <form.AppField name="type">
+                {(field) => (
+                  <field.Select label="Channel Type">
+                    <SelectItem value="team">Team</SelectItem>
+                    <SelectItem value="group">Group</SelectItem>
+                  </field.Select>
+                )}
+              </form.AppField>
 
-            {channelType === "team" ? (
-              <Suspense fallback={<TeamSelectSkeleton />}>
-                <TeamSelect />
-              </Suspense>
-            ) : (
-              <Suspense fallback={<MembersSelectSkeleton />}>
-                <MembersSelect />
-              </Suspense>
-            )}
+              {channelType === "team" ? (
+                <Suspense fallback={<TeamSelectSkeleton />}>
+                  <TeamSelect form={form} />
+                </Suspense>
+              ) : (
+                <Suspense fallback={<MembersSelectSkeleton />}>
+                  <MembersSelect form={form} />
+                </Suspense>
+              )}
+            </FieldGroup>
 
             <DialogFooter className="flex-row">
-              <Button type="reset" variant="outline">
-                Reset
-              </Button>
-              <Button disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? (
+              <form.Subscribe
+                selector={(state) => [state.canSubmit, state.isSubmitting]}
+              >
+                {([canSubmit, isSubmitting]) => (
                   <>
-                    <Loader className="mr-1.5 animate-spin" />
-                    <span>Creating ...</span>
+                    <Button type="reset" variant="outline">
+                      Reset
+                    </Button>
+
+                    <Button disabled={isSubmitting || !canSubmit} type="submit">
+                      {isSubmitting ? (
+                        <>
+                          <Spinner />
+                          <span>Creating ...</span>
+                        </>
+                      ) : (
+                        <span>Create Channel</span>
+                      )}
+                    </Button>
                   </>
-                ) : (
-                  <span>Create Channel</span>
                 )}
-              </Button>
+              </form.Subscribe>
             </DialogFooter>
           </form>
-        </Form>
+        </form.AppForm>
       </DialogContent>
     </Dialog>
   );
