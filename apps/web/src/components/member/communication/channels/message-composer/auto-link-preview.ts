@@ -1,5 +1,6 @@
 import { Extension } from "@tiptap/core";
 import { Plugin, PluginKey } from "@tiptap/pm/state";
+import { Mapping } from "@tiptap/pm/transform";
 
 export const AutoLinkPreview = Extension.create({
   name: "autoLinkPreview",
@@ -16,7 +17,23 @@ export const AutoLinkPreview = Extension.create({
 
           const { doc, schema } = newState;
           const oldDoc = oldState.doc;
+          const mapping = new Mapping();
           const inserts: Array<{ pos: number; url: string }> = [];
+          const queuedInserts = new Set<string>();
+
+          for (const transaction of transactions) {
+            mapping.appendMapping(transaction.mapping);
+          }
+
+          const newToOldMapping = mapping.invert();
+
+          const safeNodeAt = (targetDoc: typeof doc, pos: number) => {
+            try {
+              return targetDoc.nodeAt(pos);
+            } catch {
+              return null;
+            }
+          };
 
           doc.descendants((node, pos) => {
             if (!node.isText) return;
@@ -29,11 +46,10 @@ export const AutoLinkPreview = Extension.create({
             const url = linkMark.attrs.href;
 
             // Skip if link already existed
-            const existedBefore = oldDoc
-              .nodeAt(pos)
-              ?.marks.some(
-                (m) => m.type.name === "link" && m.attrs.href === url
-              );
+            const oldPos = newToOldMapping.map(pos, -1);
+            const existedBefore = safeNodeAt(oldDoc, oldPos)?.marks.some(
+              (m) => m.type.name === "link" && m.attrs.href === url
+            );
 
             if (existedBefore) return;
 
@@ -43,7 +59,7 @@ export const AutoLinkPreview = Extension.create({
             const paragraphEnd = $pos.end();
 
             // Skip if preview already exists
-            const nextNode = doc.nodeAt(paragraphEnd);
+            const nextNode = safeNodeAt(doc, paragraphEnd);
             if (
               nextNode?.type.name === "linkPreview" &&
               nextNode.attrs.url === url
@@ -51,6 +67,12 @@ export const AutoLinkPreview = Extension.create({
               return;
             }
 
+            const insertKey = `${paragraphEnd}:${url}`;
+            if (queuedInserts.has(insertKey)) {
+              return;
+            }
+
+            queuedInserts.add(insertKey);
             inserts.push({ pos: paragraphEnd, url });
           });
 
