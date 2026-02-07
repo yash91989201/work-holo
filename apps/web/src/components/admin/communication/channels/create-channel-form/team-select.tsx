@@ -43,9 +43,7 @@ export const TeamSelect = withForm({
               value={field.state.value ?? ""}
             >
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select team">
-                  {teams.find((t) => t.id === field.state.value)?.name}
-                </SelectValue>
+                <SelectValue placeholder="Select team" />
               </SelectTrigger>
               <SelectContent>
                 {teams.map((team) => (
