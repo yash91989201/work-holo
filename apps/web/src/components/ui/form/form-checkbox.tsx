@@ -9,11 +9,12 @@ type FormCheckboxProps = React.ComponentProps<typeof Checkbox> &
 export function FormCheckbox(props: FormCheckboxProps) {
   const field = useFieldContext<boolean>();
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+  const { description, label, ...checkboxProps } = props;
 
   return (
-    <FormBase {...props} controlFirst horizontal>
+    <FormBase controlFirst description={description} horizontal label={label}>
       <Checkbox
-        {...props}
+        {...checkboxProps}
         aria-invalid={isInvalid}
         checked={field.state.value}
         id={field.name}
