@@ -20,6 +20,7 @@ type ImageProps = {
 };
 
 const MAX_GENERATED_WIDTH = 3840;
+const IMGPROXY_SIGNATURE_PLACEHOLDER = "_";
 
 const canOptimizeImage = (source: string, unoptimized: boolean): boolean => {
   if (unoptimized) {
@@ -33,10 +34,10 @@ const canOptimizeImage = (source: string, unoptimized: boolean): boolean => {
   return env.VITE_ENV !== "development";
 };
 
-const encodePathSegment = (value: string): string =>
-  encodeURIComponent(value).replace(/[!'()*.]/g, (char) =>
-    `%${char.charCodeAt(0).toString(16).toUpperCase()}`
-  );
+const encodePlainSourceUrl = (sourceUrl: string): string =>
+  encodeURI(sourceUrl)
+    .replace(/\?/g, "%3F")
+    .replace(/#/g, "%23");
 
 const buildImageUrl = (options: {
   src: string;
@@ -57,23 +58,21 @@ const buildImageUrl = (options: {
     return src;
   }
 
-  const params = new URLSearchParams();
+  const processingOptions: string[] = [];
 
   if (typeof width === "number" && Number.isFinite(width) && width > 0) {
-    params.set("width", Math.round(width).toString());
+    processingOptions.push(`width:${Math.round(width)}`);
   }
 
-  params.set("quality", Math.max(1, Math.min(100, Math.round(quality))).toString());
-  if (format) {
-    params.set("format", format);
-  }
+  processingOptions.push(`quality:${Math.max(1, Math.min(100, Math.round(quality)))}`);
 
-  const baseUrl = env.VITE_IMAGE_TRANSFORMATION_URL;
+  const baseUrl = env.VITE_IMAGE_TRANSFORMATION_URL.replace(/\/$/, "");
   const websiteUrl = env.VITE_WEB_URL.replace(/\/$/, "");
   const absoluteSource = src.startsWith("/") ? `${websiteUrl}${src}` : src;
-  const encodedSrc = encodePathSegment(absoluteSource);
+  const plainSource = encodePlainSourceUrl(absoluteSource);
+  const outputExtension = format ?? "webp";
 
-  return `${baseUrl}/image/${encodedSrc}?${params.toString()}`;
+  return `${baseUrl}/${IMGPROXY_SIGNATURE_PLACEHOLDER}/${processingOptions.join("/")}/plain/${plainSource}@${outputExtension}`;
 };
 
 const buildSrcSet = (options: {
