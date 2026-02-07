@@ -1,7 +1,5 @@
-import type React from "react";
-import { LazyLoadImage } from "react-lazy-load-image-component";
-import "react-lazy-load-image-component/src/effects/blur.css";
 import { env } from "@work-holo/env/web";
+import { type CSSProperties, type FC, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 
 type ImageProps = {
@@ -14,14 +12,27 @@ type ImageProps = {
   wrapperClassName?: string;
   effect?: "blur" | "opacity" | "black-and-white";
   visibleByDefault?: boolean;
-  aspectRatio?: number; // e.g., 16/9, 4/3, 1 for square
-  placeholder?: boolean; // enable/disable low quality placeholder
-  unoptimized?: boolean; // bypass transformation service
+  aspectRatio?: number;
+  placeholder?: boolean;
+  unoptimized?: boolean;
   format?: "webp" | "avif" | undefined;
-  priority?: boolean; // load image immediately
+  priority?: boolean;
 };
 
-// Build image URL using Coolify's transformation service
+const MAX_GENERATED_WIDTH = 3840;
+
+const canOptimizeImage = (source: string, unoptimized: boolean): boolean => {
+  if (unoptimized) {
+    return false;
+  }
+
+  if (source.startsWith("data:")) {
+    return false;
+  }
+
+  return env.VITE_ENV !== "development";
+};
+
 const buildImageUrl = (options: {
   src: string;
   width?: number;
@@ -37,30 +48,101 @@ const buildImageUrl = (options: {
     format = "webp",
   } = options;
 
-  if (unoptimized) return src;
-
-  // Skip transformation for external URLs, data URLs, or in development
-  if (
-    !src.startsWith("/") ||
-    env.VITE_ENV === "development" ||
-    src.startsWith("data:")
-  ) {
+  if (!canOptimizeImage(src, unoptimized)) {
     return src;
   }
 
   const params = new URLSearchParams();
-  if (width) params.set("width", width.toString());
-  params.set("quality", quality.toString());
-  params.set("format", format);
+
+  if (typeof width === "number" && Number.isFinite(width) && width > 0) {
+    params.set("width", Math.round(width).toString());
+  }
+
+  params.set(
+    "quality",
+    Math.max(1, Math.min(100, Math.round(quality))).toString()
+  );
+  if (format) {
+    params.set("format", format);
+  }
 
   const baseUrl = env.VITE_IMAGE_TRANSFORMATION_URL;
   const websiteUrl = env.VITE_WEB_URL.replace(/\/$/, "");
-  const encodedSrc = encodeURIComponent(`${websiteUrl}${src}`);
+  const absoluteSource = src.startsWith("/") ? `${websiteUrl}${src}` : src;
+  const encodedSrc = encodeURIComponent(absoluteSource);
 
-  return `${baseUrl}/image/${encodedSrc}?${params}`;
+  return `${baseUrl}/image/${encodedSrc}?${params.toString()}`;
 };
 
-export const Image: React.FC<ImageProps> = ({
+const buildSrcSet = (options: {
+  src: string;
+  width?: number;
+  quality?: number;
+  unoptimized?: boolean;
+  format?: "webp" | "avif" | undefined;
+}): string | undefined => {
+  const { src, width, quality, unoptimized, format } = options;
+
+  if (!(width && canOptimizeImage(src, Boolean(unoptimized)))) {
+    return undefined;
+  }
+
+  const candidateWidths = Array.from(
+    new Set([
+      Math.max(1, Math.round(width)),
+      Math.min(MAX_GENERATED_WIDTH, Math.max(1, Math.round(width * 2))),
+    ])
+  ).sort((a, b) => a - b);
+
+  return candidateWidths
+    .map((candidateWidth) => {
+      const candidateSrc = buildImageUrl({
+        src,
+        width: candidateWidth,
+        quality,
+        unoptimized,
+        format,
+      });
+      return `${candidateSrc} ${candidateWidth}w`;
+    })
+    .join(", ");
+};
+
+const getLoadingEffectStyles = (
+  effect: "blur" | "opacity" | "black-and-white",
+  loaded: boolean
+): CSSProperties => {
+  if (loaded) {
+    return {
+      filter: "none",
+      opacity: 1,
+      transition: "opacity 220ms ease, filter 300ms ease",
+    };
+  }
+
+  if (effect === "opacity") {
+    return {
+      opacity: 0.2,
+      transition: "opacity 220ms ease, filter 300ms ease",
+    };
+  }
+
+  if (effect === "black-and-white") {
+    return {
+      filter: "grayscale(100%)",
+      opacity: 0.95,
+      transition: "opacity 220ms ease, filter 300ms ease",
+    };
+  }
+
+  return {
+    filter: "blur(12px)",
+    opacity: 0.7,
+    transition: "opacity 220ms ease, filter 300ms ease",
+  };
+};
+
+export const Image: FC<ImageProps> = ({
   src,
   alt,
   width,
@@ -76,58 +158,99 @@ export const Image: React.FC<ImageProps> = ({
   format = "webp",
   priority = false,
 }) => {
-  // Calculate dimensions for CLS prevention
+  const [loaded, setLoaded] = useState(false);
+
+  const eager = priority || visibleByDefault;
+
   const computedHeight =
     height ??
     (width && aspectRatio ? Math.round(width / aspectRatio) : undefined);
 
-  // Ensure we have either width/height or aspectRatio to prevent CLS
-  const shouldUseAspectRatio = aspectRatio && !(width && height);
+  const shouldUseAspectRatio = Boolean(aspectRatio && !(width && height));
 
-  // Generate main image URL
-  const mainSrc = buildImageUrl({ src, width, quality, unoptimized, format });
+  const mainSrc = useMemo(
+    () => buildImageUrl({ src, width, quality, unoptimized, format }),
+    [format, quality, src, unoptimized, width]
+  );
 
-  // Generate low-quality placeholder URL (same image, quality 15)
-  const placeholderSrc =
-    placeholder && !unoptimized
-      ? buildImageUrl({
-          src,
-          width: width ? Math.round(width * 0.1) : 50,
-          quality: 15,
-          unoptimized,
-          format,
-        })
-      : undefined;
+  const srcSet = useMemo(
+    () => buildSrcSet({ src, width, quality, unoptimized, format }),
+    [format, quality, src, unoptimized, width]
+  );
 
-  // Container styles for aspect ratio and CLS prevention
-  const containerStyle: React.CSSProperties = {
+  const placeholderSrc = useMemo(() => {
+    if (!placeholder) {
+      return undefined;
+    }
+
+    const placeholderWidth = width
+      ? Math.max(32, Math.round(width * 0.12))
+      : 48;
+
+    return buildImageUrl({
+      src,
+      width: placeholderWidth,
+      quality: 15,
+      unoptimized,
+      format,
+    });
+  }, [format, placeholder, src, unoptimized, width]);
+
+  const containerStyle: CSSProperties = {
     display: "block",
-    ...(shouldUseAspectRatio && { aspectRatio: aspectRatio.toString() }),
-    ...(!shouldUseAspectRatio && width && { width }),
-    ...(!shouldUseAspectRatio && computedHeight && { height: computedHeight }),
-    ...(!(shouldUseAspectRatio || width || computedHeight) && {
-      width: "100%",
-      height: "auto",
-    }),
+    position: "relative",
+    overflow: "hidden",
+    ...(shouldUseAspectRatio && aspectRatio
+      ? { aspectRatio: aspectRatio.toString() }
+      : {}),
+    ...(!shouldUseAspectRatio && typeof width === "number" ? { width } : {}),
+    ...(!shouldUseAspectRatio && typeof computedHeight === "number"
+      ? { height: computedHeight }
+      : {}),
+    ...(shouldUseAspectRatio || width || computedHeight
+      ? {}
+      : {
+          width: "100%",
+          height: "auto",
+        }),
+    ...(placeholderSrc && !loaded
+      ? {
+          backgroundImage: `url(${placeholderSrc})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }
+      : {}),
   };
 
-  // Wrapper props for the span container
-  const wrapperProps = {
-    style: containerStyle,
+  const imageStyle: CSSProperties = {
+    ...getLoadingEffectStyles(effect, loaded),
   };
 
   return (
-    <LazyLoadImage
-      alt={alt}
-      className={cn("h-full w-full object-cover", className)}
-      effect={effect}
-      height={computedHeight}
-      placeholderSrc={placeholderSrc}
-      src={mainSrc}
-      visibleByDefault={visibleByDefault || priority}
-      width={width}
-      wrapperClassName={cn("block overflow-hidden", wrapperClassName)}
-      wrapperProps={wrapperProps}
-    />
+    <span
+      className={cn("block overflow-hidden", wrapperClassName)}
+      style={containerStyle}
+    >
+      <img
+        alt={alt}
+        className={cn("h-full w-full object-cover", className)}
+        decoding={priority ? "sync" : "async"}
+        fetchPriority={priority ? "high" : "auto"}
+        height={computedHeight}
+        loading={eager ? "eager" : "lazy"}
+        onError={() => {
+          setLoaded(true);
+        }}
+        onLoad={() => {
+          setLoaded(true);
+        }}
+        sizes={width ? `${Math.round(width)}px` : "100vw"}
+        src={mainSrc}
+        srcSet={srcSet}
+        style={imageStyle}
+        width={width}
+      />
+    </span>
   );
 };
