@@ -7,11 +7,12 @@ type FormTextareaProps = React.ComponentProps<"textarea"> & FormControlProps;
 export function FormTextarea(props: FormTextareaProps) {
   const field = useFieldContext<string>();
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+  const { description, label, ...textareaProps } = props;
 
   return (
-    <FormBase {...props}>
+    <FormBase description={description} label={label}>
       <Textarea
-        {...props}
+        {...textareaProps}
         aria-invalid={isInvalid}
         id={field.name}
         name={field.name}
