@@ -33,6 +33,11 @@ const canOptimizeImage = (source: string, unoptimized: boolean): boolean => {
   return env.VITE_ENV !== "development";
 };
 
+const encodePathSegment = (value: string): string =>
+  encodeURIComponent(value).replace(/[!'()*.]/g, (char) =>
+    `%${char.charCodeAt(0).toString(16).toUpperCase()}`
+  );
+
 const buildImageUrl = (options: {
   src: string;
   width?: number;
@@ -58,10 +63,7 @@ const buildImageUrl = (options: {
     params.set("width", Math.round(width).toString());
   }
 
-  params.set(
-    "quality",
-    Math.max(1, Math.min(100, Math.round(quality))).toString()
-  );
+  params.set("quality", Math.max(1, Math.min(100, Math.round(quality))).toString());
   if (format) {
     params.set("format", format);
   }
@@ -69,7 +71,7 @@ const buildImageUrl = (options: {
   const baseUrl = env.VITE_IMAGE_TRANSFORMATION_URL;
   const websiteUrl = env.VITE_WEB_URL.replace(/\/$/, "");
   const absoluteSource = src.startsWith("/") ? `${websiteUrl}${src}` : src;
-  const encodedSrc = encodeURIComponent(absoluteSource);
+  const encodedSrc = encodePathSegment(absoluteSource);
 
   return `${baseUrl}/image/${encodedSrc}?${params.toString()}`;
 };
