@@ -10,7 +10,7 @@ export const adminDashboardRouter = {
           count: count(),
         })
         .from(member)
-        .where(eq(member.organizationId, orgId!));
+        .where(eq(member.organizationId, orgId));
 
       return memberRows?.count ?? 0;
     }
@@ -23,7 +23,7 @@ export const adminDashboardRouter = {
           count: count(),
         })
         .from(team)
-        .where(eq(team.organizationId, orgId!));
+        .where(eq(team.organizationId, orgId));
 
       return teamRows?.count ?? 0;
     }
