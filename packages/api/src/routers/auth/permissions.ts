@@ -14,43 +14,42 @@ export const permissionsRouter = {
       return {
         role: orgMembership.role,
         permissions: {
-          // Organization permissions
-          canCreateOrg: permission.can("org", "create"),
-          canDeleteOrg: permission.can("org", "delete"),
-
-          // User management permissions
-          canInviteUsers: permission.can("user", "create"),
-          canRemoveUsers: permission.can("user", "delete"),
-
-          // Role assignment permissions
-          canAssignOwner: permission.can("role", "assign_owner"),
-          canAssignAdmin: permission.can("role", "assign_admin"),
-          canAssignTeamAdmin: permission.can("role", "assign_team_admin"),
-          canAssignTeamLead: permission.can("role", "assign_team_lead"),
-
-          // Team permissions
-          canCreateTeam: permission.can("team", "create"),
-          canDeleteTeam: permission.can("team", "delete"),
-          canUpdateTeam: permission.can("team", "update"),
-          canViewAllTeams: (await permission.getAccessibleTeamIds()) === null,
-          canAddTeamMembers: permission.can("team", "add_members"),
-
-          // Channel permissions
-          canCreateChannel: permission.can("channel", "create"),
-          canDeleteChannel: permission.can("channel", "delete"),
-
-          // Message permissions
-          canModerateMessages: permission.can("message", "moderate"),
-
-          // Attendance permissions
-          canViewAllAttendance: permission.can("attendance", "view_all"),
-          canViewTeamAttendance: permission.can("attendance", "view_team"),
-          canViewOwnAttendance: permission.can("attendance", "view_self"),
-
-          // Dashboard permissions
-          canViewOrgDashboard: permission.can("dashboard", "org"),
-          canViewTeamDashboard: permission.can("dashboard", "team"),
-          canViewPersonalDashboard: permission.can("dashboard", "personal"),
+          org: {
+            create: permission.can("org", "create"),
+            delete: permission.can("org", "delete"),
+            inviteUsers: permission.can("user", "create"),
+            removeUsers: permission.can("user", "delete"),
+          },
+          role: {
+            assignOwner: permission.can("role", "assign_owner"),
+            assignAdmin: permission.can("role", "assign_admin"),
+            assignTeamAdmin: permission.can("role", "assign_team_admin"),
+            assignTeamLead: permission.can("role", "assign_team_lead"),
+          },
+          team: {
+            create: permission.can("team", "create"),
+            delete: permission.can("team", "delete"),
+            update: permission.can("team", "update"),
+            viewAll: (await permission.getAccessibleTeamIds()) === null,
+            addMembers: permission.can("team", "add_members"),
+          },
+          channel: {
+            create: permission.can("channel", "create"),
+            delete: permission.can("channel", "delete"),
+          },
+          message: {
+            moderate: permission.can("message", "moderate"),
+          },
+          attendance: {
+            viewAll: permission.can("attendance", "view_all"),
+            viewTeam: permission.can("attendance", "view_team"),
+            viewOwn: permission.can("attendance", "view_self"),
+          },
+          dashboard: {
+            viewOrg: permission.can("dashboard", "org"),
+            viewTeam: permission.can("dashboard", "team"),
+            viewPersonal: permission.can("dashboard", "personal"),
+          },
         },
       };
     }),

@@ -1,11 +1,11 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { api } from "@/utils/api";
+import { orpcClient } from "@/utils/orpc";
 
 export const usePermissions = () => {
   const { data } = useSuspenseQuery({
     queryKey: ["auth", "permissions"],
     queryFn: async () => {
-      const result = await api.auth.permissions.check();
+      const result = await orpcClient.auth.permissions.check();
       return result;
     },
     staleTime: 5 * 60 * 1000, // Cache for 5 minutes

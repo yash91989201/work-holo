@@ -41,27 +41,25 @@ export const adminTeamRouter = {
         permission.check("team", "create");
 
         const createdTeam = (await auth.api.createTeam({
-          body: { name: input.name, organizationId: orgId },
+          body: {
+            name: input.name,
+            organizationId: orgId,
+            createdBy: session.user.id,
+          },
           headers,
         })) as { id: string };
 
-        // Patch createdBy after Better-Auth creates the row
-        await db
-          .update(team)
-          .set({ createdBy: session.user.id })
-          .where(eq(team.id, createdTeam.id));
-
-        const updated = await db.query.team.findFirst({
+        const fullTeam = await db.query.team.findFirst({
           where: eq(team.id, createdTeam.id),
         });
 
-        if (!updated) {
+        if (!fullTeam) {
           throw new ORPCError("INTERNAL_SERVER_ERROR", {
             message: "Failed to retrieve created team",
           });
         }
 
-        return updated;
+        return fullTeam;
       }
     ),
 

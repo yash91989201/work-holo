@@ -1,5 +1,6 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { useNotificationSound } from "@/hooks/communications/use-notification-sound";
+import { usePermissions } from "@/hooks/use-permissions";
 
 export const Route = createFileRoute("/(authenticated)")({
   beforeLoad: ({ context }) => {
@@ -18,6 +19,6 @@ export const Route = createFileRoute("/(authenticated)")({
 
 function RouteComponent() {
   useNotificationSound();
-
+  usePermissions();
   return <Outlet />;
 }

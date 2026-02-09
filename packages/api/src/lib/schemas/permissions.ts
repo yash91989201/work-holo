@@ -3,42 +3,41 @@ import z from "zod";
 export const permissionsSchema = z.object({
   role: z.string(),
   permissions: z.object({
-    // Organization permissions
-    canCreateOrg: z.boolean(),
-    canDeleteOrg: z.boolean(),
-
-    // User management permissions
-    canInviteUsers: z.boolean(),
-    canRemoveUsers: z.boolean(),
-
-    // Role assignment permissions
-    canAssignOwner: z.boolean(),
-    canAssignAdmin: z.boolean(),
-    canAssignTeamAdmin: z.boolean(),
-    canAssignTeamLead: z.boolean(),
-
-    // Team permissions
-    canCreateTeam: z.boolean(),
-    canDeleteTeam: z.boolean(),
-    canUpdateTeam: z.boolean(),
-    canViewAllTeams: z.boolean(),
-    canAddTeamMembers: z.boolean(),
-
-    // Channel permissions
-    canCreateChannel: z.boolean(),
-    canDeleteChannel: z.boolean(),
-
-    // Message permissions
-    canModerateMessages: z.boolean(),
-
-    // Attendance permissions
-    canViewAllAttendance: z.boolean(),
-    canViewTeamAttendance: z.boolean(),
-    canViewOwnAttendance: z.boolean(),
-
-    // Dashboard permissions
-    canViewOrgDashboard: z.boolean(),
-    canViewTeamDashboard: z.boolean(),
-    canViewPersonalDashboard: z.boolean(),
+    org: z.object({
+      create: z.boolean(),
+      delete: z.boolean(),
+      inviteUsers: z.boolean(),
+      removeUsers: z.boolean(),
+    }),
+    role: z.object({
+      assignOwner: z.boolean(),
+      assignAdmin: z.boolean(),
+      assignTeamAdmin: z.boolean(),
+      assignTeamLead: z.boolean(),
+    }),
+    team: z.object({
+      create: z.boolean(),
+      delete: z.boolean(),
+      update: z.boolean(),
+      viewAll: z.boolean(),
+      addMembers: z.boolean(),
+    }),
+    channel: z.object({
+      create: z.boolean(),
+      delete: z.boolean(),
+    }),
+    message: z.object({
+      moderate: z.boolean(),
+    }),
+    attendance: z.object({
+      viewAll: z.boolean(),
+      viewTeam: z.boolean(),
+      viewOwn: z.boolean(),
+    }),
+    dashboard: z.object({
+      viewOrg: z.boolean(),
+      viewTeam: z.boolean(),
+      viewPersonal: z.boolean(),
+    }),
   }),
 });
