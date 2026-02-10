@@ -29,7 +29,9 @@ export function NavOps() {
       <SidebarSeparator />
 
       <SidebarGroup>
-        <SidebarGroupLabel>Ops</SidebarGroupLabel>
+        <SidebarGroupLabel className="font-semibold text-muted-foreground text-xs uppercase tracking-wider">
+          Ops
+        </SidebarGroupLabel>
         <SidebarGroupContent>
           <SidebarMenu>
             <SidebarMenuItem>

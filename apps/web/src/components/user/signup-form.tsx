@@ -109,7 +109,9 @@ export function SignUpForm() {
           </form.AppField>
 
           <form.AppField name="confirmPassword">
-            {(field) => <field.Input label="Confirm Password" type="password" />}
+            {(field) => (
+              <field.Input label="Confirm Password" type="password" />
+            )}
           </form.AppField>
 
           <form.Subscribe

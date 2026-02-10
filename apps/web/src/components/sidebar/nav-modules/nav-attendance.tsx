@@ -1,6 +1,13 @@
 import { IconCalendarEvent } from "@tabler/icons-react";
 import { Link, linkOptions, useParams } from "@tanstack/react-router";
-import { SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
+import {
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar";
 
 export function NavAttendance() {
   const { slug } = useParams({
@@ -16,14 +23,25 @@ export function NavAttendance() {
     },
   ]);
 
-  return attendanceLinks.map((link) => (
-    <SidebarMenuItem key={link.label}>
-      <SidebarMenuButton asChild tooltip={link.label}>
-        <Link {...link}>
-          {link.icon && <link.icon />}
-          <span>{link.label}</span>
-        </Link>
-      </SidebarMenuButton>
-    </SidebarMenuItem>
-  ));
+  return (
+    <SidebarGroup>
+      <SidebarGroupLabel className="font-semibold text-muted-foreground text-xs uppercase tracking-wider">
+        Attendance
+      </SidebarGroupLabel>
+      <SidebarGroupContent>
+        <SidebarMenu>
+          {attendanceLinks.map((link) => (
+            <SidebarMenuItem key={link.label}>
+              <SidebarMenuButton asChild tooltip={link.label}>
+                <Link {...link}>
+                  {link.icon && <link.icon />}
+                  <span>{link.label}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          ))}
+        </SidebarMenu>
+      </SidebarGroupContent>
+    </SidebarGroup>
+  );
 }

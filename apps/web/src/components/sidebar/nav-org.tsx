@@ -42,7 +42,9 @@ export function NavOrg() {
       <SidebarSeparator />
 
       <SidebarGroup>
-        <SidebarGroupLabel>My Organization</SidebarGroupLabel>
+        <SidebarGroupLabel className="font-semibold text-muted-foreground text-xs uppercase tracking-wider">
+          My Organization
+        </SidebarGroupLabel>
         <SidebarGroupContent>
           <SidebarMenu>
             {items.map((item) => (

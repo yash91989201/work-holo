@@ -1,32 +1,52 @@
-import { Building2, Hash, UserCheck, Users } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Activity, Building2, Hash, UserCheck } from "lucide-react";
+import { Card } from "@/components/ui/card";
 
 interface StatItem {
   title: string;
   value: string | number;
   icon: React.ComponentType<{ className?: string }>;
+  iconBg: string;
+  iconColor: string;
+  badge: string;
+  badgeColor: string;
 }
 
 const dummyStats: StatItem[] = [
   {
-    title: "Total Teams",
-    value: 12,
-    icon: Building2,
-  },
-  {
-    title: "Total Members",
-    value: 248,
-    icon: Users,
-  },
-  {
-    title: "Channels",
-    value: 34,
-    icon: Hash,
-  },
-  {
-    title: "Punched In Today",
-    value: 186,
+    title: "ATTENDANCE RATE",
+    value: "98.4%",
     icon: UserCheck,
+    iconBg: "bg-blue-100",
+    iconColor: "text-blue-600",
+    badge: "+2.4%",
+    badgeColor: "text-emerald-600 bg-emerald-50",
+  },
+  {
+    title: "AVG. HOURS/DAY",
+    value: "7.8h",
+    icon: Activity,
+    iconBg: "bg-orange-100",
+    iconColor: "text-orange-600",
+    badge: "Stable",
+    badgeColor: "text-orange-600 bg-orange-50",
+  },
+  {
+    title: "TOTAL TEAMS",
+    value: 48,
+    icon: Building2,
+    iconBg: "bg-violet-100",
+    iconColor: "text-violet-600",
+    badge: "12 New",
+    badgeColor: "text-violet-600 bg-violet-50",
+  },
+  {
+    title: "ACTIVE CHANNELS",
+    value: 156,
+    icon: Hash,
+    iconBg: "bg-emerald-100",
+    iconColor: "text-emerald-600",
+    badge: "Live",
+    badgeColor: "text-emerald-600 bg-emerald-50",
   },
 ];
 
@@ -34,23 +54,30 @@ function StatCard({ stat }: { stat: StatItem }) {
   const Icon = stat.icon;
 
   return (
-    <Card className="relative overflow-hidden">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="font-medium text-muted-foreground text-sm">
+    <Card className="gap-4 rounded-t-none rounded-b-2xl p-5 shadow-sm">
+      <div className="flex items-center justify-between">
+        <div className={`rounded-xl p-2.5 ${stat.iconBg}`}>
+          <Icon className={`h-5 w-5 ${stat.iconColor}`} />
+        </div>
+        <span
+          className={`rounded-full px-2.5 py-0.5 font-semibold text-xs ${stat.badgeColor}`}
+        >
+          {stat.badge}
+        </span>
+      </div>
+      <div>
+        <p className="font-semibold text-[11px] text-muted-foreground uppercase tracking-wider">
           {stat.title}
-        </CardTitle>
-        <Icon className="h-4 w-4 text-muted-foreground" />
-      </CardHeader>
-      <CardContent>
-        <div className="font-bold text-2xl">{stat.value}</div>
-      </CardContent>
+        </p>
+        <p className="mt-1 font-bold text-3xl tracking-tight">{stat.value}</p>
+      </div>
     </Card>
   );
 }
 
 export function OrgStats() {
   return (
-    <div className="grid gap-4 border-b py-3 md:grid-cols-2 lg:grid-cols-4">
+    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
       {dummyStats.map((stat, index) => (
         <StatCard key={index.toString()} stat={stat} />
       ))}

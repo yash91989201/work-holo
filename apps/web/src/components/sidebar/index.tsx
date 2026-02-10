@@ -7,7 +7,6 @@ import {
 import {
   Sidebar as BaseSidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarHeader,
   SidebarMenu,
   SidebarRail,
@@ -17,7 +16,6 @@ import { NavModules } from "./nav-modules";
 import { NavOps } from "./nav-ops";
 import { NavOrg } from "./nav-org";
 import { NavQuickActions } from "./nav-quick-actions";
-import { NavUser } from "./nav-user";
 
 export function Sidebar({
   ...props
@@ -38,9 +36,6 @@ export function Sidebar({
         <NavOps />
         <NavOrg />
       </SidebarContent>
-      <SidebarFooter>
-        <NavUser />
-      </SidebarFooter>
       <SidebarRail />
     </BaseSidebar>
   );

@@ -1,4 +1,4 @@
-import { Circle, Clock, Moon, Users, WifiOff, XCircle } from "lucide-react";
+import { Circle, Moon, Users, WifiOff, XCircle } from "lucide-react";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -10,15 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Item,
-  ItemContent,
-  ItemDescription,
-  ItemGroup,
-  ItemMedia,
-  ItemSeparator,
-  ItemTitle,
-} from "@/components/ui/item";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
@@ -129,15 +120,20 @@ export function PresenceRoster() {
       (a, b) => statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status)
     );
 
+  const activeCount =
+    membersWithPresence?.filter((m) => m.status !== "offline").length ?? 0;
   const totalMembers = membersWithPresence?.length ?? 0;
   const filteredCount = filteredAndSortedMembers?.length ?? 0;
 
   return (
-    <Card className="w-full max-w-xl">
+    <Card className="w-full min-w-0 overflow-hidden rounded-2xl shadow-sm ring-1 ring-foreground/5">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Users className="h-5 w-5" />
-          Presence Roster
+        <CardTitle className="flex flex-wrap items-center gap-2">
+          <Users className="h-5 w-5 shrink-0" />
+          <span className="truncate">Presence Roster</span>
+          <Badge className="border-0 bg-emerald-100 font-semibold text-emerald-600 hover:bg-emerald-100">
+            {activeCount} Active
+          </Badge>
         </CardTitle>
         <CardDescription>
           {statusFilter === "all"
@@ -151,7 +147,7 @@ export function PresenceRoster() {
             }
             value={statusFilter}
           >
-            <SelectTrigger className="w-40">
+            <SelectTrigger className="w-28 sm:w-40">
               <SelectValue placeholder="Filter by status" />
             </SelectTrigger>
             <SelectContent>
@@ -192,66 +188,64 @@ export function PresenceRoster() {
       </CardHeader>
 
       <CardContent className="p-0">
-        <ScrollArea className="h-[300px]">
-          <div>
+        <ScrollArea className="h-[250px]">
+          <div className="flex flex-col divide-y divide-border/50 px-6">
             {filteredAndSortedMembers && filteredAndSortedMembers.length > 0 ? (
-              <ItemGroup>
-                {filteredAndSortedMembers.map((member, index) => {
-                  const config = presenceConfig[member.status];
-                  const initials = getInitials(member.user.name);
-                  const lastSeen = formatTimeAgo(member.presence?.lastSeenAt);
+              filteredAndSortedMembers.slice(0, 10).map((member) => {
+                const config = presenceConfig[member.status];
+                const initials = getInitials(member.user.name);
 
-                  return (
-                    <div key={member.userId}>
-                      <Item>
-                        <ItemMedia>
-                          <div className="relative">
-                            <Avatar>
-                              <AvatarImage
-                                alt={member.user.name}
-                                src={member.user.image ?? undefined}
-                              />
-                              <AvatarFallback className="text-sm">
-                                {initials}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div className="absolute -right-1.5 -bottom-1.5 rounded-full border-2 border-background bg-background p-0.5">
-                              {config.icon}
-                            </div>
-                          </div>
-                        </ItemMedia>
-
-                        <ItemContent>
-                          <ItemTitle>
-                            {member.user.name}
-                            <Badge
-                              className={`shrink-0 ${config.color}`}
-                              variant="outline"
-                            >
-                              {config.label}
-                            </Badge>
-                          </ItemTitle>
-
-                          <ItemDescription>
-                            {member.status !== "offline" && lastSeen && (
-                              <span className="flex items-center gap-1">
-                                <Clock className="h-3 w-3" />
-                                Active {lastSeen}
-                              </span>
-                            )}
-                          </ItemDescription>
-                        </ItemContent>
-                      </Item>
-                      {index < filteredAndSortedMembers.length - 1 && (
-                        <ItemSeparator />
-                      )}
+                return (
+                  <div
+                    className="flex items-center gap-3 py-3"
+                    key={member.userId}
+                  >
+                    <div className="relative">
+                      <Avatar className="h-9 w-9">
+                        <AvatarImage
+                          alt={member.user.name}
+                          src={member.user.image ?? undefined}
+                        />
+                        <AvatarFallback className="text-xs">
+                          {initials}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="absolute -right-0.5 -bottom-0.5 rounded-full border-2 border-card bg-card p-0.5">
+                        {config.icon}
+                      </div>
                     </div>
-                  );
-                })}
-              </ItemGroup>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-medium text-sm">
+                        {member.user.name}
+                      </p>
+                      <p className={`text-xs ${config.color}`}>
+                        {config.label}
+                      </p>
+                    </div>
+                    <button
+                      className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                      type="button"
+                    >
+                      <svg
+                        fill="none"
+                        height="16"
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                        width="16"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+                      </svg>
+                    </button>
+                  </div>
+                );
+              })
             ) : (
               <div className="flex h-32 items-center justify-center text-center text-muted-foreground text-sm">
-                No members found with the selected status.
+                No members found.
               </div>
             )}
           </div>

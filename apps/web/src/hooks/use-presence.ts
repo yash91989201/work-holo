@@ -156,7 +156,7 @@ export function useSetManualStatus() {
         // Immediately refetch the org presence data to update UI
         await queryClient.refetchQueries({
           queryKey: queryUtils.member.presence.getOrgPresence.queryKey({
-            input: { },
+            input: {},
           }),
           exact: true,
         });
@@ -168,7 +168,7 @@ export function useSetManualStatus() {
 export function useOrgPresence() {
   return useQuery(
     queryUtils.member.presence.getOrgPresence.queryOptions({
-      input: { },
+      input: {},
       refetchInterval: 30_000,
     })
   );

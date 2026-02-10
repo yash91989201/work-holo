@@ -1,13 +1,16 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Suspense } from "react";
-import { Header } from "@/components/header";
 import { Greeting } from "@/components/member/attendance/greeting";
+import { DashboardHeader } from "@/components/org/dashboard-header";
+import { OrgStats } from "@/components/org/org-stats";
 import {
   PresenceRoster,
   PresenceRosterSkeleton,
 } from "@/components/org/presence-roster";
-import { RecentChannels } from "@/components/org/recent-channels";
+import { ProductivityChart } from "@/components/org/productivity-chart";
+import { RecentMentions } from "@/components/org/recent-mentions";
+import { RecentMessages } from "@/components/org/recent-messages";
 import { usePresenceHeartbeat } from "@/hooks/use-presence";
 import { queryUtils } from "@/utils/orpc";
 
@@ -21,12 +24,23 @@ function RouteComponent() {
       <Suspense fallback={null}>
         <OrgPresenceHeartbeat />
       </Suspense>
-      <Header />
+      <DashboardHeader />
       <section className="space-y-6 p-6">
+        {/* Greeting */}
         <Greeting />
-        {/* <OrgStats /> */}
-        <div className="flex flex-col gap-3 md:flex-row">
-          <RecentChannels />
+
+        {/* Stats */}
+        <OrgStats />
+
+        {/* Chart + Messages */}
+        <div className="grid gap-6 lg:grid-cols-[3fr_2fr]">
+          <ProductivityChart />
+          <RecentMessages />
+        </div>
+
+        {/* Mentions + Roster */}
+        <div className="grid gap-6 lg:grid-cols-[3fr_2fr]">
+          <RecentMentions />
           <Suspense fallback={<PresenceRosterSkeleton />}>
             <PresenceRoster />
           </Suspense>
