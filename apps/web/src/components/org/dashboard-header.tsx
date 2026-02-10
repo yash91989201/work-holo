@@ -1,11 +1,17 @@
 import { IconLogout } from "@tabler/icons-react";
+import { Link, useLoaderData, useNavigate } from "@tanstack/react-router";
 import {
-  Link,
-  linkOptions,
-  useLoaderData,
-  useNavigate,
-} from "@tanstack/react-router";
-import { Building2, ChevronDown, Plus, Search } from "lucide-react";
+  Bell,
+  Building2,
+  ChevronDown,
+  Circle,
+  LayoutDashboard,
+  Plus,
+  Search,
+  Settings,
+  Shield,
+  User,
+} from "lucide-react";
 import { Suspense, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { NotificationSheet } from "@/components/shared/notification-sheet";
@@ -19,6 +25,9 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -27,25 +36,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { useMemberRole } from "@/hooks/use-member-role";
 import { authClient } from "@/lib/auth-client";
-
-const accountItems = linkOptions([
-  {
-    label: "Profile",
-    to: "/settings/account/profile",
-  },
-  {
-    label: "Preferences",
-    to: "/settings/account/preferences",
-  },
-  {
-    label: "Notifications",
-    to: "/settings/account/notifications",
-  },
-  {
-    label: "Security & access",
-    to: "/settings/account/security",
-  },
-]);
 
 export function DashboardHeader() {
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -64,7 +54,7 @@ export function DashboardHeader() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 flex h-14 items-center gap-4 border-b bg-background px-4">
+    <header className="sticky top-0 z-50 flex h-18 items-center gap-4 border-b bg-background px-4">
       {/* Sidebar Toggle */}
       <SidebarTrigger className="h-9 w-9 text-muted-foreground hover:bg-muted hover:text-foreground" />
 
@@ -181,23 +171,21 @@ function UserMenuButton() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          className="flex h-9 items-center gap-3 px-3 hover:bg-muted"
+          className="flex h-auto items-center gap-2 rounded-xl border border-border p-2 hover:bg-muted"
           variant="ghost"
         >
-          <Avatar className="h-8 w-8">
+          <Avatar className="h-9 w-9">
             <AvatarImage
               alt={user.name ?? "User"}
               src={user.image ?? undefined}
             />
-            <AvatarFallback className="bg-orange-500 font-semibold text-white text-xs">
+            <AvatarFallback className="bg-orange-500 font-semibold text-sm text-white">
               {initials}
             </AvatarFallback>
           </Avatar>
-          <div className="flex flex-col items-start">
-            <span className="font-medium text-sm leading-none">
-              {user.name || "User"}
-            </span>
-            <Badge className="mt-1 h-4 rounded-sm bg-violet-600 px-1.5 font-bold text-[9px] text-white uppercase hover:bg-violet-600">
+          <div className="flex items-center gap-1.5">
+            <span className="font-semibold text-sm">{user.name || "User"}</span>
+            <Badge className="h-4 rounded-sm bg-violet-600 px-1.5 font-bold text-[9px] text-white uppercase hover:bg-violet-600">
               {role}
             </Badge>
           </div>
@@ -205,52 +193,45 @@ function UserMenuButton() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-64">
-        {/* User Info Header */}
-        <DropdownMenuLabel className="p-0 font-normal">
-          <div className="flex items-center gap-3 px-2 py-2">
-            <Avatar className="h-10 w-10">
-              <AvatarImage alt={user?.name} src={user?.image ?? undefined} />
-              <AvatarFallback className="bg-orange-500 text-white">
-                {initials}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex flex-1 flex-col gap-1">
-              <div className="flex items-center gap-2">
-                <span className="truncate font-semibold text-sm">
-                  {user.name}
-                </span>
-                <Badge className="h-4 rounded-sm bg-violet-600 px-1.5 font-bold text-[9px] text-white uppercase hover:bg-violet-600">
-                  {role}
-                </Badge>
-              </div>
-              <span className="truncate text-muted-foreground text-xs">
-                {user.email}
-              </span>
-            </div>
-          </div>
-        </DropdownMenuLabel>
-
-        <DropdownMenuSeparator />
-
         {/* Account Section */}
         <DropdownMenuGroup>
-          <DropdownMenuLabel className="px-2 font-semibold text-muted-foreground text-xs uppercase">
+          <DropdownMenuLabel className="px-2 py-2 font-semibold text-muted-foreground text-xs uppercase">
             Account
           </DropdownMenuLabel>
-          {accountItems.map((item) => (
-            <DropdownMenuItem asChild key={item.to}>
-              <Link {...item} className="cursor-pointer">
-                {item.label}
-              </Link>
-            </DropdownMenuItem>
-          ))}
+          <DropdownMenuItem asChild>
+            <Link className="cursor-pointer" to="/settings/account/profile">
+              <User className="mr-2 h-4 w-4" />
+              Profile
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link className="cursor-pointer" to="/settings/account/preferences">
+              <Settings className="mr-2 h-4 w-4" />
+              Preferences
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link
+              className="cursor-pointer"
+              to="/settings/account/notifications"
+            >
+              <Bell className="mr-2 h-4 w-4" />
+              Notifications
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link className="cursor-pointer" to="/settings/account/security">
+              <Shield className="mr-2 h-4 w-4" />
+              Security & Access
+            </Link>
+          </DropdownMenuItem>
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator />
 
         {/* Organization Section */}
         <DropdownMenuGroup>
-          <DropdownMenuLabel className="px-2 font-semibold text-muted-foreground text-xs uppercase">
+          <DropdownMenuLabel className="px-2 py-2 font-semibold text-muted-foreground text-xs uppercase">
             Organization
           </DropdownMenuLabel>
           <DropdownMenuItem asChild>
@@ -259,9 +240,49 @@ function UserMenuButton() {
               params={{ slug: "current" }}
               to="/org/$slug"
             >
+              <LayoutDashboard className="mr-2 h-4 w-4" />
               Dashboard
             </Link>
           </DropdownMenuItem>
+        </DropdownMenuGroup>
+
+        <DropdownMenuSeparator />
+
+        {/* Status Section */}
+        <DropdownMenuGroup>
+          <DropdownMenuLabel className="px-2 py-2 font-semibold text-muted-foreground text-xs uppercase">
+            Status
+          </DropdownMenuLabel>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger className="justify-between">
+              <div className="flex items-center">
+                <Circle className="mr-2 h-3 w-3 fill-green-500 text-green-500" />
+                Online
+              </div>
+            </DropdownMenuSubTrigger>
+            <DropdownMenuSubContent
+              className="min-w-40"
+              side="left"
+              sideOffset={8}
+            >
+              <DropdownMenuItem>
+                <Circle className="mr-2 h-3 w-3 fill-green-500 text-green-500" />
+                Online
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Circle className="mr-2 h-3 w-3 fill-amber-500 text-amber-500" />
+                Away
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Circle className="mr-2 h-3 w-3 fill-rose-500 text-rose-500" />
+                Busy
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Circle className="mr-2 h-3 w-3 fill-gray-400 text-gray-400" />
+                Offline
+              </DropdownMenuItem>
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator />

@@ -89,7 +89,11 @@ export function NotificationSheet() {
   return (
     <Sheet onOpenChange={setOpen} open={open}>
       <SheetTrigger asChild>
-        <Button className="relative" size="icon" variant="ghost">
+        <Button
+          className="relative rounded-2xl border border-border"
+          size="icon"
+          variant="ghost"
+        >
           <Bell className="h-4 w-4" />
           {triggerBadge}
         </Button>
