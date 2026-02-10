@@ -45,7 +45,9 @@ import { queryClient, queryUtils } from "@/utils/orpc";
 export function NavQuickActions() {
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Quick Actions</SidebarGroupLabel>
+      <SidebarGroupLabel className="font-semibold text-muted-foreground text-xs uppercase tracking-wider">
+        Quick Actions
+      </SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -321,7 +323,7 @@ function MarkAttendanceButton() {
   if (!hasCheckedIn) {
     return (
       <SidebarMenuButton
-        className="min-w-8 bg-green-600 text-primary-foreground duration-200 ease-linear hover:bg-green-700 hover:text-primary-foreground active:bg-green-700 active:text-primary-foreground"
+        className="h-10 min-w-8 rounded-lg bg-green-600 font-medium text-white hover:bg-green-700 hover:text-white active:bg-green-700 active:text-white"
         disabled={isActionPending}
         onClick={() => punchIn({})}
         tooltip="Punch In"
@@ -345,7 +347,7 @@ function MarkAttendanceButton() {
     return (
       <>
         <SidebarMenuButton
-          className="min-w-8 bg-red-600 text-primary-foreground duration-200 ease-linear hover:bg-red-700 hover:text-primary-foreground active:bg-red-700 active:text-primary-foreground"
+          className="h-10 min-w-8 rounded-lg bg-red-600 font-medium text-white hover:bg-red-700 hover:text-white active:bg-red-700 active:text-white"
           disabled={isActionPending}
           onClick={handlePunchOut}
           tooltip="Punch Out"

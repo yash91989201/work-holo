@@ -78,8 +78,8 @@ import {
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { authClient } from "@/lib/auth-client";
 import { UpdateMemberRoleSchema } from "@/lib/schemas/admin/member";
-import { queryClient, queryUtils } from "@/utils/orpc";
 import type { UpdateMemberRoleFormType } from "@/lib/types";
+import { queryClient, queryUtils } from "@/utils/orpc";
 
 const getRoleBadgeVariant = (role: string) => {
   switch (role) {

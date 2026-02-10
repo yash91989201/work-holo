@@ -1,9 +1,6 @@
 import { ORPCError } from "@orpc/server";
 import type { AttendanceUpdateType } from "@work-holo/db/lib/types";
-import {
-  attendanceTable,
-  workBlockTable,
-} from "@work-holo/db/schema/index";
+import { attendanceTable, workBlockTable } from "@work-holo/db/schema/index";
 import { and, asc, eq, gte, isNull, lte } from "drizzle-orm";
 import { orgMemberProcedure } from "../../index";
 import {

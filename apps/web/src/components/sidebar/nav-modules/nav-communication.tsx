@@ -14,6 +14,9 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import {
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -46,149 +49,172 @@ function NavChannelsInner() {
 
   if (channels.length === 0) {
     return (
-      <SidebarMenuItem>
-        <SidebarMenuButton tooltip="No Channels">
-          {isPopover ? <CircleAlert /> : "No Channels"}
-        </SidebarMenuButton>
-      </SidebarMenuItem>
+      <SidebarGroup>
+        <SidebarGroupLabel className="font-semibold text-muted-foreground text-xs uppercase tracking-wider">
+          Channels
+        </SidebarGroupLabel>
+        <SidebarGroupContent>
+          <SidebarMenuItem>
+            <SidebarMenuButton tooltip="No Channels">
+              {isPopover ? <CircleAlert /> : "No Channels"}
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarGroupContent>
+      </SidebarGroup>
     );
   }
 
   if (isPopover) {
     return (
-      <SidebarMenuItem>
-        <Collapsible>
-          <HoverCard
-            closeDelay={100}
-            onOpenChange={setOpen}
-            open={open}
-            openDelay={50}
-          >
-            <HoverCardTrigger asChild>
-              <CollapsibleTrigger asChild>
-                <SidebarMenuButton
-                  aria-expanded="false"
-                  aria-haspopup="true"
-                  aria-label="Channels"
-                >
-                  <IconBroadcast aria-hidden="true" />
-                  <span className="sr-only text-balance text-sm">Channels</span>
-                </SidebarMenuButton>
-              </CollapsibleTrigger>
-            </HoverCardTrigger>
-            <HoverCardContent
-              align="start"
-              aria-label="Channels list"
-              className="w-fit min-w-56 p-0"
-              role="menu"
-              side="right"
-              sideOffset={8}
-            >
-              <div className="flex flex-col">
-                <div className="flex items-center gap-3 border-b p-3">
-                  <span className="text-balance text-sm">Channels</span>
-                </div>
-                <SidebarMenuSub
-                  className={cn(
-                    isPopover && "mx-0 border-none p-1.5",
-                    !isPopover && "border-gray-700"
-                  )}
+      <SidebarGroup>
+        <SidebarGroupLabel className="font-semibold text-muted-foreground text-xs uppercase tracking-wider">
+          Channels
+        </SidebarGroupLabel>
+        <SidebarGroupContent>
+          <SidebarMenuItem>
+            <Collapsible>
+              <HoverCard
+                closeDelay={100}
+                onOpenChange={setOpen}
+                open={open}
+                openDelay={50}
+              >
+                <HoverCardTrigger asChild>
+                  <CollapsibleTrigger asChild>
+                    <SidebarMenuButton
+                      aria-expanded="false"
+                      aria-haspopup="true"
+                      aria-label="Channels"
+                    >
+                      <IconBroadcast aria-hidden="true" />
+                      <span className="sr-only text-balance text-sm">
+                        Channels
+                      </span>
+                    </SidebarMenuButton>
+                  </CollapsibleTrigger>
+                </HoverCardTrigger>
+                <HoverCardContent
+                  align="start"
+                  aria-label="Channels list"
+                  className="w-fit min-w-56 p-0"
                   role="menu"
+                  side="right"
+                  sideOffset={8}
                 >
-                  {channels.map((channel) => {
-                    const unreadCount = getUnreadCount(channel.id);
-                    return (
-                      <SidebarMenuSubItem key={channel.id}>
-                        <SidebarMenuSubButton
-                          asChild
-                          className="[&>svg]:size-3"
-                          isActive={channel.id === params?.id}
-                        >
-                          <Link
-                            onClick={() => setOpen(false)}
-                            params={{ slug, id: channel.id }}
-                            to="/org/$slug/communication/channels/$id"
-                          >
-                            <Hash />
-                            <span className="flex-1">{channel.name}</span>
-                            {unreadCount > 0 && (
-                              <Badge
-                                className="ml-auto h-5 w-5 shrink-0 items-center justify-center rounded-full p-0"
-                                variant="default"
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-3 border-b p-3">
+                      <span className="text-balance text-sm">Channels</span>
+                    </div>
+                    <SidebarMenuSub
+                      className={cn(
+                        isPopover && "mx-0 border-none p-1.5",
+                        !isPopover && "border-gray-700"
+                      )}
+                      role="menu"
+                    >
+                      {channels.map((channel) => {
+                        const unreadCount = getUnreadCount(channel.id);
+                        return (
+                          <SidebarMenuSubItem key={channel.id}>
+                            <SidebarMenuSubButton
+                              asChild
+                              className="[&>svg]:size-3"
+                              isActive={channel.id === params?.id}
+                            >
+                              <Link
+                                onClick={() => setOpen(false)}
+                                params={{ slug, id: channel.id }}
+                                to="/org/$slug/communication/channels/$id"
                               >
-                                {unreadCount}
-                              </Badge>
-                            )}
-                          </Link>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                    );
-                  })}
-                </SidebarMenuSub>
-              </div>
-            </HoverCardContent>
-          </HoverCard>
-        </Collapsible>
-      </SidebarMenuItem>
+                                <Hash />
+                                <span className="flex-1">{channel.name}</span>
+                                {unreadCount > 0 && (
+                                  <Badge
+                                    className="ml-auto h-5 w-5 shrink-0 items-center justify-center rounded-full p-0"
+                                    variant="default"
+                                  >
+                                    {unreadCount}
+                                  </Badge>
+                                )}
+                              </Link>
+                            </SidebarMenuSubButton>
+                          </SidebarMenuSubItem>
+                        );
+                      })}
+                    </SidebarMenuSub>
+                  </div>
+                </HoverCardContent>
+              </HoverCard>
+            </Collapsible>
+          </SidebarMenuItem>
+        </SidebarGroupContent>
+      </SidebarGroup>
     );
   }
 
   // Expanded Sidebar
   return (
-    <SidebarMenuItem>
-      <Collapsible>
-        <CollapsibleTrigger asChild>
-          <SidebarMenuButton
-            aria-expanded="false"
-            aria-haspopup={channels.length ? "true" : undefined}
-            aria-label="Channels"
-          >
-            <IconBroadcast aria-hidden="true" />
-            <span>Channels</span>
-          </SidebarMenuButton>
-        </CollapsibleTrigger>
-        <CollapsibleTrigger asChild>
-          <SidebarMenuAction
-            aria-label="Toggle Channels submenu"
-            className="cursor-pointer hover:bg-transparent data-[state=open]:rotate-90"
-          >
-            <ChevronRight aria-hidden="true" />
-            <span className="sr-only">Toggle</span>
-          </SidebarMenuAction>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          <SidebarMenuSub>
-            {channels.map((channel) => {
-              const unreadCount = getUnreadCount(channel.id);
-              return (
-                <SidebarMenuSubItem key={channel.id}>
-                  <SidebarMenuSubButton
-                    asChild
-                    isActive={channel.id === params?.id}
-                  >
-                    <Link
-                      params={{ slug, id: channel.id }}
-                      to="/org/$slug/communication/channels/$id"
-                    >
-                      <Hash />
-                      <span className="flex-1">{channel.name}</span>
-                      {unreadCount > 0 && (
-                        <Badge
-                          className="ml-auto h-5 w-5 shrink-0 items-center justify-center rounded-full p-0"
-                          variant="default"
+    <SidebarGroup>
+      <SidebarGroupLabel className="font-semibold text-muted-foreground text-xs uppercase tracking-wider">
+        Channels
+      </SidebarGroupLabel>
+      <SidebarGroupContent>
+        <SidebarMenuItem>
+          <Collapsible>
+            <CollapsibleTrigger asChild>
+              <SidebarMenuButton
+                aria-expanded="false"
+                aria-haspopup={channels.length ? "true" : undefined}
+                aria-label="Channels"
+              >
+                <IconBroadcast aria-hidden="true" />
+                <span>Channels</span>
+              </SidebarMenuButton>
+            </CollapsibleTrigger>
+            <CollapsibleTrigger asChild>
+              <SidebarMenuAction
+                aria-label="Toggle Channels submenu"
+                className="cursor-pointer hover:bg-transparent data-[state=open]:rotate-90"
+              >
+                <ChevronRight aria-hidden="true" />
+                <span className="sr-only">Toggle</span>
+              </SidebarMenuAction>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <SidebarMenuSub>
+                {channels.map((channel) => {
+                  const unreadCount = getUnreadCount(channel.id);
+                  return (
+                    <SidebarMenuSubItem key={channel.id}>
+                      <SidebarMenuSubButton
+                        asChild
+                        isActive={channel.id === params?.id}
+                      >
+                        <Link
+                          params={{ slug, id: channel.id }}
+                          to="/org/$slug/communication/channels/$id"
                         >
-                          {unreadCount}
-                        </Badge>
-                      )}
-                    </Link>
-                  </SidebarMenuSubButton>
-                </SidebarMenuSubItem>
-              );
-            })}
-          </SidebarMenuSub>
-        </CollapsibleContent>
-      </Collapsible>
-    </SidebarMenuItem>
+                          <Hash />
+                          <span className="flex-1">{channel.name}</span>
+                          {unreadCount > 0 && (
+                            <Badge
+                              className="ml-auto h-5 w-5 shrink-0 items-center justify-center rounded-full p-0"
+                              variant="default"
+                            >
+                              {unreadCount}
+                            </Badge>
+                          )}
+                        </Link>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                  );
+                })}
+              </SidebarMenuSub>
+            </CollapsibleContent>
+          </Collapsible>
+        </SidebarMenuItem>
+      </SidebarGroupContent>
+    </SidebarGroup>
   );
 }
 
