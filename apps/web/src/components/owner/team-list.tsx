@@ -101,7 +101,7 @@ export const TeamList = () => {
   const {
     data: { teams, pageCount, total },
   } = useSuspenseQuery(
-    queryUtils.admin.team.listTeams.queryOptions({
+    queryUtils.team.manage.list.queryOptions({
       input: {
         page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
@@ -131,7 +131,7 @@ export const TeamList = () => {
     },
     onSuccess: () => {
       queryClient.refetchQueries({
-        queryKey: queryUtils.admin.team.listTeams.queryKey({
+        queryKey: queryUtils.team.manage.list.queryKey({
           input: {
             page: pagination.pageIndex + 1,
             limit: pagination.pageSize,

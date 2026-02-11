@@ -7,10 +7,10 @@ import { queryUtils } from "@/utils/orpc";
 export const Route = createFileRoute("/(authenticated)/org/$slug/dashboard/")({
   beforeLoad: ({ context: { queryClient, queryUtils } }) => {
     queryClient.prefetchQuery(
-      queryUtils.admin.dashboard.getMemberCount.queryOptions({})
+      queryUtils.org.dashboard.getMemberCount.queryOptions({})
     );
     queryClient.prefetchQuery(
-      queryUtils.admin.dashboard.getTeamCount.queryOptions({})
+      queryUtils.org.dashboard.getTeamCount.queryOptions({})
     );
   },
   component: RouteComponent,
@@ -18,10 +18,10 @@ export const Route = createFileRoute("/(authenticated)/org/$slug/dashboard/")({
 
 function RouteComponent() {
   const { data: memberCount } = useSuspenseQuery(
-    queryUtils.admin.dashboard.getMemberCount.queryOptions({})
+    queryUtils.org.dashboard.getMemberCount.queryOptions({})
   );
   const { data: teamCount } = useSuspenseQuery(
-    queryUtils.admin.dashboard.getTeamCount.queryOptions({})
+    queryUtils.org.dashboard.getTeamCount.queryOptions({})
   );
 
   return (

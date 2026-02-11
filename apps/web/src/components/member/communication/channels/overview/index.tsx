@@ -30,7 +30,7 @@ export const RecentChannels = () => {
   const { slug } = useParams({ from: "/(authenticated)/org/$slug" });
 
   const { data: channels } = useSuspenseQuery(
-    queryUtils.member.channel.recentChannels.queryOptions({ input: {} })
+    queryUtils.communication.channel.getRecent.queryOptions({ input: {} })
   );
 
   return (

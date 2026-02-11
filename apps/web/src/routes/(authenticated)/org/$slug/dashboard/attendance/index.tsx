@@ -25,13 +25,13 @@ export const Route = createFileRoute(
   }),
   beforeLoad: ({ context: { queryClient, queryUtils }, search }) => {
     queryClient.prefetchQuery(
-      queryUtils.admin.attendance.getAttendanceStats.queryOptions({
+      queryUtils.attendance.records.getStats.queryOptions({
         input: {},
       })
     );
 
     queryClient.prefetchQuery(
-      queryUtils.admin.attendance.listAttendanceRecords.queryOptions({
+      queryUtils.attendance.records.list.queryOptions({
         input: {
           page: search.page,
           perPage: 10,

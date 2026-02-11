@@ -62,7 +62,7 @@ function RouteComponent() {
 
 function OrgPresenceHeartbeat() {
   const { data: attendance } = useSuspenseQuery(
-    queryUtils.member.attendance.getStatus.queryOptions({})
+    queryUtils.attendance.records.getStatus.queryOptions({})
   );
 
   const hasCheckedIn = Boolean(attendance?.checkInTime);

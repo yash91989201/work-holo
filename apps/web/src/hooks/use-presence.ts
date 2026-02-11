@@ -32,7 +32,7 @@ export function usePresenceHeartbeat({
   const lastHeartbeatRef = useRef(0); // ADD THIS LINE
 
   const { mutate: sendHeartbeat } = useMutation(
-    queryUtils.member.presence.heartbeat.mutationOptions({})
+    queryUtils.org.presence.heartbeat.mutationOptions({})
   );
 
   // Track user activity
@@ -151,11 +151,11 @@ export function usePresenceHeartbeat({
 
 export function useSetManualStatus() {
   return useMutation(
-    queryUtils.member.presence.setManualStatus.mutationOptions({
+    queryUtils.org.presence.setManualStatus.mutationOptions({
       onSuccess: async () => {
         // Immediately refetch the org presence data to update UI
         await queryClient.refetchQueries({
-          queryKey: queryUtils.member.presence.getOrgPresence.queryKey({
+          queryKey: queryUtils.org.presence.getOrgPresence.queryKey({
             input: {},
           }),
           exact: true,
@@ -167,7 +167,7 @@ export function useSetManualStatus() {
 
 export function useOrgPresence() {
   return useQuery(
-    queryUtils.member.presence.getOrgPresence.queryOptions({
+    queryUtils.org.presence.getOrgPresence.queryOptions({
       input: {},
       refetchInterval: 30_000,
     })

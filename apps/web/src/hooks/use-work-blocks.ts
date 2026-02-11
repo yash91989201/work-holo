@@ -4,7 +4,7 @@ import { queryUtils } from "@/utils/orpc";
 
 export function useWorkBlocks() {
   const { mutateAsync: startBlock, isPending: isStarting } = useMutation(
-    queryUtils.member.workBlock.startBlock.mutationOptions({
+    queryUtils.attendance.workBlock.start.mutationOptions({
       onSuccess: () => {
         toast.success("Work session started");
       },
@@ -15,7 +15,7 @@ export function useWorkBlocks() {
   );
 
   const { mutateAsync: endBlock, isPending: isEnding } = useMutation(
-    queryUtils.member.workBlock.endBlock.mutationOptions({
+    queryUtils.attendance.workBlock.end.mutationOptions({
       onSuccess: () => {
         toast.success("Work session ended");
       },

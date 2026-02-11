@@ -299,7 +299,7 @@ export const InvitationListTable = () => {
   const {
     data: { invitations, total, pageCount },
   } = useSuspenseQuery(
-    queryUtils.admin.invitation.listInvitations.queryOptions({
+    queryUtils.org.invitation.list.queryOptions({
       input: {
         page: pagination.pageIndex + 1,
         perPage: pagination.pageSize,
@@ -327,7 +327,7 @@ export const InvitationListTable = () => {
     onSuccess: () => {
       toast.success("Invitation cancelled successfully");
       queryClient.invalidateQueries({
-        queryKey: queryUtils.admin.invitation.listInvitations.queryKey({
+        queryKey: queryUtils.org.invitation.list.queryKey({
           input: {},
         }),
       });
@@ -355,7 +355,7 @@ export const InvitationListTable = () => {
     onSuccess: () => {
       toast.success("Invitation resent successfully");
       queryClient.invalidateQueries({
-        queryKey: queryUtils.admin.invitation.listInvitations.queryKey({
+        queryKey: queryUtils.org.invitation.list.queryKey({
           input: {},
         }),
       });
