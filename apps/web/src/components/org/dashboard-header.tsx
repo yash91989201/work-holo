@@ -50,7 +50,9 @@ function useCurrentPageName() {
   const channelId = useMemo(() => {
     const lastMatch = matches[matches.length - 1];
     if (!lastMatch) return null;
-    const params = (lastMatch as unknown as Record<string, Record<string, string>>).params;
+    const params = (
+      lastMatch as unknown as Record<string, Record<string, string>>
+    ).params;
     if (params?.id && lastMatch.pathname.includes("/channels/")) {
       return params.id;
     }

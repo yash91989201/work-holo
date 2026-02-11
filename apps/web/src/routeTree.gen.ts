@@ -32,6 +32,7 @@ import { Route as authenticatedOrgSlugDashboardMembersIndexRouteImport } from '.
 import { Route as authenticatedOrgSlugDashboardAttendanceIndexRouteImport } from './routes/(authenticated)/org/$slug/dashboard/attendance/index'
 import { Route as authenticatedOrgSlugmodulesAttendanceIndexRouteImport } from './routes/(authenticated)/org/$slug/(modules)/attendance/index'
 import { Route as authenticatedOrgSlugDashboardAttendanceAnalyticsRouteImport } from './routes/(authenticated)/org/$slug/dashboard/attendance/analytics'
+import { Route as authenticatedOrgSlugmodulesAttendanceAnalyticsRouteImport } from './routes/(authenticated)/org/$slug/(modules)/attendance/analytics'
 import { Route as authenticatedOrgSlugDashboardCommunicationChannelsIndexRouteImport } from './routes/(authenticated)/org/$slug/dashboard/communication/channels/index'
 import { Route as authenticatedOrgSlugmodulesCommunicationChannelsIndexRouteImport } from './routes/(authenticated)/org/$slug/(modules)/communication/channels/index'
 import { Route as authenticatedOrgSlugmodulesCommunicationChannelsIdRouteRouteImport } from './routes/(authenticated)/org/$slug/(modules)/communication/channels/$id/route'
@@ -166,6 +167,12 @@ const authenticatedOrgSlugDashboardAttendanceAnalyticsRoute =
     path: '/attendance/analytics',
     getParentRoute: () => authenticatedOrgSlugDashboardRouteRoute,
   } as any)
+const authenticatedOrgSlugmodulesAttendanceAnalyticsRoute =
+  authenticatedOrgSlugmodulesAttendanceAnalyticsRouteImport.update({
+    id: '/(modules)/attendance/analytics',
+    path: '/attendance/analytics',
+    getParentRoute: () => authenticatedOrgSlugRouteRoute,
+  } as any)
 const authenticatedOrgSlugDashboardCommunicationChannelsIndexRoute =
   authenticatedOrgSlugDashboardCommunicationChannelsIndexRouteImport.update({
     id: '/communication/channels/',
@@ -209,6 +216,7 @@ export interface FileRoutesByFullPath {
   '/org/$slug/': typeof authenticatedOrgSlugIndexRoute
   '/org/$slug/dashboard/': typeof authenticatedOrgSlugDashboardIndexRoute
   '/org/$slug/manage/': typeof authenticatedOrgSlugManageIndexRoute
+  '/org/$slug/attendance/analytics': typeof authenticatedOrgSlugmodulesAttendanceAnalyticsRoute
   '/org/$slug/dashboard/attendance/analytics': typeof authenticatedOrgSlugDashboardAttendanceAnalyticsRoute
   '/org/$slug/attendance/': typeof authenticatedOrgSlugmodulesAttendanceIndexRoute
   '/org/$slug/dashboard/attendance/': typeof authenticatedOrgSlugDashboardAttendanceIndexRoute
@@ -234,6 +242,7 @@ export interface FileRoutesByTo {
   '/org/$slug': typeof authenticatedOrgSlugIndexRoute
   '/org/$slug/dashboard': typeof authenticatedOrgSlugDashboardIndexRoute
   '/org/$slug/manage': typeof authenticatedOrgSlugManageIndexRoute
+  '/org/$slug/attendance/analytics': typeof authenticatedOrgSlugmodulesAttendanceAnalyticsRoute
   '/org/$slug/dashboard/attendance/analytics': typeof authenticatedOrgSlugDashboardAttendanceAnalyticsRoute
   '/org/$slug/attendance': typeof authenticatedOrgSlugmodulesAttendanceIndexRoute
   '/org/$slug/dashboard/attendance': typeof authenticatedOrgSlugDashboardAttendanceIndexRoute
@@ -263,6 +272,7 @@ export interface FileRoutesById {
   '/(authenticated)/org/$slug/': typeof authenticatedOrgSlugIndexRoute
   '/(authenticated)/org/$slug/dashboard/': typeof authenticatedOrgSlugDashboardIndexRoute
   '/(authenticated)/org/$slug/manage/': typeof authenticatedOrgSlugManageIndexRoute
+  '/(authenticated)/org/$slug/(modules)/attendance/analytics': typeof authenticatedOrgSlugmodulesAttendanceAnalyticsRoute
   '/(authenticated)/org/$slug/dashboard/attendance/analytics': typeof authenticatedOrgSlugDashboardAttendanceAnalyticsRoute
   '/(authenticated)/org/$slug/(modules)/attendance/': typeof authenticatedOrgSlugmodulesAttendanceIndexRoute
   '/(authenticated)/org/$slug/dashboard/attendance/': typeof authenticatedOrgSlugDashboardAttendanceIndexRoute
@@ -292,6 +302,7 @@ export interface FileRouteTypes {
     | '/org/$slug/'
     | '/org/$slug/dashboard/'
     | '/org/$slug/manage/'
+    | '/org/$slug/attendance/analytics'
     | '/org/$slug/dashboard/attendance/analytics'
     | '/org/$slug/attendance/'
     | '/org/$slug/dashboard/attendance/'
@@ -317,6 +328,7 @@ export interface FileRouteTypes {
     | '/org/$slug'
     | '/org/$slug/dashboard'
     | '/org/$slug/manage'
+    | '/org/$slug/attendance/analytics'
     | '/org/$slug/dashboard/attendance/analytics'
     | '/org/$slug/attendance'
     | '/org/$slug/dashboard/attendance'
@@ -345,6 +357,7 @@ export interface FileRouteTypes {
     | '/(authenticated)/org/$slug/'
     | '/(authenticated)/org/$slug/dashboard/'
     | '/(authenticated)/org/$slug/manage/'
+    | '/(authenticated)/org/$slug/(modules)/attendance/analytics'
     | '/(authenticated)/org/$slug/dashboard/attendance/analytics'
     | '/(authenticated)/org/$slug/(modules)/attendance/'
     | '/(authenticated)/org/$slug/dashboard/attendance/'
@@ -527,6 +540,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authenticatedOrgSlugDashboardAttendanceAnalyticsRouteImport
       parentRoute: typeof authenticatedOrgSlugDashboardRouteRoute
     }
+    '/(authenticated)/org/$slug/(modules)/attendance/analytics': {
+      id: '/(authenticated)/org/$slug/(modules)/attendance/analytics'
+      path: '/attendance/analytics'
+      fullPath: '/org/$slug/attendance/analytics'
+      preLoaderRoute: typeof authenticatedOrgSlugmodulesAttendanceAnalyticsRouteImport
+      parentRoute: typeof authenticatedOrgSlugRouteRoute
+    }
     '/(authenticated)/org/$slug/dashboard/communication/channels/': {
       id: '/(authenticated)/org/$slug/dashboard/communication/channels/'
       path: '/communication/channels'
@@ -634,6 +654,7 @@ interface authenticatedOrgSlugRouteRouteChildren {
   authenticatedOrgSlugDashboardRouteRoute: typeof authenticatedOrgSlugDashboardRouteRouteWithChildren
   authenticatedOrgSlugIndexRoute: typeof authenticatedOrgSlugIndexRoute
   authenticatedOrgSlugManageIndexRoute: typeof authenticatedOrgSlugManageIndexRoute
+  authenticatedOrgSlugmodulesAttendanceAnalyticsRoute: typeof authenticatedOrgSlugmodulesAttendanceAnalyticsRoute
   authenticatedOrgSlugmodulesAttendanceIndexRoute: typeof authenticatedOrgSlugmodulesAttendanceIndexRoute
   authenticatedOrgSlugmodulesCommunicationChannelsIdRouteRoute: typeof authenticatedOrgSlugmodulesCommunicationChannelsIdRouteRouteWithChildren
   authenticatedOrgSlugmodulesCommunicationChannelsIndexRoute: typeof authenticatedOrgSlugmodulesCommunicationChannelsIndexRoute
@@ -645,6 +666,8 @@ const authenticatedOrgSlugRouteRouteChildren: authenticatedOrgSlugRouteRouteChil
       authenticatedOrgSlugDashboardRouteRouteWithChildren,
     authenticatedOrgSlugIndexRoute: authenticatedOrgSlugIndexRoute,
     authenticatedOrgSlugManageIndexRoute: authenticatedOrgSlugManageIndexRoute,
+    authenticatedOrgSlugmodulesAttendanceAnalyticsRoute:
+      authenticatedOrgSlugmodulesAttendanceAnalyticsRoute,
     authenticatedOrgSlugmodulesAttendanceIndexRoute:
       authenticatedOrgSlugmodulesAttendanceIndexRoute,
     authenticatedOrgSlugmodulesCommunicationChannelsIdRouteRoute:
