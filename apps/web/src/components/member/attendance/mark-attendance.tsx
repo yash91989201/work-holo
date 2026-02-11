@@ -57,7 +57,6 @@ const formatDuration = (minutes = 0) => {
   return `${hrs}h ${mins}m`;
 };
 
-
 const StatCard = ({
   icon,
   label,
@@ -133,7 +132,7 @@ export const MarkAttendance = () => {
 
   if (!hasCheckedIn) {
     return (
-      <Card className="w-full rounded-3xl border-white border bg-background shadow-[-4px_-4px_12px_rgba(255,255,255,0.8),4px_4px_12px_rgba(0,0,0,0.04)]">
+      <Card className="w-full rounded-3xl border border-white bg-background shadow-[-4px_-4px_12px_rgba(255,255,255,0.8),4px_4px_12px_rgba(0,0,0,0.04)]">
         <CardContent className="flex flex-col items-center justify-center gap-4 p-12">
           <div className="rounded-xl bg-muted p-4">
             <BriefcaseBusiness className="h-10 w-10 text-muted-foreground/60" />

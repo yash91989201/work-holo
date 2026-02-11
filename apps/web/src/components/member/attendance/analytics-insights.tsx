@@ -1,10 +1,8 @@
 import type { AttendanceAnalyticsOutput } from "@work-holo/api/lib/schemas/attendance";
-import { format } from "date-fns";
-import { Clock3, Sparkles, Sunrise, Sunset } from "lucide-react";
+import { Flame, Moon, Sparkles, Sun, Trophy, Zap } from "lucide-react";
 import type { z } from "zod";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Card } from "@/components/ui/card";
 
 type AttendanceAnalytics = z.infer<typeof AttendanceAnalyticsOutput>;
 
@@ -19,57 +17,64 @@ export function AttendanceInsights({ punctuality, streaks, summary }: Props) {
     {
       label: "Average check-in",
       value: punctuality.averageCheckInTime ?? "—",
-      icon: <Sunrise className="h-4 w-4 text-amber-500" />,
+      icon: <Sun className="h-5 w-5 text-amber-500" />,
+      iconBg: "bg-amber-100 dark:bg-amber-900/30",
     },
     {
       label: "Average check-out",
       value: punctuality.averageCheckOutTime ?? "—",
-      icon: <Sunset className="h-4 w-4 text-sky-600" />,
+      icon: <Moon className="h-5 w-5 text-indigo-500" />,
+      iconBg: "bg-indigo-100 dark:bg-indigo-900/30",
     },
     {
       label: "Earliest check-in",
-      value: formatMaybeDate(punctuality.earliestCheckIn),
-      icon: <Clock3 className="h-4 w-4 text-emerald-600" />,
-    },
-    {
-      label: "Latest check-out",
-      value: formatMaybeDate(punctuality.latestCheckOut),
-      icon: <Clock3 className="h-4 w-4 text-indigo-600" />,
+      value: punctuality.earliestCheckIn
+        ? new Date(punctuality.earliestCheckIn).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          })
+        : "—",
+      icon: <Zap className="h-5 w-5 text-sky-500" />,
+      iconBg: "bg-sky-100 dark:bg-sky-900/30",
     },
   ];
 
   return (
-    <Card>
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
-          <CardTitle className="text-base">Insights</CardTitle>
-          <Badge className="gap-1" variant="secondary">
-            <Sparkles className="h-3.5 w-3.5" />
-            Personalized
-          </Badge>
+    <Card className="rounded-2xl bg-gradient-to-br from-slate-50 via-white to-violet-50/50 p-6 shadow-sm dark:from-slate-900 dark:via-slate-900 dark:to-violet-950/30">
+      {/* Header */}
+      <div className="mb-6 flex items-start justify-between">
+        <div>
+          <h3 className="font-semibold text-lg">Insights</h3>
+          <p className="text-muted-foreground text-sm">
+            Punctuality and streaks from your history
+          </p>
         </div>
-        <p className="text-muted-foreground text-sm">
-          Punctuality signals and streaks pulled from your attendance history.
-        </p>
-      </CardHeader>
-      <CardContent className="grid gap-4 md:grid-cols-2">
-        <div className="space-y-3 rounded-lg border bg-muted/30 p-4">
-          <div className="font-semibold text-muted-foreground text-sm">
+        <Badge className="gap-1.5" variant="outline">
+          <Sparkles className="h-3.5 w-3.5" />
+          Personalized
+        </Badge>
+      </div>
+
+      {/* Content */}
+      <div className="grid gap-8 md:grid-cols-2">
+        {/* Punctuality Section */}
+        <div>
+          <div className="mb-4 font-medium text-muted-foreground text-xs uppercase tracking-wider">
             Punctuality
           </div>
-          <div className="space-y-3">
+          <div className="space-y-4">
             {punctualityRows.map((row) => (
               <div
                 className="flex items-center justify-between"
                 key={row.label}
               >
-                <div className="flex items-center gap-2">
-                  <div className="rounded-md bg-background p-2 shadow-sm">
+                <div className="flex items-center gap-3">
+                  <div className={`rounded-xl p-2.5 ${row.iconBg}`}>
                     {row.icon}
                   </div>
                   <span className="text-sm">{row.label}</span>
                 </div>
-                <span className="font-mono text-muted-foreground text-sm">
+                <span className="font-medium text-muted-foreground">
                   {row.value}
                 </span>
               </div>
@@ -77,59 +82,66 @@ export function AttendanceInsights({ punctuality, streaks, summary }: Props) {
           </div>
         </div>
 
-        <div className="space-y-3 rounded-lg border bg-muted/30 p-4">
-          <div className="font-semibold text-muted-foreground text-sm">
+        {/* Reliability Section */}
+        <div>
+          <div className="mb-4 font-medium text-muted-foreground text-xs uppercase tracking-wider">
             Reliability
           </div>
-          <div className="space-y-2">
-            <StreakRow label="Current streak" value={streaks.currentStreak} />
-            <StreakRow
-              label="Best streak"
-              tone="positive"
-              value={streaks.longestStreak}
-            />
-            <Separator className="my-2" />
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">Total days tracked</span>
-              <span className="font-medium">{summary.totalDays}</span>
+          <div className="space-y-3">
+            {/* Current Streak */}
+            <div className="flex items-center justify-between rounded-xl bg-white p-4 shadow-sm dark:bg-slate-800/50">
+              <div>
+                <div className="text-muted-foreground text-xs uppercase tracking-wide">
+                  Current Streak
+                </div>
+                <div className="font-bold text-2xl">
+                  {streaks.currentStreak} Days
+                </div>
+              </div>
+              <div className="rounded-full bg-emerald-100 p-3 dark:bg-emerald-900/30">
+                <Flame className="h-5 w-5 text-emerald-600" />
+              </div>
             </div>
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">Late arrivals</span>
-              <span className="font-medium">{summary.lateDays}</span>
+
+            {/* Best Streak */}
+            <div className="flex items-center justify-between rounded-xl bg-white p-4 shadow-sm dark:bg-slate-800/50">
+              <div>
+                <div className="text-muted-foreground text-xs uppercase tracking-wide">
+                  Best Streak
+                </div>
+                <div className="font-bold text-2xl">
+                  {streaks.longestStreak} Days
+                </div>
+              </div>
+              <div className="rounded-full bg-amber-100 p-3 dark:bg-amber-900/30">
+                <Trophy className="h-5 w-5 text-amber-600" />
+              </div>
+            </div>
+
+            {/* Stats Row */}
+            <div className="mt-4 grid grid-cols-3 gap-3">
+              <div className="text-center">
+                <div className="text-muted-foreground text-xs uppercase tracking-wide">
+                  Total Tracked
+                </div>
+                <div className="font-bold text-xl">{summary.totalDays}</div>
+              </div>
+              <div className="text-center">
+                <div className="text-muted-foreground text-xs uppercase tracking-wide">
+                  Late Arrivals
+                </div>
+                <div className="font-bold text-xl">{summary.lateDays}</div>
+              </div>
+              <div className="text-center">
+                <div className="text-muted-foreground text-xs uppercase tracking-wide">
+                  Sick Days
+                </div>
+                <div className="font-bold text-xl">{summary.excusedDays}</div>
+              </div>
             </div>
           </div>
         </div>
-      </CardContent>
+      </div>
     </Card>
   );
-}
-
-function StreakRow({
-  label,
-  value,
-  tone = "neutral",
-}: {
-  label: string;
-  value: number;
-  tone?: "neutral" | "positive";
-}) {
-  return (
-    <div className="flex items-center justify-between rounded-lg bg-background px-3 py-2 shadow-sm">
-      <span className="text-sm">{label}</span>
-      <span
-        className={`font-semibold ${
-          tone === "positive" ? "text-emerald-600" : "text-foreground"
-        }`}
-      >
-        {value} days
-      </span>
-    </div>
-  );
-}
-
-function formatMaybeDate(value: string | null) {
-  if (!value) return "—";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "—";
-  return format(date, "MMM d, h:mm a");
 }

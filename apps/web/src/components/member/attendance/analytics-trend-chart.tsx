@@ -1,20 +1,13 @@
 import type { AttendanceAnalyticsOutput } from "@work-holo/api/lib/schemas/attendance";
-import { format } from "date-fns";
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  ReferenceLine,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { format, getDay } from "date-fns";
+import { Download, SlidersHorizontal } from "lucide-react";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import type { z } from "zod";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import {
   type ChartConfig,
   ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
@@ -27,117 +20,108 @@ type Props = {
 
 const chartConfig = {
   hours: {
-    label: "Hours worked",
-    color: "hsl(217, 91%, 60%)",
-  },
-  breaks: {
-    label: "Breaks",
-    color: "hsl(12, 86%, 63%)",
+    label: "Hours Worked",
+    color: "var(--chart-3)",
   },
 } satisfies ChartConfig;
+
+const dayNames = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 
 export function AttendanceTrendChart({ dailyTrends }: Props) {
   const hasDays = dailyTrends.length > 0;
 
-  const data = dailyTrends.map((item) => ({
-    label: format(new Date(item.date), "MM/dd"),
-    hours: item.totalHours ?? 0,
-    breaks: item.breakMinutes ? Number(item.breakMinutes) / 60 : 0,
-  }));
+  const data = dailyTrends.map((item) => {
+    const date = new Date(item.date);
+    return {
+      day: dayNames[getDay(date)],
+      fullDate: format(date, "MMM d"),
+      hours: item.totalHours ?? 0,
+    };
+  });
 
   return (
-    <Card className="h-full">
-      <CardHeader className="pb-4">
-        <CardTitle className="flex items-center justify-between text-base">
-          Productivity trend
-          <span className="text-muted-foreground text-xs">Viewed by day</span>
-        </CardTitle>
-      </CardHeader>
+    <Card className="flex h-full flex-col gap-4 rounded-2xl p-6 shadow-sm">
+      {/* Header */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h3 className="font-semibold text-lg">Productivity Trend</h3>
+          <p className="text-muted-foreground text-sm">
+            Daily hours worked this period
+          </p>
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
+          <Button className="gap-2 rounded-lg" size="sm" variant="outline">
+            <SlidersHorizontal className="h-4 w-4" />
+            <span className="xs:inline hidden">Filter</span>
+          </Button>
+          <Button
+            className="gap-2 rounded-lg bg-violet-600 text-white hover:bg-violet-700"
+            size="sm"
+          >
+            <Download className="h-4 w-4" />
+            <span className="xs:inline hidden">Export</span>
+          </Button>
+        </div>
+      </div>
 
-      <CardContent>
-        {hasDays ? (
-          <ChartContainer config={chartConfig}>
-            <AreaChart accessibilityLayer data={data}>
-              <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.3} />
-
-              <XAxis
-                axisLine={false}
-                dataKey="label"
-                tickLine={false}
-                tickMargin={8}
-              />
-
-              <YAxis
-                axisLine={false}
-                tickFormatter={(value: number) => `${value}h`}
-                tickLine={false}
-                width={40}
-              />
-
-              <ChartTooltip
-                content={
-                  <ChartTooltipContent
-                    indicator="dot"
-                    labelClassName="font-medium"
-                    labelFormatter={(label) => `Day ${label}`}
-                  />
-                }
-                cursor={{ strokeDasharray: "4 4" }}
-              />
-
-              <Area
-                activeDot={{ r: 3 }}
-                dataKey="hours"
-                fill="var(--color-hours)"
-                fillOpacity={0.12}
-                stroke="var(--color-hours)"
-                strokeWidth={2}
-                type="monotone"
-              />
-
-              <Area
-                activeDot={{ r: 3 }}
-                dataKey="breaks"
-                fill="var(--color-breaks)"
-                fillOpacity={0.08}
-                stroke="var(--color-breaks)"
-                strokeWidth={2}
-                type="monotone"
-              />
-
-              <ReferenceLine
-                label={{
-                  value: "Target 8h",
-                  position: "insideTopRight",
-                  fontSize: 10,
-                  fill: "var(--muted-foreground)",
-                }}
-                stroke="hsl(0, 0%, 65%)"
-                strokeDasharray="5 5"
-                y={8}
-              />
-
-              <ChartLegend
-                content={<ChartLegendContent payload={data} />}
-                verticalAlign="bottom"
-              />
-            </AreaChart>
-          </ChartContainer>
-        ) : (
-          <EmptyState />
-        )}
-      </CardContent>
+      {/* Chart */}
+      {hasDays ? (
+        <ChartContainer
+          className="h-[220px] w-full sm:h-[280px]"
+          config={chartConfig}
+        >
+          <BarChart
+            data={data}
+            margin={{ top: 10, right: 10, bottom: 0, left: -10 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+            <XAxis
+              axisLine={false}
+              className="font-medium text-muted-foreground text-xs tracking-wider"
+              dataKey="day"
+              tickLine={false}
+            />
+            <YAxis
+              axisLine={false}
+              className="text-muted-foreground text-xs"
+              tickFormatter={(value) => `${value}h`}
+              tickLine={false}
+            />
+            <ChartTooltip
+              content={
+                <ChartTooltipContent
+                  formatter={(value) => [`${value}h`, "Hours Worked"]}
+                  labelFormatter={(_label, payload) => {
+                    if (payload?.[0]?.payload?.fullDate) {
+                      return payload[0].payload.fullDate;
+                    }
+                    return _label;
+                  }}
+                />
+              }
+              cursor={false}
+            />
+            <Bar
+              dataKey="hours"
+              fill="var(--color-hours)"
+              maxBarSize={48}
+              radius={[6, 6, 0, 0]}
+            />
+          </BarChart>
+        </ChartContainer>
+      ) : (
+        <EmptyState />
+      )}
     </Card>
   );
 }
 
 function EmptyState() {
   return (
-    <div className="flex h-65 flex-col justify-center rounded-lg border bg-muted/40 p-6 text-center">
+    <div className="flex h-[220px] flex-col items-center justify-center rounded-lg bg-muted/40 p-6 text-center sm:h-[280px]">
       <p className="font-medium text-sm">No data available</p>
       <p className="mt-1 text-muted-foreground text-sm">
-        No working hours recorded for this range. Try a different timeframe or
-        start logging attendance to see trends.
+        No working hours recorded for this range.
       </p>
     </div>
   );
