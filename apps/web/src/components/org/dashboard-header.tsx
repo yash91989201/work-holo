@@ -1,5 +1,11 @@
 import { IconLogout } from "@tabler/icons-react";
-import { Link, useLoaderData, useNavigate } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import {
+  Link,
+  useLoaderData,
+  useMatches,
+  useNavigate,
+} from "@tanstack/react-router";
 import {
   Bell,
   Building2,
@@ -12,7 +18,7 @@ import {
   Shield,
   User,
 } from "lucide-react";
-import { Suspense, useEffect, useRef } from "react";
+import { Suspense, useEffect, useMemo, useRef } from "react";
 import { toast } from "sonner";
 import { NotificationSheet } from "@/components/shared/notification-sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -36,9 +42,66 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { useMemberRole } from "@/hooks/use-member-role";
 import { authClient } from "@/lib/auth-client";
+import { queryUtils } from "@/utils/orpc";
+
+function useCurrentPageName() {
+  const matches = useMatches();
+
+  const channelId = useMemo(() => {
+    const lastMatch = matches[matches.length - 1];
+    if (!lastMatch) return null;
+    const params = (lastMatch as unknown as Record<string, Record<string, string>>).params;
+    if (params?.id && lastMatch.pathname.includes("/channels/")) {
+      return params.id;
+    }
+    return null;
+  }, [matches]);
+
+  const { data: channel } = useQuery({
+    ...queryUtils.communication.channel.get.queryOptions({
+      input: { channelId: channelId ?? "" },
+    }),
+    enabled: !!channelId,
+  });
+
+  return useMemo(() => {
+    if (channelId && channel?.name) {
+      return `#${channel.name}`;
+    }
+    const lastMatch = matches[matches.length - 1];
+    if (!lastMatch) return "Dashboard";
+
+    const pathname = lastMatch.pathname;
+
+    const orgPathMatch = pathname.match(/\/org\/[^/]+\/(.+)/);
+    if (!orgPathMatch) return "Dashboard";
+
+    const subPath = orgPathMatch[1].replace(/\/$/, ""); // trim trailing slash
+    const segments = subPath.split("/").filter(Boolean);
+
+    // Find the last named (non-ID) segment
+    for (let i = segments.length - 1; i >= 0; i--) {
+      const seg = segments[i];
+      // Skip segments that look like IDs (UUIDs, numeric, nanoids, cuids, short random strings)
+      if (
+        /^[0-9a-f]{8}-/.test(seg) || // UUID
+        /^\d+$/.test(seg) || // numeric
+        (seg.length < 4 && /^[a-z0-9]+$/i.test(seg)) || // very short
+        (seg.length >= 15 && /^[a-z0-9]+$/i.test(seg)) // long alphanumeric (nanoid, cuid, etc.)
+      ) {
+        continue;
+      }
+
+      return seg.charAt(0).toUpperCase() + seg.slice(1);
+    }
+
+    return "Dashboard";
+  }, [matches, channel, channelId]);
+}
 
 export function DashboardHeader() {
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const currentPage = useCurrentPageName();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -67,7 +130,7 @@ export function DashboardHeader() {
       <span className="text-muted-foreground">/</span>
 
       {/* Current Page */}
-      <span className="text-muted-foreground text-sm">Dashboard</span>
+      <span className="text-muted-foreground text-sm">{currentPage}</span>
 
       {/* Search - Centered */}
       <div className="mx-auto max-w-md flex-1">
@@ -260,11 +323,7 @@ function UserMenuButton() {
                 Online
               </div>
             </DropdownMenuSubTrigger>
-            <DropdownMenuSubContent
-              className="min-w-40"
-              side="left"
-              sideOffset={8}
-            >
+            <DropdownMenuSubContent className="min-w-40" sideOffset={8}>
               <DropdownMenuItem>
                 <Circle className="mr-2 h-3 w-3 fill-green-500 text-green-500" />
                 Online

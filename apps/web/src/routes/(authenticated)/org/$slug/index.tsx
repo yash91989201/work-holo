@@ -2,7 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Suspense } from "react";
 import { Greeting } from "@/components/member/attendance/greeting";
-import { DashboardHeader } from "@/components/org/dashboard-header";
+
 import { OrgStats } from "@/components/org/org-stats";
 import {
   PresenceRoster,
@@ -24,7 +24,7 @@ function RouteComponent() {
       <Suspense fallback={null}>
         <OrgPresenceHeartbeat />
       </Suspense>
-      <DashboardHeader />
+
       <section className="space-y-6 p-6">
         {/* Greeting */}
         <Greeting />

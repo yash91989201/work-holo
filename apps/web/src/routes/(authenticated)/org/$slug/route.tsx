@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { Suspense } from "react";
+import { DashboardHeader } from "@/components/org/dashboard-header";
 import { Sidebar } from "@/components/sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { usePresenceHeartbeat } from "@/hooks/use-presence";
@@ -49,6 +50,9 @@ function RouteComponent() {
       >
         <Sidebar variant="sidebar" />
         <SidebarInset>
+          <Suspense fallback={null}>
+            <DashboardHeader />
+          </Suspense>
           <Outlet />
         </SidebarInset>
       </SidebarProvider>
