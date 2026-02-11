@@ -9,12 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Empty,
-  EmptyDescription,
-  EmptyMedia,
-  EmptyTitle,
-} from "@/components/ui/empty";
+
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { queryUtils } from "@/utils/orpc";
@@ -133,32 +128,36 @@ export function WorkBlocksList() {
 
   if (!attendance?.checkInTime) {
     return (
-      <div className="w-full">
-        <Empty className="border">
-          <EmptyMedia>
-            <Clock className="h-12 w-12 text-muted-foreground/50" />
-          </EmptyMedia>
-          <EmptyTitle>Not checked-in yet</EmptyTitle>
-          <EmptyDescription>
-            Punch-In to start your work session
-          </EmptyDescription>
-        </Empty>
-      </div>
+      <Card className="w-full rounded-3xl border-white border bg-background shadow-[-4px_-4px_12px_rgba(255,255,255,0.8),4px_4px_12px_rgba(0,0,0,0.04)]">
+        <CardContent className="flex flex-col items-center justify-center gap-4 p-12">
+          <div className="rounded-xl bg-muted p-4">
+            <Clock className="h-10 w-10 text-muted-foreground/60" />
+          </div>
+          <div className="space-y-1 text-center">
+            <h3 className="font-semibold text-xl">Not checked-in yet</h3>
+            <p className="text-muted-foreground text-sm">
+              Punch-In to start your work session
+            </p>
+          </div>
+        </CardContent>
+      </Card>
     );
   }
 
   if (!blocks || blocks.length === 0) {
     return (
-      <div className="w-full">
-        <Empty className="border">
-          <EmptyMedia>
-            <Briefcase className="h-12 w-12 text-muted-foreground/50" />
-          </EmptyMedia>
-          <EmptyTitle>
-            Your work sessions will appear here once you start working.
-          </EmptyTitle>
-        </Empty>
-      </div>
+      <Card className="w-full rounded-3xl border-white border bg-background shadow-[-4px_-4px_12px_rgba(255,255,255,0.8),4px_4px_12px_rgba(0,0,0,0.04)]">
+        <CardContent className="flex flex-col items-center justify-center gap-4 p-12">
+          <div className="rounded-xl bg-muted p-4">
+            <Briefcase className="h-10 w-10 text-muted-foreground/60" />
+          </div>
+          <div className="space-y-1 text-center">
+            <h3 className="font-semibold text-xl">
+              Your work sessions will appear here once you start working.
+            </h3>
+          </div>
+        </CardContent>
+      </Card>
     );
   }
 
@@ -184,14 +183,14 @@ export function WorkBlocksList() {
               ))}
             </div>
           ) : (
-            <Empty>
-              <EmptyMedia>
-                <Briefcase className="h-12 w-12 text-muted-foreground/50" />
-              </EmptyMedia>
-              <EmptyTitle>
+            <div className="flex flex-col items-center justify-center gap-4 py-12">
+              <div className="rounded-xl bg-muted p-4">
+                <Briefcase className="h-10 w-10 text-muted-foreground/60" />
+              </div>
+              <h3 className="font-semibold text-lg text-center">
                 Your work sessions will appear here once you start working.
-              </EmptyTitle>
-            </Empty>
+              </h3>
+            </div>
           )}
         </ScrollArea>
       </CardContent>

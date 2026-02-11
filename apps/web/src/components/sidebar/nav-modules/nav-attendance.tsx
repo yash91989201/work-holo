@@ -1,4 +1,4 @@
-import { IconCalendarEvent } from "@tabler/icons-react";
+import { IconChartBar, IconLayoutDashboard } from "@tabler/icons-react";
 import { Link, linkOptions, useParams } from "@tanstack/react-router";
 import {
   SidebarGroup,
@@ -18,8 +18,14 @@ export function NavAttendance() {
     {
       params: { slug },
       to: "/org/$slug/attendance",
-      label: "Attendance",
-      icon: IconCalendarEvent,
+      label: "Overview",
+      icon: IconLayoutDashboard,
+    },
+    {
+      params: { slug },
+      to: "/org/$slug/attendance/analytics",
+      label: "Analytics",
+      icon: IconChartBar,
     },
   ]);
 

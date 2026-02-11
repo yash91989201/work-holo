@@ -5,6 +5,7 @@ import {
   CheckCircle,
   Clock,
   Coffee,
+  LogIn,
   LogOut,
 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -25,14 +26,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  Empty,
-  EmptyContent,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from "@/components/ui/empty";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
 import { queryUtils } from "@/utils/orpc";
@@ -63,6 +56,7 @@ const formatDuration = (minutes = 0) => {
   if (hrs === 0) return `${mins}m`;
   return `${hrs}h ${mins}m`;
 };
+
 
 const StatCard = ({
   icon,
@@ -139,35 +133,34 @@ export const MarkAttendance = () => {
 
   if (!hasCheckedIn) {
     return (
-      <div className="w-full">
-        <Empty className="border">
-          <EmptyHeader>
-            <EmptyMedia>
-              <BriefcaseBusiness className="h-12 w-12 text-muted-foreground/50" />
-            </EmptyMedia>
-            <EmptyTitle>Ready to Start?</EmptyTitle>
-            <EmptyDescription>Punch in to begin your workday.</EmptyDescription>
-          </EmptyHeader>
-          <EmptyContent>
-            <Button
-              className="bg-green-600 hover:bg-green-700"
-              disabled={isActionPending}
-              onClick={() => punchIn({})}
-              size="lg"
-            >
-              {isPunchingIn ? (
-                <Spinner className="mr-2" />
-              ) : (
-                <Clock className="mr-2 h-5 w-5" />
-              )}
-              <span>Punch In</span>
-            </Button>
-          </EmptyContent>
-        </Empty>
-      </div>
+      <Card className="w-full rounded-3xl border-white border bg-background shadow-[-4px_-4px_12px_rgba(255,255,255,0.8),4px_4px_12px_rgba(0,0,0,0.04)]">
+        <CardContent className="flex flex-col items-center justify-center gap-4 p-12">
+          <div className="rounded-xl bg-muted p-4">
+            <BriefcaseBusiness className="h-10 w-10 text-muted-foreground/60" />
+          </div>
+          <div className="space-y-1 text-center">
+            <h3 className="font-semibold text-xl">Ready to Start?</h3>
+            <p className="text-muted-foreground text-sm">
+              Punch in to begin your workday.
+            </p>
+          </div>
+          <Button
+            className="mt-2 rounded-lg bg-green-600 px-8 hover:bg-green-700"
+            disabled={isActionPending}
+            onClick={() => punchIn({})}
+            size="lg"
+          >
+            {isPunchingIn ? (
+              <Spinner className="mr-2" />
+            ) : (
+              <LogIn className="mr-2 h-5 w-5" />
+            )}
+            <span>Punch In</span>
+          </Button>
+        </CardContent>
+      </Card>
     );
   }
-
   if (hasCheckedIn && !hasCheckedOut) {
     const totalMinutes = calculateWorkDuration(attendance.checkInTime, null);
     const breakMinutes = attendance.breakDuration ?? 0;

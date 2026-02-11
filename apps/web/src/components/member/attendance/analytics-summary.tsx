@@ -80,14 +80,14 @@ export function AttendanceAnalyticsSummary({ summary, punctuality }: Props) {
   ];
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+    <div className="grid gap-12 md:grid-cols-2 xl:grid-cols-4 p-6">
       {items.map((item) => (
-        <Card className="h-full border-border/60" key={item.key}>
+        <Card className="h-full rounded-3xl border-white border bg-background shadow-[-4px_-4px_12px_rgba(255,255,255,0.8),4px_4px_12px_rgba(0,0,0,0.04)]" key={item.key}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-            <CardTitle className="text-sm">{item.title}</CardTitle>
+            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{item.title}</CardTitle>
             <span
               className={cn(
-                "rounded-full bg-muted p-2 shadow-inner",
+                "rounded-xl bg-muted p-2",
                 item.accent
               )}
             >
@@ -96,7 +96,7 @@ export function AttendanceAnalyticsSummary({ summary, punctuality }: Props) {
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="flex items-baseline gap-2">
-              <span className="font-semibold text-2xl">{item.primary}</span>
+              <span className="font-bold text-3xl">{item.primary}</span>
               {item.key === "hours" && punctuality.averageCheckInTime ? (
                 <div className="text-muted-foreground text-xs">
                   Avg check-in {punctuality.averageCheckInTime}
@@ -120,29 +120,29 @@ export function AttendanceAnalyticsSummary({ summary, punctuality }: Props) {
         </Card>
       ))}
 
-      <Card className="md:col-span-2 xl:col-span-4">
+      <Card className="rounded-3xl border-white border bg-background shadow-[-4px_-4px_12px_rgba(255,255,255,0.8),4px_4px_12px_rgba(0,0,0,0.04)] md:col-span-2 xl:col-span-4">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm">Participation highlights</CardTitle>
+          <CardTitle className="text-base font-semibold">Participation Highlights</CardTitle>
           <Zap className="h-4 w-4 text-primary" />
         </CardHeader>
         <CardContent className="grid gap-4 md:grid-cols-4">
           <Insight
-            icon={<Laptop className="h-4 w-4 text-sky-600" />}
+            icon={<Laptop className="h-4 w-4 text-white" />}
             label="Remote days"
             value={summary.remoteDays}
           />
           <Insight
-            icon={<Clock3 className="h-4 w-4 text-amber-600" />}
+            icon={<Clock3 className="h-4 w-4 text-white" />}
             label="Late arrivals"
             value={summary.lateDays}
           />
           <Insight
-            icon={<Award className="h-4 w-4 text-emerald-600" />}
+            icon={<Award className="h-4 w-4 text-white" />}
             label="Excused days"
             value={summary.excusedDays}
           />
           <Insight
-            icon={<Flame className="h-4 w-4 text-rose-600" />}
+            icon={<Flame className="h-4 w-4 text-white" />}
             label="Absences"
             value={summary.absentDays}
           />
@@ -162,11 +162,11 @@ function Insight({
   icon: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center gap-3 rounded-lg border bg-muted/40 px-3 py-2">
-      <div className="rounded-full bg-background p-2 shadow-sm">{icon}</div>
+    <div className="flex items-center gap-3 rounded-2xl border border-border/40 bg-muted/30 px-4 py-3">
+      <div className="rounded-xl bg-gray-800 p-2.5">{icon}</div>
       <div>
-        <div className="font-medium leading-tight">{value}</div>
-        <div className="text-muted-foreground text-xs">{label}</div>
+        <div className="font-bold text-lg leading-tight">{value}</div>
+        <div className="text-muted-foreground text-[10px] font-semibold uppercase tracking-wider">{label}</div>
       </div>
     </div>
   );
