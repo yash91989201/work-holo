@@ -5,16 +5,23 @@ import { onError } from "@orpc/server";
 import { RPCHandler } from "@orpc/server/fetch";
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
 import { createContext } from "@work-holo/api/context";
+import { pusher } from "@work-holo/api/lib/pusher";
 import { initializeQueueClient } from "@work-holo/api/lib/queue";
+import { getRedisClient } from "@work-holo/api/lib/redis";
 import { electricRouter } from "@work-holo/api/routers/electric/index";
 import { appRouter } from "@work-holo/api/routers/index";
 import { auth } from "@work-holo/auth";
+import { db } from "@work-holo/db";
 import { env } from "@work-holo/env/server";
+import { initPermission } from "@work-holo/permission/server/config/index";
+import { initPermissionEmitter } from "@work-holo/permission/server/events/emitter";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 
 initializeQueueClient(env.RABBITMQ_URL);
+initPermission({ db, getRedisClient, pusher });
+initPermissionEmitter();
 
 const app = new Hono();
 
