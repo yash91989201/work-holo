@@ -80,17 +80,17 @@ export function AttendanceAnalyticsSummary({ summary, punctuality }: Props) {
   ];
 
   return (
-    <div className="grid gap-12 md:grid-cols-2 xl:grid-cols-4 p-6">
+    <div className="grid gap-12 p-6 md:grid-cols-2 xl:grid-cols-4">
       {items.map((item) => (
-        <Card className="h-full rounded-3xl border-white border bg-background shadow-[-4px_-4px_12px_rgba(255,255,255,0.8),4px_4px_12px_rgba(0,0,0,0.04)]" key={item.key}>
+        <Card
+          className="h-full rounded-3xl border border-white bg-background shadow-[-4px_-4px_12px_rgba(255,255,255,0.8),4px_4px_12px_rgba(0,0,0,0.04)]"
+          key={item.key}
+        >
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{item.title}</CardTitle>
-            <span
-              className={cn(
-                "rounded-xl bg-muted p-2",
-                item.accent
-              )}
-            >
+            <CardTitle className="font-semibold text-muted-foreground text-xs uppercase tracking-wider">
+              {item.title}
+            </CardTitle>
+            <span className={cn("rounded-xl bg-muted p-2", item.accent)}>
               <item.icon className="h-4 w-4" />
             </span>
           </CardHeader>
@@ -120,9 +120,11 @@ export function AttendanceAnalyticsSummary({ summary, punctuality }: Props) {
         </Card>
       ))}
 
-      <Card className="rounded-3xl border-white border bg-background shadow-[-4px_-4px_12px_rgba(255,255,255,0.8),4px_4px_12px_rgba(0,0,0,0.04)] md:col-span-2 xl:col-span-4">
+      <Card className="rounded-3xl border border-white bg-background shadow-[-4px_-4px_12px_rgba(255,255,255,0.8),4px_4px_12px_rgba(0,0,0,0.04)] md:col-span-2 xl:col-span-4">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-base font-semibold">Participation Highlights</CardTitle>
+          <CardTitle className="font-semibold text-base">
+            Participation Highlights
+          </CardTitle>
           <Zap className="h-4 w-4 text-primary" />
         </CardHeader>
         <CardContent className="grid gap-4 md:grid-cols-4">
@@ -166,7 +168,9 @@ function Insight({
       <div className="rounded-xl bg-gray-800 p-2.5">{icon}</div>
       <div>
         <div className="font-bold text-lg leading-tight">{value}</div>
-        <div className="text-muted-foreground text-[10px] font-semibold uppercase tracking-wider">{label}</div>
+        <div className="font-semibold text-[10px] text-muted-foreground uppercase tracking-wider">
+          {label}
+        </div>
       </div>
     </div>
   );

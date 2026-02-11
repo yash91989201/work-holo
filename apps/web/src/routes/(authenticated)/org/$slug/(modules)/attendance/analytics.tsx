@@ -56,7 +56,7 @@ function RouteComponent() {
   );
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6 p-12">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-bold text-2xl">Analytics</h1>
@@ -89,21 +89,23 @@ function RouteComponent() {
         </div>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          <AttendanceTrendChart dailyTrends={analytics.dailyTrends} />
+      <div className="space-y-12">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
+          <div className="lg:col-span-2 [&>*]:h-full">
+            <AttendanceTrendChart dailyTrends={analytics.dailyTrends} />
+          </div>
+          <AttendanceStatusBreakdown
+            statusBreakdown={analytics.statusBreakdown}
+            summary={analytics.summary}
+          />
         </div>
-        <AttendanceStatusBreakdown
-          statusBreakdown={analytics.statusBreakdown}
+
+        <AttendanceInsights
+          punctuality={analytics.punctuality}
+          streaks={analytics.streaks}
           summary={analytics.summary}
         />
       </div>
-
-      <AttendanceInsights
-        punctuality={analytics.punctuality}
-        streaks={analytics.streaks}
-        summary={analytics.summary}
-      />
     </div>
   );
 }
