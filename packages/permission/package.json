@@ -1,0 +1,25 @@
+{
+  "name": "@work-holo/permission",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "devDependencies": {
+    "@work-holo/config": "workspace:*"
+  },
+  "peerDependencies": {
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@orpc/server": "^1.13.5",
+    "@work-holo/db": "workspace:*",
+    "casbin": "^5.48.0",
+    "drizzle-adapter": "^1.4.0",
+    "drizzle-orm": "^0.45.1"
+  }
+}

@@ -1,6 +1,7 @@
 import { getRedisClient } from "@work-holo/api/lib/redis";
 import { auth } from "@work-holo/auth";
 import { db } from "@work-holo/db";
+import type { PermissionService } from "@work-holo/permission/server/services/permission.service";
 import type { RedisClient } from "bun";
 import type { Context as HonoContext } from "hono";
 
@@ -13,6 +14,7 @@ export type Context = {
   session: Awaited<ReturnType<typeof auth.api.getSession>>;
   db: typeof db;
   redis: RedisClient;
+  permission?: PermissionService;
   orgId?: string;
   orgMembership?: {
     memberId: string;
