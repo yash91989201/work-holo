@@ -10,7 +10,7 @@ export const Route = createFileRoute(
 )({
   beforeLoad: ({ context: { queryClient, queryUtils } }) => {
     queryClient.prefetchQuery(
-      queryUtils.member.attendance.getAnalytics.queryOptions({
+      queryUtils.attendance.analytics.getAnalytics.queryOptions({
         input: rangeToInput(RANGE_OPTIONS[0].value),
       })
     );

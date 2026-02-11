@@ -99,7 +99,7 @@ export function AttendanceTable() {
 
   // Data Fetching
   const { data: attendanceData } = useSuspenseQuery(
-    queryUtils.admin.attendance.listAttendanceRecords.queryOptions({
+    queryUtils.attendance.records.list.queryOptions({
       input: {
         page: pagination.pageIndex + 1,
         perPage: pagination.pageSize,

@@ -444,7 +444,7 @@ export function useMessageMutations() {
       userId: string;
     }) => {
       const { txid } =
-        await orpcClient.communication.message.markMessagesAsRead({
+        await orpcClient.communication.message.markAsRead({
           channelId,
           messageIds,
         });

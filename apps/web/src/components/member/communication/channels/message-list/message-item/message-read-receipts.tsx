@@ -173,7 +173,7 @@ function MessageReadersDialog({
 
 function MessageReadersList({ messageId }: { messageId: string }) {
   const { data: readers } = useSuspenseQuery(
-    queryUtils.communication.message.getAllMessageReaders.queryOptions({
+    queryUtils.communication.message.getAllReaders.queryOptions({
       input: { messageId },
     })
   );

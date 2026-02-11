@@ -66,7 +66,7 @@ export async function subscribeToPushNotifications(): Promise<PushSubscription |
 
     // Get VAPID public key from server
     const { publicKey } =
-      await orpcClient.member.pushSubscription.getVapidPublicKey();
+      await orpcClient.user.pushSubscription.getVapidPublicKey();
 
     // Convert VAPID key to Uint8Array
     const applicationServerKey = urlBase64ToUint8Array(publicKey);
@@ -84,7 +84,7 @@ export async function subscribeToPushNotifications(): Promise<PushSubscription |
       return null;
     }
 
-    await orpcClient.member.pushSubscription.savePushSubscription({
+    await orpcClient.user.pushSubscription.save({
       subscription: {
         endpoint: subscription.endpoint,
         keys: {
@@ -122,7 +122,7 @@ export async function unsubscribeFromPushNotifications(): Promise<boolean> {
 
     if (unsubscribed) {
       // Remove subscription from server
-      await orpcClient.member.pushSubscription.removePushSubscription({
+      await orpcClient.user.pushSubscription.remove({
         endpoint: subscription.endpoint,
       });
     }
@@ -176,7 +176,7 @@ export async function getPushSubscription(): Promise<PushSubscription | null> {
 export async function testPushNotification(): Promise<boolean> {
   try {
     const result =
-      await orpcClient.member.pushSubscription.testPushNotification();
+      await orpcClient.user.pushSubscription.test();
     return result.success && result.sent > 0;
   } catch (error) {
     console.error("Failed to send test push notification:", error);

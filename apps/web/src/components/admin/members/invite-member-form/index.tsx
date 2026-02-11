@@ -39,7 +39,7 @@ export const InviteMemberForm = () => {
         }
 
         queryClient.invalidateQueries({
-          queryKey: queryUtils.admin.invitation.listInvitations.queryKey({
+          queryKey: queryUtils.org.invitation.list.queryKey({
             input: {},
           }),
         });
