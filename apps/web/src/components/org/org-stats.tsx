@@ -10,7 +10,7 @@ interface StatItem {
   badge: string;
   badgeColor: string;
 }
-
+// TODO: Add actual APIs of Attendance Rate, Total teams, Active Channels
 const dummyStats: StatItem[] = [
   {
     title: "ATTENDANCE RATE",

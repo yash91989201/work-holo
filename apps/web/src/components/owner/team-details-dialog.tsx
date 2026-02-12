@@ -1,4 +1,5 @@
-import { Calendar, Settings, UserMinus, UserPlus } from "lucide-react";
+import { Calendar, Settings, UserMinus,  } from "lucide-react";
+import { IconUserFilled } from "@tabler/icons-react";
 import { useState } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -95,7 +96,7 @@ export const TeamDetailsDialog = ({
           {/* Team Overview */}
           <div className="grid grid-cols-2 gap-4 rounded-lg border p-4">
             <div className="flex items-center gap-2">
-              <UserPlus className="h-4 w-4 text-muted-foreground" />
+              <IconUserFilled className="h-4 w-4 text-muted-foreground" />
               <div>
                 <p className="font-medium text-sm">{team.memberCount}</p>
                 <p className="text-muted-foreground text-xs">Members</p>
@@ -125,7 +126,7 @@ export const TeamDetailsDialog = ({
                   onClick={() => _setIsAddMemberDialogOpen(true)}
                   size="sm"
                 >
-                  <UserPlus className="mr-2 h-4 w-4" />
+                  <IconUserFilled className="mr-2 h-4 w-4" />
                   Add Member
                 </Button>
               </div>
@@ -189,7 +190,7 @@ export const TeamDetailsDialog = ({
                     Edit Team Details
                   </Button>
                   <Button className="w-full justify-start" variant="outline">
-                    <UserPlus className="mr-2 h-4 w-4" />
+                    <IconUserFilled className="mr-2 h-4 w-4" />
                     Invite Members
                   </Button>
                   <Button

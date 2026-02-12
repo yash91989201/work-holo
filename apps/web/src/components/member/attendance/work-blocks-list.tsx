@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import type { WorkBlockType } from "@work-holo/db/lib/types";
-import { Briefcase, Clock, Coffee, LogOut, Pause } from "lucide-react";
+import { Briefcase, Coffee, LogOut, Pause } from "lucide-react";
+import { IconClockHour4Filled } from "@tabler/icons-react";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -32,7 +33,7 @@ const endReasonIcons: Record<string, React.ReactNode> = {
   manual: <Pause className="h-4 w-4 text-muted-foreground" />,
   break: <Coffee className="h-4 w-4 text-yellow-500" />,
   punch_out: <LogOut className="h-4 w-4 text-red-500" />,
-  idle_timeout: <Clock className="h-4 w-4 text-gray-500" />,
+  idle_timeout: <IconClockHour4Filled className="h-4 w-4 text-gray-500" />,
 };
 
 const endReasonLabels: Record<string, string> = {
@@ -61,14 +62,18 @@ const WorkBlockItem = ({
       reason === null ? (
         <Briefcase className="h-4 w-4 text-green-500" />
       ) : (
-        endReasonIcons[reason as string] || <Clock className="h-4 w-4" />
+        endReasonIcons[reason as string] || (
+          <IconClockHour4Filled className="h-4 w-4" />
+        )
       );
   } else {
     iconComponent =
       reason !== null ? (
-        endReasonIcons[reason as string] || <Clock className="h-4 w-4" />
+        endReasonIcons[reason as string] || (
+          <IconClockHour4Filled className="h-4 w-4" />
+        )
       ) : (
-        <Clock className="h-4 w-4" />
+        <IconClockHour4Filled className="h-4 w-4" />
       );
   }
 
@@ -131,7 +136,7 @@ export function WorkBlocksList() {
       <Card className="w-full rounded-3xl border border-white bg-background shadow-[-4px_-4px_12px_rgba(255,255,255,0.8),4px_4px_12px_rgba(0,0,0,0.04)]">
         <CardContent className="flex flex-col items-center justify-center gap-4 p-12">
           <div className="rounded-xl bg-muted p-4">
-            <Clock className="h-10 w-10 text-muted-foreground/60" />
+            <IconClockHour4Filled className="h-10 w-10 text-muted-foreground/60" />
           </div>
           <div className="space-y-1 text-center">
             <h3 className="font-semibold text-xl">Not checked-in yet</h3>

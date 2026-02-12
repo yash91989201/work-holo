@@ -12,18 +12,21 @@ import { useDebounce } from "@uidotdev/usehooks";
 import type { TeamMemberType } from "@work-holo/db/lib/types";
 import { format } from "date-fns";
 import {
-  ArrowUpDown,
+  
   Building2,
-  Calendar as CalendarIcon,
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
   MoreHorizontal,
   Search,
   Trash2,
   Users,
 } from "lucide-react";
+import {
+  IconArrowAutofitHeightFilled,
+  IconCircleChevronLeftFilled,
+  IconCircleChevronRightFilled,
+  IconCircleChevronsLeftFilled,
+  IconCircleChevronsRightFilled,
+  IconCalendarEventFilled,
+} from "@tabler/icons-react";
 import * as React from "react";
 import { Suspense } from "react";
 import type { DateRange } from "react-day-picker";
@@ -165,7 +168,7 @@ export const TeamList = () => {
             variant="ghost"
           >
             <span>Team Name</span>
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <IconArrowAutofitHeightFilled className="ml-2 h-4 w-4" />
           </Button>
         ),
         cell: ({ row }) => (
@@ -182,7 +185,7 @@ export const TeamList = () => {
           >
             <Users className="mr-2 h-4 w-4" />
             Members
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <IconArrowAutofitHeightFilled className="ml-2 h-4 w-4" />
           </Button>
         ),
         cell: ({ row }) => {
@@ -205,9 +208,9 @@ export const TeamList = () => {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             variant="ghost"
           >
-            <CalendarIcon className="mr-2 h-4 w-4" />
+            <IconCalendarEventFilled className="mr-2 h-4 w-4" />
             Created At
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <IconArrowAutofitHeightFilled className="ml-2 h-4 w-4" />
           </Button>
         ),
         cell: ({ row }) => (
@@ -321,7 +324,7 @@ export const TeamList = () => {
                 )}
                 variant={"outline"}
               >
-                <CalendarIcon className="mr-2 h-4 w-4" />
+                <IconCalendarEventFilled className="mr-2 h-4 w-4" />
                 {dateRange?.from ? (
                   dateRange.to ? (
                     <>
@@ -452,7 +455,7 @@ export const TeamList = () => {
             variant="outline"
           >
             <span className="sr-only">Go to first page</span>
-            <ChevronsLeft />
+            <IconCircleChevronsLeftFilled />
           </Button>
           <Button
             className="h-8 px-2 lg:px-3"
@@ -461,7 +464,7 @@ export const TeamList = () => {
             variant="outline"
           >
             <span className="sr-only">Go to previous page</span>
-            <ChevronLeft />
+            <IconCircleChevronLeftFilled />
           </Button>
           <div className="flex items-center justify-center font-medium text-sm">
             {table.getState().pagination.pageIndex + 1} /{" "}
@@ -474,7 +477,7 @@ export const TeamList = () => {
             variant="outline"
           >
             <span className="sr-only">Go to next page</span>
-            <ChevronRight />
+            <IconCircleChevronRightFilled />
           </Button>
           <Button
             className="h-8 px-2 lg:px-3"
@@ -483,7 +486,7 @@ export const TeamList = () => {
             variant="outline"
           >
             <span className="sr-only">Go to last page</span>
-            <ChevronsRight />
+            <IconCircleChevronsRightFilled />
           </Button>
         </div>
       </div>

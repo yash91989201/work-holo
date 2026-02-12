@@ -101,14 +101,14 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
+  --background: oklch(96.857% 0.00674 286.037);
   --foreground: oklch(0.141 0.005 285.823);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.141 0.005 285.823);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.141 0.005 285.823);
   --primary: oklch(0.56 0.25 302);
-  --primary-foreground: oklch(0.98 0.01 308);
+  --primary-foreground: oklch(98.074% 0.00419 300.661);
   --secondary: oklch(0.967 0.001 286.375);
   --secondary-foreground: oklch(0.21 0.006 285.885);
   --muted: oklch(0.967 0.001 286.375);

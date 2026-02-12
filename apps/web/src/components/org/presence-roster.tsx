@@ -1,4 +1,5 @@
-import { Circle, Moon, Users, WifiOff, XCircle } from "lucide-react";
+import { Circle, Moon, Users, WifiOff} from "lucide-react";
+import { IconCircleLetterXFilled } from "@tabler/icons-react";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -45,7 +46,7 @@ const presenceConfig: Record<
   busy: {
     label: "Busy",
     color: "text-red-600",
-    icon: <XCircle className="h-3 w-3 text-red-600" />,
+    icon: <IconCircleLetterXFilled className="h-3 w-3 text-red-600" />,
   },
   offline: {
     label: "Offline",
@@ -55,7 +56,9 @@ const presenceConfig: Record<
   dnd: {
     label: "Do Not Disturb",
     color: "text-red-700",
-    icon: <XCircle className="h-3 w-3 fill-red-700 text-red-700" />,
+    icon: (
+      <IconCircleLetterXFilled className="h-3 w-3 fill-red-700 text-red-700" />
+    ),
   },
 };
 

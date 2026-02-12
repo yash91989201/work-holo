@@ -9,19 +9,21 @@ import {
 } from "@tanstack/react-table";
 import { useDebounce } from "@uidotdev/usehooks";
 import type { MemberWithUserType } from "@work-holo/api/lib/types";
-import {
-  ArrowUpDown,
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
-  Crown,
-  LayoutList,
+import {  
   MoreHorizontal,
   Search,
-  Shield,
   User,
 } from "lucide-react";
+import {
+  IconArrowAutofitHeightFilled,
+  IconCircleChevronLeftFilled,
+  IconCircleChevronRightFilled,
+  IconCircleChevronsLeftFilled,
+  IconCircleChevronsRightFilled,
+  IconCrownFilled,
+  IconShieldFilled,
+  IconLayoutDashboardFilled,
+} from "@tabler/icons-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -97,9 +99,9 @@ const getRoleBadgeVariant = (role: string) => {
 const getRoleIcon = (role: string) => {
   switch (role) {
     case "owner":
-      return Crown;
+      return IconCrownFilled;
     case "admin":
-      return Shield;
+      return IconShieldFilled;
     case "member":
       return User;
     default:
@@ -167,7 +169,7 @@ function UpdateMemberRole({
                   <field.Select label="Role" placeholder="Select a role">
                     <SelectItem value="admin">
                       <div className="flex items-center gap-2">
-                        <Shield className="h-4 w-4" />
+                        <IconShieldFilled className="h-4 w-4" />
                         Admin
                       </div>
                     </SelectItem>
@@ -336,7 +338,7 @@ export const MemberListTable = () => {
             variant="ghost"
           >
             Member
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <IconArrowAutofitHeightFilled className="ml-2 h-4 w-4" />
           </Button>
         ),
         cell: ({ row }) => {
@@ -380,7 +382,7 @@ export const MemberListTable = () => {
             variant="ghost"
           >
             Role
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <IconArrowAutofitHeightFilled className="ml-2 h-4 w-4" />
           </Button>
         ),
         cell: ({ row }) => {
@@ -403,7 +405,7 @@ export const MemberListTable = () => {
             variant="ghost"
           >
             Joined
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <IconArrowAutofitHeightFilled className="ml-2 h-4 w-4" />
           </Button>
         ),
         cell: ({ row }) => (
@@ -539,7 +541,7 @@ export const MemberListTable = () => {
                   colSpan={columns.length}
                 >
                   <div className="flex flex-col items-center gap-2">
-                    <LayoutList className="h-8 w-8 text-muted-foreground" />
+                    <IconLayoutDashboardFilled className="h-8 w-8 text-muted-foreground" />
                     <p className="text-muted-foreground">No members found</p>
                   </div>
                 </TableCell>
@@ -585,7 +587,7 @@ export const MemberListTable = () => {
             variant="outline"
           >
             <span className="sr-only">Go to first page</span>
-            <ChevronsLeft />
+            <IconCircleChevronsLeftFilled />
           </Button>
           <Button
             className="h-8 px-2 lg:px-3"
@@ -594,7 +596,7 @@ export const MemberListTable = () => {
             variant="outline"
           >
             <span className="sr-only">Go to previous page</span>
-            <ChevronLeft />
+            <IconCircleChevronLeftFilled />
           </Button>
           <div className="flex items-center justify-center font-medium text-sm">
             {table.getState().pagination.pageIndex + 1} /{" "}
@@ -607,7 +609,7 @@ export const MemberListTable = () => {
             variant="outline"
           >
             <span className="sr-only">Go to next page</span>
-            <ChevronRight />
+            <IconCircleChevronRightFilled />
           </Button>
           <Button
             className="h-8 px-2 lg:px-3"
@@ -616,7 +618,7 @@ export const MemberListTable = () => {
             variant="outline"
           >
             <span className="sr-only">Go to last page</span>
-            <ChevronsRight />
+            <IconCircleChevronsRightFilled />
           </Button>
         </div>
       </div>

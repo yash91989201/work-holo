@@ -42,7 +42,7 @@ export const ChannelTips = () => {
       badge: "Fast Feedback",
     },
     {
-      icon: <Shield className="h-5 w-5" />,
+      icon: <IconShieldFilled className="h-5 w-5" />,
       title: "Privacy First",
       description: "Private channels are encrypted and only visible to members",
       badge: "Security",

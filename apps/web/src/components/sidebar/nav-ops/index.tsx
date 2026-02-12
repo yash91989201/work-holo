@@ -1,6 +1,6 @@
-import { IconBrandTeams, IconBroadcast } from "@tabler/icons-react";
+import { IconBrandTeams, IconBroadcast , IconCalendarEventFilled} from "@tabler/icons-react";
 import { Link, useLoaderData, useParams } from "@tanstack/react-router";
-import { Calendar, Users } from "lucide-react";
+import {  Users } from "lucide-react";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -41,7 +41,7 @@ export function NavOps() {
                   search={{ page: 1 }}
                   to="/org/$slug/dashboard/attendance"
                 >
-                  <Calendar />
+                  <IconCalendarEventFilled />
                   <span>Attendance</span>
                 </Link>
               </SidebarMenuButton>

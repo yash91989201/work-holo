@@ -75,7 +75,7 @@ export default defineConfig({
             "clsx",
             "tailwind-merge",
             "sonner",
-            "lucide-react",
+            "@tabler/icons-react",
             "vaul",
             "embla-carousel-react",
             "react-resizable-panels",

@@ -1,11 +1,14 @@
 import {
   AlertCircle,
-  CheckCircle,
-  Clock,
   Mail,
   MoreHorizontal,
-  XCircle,
 } from "lucide-react";
+import {
+  IconCircleCheckFilled,
+  IconClockHour4Filled,
+  IconMailFilled,
+  IconCircleLetterXFilled,
+} from "@tabler/icons-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -57,15 +60,15 @@ const getStatusBadgeVariant = (status: Invitation["status"]) => {
 const getStatusIcon = (status: Invitation["status"]) => {
   switch (status) {
     case "pending":
-      return Clock;
+      return IconClockHour4Filled;
     case "accepted":
-      return CheckCircle;
+      return IconCircleCheckFilled;
     case "rejected":
-      return XCircle;
+      return IconCircleLetterXFilled;
     case "expired":
       return AlertCircle;
     default:
-      return Clock;
+      return IconClockHour4Filled;
   }
 };
 
@@ -144,7 +147,7 @@ export const InvitationTable = ({ invitations }: InvitationTableProps) => {
                 </TableCell>
                 <TableCell className="text-muted-foreground">
                   <div className="flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
+                    <IconClockHour4Filled className="h-3 w-3" />
                     {new Date(invitation.expiresAt).toLocaleDateString()}
                   </div>
                 </TableCell>

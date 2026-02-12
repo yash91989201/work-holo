@@ -2,12 +2,14 @@ import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import {
   Briefcase,
   BriefcaseBusiness,
-  CheckCircle,
-  Clock,
   Coffee,
   LogIn,
   LogOut,
 } from "lucide-react";
+import {
+  IconCircleCheckFilled,
+  IconClockHour4Filled,
+} from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -175,7 +177,7 @@ export const MarkAttendance = () => {
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 gap-4">
               <StatCard
-                icon={<Clock className="text-blue-500" />}
+                icon={<IconClockHour4Filled  className="text-blue-500" />}
                 label="Checked In"
                 value={formatDateTime(attendance.checkInTime)}
               />
@@ -262,7 +264,7 @@ export const MarkAttendance = () => {
       <CardContent>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <StatCard
-            icon={<Clock className="text-blue-500" />}
+            icon={<IconClockHour4Filled className="text-blue-500" />}
             label="Checked In"
             value={formatDateTime(attendance.checkInTime)}
           />
@@ -283,7 +285,7 @@ export const MarkAttendance = () => {
           />
         </div>
         <div className="mt-6 flex items-center gap-3 rounded-lg bg-green-50 p-4 text-green-800 dark:bg-green-950 dark:text-green-300">
-          <CheckCircle className="h-6 w-6" />
+          <IconCircleCheckFilled className="h-6 w-6" />
           <p className="font-medium">
             You have successfully punched out for the day. Great work!
           </p>

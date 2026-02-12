@@ -1,4 +1,5 @@
 import { ArrowLeftRight, FileIcon, Trash2 } from "lucide-react";
+import { IconFilesFilled } from "@tabler/icons-react";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -85,7 +86,7 @@ const SingleFilePreview = ({
               src={previewUrl}
             />
           ) : (
-            <FileIcon className="size-6 text-muted-foreground/70" />
+            <IconFilesFilled className="size-6 text-muted-foreground/70" />
           )}
           {previewUrl && (
             <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
@@ -174,7 +175,7 @@ const MultiFilePreview = ({
               src={previewUrl}
             />
           ) : (
-            <FileIcon className="size-5 text-muted-foreground/60" />
+            <IconFilesFilled className="size-5 text-muted-foreground/60" />
           )}
           {previewUrl && (
             <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />

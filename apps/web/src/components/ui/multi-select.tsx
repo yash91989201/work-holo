@@ -1,11 +1,12 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import {
-  CheckIcon,
-  ChevronDown,
   WandSparkles,
-  XCircle,
-  XIcon,
 } from "lucide-react";
+import {
+  IconCircleLetterXFilled,
+  IconSquareCheckFilled,
+  IconSquareChevronDownFilled,
+} from "@tabler/icons-react";
 import * as React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -916,7 +917,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                               role="button"
                               tabIndex={0}
                             >
-                              <XCircle
+                              <IconCircleLetterXFilled
                                 className={cn(
                                   "h-3 w-3",
                                   responsiveSettings.compactMode &&
@@ -949,7 +950,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                         {`+ ${
                           selectedValues.length - responsiveSettings.maxCount
                         } more`}
-                        <XCircle
+                        <IconCircleLetterXFilled
                           className={cn(
                             "ml-2 h-4 w-4 cursor-pointer",
                             responsiveSettings.compactMode && "ml-1 h-3 w-3"
@@ -980,13 +981,13 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                       role="button"
                       tabIndex={0}
                     >
-                      <XIcon className="h-4 w-4" />
+                      <IconCircleLetterXFilled className="h-4 w-4" />
                     </div>
                     <Separator
                       className="flex h-full min-h-6"
                       orientation="vertical"
                     />
-                    <ChevronDown
+                    <IconSquareChevronDownFilled
                       aria-hidden="true"
                       className="mx-2 h-4 cursor-pointer text-muted-foreground"
                     />
@@ -997,7 +998,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                   <span className="mx-3 text-muted-foreground text-sm">
                     {placeholder}
                   </span>
-                  <ChevronDown className="mx-2 h-4 cursor-pointer text-muted-foreground" />
+                  <IconSquareChevronDownFilled className="mx-2 h-4 cursor-pointer text-muted-foreground" />
                 </div>
               )}
             </Button>
@@ -1077,7 +1078,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                             : "opacity-50 [&_svg]:invisible"
                         )}
                       >
-                        <CheckIcon className="h-4 w-4" />
+                        <IconSquareCheckFilled className="h-4 w-4" />
                       </div>
                       <span>
                         (Select All
@@ -1121,7 +1122,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                                   : "opacity-50 [&_svg]:invisible"
                               )}
                             >
-                              <CheckIcon className="h-4 w-4" />
+                              <IconSquareCheckFilled className="h-4 w-4" />
                             </div>
                             {option.icon && (
                               <option.icon
@@ -1164,7 +1165,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                                 : "opacity-50 [&_svg]:invisible"
                             )}
                           >
-                            <CheckIcon className="h-4 w-4" />
+                            <IconSquareCheckFilled className="h-4 w-4" />
                           </div>
                           {option.icon && (
                             <option.icon

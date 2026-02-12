@@ -1,5 +1,6 @@
 import { useParams } from "@tanstack/react-router";
-import { Hash, Lock } from "lucide-react";
+import { Hash } from "lucide-react";
+import { IconLockFilled } from "@tabler/icons-react";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -26,7 +27,7 @@ export const ChannelInfoSidebar = () => {
           <div className="flex items-start gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 ring-1 ring-primary/20">
               {channel.isPrivate ? (
-                <Lock className="h-5 w-5 text-primary" />
+                <IconLockFilled className="h-5 w-5 text-primary" />
               ) : (
                 <Hash className="h-5 w-5 text-primary" />
               )}
