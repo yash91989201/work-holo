@@ -11,14 +11,7 @@ import {
 import { useDebounce } from "@uidotdev/usehooks";
 import type { ListChannelsOutputType } from "@work-holo/api/lib/types";
 import {
-  ArrowUpDown,
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
   Hash,
-  LayoutList,
-  Lock,
   MoreHorizontal,
   Pencil,
   Search,
@@ -26,6 +19,15 @@ import {
   UserRoundPlus,
   X,
 } from "lucide-react";
+import {
+  IconArrowAutofitHeightFilled,
+  IconCircleChevronLeftFilled,
+  IconCircleChevronRightFilled,
+  IconCircleChevronsLeftFilled,
+  IconCircleChevronsRightFilled,
+  IconLayoutDashboardFilled,
+  IconLockFilled,
+} from "@tabler/icons-react";
 import { Suspense, useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -122,13 +124,13 @@ export const ChannelsListTable = () => {
             variant="ghost"
           >
             Channel
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <IconArrowAutofitHeightFilled className="ml-2 h-4 w-4" />
           </Button>
         ),
         cell: ({ row }) => {
           const channel = row.original;
           const isPrivate = channel.isPrivate;
-          const TypeIcon = isPrivate ? Lock : Hash;
+          const TypeIcon = isPrivate ? IconLockFilled : Hash;
 
           return (
             <div className="flex items-center gap-3">
@@ -163,7 +165,7 @@ export const ChannelsListTable = () => {
             variant="ghost"
           >
             Type
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <IconArrowAutofitHeightFilled className="ml-2 h-4 w-4" />
           </Button>
         ),
         cell: ({ row }) => <Badge>{row.original.type}</Badge>,
@@ -192,7 +194,7 @@ export const ChannelsListTable = () => {
             variant="ghost"
           >
             Created On
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <IconArrowAutofitHeightFilled className="ml-2 h-4 w-4" />
           </Button>
         ),
         cell: ({ row }) => {
@@ -274,7 +276,7 @@ export const ChannelsListTable = () => {
   if (channels.length === 0 && !debouncedSearch) {
     return (
       <div className="rounded-lg border bg-card py-12 text-center text-card-foreground shadow-sm">
-        <LayoutList className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+        <IconLayoutDashboardFilled className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
         <h3 className="mb-2 font-medium text-lg">No channels found</h3>
         <p className="mb-4 text-muted-foreground">
           Get started by creating your first channel.
@@ -384,7 +386,7 @@ export const ChannelsListTable = () => {
             variant="outline"
           >
             <span className="sr-only">Go to first page</span>
-            <ChevronsLeft />
+            <IconCircleChevronsLeftFilled />
           </Button>
           <Button
             className="h-8 px-2 lg:px-3"
@@ -393,7 +395,7 @@ export const ChannelsListTable = () => {
             variant="outline"
           >
             <span className="sr-only">Go to previous page</span>
-            <ChevronLeft />
+            <IconCircleChevronLeftFilled />
           </Button>
           <div className="flex items-center justify-center font-medium text-sm">
             {table.getState().pagination.pageIndex + 1} /{" "}
@@ -406,7 +408,7 @@ export const ChannelsListTable = () => {
             variant="outline"
           >
             <span className="sr-only">Go to next page</span>
-            <ChevronRight />
+            <IconCircleChevronRightFilled />
           </Button>
           <Button
             className="h-8 px-2 lg:px-3"
@@ -415,7 +417,7 @@ export const ChannelsListTable = () => {
             variant="outline"
           >
             <span className="sr-only">Go to last page</span>
-            <ChevronsRight />
+            <IconCircleChevronsRightFilled />
           </Button>
         </div>
       </div>

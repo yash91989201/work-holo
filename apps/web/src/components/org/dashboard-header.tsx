@@ -7,18 +7,20 @@ import {
   useNavigate,
 } from "@tanstack/react-router";
 import {
-  Bell,
   Building2,
   ChevronDown,
   Circle,
-  LayoutDashboard,
   Plus,
-  Search,
-  Settings,
-  Shield,
-  User,
+  Search, 
 } from "lucide-react";
-import { Suspense, useEffect, useMemo, useRef } from "react";
+import {
+  IconBellFilled,
+  IconUserFilled,
+  IconSettingsFilled ,
+  IconLayoutDashboardFilled ,
+  IconShieldFilled ,
+} from "@tabler/icons-react";
+import { Suspense, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { NotificationSheet } from "@/components/shared/notification-sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -265,13 +267,13 @@ function UserMenuButton() {
           </DropdownMenuLabel>
           <DropdownMenuItem asChild>
             <Link className="cursor-pointer" to="/settings/account/profile">
-              <User className="mr-2 h-4 w-4" />
+              <IconUserFilled />
               Profile
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link className="cursor-pointer" to="/settings/account/preferences">
-              <Settings className="mr-2 h-4 w-4" />
+              <IconSettingsFilled />
               Preferences
             </Link>
           </DropdownMenuItem>
@@ -280,13 +282,14 @@ function UserMenuButton() {
               className="cursor-pointer"
               to="/settings/account/notifications"
             >
-              <Bell className="mr-2 h-4 w-4" />
+              {/* <Bell className="mr-2 h-4 w-4" /> */}
+              <IconBellFilled />
               Notifications
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link className="cursor-pointer" to="/settings/account/security">
-              <Shield className="mr-2 h-4 w-4" />
+              <IconShieldFilled />
               Security & Access
             </Link>
           </DropdownMenuItem>
@@ -305,7 +308,7 @@ function UserMenuButton() {
               params={{ slug: "current" }}
               to="/org/$slug"
             >
-              <LayoutDashboard className="mr-2 h-4 w-4" />
+              <IconLayoutDashboardFilled />
               Dashboard
             </Link>
           </DropdownMenuItem>

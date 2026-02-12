@@ -4,11 +4,11 @@ import type { ChannelMemberType } from "@work-holo/db/lib/types";
 import {
   ChevronRight,
   Hash,
-  Lock,
   MessageSquare,
   MessageSquareOff,
   Users,
 } from "lucide-react";
+import { IconCircleChevronRightFilled , IconLockFilled} from "@tabler/icons-react";
 import * as React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -87,7 +87,7 @@ type ChannelItemProps = {
 
 function ChannelItem({ channel }: ChannelItemProps) {
   const badgeVariant = getBadgeVariant(channel.type);
-  const ChannelIcon = channel.isPrivate ? Lock : Hash;
+  const ChannelIcon = channel.isPrivate ? IconLockFilled : Hash;
   const slug = useActiveOrgSlug() ?? "";
 
   return (
@@ -123,7 +123,7 @@ function ChannelItem({ channel }: ChannelItemProps) {
           </ItemDescription>
         </ItemContent>
         <ItemActions>
-          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+          <IconCircleChevronRightFilled className="h-4 w-4 text-muted-foreground" />
         </ItemActions>
       </Link>
     </Item>

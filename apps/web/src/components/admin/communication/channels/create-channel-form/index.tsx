@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { useStore } from "@tanstack/react-store";
-import { Plus } from "lucide-react";
+import { IconCirclePlusFilled } from "@tabler/icons-react";
 import { Suspense, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -71,7 +71,7 @@ export const CreateChannelForm = () => {
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
       <DialogTrigger asChild>
         <Button>
-          <Plus />
+          <IconCirclePlusFilled />
           <span>New channel</span>
         </Button>
       </DialogTrigger>

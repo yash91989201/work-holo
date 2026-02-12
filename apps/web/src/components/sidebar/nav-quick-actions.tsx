@@ -1,15 +1,14 @@
 import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import {
   Check,
-  Clock,
   LogOut,
   Moon,
   Pause,
   PhoneCall,
   Play,
   Target,
-  XCircle,
 } from "lucide-react";
+import { IconClockHour4Filled } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -250,7 +249,7 @@ function PresenceStatusDropdown() {
         <DropdownMenuLabel>Update Status</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => handleStatusChange(null)}>
-          <Clock className="mr-2 h-4 w-4 text-green-600" />
+          <IconClockHour4Filled className="mr-2 h-4 w-4 text-green-600" />
           Available
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => handleStatusChange("away")}>
@@ -258,7 +257,7 @@ function PresenceStatusDropdown() {
           Away
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => handleStatusChange("busy")}>
-          <XCircle className="mr-2 h-4 w-4 text-red-600" />
+          <IconCircleLetterXFilled className="mr-2 h-4 w-4 text-red-600" />
           Busy
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => handleStatusChange("dnd")}>
@@ -335,7 +334,7 @@ function MarkAttendanceButton() {
           </>
         ) : (
           <>
-            <Clock />
+            <IconClockHour4Filled />
             <span>Punch In</span>
           </>
         )}

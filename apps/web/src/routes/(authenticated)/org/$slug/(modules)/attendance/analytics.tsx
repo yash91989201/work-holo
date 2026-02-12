@@ -1,7 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { format, subDays } from "date-fns";
-import { CalendarDays } from "lucide-react";
+import { IconCalendarEventFilled } from "@tabler/icons-react";
 import { useMemo, useState } from "react";
 import { AttendanceInsights } from "@/components/member/attendance/analytics-insights";
 import { AttendanceStatusBreakdown } from "@/components/member/attendance/analytics-status-breakdown";
@@ -82,7 +82,7 @@ function RouteComponent() {
             </SelectContent>
           </Select>
           <Badge className="gap-2" variant="outline">
-            <CalendarDays className="h-4 w-4" />
+            <IconCalendarEventFilled className="h-4 w-4" />
             {format(new Date(analytics.range.startDate), "MMM d")} -{" "}
             {format(new Date(analytics.range.endDate), "MMM d")}
           </Badge>

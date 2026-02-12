@@ -1,5 +1,6 @@
 import type { AttendanceAnalyticsOutput } from "@work-holo/api/lib/schemas/attendance";
-import { Award, Clock3, Coffee, Flame, Laptop, Zap } from "lucide-react";
+import { Award, Coffee, Flame, Laptop, Zap } from "lucide-react";
+import { IconClockHour4Filled } from "@tabler/icons-react";
 import type React from "react";
 import type { z } from "zod";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,7 +24,7 @@ const metrics = [
   {
     key: "hours",
     title: "Avg. hours / day",
-    icon: Clock3,
+    icon: IconClockHour4Filled,
     accent: "text-sky-600",
   },
   {
@@ -134,7 +135,7 @@ export function AttendanceAnalyticsSummary({ summary, punctuality }: Props) {
             value={summary.remoteDays}
           />
           <Insight
-            icon={<Clock3 className="h-4 w-4 text-white" />}
+            icon={<IconClockHour4Filled className="h-4 w-4 text-white" />}
             label="Late arrivals"
             value={summary.lateDays}
           />

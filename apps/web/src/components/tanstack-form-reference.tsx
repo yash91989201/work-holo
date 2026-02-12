@@ -1,4 +1,5 @@
-import { XIcon } from "lucide-react";
+
+import { IconSquareXFilled } from "@tabler/icons-react";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -177,7 +178,7 @@ export default function HomePage() {
                                       type="button"
                                       variant="ghost"
                                     >
-                                      <XIcon />
+                                      <IconSquareXFilled />
                                     </InputGroupButton>
                                   </InputGroupAddon>
                                 )}

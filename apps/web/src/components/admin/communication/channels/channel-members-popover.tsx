@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Users } from "lucide-react";
+import { IconUserFilled } from "@tabler/icons-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -31,7 +31,7 @@ export const ChannelMembersPopover = ({
     <Popover>
       <PopoverTrigger asChild>
         <Button className="gap-1" size="sm" variant="outline">
-          <Users className="h-3 w-3" />
+          <IconUserFilled className="h-3 w-3" />
           {memberCount}
         </Button>
       </PopoverTrigger>

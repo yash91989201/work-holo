@@ -1,5 +1,6 @@
 import type { Editor } from "@tiptap/core";
-import { ArrowRight, ExternalLink, Pencil, Trash2, X } from "lucide-react";
+import { ExternalLink, Pencil, X } from "lucide-react";
+import { IconArrowBigRightFilled, IconTrashFilled } from "@tabler/icons-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -201,7 +202,7 @@ export function LinkBubbleMenu({ editor }: LinkBubbleMenuProps) {
                   type="button"
                   variant="ghost"
                 >
-                  <ArrowRight className="h-3.5 w-3.5" />
+                  <IconArrowBigRightFilled className="h-3.5 w-3.5" />
                 </InputGroupButton>
               </InputGroupAddon>
             </InputGroup>
@@ -215,7 +216,7 @@ export function LinkBubbleMenu({ editor }: LinkBubbleMenuProps) {
           type="button"
           variant="ghost"
         >
-          <Trash2 className="h-4 w-4" />
+          <IconTrashFilled className="h-4 w-4" />
         </Button>
       </div>
     </div>

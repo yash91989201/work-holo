@@ -10,24 +10,23 @@ import {
 import { useDebounce } from "@uidotdev/usehooks";
 import type { InvitationSelectSchema } from "@work-holo/api/lib/schemas/admin-invitation";
 import { env } from "@work-holo/env/web";
+import { MoreHorizontal, Search } from "lucide-react";
 import {
-  AlertCircle,
-  ArrowUpDown,
-  CheckCircle,
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
-  Clock,
-  Copy,
-  Crown,
-  Mail,
-  MoreHorizontal,
-  Search,
-  Shield,
-  UserPlus,
-  XCircle,
-} from "lucide-react";
+  IconExclamationCircleFilled,
+  IconArrowAutofitHeightFilled,
+  IconCircleCheckFilled,
+  IconCircleChevronLeftFilled,
+  IconCircleChevronRightFilled,
+  IconCircleChevronsLeftFilled,
+  IconCircleChevronsRightFilled,
+  IconClockHour4Filled,
+  IconCopyCheckFilled,
+  IconCrownFilled,
+  IconMailFilled,
+  IconShieldFilled,
+  IconUserFilled,
+  IconCircleLetterXFilled,
+} from "@tabler/icons-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import type { z } from "zod";
@@ -82,28 +81,28 @@ interface TableMeta {
 const getStatusIcon = (status: string) => {
   switch (status) {
     case "pending":
-      return <Clock className="h-3 w-3 text-yellow-600" />;
+      return <IconClockHour4Filled className="h-3 w-3 text-yellow-600" />;
     case "accepted":
-      return <CheckCircle className="h-3 w-3 text-green-600" />;
+      return <IconCircleCheckFilled className="h-3 w-3 text-green-600" />;
     case "rejected":
-      return <XCircle className="h-3 w-3 text-red-600" />;
+      return <IconCircleLetterXFilled className="h-3 w-3 text-red-600" />;
     case "expired":
-      return <AlertCircle className="h-3 w-3 text-gray-600" />;
+      return <IconExclamationCircleFilled className="h-3 w-3 text-gray-600" />;
     default:
-      return <Clock className="h-3 w-3 text-gray-600" />;
+      return <IconClockHour4Filled className="h-3 w-3 text-gray-600" />;
   }
 };
 
 const getRoleIcon = (role: string | null) => {
   switch (role) {
     case "admin":
-      return <Crown className="h-3 w-3 text-red-600" />;
+      return <IconCrownFilled className="h-3 w-3 text-red-600" />;
     case "manager":
-      return <Shield className="h-3 w-3 text-blue-600" />;
+      return <IconShieldFilled className="h-3 w-3 text-blue-600" />;
     case "team-lead":
-      return <UserPlus className="h-3 w-3 text-green-600" />;
+      return <IconUserFilled className="h-3 w-3 text-green-600" />;
     default:
-      return <UserPlus className="h-3 w-3 text-gray-600" />;
+      return <IconUserFilled className="h-3 w-3 text-gray-600" />;
   }
 };
 
@@ -117,7 +116,7 @@ const columns: ColumnDef<InvitationRecord>[] = [
         variant="ghost"
       >
         Member
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        <IconArrowAutofitHeightFilled className="ml-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => {
@@ -156,7 +155,7 @@ const columns: ColumnDef<InvitationRecord>[] = [
         variant="ghost"
       >
         Role
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        <IconArrowAutofitHeightFilled className="ml-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => {
@@ -183,7 +182,7 @@ const columns: ColumnDef<InvitationRecord>[] = [
         variant="ghost"
       >
         Status
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        <IconArrowAutofitHeightFilled className="ml-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => {
@@ -210,7 +209,7 @@ const columns: ColumnDef<InvitationRecord>[] = [
         variant="ghost"
       >
         Expires
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        <IconArrowAutofitHeightFilled className="ml-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => {
@@ -257,14 +256,14 @@ const columns: ColumnDef<InvitationRecord>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
             <DropdownMenuItem onClick={() => onCopy(invitation)}>
-              <Copy className="mr-2 h-4 w-4" />
+              <IconCopyCheckFilled className="mr-2 h-4 w-4" />
               Copy link
             </DropdownMenuItem>
             <DropdownMenuItem
               disabled={resendPending}
               onClick={() => onResend(invitation)}
             >
-              <Mail className="mr-2 h-4 w-4" />
+              <IconMailFilled className="mr-2 h-4 w-4" />
               Resend email
             </DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -464,7 +463,7 @@ export const InvitationListTable = () => {
                   colSpan={columns.length}
                 >
                   <div className="flex flex-col items-center gap-2">
-                    <Mail className="h-8 w-8 text-muted-foreground" />
+                    <IconMailFilled className="h-8 w-8 text-muted-foreground" />
                     <p className="text-muted-foreground text-sm">
                       No invitations found
                     </p>
@@ -511,7 +510,7 @@ export const InvitationListTable = () => {
             variant="outline"
           >
             <span className="sr-only">Go to first page</span>
-            <ChevronsLeft />
+            <IconCircleChevronsLeftFilled />
           </Button>
           <Button
             className="h-8 px-2 lg:px-3"
@@ -520,7 +519,7 @@ export const InvitationListTable = () => {
             variant="outline"
           >
             <span className="sr-only">Go to previous page</span>
-            <ChevronLeft />
+            <IconCircleChevronLeftFilled />
           </Button>
           <div className="flex items-center justify-center font-medium text-sm">
             {table.getState().pagination.pageIndex + 1} /{" "}
@@ -533,7 +532,7 @@ export const InvitationListTable = () => {
             variant="outline"
           >
             <span className="sr-only">Go to next page</span>
-            <ChevronRight />
+            <IconCircleChevronRightFilled />
           </Button>
           <Button
             className="h-8 px-2 lg:px-3"
@@ -542,7 +541,7 @@ export const InvitationListTable = () => {
             variant="outline"
           >
             <span className="sr-only">Go to last page</span>
-            <ChevronsRight />
+            <IconCircleChevronsRightFilled />
           </Button>
         </div>
       </div>

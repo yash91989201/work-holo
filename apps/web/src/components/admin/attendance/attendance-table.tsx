@@ -22,7 +22,8 @@ import { useDebounce } from "@uidotdev/usehooks";
 import type { AttendanceStatus } from "@work-holo/api/lib/schemas/attendance";
 import type { AttendanceRecordWithUserType } from "@work-holo/api/lib/types";
 import { startOfMonth, subDays } from "date-fns";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
+import { IconArrowAutofitHeightFilled } from "@tabler/icons-react";
 import { useMemo, useState } from "react";
 import type { DateRange } from "react-day-picker";
 import { toast } from "sonner";
@@ -174,7 +175,7 @@ export function AttendanceTable() {
             variant="ghost"
           >
             Date
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <IconArrowAutofitHeightFilled className="ml-2 h-4 w-4" />
           </Button>
         ),
         cell: ({ row }) =>
@@ -193,7 +194,7 @@ export function AttendanceTable() {
             variant="ghost"
           >
             Check In
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <IconArrowAutofitHeightFilled className="ml-2 h-4 w-4" />
           </Button>
         ),
         cell: ({ row }) => {
@@ -215,7 +216,7 @@ export function AttendanceTable() {
             variant="ghost"
           >
             Check Out
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <IconArrowAutofitHeightFilled className="ml-2 h-4 w-4" />
           </Button>
         ),
         cell: ({ row }) => {

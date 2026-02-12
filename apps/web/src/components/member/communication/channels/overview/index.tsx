@@ -2,13 +2,12 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import type { ListChannelsOutputType } from "@work-holo/api/lib/types";
 import {
-  ArrowRight,
   Hash,
-  Lock,
   MessageSquare,
   Plus,
   Users,
 } from "lucide-react";
+import { IconLockFilled , IconArrowBigRightFilled} from "@tabler/icons-react";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -83,7 +82,7 @@ export const ChannelCard = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             {channel.isPrivate ? (
-              <Lock className="h-5 w-5 text-orange-600" />
+              <IconLockFilled className="h-5 w-5 text-orange-600" />
             ) : (
               <Hash className="h-5 w-5 text-green-600" />
             )}
@@ -104,7 +103,7 @@ export const ChannelCard = ({
       <CardContent>
         <div className="flex items-center justify-between text-muted-foreground text-sm">
           <span>Created by {channel.creator.name}</span>
-          <ArrowRight className="h-4 w-4 opacity-0 transition-opacity group-hover:opacity-100" />
+          <IconArrowBigRightFilled className="h-4 w-4 opacity-0 transition-opacity group-hover:opacity-100" />
         </div>
       </CardContent>
     </Card>
@@ -150,7 +149,7 @@ export const ChannelTypes = () => (
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
-            <Lock className="h-5 w-5 text-orange-600" />
+            <IconLockFilled className="h-5 w-5 text-orange-600" />
             <CardTitle className="text-lg">Private Channels</CardTitle>
           </div>
           <Badge className="w-fit" variant="secondary">

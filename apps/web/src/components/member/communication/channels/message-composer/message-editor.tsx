@@ -1,6 +1,5 @@
 import { EditorContent } from "@tiptap/react";
 import {
-  ArrowRight,
   Bold,
   Code,
   Eraser,
@@ -20,6 +19,7 @@ import {
   Undo,
   X,
 } from "lucide-react";
+import { IconArrowBigRightFilled } from "@tabler/icons-react";
 import type { KeyboardEvent } from "react";
 import { useCallback } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -385,7 +385,7 @@ export function MessageEditor({
                       type="button"
                       variant="ghost"
                     >
-                      <ArrowRight />
+                      <IconArrowBigRightFilled />
                     </InputGroupButton>
                   </InputGroupAddon>
                 </InputGroup>

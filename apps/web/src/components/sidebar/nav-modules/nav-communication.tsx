@@ -1,6 +1,6 @@
-import { IconBroadcast } from "@tabler/icons-react";
+import { IconBroadcast, IconCircleChevronRightFilled } from "@tabler/icons-react";
 import { Link, useParams } from "@tanstack/react-router";
-import { ChevronRight, CircleAlert, Hash } from "lucide-react";
+import { CircleAlert, Hash } from "lucide-react";
 import { Suspense, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -176,7 +176,7 @@ function NavChannelsInner() {
                 aria-label="Toggle Channels submenu"
                 className="cursor-pointer hover:bg-transparent data-[state=open]:rotate-90"
               >
-                <ChevronRight aria-hidden="true" />
+                <IconCircleChevronRightFilled aria-hidden="true" />
                 <span className="sr-only">Toggle</span>
               </SidebarMenuAction>
             </CollapsibleTrigger>

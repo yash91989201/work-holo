@@ -1,4 +1,4 @@
-import { CalendarIcon, XIcon } from "lucide-react";
+import { IconSquareXFilled, IconCalendarWeekFilled } from "@tabler/icons-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -45,7 +45,7 @@ export function DateFilter({
             )}
             variant="secondary"
           >
-            <CalendarIcon className="h-4 w-4" />
+            <IconCalendarWeekFilled className="h-4 w-4" />
             <span className="text-sm">
               {selectedDate
                 ? selectedDate.toLocaleDateString("en-US", {
@@ -62,7 +62,7 @@ export function DateFilter({
                 size="icon"
                 variant="ghost"
               >
-                <XIcon className="h-3 w-3" />
+                <IconSquareXFilled className="h-3 w-3" />
               </Button>
             )}
           </Button>
