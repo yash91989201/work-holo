@@ -16,7 +16,7 @@ import { organization, team, user } from "./auth";
 export const scopeEnum = pgEnum("scope", ["org", "team"]);
 
 export const permissionNodeTable = pgTable(
-  "permission_node",
+  "permissionNode",
   {
     id: cuid2("id").defaultRandom().primaryKey(),
     key: text("key").notNull().unique(),
@@ -30,14 +30,14 @@ export const permissionNodeTable = pgTable(
       .notNull(),
   },
   (table) => [
-    index("permission_node_resource_idx").on(table.resource),
-    uniqueIndex("permission_node_key_idx").on(table.key),
-    uniqueIndex("permission_node_bitIndex_idx").on(table.bitIndex),
+    index("permissionNodeResourceIdx").on(table.resource),
+    uniqueIndex("permissionNodeKeyIdx").on(table.key),
+    uniqueIndex("permissionNodeBitIndexIdx").on(table.bitIndex),
   ]
 );
 
 export const roleTemplateTable = pgTable(
-  "role_template",
+  "roleTemplate",
   {
     id: cuid2("id").defaultRandom().primaryKey(),
     name: text("name").notNull(),
@@ -56,16 +56,16 @@ export const roleTemplateTable = pgTable(
       .$onUpdate(() => /* @__PURE__ */ new Date()),
   },
   (table) => [
-    uniqueIndex("role_template_name_organizationId_idx").on(
+    uniqueIndex("roleTemplateNameOrganizationIdIdx").on(
       table.name,
       table.organizationId
     ),
-    index("role_template_organizationId_idx").on(table.organizationId),
+    index("roleTemplateOrganizationIdIdx").on(table.organizationId),
   ]
 );
 
 export const rolePermissionTable = pgTable(
-  "role_permission",
+  "rolePermission",
   {
     id: cuid2("id").defaultRandom().primaryKey(),
     roleTemplateId: text("roleTemplateId")
@@ -81,16 +81,16 @@ export const rolePermissionTable = pgTable(
       .notNull(),
   },
   (table) => [
-    uniqueIndex("role_permission_role_permission_idx").on(
+    uniqueIndex("rolePermissionRolePermissionIdx").on(
       table.roleTemplateId,
       table.permissionNodeId
     ),
-    index("role_permission_permissionNodeId_idx").on(table.permissionNodeId),
+    index("rolePermissionPermissionNodeIdIdx").on(table.permissionNodeId),
   ]
 );
 
 export const roleAssignmentTable = pgTable(
-  "role_assignment",
+  "roleAssignment",
   {
     id: cuid2("id").defaultRandom().primaryKey(),
     userId: text("userId")
@@ -113,19 +113,19 @@ export const roleAssignmentTable = pgTable(
       .notNull(),
   },
   (table) => [
-    uniqueIndex("role_assignment_unique_idx").on(
+    uniqueIndex("roleAssignmentUniqueIdx").on(
       table.userId,
       table.roleTemplateId,
       table.organizationId,
       table.teamId
     ),
-    index("role_assignment_scope_idx").on(table.organizationId, table.teamId),
-    index("role_assignment_userId_idx").on(table.userId),
+    index("roleAssignmentScopeIdx").on(table.organizationId, table.teamId),
+    index("roleAssignmentUserIdIdx").on(table.userId),
   ]
 );
 
 export const policyOverrideTable = pgTable(
-  "policy_override",
+  "policyOverride",
   {
     id: cuid2("id").defaultRandom().primaryKey(),
     userId: text("userId")
@@ -150,11 +150,8 @@ export const policyOverrideTable = pgTable(
       .notNull(),
   },
   (table) => [
-    index("policy_override_user_org_idx").on(
-      table.userId,
-      table.organizationId
-    ),
-    index("policy_override_user_permission_idx").on(
+    index("policyOverrideUserOrgIdx").on(table.userId, table.organizationId),
+    index("policyOverrideUserPermissionIdx").on(
       table.userId,
       table.permissionNodeId
     ),
@@ -162,7 +159,7 @@ export const policyOverrideTable = pgTable(
 );
 
 export const policyVersionTable = pgTable(
-  "policy_version",
+  "policyVersion",
   {
     id: cuid2("id").defaultRandom().primaryKey(),
     organizationId: text("organizationId")
@@ -178,16 +175,16 @@ export const policyVersionTable = pgTable(
       .notNull(),
   },
   (table) => [
-    uniqueIndex("policy_version_organizationId_version_idx").on(
+    uniqueIndex("policyVersionOrganizationIdVersionIdx").on(
       table.organizationId,
       table.version
     ),
-    index("policy_version_organizationId_idx").on(table.organizationId),
+    index("policyVersionOrganizationIdIdx").on(table.organizationId),
   ]
 );
 
 export const permissionSnapshotTable = pgTable(
-  "permission_snapshot",
+  "permissionSnapshot",
   {
     id: cuid2("id").defaultRandom().primaryKey(),
     userId: text("userId")
@@ -206,16 +203,16 @@ export const permissionSnapshotTable = pgTable(
       .notNull(),
   },
   (table) => [
-    uniqueIndex("permission_snapshot_user_org_idx").on(
+    uniqueIndex("permissionSnapshotUserOrgIdx").on(
       table.userId,
       table.organizationId
     ),
-    index("permission_snapshot_policyVersionId_idx").on(table.policyVersionId),
+    index("permissionSnapshotPolicyVersionIdIdx").on(table.policyVersionId),
   ]
 );
 
 export const permissionAuditLogTable = pgTable(
-  "permission_audit_log",
+  "permissionAuditLog",
   {
     id: cuid2("id").defaultRandom().primaryKey(),
     organizationId: text("organizationId")
@@ -232,17 +229,17 @@ export const permissionAuditLogTable = pgTable(
       .notNull(),
   },
   (table) => [
-    index("permission_audit_log_org_created_idx").on(
+    index("permissionAuditLogOrgCreatedIdx").on(
       table.organizationId,
       table.createdAt
     ),
-    index("permission_audit_log_actorId_idx").on(table.actorId),
-    index("permission_audit_log_targetUserId_idx").on(table.targetUserId),
+    index("permissionAuditLogActorIdIdx").on(table.actorId),
+    index("permissionAuditLogTargetUserIdIdx").on(table.targetUserId),
   ]
 );
 
 export const teamModuleConfigTable = pgTable(
-  "team_module_config",
+  "teamModuleConfig",
   {
     id: cuid2("id").defaultRandom().primaryKey(),
     teamId: text("teamId")
@@ -258,11 +255,11 @@ export const teamModuleConfigTable = pgTable(
     }),
   },
   (table) => [
-    uniqueIndex("team_module_config_teamId_module_idx").on(
+    uniqueIndex("teamModuleConfigTeamIdModuleIdx").on(
       table.teamId,
       table.module
     ),
-    index("team_module_config_teamId_idx").on(table.teamId),
+    index("teamModuleConfigTeamIdIdx").on(table.teamId),
   ]
 );
 

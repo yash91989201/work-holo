@@ -1175,19 +1175,6 @@ export const messageRouter = {
       const { txid, memberCount } = await db.transaction(async (tx) => {
         const txid = await generateTxId(tx);
 
-        const channelMember = await tx.query.channelMemberTable.findFirst({
-          where: and(
-            eq(channelMemberTable.channelId, input.channelId),
-            eq(channelMemberTable.userId, userId)
-          ),
-        });
-
-        if (!channelMember) {
-          throw new ORPCError("FORBIDDEN", {
-            message: "You are not a member of this channel.",
-          });
-        }
-
         const memberCountResult = await tx
           .select({ count: count() })
           .from(channelMemberTable)

@@ -1,6 +1,6 @@
 import { ORPCError, os } from "@orpc/server";
 import { member } from "@work-holo/db/schema/auth";
-import { PermissionService } from "@work-holo/permission/server/services/permission.service";
+import { PermissionService } from "@work-holo/permission";
 import { and, eq } from "drizzle-orm";
 import type { Context } from "./context";
 
@@ -33,6 +33,11 @@ export const orgProcedure = protectedProcedure.use(({ context, next }) => {
     userId: context.session.user.id,
     db: context.db,
     orgId: activeOrganizationId,
+    authorizationEngine: context.permissionManagers.authorizationEngine,
+    cacheManager: context.permissionManagers.cacheManager,
+    policyManager: context.permissionManagers.policyManager,
+    eventManager: context.permissionManagers.eventManager,
+    permissionMapManager: context.permissionManagers.permissionMapManager,
   });
 
   return next({

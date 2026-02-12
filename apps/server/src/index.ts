@@ -13,15 +13,24 @@ import { appRouter } from "@work-holo/api/routers/index";
 import { auth } from "@work-holo/auth";
 import { db } from "@work-holo/db";
 import { env } from "@work-holo/env/server";
-import { initPermission } from "@work-holo/permission/server/config/index";
-import { initPermissionEmitter } from "@work-holo/permission/server/events/emitter";
+import {
+  createPermissionManagers,
+  permissionContainer,
+} from "@work-holo/permission";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 
 initializeQueueClient(env.RABBITMQ_URL);
-initPermission({ db, getRedisClient, pusher });
-initPermissionEmitter();
+
+const redis = await getRedisClient();
+permissionContainer.initialize({
+  db,
+  redis,
+  pusher,
+});
+
+const permissionManagers = createPermissionManagers();
 
 const app = new Hono();
 
@@ -62,7 +71,10 @@ export const rpcHandler = new RPCHandler(appRouter, {
 });
 
 app.use("/*", async (c, next) => {
-  const context = await createContext({ context: c });
+  const context = await createContext({
+    context: c,
+    permissionManagers,
+  });
 
   const rpcResult = await rpcHandler.handle(c.req.raw, {
     prefix: "/rpc",
