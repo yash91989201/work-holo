@@ -1,12 +1,26 @@
 import { getRedisClient } from "@work-holo/api/lib/redis";
 import { auth } from "@work-holo/auth";
 import { db } from "@work-holo/db";
-import type { PermissionService } from "@work-holo/permission/server/services/permission.service";
+import type {
+  AuthorizationEngine,
+  CacheManager,
+  PermissionEventManager,
+  PermissionMapManager,
+  PermissionService,
+  PolicyManager,
+} from "@work-holo/permission";
 import type { RedisClient } from "bun";
 import type { Context as HonoContext } from "hono";
 
 export type CreateContextOptions = {
   context: HonoContext;
+  permissionManagers: {
+    authorizationEngine: AuthorizationEngine;
+    cacheManager: CacheManager;
+    policyManager: PolicyManager;
+    eventManager: PermissionEventManager;
+    permissionMapManager: PermissionMapManager;
+  };
 };
 
 export type Context = {
@@ -20,12 +34,20 @@ export type Context = {
     memberId: string;
     role: string;
   };
+  permissionManagers: {
+    authorizationEngine: AuthorizationEngine;
+    cacheManager: CacheManager;
+    policyManager: PolicyManager;
+    eventManager: PermissionEventManager;
+    permissionMapManager: PermissionMapManager;
+  };
 };
 
-export type ElectricContext = Omit<Context, "redis">;
+export type ElectricContext = Omit<Context, "redis" | "permissionManagers">;
 
 export async function createContext({
   context,
+  permissionManagers,
 }: CreateContextOptions): Promise<Context> {
   const session = await auth.api.getSession({
     headers: context.req.raw.headers,
@@ -38,12 +60,15 @@ export async function createContext({
     session,
     db,
     redis,
+    permissionManagers,
   };
 }
 
 export async function createElectricContext({
   context,
-}: CreateContextOptions): Promise<ElectricContext> {
+}: {
+  context: HonoContext;
+}): Promise<ElectricContext> {
   const session = await auth.api.getSession({
     headers: context.req.raw.headers,
   });

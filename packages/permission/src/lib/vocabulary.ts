@@ -1,4 +1,4 @@
-import type { VocabularyEntry } from "../core/types";
+import type { VocabularyEntry } from "../lib/types";
 
 /**
  * IMPORTANT: Bitset index stability rules

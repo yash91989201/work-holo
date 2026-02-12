@@ -1,11 +1,11 @@
-import { PERMISSIONS, SYSTEM_ROLES } from "@work-holo/permission";
-import { eq } from "drizzle-orm";
-import { db } from "../index";
+import { db } from "@work-holo/db";
 import {
   permissionNodeTable,
   rolePermissionTable,
   roleTemplateTable,
-} from "../schema/authorization";
+} from "@work-holo/db/schema/authorization";
+import { PERMISSIONS, SYSTEM_ROLES } from "@work-holo/permission";
+import { eq } from "drizzle-orm";
 
 // All permission keys from the runtime vocabulary
 const ALL_KEYS = PERMISSIONS.map((p) => p.key);

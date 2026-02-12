@@ -247,21 +247,11 @@ export const channelRouter = {
   list: orgMemberProcedure
     .input(ListChannelsInput)
     .output(ListChannelsOutput)
-    .handler(async ({ context: { db, session, orgId }, input }) => {
-      const userId = session.user.id;
+    .handler(async ({ context: { db, orgId }, input }) => {
       const { page, limit, search, filters, sorting } = input;
       const offset = (page - 1) * limit;
 
-      const conditions = [
-        eq(channelTable.organizationId, orgId),
-        inArray(
-          channelTable.id,
-          db
-            .select({ channelId: channelMemberTable.channelId })
-            .from(channelMemberTable)
-            .where(eq(channelMemberTable.userId, userId))
-        ),
-      ];
+      const conditions = [eq(channelTable.organizationId, orgId)];
 
       if (search) {
         conditions.push(like(channelTable.name, `%${search}%`));

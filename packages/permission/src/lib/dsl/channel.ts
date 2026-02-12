@@ -2,7 +2,7 @@ import type {
   AuthResource,
   PermissionAction,
   PermissionDescriptor,
-} from "../../core/types";
+} from "../types";
 import { PERMISSION_BY_KEY } from "../vocabulary";
 
 function buildDescriptor(
@@ -34,26 +34,32 @@ function createActionTerminal(permissionKey: string): PermissionAction {
   return (resourceId?: string) => buildDescriptor(permissionKey, resourceId);
 }
 
-export type AttendanceDSL = {
-  record: {
-    create: PermissionAction;
-    view: PermissionAction;
-    update: PermissionAction;
-    delete: PermissionAction;
+export type ChannelDSL = {
+  create: PermissionAction;
+  view: PermissionAction;
+  update: PermissionAction;
+  delete: PermissionAction;
+  member: {
     list: PermissionAction;
+    add: PermissionAction;
+    remove: PermissionAction;
+    search: PermissionAction;
   };
 };
 
-export function Attendance(): AttendanceDSL {
+export function Channel(): ChannelDSL {
   const t = (key: string) => createActionTerminal(key);
 
   return {
-    record: {
-      create: t("attendance.record.create"),
-      view: t("attendance.record.view"),
-      update: t("attendance.record.update"),
-      delete: t("attendance.record.delete"),
-      list: t("attendance.record.list"),
+    create: t("channel.create"),
+    view: t("channel.view"),
+    update: t("channel.update"),
+    delete: t("channel.delete"),
+    member: {
+      list: t("channel.member.list"),
+      add: t("channel.member.add"),
+      remove: t("channel.member.remove"),
+      search: t("channel.member.search"),
     },
   };
 }

@@ -175,8 +175,7 @@ export async function getPushSubscription(): Promise<PushSubscription | null> {
  */
 export async function testPushNotification(): Promise<boolean> {
   try {
-    const result =
-      await orpcClient.user.pushSubscription.test();
+    const result = await orpcClient.user.pushSubscription.test();
     return result.success && result.sent > 0;
   } catch (error) {
     console.error("Failed to send test push notification:", error);

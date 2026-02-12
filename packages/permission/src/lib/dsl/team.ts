@@ -2,7 +2,7 @@ import type {
   AuthResource,
   PermissionAction,
   PermissionDescriptor,
-} from "../../core/types";
+} from "../types";
 import { PERMISSION_BY_KEY } from "../vocabulary";
 
 function buildDescriptor(
