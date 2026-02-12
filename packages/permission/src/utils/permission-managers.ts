@@ -1,6 +1,6 @@
 import type { db as DbClient } from "@work-holo/db";
 import type { RedisClient } from "bun";
-import type { PusherLike } from "../lib/types";
+import type Pusher from "pusher";
 import { AuthorizationEngine } from "../services/authorization-engine";
 import { CacheManager } from "../services/cache-manager";
 import { PermissionEventManager } from "../services/permission-event-manager";
@@ -82,7 +82,7 @@ export function createPermissionManagers({
 }: {
   db: typeof DbClient;
   redis: RedisClient;
-  pusher?: PusherLike;
+  pusher?: Pusher;
 }): PermissionManagers {
   const cacheManager = new CacheManager(redis);
   const policyManager = new PolicyManager(db, redis);
