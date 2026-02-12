@@ -26,6 +26,7 @@ import {
 import webpush from "web-push";
 import "../../lib/push-notifications";
 import { auth } from "@work-holo/auth";
+import { Queue } from "@work-holo/infrastructure";
 import { env } from "../../env";
 import { orgMemberProcedure } from "../../index";
 import { generateTxId } from "../../lib/electric-proxy";
@@ -33,7 +34,6 @@ import {
   largeChannelReadersSql,
   smallChannelReadersSql,
 } from "../../lib/prepared-sql";
-import { getQueueClient } from "../../lib/queue";
 import {
   AddReactionInput,
   AddReactionOutput,
@@ -1311,8 +1311,7 @@ export const messageRouter = {
       });
 
       try {
-        const queueClient = getQueueClient();
-        queueClient.publish("READ_RECEIPTS", {
+        Queue.publish("READ_RECEIPTS", {
           type: "process_channel",
           channelId: input.channelId,
           memberCount,

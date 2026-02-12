@@ -5,17 +5,17 @@
     "": {
       "name": "work-holo",
       "dependencies": {
-        "dotenv": "latest",
-        "zod": "latest",
+        "dotenv": "^17.2.4",
+        "zod": "^4.3.6",
       },
       "devDependencies": {
-        "@biomejs/biome": "latest",
-        "@types/bun": "latest",
-        "husky": "latest",
-        "lint-staged": "latest",
-        "oxlint": "latest",
-        "turbo": "latest",
-        "ultracite": "latest",
+        "@biomejs/biome": "2.3.14",
+        "@types/bun": "^1.3.9",
+        "husky": "^9.1.7",
+        "lint-staged": "^16.2.7",
+        "oxlint": "^1.46.0",
+        "turbo": "^2.8.6",
+        "ultracite": "7.1.5",
       },
     },
     "apps/docs": {
@@ -86,11 +86,11 @@
         "@work-holo/auth": "workspace:*",
         "@work-holo/db": "workspace:*",
         "@work-holo/env": "workspace:*",
+        "@work-holo/infrastructure": "workspace:*",
         "@work-holo/permission": "workspace:*",
         "better-auth": "^1.4.18",
         "dotenv": "^17.2.4",
         "hono": "^4.11.9",
-        "pusher": "^5.3.2",
       },
       "devDependencies": {
         "@types/bun": "^1.3.9",
@@ -222,20 +222,18 @@
         "@t3-oss/env-core": "^0.13.10",
         "@work-holo/auth": "workspace:*",
         "@work-holo/db": "workspace:*",
+        "@work-holo/infrastructure": "workspace:*",
         "@work-holo/permission": "workspace:*",
-        "amqplib": "^0.10.9",
         "dotenv": "^17.2.4",
         "drizzle-orm": "^0.45.1",
         "drizzle-zod": "^0.8.3",
         "hono": "^4.11.9",
         "jose": "^6.1.3",
         "minio": "^8.0.6",
-        "pusher": "^5.3.2",
         "web-push": "^3.6.7",
         "zod": "^4.3.6",
       },
       "devDependencies": {
-        "@types/amqplib": "^0.10.8",
         "@types/web-push": "^3.6.4",
         "@work-holo/config": "workspace:*",
         "chokidar": "^5.0.0",
@@ -302,6 +300,20 @@
         "typescript": "^5.9.3",
       },
     },
+    "packages/infrastructure": {
+      "name": "@work-holo/infrastructure",
+      "dependencies": {
+        "amqplib": "^0.10.9",
+        "pusher": "^5.3.2",
+      },
+      "devDependencies": {
+        "@types/amqplib": "^0.10.8",
+        "@work-holo/config": "workspace:*",
+      },
+      "peerDependencies": {
+        "typescript": "^5.9.3",
+      },
+    },
     "packages/permission": {
       "name": "@work-holo/permission",
       "dependencies": {
@@ -324,11 +336,10 @@
         "@work-holo/config": "workspace:*",
         "@work-holo/db": "workspace:*",
         "@work-holo/env": "workspace:*",
-        "amqplib": "^0.10.9",
+        "@work-holo/infrastructure": "workspace:*",
         "drizzle-orm": "^0.45.1",
       },
       "devDependencies": {
-        "@types/amqplib": "^0.10.8",
         "@types/bun": "^1.3.9",
       },
       "peerDependencies": {
@@ -1584,6 +1595,8 @@
     "@work-holo/db": ["@work-holo/db@workspace:packages/db"],
 
     "@work-holo/env": ["@work-holo/env@workspace:packages/env"],
+
+    "@work-holo/infrastructure": ["@work-holo/infrastructure@workspace:packages/infrastructure"],
 
     "@work-holo/permission": ["@work-holo/permission@workspace:packages/permission"],
 

@@ -1,0 +1,44 @@
+import Pusher from "pusher";
+
+export interface PusherConfig {
+  appId: string;
+  key: string;
+  secret: string;
+  host: string;
+  port?: number;
+  useTLS?: boolean;
+}
+
+let instance: Pusher | null = null;
+
+// biome-ignore lint/complexity/noStaticOnlyClass: Singleton pattern with encapsulated state
+export class PusherClient {
+  static connect(config: PusherConfig): Pusher {
+    instance = new Pusher({
+      appId: config.appId,
+      key: config.key,
+      secret: config.secret,
+      host: config.host,
+      ...(config.port !== undefined ? { port: String(config.port) } : {}),
+      useTLS: config.useTLS ?? false,
+    });
+    return instance;
+  }
+
+  static getClient(): Pusher {
+    if (!instance) {
+      throw new Error(
+        "Pusher client not initialized. Call PusherClient.connect() first."
+      );
+    }
+    return instance;
+  }
+
+  static reset(): void {
+    instance = null;
+  }
+
+  static setClient(p: Pusher): void {
+    instance = p;
+  }
+}
