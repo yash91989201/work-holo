@@ -1,9 +1,9 @@
 import { protectedProcedure } from "@work-holo/api/index";
 import { db } from "@work-holo/db";
 import { channelMemberTable } from "@work-holo/db/schema/index";
+import { PusherClient } from "@work-holo/infrastructure";
 import { and, eq } from "drizzle-orm";
 import { z } from "zod";
-import { pusher } from "../../lib/pusher";
 
 const CHANNEL_ID_REGEX = /(?:presence-channel-|private-typing-)(.+)/;
 
@@ -36,6 +36,8 @@ export const realtimeRouter = {
       if (!membership) {
         throw new Error("Not a member of this channel");
       }
+
+      const pusher = PusherClient.getClient();
 
       if (channelName.startsWith("presence-")) {
         const presenceData = {

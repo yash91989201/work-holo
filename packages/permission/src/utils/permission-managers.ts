@@ -1,10 +1,11 @@
-import { permissionContainer } from "./container";
-import { AuthorizationEngine } from "./services/authorization-engine";
-import { CacheManager } from "./services/cache-manager";
-import { PermissionEventManager } from "./services/permission-event-manager";
-import { PermissionMapManager } from "./services/permission-map-manager";
-import { PolicyManager } from "./services/policy-manager";
-
+import type { db as DbClient } from "@work-holo/db";
+import type { RedisClient } from "bun";
+import type { PusherLike } from "../lib/types";
+import { AuthorizationEngine } from "../services/authorization-engine";
+import { CacheManager } from "../services/cache-manager";
+import { PermissionEventManager } from "../services/permission-event-manager";
+import { PermissionMapManager } from "../services/permission-map-manager";
+import { PolicyManager } from "../services/policy-manager";
 /**
  * Permission manager instances created from infrastructure dependencies.
  *
@@ -74,10 +75,15 @@ export interface PermissionManagers {
  * });
  * ```
  */
-export function createPermissionManagers(): PermissionManagers {
-  const { db, redis, pusher } = permissionContainer.getInfrastructure();
-
-  // Create stateless manager instances
+export function createPermissionManagers({
+  db,
+  redis,
+  pusher,
+}: {
+  db: typeof DbClient;
+  redis: RedisClient;
+  pusher?: PusherLike;
+}): PermissionManagers {
   const cacheManager = new CacheManager(redis);
   const policyManager = new PolicyManager(db, redis);
   const authorizationEngine = new AuthorizationEngine(
@@ -92,7 +98,6 @@ export function createPermissionManagers(): PermissionManagers {
     policyManager
   );
 
-  // Initialize event manager (sets up event handlers)
   eventManager.initialize();
 
   return {

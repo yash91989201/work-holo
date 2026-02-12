@@ -5,32 +5,35 @@ import { onError } from "@orpc/server";
 import { RPCHandler } from "@orpc/server/fetch";
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
 import { createContext } from "@work-holo/api/context";
-import { pusher } from "@work-holo/api/lib/pusher";
-import { initializeQueueClient } from "@work-holo/api/lib/queue";
-import { getRedisClient } from "@work-holo/api/lib/redis";
 import { electricRouter } from "@work-holo/api/routers/electric/index";
 import { appRouter } from "@work-holo/api/routers/index";
 import { auth } from "@work-holo/auth";
 import { db } from "@work-holo/db";
 import { env } from "@work-holo/env/server";
-import {
-  createPermissionManagers,
-  permissionContainer,
-} from "@work-holo/permission";
+import { PusherClient, Queue, Redis } from "@work-holo/infrastructure";
+import { createPermissionManagers } from "@work-holo/permission/utils/permission-managers";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 
-initializeQueueClient(env.RABBITMQ_URL);
+await Redis.connect({ url: env.REDIS_URL });
 
-const redis = await getRedisClient();
-permissionContainer.initialize({
-  db,
-  redis,
-  pusher,
+PusherClient.connect({
+  appId: env.PUSHER_APP_ID,
+  key: env.PUSHER_APP_KEY,
+  secret: env.PUSHER_APP_SECRET,
+  host: env.PUSHER_HOST,
+  port: env.PUSHER_PORT,
+  useTLS: env.ENV === "production",
 });
 
-const permissionManagers = createPermissionManagers();
+await Queue.connect({ url: env.RABBITMQ_URL });
+
+const permissionManagers = createPermissionManagers({
+  db,
+  redis: Redis.getClient(),
+  pusher: PusherClient.getClient(),
+});
 
 const app = new Hono();
 

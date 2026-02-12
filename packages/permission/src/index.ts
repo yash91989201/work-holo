@@ -12,19 +12,6 @@
 //
 // ============================================================================
 
-// ── Infrastructure & Setup ──────────────────────────────────────────────
-
-export {
-  type PermissionInfrastructure,
-  type PusherLike,
-  permissionContainer,
-} from "./container";
-
-export {
-  createPermissionManagers,
-  type PermissionManagers,
-} from "./factory";
-
 // ── Core Services ───────────────────────────────────────────────────────
 
 export { AuthorizationEngine } from "./services/authorization-engine";
