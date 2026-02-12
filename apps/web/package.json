@@ -48,7 +48,7 @@
     "@t3-oss/env-core": "^0.13.10",
     "@tabler/icons-react": "^3.36.1",
     "@tailwindcss/vite": "^4.1.18",
-    "@tanstack/electric-db-collection": "^0.2.31",
+    "@tanstack/electric-db-collection": "^0.2.32",
     "@tanstack/react-db": "^0.1.69",
     "@tanstack/react-form": "^1.28.0",
     "@tanstack/react-pacer": "^0.19.4",

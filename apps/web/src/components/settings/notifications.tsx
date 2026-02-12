@@ -11,6 +11,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useNotificationPermission } from "@/hooks/use-notification-permission";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
+import { testPushNotification } from "@/lib/push-subscription";
 import { Spinner } from "../ui/spinner";
 import { Switch } from "../ui/switch";
 
@@ -85,7 +86,6 @@ export function PushNotifications() {
   const handleTestNotification = async () => {
     setIsTesting(true);
     try {
-      const { testPushNotification } = await import("@/lib/push-subscription");
       await testPushNotification();
     } finally {
       setIsTesting(false);
