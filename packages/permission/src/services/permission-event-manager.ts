@@ -1,7 +1,8 @@
 import { EventEmitter } from "node:events";
 import type { db as Db } from "@work-holo/db";
 import { permissionAuditLogTable } from "@work-holo/db/schema/authorization";
-import type { PermissionEvent, PusherLike } from "../lib/types";
+import type Pusher from "pusher";
+import type { PermissionEvent } from "../lib/types";
 
 /**
  * Typed EventEmitter wrapper for permission change events
@@ -108,7 +109,7 @@ export class PermissionEventManager {
   private readonly db: typeof Db;
 
   /** Optional Pusher client for real-time notifications */
-  private readonly pusher?: PusherLike;
+  private readonly pusher?: Pusher;
 
   /** Typed EventEmitter for permission_change events */
   private readonly bus: PermissionBus;
@@ -116,7 +117,7 @@ export class PermissionEventManager {
   /** Initialization guard to prevent duplicate handler registration */
   private initialized = false;
 
-  constructor(db: typeof Db, pusher?: PusherLike) {
+  constructor(db: typeof Db, pusher?: Pusher) {
     this.db = db;
     this.pusher = pusher;
     this.bus = new PermissionBus();

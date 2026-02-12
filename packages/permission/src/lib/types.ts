@@ -163,7 +163,3 @@ export type AuditAction = (typeof AUDIT_ACTIONS)[keyof typeof AUDIT_ACTIONS];
  *   permission.channel.create  →  (resourceId?) => PermissionDescriptor
  */
 export type PermissionAction = (resourceId?: string) => PermissionDescriptor;
-
-export type PusherLike = {
-  trigger(channel: string, event: string, data: unknown): Promise<unknown>;
-};
