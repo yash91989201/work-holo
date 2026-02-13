@@ -18,7 +18,7 @@ import type {
   PolicyEffect,
 } from "../lib/types";
 
-const MODEL_CONF_PATH = "../lib/model.conf";
+const MODEL_CONF_PATH = `${import.meta.dir}/../lib/model.conf`;
 
 const POLICY_VERSION_PREFIX = "policy_version:";
 

@@ -6,105 +6,118 @@ import { CacheManager } from "../services/cache-manager";
 import { PermissionEventManager } from "../services/permission-event-manager";
 import { PermissionMapManager } from "../services/permission-map-manager";
 import { PolicyManager } from "../services/policy-manager";
-/**
- * Permission manager instances created from infrastructure dependencies.
- *
- * These are **stateless services** that can be safely shared across all requests.
- * They coordinate the permission system's core operations:
- * - Authorization decisions (3-tier pipeline)
- * - Policy compilation (DB → Casbin)
- * - Caching (Redis)
- * - Event emission (audit logs, Pusher)
- * - Permission map building (frontend hydration)
- */
-export interface PermissionManagers {
-  /** Manages Redis caching for decisions, bitsets, and permission maps */
+
+export interface AllPermissionManagers {
   cacheManager: CacheManager;
-
-  /** Compiles database policies into Casbin rules */
   policyManager: PolicyManager;
-
-  /** Executes the 3-tier authorization pipeline */
   authorizationEngine: AuthorizationEngine;
-
-  /** Emits audit logs and real-time permission events */
   eventManager: PermissionEventManager;
-
-  /** Builds complete permission maps for frontend hydration */
   permissionMapManager: PermissionMapManager;
 }
 
-/**
- * Create permission manager instances from initialized infrastructure.
- *
- * **Important:**
- * - Call `permissionContainer.initialize()` BEFORE calling this function
- * - Managers are stateless and can be created once at startup
- * - Reuse the same manager instances across all requests (don't recreate per-request)
- * - Each manager coordinates a specific aspect of the permission system
- *
- * **Architecture:**
- * ```
- * PermissionManagers (stateless, reusable)
- *   ├─ CacheManager ──────────► Redis (decisions, bitsets, maps)
- *   ├─ PolicyManager ─────────► DB + Redis (Casbin policies, versions)
- *   ├─ AuthorizationEngine ───► Cache + Policy + DB (3-tier pipeline)
- *   ├─ EventManager ──────────► DB + Pusher (audit logs, events)
- *   └─ PermissionMapManager ──► DB + Cache + Policy (permission maps)
- * ```
- *
- * @returns Stateless permission manager instances
- * @throws Error if container not initialized
- *
- * @example
- * ```typescript
- * // Server startup (apps/server/src/index.ts)
- * const redis = await getRedisClient();
- * permissionContainer.initialize({ db, redis, pusher });
- *
- * // Create managers ONCE
- * const permissionManagers = createPermissionManagers();
- *
- * // Reuse across all requests
- * app.use(async (c, next) => {
- *   const context = await createContext({
- *     context: c,
- *     permissionManagers,  // ← Same instances for every request
- *   });
- *   // ...
- * });
- * ```
- */
-export function createPermissionManagers({
-  db,
-  redis,
-  pusher,
-}: {
-  db: typeof DbClient;
-  redis: RedisClient;
-  pusher?: Pusher;
-}): PermissionManagers {
-  const cacheManager = new CacheManager(redis);
-  const policyManager = new PolicyManager(db, redis);
-  const authorizationEngine = new AuthorizationEngine(
-    cacheManager,
-    policyManager,
-    db
-  );
-  const eventManager = new PermissionEventManager(db, pusher);
-  const permissionMapManager = new PermissionMapManager(
-    db,
-    cacheManager,
-    policyManager
-  );
+let cacheManager: CacheManager | null = null;
+let policyManager: PolicyManager | null = null;
+let authorizationEngine: AuthorizationEngine | null = null;
+let eventManager: PermissionEventManager | null = null;
+let permissionMapManager: PermissionMapManager | null = null;
 
-  eventManager.initialize();
+// biome-ignore lint/complexity/noStaticOnlyClass: Singleton pattern with encapsulated state
+export class PermissionManagers {
+  static initialize(config: {
+    db: typeof DbClient;
+    redis: RedisClient;
+    pusher?: Pusher;
+  }): void {
+    cacheManager = new CacheManager(config.redis);
+    policyManager = new PolicyManager(config.db, config.redis);
+    authorizationEngine = new AuthorizationEngine(
+      cacheManager,
+      policyManager,
+      config.db
+    );
+    eventManager = new PermissionEventManager(config.db, config.pusher);
+    permissionMapManager = new PermissionMapManager(
+      config.db,
+      cacheManager,
+      policyManager
+    );
 
-  return {
-    cacheManager,
-    policyManager,
-    authorizationEngine,
-    eventManager,
-    permissionMapManager,
-  };
+    eventManager.initialize();
+  }
+
+  static getAll(): AllPermissionManagers {
+    if (
+      !(
+        cacheManager &&
+        policyManager &&
+        authorizationEngine &&
+        eventManager &&
+        permissionMapManager
+      )
+    ) {
+      throw new Error(
+        "PermissionManagers not initialized. Call PermissionManagers.initialize() first."
+      );
+    }
+    return {
+      cacheManager,
+      policyManager,
+      authorizationEngine,
+      eventManager,
+      permissionMapManager,
+    };
+  }
+
+  static getCacheManager(): CacheManager {
+    if (!cacheManager) {
+      throw new Error(
+        "PermissionManagers not initialized. Call PermissionManagers.initialize() first."
+      );
+    }
+    return cacheManager;
+  }
+
+  static getPolicyManager(): PolicyManager {
+    if (!policyManager) {
+      throw new Error(
+        "PermissionManagers not initialized. Call PermissionManagers.initialize() first."
+      );
+    }
+    return policyManager;
+  }
+
+  static getAuthorizationEngine(): AuthorizationEngine {
+    if (!authorizationEngine) {
+      throw new Error(
+        "PermissionManagers not initialized. Call PermissionManagers.initialize() first."
+      );
+    }
+    return authorizationEngine;
+  }
+
+  static getEventManager(): PermissionEventManager {
+    if (!eventManager) {
+      throw new Error(
+        "PermissionManagers not initialized. Call PermissionManagers.initialize() first."
+      );
+    }
+    return eventManager;
+  }
+
+  static getPermissionMapManager(): PermissionMapManager {
+    if (!permissionMapManager) {
+      throw new Error(
+        "PermissionManagers not initialized. Call PermissionManagers.initialize() first."
+      );
+    }
+    return permissionMapManager;
+  }
+
+  static reset(): void {
+    cacheManager = null;
+    policyManager = null;
+    authorizationEngine = null;
+    eventManager = null;
+    permissionMapManager = null;
+  }
 }

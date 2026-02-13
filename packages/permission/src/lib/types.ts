@@ -137,11 +137,9 @@ export type VocabularyEntry = {
 };
 
 export const SYSTEM_ROLES = {
-  ORG_OWNER: "org_owner",
-  ORG_ADMIN: "org_admin",
-  ORG_MEMBER: "org_member",
-  TEAM_ADMIN: "team_admin",
-  TEAM_MEMBER: "team_member",
+  OWNER: "owner",
+  ADMIN: "admin",
+  MEMBER: "member",
 } as const;
 
 export type SystemRole = (typeof SYSTEM_ROLES)[keyof typeof SYSTEM_ROLES];
