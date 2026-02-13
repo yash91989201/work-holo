@@ -1,11 +1,13 @@
 import { protectedProcedure } from "@work-holo/api/index";
 import { db } from "@work-holo/db";
-import { channelMemberTable } from "@work-holo/db/schema/index";
+import { channelMemberTable, member } from "@work-holo/db/schema/index";
 import { PusherClient } from "@work-holo/infrastructure";
 import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 
 const CHANNEL_ID_REGEX = /(?:presence-channel-|private-typing-)(.+)/;
+const ORG_CHANNEL_REGEX = /^private-org-(.+)$/;
+const USER_CHANNEL_REGEX = /^private-user-(.+)$/;
 
 export const realtimeRouter = {
   authorize: protectedProcedure
@@ -20,6 +22,33 @@ export const realtimeRouter = {
       const userId = context.session.user.id;
       const userName = context.session.user.name ?? "Anonymous";
 
+      const pusher = PusherClient.getClient();
+
+      // Private user channel — verify the channel matches the authenticated user
+      const userMatch = channelName.match(USER_CHANNEL_REGEX);
+      if (userMatch?.[1]) {
+        if (userMatch[1] !== userId) {
+          throw new Error("Not authorized for this user channel");
+        }
+        return pusher.authorizeChannel(socketId, channelName);
+      }
+
+      // Private org channel — verify user is a member of the org
+      const orgMatch = channelName.match(ORG_CHANNEL_REGEX);
+      if (orgMatch?.[1]) {
+        const orgMembership = await db.query.member.findFirst({
+          where: and(
+            eq(member.organizationId, orgMatch[1]),
+            eq(member.userId, userId)
+          ),
+        });
+        if (!orgMembership) {
+          throw new Error("Not a member of this organization");
+        }
+        return pusher.authorizeChannel(socketId, channelName);
+      }
+
+      // Existing channel-based authorization (presence-channel-*, private-typing-*)
       const channelIdMatch = channelName.match(CHANNEL_ID_REGEX);
       if (!channelIdMatch?.[1]) {
         throw new Error("Invalid channel name");
@@ -36,8 +65,6 @@ export const realtimeRouter = {
       if (!membership) {
         throw new Error("Not a member of this channel");
       }
-
-      const pusher = PusherClient.getClient();
 
       if (channelName.startsWith("presence-")) {
         const presenceData = {
