@@ -11,7 +11,7 @@ import { auth } from "@work-holo/auth";
 import { db } from "@work-holo/db";
 import { env } from "@work-holo/env/server";
 import { PusherClient, Queue, Redis } from "@work-holo/infrastructure";
-import { createPermissionManagers } from "@work-holo/permission/utils/permission-managers";
+import { PermissionManagers } from "@work-holo/permission";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
@@ -29,7 +29,7 @@ PusherClient.connect({
 
 await Queue.connect({ url: env.RABBITMQ_URL });
 
-const permissionManagers = createPermissionManagers({
+PermissionManagers.initialize({
   db,
   redis: Redis.getClient(),
   pusher: PusherClient.getClient(),
@@ -76,7 +76,6 @@ export const rpcHandler = new RPCHandler(appRouter, {
 app.use("/*", async (c, next) => {
   const context = await createContext({
     context: c,
-    permissionManagers,
   });
 
   const rpcResult = await rpcHandler.handle(c.req.raw, {
