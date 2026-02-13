@@ -86,33 +86,10 @@ export { Team } from "./lib/dsl/team";
 
 // ── Utilities ───────────────────────────────────────────────────────────
 
+export { assignOrgUserRole } from "./utils/assign-org-user-role";
 export { checkBit } from "./utils/bitset";
 
-// ============================================================================
-// Quick Start Guide
-// ============================================================================
-//
-// 1. Initialize infrastructure at server startup:
-//
-//    ```typescript
-//    import { permissionContainer, createPermissionManagers } from "@work-holo/permission";
-//
-//    const redis = await getRedisClient();
-//    permissionContainer.initialize({ db, redis, pusher });
-//    const permissionManagers = createPermissionManagers();
-//    ```
-//
-// 2. Use in request handlers:
-//
-//    ```typescript
-//    const permission = new PermissionService({
-//      userId,
-//      orgId,
-//      db,
-//      ...permissionManagers
-//    });
-//
-//    await permission.check(permission.channel.create());
-//    ```
-//
-// ============================================================================
+// ── Singleton ──────────────────────────────────────────────────────────
+
+export type { AllPermissionManagers } from "./utils/permission-managers";
+export { PermissionManagers } from "./utils/permission-managers";

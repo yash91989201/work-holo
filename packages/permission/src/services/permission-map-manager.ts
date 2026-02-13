@@ -143,7 +143,13 @@ export class PermissionMapManager {
     userId: string,
     orgId: string
   ): Promise<PermissionMap> {
-    const policyVersion = await this.policyManager.getPolicyVersion(orgId);
+    let policyVersion = await this.policyManager.getPolicyVersion(orgId);
+
+    if (policyVersion === 0) {
+      await this.policyManager.compilePolicies(orgId, userId);
+      await this.policyManager.reloadPolicies();
+      policyVersion = await this.policyManager.getPolicyVersion(orgId);
+    }
 
     const cached = await this.cacheManager.getCachedPermissionMap(
       userId,

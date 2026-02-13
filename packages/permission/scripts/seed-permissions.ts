@@ -23,35 +23,16 @@ const ATTENDANCE_VIEW_KEYS = ATTENDANCE_KEYS.filter(
 
 // Role permission assignments using runtime vocabulary keys
 const ROLE_PERMISSIONS: Record<string, string[]> = {
-  [SYSTEM_ROLES.ORG_OWNER]: ALL_KEYS,
-  [SYSTEM_ROLES.ORG_ADMIN]: ALL_KEYS.filter(
+  [SYSTEM_ROLES.OWNER]: ALL_KEYS,
+  [SYSTEM_ROLES.ADMIN]: ALL_KEYS.filter(
     (k) => !(k === "org.delete" || k === "org.create")
   ),
-  [SYSTEM_ROLES.ORG_MEMBER]: [
+  [SYSTEM_ROLES.MEMBER]: [
     ...COMMUNICATION_KEYS,
     ...ATTENDANCE_VIEW_KEYS,
     "org.view",
     "org.context.view",
     "org.context.switch",
-    "team.view",
-    "team.member.view",
-    "module.access",
-  ],
-  [SYSTEM_ROLES.TEAM_ADMIN]: [
-    ...COMMUNICATION_KEYS,
-    ...ATTENDANCE_KEYS,
-    "team.update",
-    "team.view",
-    "team.member.add",
-    "team.member.remove",
-    "team.member.view",
-    "team.module.enable",
-    "team.module.disable",
-    "module.access",
-  ],
-  [SYSTEM_ROLES.TEAM_MEMBER]: [
-    ...COMMUNICATION_KEYS,
-    ...ATTENDANCE_VIEW_KEYS,
     "team.view",
     "team.member.view",
     "module.access",
@@ -65,37 +46,24 @@ const ROLE_DEFINITIONS: Array<{
   scope: "org" | "team";
 }> = [
   {
-    name: SYSTEM_ROLES.ORG_OWNER,
-    displayName: "Organization Owner",
+    name: SYSTEM_ROLES.OWNER,
+    displayName: "Owner",
     description: "Full access to all organization resources and settings",
     scope: "org",
   },
   {
-    name: SYSTEM_ROLES.ORG_ADMIN,
-    displayName: "Organization Admin",
+    name: SYSTEM_ROLES.ADMIN,
+    displayName: "Admin",
     description:
       "Administrative access to organization resources (cannot delete or create organizations)",
     scope: "org",
   },
   {
-    name: SYSTEM_ROLES.ORG_MEMBER,
-    displayName: "Organization Member",
+    name: SYSTEM_ROLES.MEMBER,
+    displayName: "Member",
     description:
       "Standard member access to communication and basic organization features",
     scope: "org",
-  },
-  {
-    name: SYSTEM_ROLES.TEAM_ADMIN,
-    displayName: "Team Admin",
-    description:
-      "Administrative access to team resources including member management",
-    scope: "team",
-  },
-  {
-    name: SYSTEM_ROLES.TEAM_MEMBER,
-    displayName: "Team Member",
-    description: "Standard member access to team communication and attendance",
-    scope: "team",
   },
 ];
 
