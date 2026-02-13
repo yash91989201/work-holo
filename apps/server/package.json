@@ -20,7 +20,7 @@
     "@work-holo/infrastructure": "workspace:*",
     "@work-holo/permission": "workspace:*",
     "better-auth": "^1.4.18",
-    "dotenv": "^17.2.4",
+    "dotenv": "^17.3.1",
     "hono": "^4.11.9"
   },
   "devDependencies": {
