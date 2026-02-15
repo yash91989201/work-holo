@@ -78,10 +78,12 @@ export class AuthorizationEngine {
     const respectDenyOverrides = true;
 
     if (respectDenyOverrides) {
+      const scopeContext = this.resolveScopeContext(request);
       const hasExplicitDeny = await this.hasExplicitDenyOverride(
         request.userId,
         request.orgId,
-        request.permission.permissionKey
+        request.permission.permissionKey,
+        scopeContext
       );
 
       if (hasExplicitDeny) {
@@ -129,7 +131,8 @@ export class AuthorizationEngine {
       userId,
       orgId,
       scopeContext,
-      scopeCacheKey
+      scopeCacheKey,
+      currentVersion
     );
     const bitsetAllowed = checkBit(bitsetData.bitset, permission.bitIndex);
 
@@ -184,9 +187,9 @@ export class AuthorizationEngine {
     userId: string,
     orgId: string,
     scopeContext: ScopeContext,
-    scopeCacheKey: string
+    scopeCacheKey: string,
+    currentVersion: number
   ): Promise<BitsetData> {
-    const currentVersion = await this.policyManager.getPolicyVersion(orgId);
     const cached = await this.cacheManager.getCachedBitset(
       userId,
       orgId,
@@ -194,7 +197,13 @@ export class AuthorizationEngine {
       scopeCacheKey
     );
     if (cached) return cached;
-    return this.compileBitset(userId, orgId, scopeContext, scopeCacheKey);
+    return this.compileBitset(
+      userId,
+      orgId,
+      scopeContext,
+      scopeCacheKey,
+      currentVersion
+    );
   }
 
   /**
@@ -204,7 +213,8 @@ export class AuthorizationEngine {
     userId: string,
     orgId: string,
     scopeContext: ScopeContext,
-    scopeCacheKey: string
+    scopeCacheKey: string,
+    currentVersion: number
   ): Promise<BitsetData> {
     const permissionKeys = await this.getUserPermissionKeys(
       userId,
@@ -220,7 +230,6 @@ export class AuthorizationEngine {
       }
     }
 
-    const currentVersion = await this.policyManager.getPolicyVersion(orgId);
     const data: BitsetData = {
       bitset: bitsetToHex(bitset),
       policyVersion: currentVersion,
@@ -234,10 +243,15 @@ export class AuthorizationEngine {
   private async hasExplicitDenyOverride(
     userId: string,
     orgId: string,
-    permissionKey: string
+    permissionKey: string,
+    scopeContext: ScopeContext
   ): Promise<boolean> {
-    const denyOverride = await this.db
-      .select({ id: policyOverrideTable.id })
+    const denyOverrides = await this.db
+      .select({
+        id: policyOverrideTable.id,
+        teamId: policyOverrideTable.teamId,
+        resourceId: policyOverrideTable.resourceId,
+      })
       .from(policyOverrideTable)
       .innerJoin(
         permissionNodeTable,
@@ -254,10 +268,11 @@ export class AuthorizationEngine {
             gt(policyOverrideTable.expiresAt, new Date())
           )
         )
-      )
-      .limit(1);
+      );
 
-    return denyOverride.length > 0;
+    return denyOverrides.some((override) =>
+      this.isOverrideApplicable(override, scopeContext)
+    );
   }
 
   /**
