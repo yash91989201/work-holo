@@ -5,12 +5,13 @@
     ".": {
       "default": "./src/index.ts"
     },
-    "./server": {
-      "default": "./src/server/index.ts"
-    },
     "./*": {
       "default": "./src/*.ts"
     }
+  },
+  "scripts": {
+    "generate:permissions": "bun run ./scripts/generate-permission-code.ts",
+    "seed:permissions": "bun run ./scripts/seed-permissions.ts"
   },
   "devDependencies": {
     "@work-holo/config": "workspace:*",
@@ -22,6 +23,7 @@
   "dependencies": {
     "@orpc/server": "^1.13.5",
     "@work-holo/db": "workspace:*",
+    "@work-holo/env": "workspace:*",
     "casbin": "^5.48.0",
     "drizzle-adapter": "^1.4.0",
     "drizzle-orm": "^0.45.1"
