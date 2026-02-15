@@ -101,39 +101,64 @@ type LeafValues<T> = T extends string
   ? T
   : { [K in keyof T]: LeafValues<T[K]> }[keyof T];
 
+/** Extracts all leaf permission key strings from the DSL structure. */
 export type PermissionKeyFromDSL = LeafValues<typeof permissionKey>;
 
+/** The complete permission key DSL structure with all available permissions. */
 export type PermissionKeys = typeof permissionKey;
 
 type AndExpression = { _type: "and"; operands: PermissionExpression[] };
 type OrExpression = { _type: "or"; operands: PermissionExpression[] };
 type NotExpression = { _type: "not"; operand: PermissionExpression };
 
+/** Permission expression that can be a key, AND, OR, or NOT operation. */
 export type PermissionExpression =
   | PermissionKeyFromDSL
   | AndExpression
   | OrExpression
   | NotExpression;
 
+/**
+ * Creates an AND expression combining multiple permission expressions.
+ * @param operands Permission expressions to combine with AND logic
+ * @returns AND expression object
+ */
 export function and(...operands: PermissionExpression[]): AndExpression {
   return { _type: "and", operands };
 }
 
+/**
+ * Creates an OR expression combining multiple permission expressions.
+ * @param operands Permission expressions to combine with OR logic
+ * @returns OR expression object
+ */
 export function or(...operands: PermissionExpression[]): OrExpression {
   return { _type: "or", operands };
 }
 
+/**
+ * Creates a NOT expression negating a permission expression.
+ * @param operand Permission expression to negate
+ * @returns NOT expression object
+ */
 export function not(operand: PermissionExpression): NotExpression {
   return { _type: "not", operand };
 }
 
+/** Function that selects permissions using the DSL and logical operators. */
 export type PermissionSelector = (
   p: PermissionKeys,
   ops: { and: typeof and; or: typeof or; not: typeof not }
 ) => PermissionExpression;
 
+/** Permission input: either a key string or a selector function. */
 export type PermissionInput = PermissionKeyFromDSL | PermissionSelector;
 
+/**
+ * Resolves a permission input to an expression, executing selector functions if needed.
+ * @param input Permission key or selector function
+ * @returns Resolved permission expression
+ */
 export function resolvePermission(
   input: PermissionInput
 ): PermissionExpression {
@@ -143,6 +168,12 @@ export function resolvePermission(
   return input;
 }
 
+/**
+ * Evaluates a permission expression against a permissions map.
+ * @param expr Permission expression to evaluate
+ * @param permissions Map of permission keys to boolean values
+ * @returns True if expression evaluates to true
+ */
 export function evaluateExpression(
   expr: PermissionExpression,
   permissions: Record<string, boolean>

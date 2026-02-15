@@ -3,6 +3,7 @@
 import type { PermissionAction } from "../types";
 import { createActionTerminal, createScopedActionTerminal } from "./shared";
 
+/** DSL object providing attendance permission action builders, optionally team-scoped. */
 export type AttendanceDSL = {
   record: {
     create: PermissionAction;
@@ -13,6 +14,11 @@ export type AttendanceDSL = {
   };
 };
 
+/**
+ * Creates attendance permission descriptor builders, optionally scoped to a team.
+ * @param teamId Optional team ID for team-scoped permissions; if omitted, permissions are org-level
+ * @returns DSL object with permission action builders
+ */
 export function Attendance(teamId?: string): AttendanceDSL {
   const t = (key: string) =>
     teamId

@@ -3,6 +3,7 @@
 import type { PermissionAction } from "../types";
 import { createActionTerminal, createScopedActionTerminal } from "./shared";
 
+/** DSL object providing channel permission action builders, optionally team-scoped. */
 export type ChannelDSL = {
   create: PermissionAction;
   delete: PermissionAction;
@@ -34,6 +35,11 @@ export type ChannelDSL = {
   update: PermissionAction;
 };
 
+/**
+ * Creates channel permission descriptor builders, optionally scoped to a team.
+ * @param teamId Optional team ID for team-scoped permissions; if omitted, permissions are org-level
+ * @returns DSL object with permission action builders
+ */
 export function Channel(teamId?: string): ChannelDSL {
   const t = (key: string) =>
     teamId
