@@ -112,17 +112,17 @@ export class PermissionService {
   }
 
   /**
-   * Returns channel permission builders.
+   * Returns channel permission builders, optionally team scoped.
    */
-  get channel() {
-    return this.dsl.channel;
+  channel(teamId?: string) {
+    return this.dsl.channel(teamId);
   }
 
   /**
-   * Returns attendance permission builders.
+   * Returns attendance permission builders, optionally team scoped.
    */
-  get attendance() {
-    return this.dsl.attendance;
+  attendance(teamId?: string) {
+    return this.dsl.attendance(teamId);
   }
 
   /**
