@@ -22,7 +22,7 @@ export const analyticsRouter = {
     .input(AttendanceAnalyticsInput.optional())
     .output(AttendanceAnalyticsOutput)
     .handler(async ({ input, context: { db, session, orgId, permission } }) => {
-      await permission.check(permission.attendance.record.read());
+      await permission.check(permission.attendance().record.read());
       const user = session.user;
 
       const today = new Date();

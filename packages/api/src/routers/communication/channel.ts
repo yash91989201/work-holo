@@ -80,7 +80,7 @@ export const channelRouter = {
     .input(CreateChannelInput)
     .output(CreateChannelOutput)
     .handler(async ({ input, context: { db, orgId, permission } }) => {
-      await permission.check(permission.channel.create());
+      await permission.check(permission.channel().create());
 
       try {
         const { txid, channel } = await db.transaction(async (tx) => {
@@ -182,7 +182,7 @@ export const channelRouter = {
     .handler(async ({ input, context: { db, permission } }) => {
       await permission.requireChannelAccess(
         input.channelId,
-        permission.channel.update
+        permission.channel().update
       );
       const [updatedChannel] = await db
         .update(channelTable)
@@ -213,7 +213,7 @@ export const channelRouter = {
     .handler(async ({ context: { db, permission }, input }) => {
       await permission.requireChannelAccess(
         input.channelId,
-        permission.channel.read
+        permission.channel().read
       );
       const channel = await db.query.channelTable.findFirst({
         where: eq(channelTable.id, input.channelId),
@@ -410,7 +410,7 @@ export const channelRouter = {
     .handler(async ({ input, context: { db, orgId, permission } }) => {
       await permission.requireChannelAccess(
         input.channelId,
-        permission.channel.delete
+        permission.channel().delete
       );
 
       const { txid } = await db.transaction(async (tx) => {

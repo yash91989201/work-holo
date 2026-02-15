@@ -145,7 +145,7 @@ export const messageRouter = {
       }) => {
         await permission.requireChannelAccess(
           input.channelId,
-          permission.channel.message.create
+          permission.channel().message.create
         );
         const { txid, message } = await db.transaction(async (tx) => {
           const txid = await generateTxId(tx);
@@ -385,7 +385,7 @@ export const messageRouter = {
       }) => {
         await permission.requireMessageAccess(
           input.messageId,
-          permission.channel.message.update
+          permission.channel().message.update
         );
         const { txid, message } = await db.transaction(async (tx) => {
           const txid = await generateTxId(tx);
@@ -580,7 +580,7 @@ export const messageRouter = {
     .handler(async ({ input, context: { db, permission } }) => {
       await permission.requireMessageAccess(
         input.messageId,
-        permission.channel.message.delete
+        permission.channel().message.delete
       );
 
       const { txid } = await db.transaction(async (tx) => {
@@ -758,7 +758,7 @@ export const messageRouter = {
     .handler(async ({ input, context: { db, permission } }) => {
       await permission.requireMessageAccess(
         input.messageId,
-        permission.channel.message.read
+        permission.channel().message.read
       );
       const message = await db.query.messageTable.findFirst({
         where: eq(messageTable.id, input.messageId),
@@ -789,7 +789,7 @@ export const messageRouter = {
     .handler(async ({ input, context: { db, permission } }) => {
       await permission.requireMessageAccess(
         input.messageId,
-        permission.channel.message.read
+        permission.channel().message.read
       );
       const parentMessage = await db.query.messageTable.findFirst({
         where: eq(messageTable.parentMessageId, input.messageId),
@@ -828,7 +828,7 @@ export const messageRouter = {
       }) => {
         await permission.requireMessageAccess(
           input.messageId,
-          permission.channel.message.pin
+          permission.channel().message.pin
         );
         const { txid } = await db.transaction(async (tx) => {
           const txid = await generateTxId(tx);
@@ -863,7 +863,7 @@ export const messageRouter = {
     .handler(async ({ context: { db, permission }, input }) => {
       await permission.requireMessageAccess(
         input.messageId,
-        permission.channel.message.pin
+        permission.channel().message.pin
       );
       const { txid } = await db.transaction(async (tx) => {
         const txid = await generateTxId(tx);
@@ -954,7 +954,7 @@ export const messageRouter = {
     .input(MarkMentionSeenInput)
     .output(MarkMentionSeenOutput)
     .handler(async ({ context: { db, session, permission }, input }) => {
-      await permission.check(permission.channel.message.read());
+      await permission.check(permission.channel().message.read());
       const { user } = session;
 
       const { txid } = await db.transaction(async (tx) => {
@@ -1064,7 +1064,7 @@ export const messageRouter = {
     .handler(async ({ context: { db, session, permission }, input }) => {
       await permission.requireMessageAccess(
         input.messageId,
-        permission.channel.message.react
+        permission.channel().message.react
       );
       const userId = session.user.id;
 
@@ -1138,7 +1138,7 @@ export const messageRouter = {
 
       await permission.requireMessageAccess(
         reaction.messageId,
-        permission.channel.message.react
+        permission.channel().message.react
       );
 
       const { txid } = await db.transaction(async (tx) => {
