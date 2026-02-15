@@ -6,6 +6,9 @@ import {
 import { and, eq } from "drizzle-orm";
 import { PermissionManagers } from "./permission-managers";
 
+/**
+ * Assigns an org-scoped system role and recompiles policies for the user.
+ */
 export async function assignOrgUserRole(
   db: typeof Db,
   userId: string,

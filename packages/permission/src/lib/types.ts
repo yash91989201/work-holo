@@ -1,20 +1,11 @@
-export type AuthResource =
-  | "org"
-  | "team"
-  | "channel"
-  | "message"
-  | "attendance"
-  | "module";
+export type AuthResource = "org" | "team" | "channel" | "attendance";
 
 export type AuthAction =
   | "create"
-  | "view"
+  | "read"
   | "update"
   | "delete"
   | "list"
-  | "search"
-  | "read"
-  | "unread_count"
   | "add"
   | "remove"
   | "resend"
@@ -25,6 +16,7 @@ export type AuthAction =
   | "switch"
   | "react"
   | "pin"
+  | "reply"
   | "mention.user"
   | "mention.channel";
 
@@ -97,7 +89,7 @@ export type PermissionMapEntry = {
   key: PermissionKey;
   allowed: boolean;
   resource: AuthResource;
-  subResource: string;
+  subResources: string[];
   action: AuthAction;
 };
 
@@ -130,7 +122,7 @@ export type PermissionEvent = {
 export type VocabularyEntry = {
   key: PermissionKey;
   resource: AuthResource;
-  subResource: string;
+  subResources: string[];
   action: string;
   bitIndex: number;
   description?: string;
@@ -156,8 +148,6 @@ export const AUDIT_ACTIONS = {
 export type AuditAction = (typeof AUDIT_ACTIONS)[keyof typeof AUDIT_ACTIONS];
 
 /**
- * A function that builds a PermissionDescriptor, optionally scoped to a resourceId.
- * This matches the DSL's ActionTerminal signature:
- *   permission.channel.create  →  (resourceId?) => PermissionDescriptor
+ * Callable DSL terminal that builds a permission descriptor.
  */
 export type PermissionAction = (resourceId?: string) => PermissionDescriptor;

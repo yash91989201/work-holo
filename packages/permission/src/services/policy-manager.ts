@@ -11,6 +11,8 @@ import type { RedisClient } from "bun";
 import { type Enforcer, newEnforcer } from "casbin";
 import DrizzleAdapter from "drizzle-adapter";
 import { and, eq, gt, inArray, isNull, or } from "drizzle-orm";
+import { keyMatchColonFunc } from "../lib/casbin-matchers";
+import { resolvePermissionKey } from "../lib/permission-resolver";
 import type {
   CompilationResult,
   CompiledGroupingPolicy,
@@ -23,8 +25,7 @@ const MODEL_CONF_PATH = `${import.meta.dir}/../lib/model.conf`;
 const POLICY_VERSION_PREFIX = "policy_version:";
 
 /**
- * Database row type representing a role assignment from the DB query result.
- * Used internally by fetchRoleAssignments().
+ * Internal role-assignment row shape used during policy compilation.
  */
 type RoleAssignmentRow = {
   userId: string;
@@ -38,8 +39,7 @@ type RoleAssignmentRow = {
 };
 
 /**
- * Database row type representing a role permission from the DB query result.
- * Used internally by fetchRolePermissions().
+ * Internal role-permission row shape used during policy compilation.
  */
 type RolePermissionRow = {
   roleTemplateId: string;
@@ -56,8 +56,7 @@ type RolePermissionRow = {
 };
 
 /**
- * Database row type representing a policy override from the DB query result.
- * Used internally by fetchPolicyOverrides().
+ * Internal override row shape used during policy compilation.
  */
 type PolicyOverrideRow = {
   userId: string;
@@ -74,94 +73,35 @@ type PolicyOverrideRow = {
 };
 
 /**
- * Manages policy compilation from database state into Casbin authorization rules.
- *
- * **Core Responsibilities:**
- * - Compiles role assignments, role permissions, and policy overrides into Casbin p-rules and g-rules
- * - Manages Casbin enforcer singleton with lazy initialization
- * - Tracks policy versions in Redis for cross-process synchronization
- * - Maintains local version cache for fast policy version lookups
- * - Coordinates transactional policy updates to ensure atomicity
- *
- * **Policy Compilation Pipeline:**
- * 1. Fetch role assignments, role permissions (batched), and policy overrides from DB
- * 2. Compile grouping policies (g-rules): user-to-role mappings within org domains
- * 3. Compile role policies (p-rules): role-to-permission mappings
- * 4. Compile override policies (p-rules): direct user-to-permission exceptions
- * 5. Within a single DB transaction: delete old rules for org domain, insert new rules
- * 6. Increment policy version in Redis, reload Casbin enforcer
- *
- * **Object Path Construction:**
- * Object paths in Casbin rules use colon-separated hierarchies:
- * - Org-scoped: `resource:subResource` (e.g., `"channel:member"`)
- * - Team-scoped: `team:teamId:resource:subResource` (e.g., `"team:tm_1:team:member"`)
- * - Resource-specific: `resource:subResource:resourceId` (e.g., `"channel:member:ch_123"`)
- *
- * **Role Name Construction:**
- * Role names distinguish between org-scoped and team-scoped roles:
- * - Org-scoped: `role:roleName` (e.g., `"role:org_admin"`)
- * - Team-scoped: `role:roleName:team:teamId` (e.g., `"role:team_admin:team:tm_1"`)
- *
- * **Policy Versioning:**
- * - Each org has a monotonically increasing policy version stored in Redis (`policy_version:<orgId>`)
- * - On policy compilation, version is incremented and written to Redis
- * - All caches include policy version; stale caches are auto-evicted when version changes
- * - Local version cache (in-memory Map) provides fast reads without Redis round-trips
- *
- * **Casbin Integration:**
- * - Uses DrizzleAdapter to load policies from `casbin_rule` table
- * - Model defined in `lib/model.conf` (RBAC with domain and owner bypass)
- * - Enforcer singleton is lazily initialized and cached per process
- * - `reloadPolicies()` refreshes enforcer from DB after compilation
- *
- * @example
- * ```typescript
- * const policyManager = new PolicyManager(db, getRedisClient);
- *
- * // Compile policies for an organization
- * const result = await policyManager.compilePolicies("org_123", "user_456");
- * console.log(`Compiled ${result.policies.length} policies, version ${result.version}`);
- *
- * // Get Casbin enforcer for authorization checks
- * const enforcer = await policyManager.getEnforcer();
- * const allowed = await enforcer.enforce("user_123", "org:org_456", { name: "channel:member" }, "channel.member.add");
- *
- * // Check current policy version
- * const version = await policyManager.getPolicyVersion("org_123");
- * ```
+ * Compiles authorization data into Casbin rules and manages policy versions.
  */
 export class PolicyManager {
-  /** Database connection for querying authorization tables and writing Casbin rules */
   private readonly db: typeof Db;
-
-  /** Redis client for policy version storage and retrieval */
   private readonly redis: RedisClient;
 
   /**
-   * Singleton promise for Casbin enforcer initialization.
-   * Lazy-initialized on first getEnforcer() call, cached thereafter.
-   * Reset to null by resetEnforcer() to force re-initialization.
+   * Lazily initialized Casbin enforcer singleton promise.
    */
   private enforcerPromise: Promise<Enforcer> | null = null;
 
   /**
-   * Prevents concurrent policy reloads.
-   * Set to true during reloadPolicies() execution to ensure only one reload happens at a time.
+   * Guards concurrent policy reload calls.
    */
-  private reloadLock = false;
+  private reloading = false;
+  private pendingReload = false;
+
+  private readonly compilationLocks = new Map<
+    string,
+    Promise<CompilationResult>
+  >();
 
   /**
-   * Local in-memory cache of policy versions per organization.
-   * Reduces Redis round-trips by caching the most recent version read from Redis.
-   * Cleared by resetEnforcer().
+   * Local cache for org policy versions to reduce Redis reads.
    */
   private readonly localVersionCache = new Map<string, number>();
 
   /**
-   * Creates a new PolicyManager instance.
-   *
-   * @param db - Drizzle database instance for querying authorization tables and Casbin rules
-   * @param redis - Redis client for policy version storage
+   * Creates a policy manager with database and Redis dependencies.
    */
   constructor(db: typeof Db, redis: RedisClient) {
     this.db = db;
@@ -169,33 +109,7 @@ export class PolicyManager {
   }
 
   /**
-   * Gets or initializes the Casbin enforcer singleton.
-   *
-   * **Lazy Initialization:**
-   * - On first call, creates DrizzleAdapter from `casbin_rule` table
-   * - Loads Casbin model from `lib/model.conf`
-   * - Initializes enforcer and loads all policies from database
-   * - Caches enforcer promise; subsequent calls return cached instance
-   *
-   * **Model Configuration:**
-   * The Casbin model defines RBAC with domain support and owner bypass:
-   * - Request: `(sub, dom, obj, act)` - subject, domain, object, action
-   * - Policy: `(sub, dom, obj, act, eft)` - includes effect (allow/deny)
-   * - Grouping: domain-aware role inheritance
-   * - Matcher: supports role inheritance, domain isolation, keyMatch2 patterns, and owner bypass
-   *
-   * @returns Promise resolving to the Casbin enforcer instance
-   *
-   * @example
-   * ```typescript
-   * const enforcer = await policyManager.getEnforcer();
-   * const allowed = await enforcer.enforce(
-   *   "user_123",
-   *   "org:org_456",
-   *   { name: "channel:member:ch_789", ownerId: "" },
-   *   "channel.member.add"
-   * );
-   * ```
+   * Returns a lazily initialized Casbin enforcer instance.
    */
   getEnforcer(): Promise<Enforcer> {
     if (!this.enforcerPromise) {
@@ -205,6 +119,7 @@ export class PolicyManager {
           table: casbinRule,
         });
         const enforcer = await newEnforcer(MODEL_CONF_PATH, adapter);
+        await enforcer.addFunction("keyMatchColon", keyMatchColonFunc);
         await enforcer.loadPolicy();
         return enforcer;
       })();
@@ -214,54 +129,31 @@ export class PolicyManager {
   }
 
   /**
-   * Reloads all policies from the database into the Casbin enforcer.
-   *
-   * **Concurrency Control:**
-   * Uses `reloadLock` to prevent concurrent reloads. If a reload is already in progress,
-   * subsequent calls return immediately without waiting.
-   *
-   * **When to Call:**
-   * - After `compilePolicies()` completes to refresh enforcer with new rules
-   * - After external policy changes (e.g., manual DB updates)
-   *
-   * @example
-   * ```typescript
-   * await policyManager.compilePolicies("org_123");
-   * await policyManager.reloadPolicies();
-   * ```
+   * Reloads policy rules into the enforcer with a concurrency guard.
+   * If a reload is already in progress, schedules exactly one re-reload after it completes.
    */
   async reloadPolicies(): Promise<void> {
-    if (this.reloadLock) return;
-    this.reloadLock = true;
+    if (this.reloading) {
+      this.pendingReload = true;
+      return;
+    }
+
+    this.reloading = true;
     try {
       const enforcer = await this.getEnforcer();
       await enforcer.loadPolicy();
     } finally {
-      this.reloadLock = false;
+      this.reloading = false;
+    }
+
+    if (this.pendingReload) {
+      this.pendingReload = false;
+      await this.reloadPolicies();
     }
   }
 
   /**
-   * Gets the current policy version for an organization.
-   *
-   * **Read Strategy:**
-   * 1. Read from Redis (`policy_version:<orgId>`)
-   * 2. If found, parse as integer and update local cache
-   * 3. If not found, return from local cache (default 0 if never cached)
-   *
-   * **Cache Behavior:**
-   * - Redis is source of truth for cross-process synchronization
-   * - Local cache reduces Redis round-trips for repeated reads
-   * - Local cache is updated whenever Redis value is read
-   *
-   * @param orgId - Organization ID to get policy version for
-   * @returns Current policy version (0 if never compiled)
-   *
-   * @example
-   * ```typescript
-   * const version = await policyManager.getPolicyVersion("org_123");
-   * console.log(`Current policy version: ${version}`);
-   * ```
+   * Returns the current org policy version from Redis or local cache.
    */
   async getPolicyVersion(orgId: string): Promise<number> {
     const key = `${POLICY_VERSION_PREFIX}${orgId}`;
@@ -277,25 +169,7 @@ export class PolicyManager {
   }
 
   /**
-   * Sets the policy version for an organization in Redis and local cache.
-   *
-   * **Write Behavior:**
-   * - Writes to Redis (`policy_version:<orgId>`) with no TTL
-   * - Updates local cache to match Redis value
-   * - Triggers cache invalidation in other processes when they read the new version
-   *
-   * **Atomicity:**
-   * Called within the `compilePolicies()` transaction to ensure version increment
-   * happens atomically with policy rule updates.
-   *
-   * @param orgId - Organization ID to set policy version for
-   * @param version - New policy version (typically incremented from previous)
-   *
-   * @example
-   * ```typescript
-   * const currentVersion = await policyManager.getPolicyVersion("org_123");
-   * await policyManager.setPolicyVersion("org_123", currentVersion + 1);
-   * ```
+   * Stores an org policy version in Redis and local cache.
    */
   async setPolicyVersion(orgId: string, version: number): Promise<void> {
     const key = `${POLICY_VERSION_PREFIX}${orgId}`;
@@ -304,22 +178,7 @@ export class PolicyManager {
   }
 
   /**
-   * Resets the enforcer singleton and clears local version cache.
-   *
-   * **Effect:**
-   * - Sets `enforcerPromise` to null, forcing re-initialization on next `getEnforcer()` call
-   * - Clears all entries in `localVersionCache`
-   *
-   * **When to Use:**
-   * - During testing to reset state between test cases
-   * - After catastrophic errors requiring enforcer rebuild
-   * - Rarely needed in production (use `reloadPolicies()` instead)
-   *
-   * @example
-   * ```typescript
-   * policyManager.resetEnforcer();
-   * const enforcer = await policyManager.getEnforcer();
-   * ```
+   * Resets enforcer and local version cache state.
    */
   resetEnforcer(): void {
     this.enforcerPromise = null;
@@ -327,59 +186,28 @@ export class PolicyManager {
   }
 
   /**
-   * Compiles all policies for an organization from database state into Casbin rules.
-   *
-   * **Compilation Pipeline:**
-   * 1. Create new policy version record in DB with status "compiling"
-   * 2. Fetch in parallel: role assignments, role permissions (batched), policy overrides
-   * 3. Compile grouping policies (g-rules) from role assignments
-   * 4. Compile role policies (p-rules) from role permissions
-   * 5. Compile override policies (p-rules) from policy overrides (filters expired)
-   * 6. Within a single DB transaction:
-   *    - Delete all existing Casbin rules for org domain
-   *    - Insert all new compiled rules
-   * 7. Mark policy version as "compiled" in DB
-   * 8. Update policy version in Redis (triggers cache invalidation)
-   * 9. Reload Casbin enforcer from DB
-   *
-   * **Grouping Policies (g-rules):**
-   * Map users to roles within org domains:
-   * - `g, user_123, role:org_member, org:org_456`
-   * - `g, user_456, role:team_admin:team:tm_1, org:org_456`
-   *
-   * **Role Policies (p-rules):**
-   * Map roles to permissions:
-   * - `p, role:org_member, org:org_456, channel:member, channel.member.list, allow`
-   *
-   * **Override Policies (p-rules):**
-   * Direct user-to-permission exceptions:
-   * - `p, user_789, org:org_456, message, message.delete, deny`
-   *
-   * **Error Handling:**
-   * - On error, marks policy version as "error" with error message in DB
-   * - Returns CompilationResult with empty policies and error field
-   * - Does not throw; returns error details for handling by caller
-   *
-   * **Atomicity:**
-   * - Policy deletion and insertion happen in a single DB transaction
-   * - If transaction fails, no partial state is committed
-   * - Policy version increment only happens after successful transaction
-   *
-   * @param orgId - Organization ID to compile policies for
-   * @param compiledBy - Optional user ID of the actor performing compilation (for audit)
-   * @returns CompilationResult with compiled policies, version, and timestamp
-   *
-   * @example
-   * ```typescript
-   * const result = await policyManager.compilePolicies("org_123", "user_456");
-   * if (result.error) {
-   *   console.error(`Compilation failed: ${result.error}`);
-   * } else {
-   *   console.log(`Compiled ${result.policies.length} policies, version ${result.version}`);
-   * }
-   * ```
+   * Compiles org assignments/overrides into Casbin rules and bumps policy version.
    */
   async compilePolicies(
+    orgId: string,
+    compiledBy?: string
+  ): Promise<CompilationResult> {
+    const existing = this.compilationLocks.get(orgId);
+    if (existing) {
+      return existing;
+    }
+
+    const promise = this.executeCompilation(orgId, compiledBy);
+    this.compilationLocks.set(orgId, promise);
+
+    try {
+      return await promise;
+    } finally {
+      this.compilationLocks.delete(orgId);
+    }
+  }
+
+  private async executeCompilation(
     orgId: string,
     compiledBy?: string
   ): Promise<CompilationResult> {
@@ -475,26 +303,7 @@ export class PolicyManager {
   }
 
   /**
-   * Gets the latest policy version record for an organization from the database.
-   *
-   * **Query:**
-   * Retrieves the policy version with the highest version number for the given org.
-   *
-   * **Use Cases:**
-   * - Check compilation status ("compiling", "compiled", "error")
-   * - Retrieve version ID for linking to permission snapshots
-   * - Audit policy compilation history
-   *
-   * @param orgId - Organization ID to get latest policy version for
-   * @returns Latest policy version record (id, version, status), or null if never compiled
-   *
-   * @example
-   * ```typescript
-   * const latest = await policyManager.getLatestPolicyVersion("org_123");
-   * if (latest?.status === "error") {
-   *   console.error("Last compilation failed");
-   * }
-   * ```
+   * Returns the latest policy-version row for an organization.
    */
   async getLatestPolicyVersion(
     orgId: string
@@ -510,48 +319,13 @@ export class PolicyManager {
 
   /**
    * Builds the Casbin domain string for an organization.
-   *
-   * **Format:**
-   * `org:<orgId>`
-   *
-   * **Purpose:**
-   * Casbin uses domains to isolate policies between organizations.
-   * All policies and grouping rules for an org use this domain identifier.
-   *
-   * @param orgId - Organization ID
-   * @returns Domain string for use in Casbin rules
    */
   private buildDomain(orgId: string): string {
     return `org:${orgId}`;
   }
 
   /**
-   * Builds the Casbin object path for a permission.
-   *
-   * **Path Formats:**
-   * - Org-scoped: `resource:subResource` (e.g., `"channel:member"`)
-   * - Team-scoped: `team:teamId:resource:subResource` (e.g., `"team:tm_1:team:member"`)
-   * - Resource-specific: `resource:subResource:resourceId` (e.g., `"channel:member:ch_123"`)
-   *
-   * **Path Construction Rules:**
-   * 1. If scope is "team" and scopeId provided, prepend `team:scopeId:`
-   * 2. Append resource
-   * 3. If subResource is non-empty, append `:subResource`
-   * 4. If resourceId provided, append `:resourceId`
-   *
-   * @param scope - Permission scope ("org" or "team")
-   * @param resource - Resource type (e.g., "channel", "message", "org")
-   * @param subResource - Sub-resource type (e.g., "member", "invite") or empty string
-   * @param scopeId - Team ID for team-scoped permissions (ignored for org scope)
-   * @param resourceId - Specific resource ID for resource-level permissions
-   * @returns Colon-separated object path for Casbin rules
-   *
-   * @example
-   * ```typescript
-   * buildObject("org", "channel", "member", null, null);        // "channel:member"
-   * buildObject("team", "team", "member", "tm_1", null);        // "team:tm_1:team:member"
-   * buildObject("org", "channel", "member", null, "ch_123");    // "channel:member:ch_123"
-   * ```
+   * Builds the Casbin object path for org/team/resource-scoped permissions.
    */
   private buildObject(
     scope: "org" | "team",
@@ -568,7 +342,7 @@ export class PolicyManager {
 
     parts.push(resource);
     if (subResource) {
-      parts.push(subResource);
+      parts.push(...subResource.split("."));
     }
 
     if (resourceId) {
@@ -579,28 +353,7 @@ export class PolicyManager {
   }
 
   /**
-   * Builds the Casbin role name for a role template.
-   *
-   * **Name Formats:**
-   * - Org-scoped: `role:roleName` (e.g., `"role:org_admin"`)
-   * - Team-scoped: `role:roleName:team:teamId` (e.g., `"role:team_admin:team:tm_1"`)
-   *
-   * **Why Different Formats:**
-   * Team-scoped roles are specific to individual teams. Two users with "team_admin"
-   * role in different teams should not inherit each other's permissions. The teamId
-   * suffix ensures role names are unique per team.
-   *
-   * @param roleName - Role template name (e.g., "org_admin", "team_member")
-   * @param scope - Role scope ("org" or "team")
-   * @param teamId - Team ID for team-scoped roles (ignored for org scope)
-   * @returns Role name string for use in Casbin g-rules and p-rules
-   *
-   * @example
-   * ```typescript
-   * buildRoleName("org_admin", "org", null);           // "role:org_admin"
-   * buildRoleName("team_admin", "team", "tm_1");       // "role:team_admin:team:tm_1"
-   * buildRoleName("team_member", "team", "tm_2");      // "role:team_member:team:tm_2"
-   * ```
+   * Builds a Casbin role identifier for org- or team-scoped templates.
    */
   private buildRoleName(
     roleName: string,
@@ -614,22 +367,7 @@ export class PolicyManager {
   }
 
   /**
-   * Compiles grouping policies (g-rules) from role assignments.
-   *
-   * **Grouping Policy Format:**
-   * `g, userId, roleName, domain`
-   *
-   * Maps users to their assigned roles within organization domains.
-   * Casbin uses these rules for role inheritance in authorization checks.
-   *
-   * @param assignments - Role assignment rows from database
-   * @returns Array of compiled grouping policies for Casbin
-   *
-   * @example
-   * ```typescript
-   * // Input: [{ userId: "user_123", roleTemplate: { name: "org_member", scope: "org" }, organizationId: "org_456", teamId: null }]
-   * // Output: [{ ptype: "g", user: "user_123", role: "role:org_member", domain: "org:org_456" }]
-   * ```
+   * Compiles role-assignment rows into Casbin grouping policies.
    */
   private compileGroupingPolicies(
     assignments: RoleAssignmentRow[]
@@ -647,72 +385,38 @@ export class PolicyManager {
   }
 
   /**
-   * Compiles role policies (p-rules) from role permissions.
-   *
-   * **Policy Format:**
-   * `p, roleName, domain, objectPath, permissionKey, effect`
-   *
-   * Maps roles to their allowed/denied permissions.
-   * Object paths are constructed based on role scope (org vs team).
-   *
-   * **Effect Values:**
-   * - "allow" - role grants this permission
-   * - "deny" - role explicitly denies this permission (deny takes precedence)
-   *
-   * @param permissions - Role permission rows from database
-   * @param orgId - Organization ID (used to build domain)
-   * @returns Array of compiled role policies for Casbin
-   *
-   * @example
-   * ```typescript
-   * // Input: [{ roleTemplate: { name: "org_member", scope: "org" }, permissionNode: { key: "channel.member.list", resource: "channel", subResource: "member" }, effect: "allow" }]
-   * // Output: [{ ptype: "p", sub: "role:org_member", dom: "org:org_456", obj: "channel:member", act: "channel.member.list", eft: "allow" }]
-   * ```
+   * Compiles role permission rows into Casbin policy rules.
    */
   private compileRolePolicies(
     permissions: RolePermissionRow[],
     orgId: string
   ): CompiledPolicy[] {
-    return permissions.map((rp) => ({
-      ptype: "p" as const,
-      sub: this.buildRoleName(rp.roleTemplate.name, rp.roleTemplate.scope),
-      dom: this.buildDomain(orgId),
-      obj: this.buildObject(
-        rp.roleTemplate.scope,
-        rp.permissionNode.resource,
-        rp.permissionNode.subResource
-      ),
-      act: rp.permissionNode.key,
-      eft: rp.effect as PolicyEffect,
-    }));
+    return permissions.flatMap((rolePermission) => {
+      const entry = resolvePermissionKey(rolePermission.permissionNode.key);
+      if (!entry) {
+        return [];
+      }
+
+      return {
+        ptype: "p" as const,
+        sub: this.buildRoleName(
+          rolePermission.roleTemplate.name,
+          rolePermission.roleTemplate.scope
+        ),
+        dom: this.buildDomain(orgId),
+        obj: this.buildObject(
+          rolePermission.roleTemplate.scope,
+          rolePermission.permissionNode.resource,
+          rolePermission.permissionNode.subResource
+        ),
+        act: entry.key,
+        eft: rolePermission.effect as PolicyEffect,
+      };
+    });
   }
 
   /**
-   * Compiles override policies (p-rules) from policy overrides.
-   *
-   * **Policy Format:**
-   * `p, userId, domain, objectPath, permissionKey, effect`
-   *
-   * Similar to role policies, but `sub` is a direct user ID instead of a role name.
-   * These provide per-user permission exceptions that override role-based permissions.
-   *
-   * **Expiration Handling:**
-   * Filters out expired overrides (where `expiresAt` is in the past).
-   * Only active overrides (no expiry or expiry in future) are compiled.
-   *
-   * **Object Path:**
-   * Can include team scope and specific resource IDs for granular overrides:
-   * - Team-scoped: `team:teamId:resource:subResource`
-   * - Resource-specific: `resource:subResource:resourceId`
-   *
-   * @param overrides - Policy override rows from database
-   * @returns Array of compiled override policies for Casbin (excludes expired)
-   *
-   * @example
-   * ```typescript
-   * // Input: [{ userId: "user_789", permissionNode: { key: "message.delete", resource: "message", subResource: "" }, effect: "deny", organizationId: "org_456", teamId: null, resourceId: null, expiresAt: null }]
-   * // Output: [{ ptype: "p", sub: "user_789", dom: "org:org_456", obj: "message", act: "message.delete", eft: "deny" }]
-   * ```
+   * Compiles active user overrides into Casbin policy rules.
    */
   private compileOverridePolicies(
     overrides: PolicyOverrideRow[]
@@ -721,31 +425,31 @@ export class PolicyManager {
 
     return overrides
       .filter((o) => !o.expiresAt || o.expiresAt > now)
-      .map((o) => ({
-        ptype: "p" as const,
-        sub: o.userId,
-        dom: this.buildDomain(o.organizationId),
-        obj: this.buildObject(
-          o.teamId ? "team" : "org",
-          o.permissionNode.resource,
-          o.permissionNode.subResource,
-          o.teamId,
-          o.resourceId
-        ),
-        act: o.permissionNode.key,
-        eft: o.effect as PolicyEffect,
-      }));
+      .flatMap((override) => {
+        const entry = resolvePermissionKey(override.permissionNode.key);
+        if (!entry) {
+          return [];
+        }
+
+        return {
+          ptype: "p" as const,
+          sub: override.userId,
+          dom: this.buildDomain(override.organizationId),
+          obj: this.buildObject(
+            override.teamId ? "team" : "org",
+            override.permissionNode.resource,
+            override.permissionNode.subResource,
+            override.teamId,
+            override.resourceId
+          ),
+          act: entry.key,
+          eft: override.effect as PolicyEffect,
+        };
+      });
   }
 
   /**
-   * Fetches all role assignments for an organization from the database.
-   *
-   * **Query:**
-   * Joins `role_assignment` with `role_template` to get role name and scope.
-   * Includes team-scoped assignments (teamId is nullable).
-   *
-   * @param orgId - Organization ID to fetch assignments for
-   * @returns Array of role assignment rows with joined role template data
+   * Fetches role assignments for an organization with template metadata.
    */
   private async fetchRoleAssignments(
     orgId: string
@@ -772,23 +476,7 @@ export class PolicyManager {
   }
 
   /**
-   * Fetches all role permissions for an organization from the database.
-   *
-   * **Batched Query Strategy:**
-   * 1. Fetch all role templates for org (custom roles + system roles)
-   * 2. Extract template IDs into array
-   * 3. Single batched query: fetch all role_permission rows for all template IDs
-   *
-   * **Why Batched:**
-   * - Reduces N+1 query problem (avoid separate query per role template)
-   * - Single query with `WHERE roleTemplateId IN (...)` is much faster
-   * - Joins with `permission_node` and `role_template` for full data
-   *
-   * **System Roles:**
-   * Includes system roles (isSystem = true, organizationId = null) that apply globally.
-   *
-   * @param orgId - Organization ID to fetch permissions for
-   * @returns Array of role permission rows with joined permission node and role template data
+   * Fetches role permissions for all applicable role templates in an org.
    */
   private async fetchRolePermissions(
     orgId: string
@@ -834,18 +522,7 @@ export class PolicyManager {
   }
 
   /**
-   * Fetches active policy overrides for an organization from the database.
-   *
-   * **Query Filters:**
-   * - Organization ID matches
-   * - Override has not expired (expiresAt is null OR expiresAt > now)
-   *
-   * **Expiration Check:**
-   * Database query filters expired overrides; `compileOverridePolicies()` double-checks
-   * expiry at compile time to handle race conditions.
-   *
-   * @param orgId - Organization ID to fetch overrides for
-   * @returns Array of active policy override rows with joined permission node data
+   * Fetches active policy overrides for an organization.
    */
   private async fetchPolicyOverrides(
     orgId: string
@@ -880,6 +557,9 @@ export class PolicyManager {
     return rows as PolicyOverrideRow[];
   }
 
+  /**
+   * Creates and returns the next policy-version row for an organization.
+   */
   private async getOrCreatePolicyVersion(
     orgId: string
   ): Promise<{ id: string; version: number }> {
@@ -910,6 +590,9 @@ export class PolicyManager {
     return row;
   }
 
+  /**
+   * Marks a policy-version row as compiled or errored.
+   */
   private async markVersionComplete(
     versionId: string,
     error?: string

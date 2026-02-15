@@ -5,12 +5,7 @@ import type Pusher from "pusher";
 import type { PermissionEvent } from "../lib/types";
 
 /**
- * Typed EventEmitter wrapper for permission change events
- *
- * **PermissionBus** provides type-safe event handling by overriding EventEmitter methods
- * with strongly-typed signatures for the "permission_change" event.
- *
- * This ensures compile-time type safety when emitting or listening to permission events.
+ * Type-safe event emitter for permission change events.
  */
 class PermissionBus extends EventEmitter {
   emit(event: "permission_change", data: PermissionEvent): boolean {
@@ -40,81 +35,12 @@ class PermissionBus extends EventEmitter {
 }
 
 /**
- * Event bus and side-effect manager for permission system changes
- *
- * **PermissionEventManager** coordinates three side-effects when permissions change:
- * 1. **Audit Logging**: Immutable write to `permission_audit_log` table
- * 2. **Org Broadcast**: Real-time notification to all org members via Pusher
- * 3. **User Notification**: Direct notification to affected user via Pusher
- *
- * **Event Types:**
- * - `role_assigned` - User granted a role
- * - `role_revoked` - User lost a role
- * - `policy_override_created` - Direct permission grant/deny added
- * - `policy_override_removed` - Override removed
- * - `policy_compiled` - Policies recompiled for organization
- *
- * **Event Payload Structure:**
- * ```typescript
- * {
- *   type: PermissionEventType,
- *   orgId: string,
- *   teamId?: string,
- *   userId?: string,       // target user (not actor)
- *   actorId: string,       // who performed the action
- *   payload: Record<string, unknown>,  // event-specific data
- *   timestamp: number      // Date.now()
- * }
- * ```
- *
- * **Side-Effect Handlers:**
- * - `writeAuditLog()`: INSERT to DB (fire-and-forget, errors logged)
- * - `broadcastToOrg()`: Pusher trigger to `private-org-<orgId>` / "permission:change"
- * - `notifyUser()`: Pusher trigger to `private-user-<userId>` / "permission:update"
- *
- * **Initialization:**
- * - Must call `initialize()` once to register event handlers
- * - Idempotent (has initialized guard)
- * - Typically called at server startup
- *
- * **Error Handling:**
- * - All side-effects are fire-and-forget (don't block main flow)
- * - Errors caught and logged to console
- * - Failed audit logs or notifications don't prevent authorization
- *
- * @example
- * ```typescript
- * const eventManager = new PermissionEventManager(db, pusher);
- * eventManager.initialize();  // Register handlers (once at startup)
- *
- * // Emit permission event (from PermissionService admin operations)
- * eventManager.emit({
- *   type: "role_assigned",
- *   orgId: "org_123",
- *   userId: "user_456",  // target user
- *   actorId: "user_789",  // admin who performed action
- *   payload: { roleTemplateId: "role_abc", teamId: "team_xyz" },
- *   timestamp: Date.now()
- * });
- * // → Audit log written, org notified, user notified
- *
- * // Listen to permission changes (optional, for custom logic)
- * eventManager.on((event) => {
- *   console.log(`Permission changed: ${event.type}`);
- * });
- * ```
+ * Emits permission domain events and dispatches audit and realtime side effects.
  */
 export class PermissionEventManager {
-  /** Database connection for audit log writes */
   private readonly db: typeof Db;
-
-  /** Optional Pusher client for real-time notifications */
   private readonly pusher?: Pusher;
-
-  /** Typed EventEmitter for permission_change events */
   private readonly bus: PermissionBus;
-
-  /** Initialization guard to prevent duplicate handler registration */
   private initialized = false;
 
   constructor(db: typeof Db, pusher?: Pusher) {
@@ -124,19 +50,7 @@ export class PermissionEventManager {
   }
 
   /**
-   * Register event handlers for permission change events
-   *
-   * **Idempotency:**
-   * - Safe to call multiple times (has initialized guard)
-   * - Only registers handlers on first call
-   *
-   * **When to Call:**
-   * - Once at server startup after creating PermissionEventManager
-   * - Before any permission changes occur
-   *
-   * **What It Does:**
-   * - Registers `handlePermissionChange()` listener on internal bus
-   * - Sets initialized flag to prevent duplicate registration
+   * Registers internal listeners once.
    */
   initialize(): void {
     if (this.initialized) return;
@@ -147,28 +61,14 @@ export class PermissionEventManager {
   }
 
   /**
-   * Emit a permission change event to all registered listeners
-   *
-   * **Triggers Side-Effects:**
-   * 1. Audit log write to `permission_audit_log` table
-   * 2. Pusher broadcast to org (all members notified)
-   * 3. Pusher notification to specific user (if userId present)
-   *
-   * **Fire-and-Forget:**
-   * - Does not wait for side-effects to complete
-   * - Side-effect errors logged but don't throw
-   *
-   * @param event - Permission event with type, orgId, actorId, payload, timestamp
+   * Emits a permission change event to subscribers.
    */
   emit(event: PermissionEvent): void {
     this.bus.emit("permission_change", event);
   }
 
   /**
-   * Register a listener for permission change events
-   *
-   * @param listener - Function called with PermissionEvent when changes occur
-   * @returns This instance for chaining
+   * Adds a listener for permission change events.
    */
   on(listener: (data: PermissionEvent) => void): this {
     this.bus.on("permission_change", listener);
@@ -176,10 +76,7 @@ export class PermissionEventManager {
   }
 
   /**
-   * Unregister a listener for permission change events
-   *
-   * @param listener - Previously registered listener function
-   * @returns This instance for chaining
+   * Removes a listener for permission change events.
    */
   off(listener: (data: PermissionEvent) => void): this {
     this.bus.off("permission_change", listener);
@@ -187,13 +84,7 @@ export class PermissionEventManager {
   }
 
   /**
-   * Register a one-time listener for permission change events
-   *
-   * **Behavior:**
-   * - Listener automatically removed after first invocation
-   *
-   * @param listener - Function called once with PermissionEvent
-   * @returns This instance for chaining
+   * Adds a one-time listener for permission change events.
    */
   once(listener: (data: PermissionEvent) => void): this {
     this.bus.once("permission_change", listener);
@@ -201,19 +92,7 @@ export class PermissionEventManager {
   }
 
   /**
-   * Orchestrate all side-effects for a permission change event
-   *
-   * **Side-Effects (all fire-and-forget):**
-   * 1. Write audit log to DB
-   * 2. Broadcast to organization channel (Pusher)
-   * 3. Notify affected user (Pusher)
-   *
-   * **Error Handling:**
-   * - Each side-effect catches its own errors
-   * - Failures logged to console
-   * - One failing side-effect doesn't block others
-   *
-   * @param event - Permission change event to process
+   * Runs audit and notification side effects for an emitted event.
    */
   private handlePermissionChange(event: PermissionEvent): void {
     this.writeAuditLog(event);
@@ -222,24 +101,7 @@ export class PermissionEventManager {
   }
 
   /**
-   * Write immutable audit log entry to database
-   *
-   * **Audit Log Schema:**
-   * - organizationId: Which org the change occurred in
-   * - actorId: Who performed the action
-   * - action: Event type (role_assigned, etc.)
-   * - targetUserId: User affected by change (if applicable)
-   * - targetRoleId: Role involved (if applicable)
-   * - targetPermissionId: Permission involved (if applicable)
-   * - details: Full event payload as JSON string
-   * - createdAt: Timestamp (auto-set by DB)
-   *
-   * **Fire-and-Forget:**
-   * - DB insert not awaited (async operation)
-   * - Errors caught and logged to console
-   * - Failed audit writes don't block authorization
-   *
-   * @param event - Permission event to audit
+   * Persists an audit-log record for a permission event.
    */
   private writeAuditLog(event: PermissionEvent): void {
     this.db
@@ -263,25 +125,7 @@ export class PermissionEventManager {
   }
 
   /**
-   * Broadcast permission change to all organization members via Pusher
-   *
-   * **Channel Format:** `private-org-<orgId>`
-   * **Event Name:** `permission:change`
-   *
-   * **Payload:**
-   * - type: Event type (role_assigned, etc.)
-   * - orgId: Organization ID
-   * - teamId: Team ID (if team-scoped change)
-   * - timestamp: When change occurred
-   *
-   * **When Skipped:**
-   * - If Pusher client not configured (pusher === undefined)
-   *
-   * **Error Handling:**
-   * - Pusher trigger not awaited
-   * - Errors caught and logged
-   *
-   * @param event - Permission event to broadcast
+   * Broadcasts a permission event to the organization channel.
    */
   private broadcastToOrg(event: PermissionEvent): void {
     if (!this.pusher) return;
@@ -303,27 +147,7 @@ export class PermissionEventManager {
   }
 
   /**
-   * Send direct notification to affected user via Pusher
-   *
-   * **Channel Format:** `private-user-<userId>`
-   * **Event Name:** `permission:update`
-   *
-   * **Payload:**
-   * - type: Event type
-   * - orgId: Organization ID
-   * - teamId: Team ID (if applicable)
-   * - timestamp: When change occurred
-   * - payload: Full event payload (includes role/permission details)
-   *
-   * **When Skipped:**
-   * - If event.userId is undefined (no specific target user)
-   * - If Pusher client not configured
-   *
-   * **Error Handling:**
-   * - Pusher trigger not awaited
-   * - Errors caught and logged
-   *
-   * @param event - Permission event to notify user about
+   * Sends a permission event to the affected user channel when applicable.
    */
   private notifyUser(event: PermissionEvent): void {
     if (!event.userId) return;
