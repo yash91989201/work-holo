@@ -42,7 +42,7 @@ export const recordsRouter = {
     .output(MemberAttendanceStatusOutput.nullable())
     .handler(async ({ context }) => {
       const { db, session, orgId, permission } = context;
-      await permission.check(permission.attendance.record.read());
+      await permission.check(permission.attendance().record.read());
       const userSession = session.user;
       const today = new Date();
 
@@ -70,7 +70,7 @@ export const recordsRouter = {
     .input(GetTodayInput)
     .output(GetTodayOutput)
     .handler(async ({ context: { db, session, orgId, permission } }) => {
-      await permission.check(permission.attendance.record.read());
+      await permission.check(permission.attendance().record.read());
       const userSession = session.user;
       const today = new Date();
 
@@ -94,7 +94,7 @@ export const recordsRouter = {
     .input(GetAttendanceStatsInput)
     .output(GetAttendanceStatsOutput)
     .handler(async ({ context: { db, orgId, permission } }) => {
-      await permission.check(permission.attendance.record.list());
+      await permission.check(permission.attendance().record.list());
       const [totalMembersRow] = await db
         .select({
           count: count(),
@@ -143,7 +143,7 @@ export const recordsRouter = {
     .input(ListAttendanceRecordsInput)
     .output(ListAttendanceRecordsOutput)
     .handler(async ({ input, context: { db, orgId, permission } }) => {
-      await permission.check(permission.attendance.record.list());
+      await permission.check(permission.attendance().record.list());
       const { page, perPage, search, filters, sorting } = input;
       const offset = (page - 1) * perPage;
 
@@ -272,7 +272,7 @@ export const recordsRouter = {
     .input(GetAttendanceDetailInput)
     .output(GetAttendanceDetailOutput)
     .handler(async ({ input, context: { db, orgId, permission } }) => {
-      await permission.check(permission.attendance.record.read());
+      await permission.check(permission.attendance().record.read());
       const { attendanceId } = input;
 
       const [record] = await db
