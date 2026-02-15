@@ -18,7 +18,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@electric-sql/client": "^1.5.4",
+    "@electric-sql/client": "^1.5.5",
     "@orpc/client": "^1.13.5",
     "@orpc/openapi": "^1.13.5",
     "@orpc/server": "^1.13.5",
