@@ -235,8 +235,7 @@ export class PolicyManager {
           assignment.roleTemplateId
         ) {
           const set =
-            teamAssignments.get(assignment.roleTemplateId) ??
-            new Set<string>();
+            teamAssignments.get(assignment.roleTemplateId) ?? new Set<string>();
           set.add(assignment.teamId);
           teamAssignments.set(assignment.roleTemplateId, set);
         }
@@ -411,25 +410,6 @@ export class PolicyManager {
     orgId: string,
     teamAssignments: Map<string, Set<string>>
   ): CompiledPolicy[] {
-    const teamAssignmentsByTemplate = new Map<string, Set<string>>();
-
-    for (const assignment of assignments) {
-      if (assignment.roleTemplate.scope !== "team" || !assignment.teamId) {
-        continue;
-      }
-
-      const existing = teamAssignmentsByTemplate.get(assignment.roleTemplateId);
-      if (existing) {
-        existing.add(assignment.teamId);
-        continue;
-      }
-
-      teamAssignmentsByTemplate.set(
-        assignment.roleTemplateId,
-        new Set([assignment.teamId])
-      );
-    }
-
     return permissions.flatMap((rolePermission) => {
       const entry = resolvePermissionKey(rolePermission.permissionNode.key);
       if (!entry) {
