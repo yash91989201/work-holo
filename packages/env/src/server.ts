@@ -29,6 +29,10 @@ export const env = createEnv({
     PUSHER_APP_SECRET: z.string().min(1),
     PUSHER_HOST: z.string(),
     PUSHER_PORT: z.coerce.number().default(6001),
+    CASBIN_ENFORCE: z
+      .enum(["true", "false"])
+      .default("true")
+      .transform((val) => val === "true"),
   },
   runtimeEnv: process.env,
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,

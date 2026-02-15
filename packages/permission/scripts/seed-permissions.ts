@@ -12,13 +12,12 @@ const ALL_KEYS = PERMISSIONS.map((p) => p.key);
 
 // Communication-related keys
 const CHANNEL_KEYS = ALL_KEYS.filter((k) => k.startsWith("channel."));
-const MESSAGE_KEYS = ALL_KEYS.filter((k) => k.startsWith("message."));
-const COMMUNICATION_KEYS = [...CHANNEL_KEYS, ...MESSAGE_KEYS];
+const COMMUNICATION_KEYS = [...CHANNEL_KEYS];
 
 // Attendance keys
 const ATTENDANCE_KEYS = ALL_KEYS.filter((k) => k.startsWith("attendance."));
 const ATTENDANCE_VIEW_KEYS = ATTENDANCE_KEYS.filter(
-  (k) => k.endsWith(".view") || k.endsWith(".list") || k.endsWith(".create")
+  (k) => k.endsWith(".read") || k.endsWith(".list") || k.endsWith(".create")
 );
 
 // Role permission assignments using runtime vocabulary keys
@@ -30,12 +29,12 @@ const ROLE_PERMISSIONS: Record<string, string[]> = {
   [SYSTEM_ROLES.MEMBER]: [
     ...COMMUNICATION_KEYS,
     ...ATTENDANCE_VIEW_KEYS,
-    "org.view",
-    "org.context.view",
-    "org.context.switch",
-    "team.view",
-    "team.member.view",
-    "module.access",
+    "org.read",
+    "org.active.read",
+    "org.active.switch",
+    "team.read",
+    "team.member.read",
+    "team.module.access",
   ],
 };
 
@@ -76,7 +75,7 @@ async function seedPermissions() {
       .values({
         key: perm.key,
         resource: perm.resource,
-        subResource: perm.subResource,
+        subResource: perm.subResources.join("."),
         action: perm.action,
         description: perm.description,
         bitIndex: perm.bitIndex,
@@ -85,7 +84,7 @@ async function seedPermissions() {
         target: permissionNodeTable.key,
         set: {
           resource: perm.resource,
-          subResource: perm.subResource,
+          subResource: perm.subResources.join("."),
           action: perm.action,
           description: perm.description,
           bitIndex: perm.bitIndex,

@@ -7,6 +7,9 @@ import { PermissionEventManager } from "../services/permission-event-manager";
 import { PermissionMapManager } from "../services/permission-map-manager";
 import { PolicyManager } from "../services/policy-manager";
 
+/**
+ * Aggregates all singleton-like manager instances used by the permission package.
+ */
 export interface AllPermissionManagers {
   cacheManager: CacheManager;
   policyManager: PolicyManager;
@@ -21,9 +24,41 @@ let authorizationEngine: AuthorizationEngine | null = null;
 let eventManager: PermissionEventManager | null = null;
 let permissionMapManager: PermissionMapManager | null = null;
 
-// biome-ignore lint/complexity/noStaticOnlyClass: Singleton pattern with encapsulated state
-export class PermissionManagers {
-  static initialize(config: {
+/**
+ * Returns initialized managers or throws when initialization is missing.
+ */
+const assertInitialized = (): AllPermissionManagers => {
+  if (
+    !(
+      cacheManager &&
+      policyManager &&
+      authorizationEngine &&
+      eventManager &&
+      permissionMapManager
+    )
+  ) {
+    throw new Error(
+      "PermissionManagers not initialized. Call PermissionManagers.initialize() first."
+    );
+  }
+
+  return {
+    cacheManager,
+    policyManager,
+    authorizationEngine,
+    eventManager,
+    permissionMapManager,
+  };
+};
+
+/**
+ * Initializes and exposes shared manager instances for the permission package.
+ */
+export const PermissionManagers = {
+  /**
+   * Constructs and wires all managers.
+   */
+  initialize(config: {
     db: typeof DbClient;
     redis: RedisClient;
     pusher?: Pusher;
@@ -43,81 +78,58 @@ export class PermissionManagers {
     );
 
     eventManager.initialize();
-  }
+  },
 
-  static getAll(): AllPermissionManagers {
-    if (
-      !(
-        cacheManager &&
-        policyManager &&
-        authorizationEngine &&
-        eventManager &&
-        permissionMapManager
-      )
-    ) {
-      throw new Error(
-        "PermissionManagers not initialized. Call PermissionManagers.initialize() first."
-      );
-    }
-    return {
-      cacheManager,
-      policyManager,
-      authorizationEngine,
-      eventManager,
-      permissionMapManager,
-    };
-  }
+  /**
+   * Returns all initialized managers.
+   */
+  getAll(): AllPermissionManagers {
+    return assertInitialized();
+  },
 
-  static getCacheManager(): CacheManager {
-    if (!cacheManager) {
-      throw new Error(
-        "PermissionManagers not initialized. Call PermissionManagers.initialize() first."
-      );
-    }
-    return cacheManager;
-  }
+  /**
+   * Returns the cache manager instance.
+   */
+  getCacheManager(): CacheManager {
+    return assertInitialized().cacheManager;
+  },
 
-  static getPolicyManager(): PolicyManager {
-    if (!policyManager) {
-      throw new Error(
-        "PermissionManagers not initialized. Call PermissionManagers.initialize() first."
-      );
-    }
-    return policyManager;
-  }
+  /**
+   * Returns the policy manager instance.
+   */
+  getPolicyManager(): PolicyManager {
+    return assertInitialized().policyManager;
+  },
 
-  static getAuthorizationEngine(): AuthorizationEngine {
-    if (!authorizationEngine) {
-      throw new Error(
-        "PermissionManagers not initialized. Call PermissionManagers.initialize() first."
-      );
-    }
-    return authorizationEngine;
-  }
+  /**
+   * Returns the authorization engine instance.
+   */
+  getAuthorizationEngine(): AuthorizationEngine {
+    return assertInitialized().authorizationEngine;
+  },
 
-  static getEventManager(): PermissionEventManager {
-    if (!eventManager) {
-      throw new Error(
-        "PermissionManagers not initialized. Call PermissionManagers.initialize() first."
-      );
-    }
-    return eventManager;
-  }
+  /**
+   * Returns the permission event manager instance.
+   */
+  getEventManager(): PermissionEventManager {
+    return assertInitialized().eventManager;
+  },
 
-  static getPermissionMapManager(): PermissionMapManager {
-    if (!permissionMapManager) {
-      throw new Error(
-        "PermissionManagers not initialized. Call PermissionManagers.initialize() first."
-      );
-    }
-    return permissionMapManager;
-  }
+  /**
+   * Returns the permission map manager instance.
+   */
+  getPermissionMapManager(): PermissionMapManager {
+    return assertInitialized().permissionMapManager;
+  },
 
-  static reset(): void {
+  /**
+   * Resets all manager singletons, primarily for tests and re-initialization.
+   */
+  reset(): void {
     cacheManager = null;
     policyManager = null;
     authorizationEngine = null;
     eventManager = null;
     permissionMapManager = null;
-  }
-}
+  },
+} as const;
