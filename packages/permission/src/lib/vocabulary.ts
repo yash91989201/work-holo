@@ -459,18 +459,30 @@ const VOCABULARY: VocabularyEntry[] = [
   },
 ];
 
+/**
+ * Sorted list of all permission vocabulary entries by key.
+ */
 export const PERMISSIONS: VocabularyEntry[] = VOCABULARY.sort((a, b) =>
   a.key.localeCompare(b.key)
 );
 
+/**
+ * Map of permission keys to their vocabulary entries for O(1) lookup.
+ */
 export const PERMISSION_BY_KEY = new Map<string, VocabularyEntry>(
   PERMISSIONS.map((p) => [p.key, p])
 );
 
+/**
+ * Map of bit indices to their vocabulary entries for O(1) lookup.
+ */
 export const PERMISSION_BY_BIT_INDEX = new Map<number, VocabularyEntry>(
   PERMISSIONS.map((p) => [p.bitIndex, p])
 );
 
+/**
+ * Total count of permissions in the vocabulary.
+ */
 export const TOTAL_PERMISSIONS = PERMISSIONS.length;
 
 /**
