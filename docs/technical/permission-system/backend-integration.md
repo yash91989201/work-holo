@@ -36,7 +36,10 @@ Two common patterns are used in `packages/api/src/routers`:
 
 1. **Direct descriptor checks**
    - Example shape: `await permission.check(permission.org.read())`
-   - Used in org/team/attendance endpoints
+   - Example shape: `await permission.check(permission.channel().message.create())`
+   - Example shape: `await permission.check(permission.attendance().record.read())`
+   - Used in org/team/channel/attendance/message endpoints
+   - **Note:** `channel()` and `attendance()` are now methods (not getters) and accept optional `teamId` for team-scoped permissions
 
 2. **Resource guards for communication domain**
    - `await permission.requireChannelAccess(channelId, action)`
@@ -73,3 +76,12 @@ For user-scoped mutations, invalidation targets:
 - permission map cache for that user + org
 
 For org-wide recompile, org-level decision/bitset/map keys are invalidated.
+
+## Admin API constraints
+
+**Role revocation requires teamId for team-scoped roles:**
+
+`PermissionAdmin.revokeRole(targetUserId, roleTemplateId, options)` validates:
+- If the role template has `scope: "team"` and no `teamId` is provided in options, throws `BAD_REQUEST` error
+- This prevents accidental revocation across all teams when only a single team assignment should be removed
+- Org-scoped roles can still be revoked without providing `teamId`

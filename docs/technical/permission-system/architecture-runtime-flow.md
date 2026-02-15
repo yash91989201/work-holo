@@ -24,9 +24,9 @@ Typical check path:
 
 1. API route calls `permission.check(...)` or a guard method.
 2. `PermissionChecker.authorizeDescriptor()` builds `AuthorizationRequest`.
-3. `AuthorizationEngine.authorizeWithOwnerBypass()` runs the full auth pipeline first, then applies owner bypass if the user is denied but is the resource owner (unless an explicit deny override exists).
+3. `AuthorizationEngine.authorizeWithOwnerBypass()` runs the full auth pipeline first, then applies owner bypass if the user is denied but is the resource owner (unless a scope-applicable explicit deny override exists).
 4. `AuthorizationEngine.authorize()` checks Redis decision cache.
-5. If no decision cache hit, engine loads/compiles user bitset and checks permission bit.
+5. If no decision cache hit, engine loads/compiles user bitset (reading policy version once and using it consistently throughout compilation) and checks permission bit.
 6. If bit is set, engine calls Casbin enforcer with domain/object/action.
 7. Final decision is cached with current policy version.
 
@@ -43,9 +43,13 @@ Owner bypass is handled at the application layer in `AuthorizationEngine.authori
 
 When a user is the resource owner and the normal authorization pipeline denies the request:
 
-1. Check if an explicit deny override exists in `policyOverrideTable` for this user, org, and permission key (non-expired).
-2. If an explicit deny override exists, the deny is respected — ownership does not override it.
-3. If no explicit deny override exists, the owner bypass is applied and the request is allowed.
+1. Check if a **scope-applicable** explicit deny override exists in `policyOverrideTable` for this user, org, permission key, and scope context (teamId/resourceId) — non-expired.
+2. The scope matching uses the same `isOverrideApplicable` logic as normal override enforcement:
+   - If override has a `teamId` set, it only applies if the request's teamId matches
+   - If override has a `resourceId` set, it only applies if the request's resourceId matches
+   - Global overrides (null teamId/resourceId) always apply
+3. If a scope-applicable explicit deny override exists, the deny is respected — ownership does not override it.
+4. If no explicit deny override exists, the owner bypass is applied and the request is allowed.
 
 The `respectDenyOverrides` flag is currently hardcoded to `true`. A future org settings feature will make this configurable per-organization, allowing admins to control whether explicit deny overrides take precedence over resource ownership.
 
@@ -57,7 +61,9 @@ The `respectDenyOverrides` flag is currently hardcoded to `true`. A future org s
   - channel exists
   - channel belongs to current org
   - user is a member of channel
-  - permission check runs (ownerId uses channel creator)
+  - **channel's teamId is retrieved from the database**
+  - **if channel has a teamId, descriptor is rebuilt with team scope for proper policy matching**
+  - permission check runs with teamId in options (ownerId uses channel creator)
 - `requireMessageAccess(messageId, action)`
   - message exists
   - reuses channel access check for message's channel
