@@ -185,6 +185,26 @@ export class PolicyManager {
     this.localVersionCache.clear();
   }
 
+  private async acquireCompilationLock(
+    orgId: string,
+    ttlMs = 30_000
+  ): Promise<boolean> {
+    const lockKey = `compilation_lock:${orgId}`;
+    const result = await this.redis.send("SET", [
+      lockKey,
+      "1",
+      "NX",
+      "PX",
+      String(ttlMs),
+    ]);
+    return result === "OK";
+  }
+
+  private async releaseCompilationLock(orgId: string): Promise<void> {
+    const lockKey = `compilation_lock:${orgId}`;
+    await this.redis.send("DEL", [lockKey]);
+  }
+
   /**
    * Compiles org assignments/overrides into Casbin rules and bumps policy version.
    */
@@ -197,7 +217,7 @@ export class PolicyManager {
       return existing;
     }
 
-    const promise = this.executeCompilation(orgId, compiledBy);
+    const promise = this.executeWithDistributedLock(orgId, compiledBy);
     this.compilationLocks.set(orgId, promise);
 
     try {
@@ -205,6 +225,41 @@ export class PolicyManager {
     } finally {
       this.compilationLocks.delete(orgId);
     }
+  }
+
+  private async executeWithDistributedLock(
+    orgId: string,
+    compiledBy?: string
+  ): Promise<CompilationResult> {
+    const maxRetries = 3;
+    const retryDelayMs = 1000;
+
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      const acquired = await this.acquireCompilationLock(orgId);
+      if (acquired) {
+        try {
+          return await this.executeCompilation(orgId, compiledBy);
+        } finally {
+          try {
+            await this.releaseCompilationLock(orgId);
+          } catch {}
+        }
+      }
+
+      if (attempt < maxRetries - 1) {
+        await new Promise((resolve) => setTimeout(resolve, retryDelayMs));
+      }
+    }
+
+    const latestVersion = await this.getLatestPolicyVersion(orgId);
+    return {
+      policies: [],
+      groupingPolicies: [],
+      version: latestVersion?.version ?? 0,
+      compiledAt: new Date(),
+      error:
+        "Compilation skipped: another instance is currently compiling policies for this organization",
+    };
   }
 
   private async executeCompilation(
@@ -252,7 +307,14 @@ export class PolicyManager {
 
       await this.db.transaction(async (tx) => {
         const domain = this.buildDomain(orgId);
-        await tx.delete(casbinRule).where(eq(casbinRule.v1, domain));
+        await tx
+          .delete(casbinRule)
+          .where(
+            or(
+              and(eq(casbinRule.ptype, "p"), eq(casbinRule.v1, domain)),
+              and(eq(casbinRule.ptype, "g"), eq(casbinRule.v2, domain))
+            )
+          );
 
         const rows: Array<{
           ptype: string;
@@ -295,8 +357,8 @@ export class PolicyManager {
 
       await this.markVersionComplete(policyVersion.id);
 
-      await this.setPolicyVersion(orgId, policyVersion.version);
       await this.reloadPolicies();
+      await this.setPolicyVersion(orgId, policyVersion.version);
 
       return {
         policies: allPolicies,
