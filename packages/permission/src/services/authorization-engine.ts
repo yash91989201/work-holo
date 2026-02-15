@@ -276,17 +276,11 @@ export class AuthorizationEngine {
       scopeContext
     );
 
-    if (templateIds.length === 0) {
-      const overrides = await this.db.query.policyOverrideTable.findMany({
-        where: and(
-          eq(policyOverrideTable.userId, userId),
-          eq(policyOverrideTable.organizationId, orgId),
-          isNull(policyOverrideTable.teamId),
-          isNull(policyOverrideTable.resourceId),
-          or(
-            isNull(policyOverrideTable.expiresAt),
-            gt(policyOverrideTable.expiresAt, new Date())
-          )
+    if (applicableTemplateIds.length > 0) {
+      const rolePerms = await this.db.query.rolePermissionTable.findMany({
+        where: inArray(
+          rolePermissionTable.roleTemplateId,
+          applicableTemplateIds
         ),
         columns: { effect: true, roleTemplateId: true },
         with: {
@@ -341,8 +335,6 @@ export class AuthorizationEngine {
       where: and(
         eq(policyOverrideTable.userId, userId),
         eq(policyOverrideTable.organizationId, orgId),
-        isNull(policyOverrideTable.teamId),
-        isNull(policyOverrideTable.resourceId),
         or(
           isNull(policyOverrideTable.expiresAt),
           gt(policyOverrideTable.expiresAt, new Date())
