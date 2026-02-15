@@ -41,6 +41,9 @@ export function keyMatchColon(requestObj: string, policyObj: string): boolean {
   return remainder.length > 0 && !remainder.includes(":");
 }
 
+/**
+ * Casbin adapter function for keyMatchColon. Converts arguments to strings and delegates to keyMatchColon.
+ */
 export function keyMatchColonFunc(...args: unknown[]): boolean {
   const key1 = String(args[0]);
   const key2 = String(args[1]);
