@@ -3,6 +3,7 @@
 import type { PermissionAction } from "../types";
 import { createScopedActionTerminal } from "./shared";
 
+/** DSL object providing org-scoped permission action builders. */
 export type OrgDSL = {
   active: {
     read: PermissionAction;
@@ -32,6 +33,11 @@ export type OrgDSL = {
   update: PermissionAction;
 };
 
+/**
+ * Creates org-scoped permission descriptor builders.
+ * @param orgId Organization ID for scoping all permission checks
+ * @returns DSL object with permission action builders
+ */
 export function Org(orgId: string): OrgDSL {
   const t = (key: string) => createScopedActionTerminal("org", orgId, key);
 
