@@ -14,6 +14,10 @@ export class CacheManager {
   private readonly BITSET_TTL = 600;
   private readonly PERM_MAP_TTL = 600;
 
+  private buildScopeKey(scopeKey?: string): string {
+    return scopeKey ?? "org";
+  }
+
   /**
    * Creates a cache manager from a Redis client.
    */
@@ -28,9 +32,10 @@ export class CacheManager {
     userId: string,
     orgId: string,
     permissionKey: string,
-    currentVersion: number
+    currentVersion: number,
+    scopeKey?: string
   ): Promise<CachedDecision | null> {
-    const key = `${this.DECISION_PREFIX}${userId}:${orgId}:${permissionKey}`;
+    const key = `${this.DECISION_PREFIX}${userId}:${orgId}:${this.buildScopeKey(scopeKey)}:${permissionKey}`;
     const raw = await this.redis.get(key);
 
     if (!raw) return null;
@@ -53,9 +58,10 @@ export class CacheManager {
     orgId: string,
     permissionKey: string,
     allowed: boolean,
-    currentVersion: number
+    currentVersion: number,
+    scopeKey?: string
   ): Promise<void> {
-    const key = `${this.DECISION_PREFIX}${userId}:${orgId}:${permissionKey}`;
+    const key = `${this.DECISION_PREFIX}${userId}:${orgId}:${this.buildScopeKey(scopeKey)}:${permissionKey}`;
 
     const decision: CachedDecision = {
       allowed,
@@ -103,7 +109,7 @@ export class CacheManager {
   async invalidateOrgCache(orgId: string): Promise<void> {
     const patterns = [
       `${this.DECISION_PREFIX}*:${orgId}:*`,
-      `${this.BITSET_PREFIX}*:${orgId}`,
+      `${this.BITSET_PREFIX}*:${orgId}:*`,
       `${this.PERM_MAP_PREFIX}*:${orgId}`,
     ];
 
@@ -135,9 +141,10 @@ export class CacheManager {
   async getCachedBitset(
     userId: string,
     orgId: string,
-    currentVersion: number
+    currentVersion: number,
+    scopeKey?: string
   ): Promise<BitsetData | null> {
-    const cacheKey = `${this.BITSET_PREFIX}${userId}:${orgId}`;
+    const cacheKey = `${this.BITSET_PREFIX}${userId}:${orgId}:${this.buildScopeKey(scopeKey)}`;
     const raw = await this.redis.get(cacheKey);
 
     if (!raw) return null;
@@ -158,9 +165,10 @@ export class CacheManager {
   async setCachedBitset(
     userId: string,
     orgId: string,
-    bitsetData: BitsetData
+    bitsetData: BitsetData,
+    scopeKey?: string
   ): Promise<void> {
-    const cacheKey = `${this.BITSET_PREFIX}${userId}:${orgId}`;
+    const cacheKey = `${this.BITSET_PREFIX}${userId}:${orgId}:${this.buildScopeKey(scopeKey)}`;
     await this.redis.send("SET", [
       cacheKey,
       JSON.stringify(bitsetData),
@@ -173,8 +181,26 @@ export class CacheManager {
    * Deletes the bitset cache entry for a user and organization.
    */
   async invalidateBitset(userId: string, orgId: string): Promise<void> {
-    const cacheKey = `${this.BITSET_PREFIX}${userId}:${orgId}`;
-    await this.redis.send("DEL", [cacheKey]);
+    const pattern = `${this.BITSET_PREFIX}${userId}:${orgId}:*`;
+
+    const keys: string[] = [];
+    let cursor = "0";
+
+    do {
+      const result = (await this.redis.send("SCAN", [
+        cursor,
+        "MATCH",
+        pattern,
+        "COUNT",
+        "100",
+      ])) as [string, string[]];
+      cursor = result[0];
+      keys.push(...result[1]);
+    } while (cursor !== "0");
+
+    if (keys.length > 0) {
+      await this.redis.send("DEL", keys);
+    }
   }
 
   /**

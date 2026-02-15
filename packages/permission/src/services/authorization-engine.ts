@@ -22,6 +22,11 @@ import { TOTAL_PERMISSIONS } from "../lib/vocabulary";
 import type { CacheManager } from "./cache-manager";
 import type { PolicyManager } from "./policy-manager";
 
+type ScopeContext = {
+  teamId?: string;
+  resourceId?: string;
+};
+
 /**
  * Executes permission authorization through cache, bitset, and Casbin layers.
  */
@@ -99,6 +104,8 @@ export class AuthorizationEngine {
   async authorize(request: AuthorizationRequest): Promise<AuthorizationResult> {
     const start = performance.now();
     const { userId, orgId, permission } = request;
+    const scopeContext = this.resolveScopeContext(request);
+    const scopeCacheKey = this.buildScopeCacheKey(scopeContext);
 
     const currentVersion = await this.policyManager.getPolicyVersion(orgId);
 
@@ -106,7 +113,8 @@ export class AuthorizationEngine {
       userId,
       orgId,
       permission.permissionKey,
-      currentVersion
+      currentVersion,
+      scopeCacheKey
     );
     if (cached) {
       return {
@@ -117,7 +125,12 @@ export class AuthorizationEngine {
       };
     }
 
-    const bitsetData = await this.getOrCompileBitset(userId, orgId);
+    const bitsetData = await this.getOrCompileBitset(
+      userId,
+      orgId,
+      scopeContext,
+      scopeCacheKey
+    );
     const bitsetAllowed = checkBit(bitsetData.bitset, permission.bitIndex);
 
     if (!bitsetAllowed) {
@@ -126,7 +139,8 @@ export class AuthorizationEngine {
         orgId,
         permission.permissionKey,
         false,
-        currentVersion
+        currentVersion,
+        scopeCacheKey
       );
       return {
         allowed: false,
@@ -151,7 +165,8 @@ export class AuthorizationEngine {
       orgId,
       permission.permissionKey,
       allowed,
-      currentVersion
+      currentVersion,
+      scopeCacheKey
     );
 
     return {
@@ -165,22 +180,37 @@ export class AuthorizationEngine {
   /**
    * Returns a valid cached bitset or compiles a new one.
    */
-  async getOrCompileBitset(userId: string, orgId: string): Promise<BitsetData> {
+  async getOrCompileBitset(
+    userId: string,
+    orgId: string,
+    scopeContext: ScopeContext,
+    scopeCacheKey: string
+  ): Promise<BitsetData> {
     const currentVersion = await this.policyManager.getPolicyVersion(orgId);
     const cached = await this.cacheManager.getCachedBitset(
       userId,
       orgId,
-      currentVersion
+      currentVersion,
+      scopeCacheKey
     );
     if (cached) return cached;
-    return this.compileBitset(userId, orgId);
+    return this.compileBitset(userId, orgId, scopeContext, scopeCacheKey);
   }
 
   /**
    * Compiles and caches a user permission bitset from effective grants.
    */
-  async compileBitset(userId: string, orgId: string): Promise<BitsetData> {
-    const permissionKeys = await this.getUserPermissionKeys(userId, orgId);
+  async compileBitset(
+    userId: string,
+    orgId: string,
+    scopeContext: ScopeContext,
+    scopeCacheKey: string
+  ): Promise<BitsetData> {
+    const permissionKeys = await this.getUserPermissionKeys(
+      userId,
+      orgId,
+      scopeContext
+    );
     const bitset = createEmptyBitset(TOTAL_PERMISSIONS);
 
     for (const key of permissionKeys) {
@@ -197,7 +227,7 @@ export class AuthorizationEngine {
       compiledAt: Date.now(),
     };
 
-    await this.cacheManager.setCachedBitset(userId, orgId, data);
+    await this.cacheManager.setCachedBitset(userId, orgId, data, scopeCacheKey);
     return data;
   }
 
@@ -235,38 +265,24 @@ export class AuthorizationEngine {
    */
   private async getUserPermissionKeys(
     userId: string,
-    orgId: string
+    orgId: string,
+    scopeContext: ScopeContext
   ): Promise<Set<string>> {
     const permissionKeys = new Set<string>();
 
-    const assignments = await this.db.query.roleAssignmentTable.findMany({
-      where: and(
-        eq(roleAssignmentTable.userId, userId),
-        eq(roleAssignmentTable.organizationId, orgId)
-      ),
-      columns: { roleTemplateId: true },
-      with: {
-        roleTemplate: {
-          columns: { id: true },
-        },
-      },
-    });
-
-    const templateIds = assignments.map(
-      (a: { roleTemplateId: string }) => a.roleTemplateId
+    const applicableTemplateIds = await this.getApplicableTemplateIds(
+      userId,
+      orgId,
+      scopeContext
     );
 
-    if (templateIds.length === 0) {
-      const overrides = await this.db.query.policyOverrideTable.findMany({
-        where: and(
-          eq(policyOverrideTable.userId, userId),
-          eq(policyOverrideTable.organizationId, orgId),
-          or(
-            isNull(policyOverrideTable.expiresAt),
-            gt(policyOverrideTable.expiresAt, new Date())
-          )
+    if (applicableTemplateIds.length > 0) {
+      const rolePerms = await this.db.query.rolePermissionTable.findMany({
+        where: inArray(
+          rolePermissionTable.roleTemplateId,
+          applicableTemplateIds
         ),
-        columns: { effect: true },
+        columns: { effect: true, roleTemplateId: true },
         with: {
           permissionNode: {
             columns: { key: true },
@@ -274,36 +290,48 @@ export class AuthorizationEngine {
         },
       });
 
-      for (const override of overrides) {
-        if (override.effect === "allow") {
-          permissionKeys.add(override.permissionNode.key);
-        } else if (override.effect === "deny") {
-          permissionKeys.delete(override.permissionNode.key);
-        }
-      }
-
-      return permissionKeys;
+      this.applyPermissionEffects(permissionKeys, rolePerms);
     }
 
-    const rolePerms = await this.db.query.rolePermissionTable.findMany({
-      where: inArray(rolePermissionTable.roleTemplateId, templateIds),
-      columns: { effect: true, roleTemplateId: true },
+    const overrides = await this.fetchActiveOverrides(userId, orgId);
+    this.applyScopedOverrides(permissionKeys, overrides, scopeContext);
+
+    return permissionKeys;
+  }
+
+  private async getApplicableTemplateIds(
+    userId: string,
+    orgId: string,
+    scopeContext: ScopeContext
+  ): Promise<string[]> {
+    const assignments = await this.db.query.roleAssignmentTable.findMany({
+      where: and(
+        eq(roleAssignmentTable.userId, userId),
+        eq(roleAssignmentTable.organizationId, orgId)
+      ),
+      columns: { roleTemplateId: true, teamId: true },
       with: {
-        permissionNode: {
-          columns: { key: true },
+        roleTemplate: {
+          columns: { id: true, scope: true },
         },
       },
     });
 
-    for (const rp of rolePerms) {
-      if (rp.effect === "allow") {
-        permissionKeys.add(rp.permissionNode.key);
-      } else if (rp.effect === "deny") {
-        permissionKeys.delete(rp.permissionNode.key);
-      }
-    }
+    return assignments
+      .filter((assignment) => {
+        if (assignment.roleTemplate.scope === "org") {
+          return true;
+        }
 
-    const overrides = await this.db.query.policyOverrideTable.findMany({
+        return Boolean(
+          scopeContext.teamId && assignment.teamId === scopeContext.teamId
+        );
+      })
+      .map((assignment) => assignment.roleTemplateId);
+  }
+
+  private fetchActiveOverrides(userId: string, orgId: string) {
+    return this.db.query.policyOverrideTable.findMany({
       where: and(
         eq(policyOverrideTable.userId, userId),
         eq(policyOverrideTable.organizationId, orgId),
@@ -312,22 +340,96 @@ export class AuthorizationEngine {
           gt(policyOverrideTable.expiresAt, new Date())
         )
       ),
-      columns: { effect: true },
+      columns: { effect: true, teamId: true, resourceId: true },
       with: {
         permissionNode: {
           columns: { key: true },
         },
       },
     });
+  }
 
-    for (const override of overrides) {
-      if (override.effect === "allow") {
-        permissionKeys.add(override.permissionNode.key);
-      } else if (override.effect === "deny") {
-        permissionKeys.delete(override.permissionNode.key);
+  private applyPermissionEffects(
+    permissionKeys: Set<string>,
+    effects: Array<{ effect: string; permissionNode: { key: string } }>
+  ): void {
+    for (const effect of effects) {
+      if (effect.effect === "allow") {
+        permissionKeys.add(effect.permissionNode.key);
+      } else if (effect.effect === "deny") {
+        permissionKeys.delete(effect.permissionNode.key);
       }
     }
+  }
 
-    return permissionKeys;
+  private applyScopedOverrides(
+    permissionKeys: Set<string>,
+    overrides: Array<{
+      effect: string;
+      teamId: string | null;
+      resourceId: string | null;
+      permissionNode: { key: string };
+    }>,
+    scopeContext: ScopeContext
+  ): void {
+    for (const override of overrides) {
+      if (!this.isOverrideApplicable(override, scopeContext)) {
+        continue;
+      }
+
+      this.applyPermissionEffects(permissionKeys, [override]);
+    }
+  }
+
+  private resolveScopeContext(request: AuthorizationRequest): ScopeContext {
+    const parts = request.permission.obj.split(":");
+    const entry = resolvePermissionKey(request.permission.permissionKey);
+
+    if (!entry) {
+      return {
+        teamId: request.teamId,
+      };
+    }
+
+    const hasTeamPrefix = parts[0] === "team" && parts[1];
+    const baseIndex = hasTeamPrefix ? 2 : 0;
+    const expectedSegments = 1 + entry.subResources.length;
+    const resourceSegmentIndex = baseIndex + expectedSegments;
+
+    return {
+      teamId: request.teamId ?? (hasTeamPrefix ? parts[1] : undefined),
+      resourceId:
+        parts.length > resourceSegmentIndex
+          ? parts[resourceSegmentIndex]
+          : undefined,
+    };
+  }
+
+  private buildScopeCacheKey(scopeContext: ScopeContext): string {
+    const teamPart = scopeContext.teamId
+      ? `team:${scopeContext.teamId}`
+      : "org";
+    const resourcePart = scopeContext.resourceId
+      ? `resource:${scopeContext.resourceId}`
+      : "resource:*";
+    return `${teamPart}|${resourcePart}`;
+  }
+
+  private isOverrideApplicable(
+    override: { teamId: string | null; resourceId: string | null },
+    scopeContext: ScopeContext
+  ): boolean {
+    if (override.teamId && override.teamId !== scopeContext.teamId) {
+      return false;
+    }
+
+    if (
+      override.resourceId &&
+      override.resourceId !== scopeContext.resourceId
+    ) {
+      return false;
+    }
+
+    return true;
   }
 }
