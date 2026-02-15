@@ -97,6 +97,23 @@ export class PermissionAdmin {
     roleTemplateId: string,
     options?: { teamId?: string }
   ): Promise<void> {
+    const template = await this.db.query.roleTemplateTable.findFirst({
+      where: eq(roleTemplateTable.id, roleTemplateId),
+      columns: { id: true, scope: true },
+    });
+
+    if (!template) {
+      throw new ORPCError("NOT_FOUND", {
+        message: "Role template not found",
+      });
+    }
+
+    if (template.scope === "team" && !options?.teamId) {
+      throw new ORPCError("BAD_REQUEST", {
+        message: "teamId is required when revoking a team-scoped role",
+      });
+    }
+
     const conditions = [
       eq(roleAssignmentTable.userId, targetUserId),
       eq(roleAssignmentTable.roleTemplateId, roleTemplateId),
