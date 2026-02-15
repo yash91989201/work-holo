@@ -117,7 +117,7 @@ export class PermissionChecker {
    */
   buildDescriptorFromKey(
     permissionKey: string,
-    options?: { resourceId?: string }
+    options?: { resourceId?: string; teamId?: string }
   ): PermissionDescriptor {
     const entry = resolvePermissionKey(permissionKey);
 
@@ -127,7 +127,13 @@ export class PermissionChecker {
       });
     }
 
-    const objParts: string[] = [entry.resource];
+    const objParts: string[] = [];
+
+    if (options?.teamId) {
+      objParts.push("team", options.teamId);
+    }
+
+    objParts.push(entry.resource);
     if (entry.subResources.length > 0) {
       objParts.push(...entry.subResources);
     }
