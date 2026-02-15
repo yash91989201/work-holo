@@ -19,8 +19,8 @@ export function buildDescriptor(
   }
 
   const objParts: string[] = [];
-  if (scope) {
-    objParts.push(`${scope.type}:${scope.id}`);
+  if (scope?.type === "team") {
+    objParts.push(`team:${scope.id}`);
   }
 
   objParts.push(entry.resource);
