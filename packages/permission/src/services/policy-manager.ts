@@ -185,6 +185,9 @@ export class PolicyManager {
     this.localVersionCache.clear();
   }
 
+  /**
+   * Acquires a distributed lock for policy compilation with TTL.
+   */
   private async acquireCompilationLock(
     orgId: string,
     ttlMs = 30_000
@@ -200,6 +203,9 @@ export class PolicyManager {
     return result === "OK";
   }
 
+  /**
+   * Releases the distributed compilation lock for an organization.
+   */
   private async releaseCompilationLock(orgId: string): Promise<void> {
     const lockKey = `compilation_lock:${orgId}`;
     await this.redis.send("DEL", [lockKey]);
@@ -227,6 +233,9 @@ export class PolicyManager {
     }
   }
 
+  /**
+   * Executes compilation with distributed lock and retry logic.
+   */
   private async executeWithDistributedLock(
     orgId: string,
     compiledBy?: string
@@ -262,6 +271,9 @@ export class PolicyManager {
     };
   }
 
+  /**
+   * Performs the actual policy compilation and Casbin rule generation.
+   */
   private async executeCompilation(
     orgId: string,
     compiledBy?: string
@@ -400,12 +412,21 @@ export class PolicyManager {
   /**
    * Builds the Casbin domain string for an organization.
    */
+  /**
+   * Builds the Casbin domain string for an organization.
+   */
   private buildDomain(orgId: string): string {
     return `org:${orgId}`;
   }
 
   /**
    * Builds the Casbin object path for org/team/resource-scoped permissions.
+   * @param scope Org or team scope
+   * @param resource Resource name
+   * @param subResource Sub-resource path (dot-separated)
+   * @param scopeId Team ID for team-scoped resources
+   * @param resourceId Specific resource instance ID
+   * @returns Colon-separated object path
    */
   private buildObject(
     scope: "org" | "team",
@@ -434,6 +455,10 @@ export class PolicyManager {
 
   /**
    * Builds a Casbin role identifier for org- or team-scoped templates.
+   * @param roleName Template name
+   * @param scope Org or team scope
+   * @param teamId Team ID for team-scoped roles
+   * @returns Role identifier string
    */
   private buildRoleName(
     roleName: string,
@@ -448,6 +473,8 @@ export class PolicyManager {
 
   /**
    * Compiles role-assignment rows into Casbin grouping policies.
+   * @param assignments Role assignments to compile
+   * @returns Grouping policies mapping users to roles
    */
   private compileGroupingPolicies(
     assignments: RoleAssignmentRow[]
@@ -466,6 +493,10 @@ export class PolicyManager {
 
   /**
    * Compiles role permission rows into Casbin policy rules.
+   * @param permissions Role permissions to compile
+   * @param orgId Organization ID
+   * @param teamAssignments Map of role template IDs to team IDs
+   * @returns Policy rules for role-based access
    */
   private compileRolePolicies(
     permissions: RolePermissionRow[],
@@ -523,6 +554,8 @@ export class PolicyManager {
 
   /**
    * Compiles active user overrides into Casbin policy rules.
+   * @param overrides Policy overrides to compile
+   * @returns Policy rules for user-specific overrides
    */
   private compileOverridePolicies(
     overrides: PolicyOverrideRow[]
@@ -556,6 +589,8 @@ export class PolicyManager {
 
   /**
    * Fetches role assignments for an organization with template metadata.
+   * @param orgId Organization ID
+   * @returns Role assignment rows with template info
    */
   private async fetchRoleAssignments(
     orgId: string
@@ -583,6 +618,8 @@ export class PolicyManager {
 
   /**
    * Fetches role permissions for all applicable role templates in an org.
+   * @param orgId Organization ID
+   * @returns Role permission rows with permission node info
    */
   private async fetchRolePermissions(
     orgId: string
@@ -629,6 +666,8 @@ export class PolicyManager {
 
   /**
    * Fetches active policy overrides for an organization.
+   * @param orgId Organization ID
+   * @returns Policy override rows with permission node info
    */
   private async fetchPolicyOverrides(
     orgId: string
@@ -665,6 +704,8 @@ export class PolicyManager {
 
   /**
    * Creates and returns the next policy-version row for an organization.
+   * @param orgId Organization ID
+   * @returns Policy version row with ID and version number
    */
   private async getOrCreatePolicyVersion(
     orgId: string
@@ -698,6 +739,8 @@ export class PolicyManager {
 
   /**
    * Marks a policy-version row as compiled or errored.
+   * @param versionId Policy version ID
+   * @param error Optional error message if compilation failed
    */
   private async markVersionComplete(
     versionId: string,

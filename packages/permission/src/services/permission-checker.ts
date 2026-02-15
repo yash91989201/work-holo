@@ -114,6 +114,10 @@ export class PermissionChecker {
 
   /**
    * Builds a permission descriptor from a permission key.
+   * @param permissionKey Permission key to resolve
+   * @param options Optional resource and team IDs
+   * @returns Permission descriptor with object, action, and bitset info
+   * @throws ORPCError if permission key is unknown
    */
   buildDescriptorFromKey(
     permissionKey: string,
