@@ -227,11 +227,25 @@ export class PolicyManager {
         this.fetchPolicyOverrides(orgId),
       ]);
 
+      const teamAssignments = new Map<string, Set<string>>();
+      for (const assignment of assignments) {
+        if (
+          assignment.roleTemplate.scope === "team" &&
+          assignment.teamId &&
+          assignment.roleTemplateId
+        ) {
+          const set =
+            teamAssignments.get(assignment.roleTemplateId) ?? new Set<string>();
+          set.add(assignment.teamId);
+          teamAssignments.set(assignment.roleTemplateId, set);
+        }
+      }
+
       const groupingPolicies = this.compileGroupingPolicies(assignments);
       const rolePolicies = this.compileRolePolicies(
         rolePermissions,
-        assignments,
-        orgId
+        orgId,
+        teamAssignments
       );
       const overridePolicies = this.compileOverridePolicies(overrides);
       const allPolicies = [...rolePolicies, ...overridePolicies];
@@ -393,28 +407,9 @@ export class PolicyManager {
    */
   private compileRolePolicies(
     permissions: RolePermissionRow[],
-    assignments: RoleAssignmentRow[],
-    orgId: string
+    orgId: string,
+    teamAssignments: Map<string, Set<string>>
   ): CompiledPolicy[] {
-    const teamAssignmentsByTemplate = new Map<string, Set<string>>();
-
-    for (const assignment of assignments) {
-      if (assignment.roleTemplate.scope !== "team" || !assignment.teamId) {
-        continue;
-      }
-
-      const existing = teamAssignmentsByTemplate.get(assignment.roleTemplateId);
-      if (existing) {
-        existing.add(assignment.teamId);
-        continue;
-      }
-
-      teamAssignmentsByTemplate.set(
-        assignment.roleTemplateId,
-        new Set([assignment.teamId])
-      );
-    }
-
     return permissions.flatMap((rolePermission) => {
       const entry = resolvePermissionKey(rolePermission.permissionNode.key);
       if (!entry) {
@@ -422,9 +417,7 @@ export class PolicyManager {
       }
 
       if (rolePermission.roleTemplate.scope === "team") {
-        const teamIds = teamAssignmentsByTemplate.get(
-          rolePermission.roleTemplateId
-        );
+        const teamIds = teamAssignments.get(rolePermission.roleTemplateId);
         if (!teamIds || teamIds.size === 0) {
           return [];
         }
