@@ -65,7 +65,7 @@
     "pusher-js": "^8.4.0",
     "radix-ui": "^1.4.3",
     "react": "^19.2.4",
-    "react-day-picker": "^9.13.0",
+    "react-day-picker": "^9.13.2",
     "react-dom": "^19.2.4",
     "react-dropzone": "^14.3.8",
     "react-resizable-panels": "^4.5.4",

@@ -1,12 +1,10 @@
-import { cva, type VariantProps } from "class-variance-authority";
-import {
-  WandSparkles,
-} from "lucide-react";
 import {
   IconCircleLetterXFilled,
   IconSquareCheckFilled,
   IconSquareChevronDownFilled,
 } from "@tabler/icons-react";
+import { cva, type VariantProps } from "class-variance-authority";
+import { WandSparkles } from "lucide-react";
 import * as React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
