@@ -92,7 +92,7 @@ export const presenceRouter = {
     .input(GetOrgPresenceInput)
     .output(GetOrgPresenceOutput)
     .handler(async ({ context: { db, redis, orgId, permission } }) => {
-      await permission.check(permission.org.view());
+      await permission.check(permission.org.read());
       if (!redis) {
         throw new ORPCError("INTERNAL_SERVER_ERROR", {
           message: "Presence service is not available.",

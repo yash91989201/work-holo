@@ -213,7 +213,7 @@ export const channelRouter = {
     .handler(async ({ context: { db, permission }, input }) => {
       await permission.requireChannelAccess(
         input.channelId,
-        permission.channel.view
+        permission.channel.read
       );
       const channel = await db.query.channelTable.findFirst({
         where: eq(channelTable.id, input.channelId),

@@ -81,7 +81,7 @@ const MAX_MEMBERS_FOR_DETAILED_TRACKING =
 export const messageRouter = {
   /**
    * Searches channel members by name or email for mention autocomplete.
-   * Requires channel access with member.search permission.
+   * Requires channel access with channel.member.list permission.
    *
    * @param input.channelId - The channel to search members in
    * @param input.query - Name or email search string
@@ -93,7 +93,7 @@ export const messageRouter = {
     .handler(async ({ input, context: { db, permission } }) => {
       await permission.requireChannelAccess(
         input.channelId,
-        "channel.member.search"
+        "channel.member.list"
       );
       const users = await db
         .select({
@@ -145,7 +145,7 @@ export const messageRouter = {
       }) => {
         await permission.requireChannelAccess(
           input.channelId,
-          permission.message.create
+          permission.channel.message.create
         );
         const { txid, message } = await db.transaction(async (tx) => {
           const txid = await generateTxId(tx);
@@ -385,7 +385,7 @@ export const messageRouter = {
       }) => {
         await permission.requireMessageAccess(
           input.messageId,
-          permission.message.update
+          permission.channel.message.update
         );
         const { txid, message } = await db.transaction(async (tx) => {
           const txid = await generateTxId(tx);
@@ -535,7 +535,10 @@ export const messageRouter = {
     .input(GetChannelMessagesInput)
     .output(GetChannelMessagesOutput)
     .handler(async ({ input, context: { db, permission } }) => {
-      await permission.requireChannelAccess(input.channelId, "message.list");
+      await permission.requireChannelAccess(
+        input.channelId,
+        "channel.message.list"
+      );
       const messages = await db.query.messageTable.findMany({
         where: and(
           eq(messageTable.channelId, input.channelId),
@@ -577,7 +580,7 @@ export const messageRouter = {
     .handler(async ({ input, context: { db, permission } }) => {
       await permission.requireMessageAccess(
         input.messageId,
-        permission.message.delete
+        permission.channel.message.delete
       );
 
       const { txid } = await db.transaction(async (tx) => {
@@ -656,7 +659,7 @@ export const messageRouter = {
     .handler(async ({ input, context: { db, session, permission } }) => {
       await permission.requireChannelAccess(
         input.channelId,
-        "message.unread_count"
+        "channel.message.list"
       );
       const currentUser = session.user;
 
@@ -709,7 +712,10 @@ export const messageRouter = {
     .input(SearchMessagesInput)
     .output(SearchMessageOutput)
     .handler(async ({ input, context: { db, permission } }) => {
-      await permission.requireChannelAccess(input.channelId, "message.search");
+      await permission.requireChannelAccess(
+        input.channelId,
+        "channel.message.list"
+      );
       const messages = await db
         .select({
           ...getTableColumns(messageTable),
@@ -741,7 +747,7 @@ export const messageRouter = {
 
   /**
    * Retrieves a single message by ID with sender details.
-   * Requires message access with view permission.
+   * Requires message access with read permission.
    *
    * @param input.messageId - The message to retrieve
    * @returns Message record with sender name, email, and image
@@ -752,7 +758,7 @@ export const messageRouter = {
     .handler(async ({ input, context: { db, permission } }) => {
       await permission.requireMessageAccess(
         input.messageId,
-        permission.message.view
+        permission.channel.message.read
       );
       const message = await db.query.messageTable.findFirst({
         where: eq(messageTable.id, input.messageId),
@@ -772,7 +778,7 @@ export const messageRouter = {
 
   /**
    * Retrieves the parent message of a thread reply, with sender details.
-   * Requires message access with view permission.
+   * Requires message access with read permission.
    *
    * @param input.messageId - The child message whose parent to retrieve
    * @returns Parent message record with sender info, or undefined if none
@@ -783,7 +789,7 @@ export const messageRouter = {
     .handler(async ({ input, context: { db, permission } }) => {
       await permission.requireMessageAccess(
         input.messageId,
-        permission.message.view
+        permission.channel.message.read
       );
       const parentMessage = await db.query.messageTable.findFirst({
         where: eq(messageTable.parentMessageId, input.messageId),
@@ -822,7 +828,7 @@ export const messageRouter = {
       }) => {
         await permission.requireMessageAccess(
           input.messageId,
-          permission.message.pin
+          permission.channel.message.pin
         );
         const { txid } = await db.transaction(async (tx) => {
           const txid = await generateTxId(tx);
@@ -857,7 +863,7 @@ export const messageRouter = {
     .handler(async ({ context: { db, permission }, input }) => {
       await permission.requireMessageAccess(
         input.messageId,
-        permission.message.pin
+        permission.channel.message.pin
       );
       const { txid } = await db.transaction(async (tx) => {
         const txid = await generateTxId(tx);
@@ -893,7 +899,7 @@ export const messageRouter = {
     .handler(async ({ context: { db, permission }, input }) => {
       await permission.requireChannelAccess(
         input.channelId,
-        "message.pin.list"
+        "channel.message.pin"
       );
       const baseConditions = [
         eq(messageTable.isPinned, true),
@@ -929,7 +935,7 @@ export const messageRouter = {
     .input(GetMenionUsersInput)
     .output(GetMenionUsersOutput)
     .handler(async ({ context: { db, permission }, input }) => {
-      await permission.check(permission.org.view());
+      await permission.check(permission.org.read());
       const users = await db.query.user.findMany({
         where: inArray(userTable.id, input.userIds),
       });
@@ -948,7 +954,7 @@ export const messageRouter = {
     .input(MarkMentionSeenInput)
     .output(MarkMentionSeenOutput)
     .handler(async ({ context: { db, session, permission }, input }) => {
-      await permission.check(permission.message.view());
+      await permission.check(permission.channel.message.read());
       const { user } = session;
 
       const { txid } = await db.transaction(async (tx) => {
@@ -1002,7 +1008,10 @@ export const messageRouter = {
     .input(MarkAllMentionsSeenInput)
     .output(MarkAllMentionsSeenOutput)
     .handler(async ({ context: { db, session, permission }, input }) => {
-      await permission.requireChannelAccess(input.channelId, "message.read");
+      await permission.requireChannelAccess(
+        input.channelId,
+        "channel.message.read"
+      );
       const { user } = session;
 
       const { txid, count } = await db.transaction(async (tx) => {
@@ -1055,7 +1064,7 @@ export const messageRouter = {
     .handler(async ({ context: { db, session, permission }, input }) => {
       await permission.requireMessageAccess(
         input.messageId,
-        permission.message.react
+        permission.channel.message.react
       );
       const userId = session.user.id;
 
@@ -1129,7 +1138,7 @@ export const messageRouter = {
 
       await permission.requireMessageAccess(
         reaction.messageId,
-        permission.message.react
+        permission.channel.message.react
       );
 
       const { txid } = await db.transaction(async (tx) => {
@@ -1169,7 +1178,10 @@ export const messageRouter = {
     .input(MarkMessagesAsReadInput)
     .output(MarkMessagesAsReadOutput)
     .handler(async ({ context: { db, session, permission }, input }) => {
-      await permission.requireChannelAccess(input.channelId, "message.read");
+      await permission.requireChannelAccess(
+        input.channelId,
+        "channel.message.read"
+      );
       const userId = session.user.id;
 
       const { txid, memberCount } = await db.transaction(async (tx) => {
@@ -1342,7 +1354,7 @@ export const messageRouter = {
     .handler(async ({ context: { db, session, permission }, input }) => {
       await permission.requireMessageAccess(
         input.messageId,
-        "message.readers.list"
+        "channel.message.reader.list"
       );
       const userId = session.user.id;
 

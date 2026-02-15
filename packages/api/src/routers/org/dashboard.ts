@@ -10,7 +10,7 @@ export const dashboardRouter = {
    */
   getMemberCount: orgMemberProcedure.handler(
     async ({ context: { db, orgId, permission } }) => {
-      await permission.check(permission.org.view());
+      await permission.check(permission.org.read());
       const [memberRows] = await db
         .select({
           count: count(),
@@ -29,7 +29,7 @@ export const dashboardRouter = {
    */
   getTeamCount: orgMemberProcedure.handler(
     async ({ context: { db, orgId, permission } }) => {
-      await permission.check(permission.org.view());
+      await permission.check(permission.org.read());
       const [teamRows] = await db
         .select({
           count: count(),
