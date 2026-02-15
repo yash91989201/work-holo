@@ -6,7 +6,7 @@ import {
   messageTable,
 } from "@work-holo/db/schema/index";
 import { and, eq } from "drizzle-orm";
-import type { PermissionAction } from "../lib/types";
+import type { PermissionAction, PermissionDescriptor } from "../lib/types";
 import type { PermissionChecker } from "./permission-checker";
 
 /**
@@ -42,7 +42,7 @@ export class PermissionResourceGuard {
   ): Promise<void> {
     const channel = await this.db.query.channelTable.findFirst({
       where: eq(channelTable.id, channelId),
-      columns: { organizationId: true, createdBy: true },
+      columns: { organizationId: true, createdBy: true, teamId: true },
     });
 
     if (!channel) {
@@ -70,15 +70,32 @@ export class PermissionResourceGuard {
       });
     }
 
-    const descriptor =
-      typeof action === "function"
-        ? action(channelId)
-        : this.checker.buildDescriptorFromKey(action, {
+    const teamId = channel.teamId ?? undefined;
+    let descriptor: PermissionDescriptor;
+
+    if (typeof action === "function") {
+      const baseDescriptor = action(channelId);
+      if (teamId) {
+        descriptor = this.checker.buildDescriptorFromKey(
+          baseDescriptor.permissionKey,
+          {
             resourceId: channelId,
-          });
+            teamId,
+          }
+        );
+      } else {
+        descriptor = baseDescriptor;
+      }
+    } else {
+      descriptor = this.checker.buildDescriptorFromKey(action, {
+        resourceId: channelId,
+        teamId,
+      });
+    }
 
     await this.checker.check(descriptor, {
       ownerId: channel.createdBy ?? undefined,
+      teamId,
     });
   }
 
