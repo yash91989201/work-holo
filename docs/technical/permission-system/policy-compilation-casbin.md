@@ -66,6 +66,11 @@ From `PolicyManager` helpers:
 - object base: `resource[:subResourceSegments][:resourceId]`
 - team-scoped object includes `team:{teamId}` prefix
 
+### Team-scoped role policies
+
+- `g` rules use the assigned `teamId` when linking a user to a team role.
+- `p` rules for team roles are generated per team assignment so the subject and object carry the same `team:{teamId}` prefix, keeping permissions scoped to the correct team.
+
 ## Concurrency behavior for policy reload
 
 `PolicyManager.reloadPolicies()` uses `reloading` + `pendingReload` flags.

@@ -261,6 +261,8 @@ export class AuthorizationEngine {
         where: and(
           eq(policyOverrideTable.userId, userId),
           eq(policyOverrideTable.organizationId, orgId),
+          isNull(policyOverrideTable.teamId),
+          isNull(policyOverrideTable.resourceId),
           or(
             isNull(policyOverrideTable.expiresAt),
             gt(policyOverrideTable.expiresAt, new Date())
@@ -307,6 +309,8 @@ export class AuthorizationEngine {
       where: and(
         eq(policyOverrideTable.userId, userId),
         eq(policyOverrideTable.organizationId, orgId),
+        isNull(policyOverrideTable.teamId),
+        isNull(policyOverrideTable.resourceId),
         or(
           isNull(policyOverrideTable.expiresAt),
           gt(policyOverrideTable.expiresAt, new Date())
