@@ -42,7 +42,7 @@ export const recordsRouter = {
     .output(MemberAttendanceStatusOutput.nullable())
     .handler(async ({ context }) => {
       const { db, session, orgId, permission } = context;
-      await permission.check(permission.attendance.record.view());
+      await permission.check(permission.attendance.record.read());
       const userSession = session.user;
       const today = new Date();
 
@@ -70,7 +70,7 @@ export const recordsRouter = {
     .input(GetTodayInput)
     .output(GetTodayOutput)
     .handler(async ({ context: { db, session, orgId, permission } }) => {
-      await permission.check(permission.attendance.record.view());
+      await permission.check(permission.attendance.record.read());
       const userSession = session.user;
       const today = new Date();
 
@@ -272,7 +272,7 @@ export const recordsRouter = {
     .input(GetAttendanceDetailInput)
     .output(GetAttendanceDetailOutput)
     .handler(async ({ input, context: { db, orgId, permission } }) => {
-      await permission.check(permission.attendance.record.view());
+      await permission.check(permission.attendance.record.read());
       const { attendanceId } = input;
 
       const [record] = await db

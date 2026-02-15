@@ -25,7 +25,7 @@ export const workBlockRouter = {
     .input(GetActiveBlockInput)
     .output(GetActiveBlockOutput)
     .handler(async ({ input, context: { db, session, permission } }) => {
-      await permission.check(permission.attendance.record.view());
+      await permission.check(permission.attendance.record.read());
       const user = session.user;
 
       const attendance = await db.query.attendanceTable.findFirst({
@@ -200,7 +200,7 @@ export const workBlockRouter = {
     .input(ListBlocksInput)
     .output(ListBlocksOutput)
     .handler(async ({ input, context: { db, session, permission } }) => {
-      await permission.check(permission.attendance.record.view());
+      await permission.check(permission.attendance.record.read());
       const user = session.user;
 
       const attendance = await db.query.attendanceTable.findFirst({

@@ -6,7 +6,7 @@ import { orgMemberProcedure } from "../../index";
  * Provides endpoints for frontend permission hydration:
  * - get: Returns complete permission map for current user in current org
  *
- * The permission map contains all 59 permissions with their boolean status,
+ * The permission map contains all 64 permissions with their boolean status,
  * allowing the frontend to conditionally render UI without making individual
  * permission checks.
  */

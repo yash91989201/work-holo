@@ -28,7 +28,7 @@ export const manageRouter = {
     .input(ListTeamsInput)
     .output(ListTeamsOutput)
     .handler(async ({ input, context: { db, orgId, permission } }) => {
-      await permission.check(permission.org.view());
+      await permission.check(permission.org.read());
       const { page, limit, search, filters, sorting } = input;
       const offset = (page - 1) * limit;
 
