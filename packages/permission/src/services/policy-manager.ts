@@ -227,8 +227,27 @@ export class PolicyManager {
         this.fetchPolicyOverrides(orgId),
       ]);
 
+      const teamAssignments = new Map<string, Set<string>>();
+      for (const assignment of assignments) {
+        if (
+          assignment.roleTemplate.scope === "team" &&
+          assignment.teamId &&
+          assignment.roleTemplateId
+        ) {
+          const set =
+            teamAssignments.get(assignment.roleTemplateId) ??
+            new Set<string>();
+          set.add(assignment.teamId);
+          teamAssignments.set(assignment.roleTemplateId, set);
+        }
+      }
+
       const groupingPolicies = this.compileGroupingPolicies(assignments);
-      const rolePolicies = this.compileRolePolicies(rolePermissions, orgId);
+      const rolePolicies = this.compileRolePolicies(
+        rolePermissions,
+        orgId,
+        teamAssignments
+      );
       const overridePolicies = this.compileOverridePolicies(overrides);
       const allPolicies = [...rolePolicies, ...overridePolicies];
 
@@ -389,12 +408,38 @@ export class PolicyManager {
    */
   private compileRolePolicies(
     permissions: RolePermissionRow[],
-    orgId: string
+    orgId: string,
+    teamAssignments: Map<string, Set<string>>
   ): CompiledPolicy[] {
     return permissions.flatMap((rolePermission) => {
       const entry = resolvePermissionKey(rolePermission.permissionNode.key);
       if (!entry) {
         return [];
+      }
+
+      if (rolePermission.roleTemplate.scope === "team") {
+        const teamIds = teamAssignments.get(rolePermission.roleTemplateId);
+        if (!teamIds || teamIds.size === 0) {
+          return [];
+        }
+
+        return Array.from(teamIds).map((teamId) => ({
+          ptype: "p" as const,
+          sub: this.buildRoleName(
+            rolePermission.roleTemplate.name,
+            rolePermission.roleTemplate.scope,
+            teamId
+          ),
+          dom: this.buildDomain(orgId),
+          obj: this.buildObject(
+            rolePermission.roleTemplate.scope,
+            rolePermission.permissionNode.resource,
+            rolePermission.permissionNode.subResource,
+            teamId
+          ),
+          act: entry.key,
+          eft: rolePermission.effect as PolicyEffect,
+        }));
       }
 
       return {

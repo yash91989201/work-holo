@@ -57,6 +57,7 @@ Current scan batch size is `COUNT 100`.
 ## Consistency implications
 
 - Fast path checks are usually cache + bitset.
+- Bitset compilation only folds in org-wide overrides (no `teamId`/`resourceId`), so scoped overrides are enforced at the Casbin layer without being short-circuited by the bitset prefilter.
 - Version mismatches automatically flush stale read paths.
 - Policy recompilation increments version and forces subsequent reads to refresh.
 - Frontend map consistency is improved through event-driven query invalidation (`permission:update`).
