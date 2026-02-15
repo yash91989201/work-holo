@@ -36,6 +36,16 @@ Descriptor fields:
 - `permissionKey`: normalized key
 - `bitIndex`: bitset index for prefilter
 
+**Team-scoped variants for Channel and Attendance:**
+
+Channel and Attendance DSL factories now accept an optional `teamId` parameter:
+- `Channel(teamId?: string)` — if teamId is provided, uses `createScopedActionTerminal("team", teamId, key)`, otherwise uses `createActionTerminal(key)`
+- `Attendance(teamId?: string)` — same behavior
+
+This allows team-scoped role policies to properly match channel and attendance permissions.
+
+When a channel has a `teamId` in the database, `PermissionResourceGuard` passes it to the DSL for correct scope resolution.
+
 ## Generated DSL files
 
 Generated from vocabulary by script:
@@ -50,7 +60,7 @@ Outputs:
 - `src/lib/dsl/channel.ts`
 - `src/lib/dsl/attendance.ts`
 
-Do not manually edit generated files.
+**Note:** The `@generated` comments in `channel.ts` and `attendance.ts` indicate original code generation. These files have been manually modified to support optional `teamId` parameters and should be treated as manually maintained until the generator is updated.
 
 ## Expression support (frontend + shared logic)
 

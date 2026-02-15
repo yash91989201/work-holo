@@ -13,7 +13,7 @@ Key definitions:
 
 Matcher includes one logical path:
 
-1. role/direct-subject path using `g(...)`, domain equality, object match (`keyMatchColon`), action match (`regexMatch`)
+1. role/direct-subject path using `g(...)`, domain equality, object match (`keyMatchColon`), action match (exact equality)
 
 Owner bypass is handled at the application layer in `AuthorizationEngine.authorizeWithOwnerBypass()`, not in the Casbin model. See [Architecture and Runtime Flow](./architecture-runtime-flow.md) for details.
 
@@ -51,10 +51,10 @@ For each org compile:
 3. compile grouping policies (`g` rules)
 4. compile role permission policies (`p` rules)
 5. compile override policies (`p` rules)
-6. transactionally replace `casbin_rule` rows for org domain
+6. transactionally delete both `p` rules (where `v1 = domain`) and `g` rules (where `v2 = domain`), then insert new rules
 7. mark policy version row `compiled` (or `error` on failure)
-8. update Redis `policy_version:{orgId}`
-9. reload in-memory enforcer policy
+8. reload in-memory enforcer policy
+9. update Redis `policy_version:{orgId}` (only after successful reload)
 
 ## Object and role naming rules
 
@@ -70,6 +70,29 @@ From `PolicyManager` helpers:
 
 - `g` rules use the assigned `teamId` when linking a user to a team role.
 - `p` rules for team roles are generated per team assignment so the subject and object carry the same `team:{teamId}` prefix, keeping permissions scoped to the correct team.
+
+## Distributed compilation lock (multi-instance safety)
+
+`PolicyManager` uses a two-level locking strategy:
+
+1. **In-process lock** (`compilationLocks` Map): Prevents concurrent compiles within the same Node process
+2. **Redis distributed lock** (`compilation_lock:{orgId}`): Prevents concurrent compiles across multiple server instances
+
+Lock acquisition flow:
+- Attempts to acquire Redis lock with 30s TTL using `SET ... NX PX`
+- Retries up to 3 times with 1s delay if lock is held by another instance
+- If lock cannot be acquired after retries, returns a result with the latest known version and an error message indicating another instance is compiling
+- Lock is always released in finally block after compilation completes
+
+This prevents version churn, inconsistent intermediate states, and race conditions in multi-instance deployments.
+
+## Grouping policy cleanup
+
+The transaction in step 6 deletes both:
+- `p` (policy) rules where `v1 = domain`
+- `g` (grouping/role-assignment) rules where `v2 = domain`
+
+This ensures revoked role memberships are properly removed from Casbin and do not persist as stale `g` rows.
 
 ## Concurrency behavior for policy reload
 
@@ -89,3 +112,8 @@ If compile fails:
 - Redis version is not advanced for failed compile
 
 This prevents stale or broken policy sets from being promoted as current.
+
+If `reloadPolicies()` fails after DB write but before version publication, the error is caught and:
+- policy version row is marked `error` with the error message
+- Redis version stays at the previous value (unchanged)
+- no broken policy state is published to other instances
