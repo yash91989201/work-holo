@@ -74,6 +74,8 @@ export class PermissionMapManager {
 
   /**
    * Returns the latest compiled policy-version row ID for an organization.
+   * @param orgId Organization to query
+   * @returns Version ID or null if not found
    */
   private async getLatestVersionId(orgId: string): Promise<string | null> {
     const row = await this.db.query.policyVersionTable.findFirst({
@@ -89,6 +91,9 @@ export class PermissionMapManager {
 
   /**
    * Loads a persisted permission snapshot from the database.
+   * @param userId User to load snapshot for
+   * @param orgId Organization context
+   * @returns Cached permission map with policy version or null
    */
   private async loadSnapshotFromDb(
     userId: string,
@@ -117,7 +122,10 @@ export class PermissionMapManager {
   }
 
   /**
-   * Computes a full permission map by evaluating all vocabulary entries.
+   * Computes a full permission map by evaluating all vocabulary entries against Casbin.
+   * @param userId User to compute permissions for
+   * @param orgId Organization context
+   * @returns Complete permission map with current policy version
    */
   private async computePermissionMap(
     userId: string,
@@ -154,6 +162,9 @@ export class PermissionMapManager {
 
   /**
    * Upserts a computed permission map snapshot for the current policy version.
+   * @param userId User to save snapshot for
+   * @param orgId Organization context
+   * @param permissionMap Map to persist
    */
   private async saveSnapshot(
     userId: string,

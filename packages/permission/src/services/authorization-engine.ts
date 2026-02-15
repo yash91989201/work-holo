@@ -240,6 +240,9 @@ export class AuthorizationEngine {
     return data;
   }
 
+  /**
+   * Checks if an explicit deny override exists for the user and permission.
+   */
   private async hasExplicitDenyOverride(
     userId: string,
     orgId: string,
@@ -314,6 +317,9 @@ export class AuthorizationEngine {
     return permissionKeys;
   }
 
+  /**
+   * Retrieves role template IDs applicable to the user based on scope.
+   */
   private async getApplicableTemplateIds(
     userId: string,
     orgId: string,
@@ -345,6 +351,9 @@ export class AuthorizationEngine {
       .map((assignment) => assignment.roleTemplateId);
   }
 
+  /**
+   * Fetches active policy overrides for a user within an organization.
+   */
   private fetchActiveOverrides(userId: string, orgId: string) {
     return this.db.query.policyOverrideTable.findMany({
       where: and(
@@ -364,6 +373,9 @@ export class AuthorizationEngine {
     });
   }
 
+  /**
+   * Applies allow/deny effects to the permission set.
+   */
   private applyPermissionEffects(
     permissionKeys: Set<string>,
     effects: Array<{ effect: string; permissionNode: { key: string } }>
@@ -377,6 +389,9 @@ export class AuthorizationEngine {
     }
   }
 
+  /**
+   * Applies scoped overrides (team/resource-level) to the permission set.
+   */
   private applyScopedOverrides(
     permissionKeys: Set<string>,
     overrides: Array<{
@@ -396,6 +411,9 @@ export class AuthorizationEngine {
     }
   }
 
+  /**
+   * Extracts team and resource scope from the authorization request.
+   */
   private resolveScopeContext(request: AuthorizationRequest): ScopeContext {
     const parts = request.permission.obj.split(":");
     const entry = resolvePermissionKey(request.permission.permissionKey);
@@ -420,6 +438,9 @@ export class AuthorizationEngine {
     };
   }
 
+  /**
+   * Builds a cache key from scope context (team and resource).
+   */
   private buildScopeCacheKey(scopeContext: ScopeContext): string {
     const teamPart = scopeContext.teamId
       ? `team:${scopeContext.teamId}`
@@ -430,6 +451,9 @@ export class AuthorizationEngine {
     return `${teamPart}|${resourcePart}`;
   }
 
+  /**
+   * Checks if an override applies to the current scope context.
+   */
   private isOverrideApplicable(
     override: { teamId: string | null; resourceId: string | null },
     scopeContext: ScopeContext

@@ -8,10 +8,22 @@ import type { PermissionEvent } from "../lib/types";
  * Type-safe event emitter for permission change events.
  */
 class PermissionBus extends EventEmitter {
+  /**
+   * Emits a permission change event to all listeners.
+   * @param event Event type
+   * @param data Permission event payload
+   * @returns True if event had listeners
+   */
   emit(event: "permission_change", data: PermissionEvent): boolean {
     return super.emit(event, data);
   }
 
+  /**
+   * Registers a listener for permission change events.
+   * @param event Event type
+   * @param listener Callback function
+   * @returns This instance for chaining
+   */
   on(
     event: "permission_change",
     listener: (data: PermissionEvent) => void
@@ -19,6 +31,12 @@ class PermissionBus extends EventEmitter {
     return super.on(event, listener);
   }
 
+  /**
+   * Removes a listener for permission change events.
+   * @param event Event type
+   * @param listener Callback function to remove
+   * @returns This instance for chaining
+   */
   off(
     event: "permission_change",
     listener: (data: PermissionEvent) => void
@@ -26,6 +44,12 @@ class PermissionBus extends EventEmitter {
     return super.off(event, listener);
   }
 
+  /**
+   * Registers a one-time listener for permission change events.
+   * @param event Event type
+   * @param listener Callback function
+   * @returns This instance for chaining
+   */
   once(
     event: "permission_change",
     listener: (data: PermissionEvent) => void
@@ -93,6 +117,7 @@ export class PermissionEventManager {
 
   /**
    * Runs audit and notification side effects for an emitted event.
+   * @param event Permission event to process
    */
   private handlePermissionChange(event: PermissionEvent): void {
     this.writeAuditLog(event);
@@ -102,6 +127,7 @@ export class PermissionEventManager {
 
   /**
    * Persists an audit-log record for a permission event.
+   * @param event Permission event to log
    */
   private writeAuditLog(event: PermissionEvent): void {
     this.db
@@ -125,7 +151,8 @@ export class PermissionEventManager {
   }
 
   /**
-   * Broadcasts a permission event to the organization channel.
+   * Broadcasts a permission event to the organization channel via Pusher.
+   * @param event Permission event to broadcast
    */
   private broadcastToOrg(event: PermissionEvent): void {
     if (!this.pusher) return;
@@ -148,6 +175,7 @@ export class PermissionEventManager {
 
   /**
    * Sends a permission event to the affected user channel when applicable.
+   * @param event Permission event to send
    */
   private notifyUser(event: PermissionEvent): void {
     if (!event.userId) return;
