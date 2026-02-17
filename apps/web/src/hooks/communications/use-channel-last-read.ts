@@ -7,8 +7,8 @@ import { useAuthedSession } from "@/hooks/use-authed-session";
  * Hook to get the last read message ID for the current channel and user
  */
 export function useChannelLastRead() {
-  const { id: channelId } = useParams({
-    from: "/(authenticated)/org/$slug/(modules)/communication/channels/$id",
+  const { channelId } = useParams({
+    from: "/(authenticated)/org/$slug/workspace/teams/$teamId/(modules)/communication/channels/$channelId",
   });
 
   const { user } = useAuthedSession();

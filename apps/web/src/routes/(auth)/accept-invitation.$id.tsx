@@ -1,11 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
 import {
   IconCircleCheckFilled,
-  IconUserFilled,
   IconMailFilled,
+  IconUserFilled,
 } from "@tabler/icons-react";
+import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
-import { AcceptInvitationForm } from "@/components/shared/accept-invitation-form";
+import { AcceptInvitationForm } from "@/components/auth/accept-invitation-form";
 import {
   Card,
   CardContent,
@@ -44,7 +44,7 @@ function RouteComponent() {
         <Card>
           <CardHeader className="text-center">
             <CardTitle className="flex items-center justify-center gap-2">
-            <IconMailFilled className="h-5 w-5" /> Invitation Pending
+              <IconMailFilled className="h-5 w-5" /> Invitation Pending
             </CardTitle>
             <CardDescription>
               Accept the invitation below to join the organization and start

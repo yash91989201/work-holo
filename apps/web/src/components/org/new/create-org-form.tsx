@@ -1,8 +1,8 @@
+import { IconLoader2, IconLockFilled, IconLockOpen } from "@tabler/icons-react";
 import { formOptions } from "@tanstack/react-form";
 import { useNavigate } from "@tanstack/react-router";
 import { useStore } from "@tanstack/react-store";
-import { Loader2,  Unlock } from "lucide-react";
-import { IconLockFilled } from "@tabler/icons-react";
+
 import { Image } from "@/components/shared/image";
 import { Button } from "@/components/ui/button";
 import {
@@ -156,7 +156,11 @@ export const CreateOrgForm = () => {
                   size="icon-xs"
                   title={slugLocked ? "Unlock slug" : "Lock slug"}
                 >
-                  {slugLocked ? <IconLockFilled size={16} /> : <Unlock size={16} />}
+                  {slugLocked ? (
+                    <IconLockFilled size={16} />
+                  ) : (
+                    <IconLockOpen size={16} />
+                  )}
                 </InputGroupButton>
               </InputGroupAddon>
             </field.InputGroup>
@@ -170,7 +174,7 @@ export const CreateOrgForm = () => {
         >
           {form.state.isSubmitting ? (
             <>
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <IconLoader2 className="h-4 w-4 animate-spin" />
               Creating...
             </>
           ) : (

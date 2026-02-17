@@ -9,7 +9,7 @@ export function FullScreenLoader({ className }: FullScreenLoaderProps) {
   return (
     <div
       className={cn(
-        "fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-md",
+        "fixed inset-0 z-99 flex items-center justify-center bg-black/50 backdrop-blur-md",
         className
       )}
     >

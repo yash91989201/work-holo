@@ -145,7 +145,7 @@ const { mutateAsync: createChannel } = useMutation(
 ```tsx
 "use client";
 
-import { XIcon } from "lucide-react";
+import { IconX } from "@tabler/icons-react";
 import { z } from "zod";
 import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -339,7 +339,7 @@ export function ProjectForm() {
                                       type="button"
                                       variant="ghost"
                                     >
-                                      <XIcon />
+                                      <IconX />
                                     </InputGroupButton>
                                   </InputGroupAddon>
                                 )}

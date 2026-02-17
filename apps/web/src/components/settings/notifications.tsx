@@ -1,4 +1,4 @@
-import { Bell } from "lucide-react";
+import { IconBellFilled } from "@tabler/icons-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -146,7 +146,7 @@ export function PushNotifications() {
                     </>
                   ) : (
                     <>
-                      <Bell className="size-3" />
+                      <IconBellFilled className="size-3" />
                       <span>Test</span>
                     </>
                   )}

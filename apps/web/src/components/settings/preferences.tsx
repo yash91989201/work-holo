@@ -1,4 +1,9 @@
-import { Monitor, Moon, RotateCcw, Sun } from "lucide-react";
+import {
+  IconDeviceDesktop,
+  IconMoonFilled,
+  IconRotateClockwise,
+  IconSunFilled,
+} from "@tabler/icons-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import {
@@ -30,9 +35,9 @@ import {
 } from "@/stores/theme-store";
 
 const themeOptions = [
-  { value: "light", label: "Light", icon: Sun },
-  { value: "dark", label: "Dark", icon: Moon },
-  { value: "system", label: "System", icon: Monitor },
+  { value: "light", label: "Light", icon: IconSunFilled },
+  { value: "dark", label: "Dark", icon: IconMoonFilled },
+  { value: "system", label: "System", icon: IconDeviceDesktop },
 ];
 
 const fontFamilyOptions: {
@@ -374,7 +379,7 @@ export function Interface() {
           </ItemContent>
           <ItemActions>
             <Button onClick={resetTheme} variant="outline">
-              <RotateCcw className="size-3" />
+              <IconRotateClockwise className="size-3" />
               <span>Reset</span>
             </Button>
           </ItemActions>
