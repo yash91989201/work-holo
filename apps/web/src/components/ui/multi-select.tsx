@@ -2,9 +2,9 @@ import {
   IconCircleLetterXFilled,
   IconSquareCheckFilled,
   IconSquareChevronDownFilled,
+  IconWand,
 } from "@tabler/icons-react";
 import { cva, type VariantProps } from "class-variance-authority";
-import { WandSparkles } from "lucide-react";
 import * as React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -861,9 +861,8 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                                 "border-transparent text-white",
                               responsiveSettings.compactMode &&
                                 "px-1.5 py-0.5 text-xs",
-                              screenSize === "mobile" &&
-                                "max-w-[120px] truncate",
-                              singleLine && "flex-shrink-0 whitespace-nowrap",
+                              screenSize === "mobile" && "max-w-30 truncate",
+                              singleLine && "shrink-0 whitespace-nowrap",
                               "[&>svg]:pointer-events-auto"
                             )}
                             key={value}
@@ -935,7 +934,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                           multiSelectVariants({ variant }),
                           responsiveSettings.compactMode &&
                             "px-1.5 py-0.5 text-xs",
-                          singleLine && "flex-shrink-0 whitespace-nowrap",
+                          singleLine && "shrink-0 whitespace-nowrap",
                           "[&>svg]:pointer-events-auto"
                         )}
                         style={{
@@ -1008,9 +1007,9 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
             className={cn(
               "w-auto p-0",
               getPopoverAnimationClass(),
-              screenSize === "mobile" && "w-[85vw] max-w-[280px]",
+              screenSize === "mobile" && "w-[85vw] max-w-70",
               screenSize === "tablet" && "w-[70vw] max-w-md",
-              screenSize === "desktop" && "min-w-[300px]",
+              screenSize === "desktop" && "min-w-75",
               popoverClassName
             )}
             id={listboxId}
@@ -1206,7 +1205,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
             </Command>
           </PopoverContent>
           {animation > 0 && selectedValues.length > 0 && (
-            <WandSparkles
+            <IconWand
               className={cn(
                 "my-2 h-3 w-3 cursor-pointer bg-background text-foreground",
                 isAnimating ? "" : "text-muted-foreground"

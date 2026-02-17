@@ -24,8 +24,8 @@ import { useChannelMessageHighlight } from "@/stores/channel-store";
 import { useChannelLastRead } from "./use-channel-last-read";
 
 export function useVirtualMessages() {
-  const { id: channelId } = useParams({
-    from: "/(authenticated)/org/$slug/(modules)/communication/channels/$id",
+  const { channelId } = useParams({
+    from: "/(authenticated)/org/$slug/workspace/teams/$teamId/(modules)/communication/channels/$channelId",
   });
 
   const scrollRef = useRef<HTMLDivElement | null>(null);

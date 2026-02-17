@@ -3,8 +3,8 @@ import {
   Outlet,
   useRouterState,
 } from "@tanstack/react-router";
+import { Header } from "@/components/public/header";
 import { FullScreenLoader } from "@/components/shared/full-screen-loader";
-import { Header } from "@/components/shared/header";
 
 export const Route = createFileRoute("/(public)")({
   pendingComponent: () => <FullScreenLoader />,
