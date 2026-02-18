@@ -4,7 +4,6 @@ import {
   IconUserFilled,
 } from "@tabler/icons-react";
 import { useSearch } from "@tanstack/react-router";
-import { useStore } from "@tanstack/react-store";
 import { Suspense, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -70,8 +69,6 @@ export const InvitationForm = () => {
     },
   });
 
-  const selectedRole = useStore(form.store, (state) => state.values.role);
-
   return (
     <Dialog onOpenChange={setIsOpen} open={isOpen}>
       <DialogTrigger asChild>
@@ -128,11 +125,15 @@ export const InvitationForm = () => {
                   )}
                 </form.AppField>
 
-                {selectedRole === "member" && (
-                  <Suspense fallback={<Skeleton className="h-9 w-full" />}>
-                    <TeamsDropdown form={form} />
-                  </Suspense>
-                )}
+                <form.Subscribe selector={(state) => state.values.role}>
+                  {(selectedRole) =>
+                    selectedRole === "member" && (
+                      <Suspense fallback={<Skeleton className="h-9 w-full" />}>
+                        <TeamsDropdown form={form} />
+                      </Suspense>
+                    )
+                  }
+                </form.Subscribe>
               </FieldGroup>
 
               <form.Subscribe

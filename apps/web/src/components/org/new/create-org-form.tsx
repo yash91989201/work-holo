@@ -1,7 +1,6 @@
 import { IconLoader2, IconLockFilled, IconLockOpen } from "@tabler/icons-react";
 import { formOptions } from "@tanstack/react-form";
 import { useNavigate } from "@tanstack/react-router";
-import { useStore } from "@tanstack/react-store";
 
 import { Image } from "@/components/shared/image";
 import { Button } from "@/components/ui/button";
@@ -70,11 +69,6 @@ export const CreateOrgForm = () => {
     },
   });
 
-  const slugLocked = useStore(
-    form.store,
-    (state) => state.values.formState?.slugLocked ?? false
-  );
-
   return (
     <form.AppForm>
       <form
@@ -105,67 +99,83 @@ export const CreateOrgForm = () => {
           )}
         </form.AppField>
 
-        <form.AppField
-          listeners={{
-            onChange: ({ value }) => {
-              if (slugLocked) {
-                const newSlug = generateSlug(value || "");
-                form.setFieldValue("slug", newSlug);
-              }
-            },
-          }}
-          name="name"
+        <form.Subscribe
+          selector={(state) => state.values.formState?.slugLocked ?? false}
         >
-          {(field) => (
-            <field.Input label="Organization Name" placeholder="Acme Inc." />
-          )}
-        </form.AppField>
+          {(slugLocked) => (
+            <>
+              <form.AppField
+                listeners={{
+                  onChange: ({ value }) => {
+                    if (slugLocked) {
+                      const newSlug = generateSlug(value || "");
+                      form.setFieldValue("slug", newSlug);
+                    }
+                  },
+                }}
+                name="name"
+              >
+                {(field) => (
+                  <field.Input
+                    label="Organization Name"
+                    placeholder="Acme Inc."
+                  />
+                )}
+              </form.AppField>
 
-        <form.AppField
-          asyncDebounceMs={500}
-          name="slug"
-          validators={{
-            onChangeListenTo: ["name"],
-            onChangeAsync: async ({ value }) => {
-              const result =
-                await CreateOrgFormSchema.shape.slug.safeParseAsync(value);
+              <form.AppField
+                asyncDebounceMs={500}
+                name="slug"
+                validators={{
+                  onChangeListenTo: ["name"],
+                  onChangeAsync: async ({ value }) => {
+                    const result =
+                      await CreateOrgFormSchema.shape.slug.safeParseAsync(
+                        value
+                      );
 
-              return result.success
-                ? undefined
-                : result.error.issues[0]?.message;
-            },
-          }}
-        >
-          {(field) => (
-            <field.InputGroup
-              description="This will be a unique name for your Organization. Only a-z, 0-9 and hypens are allowed."
-              label="URL Slug"
-            >
-              <field.InputGroupInput
-                disabled={!!slugLocked}
-                placeholder="acme-inc"
-              />
-              <field.InputGroupSpinner />
-              <InputGroupAddon align="inline-end">
-                <InputGroupButton
-                  aria-label={slugLocked ? "Unlock slug" : "Lock slug"}
-                  onClick={() => {
-                    const nextLocked = !slugLocked;
-                    form.setFieldValue("formState.slugLocked", nextLocked);
-                  }}
-                  size="icon-xs"
-                  title={slugLocked ? "Unlock slug" : "Lock slug"}
-                >
-                  {slugLocked ? (
-                    <IconLockFilled size={16} />
-                  ) : (
-                    <IconLockOpen size={16} />
-                  )}
-                </InputGroupButton>
-              </InputGroupAddon>
-            </field.InputGroup>
+                    return result.success
+                      ? undefined
+                      : result.error.issues[0]?.message;
+                  },
+                }}
+              >
+                {(field) => (
+                  <field.InputGroup
+                    description="This will be a unique name for your Organization. Only a-z, 0-9 and hypens are allowed."
+                    label="URL Slug"
+                  >
+                    <field.InputGroupInput
+                      disabled={!!slugLocked}
+                      placeholder="acme-inc"
+                    />
+                    <field.InputGroupSpinner />
+                    <InputGroupAddon align="inline-end">
+                      <InputGroupButton
+                        aria-label={slugLocked ? "Unlock slug" : "Lock slug"}
+                        onClick={() => {
+                          const nextLocked = !slugLocked;
+                          form.setFieldValue(
+                            "formState.slugLocked",
+                            nextLocked
+                          );
+                        }}
+                        size="icon-xs"
+                        title={slugLocked ? "Unlock slug" : "Lock slug"}
+                      >
+                        {slugLocked ? (
+                          <IconLockFilled size={16} />
+                        ) : (
+                          <IconLockOpen size={16} />
+                        )}
+                      </InputGroupButton>
+                    </InputGroupAddon>
+                  </field.InputGroup>
+                )}
+              </form.AppField>
+            </>
           )}
-        </form.AppField>
+        </form.Subscribe>
 
         <Button
           className="gap-1.5"
