@@ -49,7 +49,7 @@ export function useNotifications() {
       });
     },
     mutationFn: async ({ notificationId }: MarkNotificationAsReadInputType) => {
-      const { txid } = await orpcClient.member.notification.markAsRead({
+      const { txid } = await orpcClient.notification.markAsRead({
         notificationId,
       });
 
@@ -79,7 +79,7 @@ export function useNotifications() {
       });
     },
     mutationFn: async () => {
-      const { txid } = await orpcClient.member.notification.markAllAsRead({});
+      const { txid } = await orpcClient.notification.markAllAsRead({});
 
       await notificationsCollection.utils.awaitTxId(txid);
     },

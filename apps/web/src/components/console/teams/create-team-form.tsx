@@ -51,7 +51,7 @@ export const CreateTeamForm = () => {
 
       // Refresh team list
       queryClient.refetchQueries({
-        queryKey: queryUtils.admin.team.listTeams.queryKey({}),
+        queryKey: queryUtils.team.manage.list.queryKey({}),
       });
 
       toast.success(`${data.name} team created successfully`);

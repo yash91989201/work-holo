@@ -1,5 +1,6 @@
 import { ORPCError, os } from "@orpc/server";
 import { member } from "@work-holo/db/schema/auth";
+import { PermissionManagers, PermissionService } from "@work-holo/permission";
 import { and, eq } from "drizzle-orm";
 import type { Context } from "./context";
 
@@ -28,9 +29,18 @@ export const orgProcedure = protectedProcedure.use(({ context, next }) => {
     });
   }
 
+  const managers = PermissionManagers.getAll();
+  const permission = new PermissionService({
+    userId: context.session.user.id,
+    db: context.db,
+    orgId: activeOrganizationId,
+    ...managers,
+  });
+
   return next({
     context: {
       orgId: activeOrganizationId,
+      permission,
     },
   });
 });
@@ -62,30 +72,5 @@ export const orgMemberProcedure = orgProcedure.use(
         },
       },
     });
-  }
-);
-
-export const orgAdminProcedure = orgMemberProcedure.use(({ context, next }) => {
-  const { role } = context.orgMembership;
-
-  if (role !== "admin" && role !== "owner") {
-    throw new ORPCError("FORBIDDEN", {
-      message: "Organization admin or owner role required",
-    });
-  }
-
-  return next();
-});
-
-// Platform admin procedure (does not bypass org/channel checks)
-export const platformAdminProcedure = protectedProcedure.use(
-  ({ context, next }) => {
-    if (context.session.user.role !== "admin") {
-      throw new ORPCError("FORBIDDEN", {
-        message: "Platform admin role required",
-      });
-    }
-
-    return next();
   }
 );

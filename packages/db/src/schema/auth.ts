@@ -160,6 +160,7 @@ export const teamMember = pgTable(
   "teamMember",
   {
     id: text("id").primaryKey(),
+    role: text("role").default("member").notNull(),
     teamId: text("teamId")
       .notNull()
       .references(() => team.id, { onDelete: "cascade" }),

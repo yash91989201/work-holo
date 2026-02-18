@@ -1,16 +1,22 @@
 import type { RouterClient } from "@orpc/server";
-import { publicProcedure } from "@work-holo/api/index";
-import { adminRouter } from "./admin";
+import { publicProcedure } from "../index";
+import { attendanceRouter } from "./attendance";
 import { communicationRouter } from "./communication";
-import { memberRouter } from "./member";
+import { notificationRouter } from "./notification";
+import { orgRouter } from "./org";
 import { realtimeRouter } from "./realtime";
 import { storageRouter } from "./storage";
+import { teamRouter } from "./team";
+import { userRouter } from "./user";
 
 export const appRouter = {
   healthCheck: publicProcedure.handler(() => "OK"),
-  member: memberRouter,
+  attendance: attendanceRouter,
   communication: communicationRouter,
-  admin: adminRouter,
+  notification: notificationRouter,
+  org: orgRouter,
+  user: userRouter,
+  team: teamRouter,
   storage: storageRouter,
   realtime: realtimeRouter,
 };

@@ -76,11 +76,11 @@ const StatCard = ({
 
 export const MarkAttendance = () => {
   const { data: attendance, refetch } = useSuspenseQuery(
-    queryUtils.member.attendance.getStatus.queryOptions({})
+    queryUtils.attendance.records.getStatus.queryOptions({})
   );
 
   const { mutateAsync: punchIn, isPending: isPunchingIn } = useMutation(
-    queryUtils.member.attendance.punchIn.mutationOptions({
+    queryUtils.attendance.clock.punchIn.mutationOptions({
       onSuccess: async () => {
         toast.success("Checked in successfully!");
         await refetch();
@@ -89,7 +89,7 @@ export const MarkAttendance = () => {
   );
 
   const { mutateAsync: punchOut, isPending: isPunchingOut } = useMutation(
-    queryUtils.member.attendance.punchOut.mutationOptions({
+    queryUtils.attendance.clock.punchOut.mutationOptions({
       onSuccess: async () => {
         toast.success("Checked out successfully!");
         setShowPunchOutDialog(false);

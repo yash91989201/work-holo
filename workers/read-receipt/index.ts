@@ -1,34 +1,28 @@
 import { db } from "@work-holo/db";
 import { env } from "@work-holo/env/read-receipt";
-import amqp, { type Channel, type ChannelModel } from "amqplib";
+import {
+  QUEUES,
+  Queue,
+  type ReadReceiptQueueMessage,
+} from "@work-holo/infrastructure";
+import type { Channel } from "amqplib";
 import {
   cleanupMemberCountCache,
   processChannelReadReceiptsNow,
 } from "./lib/processor";
 
 // Queue configuration
-const QUEUE_NAME = "read_receipts";
 const PREFETCH_COUNT = Number(env.PREFETCH_COUNT ?? 5);
 const CACHE_CLEANUP_INTERVAL = 10 * 60 * 1000; // 10 minutes
 
 const processingChannels = new Set<string>();
 
-// Message types
-interface ReadReceiptQueueMessage {
-  type: "process_channel";
-  channelId: string;
-  memberCount: number;
-  timestamp: string;
-}
-
-type QueueMessage = ReadReceiptQueueMessage;
-
 /**
  * Handle incoming queue messages
  */
-async function handleMessage(message: QueueMessage): Promise<void> {
+async function handleMessage(message: ReadReceiptQueueMessage): Promise<void> {
   if (message.type === "process_channel") {
-    const channelMessage = message as ReadReceiptQueueMessage;
+    const channelMessage = message;
     const channelId = channelMessage.channelId;
 
     // Skip if already processing this channel
@@ -78,100 +72,16 @@ async function handleMessage(message: QueueMessage): Promise<void> {
  * RabbitMQ connection manager
  */
 class QueueWorker {
-  private connection: ChannelModel | null = null;
   private channel: Channel | null = null;
-  private reconnectTimeout: NodeJS.Timeout | null = null;
-  private isConnecting = false;
   private cleanupIntervalId: NodeJS.Timeout | null = null;
 
   /**
    * Connect to RabbitMQ and create channel
    */
   async connect(): Promise<void> {
-    if (this.isConnecting) {
-      console.log("Already connecting to RabbitMQ, skipping...");
-      return;
-    }
-
-    if (this.connection && this.channel) {
-      console.log("Already connected to RabbitMQ");
-      return;
-    }
-
-    this.isConnecting = true;
-
-    try {
-      console.log(`Connecting to RabbitMQ: ${env.RABBITMQ_URL}`);
-      this.connection = await amqp.connect(env.RABBITMQ_URL, {
-        tls: {
-          rejectUnauthorized: false,
-        },
-      });
-
-      this.connection.on("error", (err) => {
-        console.error("RabbitMQ connection error:", err);
-        this.handleConnectionError();
-      });
-
-      this.connection.on("close", () => {
-        console.log("RabbitMQ connection closed");
-        this.handleConnectionError();
-      });
-
-      this.channel = await this.connection.createChannel();
-      console.log("Connected to RabbitMQ successfully");
-
-      // Setup queue
-      await this.setupQueue();
-
-      this.isConnecting = false;
-    } catch (error) {
-      this.isConnecting = false;
-      console.error("Failed to connect to RabbitMQ:", error);
-      this.handleConnectionError();
-      throw error;
-    }
-  }
-
-  /**
-   * Handle connection errors and attempt reconnection
-   */
-  private handleConnectionError(): void {
-    this.connection = null;
-    this.channel = null;
-
-    // Clear existing reconnect timeout
-    if (this.reconnectTimeout) {
-      clearTimeout(this.reconnectTimeout);
-    }
-
-    // Attempt to reconnect after 5 seconds
-    console.log("Attempting to reconnect to RabbitMQ in 5 seconds...");
-    this.reconnectTimeout = setTimeout(() => {
-      this.connect().catch((err) => {
-        console.error("Reconnection failed:", err);
-      });
-    }, 5000);
-  }
-
-  /**
-   * Setup the read receipts queue
-   */
-  private async setupQueue(): Promise<void> {
-    if (!this.channel) {
-      throw new Error("Channel not initialized");
-    }
-
-    // Create read receipts queue with durability
-    await this.channel.assertQueue(QUEUE_NAME, {
-      durable: true, // Queue survives broker restart
-      arguments: {
-        "x-message-ttl": 3_600_000, // Messages expire after 1 hour
-        "x-max-length": 10_000, // Max 10k messages in queue
-      },
-    });
-
-    console.log(`Queue "${QUEUE_NAME}" setup completed`);
+    await Queue.connect({ url: env.RABBITMQ_URL });
+    this.channel = Queue.getClient();
+    console.log("Connected to RabbitMQ successfully");
   }
 
   /**
@@ -185,17 +95,19 @@ class QueueWorker {
     // Set prefetch count (how many messages to process concurrently)
     await this.channel.prefetch(PREFETCH_COUNT);
 
-    console.log(`Starting to consume messages from queue: ${QUEUE_NAME}`);
+    console.log(
+      `Starting to consume messages from queue: ${QUEUES.READ_RECEIPTS}`
+    );
     console.log(`Prefetch count: ${PREFETCH_COUNT}`);
 
     await this.channel.consume(
-      QUEUE_NAME,
+      QUEUES.READ_RECEIPTS,
       async (msg) => {
         if (!msg) return;
 
         try {
           const content = msg.content.toString();
-          const message: QueueMessage = JSON.parse(content);
+          const message: ReadReceiptQueueMessage = JSON.parse(content);
 
           // Acknowledge the message immediately after parsing
           // This prevents RabbitMQ timeout for long-running processing
@@ -248,25 +160,9 @@ class QueueWorker {
       console.log("Cache cleanup interval cleared");
     }
 
-    // Clear reconnect timeout
-    if (this.reconnectTimeout) {
-      clearTimeout(this.reconnectTimeout);
-      this.reconnectTimeout = null;
-    }
-
-    try {
-      if (this.channel) {
-        await this.channel.close();
-        this.channel = null;
-      }
-      if (this.connection) {
-        await this.connection.close();
-        this.connection = null;
-      }
-      console.log("RabbitMQ connection closed successfully");
-    } catch (error) {
-      console.error("Error closing RabbitMQ connection:", error);
-    }
+    await Queue.close();
+    this.channel = null;
+    console.log("RabbitMQ connection closed successfully");
   }
 }
 

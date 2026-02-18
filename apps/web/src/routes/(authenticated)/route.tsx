@@ -1,5 +1,8 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { Suspense } from "react";
+import { FullScreenLoader } from "@/components/shared/full-screen-loader";
 import { useNotificationSound } from "@/hooks/communications/use-notification-sound";
+import { PermissionProvider } from "@/lib/permission/permission-context";
 
 export const Route = createFileRoute("/(authenticated)")({
   beforeLoad: ({ context }) => {
@@ -19,5 +22,11 @@ export const Route = createFileRoute("/(authenticated)")({
 function RouteComponent() {
   useNotificationSound();
 
-  return <Outlet />;
+  return (
+    <Suspense fallback={<FullScreenLoader />}>
+      <PermissionProvider>
+        <Outlet />
+      </PermissionProvider>
+    </Suspense>
+  );
 }

@@ -7,7 +7,7 @@ import { queryUtils } from "@/utils/orpc";
  */
 export function useChannelUnreadCounts() {
   const { data: unreadCounts } = useSuspenseQuery(
-    queryUtils.member.channel.getChannelUnreadCounts.queryOptions({
+    queryUtils.communication.channel.getUnreadCounts.queryOptions({
       input: {},
       refetchInterval: 10_000, // Refetch every 10 seconds
     })

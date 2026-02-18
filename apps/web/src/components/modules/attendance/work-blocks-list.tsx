@@ -124,11 +124,11 @@ const WorkBlockItem = ({
 
 export function WorkBlocksList() {
   const { data: attendance } = useSuspenseQuery(
-    queryUtils.member.attendance.getStatus.queryOptions({})
+    queryUtils.attendance.records.getStatus.queryOptions({})
   );
 
   const { data: blocks } = useSuspenseQuery(
-    queryUtils.member.workBlock.listBlocks.queryOptions({
+    queryUtils.attendance.workBlock.list.queryOptions({
       input: {
         attendanceId: attendance?.id ?? "",
       },

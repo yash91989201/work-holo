@@ -5,7 +5,7 @@ import { queryUtils } from "@/utils/orpc";
 
 export function AttendanceStats() {
   const { data: stats } = useSuspenseQuery(
-    queryUtils.admin.attendance.getAttendanceStats.queryOptions({ input: {} })
+    queryUtils.attendance.records.getStats.queryOptions({ input: {} })
   );
 
   return (

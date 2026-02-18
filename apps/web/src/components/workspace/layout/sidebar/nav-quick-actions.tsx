@@ -64,11 +64,11 @@ export function NavQuickActions() {
 function WorkBlockToggle() {
   const { state } = useSidebar();
   const { data: attendance, refetch: refetchAttendance } = useSuspenseQuery(
-    queryUtils.member.attendance.getStatus.queryOptions({})
+    queryUtils.attendance.records.getStatus.queryOptions({})
   );
 
   const { data: activeBlock, refetch: refetchBlock } = useQuery(
-    queryUtils.member.workBlock.getActiveBlock.queryOptions({
+    queryUtils.attendance.workBlock.getActive.queryOptions({
       input: {
         attendanceId: attendance?.id ?? "",
       },
@@ -104,7 +104,7 @@ function WorkBlockToggle() {
   }, [activeBlock]);
 
   const { mutateAsync: startBlock, isPending: isStarting } = useMutation(
-    queryUtils.member.workBlock.startBlock.mutationOptions({
+    queryUtils.attendance.workBlock.start.mutationOptions({
       onSuccess: async () => {
         toast.success("Work session started");
         await Promise.all([refetchAttendance(), refetchBlock()]);
@@ -118,7 +118,7 @@ function WorkBlockToggle() {
   const { mutateAsync: setManualStatus } = useSetManualStatus();
 
   const { mutateAsync: endBlock, isPending: isEnding } = useMutation(
-    queryUtils.member.workBlock.endBlock.mutationOptions({
+    queryUtils.attendance.workBlock.end.mutationOptions({
       onSuccess: async () => {
         toast.success("Work session paused");
         // Set status to away when pausing work
@@ -182,11 +182,11 @@ function WorkBlockToggle() {
 
 function PresenceStatusDropdown() {
   const { data: attendance } = useSuspenseQuery(
-    queryUtils.member.attendance.getStatus.queryOptions({})
+    queryUtils.attendance.records.getStatus.queryOptions({})
   );
 
   const { data: orgPresence } = useQuery(
-    queryUtils.member.presence.getOrgPresence.queryOptions({
+    queryUtils.org.presence.getOrgPresence.queryOptions({
       input: {},
       refetchInterval: 5000,
     })
@@ -272,18 +272,18 @@ function PresenceStatusDropdown() {
 
 function MarkAttendanceButton() {
   const { data: attendance, refetch } = useSuspenseQuery(
-    queryUtils.member.attendance.getStatus.queryOptions({})
+    queryUtils.attendance.records.getStatus.queryOptions({})
   );
 
   const [showPunchOutDialog, setShowPunchOutDialog] = useState(false);
 
   const { mutateAsync: punchIn, isPending: isPunchingIn } = useMutation(
-    queryUtils.member.attendance.punchIn.mutationOptions({
+    queryUtils.attendance.clock.punchIn.mutationOptions({
       onSuccess: async () => {
         toast.success("Checked in successfully!");
 
         queryClient.refetchQueries(
-          queryUtils.member.workBlock.listBlocks.queryOptions({
+          queryUtils.attendance.workBlock.list.queryOptions({
             input: {
               attendanceId: attendance?.id ?? "",
             },
@@ -295,7 +295,7 @@ function MarkAttendanceButton() {
   );
 
   const { mutateAsync: punchOut, isPending: isPunchingOut } = useMutation(
-    queryUtils.member.attendance.punchOut.mutationOptions({
+    queryUtils.attendance.clock.punchOut.mutationOptions({
       onSuccess: async () => {
         toast.success("Checked out successfully!");
         setShowPunchOutDialog(false);

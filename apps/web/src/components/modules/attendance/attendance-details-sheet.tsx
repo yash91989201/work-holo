@@ -80,7 +80,7 @@ export function AttendanceDetailsSheet({
   onClose,
 }: AttendanceDetailsSheetProps) {
   const { data: detailData, isLoading } = useQuery(
-    queryUtils.admin.attendance.getAttendanceDetail.queryOptions({
+    queryUtils.attendance.records.getDetail.queryOptions({
       input: {
         attendanceId: attendanceId ?? "",
       },

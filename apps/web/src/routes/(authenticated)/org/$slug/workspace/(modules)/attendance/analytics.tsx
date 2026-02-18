@@ -50,7 +50,7 @@ function RouteComponent() {
   const input = useMemo(() => rangeToInput(range), [range]);
 
   const { data: analytics } = useSuspenseQuery(
-    queryUtils.member.attendance.getAnalytics.queryOptions({
+    queryUtils.attendance.analytics.getAnalytics.queryOptions({
       input,
     })
   );
