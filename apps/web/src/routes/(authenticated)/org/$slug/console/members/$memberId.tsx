@@ -89,7 +89,7 @@ function UpdateMemberRole({
         });
 
         queryClient.invalidateQueries({
-          queryKey: queryUtils.admin.member.listMembers.queryKey(),
+          queryKey: queryUtils.org.member.list.queryKey(),
         });
 
         toast.success(`Member role updated to ${data.role}`);
@@ -200,7 +200,7 @@ function RemoveMember({
       });
 
       queryClient.invalidateQueries({
-        queryKey: queryUtils.admin.member.listMembers.queryKey(),
+        queryKey: queryUtils.org.member.list.queryKey(),
       });
 
       toast.success(
@@ -256,7 +256,7 @@ function MemberDetailContent() {
   const {
     data: { members },
   } = useSuspenseQuery(
-    queryUtils.admin.member.listMembers.queryOptions({
+    queryUtils.org.member.list.queryOptions({
       input: {
         page: 1,
         perPage: 1000,
