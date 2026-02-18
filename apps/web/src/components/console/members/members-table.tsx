@@ -147,7 +147,7 @@ function UpdateMemberRole({
         });
 
         queryClient.invalidateQueries({
-          queryKey: queryUtils.admin.member.listMembers.queryKey(),
+          queryKey: queryUtils.org.member.list.queryKey(),
         });
 
         toast.success(`Member role updated to ${data.role}`);
@@ -256,7 +256,7 @@ function RemoveMember({
       });
 
       queryClient.invalidateQueries({
-        queryKey: queryUtils.admin.member.listMembers.queryKey(),
+        queryKey: queryUtils.org.member.list.queryKey(),
       });
 
       toast.success(
@@ -357,7 +357,7 @@ export const MembersTable = () => {
   const {
     data: { members, total, pageCount },
   } = useSuspenseQuery(
-    queryUtils.admin.member.listMembers.queryOptions({
+    queryUtils.org.member.list.queryOptions({
       input: {
         page: pagination.pageIndex + 1,
         perPage: pagination.pageSize,
