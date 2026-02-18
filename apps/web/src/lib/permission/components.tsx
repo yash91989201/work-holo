@@ -1,10 +1,10 @@
 import type { PermissionInput } from "@work-holo/permission/client";
-import { useCan } from "./permission-context";
+import { useCan } from "./hooks";
 
 interface CanProps {
-  permission: PermissionInput;
-  fallback?: React.ReactNode;
   children: React.ReactNode | ((allowed: boolean) => React.ReactNode);
+  fallback?: React.ReactNode;
+  permission: PermissionInput;
 }
 
 /**
@@ -40,7 +40,6 @@ export function Can({
   children,
 }: CanProps): React.ReactNode {
   const allowed = useCan(permission);
-  console.log(allowed);
 
   if (typeof children === "function") {
     return children(allowed);
