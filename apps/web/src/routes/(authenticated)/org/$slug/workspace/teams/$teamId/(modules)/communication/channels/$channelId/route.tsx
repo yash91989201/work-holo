@@ -30,7 +30,7 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   return (
-    <section className="flex h-screen min-h-0 flex-col">
+    <section className="flex h-[calc(100dvh-var(--workspace-header-height))] min-h-0 flex-col">
       <ChannelHeader />
       <div className="flex min-h-0 flex-1">
         <Suspense
