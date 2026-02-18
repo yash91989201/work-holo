@@ -1,45 +1,10 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
 import type { PermissionInput } from "@work-holo/permission/client";
 import {
   evaluateExpression,
   resolvePermission,
 } from "@work-holo/permission/client";
-import { createContext, use } from "react";
-import { queryUtils } from "@/utils/orpc";
-
-type PermissionRecord = Record<string, boolean>;
-
-const PermissionContext = createContext<PermissionRecord>({});
-
-/**
- * Provides the permission map to all descendants via React Context.
- * Fetches the current user's permissions using a suspense query.
- * Must wrap any component tree that uses {@link useCan} or `<Can>`.
- *
- * @example
- * ```tsx
- * <Suspense fallback={<Loading />}>
- *   <PermissionProvider>
- *     <App />
- *   </PermissionProvider>
- * </Suspense>
- * ```
- */
-export function PermissionProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const { data: permissionMap } = useSuspenseQuery(
-    queryUtils.user.permission.get.queryOptions({})
-  );
-
-  return (
-    <PermissionContext value={permissionMap.permissions}>
-      {children}
-    </PermissionContext>
-  );
-}
+import { use } from "react";
+import { PermissionContext, type PermissionRecord } from "./provider";
 
 /**
  * Returns the complete permission map from context.

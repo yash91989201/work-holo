@@ -1,6 +1,5 @@
 import { IconPlus } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
-import { useStore } from "@tanstack/react-store";
 import { Suspense, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -65,8 +64,6 @@ export const CreateChannelForm = () => {
     },
   });
 
-  const channelType = useStore(form.store, (state) => state.values.type);
-
   return (
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
       <DialogTrigger asChild>
@@ -127,15 +124,19 @@ export const CreateChannelForm = () => {
                 )}
               </form.AppField>
 
-              {channelType === "team" ? (
-                <Suspense fallback={<TeamSelectSkeleton />}>
-                  <TeamSelect form={form} />
-                </Suspense>
-              ) : (
-                <Suspense fallback={<MembersSelectSkeleton />}>
-                  <MembersSelect form={form} />
-                </Suspense>
-              )}
+              <form.Subscribe selector={(state) => state.values.type}>
+                {(channelType) =>
+                  channelType === "team" ? (
+                    <Suspense fallback={<TeamSelectSkeleton />}>
+                      <TeamSelect form={form} />
+                    </Suspense>
+                  ) : (
+                    <Suspense fallback={<MembersSelectSkeleton />}>
+                      <MembersSelect form={form} />
+                    </Suspense>
+                  )
+                }
+              </form.Subscribe>
             </FieldGroup>
 
             <DialogFooter className="flex-row">

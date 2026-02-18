@@ -33,7 +33,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useChannelUnreadCounts } from "@/hooks/communications/use-channel-unread-counts";
 import { useUserChannels } from "@/hooks/communications/use-user-channels";
-import { Can } from "@/lib/permission/components";
+import { Can } from "@/lib/permission";
 import { cn } from "@/lib/utils";
 
 function NavChannelsInner() {
