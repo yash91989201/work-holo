@@ -22,11 +22,5 @@ export const Route = createFileRoute("/(authenticated)")({
 function RouteComponent() {
   useNotificationSound();
 
-  return (
-    <Suspense fallback={<FullScreenLoader />}>
-      <PermissionProvider>
-        <Outlet />
-      </PermissionProvider>
-    </Suspense>
-  );
+  return <Outlet />;
 }

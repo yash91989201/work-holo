@@ -1,6 +1,9 @@
+import { PermissionProvider } from "@/lib/permission";
+import { Suspense } from "react";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { authClient } from "@/lib/auth-client";
 import { queryClient, queryUtils } from "@/utils/orpc";
+import { FullScreenLoader } from "@/components/shared/full-screen-loader";
 
 export const Route = createFileRoute("/(authenticated)/org/$slug")({
   loader: async () => {
@@ -34,5 +37,11 @@ export const Route = createFileRoute("/(authenticated)/org/$slug")({
 });
 
 function RouteComponent() {
-  return <Outlet />;
+  return (
+    <Suspense fallback={<FullScreenLoader />}>
+      <PermissionProvider>
+        <Outlet />
+      </PermissionProvider>
+    </Suspense>
+  );
 }
