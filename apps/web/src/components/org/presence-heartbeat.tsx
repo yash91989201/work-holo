@@ -4,7 +4,7 @@ import { queryUtils } from "@/utils/orpc";
 
 export function PresenceHeartbeat() {
   const { data: attendance } = useSuspenseQuery(
-    queryUtils.member.attendance.getStatus.queryOptions({})
+    queryUtils.attendance.records.getStatus.queryOptions({})
   );
 
   const hasCheckedIn = Boolean(attendance?.checkInTime);

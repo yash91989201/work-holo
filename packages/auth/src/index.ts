@@ -2,6 +2,7 @@ import { expo } from "@better-auth/expo";
 import { passkey } from "@better-auth/passkey";
 import { db } from "@work-holo/db";
 import * as authSchema from "@work-holo/db/schema/auth";
+import { assignOrgUserRole } from "@work-holo/permission";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import {
@@ -60,6 +61,17 @@ export const auth = betterAuth({
         enabled: true,
         defaultTeam: {
           enabled: false,
+        },
+      },
+      organizationHooks: {
+        afterCreateOrganization: async ({ organization: org, member }) => {
+          await assignOrgUserRole(db, member.userId, org.id, member.role);
+        },
+        afterAddMember: async ({ member, organization: org }) => {
+          await assignOrgUserRole(db, member.userId, org.id, member.role);
+        },
+        afterAcceptInvitation: async ({ member, organization: org }) => {
+          await assignOrgUserRole(db, member.userId, org.id, member.role);
         },
       },
       // sendInvitationEmail(data) {

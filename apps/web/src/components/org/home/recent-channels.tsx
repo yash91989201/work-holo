@@ -35,7 +35,7 @@ import { queryUtils } from "@/utils/orpc";
 
 export function RecentChannels() {
   const { data: recentChannels } = useSuspenseQuery(
-    queryUtils.member.channel.recentChannels.queryOptions({})
+    queryUtils.communication.channel.getRecent.queryOptions({})
   );
 
   if (recentChannels.length === 0) {

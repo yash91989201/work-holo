@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useChannelUnreadCounts } from "@/hooks/communications/use-channel-unread-counts";
 import { useUserChannels } from "@/hooks/communications/use-user-channels";
+import { Can } from "@/lib/permission/components";
 import { cn } from "@/lib/utils";
 
 function NavChannelsInner() {
@@ -57,9 +58,11 @@ function NavChannelsInner() {
     return (
       <SidebarGroup>
         <SidebarGroupLabel>Communication</SidebarGroupLabel>
-        <SidebarGroupAction>
-          <CreateChannelForm />
-        </SidebarGroupAction>
+        <Can permission={(p) => p.channel.create}>
+          <SidebarGroupAction>
+            <CreateChannelForm />
+          </SidebarGroupAction>
+        </Can>
         <SidebarGroupContent>
           <SidebarMenuItem>
             <SidebarMenuButton tooltip="No Channels">
@@ -108,8 +111,11 @@ function NavChannelsInner() {
                   sideOffset={8}
                 >
                   <div className="flex flex-col">
-                    <div className="flex items-center gap-3 border-b p-3">
+                    <div className="flex items-center justify-between gap-3 border-b p-3">
                       <span className="text-balance text-sm">Channels</span>
+                      <Can permission={(p) => p.channel.create}>
+                        <CreateChannelForm />
+                      </Can>
                     </div>
                     <SidebarMenuSub
                       className={cn(
@@ -165,9 +171,11 @@ function NavChannelsInner() {
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Communication</SidebarGroupLabel>
-      <SidebarGroupAction>
-        <CreateChannelForm />
-      </SidebarGroupAction>
+      <Can permission={(p) => p.channel.create}>
+        <SidebarGroupAction>
+          <CreateChannelForm />
+        </SidebarGroupAction>
+      </Can>
       <SidebarGroupContent>
         <SidebarMenuItem>
           <Collapsible>

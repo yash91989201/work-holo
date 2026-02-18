@@ -5,16 +5,35 @@ import { onError } from "@orpc/server";
 import { RPCHandler } from "@orpc/server/fetch";
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
 import { createContext } from "@work-holo/api/context";
-import { initializeQueueClient } from "@work-holo/api/lib/queue";
 import { electricRouter } from "@work-holo/api/routers/electric/index";
 import { appRouter } from "@work-holo/api/routers/index";
 import { auth } from "@work-holo/auth";
+import { db } from "@work-holo/db";
 import { env } from "@work-holo/env/server";
+import { PusherClient, Queue, Redis } from "@work-holo/infrastructure";
+import { PermissionManagers } from "@work-holo/permission";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 
-initializeQueueClient(env.RABBITMQ_URL);
+await Redis.connect({ url: env.REDIS_URL });
+
+PusherClient.connect({
+  appId: env.PUSHER_APP_ID,
+  key: env.PUSHER_APP_KEY,
+  secret: env.PUSHER_APP_SECRET,
+  host: env.PUSHER_HOST,
+  port: env.PUSHER_PORT,
+  useTLS: env.ENV === "production",
+});
+
+await Queue.connect({ url: env.RABBITMQ_URL });
+
+PermissionManagers.initialize({
+  db,
+  redis: Redis.getClient(),
+  pusher: PusherClient.getClient(),
+});
 
 const app = new Hono();
 
@@ -55,7 +74,9 @@ export const rpcHandler = new RPCHandler(appRouter, {
 });
 
 app.use("/*", async (c, next) => {
-  const context = await createContext({ context: c });
+  const context = await createContext({
+    context: c,
+  });
 
   const rpcResult = await rpcHandler.handle(c.req.raw, {
     prefix: "/rpc",

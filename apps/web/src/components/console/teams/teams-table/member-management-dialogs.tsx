@@ -24,7 +24,7 @@ export function AddTeamMemberDialog({ teamId }: { teamId: string }) {
 
   const {
     data: { teams },
-  } = useSuspenseQuery(queryUtils.admin.team.listTeams.queryOptions({}));
+  } = useSuspenseQuery(queryUtils.team.manage.list.queryOptions({}));
 
   const currentTeam = teams.find((team) => team.id === teamId);
   const currentTeamMemberIds =
@@ -35,12 +35,12 @@ export function AddTeamMemberDialog({ teamId }: { teamId: string }) {
   );
 
   const { mutateAsync: addMember, isPending } = useMutation(
-    queryUtils.admin.team.addMember.mutationOptions({
+    queryUtils.team.manage.addMember.mutationOptions({
       onSuccess: () => {
         toast.success("Member added successfully");
         setDialogOpen(false);
         queryClient.invalidateQueries({
-          queryKey: queryUtils.admin.team.listTeams.queryKey({}),
+          queryKey: queryUtils.team.manage.list.queryKey({}),
         });
       },
       onError: (error) => {
@@ -162,18 +162,18 @@ export function RemoveTeamMemberDialog({ teamId }: { teamId: string }) {
 
   const {
     data: { teams },
-  } = useSuspenseQuery(queryUtils.admin.team.listTeams.queryOptions({}));
+  } = useSuspenseQuery(queryUtils.team.manage.list.queryOptions({}));
 
   const currentTeam = teams.find((team) => team.id === teamId);
   const members = currentTeam?.teamMembers || [];
 
   const { mutateAsync: removeMember, isPending } = useMutation(
-    queryUtils.admin.team.removeMember.mutationOptions({
+    queryUtils.team.manage.removeMember.mutationOptions({
       onSuccess: () => {
         toast.success("Member removed successfully");
         setDialogOpen(false);
         queryClient.invalidateQueries({
-          queryKey: queryUtils.admin.team.listTeams.queryKey({}),
+          queryKey: queryUtils.team.manage.list.queryKey({}),
         });
       },
       onError: (error) => {
