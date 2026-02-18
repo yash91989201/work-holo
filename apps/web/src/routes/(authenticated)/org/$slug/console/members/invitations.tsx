@@ -20,6 +20,7 @@ const InvitationsSearchSchema = z.object({
     .default("all"),
   expiryStartDate: z.string().optional(),
   expiryEndDate: z.string().optional(),
+  inviteMemberForm: z.enum(["open", "close"]).optional(),
 });
 
 export const Route = createFileRoute(

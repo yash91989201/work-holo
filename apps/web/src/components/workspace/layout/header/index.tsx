@@ -1,12 +1,13 @@
-import { IconSlash } from "@tabler/icons-react";
 import { Suspense } from "react";
+import {
+  AccountDropdown,
+  AccountDropdownSkeleton,
+} from "@/components/org/account-dropdown";
+import { NotificationDropdown } from "@/components/org/notification-dropdown";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Account } from "./account";
 import { GlobalSearch } from "./global-search";
 import { Navigator } from "./navigator";
-import { NotificationSheet } from "./notification-sheet";
 import { TeamSwitcher } from "./team-switcher";
 
 export function Header() {
@@ -17,29 +18,15 @@ export function Header() {
 
       <TeamSwitcher />
 
-      <IconSlash />
-
       <Navigator />
 
       <div className="flex flex-1 items-center justify-end gap-3">
         <GlobalSearch />
-        <NotificationSheet />
-        <Suspense fallback={<AccountSkeleton />}>
-          <Account />
+        <NotificationDropdown />
+        <Suspense fallback={<AccountDropdownSkeleton />}>
+          <AccountDropdown />
         </Suspense>
       </div>
     </header>
-  );
-}
-
-function AccountSkeleton() {
-  return (
-    <div className="flex h-9 items-center gap-3 px-3">
-      <Skeleton className="h-8 w-8 rounded-full" />
-      <div className="flex flex-col gap-1">
-        <Skeleton className="h-3 w-20" />
-        <Skeleton className="h-3 w-12" />
-      </div>
-    </div>
   );
 }

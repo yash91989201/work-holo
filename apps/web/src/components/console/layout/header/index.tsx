@@ -1,11 +1,13 @@
 import { Suspense } from "react";
+import {
+  AccountDropdown,
+  AccountDropdownSkeleton,
+} from "@/components/org/account-dropdown";
+import { NotificationDropdown } from "@/components/org/notification-dropdown";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Account } from "./account";
 import { GlobalSearch } from "./global-search";
 import { Navigator } from "./navigator";
-import { NotificationSheet } from "./notification-sheet";
 
 export function Header() {
   return (
@@ -19,27 +21,13 @@ export function Header() {
         <GlobalSearch />
       </div>
 
-      {/* Right Actions */}
       <div className="flex items-center gap-3">
-        {/* Notifications */}
-        <NotificationSheet />
+        <NotificationDropdown />
 
-        <Suspense fallback={<AccountSkeleton />}>
-          <Account />
+        <Suspense fallback={<AccountDropdownSkeleton />}>
+          <AccountDropdown />
         </Suspense>
       </div>
     </header>
-  );
-}
-
-function AccountSkeleton() {
-  return (
-    <div className="flex h-9 items-center gap-3 px-3">
-      <Skeleton className="h-8 w-8 rounded-full" />
-      <div className="flex flex-col gap-1">
-        <Skeleton className="h-3 w-20" />
-        <Skeleton className="h-3 w-12" />
-      </div>
-    </div>
   );
 }

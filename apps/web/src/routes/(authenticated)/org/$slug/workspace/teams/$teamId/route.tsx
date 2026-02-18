@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute(
   "/(authenticated)/org/$slug/workspace/teams/$teamId"
@@ -7,5 +7,5 @@ export const Route = createFileRoute(
 });
 
 function RouteComponent() {
-  return <div>Hello "/(authenticated)/org/$slug/teams/$id"!</div>;
+  return <Outlet />;
 }

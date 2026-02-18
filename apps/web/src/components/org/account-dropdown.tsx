@@ -8,7 +8,7 @@ import {
   IconShieldFilled,
   IconUserFilled,
 } from "@tabler/icons-react";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useParams } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -24,12 +24,17 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { useMemberRole } from "@/hooks/use-member-role";
 import { authClient } from "@/lib/auth-client";
 
-export function Account() {
+export function AccountDropdown() {
   const navigate = useNavigate();
+  const { slug } = useParams({
+    from: "/(authenticated)/org/$slug",
+  });
+
   const { user } = useAuthedSession();
   const role = useMemberRole();
 
@@ -68,9 +73,7 @@ export function Account() {
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-80">
-        <div className="relative h-24 w-full overflow-hidden rounded-t-lg bg-linear-to-br from-violet-500 via-purple-500 to-pink-500">
-          <div className="absolute inset-0 bg-[url('/patterns/topography.svg')] opacity-20" />
-        </div>
+        <div className="relative h-24 w-full overflow-hidden rounded-t-lg bg-linear-to-br from-violet-500 via-purple-500 to-pink-500" />
 
         <div className="relative -mt-12 px-4 pb-4">
           <Avatar className="h-20 w-20 border-4 border-background">
@@ -100,7 +103,7 @@ export function Account() {
           <DropdownMenuItem asChild>
             <Link
               className="cursor-pointer"
-              params={{ slug: "current" }}
+              params={{ slug }}
               to="/org/$slug/workspace"
             >
               <IconBriefcase />
@@ -110,7 +113,7 @@ export function Account() {
           <DropdownMenuItem asChild>
             <Link
               className="cursor-pointer"
-              params={{ slug: "current" }}
+              params={{ slug }}
               to="/org/$slug/console"
             >
               <IconUserFilled />
@@ -120,7 +123,7 @@ export function Account() {
           <DropdownMenuItem asChild>
             <Link
               className="cursor-pointer"
-              params={{ slug: "current" }}
+              params={{ slug }}
               to="/org/$slug/manage"
             >
               <IconLayoutDashboardFilled />
@@ -207,5 +210,14 @@ export function Account() {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+}
+
+export function AccountDropdownSkeleton() {
+  return (
+    <div className="relative flex items-center justify-center">
+      <Skeleton className="h-9 w-9 rounded-full" />
+      <span className="absolute right-0 bottom-0 block h-2.5 w-2.5 rounded-full border-2 border-background bg-muted" />
+    </div>
   );
 }

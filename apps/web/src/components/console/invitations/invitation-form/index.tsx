@@ -3,6 +3,7 @@ import {
   IconShieldFilled,
   IconUserFilled,
 } from "@tabler/icons-react";
+import { useSearch } from "@tanstack/react-router";
 import { useStore } from "@tanstack/react-store";
 import { Suspense, useState } from "react";
 import { toast } from "sonner";
@@ -27,7 +28,12 @@ import { inviteFormOpts } from "./form-options";
 import { TeamsDropdown } from "./teams-dropdown";
 
 export const InvitationForm = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const search = useSearch({
+    from: "/(authenticated)/org/$slug/console/members/invitations",
+    shouldThrow: false,
+  });
+
+  const [isOpen, setIsOpen] = useState(search?.inviteMemberForm === "open");
 
   const form = useAppForm({
     ...inviteFormOpts,

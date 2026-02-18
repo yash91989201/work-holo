@@ -56,9 +56,7 @@ function NavChannelsInner() {
   if (channels.length === 0) {
     return (
       <SidebarGroup>
-        <SidebarGroupLabel className="font-semibold text-muted-foreground text-xs uppercase tracking-wider">
-          Communication
-        </SidebarGroupLabel>
+        <SidebarGroupLabel>Communication</SidebarGroupLabel>
         <SidebarGroupAction>
           <CreateChannelForm />
         </SidebarGroupAction>
@@ -166,7 +164,7 @@ function NavChannelsInner() {
 
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Channels</SidebarGroupLabel>
+      <SidebarGroupLabel>Communication</SidebarGroupLabel>
       <SidebarGroupAction>
         <CreateChannelForm />
       </SidebarGroupAction>

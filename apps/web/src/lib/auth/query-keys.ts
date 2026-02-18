@@ -27,6 +27,9 @@ export const getAuthQueryKey = {
     teams: (organizationId: string) =>
       ["auth", "organization", "teams", organizationId] as const,
 
+    myTeamMemberships: () =>
+      ["auth", "organization", "my-team-memberships"] as const,
+
     // Get organization roles
     roles: () => ["auth", "organization", "roles"] as const,
 
