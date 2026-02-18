@@ -31,9 +31,7 @@ export function NavAttendance() {
 
   return (
     <SidebarGroup>
-      <SidebarGroupLabel className="font-semibold text-muted-foreground text-xs uppercase tracking-wider">
-        Attendance
-      </SidebarGroupLabel>
+      <SidebarGroupLabel>Attendance</SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
           {attendanceLinks.map((link) => (

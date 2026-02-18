@@ -1,3 +1,4 @@
+import type { AnyExtension } from "@tiptap/core";
 import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import Mention from "@tiptap/extension-mention";
@@ -12,7 +13,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import z from "zod";
 import { cn } from "@/lib/utils";
 import { uploadMessageImage } from "@/utils/upload-helper";
-import type { AnyExtension } from "@tiptap/core";
 
 const URL_REGEX = /^[a-zA-Z]+:\/\//;
 

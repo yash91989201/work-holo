@@ -636,7 +636,3 @@ function NotificationListSkeleton() {
     </div>
   );
 }
-
-// Keep old name for backward compatibility
-export const NotificationSheet = NotificationDropdown;
-export default NotificationDropdown;
