@@ -5,10 +5,10 @@ export const QUEUES = {
 } as const;
 
 export interface ReadReceiptQueueMessage {
-  type: "process_channel";
   channelId: string;
   memberCount: number;
   timestamp: string;
+  type: "process_channel";
 }
 
 export type QueueMessage = ReadReceiptQueueMessage;

@@ -283,6 +283,7 @@
       },
       "devDependencies": {
         "@work-holo/config": "workspace:*",
+        "@work-holo/env": "workspace:*",
         "chokidar": "^5.0.0",
         "drizzle-kit": "^0.31.9",
       },

@@ -9,13 +9,13 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 
 interface AudioRecorderProps {
-  isRecording: boolean;
   audioUrl: string | null;
   duration: number;
-  onStop: () => void;
+  isRecording: boolean;
   onCancel: () => void;
   onSend: () => void;
   onStart: () => void;
+  onStop: () => void;
 }
 
 function formatDuration(seconds: number): string {

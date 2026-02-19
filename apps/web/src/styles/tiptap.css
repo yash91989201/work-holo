@@ -48,14 +48,14 @@
 }
 
 .ProseMirror p.is-editor-empty:first-child::before {
-  @apply text-muted-foreground/70;
-  content: attr(data-placeholder);
   float: left;
   height: 0;
-  pointer-events: none;
   font-size: 0.95rem;
   font-weight: 400;
   letter-spacing: 0.01em;
+  pointer-events: none;
+  content: attr(data-placeholder);
+  @apply text-muted-foreground/70;
 }
 
 .ProseMirror ul,
@@ -107,8 +107,8 @@
 
 /* Tippy.js base styles for mention dropdown */
 .tippy-box {
-  @apply rounded-lg border border-border bg-popover shadow-md;
   z-index: 9999;
+  @apply rounded-lg border border-border bg-popover shadow-md;
 }
 
 .tippy-box[data-theme~="mention"] {
@@ -160,8 +160,8 @@
 
 /* Ensure pre-formatted text wraps */
 .ProseMirror pre {
-  white-space: pre-wrap;
   word-wrap: break-word;
+  white-space: pre-wrap;
 }
 
 /* Smooth animations for message composer */
@@ -179,6 +179,8 @@
 }
 
 .tiptap {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
   :first-child {
     margin-top: 0;
   }
@@ -211,9 +213,9 @@
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 2px;
+    pointer-events: none; /* Prevent clicking links in editor */
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    pointer-events: none; /* Prevent clicking links in editor */
 
     &:hover {
       color: #1d4ed8; /* blue-700 */
@@ -223,10 +225,10 @@
 
   [data-resize-handle] {
     position: absolute;
+    z-index: 10;
     background: rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.8);
     border-radius: 2px;
-    z-index: 10;
 
     &:hover {
       background: rgba(0, 0, 0, 0.8);
@@ -260,17 +262,17 @@
     }
 
     &[data-resize-handle="bottom-right"] {
-      bottom: -4px;
       right: -4px;
+      bottom: -4px;
       cursor: nwse-resize;
     }
 
     /* Edge handles */
     &[data-resize-handle="top"],
     &[data-resize-handle="bottom"] {
-      height: 6px;
-      left: 8px;
       right: 8px;
+      left: 8px;
+      height: 6px;
     }
 
     &[data-resize-handle="top"] {
@@ -285,9 +287,9 @@
 
     &[data-resize-handle="left"],
     &[data-resize-handle="right"] {
-      width: 6px;
       top: 8px;
       bottom: 8px;
+      width: 6px;
     }
 
     &[data-resize-handle="left"] {
@@ -305,10 +307,6 @@
     outline: 1px solid rgba(0, 0, 0, 0.25);
     border-radius: 0.125rem;
   }
-
-  /* Word wrapping for editor content */
-  word-wrap: break-word;
-  overflow-wrap: break-word;
 
   a,
   .tiptap-link {

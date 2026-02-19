@@ -9,6 +9,7 @@ import {
 export const Route = createFileRoute(
   "/(authenticated)/org/$slug/workspace/teams/"
 )({
+  staticData: { crumb: "Teams" },
   component: RouteComponent,
 });
 

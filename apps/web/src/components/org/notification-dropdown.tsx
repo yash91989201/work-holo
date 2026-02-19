@@ -69,10 +69,10 @@ type TimeGroup = "today" | "yesterday" | "earlier";
 type FilterType = "all" | "unread" | "read";
 
 interface NotificationConfig {
+  borderColor: string;
   icon: React.ReactNode;
   label: string;
   linear: string;
-  borderColor: string;
 }
 
 const notificationConfig: Record<NotificationType, NotificationConfig> = {
@@ -316,11 +316,11 @@ export function NotificationDropdown() {
 
 interface NotificationContentProps {
   filter: string;
-  isLoading: boolean;
   groupedNotifications: Record<
     TimeGroup,
     ReturnType<typeof useNotifications>["notifications"]
   >;
+  isLoading: boolean;
   onClose: () => void;
   onMarkAsRead: (input: { notificationId: string }) => void;
 }

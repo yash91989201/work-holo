@@ -8,7 +8,8 @@
     "./web": "./src/web.ts",
     "./native": "./src/native.ts",
     "./realtime": "./src/realtime.ts",
-    "./read-receipt": "./src/read-receipt.ts"
+    "./read-receipt": "./src/read-receipt.ts",
+    "./db": "./src/db.ts"
   },
   "dependencies": {
     "@t3-oss/env-core": "^0.13.10",

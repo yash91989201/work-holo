@@ -25,6 +25,7 @@ import { queryUtils } from "@/utils/orpc";
 export const Route = createFileRoute(
   "/(authenticated)/org/$slug/workspace/(modules)/attendance/"
 )({
+  staticData: { crumb: "Attendance" },
   component: RouteComponent,
 });
 

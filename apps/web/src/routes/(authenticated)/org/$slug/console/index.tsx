@@ -10,16 +10,17 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/(authenticated)/org/$slug/console/")({
+  staticData: { crumb: "Console" },
   component: RouteComponent,
 });
 
 interface AdminStatItem {
-  title: string;
-  value: string | number;
+  description: string;
   icon: React.ComponentType<{ className?: string }>;
   iconBg: string;
   iconColor: string;
-  description: string;
+  title: string;
+  value: string | number;
 }
 
 // TODO: Replace with actual API data

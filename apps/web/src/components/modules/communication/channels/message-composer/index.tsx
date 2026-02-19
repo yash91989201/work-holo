@@ -34,9 +34,9 @@ interface AttachmentPreview {
 
 interface MessageAttachment {
   fileName: string;
-  originalName: string;
   fileSize: number;
   mimeType: string;
+  originalName: string;
   type: "image" | "document" | "video" | "audio" | "archive";
   url: string;
 }
@@ -44,12 +44,12 @@ interface MessageAttachment {
 interface MessageComposerProps {
   channelId: string;
   className?: string;
+  initialContent?: string;
+  onMaximize?: (content: string) => void;
+  onSendSuccess?: () => void;
   parentMessageId?: string;
   placeholder?: string;
   showHelpText?: boolean;
-  onSendSuccess?: () => void;
-  onMaximize?: (content: string) => void;
-  initialContent?: string;
 }
 
 export function MessageComposer({

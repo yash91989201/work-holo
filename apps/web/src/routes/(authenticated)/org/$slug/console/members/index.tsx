@@ -19,6 +19,7 @@ export const Route = createFileRoute(
   "/(authenticated)/org/$slug/console/members/"
 )({
   validateSearch: MembersSearchSchema,
+  staticData: { crumb: "Members" },
   component: RouteComponent,
 });
 

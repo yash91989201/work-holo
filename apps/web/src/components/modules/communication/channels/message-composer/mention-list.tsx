@@ -17,13 +17,13 @@ import {
 import { cn } from "@/lib/utils";
 
 export interface MentionListProps {
+  command: (item: { id: string; label: string }) => void;
   items: Array<{
     id: string;
     name: string;
     email: string;
     image?: string | null;
   }>;
-  command: (item: { id: string; label: string }) => void;
   loading: boolean;
 }
 

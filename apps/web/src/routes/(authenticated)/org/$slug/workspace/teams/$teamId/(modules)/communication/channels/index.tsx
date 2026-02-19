@@ -16,6 +16,7 @@ import { ChannelTips } from "@/components/modules/communication/channels/overvie
 export const Route = createFileRoute(
   "/(authenticated)/org/$slug/workspace/teams/$teamId/(modules)/communication/channels/"
 )({
+  staticData: { crumb: "Channels" },
   component: RouteComponent,
 });
 

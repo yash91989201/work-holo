@@ -49,6 +49,7 @@ import { queryClient, queryUtils } from "@/utils/orpc";
 export const Route = createFileRoute(
   "/(authenticated)/org/$slug/console/members/$memberId"
 )({
+  staticData: { crumb: "Member Details" },
   component: RouteComponent,
 });
 

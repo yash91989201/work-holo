@@ -18,6 +18,7 @@ export const Route = createFileRoute(
   "/(authenticated)/org/$slug/console/teams/"
 )({
   validateSearch: TeamsSearchSchema,
+  staticData: { crumb: "Teams" },
   component: RouteComponent,
 });
 

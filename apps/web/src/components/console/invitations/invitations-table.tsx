@@ -88,11 +88,11 @@ const routeApi = getRouteApi(
 type InvitationRecord = z.infer<typeof InvitationSelectSchema>;
 
 interface TableMeta {
+  cancelPending: boolean;
+  onCancel: (invitationId: string) => void;
   onCopy: (invitation: InvitationRecord) => void;
   onResend: (invitation: InvitationRecord) => void;
-  onCancel: (invitationId: string) => void;
   resendPending: boolean;
-  cancelPending: boolean;
 }
 
 // Helper Functions

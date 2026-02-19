@@ -3,9 +3,9 @@ import { useCallback, useEffect, useRef } from "react";
 import { toast } from "sonner";
 
 interface VersionInfo {
+  date: string;
   hash: string;
   timestamp: number;
-  date: string;
 }
 
 const CHECK_INTERVAL = 5 * 60 * 1000;

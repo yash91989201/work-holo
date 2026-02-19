@@ -25,6 +25,14 @@ export const Route = createFileRoute(
       })
     );
   },
+  loader: async ({ context: { queryClient, queryUtils }, params }) => {
+    const channel = await queryClient.ensureQueryData(
+      queryUtils.communication.channel.get.queryOptions({
+        input: { channelId: params.channelId },
+      })
+    );
+    return { crumb: channel.name };
+  },
   component: RouteComponent,
 });
 

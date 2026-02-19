@@ -83,9 +83,9 @@ export function Profile() {
 // ============================================================================
 
 interface ProfileImageSectionProps {
+  imageUrl: string | null | undefined;
   userId: string;
   userName: string;
-  imageUrl: string | null | undefined;
 }
 
 function ProfileImageSection({

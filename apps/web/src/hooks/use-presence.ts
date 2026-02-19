@@ -8,12 +8,12 @@ export type ManualStatus = "dnd" | "busy" | "away" | null;
 
 interface UsePresenceHeartbeatOptions {
   enabled?: boolean;
-  punchedIn: boolean;
-  onBreak: boolean;
   inCall?: boolean;
   inMeeting?: boolean;
-  manualStatus?: ManualStatus;
   intervalMs?: number;
+  manualStatus?: ManualStatus;
+  onBreak: boolean;
+  punchedIn: boolean;
 }
 
 export function usePresenceHeartbeat({

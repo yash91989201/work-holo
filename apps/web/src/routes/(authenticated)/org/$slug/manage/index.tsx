@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/(authenticated)/org/$slug/manage/")({
+  staticData: { crumb: "Manage" },
   component: RouteComponent,
 });
 

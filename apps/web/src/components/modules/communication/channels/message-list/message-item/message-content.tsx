@@ -8,8 +8,8 @@ import { cn } from "@/lib/utils";
 import { LinkPreview } from "../../message-composer/link-preview";
 
 interface MessageContentProps {
-  message: MessageWithSenderType;
   isOwnMessage?: boolean;
+  message: MessageWithSenderType;
 }
 
 export function MessageContent({

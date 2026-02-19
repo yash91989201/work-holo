@@ -5,17 +5,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 interface LinkPreviewData {
-  title: string;
   description: string;
-  image: string;
   favicon: string;
+  image: string;
+  title: string;
   url: string;
 }
 
 interface LinkPreviewProps {
-  url: string;
   onClose?: () => void;
   showCloseButton?: boolean;
+  url: string;
 }
 
 export function LinkPreview({

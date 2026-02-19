@@ -4,12 +4,12 @@
     "browsermcp": {
       "type": "local",
       "command": ["npx", "-y", "@browsermcp/mcp@latest"],
-      "enabled": true
+      "enabled": false
     },
     "tanstack": {
       "type": "local",
       "command": ["npx", "-y", "@tanstack/cli", "mcp"],
-      "enabled": true
+      "enabled": false
     },
     "context7": {
       "type": "local",
@@ -19,7 +19,7 @@
     "shadcn": {
       "type": "local",
       "command": ["npx", "shadcn@latest", "mcp"],
-      "enabled": true
+      "enabled": false
     },
     "morph": {
       "type": "local",

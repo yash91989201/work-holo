@@ -25,15 +25,15 @@ const QUICK_REACTIONS = ["👍", "😂", "🎉", "👀"] as const;
 interface MessageActionsProps {
   canEdit: boolean;
   canPin: boolean;
-  isPinned: boolean;
-  isOwnMessage: boolean;
   canReply: boolean;
-  onEdit: () => void;
-  onReply: () => void;
+  className?: string;
+  isOwnMessage: boolean;
+  isPinned: boolean;
   onDelete: () => void;
+  onEdit: () => void;
   onPin: () => void;
   onReact: (emoji: string) => void;
-  className?: string;
+  onReply: () => void;
 }
 
 export function MessageActions({

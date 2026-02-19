@@ -1,9 +1,9 @@
-import { PermissionProvider } from "@/lib/permission";
-import { Suspense } from "react";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { authClient } from "@/lib/auth-client";
-import { queryClient, queryUtils } from "@/utils/orpc";
+import { Suspense } from "react";
 import { FullScreenLoader } from "@/components/shared/full-screen-loader";
+import { authClient } from "@/lib/auth-client";
+import { PermissionProvider } from "@/lib/permission";
+import { queryClient, queryUtils } from "@/utils/orpc";
 
 export const Route = createFileRoute("/(authenticated)/org/$slug")({
   loader: async () => {
