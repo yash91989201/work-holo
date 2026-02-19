@@ -22,10 +22,10 @@ import { MessageReactions } from "./message-reactions";
 import { MessageReadReceipts } from "./message-read-receipts";
 
 interface MessageItemProps {
-  message: MessageWithSenderType;
-  isThreadMessage?: boolean;
-  isPinnedMessage?: boolean;
   isHighlighted?: boolean;
+  isPinnedMessage?: boolean;
+  isThreadMessage?: boolean;
+  message: MessageWithSenderType;
 }
 
 export function MessageItem({

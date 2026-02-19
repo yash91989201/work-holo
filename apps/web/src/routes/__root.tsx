@@ -19,9 +19,9 @@ import { useVersionCheck } from "@/hooks/use-version-check";
 import { authClient } from "@/lib/auth-client";
 
 export interface RouterAppContext {
-  queryUtils: typeof queryUtils;
-  queryClient: QueryClient;
   orpcClient: typeof orpcClient;
+  queryClient: QueryClient;
+  queryUtils: typeof queryUtils;
 }
 
 export const Route = createRootRouteWithContext<RouterAppContext>()({

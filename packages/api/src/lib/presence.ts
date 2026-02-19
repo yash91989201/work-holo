@@ -16,25 +16,25 @@ export type ManualStatus = "dnd" | "busy" | "away" | null;
 
 // Presence data stored in Redis hash
 export interface PresenceData {
-  status: PresenceStatus;
-  lastSeenAt: string; // unix timestamp in milliseconds
-  orgId: string;
-  punchedIn: "0" | "1";
-  onBreak: "0" | "1";
   inCall: "0" | "1";
   inMeeting: "0" | "1";
+  lastSeenAt: string; // unix timestamp in milliseconds
   manualStatus: string; // "dnd" | "busy" | "away" | ""
+  onBreak: "0" | "1";
+  orgId: string;
+  punchedIn: "0" | "1";
+  status: PresenceStatus;
 }
 
 // Input for computing presence status
 export interface ComputePresenceInput {
-  punchedIn: boolean;
-  onBreak: boolean;
   inCall: boolean;
   inMeeting: boolean;
-  isTabFocused: boolean;
   isIdle: boolean; // idle > 15 min
+  isTabFocused: boolean;
   manualStatus?: ManualStatus;
+  onBreak: boolean;
+  punchedIn: boolean;
 }
 
 // TTL for presence keys in seconds (5 minutes)

@@ -113,9 +113,6 @@ function NavChannelsInner() {
                   <div className="flex flex-col">
                     <div className="flex items-center justify-between gap-3 border-b p-3">
                       <span className="text-balance text-sm">Channels</span>
-                      <Can permission={(p) => p.channel.create}>
-                        <CreateChannelForm />
-                      </Can>
                     </div>
                     <SidebarMenuSub
                       className={cn(
@@ -137,7 +134,7 @@ function NavChannelsInner() {
                                 onClick={() => setOpen(false)}
                                 params={{
                                   slug,
-                                  teamId: "",
+                                  teamId: channel.teamId ?? "",
                                   channelId: channel.id,
                                 }}
                                 to="/org/$slug/workspace/teams/$teamId/communication/channels/$channelId"

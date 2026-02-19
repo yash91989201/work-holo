@@ -12,6 +12,7 @@ import { RecentMentions } from "@/components/org/home/recent-mentions";
 import { RecentMessages } from "@/components/org/home/recent-messages";
 
 export const Route = createFileRoute("/(authenticated)/org/$slug/workspace/")({
+  staticData: { crumb: "Home" },
   component: RouteComponent,
 });
 

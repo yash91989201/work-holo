@@ -28,13 +28,13 @@ export const TestPushNotificationOutput = z.object({
 });
 
 export interface PushNotificationPayload {
-  title: string;
-  body: string;
-  icon?: string;
   badge?: string;
-  tag?: string;
+  body: string;
   data?: Record<string, unknown>;
+  icon?: string;
   requireInteraction?: boolean;
+  tag?: string;
+  title: string;
 }
 
 export function getVapidPublicKey(): string {

@@ -2,10 +2,10 @@ import Pusher from "pusher";
 
 export interface PusherConfig {
   appId: string;
-  key: string;
-  secret: string;
   host: string;
+  key: string;
   port?: number;
+  secret: string;
   useTLS?: boolean;
 }
 

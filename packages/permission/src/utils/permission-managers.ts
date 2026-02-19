@@ -11,11 +11,11 @@ import { PolicyManager } from "../services/policy-manager";
  * Aggregates all singleton-like manager instances used by the permission package.
  */
 export interface AllPermissionManagers {
-  cacheManager: CacheManager;
-  policyManager: PolicyManager;
   authorizationEngine: AuthorizationEngine;
+  cacheManager: CacheManager;
   eventManager: PermissionEventManager;
   permissionMapManager: PermissionMapManager;
+  policyManager: PolicyManager;
 }
 
 let cacheManager: CacheManager | null = null;

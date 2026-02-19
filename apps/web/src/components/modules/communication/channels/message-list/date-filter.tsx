@@ -10,10 +10,10 @@ import {
 import { cn } from "@/lib/utils";
 
 interface DateFilterProps {
-  selectedDate: Date | undefined;
-  onDateSelect: (date: Date | undefined) => void;
-  minDate?: Date;
   maxDate?: Date;
+  minDate?: Date;
+  onDateSelect: (date: Date | undefined) => void;
+  selectedDate: Date | undefined;
 }
 
 export function DateFilter({

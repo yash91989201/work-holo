@@ -9,21 +9,27 @@
  * `keyMatchColon` handles this by matching when:
  *   1. The request object exactly equals the policy object, OR
  *   2. The request object equals the policy object with exactly one
- *      additional `:segment` appended (the resource ID).
+ *      additional `:segment` appended (the resource ID), OR
+ *   3. The policy object has no `team:` prefix but the request object does
+ *      (org-level cascade): strip the `team:<id>:` prefix from the request
+ *      and retry matching. This lets org-level role grants apply to
+ *      team-scoped resources.
  */
 
 /**
  * Matches colon-delimited permission object strings.
  *
  * @example
- * keyMatchColon("channel", "channel")                           // true  — exact match
- * keyMatchColon("channel:ch_abc123", "channel")                 // true  — policy + resourceId
- * keyMatchColon("channel:member", "channel:member")             // true  — exact match
- * keyMatchColon("channel:member:ch_abc123", "channel:member")   // true  — policy + resourceId
- * keyMatchColon("team:t1:channel", "team:t1:channel")           // true  — exact match
- * keyMatchColon("team:t1:channel:ch_abc", "team:t1:channel")    // true  — policy + resourceId
- * keyMatchColon("channel:member", "channel")                    // false — different structure
- * keyMatchColon("channel:a:b", "channel")                       // false — two extra segments
+ * keyMatchColon("channel", "channel")                                  // true  — exact match
+ * keyMatchColon("channel:ch_abc123", "channel")                        // true  — policy + resourceId
+ * keyMatchColon("channel:member", "channel:member")                    // true  — exact match
+ * keyMatchColon("channel:member:ch_abc123", "channel:member")          // true  — policy + resourceId
+ * keyMatchColon("team:t1:channel", "team:t1:channel")                  // true  — exact match
+ * keyMatchColon("team:t1:channel:ch_abc", "team:t1:channel")           // true  — policy + resourceId
+ * keyMatchColon("team:t1:channel:member:ch_abc", "channel:member")     // true  — org-level cascade
+ * keyMatchColon("team:t1:channel:ch_abc", "channel")                   // true  — org-level cascade
+ * keyMatchColon("channel:a:b", "channel")                              // false — two extra segments
+ * keyMatchColon("team:t2:channel:member:c", "team:t1:channel:member")  // false — different team
  */
 export function keyMatchColon(requestObj: string, policyObj: string): boolean {
   if (requestObj === policyObj) {
@@ -31,14 +37,23 @@ export function keyMatchColon(requestObj: string, policyObj: string): boolean {
   }
 
   const prefix = `${policyObj}:`;
-  if (!requestObj.startsWith(prefix)) {
-    return false;
+  if (requestObj.startsWith(prefix)) {
+    // Only allow exactly one additional segment (the resourceId).
+    // If the remainder contains another `:`, it's a different structure.
+    const remainder = requestObj.slice(prefix.length);
+    return remainder.length > 0 && !remainder.includes(":");
   }
 
-  // Only allow exactly one additional segment (the resourceId).
-  // If the remainder contains another `:`, it's a different structure.
-  const remainder = requestObj.slice(prefix.length);
-  return remainder.length > 0 && !remainder.includes(":");
+  if (!policyObj.startsWith("team:") && requestObj.startsWith("team:")) {
+    const afterTeamPrefix = requestObj.slice("team:".length);
+    const teamIdEnd = afterTeamPrefix.indexOf(":");
+    if (teamIdEnd > 0) {
+      const strippedRequest = afterTeamPrefix.slice(teamIdEnd + 1);
+      return keyMatchColon(strippedRequest, policyObj);
+    }
+  }
+
+  return false;
 }
 
 /**

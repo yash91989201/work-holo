@@ -28,17 +28,17 @@ import {
 import { cn } from "@/lib/utils";
 
 interface ComposerActionsProps {
-  isRecording: boolean;
-  isCreatingMessage: boolean;
-  text: string;
-  hasText: boolean;
   hasAttachments: boolean;
   hasAudio: boolean;
-  recordingDuration?: number;
+  hasText: boolean;
+  isCreatingMessage: boolean;
+  isRecording: boolean;
   onEmojiSelect: (emoji: { emoji: string; label: string }) => void;
   onFileUpload: () => void;
-  onVoiceRecord: () => void;
   onSubmit: () => void;
+  onVoiceRecord: () => void;
+  recordingDuration?: number;
+  text: string;
 }
 
 export function ComposerActions({

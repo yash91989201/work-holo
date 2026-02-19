@@ -7,13 +7,13 @@ import {
 import { Card } from "@/components/ui/card";
 
 interface StatItem {
-  title: string;
-  value: string | number;
+  badge: string;
+  badgeColor: string;
   icon: React.ComponentType<{ className?: string }>;
   iconBg: string;
   iconColor: string;
-  badge: string;
-  badgeColor: string;
+  title: string;
+  value: string | number;
 }
 // TODO: Add actual APIs of Attendance Rate, Total teams, Active Channels
 const dummyStats: StatItem[] = [
