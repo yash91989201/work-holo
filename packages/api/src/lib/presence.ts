@@ -130,6 +130,10 @@ export async function setManualStatus(
     manualStatus: manualStatus || "",
     lastSeenAt: now,
     orgId,
+    punchedIn: existingData?.punchedIn ?? "0",
+    onBreak: existingData?.onBreak ?? "0",
+    inCall: existingData?.inCall ?? "0",
+    inMeeting: existingData?.inMeeting ?? "0",
   });
 
   // Refresh expiration
