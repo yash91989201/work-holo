@@ -5,15 +5,7 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { Link, useParams } from "@tanstack/react-router";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { SidebarTrigger } from "@/components/ui/sidebar";
 import {
   Tooltip,
   TooltipContent,
@@ -21,7 +13,6 @@ import {
 } from "@/components/ui/tooltip";
 import { useChannelMentions } from "@/hooks/communications/use-channel-mentions";
 import {
-  useChannel,
   useChannelInfoSidebar,
   useMentionsSidebar,
   usePinnedMessagesSidebar,
@@ -36,8 +27,6 @@ export function ChannelHeader() {
     from: "/(authenticated)/org/$slug/workspace/teams/$teamId/(modules)/communication/channels/$channelId",
   });
 
-  const { channel } = useChannel(channelParams.channelId);
-
   const { toggleInfoSidebar } = useChannelInfoSidebar();
   const { isOpen, togglePinnedMessages } = usePinnedMessagesSidebar();
   const { isOpen: mentionsOpen, toggleMentionsSidebar } = useMentionsSidebar();
@@ -45,38 +34,7 @@ export function ChannelHeader() {
 
   return (
     <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b bg-background/95 backdrop-blur-sm transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height) supports-backdrop-filter:bg-background/60">
-      <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
-        <SidebarTrigger className="-ml-1.5" title="Toggle Sidebar (Crtl+B)" />
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild className="font-medium">
-                <Link
-                  params={{ slug, teamId: "" }}
-                  to="/org/$slug/workspace/teams/$teamId/communication/channels"
-                >
-                  Channels
-                </Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild className="font-medium">
-                <Link
-                  params={{
-                    slug,
-                    teamId: "",
-                    channelId: channelParams.channelId,
-                  }}
-                  to="/org/$slug/workspace/teams/$teamId/communication/channels/$channelId"
-                >
-                  {channel.name}
-                </Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-
+      <div className="flex w-full items-center gap-1 px-3 lg:gap-2">
         <div className="ml-auto flex items-center gap-3">
           <Tooltip>
             <TooltipTrigger asChild>
@@ -125,7 +83,7 @@ export function ChannelHeader() {
 
           <Link
             className={buttonVariants({ variant: "ghost", size: "icon" })}
-            params={{ slug, teamId: "" }}
+            params={{ slug, teamId: channelParams.teamId }}
             to="/org/$slug/workspace/teams/$teamId/communication/channels"
           >
             <IconX />
