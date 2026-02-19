@@ -2,7 +2,15 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 import { queryClient, queryUtils } from "@/utils/orpc";
 
-export type PresenceStatus = "available" | "away" | "busy" | "offline" | "dnd";
+export type PresenceStatus =
+  | "available"
+  | "away"
+  | "busy"
+  | "offline"
+  | "dnd"
+  | "on_break"
+  | "in_call"
+  | "in_meeting";
 
 export type ManualStatus = "dnd" | "busy" | "away" | null;
 
