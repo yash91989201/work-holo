@@ -1,9 +1,14 @@
 import {
   IconBellFilled,
   IconBriefcase,
+  IconCalendar,
   IconCircleFilled,
+  IconCircleLetterXFilled,
+  IconCoffee,
   IconLayoutDashboardFilled,
   IconLogout,
+  IconMoonFilled,
+  IconPhone,
   IconSettingsFilled,
   IconShieldFilled,
   IconUserFilled,
@@ -27,7 +32,55 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { useMemberRole } from "@/hooks/use-member-role";
+import { useOrgPresence, useSetManualStatus } from "@/hooks/use-presence";
 import { authClient } from "@/lib/auth-client";
+
+const STATUS_CONFIG = {
+  available: {
+    label: "Available",
+    dotColor: "bg-green-500",
+    icon: <IconCircleFilled className="h-3 w-3 text-green-500" />,
+  },
+  away: {
+    label: "Away",
+    dotColor: "bg-yellow-500",
+    icon: <IconMoonFilled className="h-3 w-3 text-yellow-500" />,
+  },
+  busy: {
+    label: "Busy",
+    dotColor: "bg-red-500",
+    icon: <IconCircleLetterXFilled className="h-3 w-3 text-red-600" />,
+  },
+  dnd: {
+    label: "Do Not Disturb",
+    dotColor: "bg-red-700",
+    icon: (
+      <IconCircleLetterXFilled className="h-3 w-3 fill-red-700 text-red-700" />
+    ),
+  },
+  on_break: {
+    label: "On Break",
+    dotColor: "bg-orange-500",
+    icon: <IconCoffee className="h-3 w-3 text-orange-500" />,
+  },
+  in_call: {
+    label: "In a Call",
+    dotColor: "bg-blue-500",
+    icon: <IconPhone className="h-3 w-3 text-blue-600" />,
+  },
+  in_meeting: {
+    label: "In a Meeting",
+    dotColor: "bg-purple-500",
+    icon: <IconCalendar className="h-3 w-3 text-purple-600" />,
+  },
+  offline: {
+    label: "Offline",
+    dotColor: "bg-gray-400",
+    icon: <IconCircleFilled className="h-3 w-3 text-gray-400" />,
+  },
+} as const;
+
+type StatusKey = keyof typeof STATUS_CONFIG;
 
 export function AccountDropdown() {
   const navigate = useNavigate();
@@ -37,6 +90,39 @@ export function AccountDropdown() {
 
   const { user } = useAuthedSession();
   const role = useMemberRole();
+
+  const { mutateAsync: setManualStatus, isPending: isStatusPending } =
+    useSetManualStatus();
+  const { data: orgPresence } = useOrgPresence();
+
+  const myPresence = orgPresence?.presence?.[user.id] ?? null;
+  const manualStatus = (myPresence?.manualStatus || null) as
+    | "dnd"
+    | "busy"
+    | "away"
+    | null;
+
+  let currentStatusKey: StatusKey;
+  if (
+    manualStatus === "dnd" ||
+    manualStatus === "busy" ||
+    manualStatus === "away"
+  ) {
+    currentStatusKey = manualStatus;
+  } else {
+    const computedStatus = myPresence?.status as StatusKey | undefined;
+    currentStatusKey =
+      computedStatus && computedStatus in STATUS_CONFIG
+        ? computedStatus
+        : "offline";
+  }
+
+  const current = STATUS_CONFIG[currentStatusKey];
+
+  const handleStatusChange = async (status: "dnd" | "busy" | "away" | null) => {
+    await setManualStatus({ status });
+    toast.success("Status updated");
+  };
 
   const logout = async () => {
     const signOutRes = await authClient.signOut();
@@ -69,7 +155,9 @@ export function AccountDropdown() {
               {initials}
             </AvatarFallback>
           </Avatar>
-          <span className="absolute right-0 bottom-0 block h-2.5 w-2.5 rounded-full border-2 border-background bg-green-500 ring-2 ring-background" />
+          <span
+            className={`absolute right-0 bottom-0 block h-2.5 w-2.5 rounded-full border-2 border-background ${current.dotColor} ring-2 ring-background`}
+          />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-80">
@@ -172,28 +260,29 @@ export function AccountDropdown() {
             Status
           </DropdownMenuLabel>
           <DropdownMenuSub>
-            <DropdownMenuSubTrigger className="justify-between">
-              <div className="flex items-center">
-                <IconCircleFilled className="mr-2 h-3 w-3 text-green-500" />
-                Online
-              </div>
+            <DropdownMenuSubTrigger
+              className="gap-2"
+              disabled={isStatusPending}
+            >
+              {current.icon}
+              <span>{current.label}</span>
             </DropdownMenuSubTrigger>
-            <DropdownMenuSubContent className="min-w-40" sideOffset={8}>
-              <DropdownMenuItem>
-                <IconCircleFilled className="mr-2 h-3 w-3 text-green-500" />
-                Online
+            <DropdownMenuSubContent className="min-w-48" sideOffset={8}>
+              <DropdownMenuItem onClick={() => handleStatusChange(null)}>
+                {STATUS_CONFIG.available.icon}
+                Available
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconCircleFilled className="mr-2 h-3 w-3 text-amber-500" />
+              <DropdownMenuItem onClick={() => handleStatusChange("away")}>
+                {STATUS_CONFIG.away.icon}
                 Away
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconCircleFilled className="mr-2 h-3 w-3 text-rose-500" />
+              <DropdownMenuItem onClick={() => handleStatusChange("busy")}>
+                {STATUS_CONFIG.busy.icon}
                 Busy
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconCircleFilled className="mr-2 h-3 w-3 text-gray-400" />
-                Offline
+              <DropdownMenuItem onClick={() => handleStatusChange("dnd")}>
+                {STATUS_CONFIG.dnd.icon}
+                Do Not Disturb
               </DropdownMenuItem>
             </DropdownMenuSubContent>
           </DropdownMenuSub>

@@ -37,8 +37,7 @@ export interface ComputePresenceInput {
   punchedIn: boolean;
 }
 
-// TTL for presence keys in seconds (5 minutes)
-const PRESENCE_TTL = 300;
+const PRESENCE_TTL = 600;
 
 /**
  * Computes the presence status based on priority order:

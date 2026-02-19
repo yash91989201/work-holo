@@ -1,7 +1,10 @@
 import {
+  IconCalendar,
   IconCircleFilled,
   IconCircleLetterXFilled,
+  IconCoffee,
   IconMoonFilled,
+  IconPhone,
   IconUsers,
   IconWifiOff,
 } from "@tabler/icons-react";
@@ -67,6 +70,21 @@ const presenceConfig: Record<
       <IconCircleLetterXFilled className="h-3 w-3 fill-red-700 text-red-700" />
     ),
   },
+  on_break: {
+    label: "On Break",
+    color: "text-orange-500",
+    icon: <IconCoffee className="h-3 w-3 text-orange-500" />,
+  },
+  in_call: {
+    label: "In a Call",
+    color: "text-blue-600",
+    icon: <IconPhone className="h-3 w-3 text-blue-600" />,
+  },
+  in_meeting: {
+    label: "In a Meeting",
+    color: "text-purple-600",
+    icon: <IconCalendar className="h-3 w-3 text-purple-600" />,
+  },
 };
 
 const getInitials = (name: string) =>
@@ -97,7 +115,10 @@ export function PresenceRoster() {
 
   const statusOrder: PresenceStatus[] = [
     "available",
+    "in_call",
+    "in_meeting",
     "busy",
+    "on_break",
     "away",
     "dnd",
     "offline",
@@ -165,6 +186,24 @@ export function PresenceRoster() {
                 <span className="flex items-center gap-2">
                   {presenceConfig.dnd.icon}
                   Do Not Disturb
+                </span>
+              </SelectItem>
+              <SelectItem value="on_break">
+                <span className="flex items-center gap-2">
+                  {presenceConfig.on_break.icon}
+                  On Break
+                </span>
+              </SelectItem>
+              <SelectItem value="in_call">
+                <span className="flex items-center gap-2">
+                  {presenceConfig.in_call.icon}
+                  In a Call
+                </span>
+              </SelectItem>
+              <SelectItem value="in_meeting">
+                <span className="flex items-center gap-2">
+                  {presenceConfig.in_meeting.icon}
+                  In a Meeting
                 </span>
               </SelectItem>
               <SelectItem value="offline">
