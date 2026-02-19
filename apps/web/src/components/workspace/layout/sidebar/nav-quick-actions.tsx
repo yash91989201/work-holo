@@ -1,13 +1,9 @@
 import {
   IconCheck,
-  IconCircleLetterXFilled,
   IconClockHour4Filled,
   IconLogout,
-  IconMoon,
-  IconPhone,
   IconPlayerPause,
   IconPlayerPlay,
-  IconTarget,
 } from "@tabler/icons-react";
 import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -21,14 +17,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -51,9 +40,6 @@ export function NavQuickActions() {
           </SidebarMenuItem>
           <SidebarMenuItem>
             <WorkBlockToggle />
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <PresenceStatusDropdown />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarGroupContent>
@@ -177,96 +163,6 @@ function WorkBlockToggle() {
         </span>
       )}
     </SidebarMenuButton>
-  );
-}
-
-function PresenceStatusDropdown() {
-  const { data: attendance } = useSuspenseQuery(
-    queryUtils.attendance.records.getStatus.queryOptions({})
-  );
-
-  const { data: orgPresence } = useQuery(
-    queryUtils.org.presence.getOrgPresence.queryOptions({
-      input: {},
-      refetchInterval: 5000,
-    })
-  );
-
-  const { mutateAsync: setManualStatus, isPending } = useSetManualStatus();
-
-  const hasCheckedIn = !!attendance?.checkInTime;
-  const hasCheckedOut = !!attendance?.checkOutTime;
-  const canSetStatus = hasCheckedIn && !hasCheckedOut;
-
-  if (!canSetStatus) {
-    return null;
-  }
-
-  const handleStatusChange = async (status: "dnd" | "busy" | "away" | null) => {
-    await setManualStatus({ status });
-    toast.success("Status updated");
-  };
-
-  const myPresence =
-    attendance?.userId && orgPresence?.presence
-      ? orgPresence.presence[attendance.userId]
-      : null;
-  const currentStatusRaw = myPresence?.manualStatus as
-    | "dnd"
-    | "busy"
-    | "away"
-    | null
-    | undefined;
-
-  const getStatusLabel = (status: string | null | undefined) => {
-    switch (status) {
-      case "dnd":
-        return "Do Not Disturb";
-      case "busy":
-        return "Busy";
-      case "away":
-        return "Away";
-      default:
-        return "Available";
-    }
-  };
-
-  const currentStatusLabel = getStatusLabel(currentStatusRaw);
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <SidebarMenuButton disabled={isPending}>
-          <IconTarget />
-          <span>{currentStatusLabel}</span>
-        </SidebarMenuButton>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
-        align="start"
-        className="w-48"
-        side="right"
-        sideOffset={12}
-      >
-        <DropdownMenuLabel>Update Status</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => handleStatusChange(null)}>
-          <IconClockHour4Filled className="mr-2 h-4 w-4 text-green-600" />
-          Available
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => handleStatusChange("away")}>
-          <IconMoon className="mr-2 h-4 w-4 text-yellow-600" />
-          Away
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => handleStatusChange("busy")}>
-          <IconCircleLetterXFilled className="mr-2 h-4 w-4 text-red-600" />
-          Busy
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => handleStatusChange("dnd")}>
-          <IconPhone className="mr-2 h-4 w-4 text-red-700" />
-          Do Not Disturb
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
   );
 }
 
