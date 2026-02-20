@@ -47,7 +47,10 @@ RUN bun run --cwd apps/server build
 FROM oven/bun:1.3.9-slim AS runtime
 WORKDIR /app
 
+COPY --from=deps /app/node_modules/.bun node_modules/.bun
 COPY --from=deps /app/apps/server/node_modules apps/server/node_modules
+COPY --from=deps /app/package.json ./
+COPY --from=deps /app/apps/server/package.json apps/server/
 COPY --from=builder /app/apps/server/dist apps/server/dist
 
 ARG PORT
@@ -55,4 +58,4 @@ ENV PORT=$PORT
 
 EXPOSE $PORT
 
-CMD ["bun", "run", "apps/server/dist/index.js"]
+CMD ["bun", "apps/server/dist/index.mjs"]
