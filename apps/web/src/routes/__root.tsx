@@ -8,19 +8,20 @@ import {
 } from "@tanstack/react-router";
 import type { AppRouterClient } from "@work-holo/api/routers/index";
 import { useState } from "react";
-import { ThemeProvider } from "@/components/shared/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/providers/theme-provider";
 import type { orpcClient, queryUtils } from "@/utils/orpc";
 import { link } from "@/utils/orpc";
 import "@/styles/index.css";
 import { FullScreenLoader } from "@/components/shared/full-screen-loader";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { useVersionCheck } from "@/hooks/use-version-check";
 import { authClient } from "@/lib/auth-client";
 
 export interface RouterAppContext {
-  queryUtils: typeof queryUtils;
-  queryClient: QueryClient;
   orpcClient: typeof orpcClient;
+  queryClient: QueryClient;
+  queryUtils: typeof queryUtils;
 }
 
 export const Route = createRootRouteWithContext<RouterAppContext>()({
@@ -100,7 +101,9 @@ function RootComponent() {
         disableTransitionOnChange
         storageKey="vite-ui-theme"
       >
-        <Outlet />
+        <TooltipProvider>
+          <Outlet />
+        </TooltipProvider>
         <Toaster richColors />
       </ThemeProvider>
     </>

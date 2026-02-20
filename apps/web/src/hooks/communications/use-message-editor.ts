@@ -1,3 +1,4 @@
+import type { AnyExtension } from "@tiptap/core";
 import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import Mention from "@tiptap/extension-mention";
@@ -12,26 +13,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import z from "zod";
 import { cn } from "@/lib/utils";
 import { uploadMessageImage } from "@/utils/upload-helper";
-import type { AnyExtension } from "@tiptap/core";
 
 const URL_REGEX = /^[a-zA-Z]+:\/\//;
 
 interface UseMessageEditorOptions {
+  AutoLinkPreview: AnyExtension;
   content: string;
-  onChange: (content: string) => void;
-  onSubmit: () => void;
-  disabled?: boolean;
-  onCursorChange?: (position: number) => void;
-  fetchUsers: (query: string) => Promise<
-    Array<{
-      id: string;
-      name: string | null;
-      image: string | null;
-      email: string;
-    }>
-  >;
-  isMaximized?: boolean;
-  isInMaximizedComposer?: boolean;
   createMentionSuggestion: (
     fetchUsers: (query: string) => Promise<
       Array<{
@@ -42,8 +29,21 @@ interface UseMessageEditorOptions {
       }>
     >
   ) => Omit<SuggestionOptions, "editor">;
+  disabled?: boolean;
+  fetchUsers: (query: string) => Promise<
+    Array<{
+      id: string;
+      name: string | null;
+      image: string | null;
+      email: string;
+    }>
+  >;
+  isInMaximizedComposer?: boolean;
+  isMaximized?: boolean;
   LinkPreviewNode: AnyExtension;
-  AutoLinkPreview: AnyExtension;
+  onChange: (content: string) => void;
+  onCursorChange?: (position: number) => void;
+  onSubmit: () => void;
 }
 
 export function useMessageEditor({

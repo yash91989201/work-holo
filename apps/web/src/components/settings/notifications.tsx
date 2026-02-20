@@ -1,4 +1,4 @@
-import { Bell } from "lucide-react";
+import { IconBellFilled } from "@tabler/icons-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,6 +11,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useNotificationPermission } from "@/hooks/use-notification-permission";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
+import { testPushNotification } from "@/lib/push-subscription";
 import { Spinner } from "../ui/spinner";
 import { Switch } from "../ui/switch";
 
@@ -85,7 +86,6 @@ export function PushNotifications() {
   const handleTestNotification = async () => {
     setIsTesting(true);
     try {
-      const { testPushNotification } = await import("@/lib/push-subscription");
       await testPushNotification();
     } finally {
       setIsTesting(false);
@@ -146,7 +146,7 @@ export function PushNotifications() {
                     </>
                   ) : (
                     <>
-                      <Bell className="size-3" />
+                      <IconBellFilled className="size-3" />
                       <span>Test</span>
                     </>
                   )}

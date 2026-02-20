@@ -1,7 +1,11 @@
+import {
+  IconCircleCheckFilled,
+  IconMailFilled,
+  IconUserFilled,
+} from "@tabler/icons-react";
 import { createFileRoute } from "@tanstack/react-router";
-import { CheckCircle, Mail, Users } from "lucide-react";
 import { z } from "zod";
-import { AcceptInvitationForm } from "@/components/shared/accept-invitation-form";
+import { AcceptInvitationForm } from "@/components/auth/accept-invitation-form";
 import {
   Card,
   CardContent,
@@ -27,7 +31,7 @@ function RouteComponent() {
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-            <Users className="h-8 w-8 text-primary" />
+            <IconUserFilled className="h-8 w-8 text-primary" />
           </div>
           <h1 className="mb-2 font-bold text-3xl text-foreground">
             Join Organization
@@ -40,8 +44,7 @@ function RouteComponent() {
         <Card>
           <CardHeader className="text-center">
             <CardTitle className="flex items-center justify-center gap-2">
-              <Mail className="h-5 w-5" />
-              Invitation Pending
+              <IconMailFilled className="h-5 w-5" /> Invitation Pending
             </CardTitle>
             <CardDescription>
               Accept the invitation below to join the organization and start
@@ -60,15 +63,15 @@ function RouteComponent() {
 
             <div className="space-y-4">
               <div className="flex items-center gap-3 text-muted-foreground text-sm">
-                <CheckCircle className="h-4 w-4 text-green-500" />
+                <IconCircleCheckFilled className="h-4 w-4 text-green-500" />
                 <span>Get access to organization resources</span>
               </div>
               <div className="flex items-center gap-3 text-muted-foreground text-sm">
-                <CheckCircle className="h-4 w-4 text-green-500" />
+                <IconCircleCheckFilled className="h-4 w-4 text-green-500" />
                 <span>Collaborate with team members</span>
               </div>
               <div className="flex items-center gap-3 text-muted-foreground text-sm">
-                <CheckCircle className="h-4 w-4 text-green-500" />
+                <IconCircleCheckFilled className="h-4 w-4 text-green-500" />
                 <span>Manage projects and tasks</span>
               </div>
             </div>

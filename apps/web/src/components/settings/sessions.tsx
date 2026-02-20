@@ -1,5 +1,9 @@
+import {
+  IconDeviceDesktop,
+  IconDeviceMobile,
+  IconTrashFilled,
+} from "@tabler/icons-react";
 import { useNavigate } from "@tanstack/react-router";
-import { Monitor, Smartphone, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { UAParser } from "ua-parser-js";
 import { Badge } from "@/components/ui/badge";
@@ -62,9 +66,9 @@ export function CurrentSession() {
         <ItemTitle className="flex items-center gap-2">
           {new UAParser(currentSessionData.userAgent || "").getResult().device
             .type === "mobile" ? (
-            <Smartphone className="size-4" />
+            <IconDeviceMobile className="size-4" />
           ) : (
-            <Monitor className="size-4" />
+            <IconDeviceDesktop className="size-4" />
           )}
           {getBrowserInformation(currentSessionData.userAgent)}
           <Badge>Current</Badge>
@@ -162,9 +166,9 @@ export function OtherSessions() {
                 <ItemTitle className="flex items-center gap-2">
                   {new UAParser(session.userAgent || "").getResult().device
                     .type === "mobile" ? (
-                    <Smartphone className="size-4" />
+                    <IconDeviceMobile className="size-4" />
                   ) : (
-                    <Monitor className="size-4" />
+                    <IconDeviceDesktop className="size-4" />
                   )}
                   {getBrowserInformation(session.userAgent)}
                 </ItemTitle>
@@ -179,7 +183,7 @@ export function OtherSessions() {
                   size="sm"
                   variant="destructive"
                 >
-                  <Trash2 className="size-4" />
+                  <IconTrashFilled className="size-4" />
                 </Button>
               </ItemActions>
             </Item>

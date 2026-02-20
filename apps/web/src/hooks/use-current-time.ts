@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
 interface TimeOfDay {
-  label: string;
   greeting: string;
+  label: string;
 }
 
 const getTimeOfDay = (hour: number): TimeOfDay => {

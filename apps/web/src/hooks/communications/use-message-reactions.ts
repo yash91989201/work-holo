@@ -4,17 +4,17 @@ import { messageReactionsCollection, usersCollection } from "@/db/collections";
 
 interface ReactionUser {
   id: string;
-  name: string;
   image: string | undefined;
+  name: string;
 }
 
 interface GroupedReaction {
-  emoji: string;
   count: number;
+  currentUserReactionId?: string;
+  emoji: string;
+  hasCurrentUser: boolean;
   userIds: string[];
   users: ReactionUser[];
-  hasCurrentUser: boolean;
-  currentUserReactionId?: string;
 }
 
 export function useMessageReactions(messageId: string, userId: string) {

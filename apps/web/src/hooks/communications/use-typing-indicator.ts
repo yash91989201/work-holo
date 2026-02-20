@@ -9,10 +9,10 @@ export interface TypingUser {
 }
 
 interface TypingPayload {
-  userId: string;
-  userName: string;
   isTyping: boolean;
   timestamp: string;
+  userId: string;
+  userName: string;
 }
 
 export function useTypingIndicator(channelId: string) {

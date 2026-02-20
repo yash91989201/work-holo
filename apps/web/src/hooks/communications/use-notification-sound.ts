@@ -19,9 +19,9 @@ export function useNotificationSound() {
 
   const activeChannelId =
     useParams({
-      from: "/(authenticated)/org/$slug/(modules)/communication/channels/$id",
+      from: "/(authenticated)/org/$slug/workspace/teams/$teamId/(modules)/communication/channels/$channelId",
       shouldThrow: false,
-    })?.id ?? null;
+    })?.channelId ?? null;
 
   const seenNotificationIdsRef = useRef<Set<string>>(new Set());
   const isFirstLoadRef = useRef(true);

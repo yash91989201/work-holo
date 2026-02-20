@@ -1,5 +1,5 @@
+import { IconArrowLeft } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
 import type * as React from "react";
 import { Suspense } from "react";
 import {
@@ -46,7 +46,7 @@ function BackToOrgButton() {
     <SidebarMenuItem>
       <SidebarMenuButton asChild>
         <Link params={{ slug: activeOrg }} to="/org/$slug">
-          <ArrowLeft />
+          <IconArrowLeft />
           <span>Back to Org</span>
         </Link>
       </SidebarMenuButton>

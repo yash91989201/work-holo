@@ -4,18 +4,18 @@ export type BucketName = (typeof BUCKETS)[keyof typeof BUCKETS];
 
 export interface UploadUrlRequest {
   bucket: BucketName;
-  fileName: string;
   contentType: string;
+  fileName: string;
   fileSize: number;
   userId: string;
 }
 
 export interface UploadUrlResponse {
-  uploadUrl: string;
-  publicUrl: string;
-  filePath: string;
   bucket: BucketName;
   expiresAt: Date;
+  filePath: string;
+  publicUrl: string;
+  uploadUrl: string;
 }
 
 export interface DeleteFileRequest {
@@ -24,9 +24,9 @@ export interface DeleteFileRequest {
 }
 
 export interface DeleteFileResponse {
-  success: boolean;
-  filePath: string;
   bucket: BucketName;
+  filePath: string;
+  success: boolean;
 }
 
 export interface GetPublicUrlRequest {
@@ -35,18 +35,18 @@ export interface GetPublicUrlRequest {
 }
 
 export interface FileMetadata {
+  bucket: BucketName;
   fileName: string;
-  originalName: string;
+  filePath: string;
   fileSize: number;
   mimeType: string;
-  bucket: BucketName;
-  filePath: string;
+  originalName: string;
   publicUrl: string;
 }
 
 export interface StorageError {
-  code: string;
-  message: string;
   bucket?: BucketName;
+  code: string;
   filePath?: string;
+  message: string;
 }

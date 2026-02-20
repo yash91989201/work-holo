@@ -5,11 +5,11 @@ import { useChannelPresence } from "@/hooks/communications/use-channel-presence"
 import { queryUtils } from "@/utils/orpc";
 
 interface ChannelMember {
-  id: string;
-  name: string;
   email: string;
+  id: string;
   image?: string | null | undefined;
   isOnline: boolean;
+  name: string;
 }
 
 interface InfoSidebarState {
@@ -25,23 +25,23 @@ type MaximizedComposerCompleteCallback = (
 ) => void;
 
 interface MaximizedMessageComposerState {
-  isOpen: boolean;
   content: string | null;
+  isOpen: boolean;
   messageId: string | null;
-  parentMessageId: string | null;
   onComplete?: MaximizedComposerCompleteCallback;
+  parentMessageId: string | null;
 }
 
 interface OpenMaximizedMessageComposerConfig {
-  messageId?: string | null;
   content?: string | null;
-  parentMessageId?: string | null;
+  messageId?: string | null;
   onComplete?: MaximizedComposerCompleteCallback;
+  parentMessageId?: string | null;
 }
 
 interface MessageThreadState {
-  messageId: string | null;
   isOpen: boolean;
+  messageId: string | null;
 }
 
 interface PinnedMessagesState {
@@ -58,32 +58,32 @@ interface HighlightedMessageState {
 }
 
 interface ChannelState {
-  infoSidebar: InfoSidebarState;
-  maximizedMessageComposer: MaximizedMessageComposerState;
-  messageThread: MessageThreadState;
-  pinnedMessages: PinnedMessagesState;
-  mentionsSidebar: MentionsSidebarState;
+  clearHighlightedMessage: () => void;
+  closeInfoSidebar: () => void;
+  closeMaximizedMessageComposer: () => void;
+  closeMentionsSidebar: () => void;
+  closeMessageThread: () => void;
+  closePinnedMessages: () => void;
   highlightedMessage: HighlightedMessageState;
 
+  highlightMessage: (messageId: string) => void;
+  infoSidebar: InfoSidebarState;
+  maximizedMessageComposer: MaximizedMessageComposerState;
+  mentionsSidebar: MentionsSidebarState;
+  messageThread: MessageThreadState;
+
   openInfoSidebar: () => void;
-  closeInfoSidebar: () => void;
 
   openMaximizedMessageComposer: (
     config?: OpenMaximizedMessageComposerConfig
   ) => void;
-  closeMaximizedMessageComposer: () => void;
-
-  openMessageThread: (messageId: string) => void;
-  closeMessageThread: () => void;
-
-  openPinnedMessages: () => void;
-  closePinnedMessages: () => void;
 
   openMentionsSidebar: () => void;
-  closeMentionsSidebar: () => void;
 
-  highlightMessage: (messageId: string) => void;
-  clearHighlightedMessage: () => void;
+  openMessageThread: (messageId: string) => void;
+
+  openPinnedMessages: () => void;
+  pinnedMessages: PinnedMessagesState;
 }
 
 const defaultMaximizedComposerState: MaximizedMessageComposerState = {

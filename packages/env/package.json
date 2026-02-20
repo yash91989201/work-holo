@@ -8,15 +8,16 @@
     "./web": "./src/web.ts",
     "./native": "./src/native.ts",
     "./realtime": "./src/realtime.ts",
-    "./read-receipt": "./src/read-receipt.ts"
+    "./read-receipt": "./src/read-receipt.ts",
+    "./db": "./src/db.ts"
   },
   "dependencies": {
     "@t3-oss/env-core": "^0.13.10",
-    "dotenv": "^17.2.3",
+    "dotenv": "^17.3.1",
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@types/bun": "^1.3.7",
+    "@types/bun": "^1.3.9",
     "@work-holo/config": "workspace:*",
     "typescript": "^5.9.3"
   }

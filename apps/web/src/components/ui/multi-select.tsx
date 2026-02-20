@@ -1,11 +1,10 @@
-import { cva, type VariantProps } from "class-variance-authority";
 import {
-  CheckIcon,
-  ChevronDown,
-  WandSparkles,
-  XCircle,
-  XIcon,
-} from "lucide-react";
+  IconCircleLetterXFilled,
+  IconSquareCheckFilled,
+  IconSquareChevronDownFilled,
+  IconWand,
+} from "@tabler/icons-react";
+import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -32,14 +31,14 @@ import { cn } from "@/lib/utils";
 export interface AnimationConfig {
   /** Badge animation type */
   badgeAnimation?: "bounce" | "pulse" | "wiggle" | "fade" | "slide" | "none";
-  /** Popover animation type */
-  popoverAnimation?: "scale" | "slide" | "fade" | "flip" | "none";
-  /** Option hover animation type */
-  optionHoverAnimation?: "highlight" | "scale" | "glow" | "none";
-  /** Animation duration in seconds */
-  duration?: number;
   /** Animation delay in seconds */
   delay?: number;
+  /** Animation duration in seconds */
+  duration?: number;
+  /** Option hover animation type */
+  optionHoverAnimation?: "highlight" | "scale" | "glow" | "none";
+  /** Popover animation type */
+  popoverAnimation?: "scale" | "slide" | "fade" | "flip" | "none";
 }
 
 /**
@@ -75,14 +74,12 @@ const multiSelectVariants = cva("m-1 transition-all duration-300 ease-in-out", {
  * Option interface for MultiSelect component
  */
 interface MultiSelectOption {
-  /** The text to display for the option. */
-  label: string;
-  /** The unique value associated with the option. */
-  value: string;
-  /** Optional icon component to display alongside the option. */
-  icon?: React.ComponentType<{ className?: string }>;
   /** Whether this option is disabled */
   disabled?: boolean;
+  /** Optional icon component to display alongside the option. */
+  icon?: React.ComponentType<{ className?: string }>;
+  /** The text to display for the option. */
+  label: string;
   /** Custom styling for the option */
   style?: {
     /** Custom badge color */
@@ -92,6 +89,8 @@ interface MultiSelectOption {
     /** Gradient background for badge */
     gradient?: string;
   };
+  /** The unique value associated with the option. */
+  value: string;
 }
 
 /**
@@ -114,25 +113,6 @@ interface MultiSelectProps
     >,
     VariantProps<typeof multiSelectVariants> {
   /**
-   * An array of option objects or groups to be displayed in the multi-select component.
-   */
-  options: MultiSelectOption[] | MultiSelectGroup[];
-  /**
-   * Callback function triggered when the selected values change.
-   * Receives an array of the new selected values.
-   */
-  onValueChange: (value: string[]) => void;
-
-  /** The default selected values when the component mounts. */
-  defaultValue?: string[];
-
-  /**
-   * Placeholder text to be displayed when no values are selected.
-   * Optional, defaults to "Select options".
-   */
-  placeholder?: string;
-
-  /**
    * Animation duration in seconds for the visual effects (e.g., bouncing badges).
    * Optional, defaults to 0 (no animation).
    */
@@ -145,48 +125,10 @@ interface MultiSelectProps
   animationConfig?: AnimationConfig;
 
   /**
-   * Maximum number of items to display. Extra selected items will be summarized.
-   * Optional, defaults to 3.
-   */
-  maxCount?: number;
-
-  /**
-   * The modality of the popover. When set to true, interaction with outside elements
-   * will be disabled and only popover content will be visible to screen readers.
-   * Optional, defaults to false.
-   */
-  modalPopover?: boolean;
-
-  /**
    * If true, renders the multi-select component as a child of another component.
    * Optional, defaults to false.
    */
   asChild?: boolean;
-
-  /**
-   * Additional class names to apply custom styles to the multi-select component.
-   * Optional, can be used to add custom styles.
-   */
-  className?: string;
-
-  /**
-   * If true, disables the select all functionality.
-   * Optional, defaults to false.
-   */
-  hideSelectAll?: boolean;
-
-  /**
-   * If true, shows search functionality in the popover.
-   * If false, hides the search input completely.
-   * Optional, defaults to true.
-   */
-  searchable?: boolean;
-
-  /**
-   * Custom empty state message when no options match search.
-   * Optional, defaults to "No results found."
-   */
-  emptyIndicator?: React.ReactNode;
 
   /**
    * If true, allows the component to grow and shrink with its content.
@@ -196,11 +138,86 @@ interface MultiSelectProps
   autoSize?: boolean;
 
   /**
-   * If true, shows badges in a single line with horizontal scroll.
-   * If false, badges wrap to multiple lines.
+   * Additional class names to apply custom styles to the multi-select component.
+   * Optional, can be used to add custom styles.
+   */
+  className?: string;
+
+  /**
+   * If true, automatically closes the popover after selecting an option.
+   * Useful for single-selection-like behavior or mobile UX.
    * Optional, defaults to false.
    */
-  singleLine?: boolean;
+  closeOnSelect?: boolean;
+
+  /**
+   * If true, automatically removes duplicate options based on their value.
+   * Optional, defaults to false (shows warning in dev mode instead).
+   */
+  deduplicateOptions?: boolean;
+
+  /** The default selected values when the component mounts. */
+  defaultValue?: string[];
+
+  /**
+   * If true, disables the component completely.
+   * Optional, defaults to false.
+   */
+  disabled?: boolean;
+
+  /**
+   * Custom empty state message when no options match search.
+   * Optional, defaults to "No results found."
+   */
+  emptyIndicator?: React.ReactNode;
+
+  /**
+   * If true, disables the select all functionality.
+   * Optional, defaults to false.
+   */
+  hideSelectAll?: boolean;
+
+  /**
+   * Maximum number of items to display. Extra selected items will be summarized.
+   * Optional, defaults to 3.
+   */
+  maxCount?: number;
+
+  /**
+   * Maximum width for the component.
+   * Optional, defaults to 100% of container.
+   * Component will not exceed container boundaries.
+   */
+  maxWidth?: string;
+
+  /**
+   * Minimum width for the component.
+   * Optional, defaults to auto-sizing based on content.
+   * When set, component will not shrink below this width.
+   */
+  minWidth?: string;
+
+  /**
+   * The modality of the popover. When set to true, interaction with outside elements
+   * will be disabled and only popover content will be visible to screen readers.
+   * Optional, defaults to false.
+   */
+  modalPopover?: boolean;
+  /**
+   * Callback function triggered when the selected values change.
+   * Receives an array of the new selected values.
+   */
+  onValueChange: (value: string[]) => void;
+  /**
+   * An array of option objects or groups to be displayed in the multi-select component.
+   */
+  options: MultiSelectOption[] | MultiSelectGroup[];
+
+  /**
+   * Placeholder text to be displayed when no values are selected.
+   * Optional, defaults to "Select options".
+   */
+  placeholder?: string;
 
   /**
    * Custom CSS class for the popover content.
@@ -209,10 +226,11 @@ interface MultiSelectProps
   popoverClassName?: string;
 
   /**
-   * If true, disables the component completely.
-   * Optional, defaults to false.
+   * If true, the component will reset its internal state when defaultValue changes.
+   * Useful for React Hook Form integration and form reset functionality.
+   * Optional, defaults to true.
    */
-  disabled?: boolean;
+  resetOnDefaultValueChange?: boolean;
 
   /**
    * Responsive configuration for different screen sizes.
@@ -243,56 +261,24 @@ interface MultiSelectProps
       };
 
   /**
-   * Minimum width for the component.
-   * Optional, defaults to auto-sizing based on content.
-   * When set, component will not shrink below this width.
-   */
-  minWidth?: string;
-
-  /**
-   * Maximum width for the component.
-   * Optional, defaults to 100% of container.
-   * Component will not exceed container boundaries.
-   */
-  maxWidth?: string;
-
-  /**
-   * If true, automatically removes duplicate options based on their value.
-   * Optional, defaults to false (shows warning in dev mode instead).
-   */
-  deduplicateOptions?: boolean;
-
-  /**
-   * If true, the component will reset its internal state when defaultValue changes.
-   * Useful for React Hook Form integration and form reset functionality.
+   * If true, shows search functionality in the popover.
+   * If false, hides the search input completely.
    * Optional, defaults to true.
    */
-  resetOnDefaultValueChange?: boolean;
+  searchable?: boolean;
 
   /**
-   * If true, automatically closes the popover after selecting an option.
-   * Useful for single-selection-like behavior or mobile UX.
+   * If true, shows badges in a single line with horizontal scroll.
+   * If false, badges wrap to multiple lines.
    * Optional, defaults to false.
    */
-  closeOnSelect?: boolean;
+  singleLine?: boolean;
 }
 
 /**
  * Imperative methods exposed through ref
  */
 export interface MultiSelectRef {
-  /**
-   * Programmatically reset the component to its default value
-   */
-  reset: () => void;
-  /**
-   * Get current selected values
-   */
-  getSelectedValues: () => string[];
-  /**
-   * Set selected values programmatically
-   */
-  setSelectedValues: (values: string[]) => void;
   /**
    * Clear all selected values
    */
@@ -301,6 +287,18 @@ export interface MultiSelectRef {
    * Focus the component
    */
   focus: () => void;
+  /**
+   * Get current selected values
+   */
+  getSelectedValues: () => string[];
+  /**
+   * Programmatically reset the component to its default value
+   */
+  reset: () => void;
+  /**
+   * Set selected values programmatically
+   */
+  setSelectedValues: (values: string[]) => void;
 }
 
 export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
@@ -862,9 +860,8 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                                 "border-transparent text-white",
                               responsiveSettings.compactMode &&
                                 "px-1.5 py-0.5 text-xs",
-                              screenSize === "mobile" &&
-                                "max-w-[120px] truncate",
-                              singleLine && "flex-shrink-0 whitespace-nowrap",
+                              screenSize === "mobile" && "max-w-30 truncate",
+                              singleLine && "shrink-0 whitespace-nowrap",
                               "[&>svg]:pointer-events-auto"
                             )}
                             key={value}
@@ -916,7 +913,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                               role="button"
                               tabIndex={0}
                             >
-                              <XCircle
+                              <IconCircleLetterXFilled
                                 className={cn(
                                   "h-3 w-3",
                                   responsiveSettings.compactMode &&
@@ -936,7 +933,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                           multiSelectVariants({ variant }),
                           responsiveSettings.compactMode &&
                             "px-1.5 py-0.5 text-xs",
-                          singleLine && "flex-shrink-0 whitespace-nowrap",
+                          singleLine && "shrink-0 whitespace-nowrap",
                           "[&>svg]:pointer-events-auto"
                         )}
                         style={{
@@ -949,7 +946,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                         {`+ ${
                           selectedValues.length - responsiveSettings.maxCount
                         } more`}
-                        <XCircle
+                        <IconCircleLetterXFilled
                           className={cn(
                             "ml-2 h-4 w-4 cursor-pointer",
                             responsiveSettings.compactMode && "ml-1 h-3 w-3"
@@ -980,13 +977,13 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                       role="button"
                       tabIndex={0}
                     >
-                      <XIcon className="h-4 w-4" />
+                      <IconCircleLetterXFilled className="h-4 w-4" />
                     </div>
                     <Separator
                       className="flex h-full min-h-6"
                       orientation="vertical"
                     />
-                    <ChevronDown
+                    <IconSquareChevronDownFilled
                       aria-hidden="true"
                       className="mx-2 h-4 cursor-pointer text-muted-foreground"
                     />
@@ -997,7 +994,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                   <span className="mx-3 text-muted-foreground text-sm">
                     {placeholder}
                   </span>
-                  <ChevronDown className="mx-2 h-4 cursor-pointer text-muted-foreground" />
+                  <IconSquareChevronDownFilled className="mx-2 h-4 cursor-pointer text-muted-foreground" />
                 </div>
               )}
             </Button>
@@ -1009,9 +1006,9 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
             className={cn(
               "w-auto p-0",
               getPopoverAnimationClass(),
-              screenSize === "mobile" && "w-[85vw] max-w-[280px]",
+              screenSize === "mobile" && "w-[85vw] max-w-70",
               screenSize === "tablet" && "w-[70vw] max-w-md",
-              screenSize === "desktop" && "min-w-[300px]",
+              screenSize === "desktop" && "min-w-75",
               popoverClassName
             )}
             id={listboxId}
@@ -1077,7 +1074,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                             : "opacity-50 [&_svg]:invisible"
                         )}
                       >
-                        <CheckIcon className="h-4 w-4" />
+                        <IconSquareCheckFilled className="h-4 w-4" />
                       </div>
                       <span>
                         (Select All
@@ -1121,7 +1118,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                                   : "opacity-50 [&_svg]:invisible"
                               )}
                             >
-                              <CheckIcon className="h-4 w-4" />
+                              <IconSquareCheckFilled className="h-4 w-4" />
                             </div>
                             {option.icon && (
                               <option.icon
@@ -1164,7 +1161,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                                 : "opacity-50 [&_svg]:invisible"
                             )}
                           >
-                            <CheckIcon className="h-4 w-4" />
+                            <IconSquareCheckFilled className="h-4 w-4" />
                           </div>
                           {option.icon && (
                             <option.icon
@@ -1207,7 +1204,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
             </Command>
           </PopoverContent>
           {animation > 0 && selectedValues.length > 0 && (
-            <WandSparkles
+            <IconWand
               className={cn(
                 "my-2 h-3 w-3 cursor-pointer bg-background text-foreground",
                 isAnimating ? "" : "text-muted-foreground"

@@ -443,11 +443,10 @@ export function useMessageMutations() {
       messageIds: string[];
       userId: string;
     }) => {
-      const { txid } =
-        await orpcClient.communication.message.markMessagesAsRead({
-          channelId,
-          messageIds,
-        });
+      const { txid } = await orpcClient.communication.message.markAsRead({
+        channelId,
+        messageIds,
+      });
 
       // Wait for Electric Shape sync
       await messageMentionsCollection.utils.awaitTxId(txid);
