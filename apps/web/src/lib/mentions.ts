@@ -1,8 +1,8 @@
 export interface Mention {
-  id: string;
-  name: string | null;
   email: string;
+  id: string;
   image: string | null;
+  name: string | null;
 }
 
 export const CHANNEL_MENTION_ID = "__channel__";
@@ -14,12 +14,12 @@ export const CHANNEL_MENTION: Mention = {
 };
 
 export interface MentionMatch {
-  id: string;
-  name: string;
   email: string;
-  image: string | null;
-  start: number;
   end: number;
+  id: string;
+  image: string | null;
+  name: string;
+  start: number;
 }
 
 export const parseMentions = (content: string): MentionMatch[] => {

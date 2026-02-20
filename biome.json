@@ -38,7 +38,8 @@
         "useConsistentTypeDefinitions": "off"
       },
       "suspicious": {
-        "noConsole": "off"
+        "noConsole": "off",
+        "noBitwiseOperators": "off"
       },
       "performance": {
         "noNamespaceImport": "off",

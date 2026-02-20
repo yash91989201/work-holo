@@ -1,20 +1,27 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 import { queryClient, queryUtils } from "@/utils/orpc";
-import { useActiveOrganization } from "./use-active-organization";
 
-export type PresenceStatus = "available" | "away" | "busy" | "offline" | "dnd";
+export type PresenceStatus =
+  | "available"
+  | "away"
+  | "busy"
+  | "offline"
+  | "dnd"
+  | "on_break"
+  | "in_call"
+  | "in_meeting";
 
 export type ManualStatus = "dnd" | "busy" | "away" | null;
 
 interface UsePresenceHeartbeatOptions {
   enabled?: boolean;
-  punchedIn: boolean;
-  onBreak: boolean;
   inCall?: boolean;
   inMeeting?: boolean;
-  manualStatus?: ManualStatus;
   intervalMs?: number;
+  manualStatus?: ManualStatus;
+  onBreak: boolean;
+  punchedIn: boolean;
 }
 
 export function usePresenceHeartbeat({
@@ -26,13 +33,12 @@ export function usePresenceHeartbeat({
   manualStatus = null,
   intervalMs = 300_000, // 5 minutes
 }: UsePresenceHeartbeatOptions) {
-  const organization = useActiveOrganization();
   const lastActivityRef = useRef(Date.now());
   const isTabFocusedRef = useRef(true);
   const lastHeartbeatRef = useRef(0); // ADD THIS LINE
 
   const { mutate: sendHeartbeat } = useMutation(
-    queryUtils.member.presence.heartbeat.mutationOptions({})
+    queryUtils.org.presence.heartbeat.mutationOptions({})
   );
 
   // Track user activity
@@ -151,12 +157,12 @@ export function usePresenceHeartbeat({
 
 export function useSetManualStatus() {
   return useMutation(
-    queryUtils.member.presence.setManualStatus.mutationOptions({
+    queryUtils.org.presence.setManualStatus.mutationOptions({
       onSuccess: async () => {
         // Immediately refetch the org presence data to update UI
         await queryClient.refetchQueries({
-          queryKey: queryUtils.member.presence.getOrgPresence.queryKey({
-            input: { },
+          queryKey: queryUtils.org.presence.getOrgPresence.queryKey({
+            input: {},
           }),
           exact: true,
         });
@@ -167,8 +173,8 @@ export function useSetManualStatus() {
 
 export function useOrgPresence() {
   return useQuery(
-    queryUtils.member.presence.getOrgPresence.queryOptions({
-      input: { },
+    queryUtils.org.presence.getOrgPresence.queryOptions({
+      input: {},
       refetchInterval: 30_000,
     })
   );

@@ -8,12 +8,12 @@ export type StorageBucket =
   | "org-logo";
 
 export interface UploadResult {
+  bucket: StorageBucket;
   fileName: string;
-  originalName: string;
   fileSize: number;
   mimeType: string;
+  originalName: string;
   url: string;
-  bucket: StorageBucket;
 }
 
 async function uploadFileWithPresignedUrl(

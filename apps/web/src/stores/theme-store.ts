@@ -29,18 +29,18 @@ export type LetterSpacing = "tighter" | "tight" | "normal" | "wide" | "wider";
 interface ThemeConfig {
   fontFamily: FontFamily;
   fontSize: FontSize;
+  letterSpacing: LetterSpacing;
   radius: Radius;
   spacing: Spacing;
-  letterSpacing: LetterSpacing;
 }
 
 interface ThemeStore extends ThemeConfig {
+  resetTheme: () => void;
   setFontFamily: (fontFamily: FontFamily) => void;
   setFontSize: (fontSize: FontSize) => void;
+  setLetterSpacing: (letterSpacing: LetterSpacing) => void;
   setRadius: (radius: Radius) => void;
   setSpacing: (spacing: Spacing) => void;
-  setLetterSpacing: (letterSpacing: LetterSpacing) => void;
-  resetTheme: () => void;
 }
 
 const defaultTheme: ThemeConfig = {

@@ -2,13 +2,13 @@ import { useCallback, useRef, useState } from "react";
 import { toast } from "sonner";
 
 interface UseAudioRecorderReturn {
-  isRecording: boolean;
   audioBlob: Blob | null;
   audioUrl: string | null;
+  cancelRecording: () => void;
   duration: number;
+  isRecording: boolean;
   startRecording: () => Promise<void>;
   stopRecording: () => void;
-  cancelRecording: () => void;
 }
 
 export function useAudioRecorder(): UseAudioRecorderReturn {

@@ -1,26 +1,27 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { Suspense } from "react";
-import { Sidebar } from "@/components/sidebar";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { usePresenceHeartbeat } from "@/hooks/use-presence";
+import { FullScreenLoader } from "@/components/shared/full-screen-loader";
 import { authClient } from "@/lib/auth-client";
-import { queryUtils } from "@/utils/orpc";
+import { PermissionProvider } from "@/lib/permission";
+import { queryClient, queryUtils } from "@/utils/orpc";
 
 export const Route = createFileRoute("/(authenticated)/org/$slug")({
   loader: async () => {
-    const activeOrganization =
-      await authClient.organization.getFullOrganization();
+    const [activeOrganization, memberRole] = await Promise.all([
+      authClient.organization.getFullOrganization(),
+      authClient.organization.getActiveMemberRole(),
+      queryClient.prefetchQuery(
+        queryUtils.user.permission.get.queryOptions({})
+      ),
+    ]);
 
-    const { data, error } = await authClient.organization.getActiveMemberRole();
-
-    if (error !== null) {
+    if (memberRole.error !== null) {
       throw new Error("Failed to load member role");
     }
 
     return {
       logoSrc: activeOrganization.data?.logo ?? undefined,
-      role: data.role,
+      role: memberRole.data.role,
     };
   },
   head: ({ loaderData }) => ({
@@ -37,43 +38,10 @@ export const Route = createFileRoute("/(authenticated)/org/$slug")({
 
 function RouteComponent() {
   return (
-    <>
-      <SidebarProvider
-        defaultOpen={false}
-        style={
-          {
-            "--sidebar-width": "calc(var(--spacing) * 72)",
-            "--header-height": "calc(var(--spacing) * 12)",
-          } as React.CSSProperties
-        }
-      >
-        <Sidebar variant="sidebar" />
-        <SidebarInset>
-          <Outlet />
-        </SidebarInset>
-      </SidebarProvider>
-
-      <Suspense fallback={null}>
-        <OrgPresenceHeartbeat />
-      </Suspense>
-    </>
+    <Suspense fallback={<FullScreenLoader />}>
+      <PermissionProvider>
+        <Outlet />
+      </PermissionProvider>
+    </Suspense>
   );
-}
-
-function OrgPresenceHeartbeat() {
-  const { data: attendance } = useSuspenseQuery(
-    queryUtils.member.attendance.getStatus.queryOptions({})
-  );
-
-  const hasCheckedIn = Boolean(attendance?.checkInTime);
-  const hasCheckedOut = Boolean(attendance?.checkOutTime);
-  const isWorking = hasCheckedIn && !hasCheckedOut;
-
-  usePresenceHeartbeat({
-    enabled: isWorking,
-    punchedIn: isWorking,
-    onBreak: false,
-  });
-
-  return null;
 }
