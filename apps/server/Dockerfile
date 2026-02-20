@@ -42,17 +42,17 @@ COPY packages/permission/src packages/permission/src
 COPY packages/infrastructure/src packages/infrastructure/src
 COPY apps/server/src apps/server/src
 
-# Build in parallel
-RUN  bun run --cwd apps/server compile
+RUN bun run --cwd apps/server build
 
-FROM oven/bun:1.3.6-slim AS runtime
+FROM oven/bun:1.3.9-slim AS runtime
 WORKDIR /app
 
-COPY --from=builder /app/apps/server/server /app/server
+COPY --from=deps /app/apps/server/node_modules apps/server/node_modules
+COPY --from=builder /app/apps/server/dist apps/server/dist
 
 ARG PORT
 ENV PORT=$PORT
 
 EXPOSE $PORT
 
-CMD ["/app/server"]
+CMD ["bun", "run", "apps/server/dist/index.js"]
