@@ -48,6 +48,20 @@ bun auth:generate    # Generate Better-Auth schema
 bun build            # Build all apps
 ```
 
+## Distributed Documentation
+
+Each major directory has its own `CLAUDE.md` with detailed implementation notes:
+
+| Location | Purpose |
+|----------|---------|
+| `apps/server/CLAUDE.md` | Server architecture, routes, middleware, startup |
+| `apps/web/CLAUDE.md` | Web app structure, routing, components, state |
+| `packages/CLAUDE.md` | Package overview, dependencies, patterns |
+| `workers/CLAUDE.md` | Worker architecture, adding new workers |
+| `workers/read-receipt/CLAUDE.md` | Read receipt processing, dual strategy |
+
+When working on a specific area, read the relevant `CLAUDE.md` first for detailed context.
+
 ## Monorepo Structure
 
 ```
@@ -62,6 +76,8 @@ work-holo/
 │   ├── auth/        # Better-Auth configuration
 │   ├── db/          # Drizzle schema and database client
 │   ├── env/         # Environment variable validation
+│   ├── permission/  # RBAC engine (Casbin)
+│   ├── infrastructure/ # Redis, Queue, Pusher clients
 │   └── config/      # Shared TypeScript configs
 └── workers/
     └── read-receipt/ # Background worker for read receipts
