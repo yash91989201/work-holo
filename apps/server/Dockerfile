@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM oven/bun:1.3.6-slim AS base
+FROM oven/bun:1.3.9-slim AS base
 WORKDIR /app
 
 FROM base AS deps
@@ -11,6 +11,7 @@ COPY packages/config/package.json packages/config/
 COPY packages/env/package.json packages/env/
 COPY packages/db/package.json packages/db/
 COPY packages/auth/package.json packages/auth/
+COPY packages/permission/package.json packages/permission/
 COPY packages/api/package.json packages/api/
 COPY apps/server/package.json apps/server/
 
@@ -26,6 +27,7 @@ COPY packages/env/tsconfig.json packages/env/
 COPY packages/db/tsconfig.json packages/db/
 COPY packages/api/tsconfig.json packages/api/
 COPY packages/auth/tsconfig.json packages/auth/
+COPY packages/permission/auth/tsconfig.json packages/permission/
 COPY apps/server/tsconfig.json apps/server/
 
 COPY packages/db/drizzle.config.ts packages/db/
@@ -35,6 +37,7 @@ COPY packages/env/src/server.ts packages/env/src/
 COPY packages/db/src packages/db/src
 COPY packages/auth/src packages/auth/src
 COPY packages/api/src packages/api/src
+COPY packages/permission/src packages/permission/src
 COPY apps/server/src apps/server/src
 
 # Build in parallel
