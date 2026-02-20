@@ -54,7 +54,7 @@ export function LogInForm() {
           });
 
           navigate({
-            to: "/org/$slug",
+            to: "/org/$slug/workspace",
             params: { slug: org.slug },
           });
           return;
