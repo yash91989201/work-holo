@@ -13,6 +13,7 @@ COPY packages/db/package.json packages/db/
 COPY packages/auth/package.json packages/auth/
 COPY packages/api/package.json packages/api/
 COPY packages/permission/package.json packages/permission/
+COPY packages/infrastructure/package.json packages/infrastructure/
 COPY apps/web/package.json apps/web/
 
 RUN --mount=type=cache,target=/root/.bun/install/cache \
@@ -39,6 +40,7 @@ COPY packages/db/src packages/db/src
 COPY packages/auth/src packages/auth/src
 COPY packages/api/src packages/api/src
 COPY packages/permission/src packages/permission/src
+COPY packages/infrastructure/src packages/infrastructure/src
 
 COPY apps/web apps/web
 
