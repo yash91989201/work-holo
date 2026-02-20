@@ -4,7 +4,7 @@ import {
   IconBellFilled,
   IconCheck,
   IconChecks,
-  IconFilter,
+  IconChevronRight,
   IconMail,
   IconMessage,
   IconUsers,
@@ -16,17 +16,6 @@ import { useCallback, useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  ButtonGroup,
-  ButtonGroupSeparator,
-} from "@/components/ui/button-group";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   Empty,
   EmptyDescription,
   EmptyHeader,
@@ -34,20 +23,11 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import {
-  Item,
-  ItemContent,
-  ItemDescription,
-  ItemHeader,
-  ItemMedia,
-  ItemTitle,
-} from "@/components/ui/item";
-import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Tooltip,
@@ -55,8 +35,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { messagesCollection } from "@/db/collections";
+import { channelsCollection, messagesCollection } from "@/db/collections";
 import { useNotifications } from "@/hooks/communications/use-notifications";
+import { useSession } from "@/hooks/use-session";
 import { cn } from "@/lib/utils";
 import { useChannelMessageHighlight } from "@/stores/channel-store";
 
@@ -69,36 +50,46 @@ type TimeGroup = "today" | "yesterday" | "earlier";
 type FilterType = "all" | "unread" | "read";
 
 interface NotificationConfig {
-  borderColor: string;
+  accentColor: string;
+  bgTone: string;
+  gradient: string;
   icon: React.ReactNode;
   label: string;
-  linear: string;
+  tone: string;
 }
 
 const notificationConfig: Record<NotificationType, NotificationConfig> = {
   mention: {
     icon: <IconAt className="h-4 w-4" />,
     label: "Mentioned you",
-    linear: "from-amber-500/20 to-orange-500/10",
-    borderColor: "border-amber-500/30",
+    tone: "text-amber-600 dark:text-amber-400",
+    bgTone: "bg-amber-500/10 dark:bg-amber-500/15",
+    accentColor: "border-amber-400/30",
+    gradient: "from-amber-500/20 via-amber-400/10 to-transparent",
   },
   channel_invite: {
     icon: <IconUsers className="h-4 w-4" />,
     label: "Invited you",
-    linear: "from-emerald-500/20 to-teal-500/10",
-    borderColor: "border-emerald-500/30",
+    tone: "text-emerald-600 dark:text-emerald-400",
+    bgTone: "bg-emerald-500/10 dark:bg-emerald-500/15",
+    accentColor: "border-emerald-400/30",
+    gradient: "from-emerald-500/20 via-emerald-400/10 to-transparent",
   },
   direct_message: {
     icon: <IconMail className="h-4 w-4" />,
     label: "Sent a message",
-    linear: "from-blue-500/20 to-indigo-500/10",
-    borderColor: "border-blue-500/30",
+    tone: "text-blue-600 dark:text-blue-400",
+    bgTone: "bg-blue-500/10 dark:bg-blue-500/15",
+    accentColor: "border-blue-400/30",
+    gradient: "from-blue-500/20 via-blue-400/10 to-transparent",
   },
   default: {
     icon: <IconMessage className="h-4 w-4" />,
     label: "Notification",
-    linear: "from-slate-500/20 to-gray-500/10",
-    borderColor: "border-slate-500/30",
+    tone: "text-muted-foreground",
+    bgTone: "bg-muted/50",
+    accentColor: "border-border/30",
+    gradient: "from-muted/20 via-muted/10 to-transparent",
   },
 };
 
@@ -119,15 +110,15 @@ function formatTimeAgo(date: Date): string {
   const diff = now - date.getTime();
   const minutes = Math.floor(diff / 60_000);
 
-  if (minutes < 1) return "now";
-  if (minutes < 60) return `${minutes}m`;
+  if (minutes < 1) return "Just now";
+  if (minutes < 60) return `${minutes}m ago`;
 
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h`;
+  if (hours < 24) return `${hours}h ago`;
 
   const days = Math.floor(hours / 24);
   if (days === 1) return "Yesterday";
-  if (days < 7) return `${days}d`;
+  if (days < 7) return `${days}d ago`;
 
   return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
@@ -193,9 +184,6 @@ export function NotificationDropdown() {
     [filteredNotifications]
   );
 
-  const currentFilterLabel =
-    filterOptions.find((f) => f.value === filter)?.label ?? "All notifications";
-
   return (
     <TooltipProvider>
       <Popover onOpenChange={setOpen} open={open}>
@@ -203,110 +191,133 @@ export function NotificationDropdown() {
           <TooltipTrigger asChild>
             <PopoverTrigger asChild>
               <Button
-                className="relative size-10 rounded-xl border border-border/60 bg-background shadow-sm transition-all duration-200 hover:border-border hover:bg-muted/50 hover:shadow-md active:scale-95"
-                size="icon-lg"
+                className="group relative size-10 rounded-xl bg-gradient-to-br from-primary/5 to-primary/0 shadow-lg shadow-primary/5 transition-all duration-300 hover:scale-105 hover:shadow-primary/10 hover:shadow-xl"
+                size="icon"
                 variant="ghost"
               >
-                <IconBellFilled className="h-5 w-5 text-muted-foreground transition-colors hover:text-foreground" />
+                <div
+                  className={cn(
+                    "relative transition-transform duration-300",
+                    open && "rotate-12"
+                  )}
+                >
+                  {unreadCount > 0 ? (
+                    <IconBellFilled className="h-5 w-5 text-primary transition-transform group-hover:scale-110" />
+                  ) : (
+                    <IconBell className="h-5 w-5 text-foreground/60 transition-transform group-hover:scale-110 group-hover:text-foreground" />
+                  )}
+                </div>
                 {unreadCount > 0 && (
-                  <span className="zoom-in-50 pointer-events-none absolute -top-1 -right-1 flex h-5 min-w-5 animate-in items-center justify-center rounded-full bg-linear-to-br from-red-500 to-rose-600 px-1 font-semibold text-[10px] text-white shadow-lg ring-2 ring-background duration-300">
-                    {unreadCount > 99 ? "99+" : unreadCount}
-                  </span>
+                  <>
+                    <span className="absolute -top-1 -right-1 h-3 w-3 animate-pulse rounded-full bg-gradient-to-br from-red-500 to-red-600 shadow-lg shadow-red-500/30" />
+                    <span className="absolute -top-1 -right-1 h-3 w-3 animate-ping rounded-full bg-gradient-to-br from-red-500 to-red-600 opacity-50" />
+                  </>
                 )}
               </Button>
             </PopoverTrigger>
           </TooltipTrigger>
-          <TooltipContent>
-            <p>Notifications</p>
+          <TooltipContent className="font-medium" side="bottom">
+            <p>
+              Notifications
+              {unreadCount > 0 && ` (${unreadCount})`}
+            </p>
           </TooltipContent>
         </Tooltip>
+
         <PopoverContent
           align="end"
-          className="w-120 overflow-hidden rounded-2xl border-border/60 p-0 shadow-2xl"
-          sideOffset={8}
+          className="w-[24rem] overflow-hidden rounded-2xl border border-border/40 bg-background/95 p-0 shadow-2xl shadow-primary/5 backdrop-blur-xl"
+          sideOffset={12}
         >
-          <div className="flex flex-col">
-            {/* Header */}
-            <div className="relative overflow-hidden bg-linear-to-br from-primary/5 via-primary/3 to-background px-5 py-4">
-              <div className="absolute inset-0 bg-[radial-linear(circle_at_top_right,theme(colors.primary.500/0.1),transparent_50%)]" />
-              <div className="relative flex items-center justify-between">
-                <h3 className="font-semibold text-foreground text-lg">
-                  Notifications
-                </h3>
-                <ButtonGroup>
-                  <Button
-                    className="h-9 gap-2 rounded-lg font-medium text-xs"
-                    disabled={unreadCount === 0}
-                    onClick={handleMarkAllAsRead}
-                    size="sm"
-                    variant="outline"
+          <div className="relative overflow-hidden border-border/40 border-b">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-primary/0 to-transparent" />
+            <div className="relative px-5 pt-5 pb-4">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1">
+                  <div className="flex items-baseline gap-3">
+                    <h2 className="font-bold text-foreground text-xl tracking-tight">
+                      Notifications
+                    </h2>
+                    {unreadCount > 0 && (
+                      <Badge
+                        className="h-6 rounded-full bg-gradient-to-r from-primary to-primary/80 font-bold text-[10px] uppercase tracking-wider"
+                        variant="default"
+                      >
+                        {unreadCount}
+                      </Badge>
+                    )}
+                  </div>
+                  <p className="mt-1 text-muted-foreground text-xs">
+                    {unreadCount > 0
+                      ? `${unreadCount} unread notification${unreadCount > 1 ? "s" : ""}`
+                      : "You're all caught up"}
+                  </p>
+                </div>
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      className="h-9 w-9 rounded-lg bg-background/60 shadow-sm backdrop-blur-sm transition-all duration-200 hover:bg-primary hover:text-primary-foreground"
+                      disabled={unreadCount === 0}
+                      onClick={handleMarkAllAsRead}
+                      size="icon"
+                      variant="ghost"
+                    >
+                      <IconChecks className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">
+                    <p>Mark all as read</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+
+              <div className="mt-4 flex gap-2">
+                {filterOptions.map((option) => (
+                  <button
+                    className={cn(
+                      "relative overflow-hidden rounded-lg px-3 py-1.5 font-medium text-xs transition-all duration-200",
+                      "border",
+                      filter === option.value
+                        ? "border-primary/50 bg-primary/10 text-primary shadow-primary/10 shadow-sm"
+                        : "border-border/40 bg-background/60 text-muted-foreground hover:border-border/60 hover:bg-background hover:text-foreground"
+                    )}
+                    key={option.value}
+                    onClick={() => setFilter(option.value)}
+                    type="button"
                   >
-                    <IconChecks className="h-4 w-4" />
-                    Mark all
-                  </Button>
-                  <ButtonGroupSeparator />
-
-                  {/* Filter Dropdown */}
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        className="h-9 gap-2 rounded-lg font-medium text-xs"
-                        size="sm"
-                        variant="outline"
-                      >
-                        <IconFilter className="h-3.5 w-3.5" />
-                        {currentFilterLabel}
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48">
-                      {filterOptions.map((option) => (
-                        <DropdownMenuCheckboxItem
-                          checked={filter === option.value}
-                          key={option.value}
-                          onCheckedChange={() => setFilter(option.value)}
-                        >
-                          {option.label}
-                        </DropdownMenuCheckboxItem>
-                      ))}
-                      <DropdownMenuSeparator />
-                      <DropdownMenuCheckboxItem
-                        checked={filter === "all"}
-                        onCheckedChange={() => setFilter("all")}
-                      >
-                        Reset filter
-                      </DropdownMenuCheckboxItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </ButtonGroup>
+                    {option.label}
+                    {option.value === "unread" && unreadCount > 0 && (
+                      <span className="ml-1.5 h-1.5 w-1.5 rounded-full bg-primary" />
+                    )}
+                  </button>
+                ))}
               </div>
             </div>
+          </div>
 
-            <ScrollArea className="max-h-100">
-              <div className="p-2">
-                <NotificationContent
-                  filter={filter}
-                  groupedNotifications={groupedNotifications}
-                  isLoading={isLoading}
-                  onClose={() => setOpen(false)}
-                  onMarkAsRead={handleMarkAsRead}
-                />
-              </div>
-            </ScrollArea>
+          <ScrollArea className="h-[28rem]">
+            <NotificationContent
+              filter={filter}
+              groupedNotifications={groupedNotifications}
+              isLoading={isLoading}
+              onClose={() => setOpen(false)}
+              onMarkAsRead={handleMarkAsRead}
+            />
+          </ScrollArea>
 
-            <div className="border-t bg-muted/30 px-4 py-3">
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground text-xs">
-                  Showing {filteredNotifications.length} of{" "}
-                  {notifications.length}
-                </span>
-                <Button
-                  className="h-auto gap-1.5 p-0 font-medium text-primary text-xs hover:text-primary/80"
-                  variant="link"
-                >
-                  View all
-                </Button>
-              </div>
-            </div>
+          <div className="flex items-center justify-between border-border/40 border-t bg-muted/30 px-5 py-3">
+            <span className="font-medium text-[11px] text-muted-foreground/70">
+              {filteredNotifications.length}{" "}
+              {filteredNotifications.length === 1 ? "item" : "items"}
+            </span>
+            <Button
+              className="h-7 gap-1.5 rounded-lg px-2.5 font-medium text-muted-foreground text-xs transition-all hover:bg-primary/5 hover:text-foreground"
+              variant="ghost"
+            >
+              View all
+              <IconChevronRight className="h-3.5 w-3.5" />
+            </Button>
           </div>
         </PopoverContent>
       </Popover>
@@ -345,7 +356,7 @@ function NotificationContent({
   }
 
   return (
-    <div className="space-y-1">
+    <div className="flex flex-col py-2">
       {groupedNotifications.today.length > 0 && (
         <TimeGroupSection
           label="Today"
@@ -388,23 +399,20 @@ function TimeGroupSection({
   onMarkAsRead,
 }: TimeGroupSectionProps) {
   return (
-    <div className="py-1">
-      <div className="sticky top-0 z-10 mb-2 flex items-center gap-2 bg-background/95 px-3 py-1.5 backdrop-blur-sm">
-        <span className="font-medium text-muted-foreground text-xs uppercase tracking-wider">
+    <div className="flex flex-col">
+      <div className="sticky top-0 z-10 flex items-center gap-2 bg-background/95 px-5 py-2 backdrop-blur-sm">
+        <span className="font-bold text-[10px] text-muted-foreground/70 uppercase tracking-widest">
           {label}
         </span>
-        <Separator className="flex-1" />
-        <Badge
-          className="h-5 border-border/40 bg-muted px-1.5 font-medium text-[10px] text-muted-foreground"
-          variant="outline"
-        >
+        <div className="h-px flex-1 bg-gradient-to-r from-border/40 to-transparent" />
+        <span className="font-medium text-[10px] text-muted-foreground/50">
           {notifications.length}
-        </Badge>
+        </span>
       </div>
-      <div className="space-y-0.5">
-        {notifications.map((notification, index) => (
+
+      <div className="flex flex-col gap-1 px-2 py-1">
+        {notifications.map((notification) => (
           <NotificationItem
-            index={index}
             key={notification.id}
             notification={notification}
             onClose={onClose}
@@ -417,18 +425,17 @@ function TimeGroupSection({
 }
 
 type NotificationItemProps = {
-  index: number;
   notification: ReturnType<typeof useNotifications>["notifications"][number];
   onMarkAsRead: (input: { notificationId: string }) => void;
   onClose: () => void;
 };
 
 function NotificationItem({
-  index,
   notification,
   onMarkAsRead,
   onClose,
 }: NotificationItemProps) {
+  const session = useSession();
   const { highlightMessage } = useChannelMessageHighlight();
   const navigate = useNavigate();
   const { slug } = useParams({
@@ -448,13 +455,22 @@ function NotificationItem({
       typeof slug === "string"
     ) {
       const message = messagesCollection.get(notification.entityId);
+      const channelTeamId = message
+        ? channelsCollection.get(message.channelId)?.teamId
+        : null;
+      const fallbackTeamId = session?.session?.activeTeamId ?? null;
+      const resolvedTeamId = channelTeamId ?? fallbackTeamId;
 
-      if (message) {
+      if (message && resolvedTeamId) {
         highlightMessage(notification.entityId);
         onClose();
         navigate({
           to: "/org/$slug/workspace/teams/$teamId/communication/channels/$channelId",
-          params: { slug, teamId: "", channelId: message.channelId },
+          params: {
+            slug,
+            teamId: resolvedTeamId,
+            channelId: message.channelId,
+          },
         });
       }
     }
@@ -473,106 +489,94 @@ function NotificationItem({
   };
 
   return (
-    <Item
-      asChild
+    <div
       className={cn(
-        "group relative cursor-pointer transition-all duration-200 hover:translate-x-0.5 hover:shadow-md",
-        isUnread
-          ? cn(
-              "border-primary/20 bg-linear-to-r from-primary/5 to-transparent shadow-sm",
-              "hover:border-primary/30 hover:from-primary/2 hover:to-primary/2"
-            )
-          : "border-transparent bg-transparent hover:bg-muted/40"
+        "group relative rounded-xl transition-all duration-200",
+        isUnread &&
+          "border-l-2 border-l-primary bg-gradient-to-r from-primary/5 via-primary/[0.02] to-transparent"
       )}
-      style={{
-        animationDelay: `${index * 30}ms`,
-      }}
-      variant={isUnread ? "outline" : "default"}
     >
-      <button onClick={handleClick} onKeyDown={handleKeyDown} type="button">
-        {/* Unread indicator */}
-        {isUnread && (
-          <span className="zoom-in absolute top-4 left-1.5 h-2.5 w-2.5 animate-in rounded-full bg-primary shadow-primary/30 shadow-sm ring-2 ring-background duration-300" />
+      <button
+        className={cn(
+          "flex w-full items-start gap-3 rounded-xl px-4 py-3 text-left transition-all duration-200",
+          isUnread ? "hover:bg-primary/[0.08]" : "hover:bg-muted/40"
         )}
-
-        {/* Icon Container */}
-        <ItemMedia
-          className={cn(
-            "relative size-10 overflow-hidden rounded-xl border shadow-sm transition-transform duration-200 group-hover:scale-105",
-            meta.borderColor,
-            isUnread ? "bg-linear-to-br" : "bg-muted",
-            isUnread ? meta.linear : ""
-          )}
-          variant="default"
-        >
-          <span
-            className={cn(
-              "transition-colors duration-200",
-              isUnread ? "text-foreground" : "text-muted-foreground"
-            )}
-          >
-            {meta.icon}
-          </span>
-        </ItemMedia>
-
-        {/* Content */}
-        <ItemContent className="pt-0.5">
-          {/* Header row */}
-          <ItemHeader>
-            <div className="flex items-center gap-2 overflow-hidden">
-              <ItemTitle
-                className={cn(
-                  isUnread ? "text-foreground" : "text-foreground/70"
-                )}
-              >
-                {notification.title}
-              </ItemTitle>
-              {isUnread && (
-                <Badge
-                  className="zoom-in h-5 shrink-0 animate-in border-primary/20 bg-primary/10 px-1.5 font-semibold text-[10px] text-primary"
-                  variant="outline"
-                >
-                  NEW
-                </Badge>
-              )}
-            </div>
-            <span className="mt-0.5 shrink-0 text-muted-foreground text-xs tabular-nums">
-              {formatTimeAgo(new Date(notification.createdAt))}
-            </span>
-          </ItemHeader>
-
-          {/* Type label */}
-          <p className="mt-0.5 text-muted-foreground text-xs">{meta.label}</p>
-
-          {/* Message preview */}
-          {notification.message && (
-            <ItemDescription className="mt-1.5 text-muted-foreground/80 text-xs leading-relaxed">
-              {parse(DOMPurify.sanitize(notification.message))}
-            </ItemDescription>
-          )}
-
-          {/* Actions */}
+        onClick={handleClick}
+        onKeyDown={handleKeyDown}
+        type="button"
+      >
+        <div className="relative">
           <div
             className={cn(
-              "mt-2 flex items-center gap-1 transition-all duration-200",
-              isUnread ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+              "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ring-1 transition-transform duration-200",
+              meta.bgTone,
+              meta.accentColor,
+              "group-hover:scale-105 group-hover:shadow-lg",
+              isUnread && "shadow-md"
             )}
           >
-            {isUnread && (
-              <Button
-                className="h-7 gap-1.5 rounded-lg border-border/40 bg-background px-2.5 font-medium text-[11px] text-muted-foreground shadow-sm hover:text-foreground"
-                onClick={handleMarkAsReadClick}
-                size="sm"
-                variant="outline"
-              >
-                <IconCheck className="h-3.5 w-3.5" />
-                Mark read
-              </Button>
-            )}
+            <span className={cn(meta.tone)}>{meta.icon}</span>
           </div>
-        </ItemContent>
+          {isUnread && (
+            <div className="absolute -right-0.5 -bottom-0.5 flex h-3 w-3 items-center justify-center">
+              <div className="h-2 w-2 animate-ping rounded-full bg-primary" />
+              <div className="absolute h-2 w-2 rounded-full bg-primary" />
+            </div>
+          )}
+        </div>
+
+        <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+          <div className="flex items-center justify-between">
+            <span
+              className={cn(
+                "min-w-0 flex-1 truncate font-medium text-sm leading-snug",
+                isUnread ? "text-foreground" : "text-foreground/70"
+              )}
+            >
+              {notification.title}
+            </span>
+            <span className="ml-2 shrink-0 font-medium text-[10px] text-muted-foreground/50 tabular-nums">
+              {formatTimeAgo(new Date(notification.createdAt))}
+            </span>
+          </div>
+
+          <div
+            className={cn(
+              "inline-flex w-fit items-center gap-1.5 rounded-full border px-2 py-0.5 font-medium text-[10px] leading-none",
+              meta.bgTone,
+              meta.accentColor,
+              meta.tone
+            )}
+          >
+            {meta.label}
+          </div>
+
+          {notification.message && (
+            <p className="line-clamp-2 text-muted-foreground/60 text-xs leading-relaxed">
+              {parse(DOMPurify.sanitize(notification.message))}
+            </p>
+          )}
+        </div>
       </button>
-    </Item>
+
+      {isUnread && (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              aria-label="Mark as read"
+              className="absolute top-1/2 right-3 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-lg bg-background/80 opacity-0 shadow-sm backdrop-blur-sm transition-all duration-150 hover:bg-primary hover:text-primary-foreground group-hover:opacity-100"
+              onClick={handleMarkAsReadClick}
+              type="button"
+            >
+              <IconCheck className="h-3.5 w-3.5 text-muted-foreground" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="left">
+            <p>Mark as read</p>
+          </TooltipContent>
+        </Tooltip>
+      )}
+    </div>
   );
 }
 
@@ -580,11 +584,12 @@ function EmptyState({ filter }: { filter: string }) {
   const messages: Record<string, { title: string; description: string }> = {
     all: {
       title: "No notifications",
-      description: "You're all caught up! Check back later.",
+      description: "You're all caught up! Check back later for updates.",
     },
     unread: {
       title: "No unread notifications",
-      description: "You've read everything!",
+      description:
+        "You've read everything! Great job staying on top of things.",
     },
     read: {
       title: "No read notifications",
@@ -595,13 +600,22 @@ function EmptyState({ filter }: { filter: string }) {
   const { title, description } = messages[filter] ?? messages.all;
 
   return (
-    <Empty className="border-0 py-12">
-      <EmptyHeader>
-        <EmptyMedia variant="icon">
-          <IconBell className="h-6 w-6" />
+    <Empty className="h-full min-h-[20rem] border-0">
+      <EmptyHeader className="gap-4">
+        <EmptyMedia
+          className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/0 shadow-lg shadow-primary/5 ring-1 ring-border/30"
+          variant="icon"
+        >
+          <IconBell className="h-8 w-8 text-primary/40" />
         </EmptyMedia>
-        <EmptyTitle>{title}</EmptyTitle>
-        <EmptyDescription>{description}</EmptyDescription>
+        <div className="space-y-1.5">
+          <EmptyTitle className="font-semibold text-base tracking-tight">
+            {title}
+          </EmptyTitle>
+          <EmptyDescription className="max-w-[14rem] text-sm">
+            {description}
+          </EmptyDescription>
+        </div>
       </EmptyHeader>
     </Empty>
   );
@@ -609,30 +623,36 @@ function EmptyState({ filter }: { filter: string }) {
 
 function NotificationListSkeleton() {
   return (
-    <div className="space-y-4 p-2">
-      <div className="flex items-center gap-2 px-2">
-        <Skeleton className="h-3 w-12 rounded-full" />
-        <Skeleton className="h-px flex-1" />
-        <Skeleton className="h-4 w-6 rounded-full" />
-      </div>
-      <div className="space-y-2">
-        {Array.from({ length: 3 }).map((_, index) => (
-          <div
-            className="flex items-start gap-3 rounded-xl border border-border/40 p-3.5"
-            key={index.toString()}
-          >
-            <Skeleton className="size-10 shrink-0 rounded-xl" />
-            <div className="min-w-0 flex-1 space-y-2">
-              <div className="flex items-center justify-between">
-                <Skeleton className="h-4 w-24 rounded-full" />
-                <Skeleton className="h-3 w-10 rounded-full" />
-              </div>
-              <Skeleton className="h-3 w-16 rounded-full" />
-              <Skeleton className="h-3 w-full rounded-full" />
-            </div>
+    <div className="flex flex-col py-2">
+      {([0, 1] as const).map((groupIndex) => (
+        <div className="flex flex-col" key={groupIndex}>
+          <div className="flex items-center gap-2 px-5 py-2">
+            <Skeleton className="h-2.5 w-16 rounded-full" />
+            <div className="h-px flex-1 bg-gradient-to-r from-border/40 to-transparent" />
+            <Skeleton className="h-2.5 w-4 rounded-full" />
           </div>
-        ))}
-      </div>
+
+          <div className="flex flex-col gap-1 px-2 py-1">
+            {([0, 1, 2] as const).map((itemIndex) => (
+              <div
+                className="flex items-start gap-3 rounded-xl px-4 py-3"
+                key={itemIndex}
+              >
+                <Skeleton className="h-10 w-10 shrink-0 rounded-xl" />
+                <div className="flex flex-1 flex-col gap-1.5">
+                  <div className="flex items-start justify-between gap-2">
+                    <Skeleton className="h-3.5 w-32 rounded-full" />
+                    <Skeleton className="h-2.5 w-10 rounded-full" />
+                  </div>
+                  <Skeleton className="h-3 w-20 rounded-full" />
+                  <Skeleton className="mt-0.5 h-2.5 w-full rounded-full" />
+                  <Skeleton className="h-2.5 w-3/4 rounded-full" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
