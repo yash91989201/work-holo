@@ -1,22 +1,30 @@
 import {
+  IconArrowBackUp,
+  IconArrowForwardUp,
+  IconArrowRight,
   IconBold,
   IconCode,
   IconEraser,
   IconItalic,
+  IconLink,
   IconList,
   IconListNumbers,
+  IconMaximize,
   IconMicrophone,
-  IconMoodSmileBeam,
-  IconPlus,
-  IconPolaroid,
+  IconMinimize,
+  IconMoodPlus,
+  IconPaperclip,
+  IconPhoto,
   IconSend,
   IconStrikethrough,
+  IconX,
 } from "@tabler/icons-react";
 import { EditorContent } from "@tiptap/react";
 import type { KeyboardEvent } from "react";
-import { useCallback, useState } from "react";
-
+import { useCallback } from "react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ButtonGroup } from "@/components/ui/button-group";
 import {
   EmojiPicker,
   EmojiPickerContent,
@@ -24,51 +32,60 @@ import {
   EmojiPickerSearch,
 } from "@/components/ui/emoji-picker";
 import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useMessageEditor } from "@/hooks/communications/use-message-editor";
 import { cn } from "@/lib/utils";
-
 import { AutoLinkPreview } from "./auto-link-preview";
 import { LinkBubbleMenu } from "./link-bubble-menu";
 import { LinkPreviewNode } from "./link-preview-node";
 import { createMentionSuggestion } from "./mention-suggestion";
-
+import "tippy.js/dist/tippy.css";
 import "@/styles/tiptap.css";
 
-/* ---------- Menu Item ---------- */
-
-function Item({
-  icon,
-  label,
-  active,
-  onClick,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  active?: boolean;
-  onClick?: () => void;
-}) {
-  return (
-    <button
-      className={cn(
-        "flex h-9 w-full items-center gap-3 rounded-md px-3 text-sm",
-        "text-zinc-200 hover:bg-white/10",
-        active && "bg-white/10"
-      )}
-      onClick={onClick}
-      type="button"
-    >
-      <span className="flex h-4 w-4 items-center justify-center">{icon}</span>
-      <span className="leading-none">{label}</span>
-    </button>
-  );
+interface MessageEditorProps {
+  content: string;
+  disabled?: boolean;
+  fetchUsers: (query: string) => Promise<
+    Array<{
+      id: string;
+      name: string | null;
+      image: string | null;
+      email: string;
+    }>
+  >;
+  hasAttachments?: boolean;
+  hasAudio?: boolean;
+  isCreatingMessage?: boolean;
+  isInMaximizedComposer?: boolean;
+  isMaximized?: boolean;
+  isRecording?: boolean;
+  onChange: (content: string) => void;
+  onCursorChange?: (position: number) => void;
+  onEmojiSelect?: (emoji: { emoji: string; label: string }) => void;
+  onFileUpload?: () => void;
+  onMaximize?: () => void;
+  onMinimize?: () => void;
+  onSubmit: () => void;
+  onVoiceRecord?: () => void;
 }
-
-/* ---------- Main ---------- */
 
 export function MessageEditor({
   content,
@@ -77,20 +94,29 @@ export function MessageEditor({
   disabled = false,
   onCursorChange,
   fetchUsers,
+  onMaximize,
+  onMinimize,
+  isMaximized = false,
+  isInMaximizedComposer = false,
+  isRecording = false,
   isCreatingMessage = false,
   hasAttachments = false,
   hasAudio = false,
   onEmojiSelect,
+  onFileUpload,
   onVoiceRecord,
-}: any) {
-  const [plusOpen, setPlusOpen] = useState(false);
-  const [emojiOpen, setEmojiOpen] = useState(false);
-
+}: MessageEditorProps) {
   const {
     editor,
     fileInputRef,
+    isLinkPopoverOpen,
+    setIsLinkPopoverOpen,
+    linkUrl,
+    setLinkUrl,
     handleImageUploadClick,
     handleFileInputChange,
+    handleAddLink,
+    handleSaveLink,
   } = useMessageEditor({
     content,
     onChange,
@@ -98,6 +124,8 @@ export function MessageEditor({
     disabled,
     onCursorChange,
     fetchUsers,
+    isMaximized,
+    isInMaximizedComposer,
     createMentionSuggestion,
     LinkPreviewNode,
     AutoLinkPreview,
@@ -105,20 +133,42 @@ export function MessageEditor({
 
   const handleEditorKeyDown = useCallback(
     (event: KeyboardEvent<HTMLDivElement>) => {
-      if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
-        event.preventDefault();
-        onSubmit();
+      if (disabled) return;
+
+      const isModifierPressed = event.ctrlKey || event.metaKey;
+      const isMaximizeShortcut =
+        isModifierPressed && event.key.toLowerCase() === "m";
+
+      if (!isMaximizeShortcut) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      if (!(isMaximized || isInMaximizedComposer)) {
+        onMaximize?.();
+        return;
+      }
+
+      if (isMaximized && isInMaximizedComposer) {
+        onMinimize?.();
       }
     },
-    [onSubmit]
+    [disabled, isInMaximizedComposer, isMaximized, onMaximize, onMinimize]
   );
 
-  if (!editor) return null;
+  if (!editor) {
+    return null;
+  }
 
   return (
-    <div className="mx-6 mb-6 rounded-2xl border border-white/10 bg-zinc-950/80 shadow-xl backdrop-blur-xl">
-      {/* Hidden file input */}
+    <div
+      className={cn(
+        "flex min-w-0 flex-col overflow-x-hidden",
+        isMaximized ? "flex-1 overflow-y-hidden" : ""
+      )}
+    >
       <input
+        accept="image/*"
         className="hidden"
         multiple
         onChange={handleFileInputChange}
@@ -126,154 +176,338 @@ export function MessageEditor({
         type="file"
       />
 
-      {/* ---------- EDITOR ---------- */}
-      <div className="px-6 pt-4">
-        <LinkBubbleMenu editor={editor} />
-        <EditorContent
-          className="max-h-15 min-h-3 w-full overflow-y-auto bg-transparent text-sm text-zinc-100 focus:outline-none"
-          editor={editor}
-          onKeyDown={handleEditorKeyDown}
-          placeholder="Type a message..."
-        />
-      </div>
+      <div
+        className={cn(
+          "overflow-hidden rounded-lg border transition-colors",
+          "focus-within:border-primary",
+          isMaximized && "mx-0 flex flex-1 flex-col rounded-none border-0"
+        )}
+      >
+        {/* Editor Content */}
+        <div
+          className={cn(
+            "relative min-w-0 overflow-x-hidden",
+            isMaximized && "flex-1 overflow-y-auto"
+          )}
+        >
+          <LinkBubbleMenu editor={editor} />
+          <div className="p-3">
+            <EditorContent
+              className={cn("min-w-0", disabled && "opacity-50")}
+              editor={editor}
+              onKeyDown={handleEditorKeyDown}
+            />
+          </div>
 
-      {/* ---------- DIVIDER ---------- */}
-      <div className="mx-6 mt-3 h-px bg-white/10" />
-
-      {/* ---------- ACTION ROW ---------- */}
-      <div className="flex items-center justify-between px-4 py-3">
-        {/* LEFT */}
-        <div className="flex items-center gap-1">
-          {/* PLUS MENU */}
-          <Popover onOpenChange={setPlusOpen} open={plusOpen}>
-            <PopoverTrigger asChild>
-              <Button
-                className="h-9 w-9 rounded-full text-zinc-400 hover:text-white"
-                size="icon-sm"
-                variant="ghost"
-              >
-                <IconPlus className="h-5 w-5" />
-              </Button>
-            </PopoverTrigger>
-
-            <PopoverContent
-              align="start"
-              className="w-48 rounded-xl border border-white/10 bg-zinc-900/95 p-1 shadow-xl backdrop-blur"
-              side="top"
+          {/* Content Length Badge - Bottom Right */}
+          <div className="pointer-events-none absolute right-4 bottom-3">
+            <Badge
+              variant={content.length > 5000 ? "destructive" : "secondary"}
             >
-              <Item
-                active={editor.isActive("bold")}
-                icon={<IconBold className="h-4 w-4" />}
-                label="Bold"
-                onClick={() => editor.chain().focus().toggleBold().run()}
-              />
-              <Item
-                active={editor.isActive("italic")}
-                icon={<IconItalic className="h-4 w-4" />}
-                label="Italic"
-                onClick={() => editor.chain().focus().toggleItalic().run()}
-              />
-              <Item
-                active={editor.isActive("strike")}
-                icon={<IconStrikethrough className="h-4 w-4" />}
-                label="Strike"
-                onClick={() => editor.chain().focus().toggleStrike().run()}
-              />
-              <Item
-                active={editor.isActive("code")}
-                icon={<IconCode className="h-4 w-4" />}
-                label="Code"
-                onClick={() => editor.chain().focus().toggleCode().run()}
-              />
-              <Item
-                active={editor.isActive("bulletList")}
-                icon={<IconList className="h-4 w-4" />}
-                label="Bullet List"
-                onClick={() => editor.chain().focus().toggleBulletList().run()}
-              />
-              <Item
-                active={editor.isActive("orderedList")}
-                icon={<IconListNumbers className="h-4 w-4" />}
-                label="Numbered List"
-                onClick={() => editor.chain().focus().toggleOrderedList().run()}
-              />
-              <Item
-                icon={<IconPolaroid className="h-4 w-4" />}
-                label="Image / Video"
-                onClick={handleImageUploadClick}
-              />
-              <Item
-                icon={<IconEraser className="h-4 w-4" />}
-                label="Clear"
-                onClick={() => {
-                  editor.chain().focus().clearContent().run();
-                  onChange("");
-                }}
-              />
-            </PopoverContent>
-          </Popover>
-
-          {/* EMOJI */}
-          <Popover onOpenChange={setEmojiOpen} open={emojiOpen}>
-            <PopoverTrigger asChild>
-              <Button className="h-4 w-4" size="icon-sm" variant="ghost">
-                <IconMoodSmileBeam />
-              </Button>
-            </PopoverTrigger>
-
-            <PopoverContent
-              align="start"
-              alignOffset={-4}
-              className="w-68 overflow-hidden rounded-xl p-0 shadow-lg"
-              side="top"
-              sideOffset={8}
-            >
-              <EmojiPicker
-                className="p-0"
-                onEmojiSelect={(emoji) => {
-                  editor.chain().focus().insertContent(emoji.emoji).run();
-                  onEmojiSelect?.(emoji);
-                  setEmojiOpen(false);
-                }}
-              >
-                <EmojiPickerSearch className="h-9 border-b px-2 text-sm" />
-
-                <EmojiPickerContent className="max-h-60 p-1" />
-
-                <EmojiPickerFooter className="px-2 py-1 text-xs" />
-              </EmojiPicker>
-            </PopoverContent>
-          </Popover>
+              {content.length}/5000
+            </Badge>
+          </div>
         </div>
 
-        {/* RIGHT */}
-        <div className="flex items-center gap-2">
-          <Button
-            className="h-9 w-9 rounded-full text-zinc-400 hover:text-white"
-            disabled={content.trim().length > 0}
-            onClick={onVoiceRecord}
-            size="icon-sm"
-            variant="ghost"
-          >
-            <IconMicrophone className="h-5 w-5" />
-          </Button>
+        {/* Actions Bar at Bottom */}
+        <div className="flex shrink-0 flex-wrap items-center gap-3 border-t bg-muted/30 px-3 py-1.5">
+          {/* History Group - First */}
+          <ButtonGroup>
+            <Button
+              aria-label="Undo"
+              disabled={!editor.can().undo()}
+              onClick={() => editor.chain().focus().undo().run()}
+              size="icon-sm"
+              title="Undo (Ctrl+Z)"
+              variant="ghost"
+            >
+              <IconArrowBackUp />
+            </Button>
+            <Button
+              aria-label="Redo"
+              disabled={!editor.can().redo()}
+              onClick={() => editor.chain().focus().redo().run()}
+              size="icon-sm"
+              title="Redo (Ctrl+Y)"
+              variant="ghost"
+            >
+              <IconArrowForwardUp />
+            </Button>
+            <Button
+              aria-label="Clear content"
+              onClick={() => {
+                editor.chain().focus().clearContent(true).run();
+                onChange("");
+              }}
+              size="icon-sm"
+              title="Clear Content"
+              variant="ghost"
+            >
+              <IconEraser />
+            </Button>
+          </ButtonGroup>
 
-          <Button
-            className="h-9 rounded-full bg-violet-600 px-4 text-sm text-white hover:bg-violet-500"
-            disabled={
-              isCreatingMessage ||
-              !(content.trim() || hasAttachments || hasAudio)
-            }
-            onClick={onSubmit}
-          >
-            {/* {isCreatingMessage ? <Spinner /> : <IconSend className="h-4 w-8" />} */}
-            {isCreatingMessage ? (
-              <Spinner className="h-4 w-4" />
-            ) : (
-              <IconSend className="h-4 w-4 translate-y-[1px]" />
-            )}
-            <span>Send</span>
-          </Button>
+          <Separator orientation="vertical" />
+
+          {/* Formatting Group */}
+          <ToggleGroup size="sm" spacing={0} type="multiple" variant="default">
+            <ToggleGroupItem
+              aria-label="Toggle bold"
+              onClick={() => editor.chain().focus().toggleBold().run()}
+              title="Bold (Ctrl+B)"
+              value="bold"
+            >
+              <IconBold />
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              aria-label="Toggle italic"
+              onClick={() => editor.chain().focus().toggleItalic().run()}
+              title="Italic (Ctrl+I)"
+              value="italic"
+            >
+              <IconItalic />
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              aria-label="Toggle strikethrough"
+              onClick={() => editor.chain().focus().toggleStrike().run()}
+              title="Strikethrough (Ctrl+Shift+S)"
+              value="strike"
+            >
+              <IconStrikethrough />
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              aria-label="Toggle code"
+              onClick={() => editor.chain().focus().toggleCode().run()}
+              title="Inline Code (Ctrl+E)"
+              value="code"
+            >
+              <IconCode />
+            </ToggleGroupItem>
+          </ToggleGroup>
+
+          <Separator orientation="vertical" />
+
+          {/* Lists Group */}
+          <ToggleGroup size="sm" spacing={0} type="multiple" variant="default">
+            <ToggleGroupItem
+              aria-label="Toggle bullet list"
+              onClick={() => editor.chain().focus().toggleBulletList().run()}
+              title="Bullet List (Ctrl+Shift+8)"
+              value="bulletList"
+            >
+              <IconList />
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              aria-label="Toggle ordered list"
+              onClick={() => editor.chain().focus().toggleOrderedList().run()}
+              title="Ordered List (Ctrl+Shift+7)"
+              value="orderedList"
+            >
+              <IconListNumbers />
+            </ToggleGroupItem>
+          </ToggleGroup>
+
+          <Separator orientation="vertical" />
+
+          {/* Insert Group */}
+          <ButtonGroup>
+            <Popover
+              onOpenChange={setIsLinkPopoverOpen}
+              open={isLinkPopoverOpen}
+            >
+              <PopoverTrigger asChild>
+                <Button
+                  aria-label="Add a link"
+                  onClick={handleAddLink}
+                  size="icon-sm"
+                  title="Insert Link (Ctrl+K)"
+                  variant="ghost"
+                >
+                  <IconLink />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent align="start" className="w-80 p-2">
+                <InputGroup>
+                  <InputGroupInput
+                    autoFocus
+                    onChange={(e) => setLinkUrl(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleSaveLink();
+                      }
+                      if (e.key === "Escape") {
+                        setLinkUrl("");
+                        setIsLinkPopoverOpen(false);
+                      }
+                    }}
+                    placeholder="https://example.com"
+                    type="url"
+                    value={linkUrl}
+                  />
+                  <InputGroupAddon align="inline-end">
+                    <InputGroupButton
+                      onClick={() => {
+                        setLinkUrl("");
+                        setIsLinkPopoverOpen(false);
+                      }}
+                      size="icon-xs"
+                      title="Cancel"
+                      type="button"
+                      variant="default"
+                    >
+                      <IconX />
+                    </InputGroupButton>
+                    <InputGroupButton
+                      onClick={handleSaveLink}
+                      size="icon-xs"
+                      title="Insert Link"
+                      type="button"
+                      variant="default"
+                    >
+                      <IconArrowRight />
+                    </InputGroupButton>
+                  </InputGroupAddon>
+                </InputGroup>
+              </PopoverContent>
+            </Popover>
+            <Button
+              aria-label="Upload image"
+              onClick={handleImageUploadClick}
+              size="icon-sm"
+              title="Upload Image"
+              variant="ghost"
+            >
+              <IconPhoto />
+            </Button>
+          </ButtonGroup>
+
+          <Separator orientation="vertical" />
+
+          {/* Communication Actions + Actions Group - Merged and Right Aligned */}
+          <div className="ml-auto flex items-center gap-3">
+            <ButtonGroup>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      aria-label={
+                        isRecording ? "Stop recording" : "Start voice message"
+                      }
+                      className={cn(
+                        "transition-all duration-200",
+                        isRecording && "relative"
+                      )}
+                      disabled={!onVoiceRecord || content.trim().length > 0}
+                      onClick={onVoiceRecord}
+                      size="icon-sm"
+                      title={
+                        content.trim().length > 0
+                          ? "Clear text to record audio"
+                          : isRecording
+                            ? "Stop recording"
+                            : "Start voice message"
+                      }
+                      variant="ghost"
+                    >
+                      <IconMicrophone
+                        className={cn(
+                          content.trim().length > 0 && "opacity-50",
+                          isRecording && "text-red-500"
+                        )}
+                      />
+                    </Button>
+                  </TooltipTrigger>
+                  {content.trim().length > 0 && (
+                    <TooltipContent>
+                      <p>Clear text to record audio</p>
+                    </TooltipContent>
+                  )}
+                </Tooltip>
+              </TooltipProvider>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    className="transition-all duration-200"
+                    disabled={!onEmojiSelect || hasAudio}
+                    size="icon-sm"
+                    title="Add emoji"
+                    variant="ghost"
+                  >
+                    <IconMoodPlus className={cn(hasAudio && "opacity-50")} />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent align="start" className="w-80 p-0" side="top">
+                  <EmojiPicker onEmojiSelect={onEmojiSelect || (() => {})}>
+                    <EmojiPickerSearch
+                      className="h-16"
+                      placeholder="Search emoji..."
+                    />
+                    <EmojiPickerContent />
+                    <EmojiPickerFooter />
+                  </EmojiPicker>
+                </PopoverContent>
+              </Popover>
+              <Button
+                className="transition-all duration-200"
+                onClick={onFileUpload}
+                size="icon-sm"
+                title="Attach file"
+                variant="ghost"
+              >
+                <IconPaperclip className="h-3.5 w-3.5" />
+              </Button>
+              <Button
+                aria-label={isMaximized ? "Minimize editor" : "Maximize editor"}
+                onClick={() => {
+                  if (isMaximized) {
+                    onMinimize?.();
+                  } else {
+                    onMaximize?.();
+                  }
+                }}
+                size="icon-sm"
+                title={
+                  isMaximized
+                    ? "Minimize Editor (Ctrl+M)"
+                    : "Maximize Editor (Ctrl+M)"
+                }
+                variant="ghost"
+              >
+                {isMaximized ? (
+                  <IconMinimize className="h-3.5 w-3.5" />
+                ) : (
+                  <IconMaximize className="h-3.5 w-3.5" />
+                )}
+              </Button>
+            </ButtonGroup>
+            <Button
+              className={cn(
+                "ml-2 rounded-full transition-all duration-200",
+                (content.trim().length > 0 || hasAttachments || hasAudio) &&
+                  "scale-105 bg-primary hover:bg-primary/90"
+              )}
+              disabled={
+                isCreatingMessage ||
+                content.length > 5000 ||
+                !(content.trim().length > 0 || hasAttachments || hasAudio)
+              }
+              onClick={onSubmit}
+              size="icon-sm"
+              title="Send message (Enter)"
+              variant={
+                content.trim().length > 0 || hasAttachments || hasAudio
+                  ? "default"
+                  : "ghost"
+              }
+            >
+              {isCreatingMessage ? (
+                <Spinner />
+              ) : (
+                <IconSend className="h-3.5 w-3.5" />
+              )}
+            </Button>
+          </div>
         </div>
       </div>
     </div>

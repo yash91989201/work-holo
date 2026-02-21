@@ -399,10 +399,6 @@ export function MessageComposer({
     }
   }, [isRecording, startRecording, stopRecording]);
 
-  const handleAudioSend = useCallback(() => {
-    handleSubmit();
-  }, [handleSubmit]);
-
   const handleAudioCancel = useCallback(() => {
     cancelRecording();
   }, [cancelRecording]);
@@ -465,7 +461,7 @@ export function MessageComposer({
 
       <div
         className={cn(
-          "relative min-w-0 overflow-x-hidden bg-background",
+          "relative min-w-0 overflow-x-hidden bg-background p-3",
           className
         )}
       >
@@ -491,7 +487,6 @@ export function MessageComposer({
                   duration={duration}
                   isRecording={isRecording}
                   onCancel={handleAudioCancel}
-                  onSend={handleAudioSend}
                   onStart={startRecording}
                   onStop={stopRecording}
                 />
