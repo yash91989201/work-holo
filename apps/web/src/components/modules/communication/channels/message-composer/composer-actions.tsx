@@ -113,7 +113,7 @@ export function ComposerActions({
         </PopoverTrigger>
         <PopoverContent align="start" className="w-80 p-0" side="top">
           <EmojiPicker onEmojiSelect={onEmojiSelect}>
-            <EmojiPickerSearch className="h-16" placeholder="Search emoji..." />
+            <EmojiPickerSearch className="h-6" placeholder="Search emoji..." />
             <EmojiPickerContent />
             <EmojiPickerFooter />
           </EmojiPicker>
