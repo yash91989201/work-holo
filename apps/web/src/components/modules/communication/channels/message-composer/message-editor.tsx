@@ -54,13 +54,13 @@ function Item({
 }) {
   return (
     <button
-      type="button"
-      onClick={onClick}
       className={cn(
         "flex h-9 w-full items-center gap-3 rounded-md px-3 text-sm",
         "text-zinc-200 hover:bg-white/10",
         active && "bg-white/10"
       )}
+      onClick={onClick}
+      type="button"
     >
       <span className="flex h-4 w-4 items-center justify-center">{icon}</span>
       <span className="leading-none">{label}</span>
@@ -119,29 +119,20 @@ export function MessageEditor({
     <div className="mx-6 mb-6 rounded-2xl border border-white/10 bg-zinc-950/80 shadow-xl backdrop-blur-xl">
       {/* Hidden file input */}
       <input
+        className="hidden"
+        multiple
+        onChange={handleFileInputChange}
         ref={fileInputRef}
         type="file"
-        multiple
-        className="hidden"
-        onChange={handleFileInputChange}
       />
 
       {/* ---------- EDITOR ---------- */}
       <div className="px-6 pt-4">
         <LinkBubbleMenu editor={editor} />
         <EditorContent
+          className="max-h-15 min-h-3 w-full overflow-y-auto bg-transparent text-sm text-zinc-100 focus:outline-none"
           editor={editor}
           onKeyDown={handleEditorKeyDown}
-          className="
-            min-h-[12px]
-            max-h-15
-            w-full
-            overflow-y-auto
-            bg-transparent
-            text-sm
-            text-zinc-100
-            focus:outline-none
-          "
           placeholder="Type a message..."
         />
       </div>
@@ -154,56 +145,56 @@ export function MessageEditor({
         {/* LEFT */}
         <div className="flex items-center gap-1">
           {/* PLUS MENU */}
-          <Popover open={plusOpen} onOpenChange={setPlusOpen}>
+          <Popover onOpenChange={setPlusOpen} open={plusOpen}>
             <PopoverTrigger asChild>
               <Button
+                className="h-9 w-9 rounded-full text-zinc-400 hover:text-white"
                 size="icon-sm"
                 variant="ghost"
-                className="h-9 w-9 rounded-full text-zinc-400 hover:text-white"
               >
                 <IconPlus className="h-5 w-5" />
               </Button>
             </PopoverTrigger>
 
             <PopoverContent
-              side="top"
               align="start"
               className="w-48 rounded-xl border border-white/10 bg-zinc-900/95 p-1 shadow-xl backdrop-blur"
+              side="top"
             >
               <Item
+                active={editor.isActive("bold")}
                 icon={<IconBold className="h-4 w-4" />}
                 label="Bold"
-                active={editor.isActive("bold")}
                 onClick={() => editor.chain().focus().toggleBold().run()}
               />
               <Item
+                active={editor.isActive("italic")}
                 icon={<IconItalic className="h-4 w-4" />}
                 label="Italic"
-                active={editor.isActive("italic")}
                 onClick={() => editor.chain().focus().toggleItalic().run()}
               />
               <Item
+                active={editor.isActive("strike")}
                 icon={<IconStrikethrough className="h-4 w-4" />}
                 label="Strike"
-                active={editor.isActive("strike")}
                 onClick={() => editor.chain().focus().toggleStrike().run()}
               />
               <Item
+                active={editor.isActive("code")}
                 icon={<IconCode className="h-4 w-4" />}
                 label="Code"
-                active={editor.isActive("code")}
                 onClick={() => editor.chain().focus().toggleCode().run()}
               />
               <Item
+                active={editor.isActive("bulletList")}
                 icon={<IconList className="h-4 w-4" />}
                 label="Bullet List"
-                active={editor.isActive("bulletList")}
                 onClick={() => editor.chain().focus().toggleBulletList().run()}
               />
               <Item
+                active={editor.isActive("orderedList")}
                 icon={<IconListNumbers className="h-4 w-4" />}
                 label="Numbered List"
-                active={editor.isActive("orderedList")}
                 onClick={() => editor.chain().focus().toggleOrderedList().run()}
               />
               <Item
@@ -223,31 +214,31 @@ export function MessageEditor({
           </Popover>
 
           {/* EMOJI */}
-          <Popover open={emojiOpen} onOpenChange={setEmojiOpen}>
+          <Popover onOpenChange={setEmojiOpen} open={emojiOpen}>
             <PopoverTrigger asChild>
-              <Button size="icon-sm" variant="ghost" className="h-4 w-4">
+              <Button className="h-4 w-4" size="icon-sm" variant="ghost">
                 <IconMoodSmileBeam />
               </Button>
             </PopoverTrigger>
 
             <PopoverContent
-              side="top"
               align="start"
-              sideOffset={8}
               alignOffset={-4}
-              className="w-68 rounded-xl p-0 shadow-lg overflow-hidden"
+              className="w-68 overflow-hidden rounded-xl p-0 shadow-lg"
+              side="top"
+              sideOffset={8}
             >
               <EmojiPicker
+                className="p-0"
                 onEmojiSelect={(emoji) => {
                   editor.chain().focus().insertContent(emoji.emoji).run();
                   onEmojiSelect?.(emoji);
                   setEmojiOpen(false);
                 }}
-                className="p-0"
               >
-                <EmojiPickerSearch className="h-9 px-2 text-sm border-b" />
+                <EmojiPickerSearch className="h-9 border-b px-2 text-sm" />
 
-                <EmojiPickerContent className="p-1 max-h-60" />
+                <EmojiPickerContent className="max-h-60 p-1" />
 
                 <EmojiPickerFooter className="px-2 py-1 text-xs" />
               </EmojiPicker>
@@ -258,11 +249,11 @@ export function MessageEditor({
         {/* RIGHT */}
         <div className="flex items-center gap-2">
           <Button
-            size="icon-sm"
-            variant="ghost"
             className="h-9 w-9 rounded-full text-zinc-400 hover:text-white"
             disabled={content.trim().length > 0}
             onClick={onVoiceRecord}
+            size="icon-sm"
+            variant="ghost"
           >
             <IconMicrophone className="h-5 w-5" />
           </Button>
