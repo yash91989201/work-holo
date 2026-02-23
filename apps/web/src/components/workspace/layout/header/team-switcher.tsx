@@ -37,20 +37,12 @@ export function TeamSwitcher() {
   const role = useActiveMemberRole();
   const session = useSession();
 
-  const workspaceParams = useParams({
-    from: "/(authenticated)/org/$slug/workspace",
-    shouldThrow: false,
+  const { slug } = useParams({
+    from: "/(authenticated)/org/$slug",
   });
 
-  const teamParams = useParams({
-    from: "/(authenticated)/org/$slug/workspace/teams/$teamId",
-    shouldThrow: false,
-  });
-
-  const slug = workspaceParams?.slug ?? teamParams?.slug ?? "";
-  const teamIdFromRoute = teamParams?.teamId;
   const teamIdFromSession = session?.session?.activeTeamId;
-  const teamId = teamIdFromRoute ?? teamIdFromSession;
+  const teamId = teamIdFromSession;
 
   const { teams, isRefetching } = useMyTeams(role);
   const isOwnerOrAdmin = role === "owner" || role === "admin";
@@ -61,7 +53,9 @@ export function TeamSwitcher() {
     return <TeamSwitcherSkeleton />;
   }
 
-  if (isOwnerOrAdmin && !teamIdFromRoute) {
+  // Only show team switcher for non-owner/admin roles
+  // or when a team is selected
+  if (isOwnerOrAdmin && !teamId) {
     return null;
   }
 
@@ -92,9 +86,10 @@ export function TeamSwitcher() {
         });
       }
 
+      // Navigate to workspace home after switching team
       navigate({
-        to: "/org/$slug/workspace/teams/$teamId",
-        params: { slug, teamId: newTeamId },
+        to: "/org/$slug/workspace",
+        params: { slug },
       });
 
       setOpen(false);

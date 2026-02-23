@@ -24,7 +24,7 @@ export function ChannelHeader() {
   });
 
   const channelParams = useParams({
-    from: "/(authenticated)/org/$slug/workspace/teams/$teamId/(modules)/communication/channels/$channelId",
+    from: "/(authenticated)/org/$slug/workspace/communication/channels/$channelId",
   });
 
   const { toggleInfoSidebar } = useChannelInfoSidebar();
@@ -83,8 +83,8 @@ export function ChannelHeader() {
 
           <Link
             className={buttonVariants({ variant: "ghost", size: "icon" })}
-            params={{ slug, teamId: channelParams.teamId }}
-            to="/org/$slug/workspace/teams/$teamId/communication/channels"
+            params={{ slug }}
+            to="/org/$slug/workspace/communication/channels"
           >
             <IconX />
           </Link>

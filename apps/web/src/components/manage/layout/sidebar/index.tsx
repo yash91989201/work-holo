@@ -44,7 +44,7 @@ export function Sidebar({
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip="Organization Overview">
-                  <Link params={{ slug }} to="/org/$slug/manage">
+                  <Link params={{ slug }} to="/org/$slug/workspace">
                     <IconBuildingCommunity />
                     <span>Overview</span>
                   </Link>

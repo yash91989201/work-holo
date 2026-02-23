@@ -14,7 +14,7 @@ import {
 import { ChannelTips } from "@/components/modules/communication/channels/overview/tips";
 
 export const Route = createFileRoute(
-  "/(authenticated)/org/$slug/workspace/teams/$teamId/(modules)/communication/channels/"
+  "/(authenticated)/org/$slug/workspace/communication/channels/"
 )({
   staticData: { crumb: "Channels" },
   component: RouteComponent,

@@ -7,10 +7,12 @@ import {
   IconUsers,
 } from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { Link, useParams } from "@tanstack/react-router";
 import type { ChannelMemberType } from "@work-holo/db/lib/types";
 import * as React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Empty,
@@ -85,45 +87,44 @@ type ChannelItemProps = {
 function ChannelItem({ channel }: ChannelItemProps) {
   const badgeVariant = getBadgeVariant(channel.type);
   const ChannelIcon = channel.isPrivate ? IconLockFilled : IconHash;
-  // TODO: Need teamId to navigate to channels - routes now require teamId
-  // const slug = useActiveOrgSlug() ?? "";
+  const { slug } = useParams({ from: "/(authenticated)/org/$slug" });
 
   return (
     <Item>
-      {/* <Link
-        params={{ slug, teamId, channelId: channel.id }}
-        to="/org/$slug/teams/$teamId/communication/channels/$channelId"
-      > */}
-      <ItemMedia>
-        <Avatar className="h-9 w-9">
-          <AvatarImage
-            alt={channel.creator.name}
-            src={channel.creator.image ?? undefined}
-          />
-          <AvatarFallback className="text-xs">
-            {getInitials(channel.creator.name)}
-          </AvatarFallback>
-        </Avatar>
-      </ItemMedia>
-      <ItemContent>
-        <ItemTitle className="flex items-center gap-1.5">
-          <ChannelIcon className="h-3.5 w-3.5 text-muted-foreground" />
-          <span className="truncate">{channel.name}</span>
-          <Badge className="ml-auto shrink-0 text-xs" variant={badgeVariant}>
-            {channel.type}
-          </Badge>
-        </ItemTitle>
-        <ItemDescription className="flex items-center gap-3">
-          <span className="flex items-center gap-1">
-            <IconUsers className="h-3 w-3" />
-            {channel.members.length}
-          </span>
-        </ItemDescription>
-      </ItemContent>
-      <ItemActions>
-        <IconCircleChevronRightFilled className="h-4 w-4 text-muted-foreground" />
-      </ItemActions>
-      {/* </Link> */}
+      <Link
+        params={{ slug, channelId: channel.id }}
+        to="/org/$slug/workspace/communication/channels/$channelId"
+      >
+        <ItemMedia>
+          <Avatar className="h-9 w-9">
+            <AvatarImage
+              alt={channel.creator.name}
+              src={channel.creator.image ?? undefined}
+            />
+            <AvatarFallback className="text-xs">
+              {getInitials(channel.creator.name)}
+            </AvatarFallback>
+          </Avatar>
+        </ItemMedia>
+        <ItemContent>
+          <ItemTitle className="flex items-center gap-1.5">
+            <ChannelIcon className="h-3.5 w-3.5 text-muted-foreground" />
+            <span className="truncate">{channel.name}</span>
+            <Badge className="ml-auto shrink-0 text-xs" variant={badgeVariant}>
+              {channel.type}
+            </Badge>
+          </ItemTitle>
+          <ItemDescription className="flex items-center gap-3">
+            <span className="flex items-center gap-1">
+              <IconUsers className="h-3 w-3" />
+              {channel.members.length}
+            </span>
+          </ItemDescription>
+        </ItemContent>
+        <ItemActions>
+          <IconCircleChevronRightFilled className="h-4 w-4 text-muted-foreground" />
+        </ItemActions>
+      </Link>
     </Item>
   );
 }
@@ -150,8 +151,7 @@ function getInitials(name: string): string {
 }
 
 function NoRecentChannels() {
-  // TODO: Need teamId to navigate to channels - routes now require teamId
-  // const slug = useActiveOrgSlug() ?? "";
+  const { slug } = useParams({ from: "/(authenticated)/org/$slug" });
 
   return (
     <Empty className="max-w-md border">
@@ -165,15 +165,13 @@ function NoRecentChannels() {
         </EmptyDescription>
       </EmptyHeader>
       <EmptyContent>
-        {/* TODO: Fix navigation - channels now require teamId
         <Link
           className={buttonVariants({ variant: "outline", size: "sm" })}
-          params={{ slug, teamId }}
-          to="/org/$slug/teams/$teamId/communication/channels"
+          params={{ slug }}
+          to="/org/$slug/workspace/communication/channels"
         >
           Browse Channels
         </Link>
-        */}
       </EmptyContent>
     </Empty>
   );

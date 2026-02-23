@@ -104,12 +104,6 @@ export function RecentMentions() {
   };
 
   const handleReply = (mention: (typeof mentions)[number]) => {
-    const resolvedTeamId = mention.channel.teamId;
-
-    if (!resolvedTeamId) {
-      return;
-    }
-
     if (isMentionSidebarOpen) {
       closeMentionsSidebar();
     }
@@ -124,10 +118,9 @@ export function RecentMentions() {
     openMessageThread(mention.messageId);
 
     navigate({
-      to: "/org/$slug/workspace/teams/$teamId/communication/channels/$channelId",
+      to: "/org/$slug/workspace/communication/channels/$channelId",
       params: {
         slug,
-        teamId: resolvedTeamId,
         channelId: mention.channel.id,
       },
     });

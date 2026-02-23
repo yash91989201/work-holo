@@ -119,17 +119,7 @@ export function RecentMessages() {
     });
   };
 
-  const handleReply = (
-    messageId: string,
-    channelId: string,
-    messageTeamId: string | null
-  ) => {
-    const resolvedTeamId = messageTeamId;
-
-    if (!resolvedTeamId) {
-      return;
-    }
-
+  const handleReply = (messageId: string, channelId: string) => {
     if (isMentionSidebarOpen) {
       closeMentionsSidebar();
     }
@@ -139,10 +129,9 @@ export function RecentMessages() {
     openMessageThread(messageId);
 
     navigate({
-      to: "/org/$slug/workspace/teams/$teamId/communication/channels/$channelId",
+      to: "/org/$slug/workspace/communication/channels/$channelId",
       params: {
         slug,
-        teamId: resolvedTeamId,
         channelId,
       },
     });
@@ -271,11 +260,7 @@ export function RecentMessages() {
                         <Button
                           className="h-7 gap-1 rounded-md px-2 text-[11px]"
                           onClick={() =>
-                            handleReply(
-                              msg.id,
-                              msg.channel.id,
-                              msg.channel.teamId
-                            )
+                            handleReply(msg.id, msg.channel.id)
                           }
                           size="sm"
                           type="button"

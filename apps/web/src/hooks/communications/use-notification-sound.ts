@@ -19,7 +19,7 @@ export function useNotificationSound() {
 
   const activeChannelId =
     useParams({
-      from: "/(authenticated)/org/$slug/workspace/teams/$teamId/(modules)/communication/channels/$channelId",
+      from: "/(authenticated)/org/$slug/workspace/communication/channels/$channelId",
       shouldThrow: false,
     })?.channelId ?? null;
 
