@@ -8,7 +8,7 @@ import { MessageThreadSidebar } from "@/components/modules/communication/channel
 import { PinnedMessagesSidebar } from "@/components/modules/communication/channels/pinned-messages-sidebar";
 
 export const Route = createFileRoute(
-  "/(authenticated)/org/$slug/workspace/teams/$teamId/(modules)/communication/channels/$channelId"
+  "/(authenticated)/org/$slug/workspace/communication/channels/$channelId"
 )({
   beforeLoad: ({ context: { queryClient, queryUtils }, params }) => {
     queryClient.prefetchQuery(

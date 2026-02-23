@@ -6,6 +6,7 @@ import {
   IconCode,
   IconEraser,
   IconItalic,
+  IconKeyboard,
   IconLink,
   IconList,
   IconListNumbers,
@@ -60,7 +61,12 @@ import { createMentionSuggestion } from "./mention-suggestion";
 import "tippy.js/dist/tippy.css";
 import "@/styles/tiptap.css";
 
+export type ComposerView = "editor" | "attachments" | "audio";
+
 interface MessageEditorProps {
+  attachmentPreview?: React.ReactNode;
+  audioPreview?: React.ReactNode;
+  composerView?: ComposerView;
   content: string;
   disabled?: boolean;
   fetchUsers: (query: string) => Promise<
@@ -78,6 +84,7 @@ interface MessageEditorProps {
   isMaximized?: boolean;
   isRecording?: boolean;
   onChange: (content: string) => void;
+  onComposerViewChange?: (view: ComposerView) => void;
   onCursorChange?: (position: number) => void;
   onEmojiSelect?: (emoji: { emoji: string; label: string }) => void;
   onFileUpload?: () => void;
@@ -87,7 +94,11 @@ interface MessageEditorProps {
   onVoiceRecord?: () => void;
 }
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Composer combines many conditional UI states in one orchestrating component.
 export function MessageEditor({
+  attachmentPreview,
+  audioPreview,
+  composerView = "editor",
   content,
   onChange,
   onSubmit,
@@ -102,6 +113,7 @@ export function MessageEditor({
   isCreatingMessage = false,
   hasAttachments = false,
   hasAudio = false,
+  onComposerViewChange,
   onEmojiSelect,
   onFileUpload,
   onVoiceRecord,
@@ -156,6 +168,16 @@ export function MessageEditor({
     [disabled, isInMaximizedComposer, isMaximized, onMaximize, onMinimize]
   );
 
+  let voiceRecordTitle = "Start voice message";
+
+  if (isRecording) {
+    voiceRecordTitle = "Stop recording";
+  }
+
+  if (content.trim().length > 0) {
+    voiceRecordTitle = "Clear text to record audio";
+  }
+
   if (!editor) {
     return null;
   }
@@ -183,31 +205,53 @@ export function MessageEditor({
           isMaximized && "mx-0 flex flex-1 flex-col rounded-none border-0"
         )}
       >
-        {/* Editor Content */}
-        <div
-          className={cn(
-            "relative min-w-0 overflow-x-hidden",
-            isMaximized && "flex-1 overflow-y-auto"
-          )}
-        >
-          <LinkBubbleMenu editor={editor} />
-          <div className="p-3">
-            <EditorContent
-              className={cn("min-w-0", disabled && "opacity-50")}
-              editor={editor}
-              onKeyDown={handleEditorKeyDown}
-            />
-          </div>
+        {composerView === "editor" && (
+          <div
+            className={cn(
+              "relative min-w-0 overflow-x-hidden",
+              isMaximized && "flex-1 overflow-y-auto"
+            )}
+          >
+            <LinkBubbleMenu editor={editor} />
+            <div className="p-3">
+              <EditorContent
+                className={cn("min-w-0", disabled && "opacity-50")}
+                editor={editor}
+                onKeyDown={handleEditorKeyDown}
+              />
+            </div>
 
-          {/* Content Length Badge - Bottom Right */}
-          <div className="pointer-events-none absolute right-4 bottom-3">
-            <Badge
-              variant={content.length > 5000 ? "destructive" : "secondary"}
-            >
-              {content.length}/5000
-            </Badge>
+            <div className="pointer-events-none absolute right-4 bottom-3">
+              <Badge
+                variant={content.length > 5000 ? "destructive" : "secondary"}
+              >
+                {content.length}/5000
+              </Badge>
+            </div>
           </div>
-        </div>
+        )}
+
+        {composerView === "attachments" && attachmentPreview && (
+          <div
+            className={cn(
+              "relative min-w-0 overflow-x-hidden",
+              isMaximized && "flex-1 overflow-y-auto"
+            )}
+          >
+            {attachmentPreview}
+          </div>
+        )}
+
+        {composerView === "audio" && audioPreview && (
+          <div
+            className={cn(
+              "relative min-w-0 overflow-x-hidden",
+              isMaximized && "flex-1 overflow-y-auto"
+            )}
+          >
+            {audioPreview}
+          </div>
+        )}
 
         {/* Actions Bar at Bottom */}
         <div className="flex shrink-0 flex-wrap items-center gap-3 border-t bg-muted/30 px-3 py-1.5">
@@ -401,13 +445,7 @@ export function MessageEditor({
                       disabled={!onVoiceRecord || content.trim().length > 0}
                       onClick={onVoiceRecord}
                       size="icon-sm"
-                      title={
-                        content.trim().length > 0
-                          ? "Clear text to record audio"
-                          : isRecording
-                            ? "Stop recording"
-                            : "Start voice message"
-                      }
+                      title={voiceRecordTitle}
                       variant="ghost"
                     >
                       <IconMicrophone
@@ -437,17 +475,28 @@ export function MessageEditor({
                     <IconMoodPlus className={cn(hasAudio && "opacity-50")} />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent align="start" className="w-80 p-0" side="top">
-                  <EmojiPicker onEmojiSelect={onEmojiSelect || (() => {})}>
-                    <EmojiPickerSearch
-                      className="h-16"
-                      placeholder="Search emoji..."
-                    />
-                    <EmojiPickerContent />
+                <PopoverContent align="end" side="top">
+                  <EmojiPicker
+                    onEmojiSelect={onEmojiSelect ?? (() => undefined)}
+                  >
+                    <EmojiPickerSearch placeholder="Search emoji..." />
+                    <EmojiPickerContent className="max-h-70 overflow-y-auto" />
                     <EmojiPickerFooter />
                   </EmojiPicker>
                 </PopoverContent>
               </Popover>
+              {composerView !== "editor" && onComposerViewChange && (
+                <Button
+                  aria-label="Back to text editor"
+                  className="transition-all duration-200"
+                  onClick={() => onComposerViewChange("editor")}
+                  size="icon-sm"
+                  title="Back to text editor"
+                  variant="ghost"
+                >
+                  <IconKeyboard className="h-3.5 w-3.5" />
+                </Button>
+              )}
               <Button
                 className="transition-all duration-200"
                 onClick={onFileUpload}

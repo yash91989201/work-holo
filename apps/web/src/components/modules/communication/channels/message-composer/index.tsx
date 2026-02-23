@@ -67,6 +67,7 @@ export function MessageComposer({
   const [text, setText] = useState(initialContent);
   const [isEditorMaximized, setIsEditorMaximized] = useState(false);
   const [attachments, setAttachments] = useState<AttachmentPreview[]>([]);
+  const [composerView, setComposerView] = useState<ComposerView>("editor");
   const { openMaximizedMessageComposer } = useMaximizedMessageComposerActions();
 
   const {
@@ -352,6 +353,18 @@ export function MessageComposer({
     [text]
   );
 
+  useEffect(() => {
+    if (composerView === "attachments" && attachments.length === 0) {
+      setComposerView("editor");
+    }
+  }, [attachments.length, composerView]);
+
+  useEffect(() => {
+    if (composerView === "audio" && !isRecording && !audioUrl) {
+      setComposerView("editor");
+    }
+  }, [composerView, isRecording, audioUrl]);
+
   const handleFileUpload = useCallback((files?: FileList) => {
     const filesToAdd = files || fileInputRef.current?.files;
     if (!filesToAdd) return;
@@ -364,6 +377,7 @@ export function MessageComposer({
     );
 
     setAttachments((prev) => [...prev, ...newAttachments]);
+    setComposerView("attachments");
 
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -396,6 +410,7 @@ export function MessageComposer({
       stopRecording();
     } else {
       await startRecording();
+      setComposerView("audio");
     }
   }, [isRecording, startRecording, stopRecording]);
 
@@ -473,27 +488,30 @@ export function MessageComposer({
               </div>
             )}
 
-            {attachments.length > 0 && (
-              <AttachmentPreviewList
-                attachments={attachments}
-                onRemove={handleRemoveAttachment}
-              />
-            )}
-
-            {(isRecording || audioUrl) && (
-              <div className="border-b p-3">
-                <AudioRecorder
-                  audioUrl={audioUrl}
-                  duration={duration}
-                  isRecording={isRecording}
-                  onCancel={handleAudioCancel}
-                  onStart={startRecording}
-                  onStop={stopRecording}
-                />
-              </div>
-            )}
-
             <MessageEditor
+              attachmentPreview={
+                composerView === "attachments" && attachments.length > 0 ? (
+                  <AttachmentPreviewList
+                    attachments={attachments}
+                    onRemove={handleRemoveAttachment}
+                  />
+                ) : undefined
+              }
+              audioPreview={
+                composerView === "audio" && (isRecording || audioUrl) ? (
+                  <div className="p-3">
+                    <AudioRecorder
+                      audioUrl={audioUrl}
+                      duration={duration}
+                      isRecording={isRecording}
+                      onCancel={handleAudioCancel}
+                      onStart={startRecording}
+                      onStop={stopRecording}
+                    />
+                  </div>
+                ) : undefined
+              }
+              composerView={composerView}
               content={text}
               disabled={isRecording || audioUrl !== null}
               fetchUsers={fetchUsers}
@@ -503,6 +521,7 @@ export function MessageComposer({
               isMaximized={onMaximize ? false : isEditorMaximized}
               isRecording={isRecording}
               onChange={handleMarkdownChange}
+              onComposerViewChange={setComposerView}
               onEmojiSelect={handleEmojiSelect}
               onFileUpload={() => fileInputRef.current?.click()}
               onMaximize={handleMaximize}

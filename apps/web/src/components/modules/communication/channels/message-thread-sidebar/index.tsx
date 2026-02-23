@@ -21,7 +21,7 @@ export function MessageThreadSidebar() {
   const [threadComposerText, setThreadComposerText] = useState("");
 
   const { channelId } = useParams({
-    from: "/(authenticated)/org/$slug/workspace/teams/$teamId/(modules)/communication/channels/$channelId",
+    from: "/(authenticated)/org/$slug/workspace/communication/channels/$channelId",
   });
 
   const { messageId, isOpen, closeMessageThread } = useMessageThreadSidebar();

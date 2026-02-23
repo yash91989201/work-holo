@@ -29,7 +29,7 @@ export function useMarkMessagesRead(
   const { debounceMs = 1000, enabled = true } = options;
 
   const { channelId } = useParams({
-    from: "/(authenticated)/org/$slug/workspace/teams/$teamId/(modules)/communication/channels/$channelId",
+    from: "/(authenticated)/org/$slug/workspace/communication/channels/$channelId",
   });
 
   const { user } = useAuthedSession();

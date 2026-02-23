@@ -212,10 +212,10 @@ export function AccountDropdown() {
             <Link
               className="cursor-pointer"
               params={{ slug }}
-              to="/org/$slug/manage"
+              to="/org/$slug/workspace"
             >
               <IconLayoutDashboardFilled />
-              Manage
+              Workspace
             </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>

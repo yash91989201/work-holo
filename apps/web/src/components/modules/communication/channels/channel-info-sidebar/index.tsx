@@ -10,7 +10,7 @@ import { Members } from "./members";
 
 export const ChannelInfoSidebar = () => {
   const { channelId } = useParams({
-    from: "/(authenticated)/org/$slug/workspace/teams/$teamId/(modules)/communication/channels/$channelId",
+    from: "/(authenticated)/org/$slug/workspace/communication/channels/$channelId",
   });
 
   const { channel, channelMembers, onlineUsersCount } = useChannel(channelId);

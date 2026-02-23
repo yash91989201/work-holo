@@ -46,7 +46,7 @@ function NavChannelsInner() {
   });
 
   const params = useParams({
-    from: "/(authenticated)/org/$slug/workspace/teams/$teamId/(modules)/communication/channels/$channelId",
+    from: "/(authenticated)/org/$slug/workspace/communication/channels/$channelId",
     shouldThrow: false,
   });
 
@@ -134,10 +134,9 @@ function NavChannelsInner() {
                                 onClick={() => setOpen(false)}
                                 params={{
                                   slug,
-                                  teamId: channel.teamId ?? "",
                                   channelId: channel.id,
                                 }}
-                                to="/org/$slug/workspace/teams/$teamId/communication/channels/$channelId"
+                                to="/org/$slug/workspace/communication/channels/$channelId"
                               >
                                 <IconHash />
                                 <span className="flex-1">{channel.name}</span>
@@ -208,10 +207,9 @@ function NavChannelsInner() {
                         <Link
                           params={{
                             slug,
-                            teamId: channel.teamId ?? "",
                             channelId: channel.id,
                           }}
-                          to="/org/$slug/workspace/teams/$teamId/communication/channels/$channelId"
+                          to="/org/$slug/workspace/communication/channels/$channelId"
                         >
                           <IconHash />
                           <span className="flex-1">{channel.name}</span>
