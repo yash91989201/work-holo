@@ -1,6 +1,7 @@
 import {
   IconArrowBackUp,
   IconEdit,
+  IconMoodPlus,
   IconPinFilled,
   IconTrashFilled,
 } from "@tabler/icons-react";
@@ -17,8 +18,18 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
+import {
+  EmojiPicker,
+  EmojiPickerContent,
+  EmojiPickerFooter,
+  EmojiPickerSearch,
+} from "@/components/ui/emoji-picker";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { ReactionPicker } from "./reaction-picker";
 
 const QUICK_REACTIONS = ["👍", "😂", "🎉", "👀"] as const;
 
@@ -57,7 +68,30 @@ export function MessageActions({
           className
         )}
       >
-        <ReactionPicker onSelectEmoji={onReact} />
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              size="icon-sm"
+              title="Add reaction"
+              type="button"
+              variant="ghost"
+            >
+              <IconMoodPlus className="h-3.5 w-3.5" />
+              <span className="sr-only">Add reaction</span>
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent align="center" side="left" sideOffset={8}>
+            <EmojiPicker
+              onEmojiSelect={(emoji) => {
+                onReact(emoji.emoji);
+              }}
+            >
+              <EmojiPickerSearch placeholder="Search emoji..." />
+              <EmojiPickerContent className="max-h-70 overflow-y-auto" />
+              <EmojiPickerFooter />
+            </EmojiPicker>
+          </PopoverContent>
+        </Popover>
 
         {QUICK_REACTIONS.map((emoji) => (
           <Button
