@@ -5,7 +5,7 @@ import {
   roleTemplateTable,
 } from "@work-holo/db/schema/authorization";
 import { PERMISSIONS, SYSTEM_ROLES } from "@work-holo/permission";
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 
 // All permission keys from the runtime vocabulary
 const ALL_KEYS = PERMISSIONS.map((p) => p.key);
@@ -13,6 +13,14 @@ const ALL_KEYS = PERMISSIONS.map((p) => p.key);
 // Communication-related keys
 const CHANNEL_KEYS = ALL_KEYS.filter((k) => k.startsWith("channel."));
 const COMMUNICATION_KEYS = [...CHANNEL_KEYS];
+const MEMBER_BLOCKED_CHANNEL_KEYS = new Set([
+  "channel.create",
+  "channel.update",
+  "channel.delete",
+]);
+const MEMBER_COMMUNICATION_KEYS = COMMUNICATION_KEYS.filter(
+  (key) => !MEMBER_BLOCKED_CHANNEL_KEYS.has(key)
+);
 
 // Attendance keys
 const ATTENDANCE_KEYS = ALL_KEYS.filter((k) => k.startsWith("attendance."));
@@ -27,7 +35,7 @@ const ROLE_PERMISSIONS: Record<string, string[]> = {
     (k) => !(k === "org.delete" || k === "org.create")
   ),
   [SYSTEM_ROLES.MEMBER]: [
-    ...COMMUNICATION_KEYS,
+    ...MEMBER_COMMUNICATION_KEYS,
     ...ATTENDANCE_VIEW_KEYS,
     "org.read",
     "org.active.read",
@@ -157,12 +165,24 @@ async function seedPermissions() {
       continue;
     }
 
+    const existingRolePerms = await db
+      .select({
+        id: rolePermissionTable.id,
+        permissionNodeId: rolePermissionTable.permissionNodeId,
+      })
+      .from(rolePermissionTable)
+      .where(eq(rolePermissionTable.roleTemplateId, roleId));
+
+    const desiredNodeIds = new Set<string>();
+
     for (const key of permKeys) {
       const nodeId = nodeByKey.get(key);
       if (!nodeId) {
         console.warn(`  Permission node ${key} not found, skipping`);
         continue;
       }
+
+      desiredNodeIds.add(nodeId);
 
       await db
         .insert(rolePermissionTable)
@@ -174,6 +194,16 @@ async function seedPermissions() {
         .onConflictDoNothing();
 
       totalRolePerms++;
+    }
+
+    const staleRolePermissionIds = existingRolePerms
+      .filter((row) => !desiredNodeIds.has(row.permissionNodeId))
+      .map((row) => row.id);
+
+    if (staleRolePermissionIds.length > 0) {
+      await db
+        .delete(rolePermissionTable)
+        .where(inArray(rolePermissionTable.id, staleRolePermissionIds));
     }
   }
 
