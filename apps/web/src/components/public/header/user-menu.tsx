@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,9 +12,11 @@ import {
 import { useMemberRole } from "@/hooks/use-member-role";
 import { useSession } from "@/hooks/use-session";
 import { authClient } from "@/lib/auth-client";
+import { queryClient } from "@/utils/orpc";
 
 export default function UserMenu() {
   const navigate = useNavigate();
+  const router = useRouter();
   const session = useSession();
   const role = useMemberRole();
 
@@ -52,7 +54,9 @@ export default function UserMenu() {
           onClick={() => {
             authClient.signOut({
               fetchOptions: {
-                onSuccess: () => {
+                onSuccess: async () => {
+                  queryClient.clear();
+                  await router.invalidate();
                   navigate({
                     to: "/",
                   });

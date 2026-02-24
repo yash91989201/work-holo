@@ -4,8 +4,8 @@ import {
   IconPlus,
   IconSelector,
 } from "@tabler/icons-react";
+import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
 import { Image } from "@/components/shared/image";
 import {
   DropdownMenu,
@@ -21,13 +21,107 @@ import { useActiveMemberRole } from "@/hooks/use-active-member-role";
 import { useActiveOrganization } from "@/hooks/use-active-organization";
 import { getAuthQueryKey } from "@/lib/auth/query-keys";
 import { authClient } from "@/lib/auth-client";
+import { getOrgRouteByRole } from "@/utils";
 import { queryClient } from "@/utils/orpc";
+
+const DEFAULT_LOGO = "/logo.webp";
+
+interface OrgLogoProps {
+  logo?: string | null;
+  name: string;
+  size: "sm" | "md";
+}
+
+const OrgLogo = ({ name, logo, size }: OrgLogoProps) => {
+  const src = logo ?? DEFAULT_LOGO;
+
+  if (size === "md") {
+    return (
+      <div className="flex aspect-square size-8 items-center justify-center rounded-lg">
+        <Image
+          alt={name}
+          className="size-6 rounded-sm"
+          height={24}
+          src={src}
+          width={24}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex size-6 items-center justify-center rounded-sm border">
+      <Image
+        alt={name}
+        className="size-4 shrink-0 rounded-sm"
+        height={16}
+        src={src}
+        width={16}
+      />
+    </div>
+  );
+};
+
+// ---------------------------------------------------------------------------
+// Hook
+// ---------------------------------------------------------------------------
+
+const useOrgSwitcher = () => {
+  const navigate = useNavigate();
+  const { mutate: switchOrganization, isPending: isSwitching } = useMutation({
+    mutationFn: async ({
+      organizationId,
+      organizationSlug,
+    }: {
+      organizationId: string;
+      organizationSlug: string;
+    }) => {
+      const { error } = await authClient.organization.setActive({
+        organizationId,
+        organizationSlug,
+      });
+      if (error !== null) {
+        throw new Error(`Failed to switch organization: ${error}`);
+      }
+
+      await queryClient.invalidateQueries({
+        queryKey: getAuthQueryKey.invalidation.allOrganizations(),
+      });
+      await queryClient.invalidateQueries({
+        queryKey: getAuthQueryKey.user.activeMemberRole(),
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["active-organization"],
+      });
+
+      const newRole = await authClient.organization.getActiveMemberRole();
+
+      return { role: newRole.data?.role ?? "member", organizationSlug };
+    },
+    onSuccess: ({ role, organizationSlug }) => {
+      const route = getOrgRouteByRole(role, organizationSlug);
+      navigate(route);
+    },
+    onError: (err) => {
+      console.error("Error switching organization:", err);
+    },
+  });
+
+  const createOrganization = () => {
+    navigate({ to: "/org/new" });
+  };
+  return { isSwitching, switchOrganization, createOrganization };
+};
+
+// ---------------------------------------------------------------------------
+// Main component
+// ---------------------------------------------------------------------------
 
 export const OrgSwitcher = () => {
   const role = useActiveMemberRole();
   const activeOrganization = useActiveOrganization();
-  const navigate = useNavigate();
-  const [isSwitching, setIsSwitching] = useState(false);
+  const { isSwitching, switchOrganization, createOrganization } =
+    useOrgSwitcher();
 
   const { data: organizations, isPending: isLoadingOrgs } =
     authClient.useListOrganizations();
@@ -43,56 +137,6 @@ export const OrgSwitcher = () => {
     );
   }
 
-  const logo = activeOrganization.logo ?? "/logo.webp";
-
-  const handleSwitchOrganization = async (
-    organizationId: string,
-    organizationSlug: string
-  ) => {
-    if (isSwitching || organizationId === activeOrganization.id) {
-      return;
-    }
-
-    try {
-      setIsSwitching(true);
-
-      const { error } = await authClient.organization.setActive({
-        organizationId,
-        organizationSlug,
-      });
-
-      if (error !== null) {
-        console.error("Failed to switch organization:", error);
-        return;
-      }
-
-      await queryClient.invalidateQueries({
-        queryKey: getAuthQueryKey.invalidation.allOrganizations(),
-      });
-
-      await queryClient.invalidateQueries({
-        queryKey: getAuthQueryKey.user.activeMemberRole(),
-      });
-
-      await queryClient.invalidateQueries({
-        queryKey: ["active-organization"],
-      });
-
-      navigate({
-        to: "/org/$slug",
-        params: { slug: organizationSlug },
-      });
-    } catch (error) {
-      console.error("Error switching organization:", error);
-    } finally {
-      setIsSwitching(false);
-    }
-  };
-
-  const handleCreateOrganization = () => {
-    navigate({ to: "/org/new" });
-  };
-
   const otherOrganizations =
     organizations?.filter((org) => org.id !== activeOrganization.id) ?? [];
 
@@ -105,21 +149,18 @@ export const OrgSwitcher = () => {
             size="lg"
             tooltip={activeOrganization.name}
           >
-            <div className="flex aspect-square size-8 items-center justify-center rounded-lg">
-              <Image
-                alt={activeOrganization.name}
-                className="size-6 rounded-sm"
-                height={24}
-                src={logo}
-                width={24}
-              />
-            </div>
+            <OrgLogo
+              logo={activeOrganization.logo}
+              name={activeOrganization.name}
+              size="md"
+            />
             <span className="truncate font-semibold">
               {activeOrganization.name}
             </span>
             <IconSelector className="ml-auto size-4" />
           </SidebarMenuButton>
         </DropdownMenuTrigger>
+
         <DropdownMenuContent
           className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
           side="right"
@@ -128,22 +169,21 @@ export const OrgSwitcher = () => {
           <DropdownMenuLabel className="text-muted-foreground text-xs">
             Organizations
           </DropdownMenuLabel>
+
+          {/* Active org -- always rendered first */}
           <DropdownMenuItem className="gap-2 p-2">
-            <div className="flex size-6 items-center justify-center rounded-sm border">
-              <Image
-                alt={activeOrganization.name}
-                className="size-4 shrink-0 rounded-sm"
-                height={16}
-                src={logo}
-                width={16}
-              />
-            </div>
+            <OrgLogo
+              logo={activeOrganization.logo}
+              name={activeOrganization.name}
+              size="sm"
+            />
             <span className="flex-1 font-medium">
               {activeOrganization.name}
             </span>
             <IconCheck className="size-4" />
           </DropdownMenuItem>
 
+          {/* Other orgs or loading skeleton */}
           {isLoadingOrgs ? (
             <DropdownMenuItem className="gap-2 p-2" disabled>
               <Skeleton className="size-6" />
@@ -155,17 +195,14 @@ export const OrgSwitcher = () => {
                 className="gap-2 p-2"
                 disabled={isSwitching}
                 key={org.id}
-                onClick={() => handleSwitchOrganization(org.id, org.slug)}
+                onClick={() =>
+                  switchOrganization({
+                    organizationId: org.id,
+                    organizationSlug: org.slug,
+                  })
+                }
               >
-                <div className="flex size-6 items-center justify-center rounded-sm border">
-                  <Image
-                    alt={org.name}
-                    className="size-4 shrink-0 rounded-sm"
-                    height={16}
-                    src={org.logo ?? "/logo.webp"}
-                    width={16}
-                  />
-                </div>
+                <OrgLogo logo={org.logo} name={org.name} size="sm" />
                 <span className="flex-1">{org.name}</span>
               </DropdownMenuItem>
             ))
@@ -175,7 +212,7 @@ export const OrgSwitcher = () => {
           <DropdownMenuItem
             className="gap-2 p-2"
             disabled={isSwitching}
-            onClick={handleCreateOrganization}
+            onClick={createOrganization}
           >
             <IconPlus className="size-4" />
             New Organization
@@ -185,6 +222,10 @@ export const OrgSwitcher = () => {
     </SidebarMenuItem>
   );
 };
+
+// ---------------------------------------------------------------------------
+// Skeleton
+// ---------------------------------------------------------------------------
 
 export const OrgSwitcherSkeleton = () => (
   <SidebarMenuItem>
