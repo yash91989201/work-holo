@@ -3,11 +3,13 @@ import {
   IconBroadcast,
   IconCircleChevronRightFilled,
   IconHash,
+  IconPlus,
 } from "@tabler/icons-react";
 import { Link, useParams } from "@tanstack/react-router";
 import { Suspense, useState } from "react";
 import { CreateChannelForm } from "@/components/modules/communication/channels/create-channel-form";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Collapsible,
   CollapsibleContent,
@@ -54,27 +56,6 @@ function NavChannelsInner() {
 
   const isPopover = state === "collapsed" && !isMobile;
 
-  if (channels.length === 0) {
-    return (
-      <SidebarGroup>
-        <SidebarGroupLabel>Communication</SidebarGroupLabel>
-        <Can permission={(p) => p.channel.create}>
-          <SidebarGroupAction>
-            <CreateChannelForm />
-          </SidebarGroupAction>
-        </Can>
-        <SidebarGroupContent>
-          <SidebarMenuItem>
-            <SidebarMenuButton tooltip="No Channels">
-              <IconAlertCircleFilled />
-              No Channels
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarGroupContent>
-      </SidebarGroup>
-    );
-  }
-
   if (isPopover) {
     return (
       <SidebarGroup>
@@ -113,6 +94,15 @@ function NavChannelsInner() {
                   <div className="flex flex-col">
                     <div className="flex items-center justify-between gap-3 border-b p-3">
                       <span className="text-balance text-sm">Channels</span>
+                      <Can permission={(p) => p.channel.create}>
+                        <CreateChannelForm
+                          trigger={
+                            <Button size="icon-sm" variant="ghost">
+                              <IconPlus />
+                            </Button>
+                          }
+                        />
+                      </Can>
                     </div>
                     <SidebarMenuSub
                       className={cn(
@@ -121,38 +111,47 @@ function NavChannelsInner() {
                       )}
                       role="menu"
                     >
-                      {channels.map((channel) => {
-                        const unreadCount = getUnreadCount(channel.id);
-                        return (
-                          <SidebarMenuSubItem key={channel.id}>
-                            <SidebarMenuSubButton
-                              asChild
-                              className="[&>svg]:size-3"
-                              isActive={channel.id === params?.channelId}
-                            >
-                              <Link
-                                onClick={() => setOpen(false)}
-                                params={{
-                                  slug,
-                                  channelId: channel.id,
-                                }}
-                                to="/org/$slug/workspace/communication/channels/$channelId"
+                      {channels.length === 0 ? (
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton className="cursor-default text-muted-foreground [&>svg]:size-3">
+                            <IconAlertCircleFilled />
+                            <span>No channels yet</span>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      ) : (
+                        channels.map((channel) => {
+                          const unreadCount = getUnreadCount(channel.id);
+                          return (
+                            <SidebarMenuSubItem key={channel.id}>
+                              <SidebarMenuSubButton
+                                asChild
+                                className="[&>svg]:size-3"
+                                isActive={channel.id === params?.channelId}
                               >
-                                <IconHash />
-                                <span className="flex-1">{channel.name}</span>
-                                {unreadCount > 0 && (
-                                  <Badge
-                                    className="ml-auto h-5 w-5 shrink-0 items-center justify-center rounded-full p-0"
-                                    variant="default"
-                                  >
-                                    {unreadCount}
-                                  </Badge>
-                                )}
-                              </Link>
-                            </SidebarMenuSubButton>
-                          </SidebarMenuSubItem>
-                        );
-                      })}
+                                <Link
+                                  onClick={() => setOpen(false)}
+                                  params={{
+                                    slug,
+                                    channelId: channel.id,
+                                  }}
+                                  to="/org/$slug/workspace/communication/channels/$channelId"
+                                >
+                                  <IconHash />
+                                  <span className="flex-1">{channel.name}</span>
+                                  {unreadCount > 0 && (
+                                    <Badge
+                                      className="ml-auto h-5 w-5 shrink-0 items-center justify-center rounded-full p-0"
+                                      variant="default"
+                                    >
+                                      {unreadCount}
+                                    </Badge>
+                                  )}
+                                </Link>
+                              </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                          );
+                        })
+                      )}
                     </SidebarMenuSub>
                   </div>
                 </HoverCardContent>
@@ -174,7 +173,7 @@ function NavChannelsInner() {
       </Can>
       <SidebarGroupContent>
         <SidebarMenuItem>
-          <Collapsible>
+          <Collapsible defaultOpen={channels.length === 0}>
             <CollapsibleTrigger asChild>
               <SidebarMenuButton
                 aria-expanded="false"
@@ -196,36 +195,45 @@ function NavChannelsInner() {
             </CollapsibleTrigger>
             <CollapsibleContent>
               <SidebarMenuSub>
-                {channels.map((channel) => {
-                  const unreadCount = getUnreadCount(channel.id);
-                  return (
-                    <SidebarMenuSubItem key={channel.id}>
-                      <SidebarMenuSubButton
-                        asChild
-                        isActive={channel.id === params?.channelId}
-                      >
-                        <Link
-                          params={{
-                            slug,
-                            channelId: channel.id,
-                          }}
-                          to="/org/$slug/workspace/communication/channels/$channelId"
+                {channels.length === 0 ? (
+                  <SidebarMenuSubItem>
+                    <SidebarMenuSubButton className="cursor-default text-muted-foreground">
+                      <IconAlertCircleFilled />
+                      <span>No channels yet</span>
+                    </SidebarMenuSubButton>
+                  </SidebarMenuSubItem>
+                ) : (
+                  channels.map((channel) => {
+                    const unreadCount = getUnreadCount(channel.id);
+                    return (
+                      <SidebarMenuSubItem key={channel.id}>
+                        <SidebarMenuSubButton
+                          asChild
+                          isActive={channel.id === params?.channelId}
                         >
-                          <IconHash />
-                          <span className="flex-1">{channel.name}</span>
-                          {unreadCount > 0 && (
-                            <Badge
-                              className="ml-auto h-5 w-5 shrink-0 items-center justify-center rounded-full p-0"
-                              variant="default"
-                            >
-                              {unreadCount}
-                            </Badge>
-                          )}
-                        </Link>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                  );
-                })}
+                          <Link
+                            params={{
+                              slug,
+                              channelId: channel.id,
+                            }}
+                            to="/org/$slug/workspace/communication/channels/$channelId"
+                          >
+                            <IconHash />
+                            <span className="flex-1">{channel.name}</span>
+                            {unreadCount > 0 && (
+                              <Badge
+                                className="ml-auto h-5 w-5 shrink-0 items-center justify-center rounded-full p-0"
+                                variant="default"
+                              >
+                                {unreadCount}
+                              </Badge>
+                            )}
+                          </Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                    );
+                  })
+                )}
               </SidebarMenuSub>
             </CollapsibleContent>
           </Collapsible>
@@ -244,19 +252,8 @@ export function NavChannels() {
 }
 
 function NavChannelsLoadingFallback() {
-  const { channels } = useUserChannels();
   const { state, isMobile } = useSidebar();
   const isPopover = state === "collapsed" && !isMobile;
-
-  if (channels.length === 0) {
-    return (
-      <SidebarMenuItem>
-        <SidebarMenuButton tooltip="No Channels">
-          {isPopover ? <IconAlertCircleFilled /> : "No Channels"}
-        </SidebarMenuButton>
-      </SidebarMenuItem>
-    );
-  }
 
   return (
     <SidebarMenuItem>
