@@ -3,7 +3,6 @@
 import type { PermissionAction } from "../types";
 import { createScopedActionTerminal } from "./shared";
 
-/** DSL object providing team-scoped permission action builders. */
 export type TeamDSL = {
   create: PermissionAction;
   delete: PermissionAction;
@@ -32,11 +31,6 @@ export type TeamDSL = {
   update: PermissionAction;
 };
 
-/**
- * Creates team-scoped permission descriptor builders.
- * @param teamId Team ID for scoping all permission checks
- * @returns DSL object with permission action builders
- */
 export function Team(teamId: string): TeamDSL {
   const t = (key: string) => createScopedActionTerminal("team", teamId, key);
 
