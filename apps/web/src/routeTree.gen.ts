@@ -24,8 +24,10 @@ import { Route as authenticatedSettingsAccountProfileRouteImport } from './route
 import { Route as authenticatedSettingsAccountPreferencesRouteImport } from './routes/(authenticated)/settings/account/preferences'
 import { Route as authenticatedSettingsAccountNotificationsRouteImport } from './routes/(authenticated)/settings/account/notifications'
 import { Route as authenticatedOrgSlugWorkspaceRouteRouteImport } from './routes/(authenticated)/org/$slug/workspace/route'
+import { Route as authenticatedOrgSlugManageRouteRouteImport } from './routes/(authenticated)/org/$slug/manage/route'
 import { Route as authenticatedOrgSlugConsoleRouteRouteImport } from './routes/(authenticated)/org/$slug/console/route'
 import { Route as authenticatedOrgSlugWorkspaceIndexRouteImport } from './routes/(authenticated)/org/$slug/workspace/index'
+import { Route as authenticatedOrgSlugManageIndexRouteImport } from './routes/(authenticated)/org/$slug/manage/index'
 import { Route as authenticatedOrgSlugConsoleIndexRouteImport } from './routes/(authenticated)/org/$slug/console/index'
 import { Route as authenticatedOrgSlugWorkspaceTeamsIndexRouteImport } from './routes/(authenticated)/org/$slug/workspace/teams/index'
 import { Route as authenticatedOrgSlugWorkspaceAttendanceIndexRouteImport } from './routes/(authenticated)/org/$slug/workspace/attendance/index'
@@ -120,6 +122,12 @@ const authenticatedOrgSlugWorkspaceRouteRoute =
     path: '/workspace',
     getParentRoute: () => authenticatedOrgSlugRouteRoute,
   } as any)
+const authenticatedOrgSlugManageRouteRoute =
+  authenticatedOrgSlugManageRouteRouteImport.update({
+    id: '/manage',
+    path: '/manage',
+    getParentRoute: () => authenticatedOrgSlugRouteRoute,
+  } as any)
 const authenticatedOrgSlugConsoleRouteRoute =
   authenticatedOrgSlugConsoleRouteRouteImport.update({
     id: '/console',
@@ -131,6 +139,12 @@ const authenticatedOrgSlugWorkspaceIndexRoute =
     id: '/',
     path: '/',
     getParentRoute: () => authenticatedOrgSlugWorkspaceRouteRoute,
+  } as any)
+const authenticatedOrgSlugManageIndexRoute =
+  authenticatedOrgSlugManageIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authenticatedOrgSlugManageRouteRoute,
   } as any)
 const authenticatedOrgSlugConsoleIndexRoute =
   authenticatedOrgSlugConsoleIndexRouteImport.update({
@@ -219,6 +233,7 @@ export interface FileRoutesByFullPath {
   '/accept-invitation/$id': typeof authAcceptInvitationIdRoute
   '/org/new': typeof authenticatedOrgNewRoute
   '/org/$slug/console': typeof authenticatedOrgSlugConsoleRouteRouteWithChildren
+  '/org/$slug/manage': typeof authenticatedOrgSlugManageRouteRouteWithChildren
   '/org/$slug/workspace': typeof authenticatedOrgSlugWorkspaceRouteRouteWithChildren
   '/settings/account/notifications': typeof authenticatedSettingsAccountNotificationsRoute
   '/settings/account/preferences': typeof authenticatedSettingsAccountPreferencesRoute
@@ -226,6 +241,7 @@ export interface FileRoutesByFullPath {
   '/settings/account/security': typeof authenticatedSettingsAccountSecurityRoute
   '/settings/account/sessions': typeof authenticatedSettingsAccountSessionsRoute
   '/org/$slug/console/': typeof authenticatedOrgSlugConsoleIndexRoute
+  '/org/$slug/manage/': typeof authenticatedOrgSlugManageIndexRoute
   '/org/$slug/workspace/': typeof authenticatedOrgSlugWorkspaceIndexRoute
   '/org/$slug/console/members/$memberId': typeof authenticatedOrgSlugConsoleMembersMemberIdRoute
   '/org/$slug/console/members/invitations': typeof authenticatedOrgSlugConsoleMembersInvitationsRoute
@@ -253,6 +269,7 @@ export interface FileRoutesByTo {
   '/settings/account/security': typeof authenticatedSettingsAccountSecurityRoute
   '/settings/account/sessions': typeof authenticatedSettingsAccountSessionsRoute
   '/org/$slug/console': typeof authenticatedOrgSlugConsoleIndexRoute
+  '/org/$slug/manage': typeof authenticatedOrgSlugManageIndexRoute
   '/org/$slug/workspace': typeof authenticatedOrgSlugWorkspaceIndexRoute
   '/org/$slug/console/members/$memberId': typeof authenticatedOrgSlugConsoleMembersMemberIdRoute
   '/org/$slug/console/members/invitations': typeof authenticatedOrgSlugConsoleMembersInvitationsRoute
@@ -277,6 +294,7 @@ export interface FileRoutesById {
   '/(auth)/accept-invitation/$id': typeof authAcceptInvitationIdRoute
   '/(authenticated)/org/new': typeof authenticatedOrgNewRoute
   '/(authenticated)/org/$slug/console': typeof authenticatedOrgSlugConsoleRouteRouteWithChildren
+  '/(authenticated)/org/$slug/manage': typeof authenticatedOrgSlugManageRouteRouteWithChildren
   '/(authenticated)/org/$slug/workspace': typeof authenticatedOrgSlugWorkspaceRouteRouteWithChildren
   '/(authenticated)/settings/account/notifications': typeof authenticatedSettingsAccountNotificationsRoute
   '/(authenticated)/settings/account/preferences': typeof authenticatedSettingsAccountPreferencesRoute
@@ -284,6 +302,7 @@ export interface FileRoutesById {
   '/(authenticated)/settings/account/security': typeof authenticatedSettingsAccountSecurityRoute
   '/(authenticated)/settings/account/sessions': typeof authenticatedSettingsAccountSessionsRoute
   '/(authenticated)/org/$slug/console/': typeof authenticatedOrgSlugConsoleIndexRoute
+  '/(authenticated)/org/$slug/manage/': typeof authenticatedOrgSlugManageIndexRoute
   '/(authenticated)/org/$slug/workspace/': typeof authenticatedOrgSlugWorkspaceIndexRoute
   '/(authenticated)/org/$slug/console/members/$memberId': typeof authenticatedOrgSlugConsoleMembersMemberIdRoute
   '/(authenticated)/org/$slug/console/members/invitations': typeof authenticatedOrgSlugConsoleMembersInvitationsRoute
@@ -308,6 +327,7 @@ export interface FileRouteTypes {
     | '/accept-invitation/$id'
     | '/org/new'
     | '/org/$slug/console'
+    | '/org/$slug/manage'
     | '/org/$slug/workspace'
     | '/settings/account/notifications'
     | '/settings/account/preferences'
@@ -315,6 +335,7 @@ export interface FileRouteTypes {
     | '/settings/account/security'
     | '/settings/account/sessions'
     | '/org/$slug/console/'
+    | '/org/$slug/manage/'
     | '/org/$slug/workspace/'
     | '/org/$slug/console/members/$memberId'
     | '/org/$slug/console/members/invitations'
@@ -342,6 +363,7 @@ export interface FileRouteTypes {
     | '/settings/account/security'
     | '/settings/account/sessions'
     | '/org/$slug/console'
+    | '/org/$slug/manage'
     | '/org/$slug/workspace'
     | '/org/$slug/console/members/$memberId'
     | '/org/$slug/console/members/invitations'
@@ -365,6 +387,7 @@ export interface FileRouteTypes {
     | '/(auth)/accept-invitation/$id'
     | '/(authenticated)/org/new'
     | '/(authenticated)/org/$slug/console'
+    | '/(authenticated)/org/$slug/manage'
     | '/(authenticated)/org/$slug/workspace'
     | '/(authenticated)/settings/account/notifications'
     | '/(authenticated)/settings/account/preferences'
@@ -372,6 +395,7 @@ export interface FileRouteTypes {
     | '/(authenticated)/settings/account/security'
     | '/(authenticated)/settings/account/sessions'
     | '/(authenticated)/org/$slug/console/'
+    | '/(authenticated)/org/$slug/manage/'
     | '/(authenticated)/org/$slug/workspace/'
     | '/(authenticated)/org/$slug/console/members/$memberId'
     | '/(authenticated)/org/$slug/console/members/invitations'
@@ -501,6 +525,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authenticatedOrgSlugWorkspaceRouteRouteImport
       parentRoute: typeof authenticatedOrgSlugRouteRoute
     }
+    '/(authenticated)/org/$slug/manage': {
+      id: '/(authenticated)/org/$slug/manage'
+      path: '/manage'
+      fullPath: '/org/$slug/manage'
+      preLoaderRoute: typeof authenticatedOrgSlugManageRouteRouteImport
+      parentRoute: typeof authenticatedOrgSlugRouteRoute
+    }
     '/(authenticated)/org/$slug/console': {
       id: '/(authenticated)/org/$slug/console'
       path: '/console'
@@ -514,6 +545,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/org/$slug/workspace/'
       preLoaderRoute: typeof authenticatedOrgSlugWorkspaceIndexRouteImport
       parentRoute: typeof authenticatedOrgSlugWorkspaceRouteRoute
+    }
+    '/(authenticated)/org/$slug/manage/': {
+      id: '/(authenticated)/org/$slug/manage/'
+      path: '/'
+      fullPath: '/org/$slug/manage/'
+      preLoaderRoute: typeof authenticatedOrgSlugManageIndexRouteImport
+      parentRoute: typeof authenticatedOrgSlugManageRouteRoute
     }
     '/(authenticated)/org/$slug/console/': {
       id: '/(authenticated)/org/$slug/console/'
@@ -656,6 +694,20 @@ const authenticatedOrgSlugConsoleRouteRouteWithChildren =
     authenticatedOrgSlugConsoleRouteRouteChildren,
   )
 
+interface authenticatedOrgSlugManageRouteRouteChildren {
+  authenticatedOrgSlugManageIndexRoute: typeof authenticatedOrgSlugManageIndexRoute
+}
+
+const authenticatedOrgSlugManageRouteRouteChildren: authenticatedOrgSlugManageRouteRouteChildren =
+  {
+    authenticatedOrgSlugManageIndexRoute: authenticatedOrgSlugManageIndexRoute,
+  }
+
+const authenticatedOrgSlugManageRouteRouteWithChildren =
+  authenticatedOrgSlugManageRouteRoute._addFileChildren(
+    authenticatedOrgSlugManageRouteRouteChildren,
+  )
+
 interface authenticatedOrgSlugWorkspaceCommunicationChannelsChannelIdRouteRouteChildren {
   authenticatedOrgSlugWorkspaceCommunicationChannelsChannelIdIndexRoute: typeof authenticatedOrgSlugWorkspaceCommunicationChannelsChannelIdIndexRoute
 }
@@ -706,6 +758,7 @@ const authenticatedOrgSlugWorkspaceRouteRouteWithChildren =
 
 interface authenticatedOrgSlugRouteRouteChildren {
   authenticatedOrgSlugConsoleRouteRoute: typeof authenticatedOrgSlugConsoleRouteRouteWithChildren
+  authenticatedOrgSlugManageRouteRoute: typeof authenticatedOrgSlugManageRouteRouteWithChildren
   authenticatedOrgSlugWorkspaceRouteRoute: typeof authenticatedOrgSlugWorkspaceRouteRouteWithChildren
 }
 
@@ -713,6 +766,8 @@ const authenticatedOrgSlugRouteRouteChildren: authenticatedOrgSlugRouteRouteChil
   {
     authenticatedOrgSlugConsoleRouteRoute:
       authenticatedOrgSlugConsoleRouteRouteWithChildren,
+    authenticatedOrgSlugManageRouteRoute:
+      authenticatedOrgSlugManageRouteRouteWithChildren,
     authenticatedOrgSlugWorkspaceRouteRoute:
       authenticatedOrgSlugWorkspaceRouteRouteWithChildren,
   }
