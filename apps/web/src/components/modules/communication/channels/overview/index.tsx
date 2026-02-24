@@ -53,11 +53,7 @@ export const RecentChannels = () => {
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {channels.map((channel) => (
-            <ChannelCard
-              channel={channel}
-              key={channel.id}
-              slug={slug}
-            />
+            <ChannelCard channel={channel} key={channel.id} slug={slug} />
           ))}
         </div>
       )}

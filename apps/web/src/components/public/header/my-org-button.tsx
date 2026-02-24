@@ -4,6 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useActiveMemberRole } from "@/hooks/use-active-member-role";
 import { useActiveOrgSlug } from "@/hooks/use-active-org-slug";
 import { useSession } from "@/hooks/use-session";
+import { getOrgRouteByRole } from "@/utils";
 
 export function MyOrgButton() {
   const slug = useActiveOrgSlug();
@@ -22,12 +23,10 @@ export function MyOrgButton() {
     );
   }
 
+  const route = getOrgRouteByRole(role, slug);
+
   return (
-    <Link
-      className={buttonVariants({ variant: "outline" })}
-      params={{ slug }}
-      to="/org/$slug"
-    >
+    <Link className={buttonVariants({ variant: "outline" })} {...route}>
       My Org
     </Link>
   );

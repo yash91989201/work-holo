@@ -38,3 +38,5 @@ export const CreateOrgFormSchema = z.object({
     slugLocked: z.boolean().optional(),
   }),
 });
+
+export const OrgRolesSchema = z.enum(["owner", "admin", "member"]);

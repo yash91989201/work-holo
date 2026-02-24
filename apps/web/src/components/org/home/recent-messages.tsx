@@ -259,9 +259,7 @@ export function RecentMessages() {
                         </DropdownMenu>
                         <Button
                           className="h-7 gap-1 rounded-md px-2 text-[11px]"
-                          onClick={() =>
-                            handleReply(msg.id, msg.channel.id)
-                          }
+                          onClick={() => handleReply(msg.id, msg.channel.id)}
                           size="sm"
                           type="button"
                           variant="ghost"

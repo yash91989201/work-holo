@@ -37,9 +37,7 @@ export function Sidebar({
       </SidebarHeader>
       <SidebarContent className="gap-0">
         <SidebarGroup>
-          <SidebarGroupLabel className="font-semibold text-muted-foreground text-xs uppercase tracking-wider">
-            Organization Management
-          </SidebarGroupLabel>
+          <SidebarGroupLabel>Manage organization</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>

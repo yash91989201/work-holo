@@ -212,7 +212,7 @@ export function AccountDropdown() {
             <Link
               className="cursor-pointer"
               params={{ slug }}
-              to="/org/$slug/workspace"
+              to="/org/$slug/manage"
             >
               <IconLayoutDashboardFilled />
               Workspace
