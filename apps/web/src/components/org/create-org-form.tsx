@@ -12,17 +12,17 @@ import { useAppForm } from "@/components/ui/form/hooks";
 import { authClient } from "@/lib/auth-client";
 import { CreateOrgFormSchema } from "@/lib/schemas/org";
 import type { CreateOrgFormType } from "@/lib/types";
-import { generateSlug } from "@/utils";
+import { generateSlug, getOrgRouteByRole } from "@/utils";
 import { uploadOrgLogo } from "@/utils/upload-helper";
 
 export const createOrgFormOpts = formOptions({
   defaultValues: {
     name: "",
     slug: "",
-    logo: undefined as string | undefined,
+    logo: undefined,
     formState: {
       slugLocked: true,
-      logo: undefined as File | undefined,
+      logo: undefined,
     },
   } satisfies CreateOrgFormType as CreateOrgFormType,
 });
@@ -57,12 +57,7 @@ export const CreateOrgForm = () => {
           throw new Error("Organization creation failed, please try again.");
         }
 
-        navigate({
-          to: "/org/$slug/workspace",
-          params: {
-            slug: org.slug,
-          },
-        });
+        navigate(getOrgRouteByRole("owner", org.slug));
       } catch (error) {
         console.error(error);
       }
