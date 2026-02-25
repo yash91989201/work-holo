@@ -27,7 +27,7 @@ function RouteComponent() {
 
   return (
     <div className="flex min-h-0 min-w-0 flex-1 flex-col bg-background shadow-sm">
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+      <div className="page-gradient flex min-h-0 min-w-0 flex-1 flex-col">
         <MessageList key={id} />
         <MessageComposer channelId={id} />
       </div>
