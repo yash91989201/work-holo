@@ -1,3 +1,4 @@
+import { IconChartDonut } from "@tabler/icons-react";
 import type { AttendanceAnalyticsOutput } from "@work-holo/api/lib/schemas/attendance";
 import { Cell, Pie, PieChart } from "recharts";
 import type { z } from "zod";
@@ -44,17 +45,31 @@ export function AttendanceStatusBreakdown({ statusBreakdown, summary }: Props) {
   });
 
   return (
-    <Card className="flex h-full flex-col rounded-2xl bg-gradient-to-br from-slate-50 via-white to-violet-50/50 p-6 shadow-sm dark:from-slate-900 dark:via-slate-900 dark:to-violet-950/30">
-      {/* Title */}
-      <h3 className="mb-6 text-center font-semibold text-lg">
-        Status Breakdown
-      </h3>
+    <Card className="flex h-full flex-col rounded-2xl p-6" variant="neumorphic">
+      {/* Header */}
+      <div className="mb-6 flex items-center gap-3">
+        <div className="rounded-xl bg-sky-100 p-2.5 dark:bg-sky-900/30">
+          <IconChartDonut className="h-5 w-5 text-sky-600 dark:text-sky-400" />
+        </div>
+        <div>
+          <h3 className="font-semibold text-lg">Status Breakdown</h3>
+          <p className="text-muted-foreground text-sm">
+            Distribution across this period
+          </p>
+        </div>
+      </div>
 
       {data.length === 0 ? (
-        <div className="flex flex-1 items-center justify-center">
-          <p className="text-muted-foreground text-sm">
-            No attendance data available for this period.
-          </p>
+        <div className="flex flex-1 flex-col items-center justify-center gap-3 rounded-xl p-6 text-center">
+          <div className="rounded-2xl bg-sky-100/60 p-4 dark:bg-sky-900/20">
+            <IconChartDonut className="h-8 w-8 text-sky-400" />
+          </div>
+          <div>
+            <p className="font-medium text-sm">No data yet</p>
+            <p className="mt-0.5 text-muted-foreground text-sm">
+              No attendance records found for this period.
+            </p>
+          </div>
         </div>
       ) : (
         <div className="flex flex-1 flex-col gap-6">
@@ -82,19 +97,20 @@ export function AttendanceStatusBreakdown({ statusBreakdown, summary }: Props) {
                 ))}
               </Pie>
             </PieChart>
+
             {/* Center Label */}
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="font-bold text-2xl text-emerald-500">
+              <span className="font-bold text-3xl text-emerald-500">
                 {dominantPercentage}%
               </span>
-              <span className="text-muted-foreground text-xs uppercase tracking-wide">
+              <span className="mt-0.5 font-medium text-muted-foreground text-xs uppercase tracking-wider">
                 {dominantStatus ? formatStatus(dominantStatus.status) : ""}
               </span>
             </div>
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2.5">
             {statsToShow.map((stat) => (
               <StatusCard
                 color={stat.color}
@@ -120,15 +136,15 @@ function StatusCard({
   color: string;
 }) {
   return (
-    <div className="flex items-center gap-3 rounded-xl bg-white p-3 shadow-sm dark:bg-slate-800/50">
+    <div className="flex items-center gap-2.5 rounded-xl bg-white/70 p-3 shadow-[0_1px_4px_rgba(0,0,0,0.06)] transition-shadow hover:shadow-[0_2px_8px_rgba(0,0,0,0.1)] dark:bg-white/5 dark:shadow-none dark:hover:bg-white/8">
       <span
         aria-hidden
         className="h-2.5 w-2.5 shrink-0 rounded-full"
         style={{ background: color }}
       />
-      <div>
-        <div className="text-muted-foreground text-xs">{label}</div>
-        <div className="font-semibold">
+      <div className="min-w-0">
+        <div className="truncate text-muted-foreground text-xs">{label}</div>
+        <div className="font-semibold text-sm">
           {count} Day{count !== 1 ? "s" : ""}
         </div>
       </div>

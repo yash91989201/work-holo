@@ -13,7 +13,12 @@ import {
   IconShieldFilled,
   IconUserFilled,
 } from "@tabler/icons-react";
-import { Link, useNavigate, useParams } from "@tanstack/react-router";
+import {
+  Link,
+  useNavigate,
+  useParams,
+  useRouter,
+} from "@tanstack/react-router";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -34,6 +39,7 @@ import { useAuthedSession } from "@/hooks/use-authed-session";
 import { useMemberRole } from "@/hooks/use-member-role";
 import { useOrgPresence, useSetManualStatus } from "@/hooks/use-presence";
 import { authClient } from "@/lib/auth-client";
+import { queryClient } from "@/utils/orpc";
 
 const STATUS_CONFIG = {
   available: {
@@ -84,6 +90,7 @@ type StatusKey = keyof typeof STATUS_CONFIG;
 
 export function AccountDropdown() {
   const navigate = useNavigate();
+  const router = useRouter();
   const { slug } = useParams({
     from: "/(authenticated)/org/$slug",
   });
@@ -130,7 +137,8 @@ export function AccountDropdown() {
       toast("Unable to logout, try again");
       return;
     }
-
+    queryClient.clear();
+    await router.invalidate();
     navigate({ to: "/login" });
   };
 
@@ -182,45 +190,46 @@ export function AccountDropdown() {
           </div>
         </div>
 
-        <DropdownMenuSeparator />
-
-        <DropdownMenuGroup>
-          <DropdownMenuLabel className="px-2 py-2 font-semibold text-muted-foreground text-xs uppercase">
-            Organization
-          </DropdownMenuLabel>
-          <DropdownMenuItem asChild>
-            <Link
-              className="cursor-pointer"
-              params={{ slug }}
-              to="/org/$slug/workspace"
-            >
-              <IconBriefcase />
-              Workspace
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link
-              className="cursor-pointer"
-              params={{ slug }}
-              to="/org/$slug/console"
-            >
-              <IconUserFilled />
-              Console
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link
-              className="cursor-pointer"
-              params={{ slug }}
-              to="/org/$slug/manage"
-            >
-              <IconLayoutDashboardFilled />
-              Manage
-            </Link>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-
-        <DropdownMenuSeparator />
+        {role !== "member" && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>Organization</DropdownMenuLabel>
+              <DropdownMenuItem asChild>
+                <Link
+                  className="cursor-pointer"
+                  params={{ slug }}
+                  to="/org/$slug/workspace"
+                >
+                  <IconBriefcase />
+                  Workspace
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link
+                  className="cursor-pointer"
+                  params={{ slug }}
+                  to="/org/$slug/console"
+                >
+                  <IconUserFilled />
+                  Console
+                </Link>
+              </DropdownMenuItem>
+              {role === "owner" && (
+                <DropdownMenuItem asChild>
+                  <Link
+                    className="cursor-pointer"
+                    params={{ slug }}
+                    to="/org/$slug/manage"
+                  >
+                    <IconLayoutDashboardFilled />
+                    Manage
+                  </Link>
+                </DropdownMenuItem>
+              )}
+            </DropdownMenuGroup>
+          </>
+        )}
 
         <DropdownMenuGroup>
           <DropdownMenuLabel>Account</DropdownMenuLabel>

@@ -7,6 +7,9 @@ export const LogInFormSchema = z.object({
     .string()
     .min(8, "Password must be at least 8 characters")
     .nonempty("Password is required"),
+  formState: z.object({
+    showPassword: z.boolean(),
+  }),
 });
 
 export const SignUpFormSchema = z
@@ -47,6 +50,10 @@ export const SignUpFormSchema = z
       .min(8, "Password must be at least 8 characters")
       .nonempty("Password is required"),
     confirmPassword: z.string().nonempty("Please confirm your password"),
+    formState: z.object({
+      showPassword: z.boolean(),
+      showConfirmPassword: z.boolean(),
+    }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -61,4 +68,7 @@ export const AcceptInvitationFormSchema = z.object({
     .min(8, "Password must be at least 8 characters")
     .nonempty("Password is required"),
   invitationId: z.string().min(1, "Invitation ID is required"),
+  formState: z.object({
+    showPassword: z.boolean(),
+  }),
 });

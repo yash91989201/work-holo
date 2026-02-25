@@ -5,7 +5,7 @@ import { MaximizedMessageComposer } from "@/components/modules/communication/cha
 import { MessageList } from "@/components/modules/communication/channels/message-list";
 
 export const Route = createFileRoute(
-  "/(authenticated)/org/$slug/workspace/teams/$teamId/(modules)/communication/channels/$channelId/"
+  "/(authenticated)/org/$slug/workspace/communication/channels/$channelId/"
 )({
   beforeLoad: ({ context: { queryClient, queryUtils }, params }) => {
     queryClient.prefetchQuery(
@@ -27,7 +27,7 @@ function RouteComponent() {
 
   return (
     <div className="flex min-h-0 min-w-0 flex-1 flex-col bg-background shadow-sm">
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+      <div className="page-gradient flex min-h-0 min-w-0 flex-1 flex-col">
         <MessageList key={id} />
         <MessageComposer channelId={id} />
       </div>

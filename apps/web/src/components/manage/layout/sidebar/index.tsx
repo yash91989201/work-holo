@@ -37,14 +37,12 @@ export function Sidebar({
       </SidebarHeader>
       <SidebarContent className="gap-0">
         <SidebarGroup>
-          <SidebarGroupLabel className="font-semibold text-muted-foreground text-xs uppercase tracking-wider">
-            Organization Management
-          </SidebarGroupLabel>
+          <SidebarGroupLabel>Manage organization</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip="Organization Overview">
-                  <Link params={{ slug }} to="/org/$slug/manage">
+                  <Link params={{ slug }} to="/org/$slug/workspace">
                     <IconBuildingCommunity />
                     <span>Overview</span>
                   </Link>

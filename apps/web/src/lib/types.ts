@@ -11,7 +11,10 @@ import type {
   InvitationFormSchema,
   UpdateMemberRoleSchema,
 } from "@/lib/schemas/member/index";
-import type { CreateOrgFormSchema } from "@/lib/schemas/org/index";
+import type {
+  CreateOrgFormSchema,
+  OrgRolesSchema,
+} from "@/lib/schemas/org/index";
 import type {
   ProfileEmailSchema,
   ProfileImageSchema,
@@ -31,6 +34,7 @@ export type CreateOrgFormType = z.infer<typeof CreateOrgFormSchema>;
 export type CreateTeamFormType = z.infer<typeof CreateTeamFormSchema>;
 export type InvitationFormType = z.infer<typeof InvitationFormSchema>;
 export type LogInFormType = z.infer<typeof LogInFormSchema>;
+export type OrgRolesType = z.infer<typeof OrgRolesSchema>;
 export type ProfileEmailType = z.infer<typeof ProfileEmailSchema>;
 export type ProfileImageType = z.infer<typeof ProfileImageSchema>;
 export type ProfileNameType = z.infer<typeof ProfileNameSchema>;

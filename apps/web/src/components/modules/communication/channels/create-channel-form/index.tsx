@@ -1,6 +1,6 @@
 import { IconPlus } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
-import { Suspense, useState } from "react";
+import { type ReactNode, Suspense, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,7 +23,11 @@ import { channelFormOpts } from "./form-options";
 import { MembersSelect, MembersSelectSkeleton } from "./members-select";
 import { TeamSelect, TeamSelectSkeleton } from "./team-select";
 
-export const CreateChannelForm = () => {
+interface CreateChannelFormProps {
+  trigger?: ReactNode;
+}
+
+export const CreateChannelForm = ({ trigger }: CreateChannelFormProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const { user } = useAuthedSession();
@@ -67,9 +71,11 @@ export const CreateChannelForm = () => {
   return (
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
       <DialogTrigger asChild>
-        <Button asChild size="icon-lg" variant="ghost">
-          <IconPlus />
-        </Button>
+        {trigger ?? (
+          <Button asChild size="icon" variant="ghost">
+            <IconPlus />
+          </Button>
+        )}
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-106">

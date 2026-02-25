@@ -12,7 +12,7 @@ import { TeamSwitcher } from "./team-switcher";
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-50 flex h-18 items-center gap-4 border-border/40 border-b bg-background/80 px-4 backdrop-blur-md supports-backdrop-filter:bg-background/60">
+    <header className="sticky top-0 z-50 flex h-18 items-center gap-4 border-border/40 border-b bg-background/60 px-4 backdrop-blur-xl supports-backdrop-filter:bg-background/40">
       <SidebarTrigger className="text-muted-foreground hover:bg-muted hover:text-foreground" />
       <Separator orientation="vertical" />
 

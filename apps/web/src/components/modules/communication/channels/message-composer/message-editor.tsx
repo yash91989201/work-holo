@@ -1,21 +1,32 @@
 import {
+  IconArrowBackUp,
+  IconArrowForwardUp,
+  IconArrowRight,
   IconBold,
   IconCode,
   IconEraser,
   IconItalic,
+  IconKeyboard,
+  IconLink,
   IconList,
   IconListNumbers,
+  IconMarkdown,
+  IconMaximize,
   IconMicrophone,
-  IconMoodSmileBeam,
-  IconPlus,
-  IconPolaroid,
+  IconMinimize,
+  IconMoodPlus,
+  IconPaperclip,
+  IconPhoto,
   IconSend,
   IconStrikethrough,
+  IconX,
 } from "@tabler/icons-react";
 import { EditorContent } from "@tiptap/react";
 import type { KeyboardEvent } from "react";
 import { useCallback, useState } from "react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ButtonGroup } from "@/components/ui/button-group";
 import {
   EmojiPicker,
   EmojiPickerContent,
@@ -23,75 +34,104 @@ import {
   EmojiPickerSearch,
 } from "@/components/ui/emoji-picker";
 import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useMessageEditor } from "@/hooks/communications/use-message-editor";
 import { cn } from "@/lib/utils";
 import { AutoLinkPreview } from "./auto-link-preview";
 import { LinkBubbleMenu } from "./link-bubble-menu";
 import { LinkPreviewNode } from "./link-preview-node";
 import { createMentionSuggestion } from "./mention-suggestion";
+import "tippy.js/dist/tippy.css";
 import "@/styles/tiptap.css";
 
-/* ---------------- HELPERS ---------------- */
+export type ComposerView = "editor" | "attachments" | "audio";
 
-function Item({
-  icon,
-  label,
-  active,
-  disabled,
-  onClick,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  active?: boolean;
+interface MessageEditorProps {
+  attachmentPreview?: React.ReactNode;
+  audioPreview?: React.ReactNode;
+  composerView?: ComposerView;
+  content: string;
   disabled?: boolean;
-  onClick?: () => void;
-}) {
-  return (
-    <button
-      className={cn(
-        "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm",
-        "hover:bg-muted",
-        active && "bg-muted",
-        disabled && "cursor-not-allowed opacity-50"
-      )}
-      disabled={disabled}
-      onClick={onClick}
-      type="button"
-    >
-      <span className="h-4 w-4">{icon}</span>
-      <span>{label}</span>
-    </button>
-  );
+  fetchUsers: (query: string) => Promise<
+    Array<{
+      id: string;
+      name: string | null;
+      image: string | null;
+      email: string;
+    }>
+  >;
+  hasAttachments?: boolean;
+  hasAudio?: boolean;
+  isCreatingMessage?: boolean;
+  isInMaximizedComposer?: boolean;
+  isMaximized?: boolean;
+  isRecording?: boolean;
+  onChange: (content: string) => void;
+  onComposerViewChange?: (view: ComposerView) => void;
+  onCursorChange?: (position: number) => void;
+  onEmojiSelect?: (emoji: { emoji: string; label: string }) => void;
+  onFileUpload?: () => void;
+  onMaximize?: () => void;
+  onMinimize?: () => void;
+  onSubmit: () => void;
+  onVoiceRecord?: () => void;
 }
 
-/* ---------------- MAIN ---------------- */
-
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Composer combines many conditional UI states in one orchestrating component.
 export function MessageEditor({
+  attachmentPreview,
+  audioPreview,
+  composerView = "editor",
   content,
   onChange,
   onSubmit,
   disabled = false,
   onCursorChange,
   fetchUsers,
+  onMaximize,
+  onMinimize,
+  isMaximized = false,
+  isInMaximizedComposer = false,
+  isRecording = false,
   isCreatingMessage = false,
   hasAttachments = false,
   hasAudio = false,
+  onComposerViewChange,
   onEmojiSelect,
+  onFileUpload,
   onVoiceRecord,
-}: any) {
-  const [plusOpen, setPlusOpen] = useState(false);
-  const [emojiOpen, setEmojiOpen] = useState(false);
+}: MessageEditorProps) {
+  const [isFormattingBarOpen, setIsFormattingBarOpen] = useState(false);
 
   const {
     editor,
     fileInputRef,
+    isLinkPopoverOpen,
+    setIsLinkPopoverOpen,
+    linkUrl,
+    setLinkUrl,
     handleImageUploadClick,
     handleFileInputChange,
+    handleAddLink,
+    handleSaveLink,
   } = useMessageEditor({
     content,
     onChange,
@@ -99,6 +139,8 @@ export function MessageEditor({
     disabled,
     onCursorChange,
     fetchUsers,
+    isMaximized,
+    isInMaximizedComposer,
     createMentionSuggestion,
     LinkPreviewNode,
     AutoLinkPreview,
@@ -107,20 +149,51 @@ export function MessageEditor({
   const handleEditorKeyDown = useCallback(
     (event: KeyboardEvent<HTMLDivElement>) => {
       if (disabled) return;
-      if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
-        event.preventDefault();
-        onSubmit();
+
+      const isModifierPressed = event.ctrlKey || event.metaKey;
+      const isMaximizeShortcut =
+        isModifierPressed && event.key.toLowerCase() === "m";
+
+      if (!isMaximizeShortcut) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      if (!(isMaximized || isInMaximizedComposer)) {
+        onMaximize?.();
+        return;
+      }
+
+      if (isMaximized && isInMaximizedComposer) {
+        onMinimize?.();
       }
     },
-    [disabled, onSubmit]
+    [disabled, isInMaximizedComposer, isMaximized, onMaximize, onMinimize]
   );
 
-  if (!editor) return null;
+  let voiceRecordTitle = "Start voice message";
+
+  if (isRecording) {
+    voiceRecordTitle = "Stop recording";
+  }
+
+  if (content.trim().length > 0) {
+    voiceRecordTitle = "Clear text to record audio";
+  }
+
+  if (!editor) {
+    return null;
+  }
 
   return (
-    <div className="mx-2 mb-5 flex items-center gap-1 rounded-full border bg-background p-2">
-      {/* FILE INPUT */}
+    <div
+      className={cn(
+        "flex min-w-0 flex-col overflow-x-hidden",
+        isMaximized ? "flex-1 overflow-y-hidden" : ""
+      )}
+    >
       <input
+        accept="image/*"
         className="hidden"
         multiple
         onChange={handleFileInputChange}
@@ -128,122 +201,398 @@ export function MessageEditor({
         type="file"
       />
 
-      {/* PLUS MENU */}
-      <Popover onOpenChange={setPlusOpen} open={plusOpen}>
-        <PopoverTrigger asChild>
-          <Button className="h-8 w-8" size="icon-sm" variant="ghost">
-            <IconPlus />
-          </Button>
-        </PopoverTrigger>
+      <div
+        className={cn(
+          "overflow-hidden rounded-3xl border transition-colors",
+          "focus-within:border-primary",
+          isMaximized && "mx-0 flex flex-1 flex-col rounded-none border-0"
+        )}
+      >
+        {/* Top Formatting Bar — collapsible, toggled by markdown button */}
+        {isFormattingBarOpen && (
+          <div className="flex shrink-0 flex-wrap items-center gap-3 border-b bg-muted/20 px-2 py-1">
+            {/* Formatting Group */}
+            <ToggleGroup type="multiple" variant="default">
+              <ToggleGroupItem
+                aria-label="Toggle bold"
+                onClick={() => editor.chain().focus().toggleBold().run()}
+                title="Bold (Ctrl+B)"
+                value="bold"
+              >
+                <IconBold />
+              </ToggleGroupItem>
+              <ToggleGroupItem
+                aria-label="Toggle italic"
+                onClick={() => editor.chain().focus().toggleItalic().run()}
+                title="Italic (Ctrl+I)"
+                value="italic"
+              >
+                <IconItalic />
+              </ToggleGroupItem>
+              <ToggleGroupItem
+                aria-label="Toggle strikethrough"
+                onClick={() => editor.chain().focus().toggleStrike().run()}
+                title="Strikethrough (Ctrl+Shift+S)"
+                value="strike"
+              >
+                <IconStrikethrough />
+              </ToggleGroupItem>
+              <ToggleGroupItem
+                aria-label="Toggle code"
+                onClick={() => editor.chain().focus().toggleCode().run()}
+                title="Inline Code (Ctrl+E)"
+                value="code"
+              >
+                <IconCode />
+              </ToggleGroupItem>
+            </ToggleGroup>
 
-        <PopoverContent align="start" className="w-44 p-1" side="top">
-          <Item
-            active={editor.isActive("bold")}
-            icon={<IconBold />}
-            label="Bold"
-            onClick={() => editor.chain().focus().toggleBold().run()}
-          />
-          <Item
-            active={editor.isActive("italic")}
-            icon={<IconItalic />}
-            label="Italic"
-            onClick={() => editor.chain().focus().toggleItalic().run()}
-          />
-          <Item
-            active={editor.isActive("strike")}
-            icon={<IconStrikethrough />}
-            label="Strike"
-            onClick={() => editor.chain().focus().toggleStrike().run()}
-          />
-          <Item
-            active={editor.isActive("code")}
-            icon={<IconCode />}
-            label="Code"
-            onClick={() => editor.chain().focus().toggleCode().run()}
-          />
-          <Item
-            icon={<IconPolaroid />}
-            label="Image / Video"
-            onClick={handleImageUploadClick}
-          />
-          <Item
-            active={editor.isActive("bulletList")}
-            icon={<IconList />}
-            label="Bullet List"
-            onClick={() => editor.chain().focus().toggleBulletList().run()}
-          />
+            <Separator orientation="vertical" />
 
-          <Item
-            active={editor.isActive("orderedList")}
-            icon={<IconListNumbers />}
-            label="Numbered List"
-            onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          />
+            {/* Lists Group */}
+            <ToggleGroup type="multiple" variant="default">
+              <ToggleGroupItem
+                aria-label="Toggle bullet list"
+                onClick={() => editor.chain().focus().toggleBulletList().run()}
+                title="Bullet List (Ctrl+Shift+8)"
+                value="bulletList"
+              >
+                <IconList />
+              </ToggleGroupItem>
+              <ToggleGroupItem
+                aria-label="Toggle ordered list"
+                onClick={() => editor.chain().focus().toggleOrderedList().run()}
+                title="Ordered List (Ctrl+Shift+7)"
+                value="orderedList"
+              >
+                <IconListNumbers />
+              </ToggleGroupItem>
+            </ToggleGroup>
 
-          <Item
-            icon={<IconEraser />}
-            label="Clear"
-            onClick={() => {
-              editor.chain().focus().clearContent().run();
-              onChange("");
-            }}
-          />
-        </PopoverContent>
-      </Popover>
+            <Separator orientation="vertical" />
 
-      {/* EMOJI */}
-      <Popover onOpenChange={setEmojiOpen} open={emojiOpen}>
-        <PopoverTrigger asChild>
-          <Button className="h-8 w-8" size="icon-sm" variant="ghost">
-            <IconMoodSmileBeam />
-          </Button>
-        </PopoverTrigger>
+            {/* Insert Group */}
+            <ButtonGroup>
+              <Popover
+                onOpenChange={setIsLinkPopoverOpen}
+                open={isLinkPopoverOpen}
+              >
+                <PopoverTrigger asChild>
+                  <Button
+                    aria-label="Add a link"
+                    onClick={handleAddLink}
+                    size="icon"
+                    title="Insert Link (Ctrl+K)"
+                    variant="ghost"
+                  >
+                    <IconLink />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  align="start"
+                  className="w-96 p-0"
+                  sideOffset={14}
+                >
+                  <InputGroup>
+                    <InputGroupInput
+                      autoFocus
+                      onChange={(e) => setLinkUrl(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          handleSaveLink();
+                        }
+                        if (e.key === "Escape") {
+                          setLinkUrl("");
+                          setIsLinkPopoverOpen(false);
+                        }
+                      }}
+                      placeholder="https://example.com"
+                      type="url"
+                      value={linkUrl}
+                    />
+                    <InputGroupAddon align="inline-end">
+                      <InputGroupButton
+                        onClick={() => {
+                          setLinkUrl("");
+                          setIsLinkPopoverOpen(false);
+                        }}
+                        size="icon-xs"
+                        title="Cancel"
+                        type="button"
+                        variant="default"
+                      >
+                        <IconX />
+                      </InputGroupButton>
+                      <InputGroupButton
+                        onClick={handleSaveLink}
+                        size="icon-xs"
+                        title="Insert Link"
+                        type="button"
+                        variant="default"
+                      >
+                        <IconArrowRight />
+                      </InputGroupButton>
+                    </InputGroupAddon>
+                  </InputGroup>
+                </PopoverContent>
+              </Popover>
+              <Button
+                aria-label="Upload image"
+                onClick={handleImageUploadClick}
+                size="icon"
+                title="Upload Image"
+                variant="ghost"
+              >
+                <IconPhoto />
+              </Button>
+            </ButtonGroup>
+          </div>
+        )}
 
-        <PopoverContent align="start" className="w-80 p-0" side="top">
-          <EmojiPicker
-            onEmojiSelect={(emoji) => {
-              editor.chain().focus().insertContent(emoji.emoji).run();
-              onEmojiSelect?.(emoji);
-              setEmojiOpen(false);
-            }}
+        {composerView === "editor" && (
+          <div
+            className={cn(
+              "relative min-w-0 overflow-x-hidden",
+              isMaximized && "flex-1 overflow-y-auto"
+            )}
           >
-            <EmojiPickerSearch />
-            <EmojiPickerContent />
-            <EmojiPickerFooter />
-          </EmojiPicker>
-        </PopoverContent>
-      </Popover>
+            <LinkBubbleMenu editor={editor} />
+            <div className="p-3">
+              <EditorContent
+                className={cn("min-w-0", disabled && "opacity-50")}
+                editor={editor}
+                onKeyDown={handleEditorKeyDown}
+              />
+            </div>
 
-      {/* EDITOR */}
-      <div className="flex-1 overflow-hidden">
-        <LinkBubbleMenu editor={editor} />
-        <EditorContent
-          className="h-10 overflow-y-auto px-2 text-sm leading-10"
-          editor={editor}
-          onKeyDown={handleEditorKeyDown}
-        />
+            <div className="pointer-events-none absolute right-6 bottom-3">
+              <Badge
+                variant={content.length > 5000 ? "destructive" : "secondary"}
+              >
+                {content.length}/5000
+              </Badge>
+            </div>
+          </div>
+        )}
+
+        {composerView === "attachments" && attachmentPreview && (
+          <div
+            className={cn(
+              "relative min-w-0 overflow-x-hidden",
+              isMaximized && "flex-1 overflow-y-auto"
+            )}
+          >
+            {attachmentPreview}
+          </div>
+        )}
+
+        {composerView === "audio" && audioPreview && (
+          <div
+            className={cn(
+              "relative min-w-0 overflow-x-hidden",
+              isMaximized && "flex-1 overflow-y-auto"
+            )}
+          >
+            {audioPreview}
+          </div>
+        )}
+
+        {/* Bottom Actions Bar */}
+        <div className="flex shrink-0 items-center justify-between gap-1 border-t bg-muted/30 p-1.5">
+          {/* Left: Markdown toggle + communication actions */}
+          <div className="flex items-center gap-3">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    aria-label="Toggle formatting toolbar"
+                    onClick={() => setIsFormattingBarOpen((v) => !v)}
+                    size="sm"
+                    variant={isFormattingBarOpen ? "default" : "ghost"}
+                  >
+                    <IconMarkdown />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>
+                    {isFormattingBarOpen ? "Hide" : "Show"} formatting toolbar
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <Separator orientation="vertical" />
+            <ButtonGroup>
+              <Button
+                aria-label="Undo"
+                disabled={!editor.can().undo()}
+                onClick={() => editor.chain().focus().undo().run()}
+                size="icon"
+                title="Undo (Ctrl+Z)"
+                variant="ghost"
+              >
+                <IconArrowBackUp />
+              </Button>
+              <Button
+                aria-label="Redo"
+                disabled={!editor.can().redo()}
+                onClick={() => editor.chain().focus().redo().run()}
+                size="icon"
+                title="Redo (Ctrl+Y)"
+                variant="ghost"
+              >
+                <IconArrowForwardUp />
+              </Button>
+              <Button
+                aria-label="Clear content"
+                onClick={() => {
+                  editor.chain().focus().clearContent(true).run();
+                  onChange("");
+                }}
+                size="icon"
+                title="Clear Content"
+                variant="ghost"
+              >
+                <IconEraser />
+              </Button>
+            </ButtonGroup>
+            <Separator orientation="vertical" />
+
+            <ButtonGroup>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      aria-label={
+                        isRecording ? "Stop recording" : "Start voice message"
+                      }
+                      className={cn(
+                        "transition-all duration-200",
+                        isRecording && "relative"
+                      )}
+                      disabled={!onVoiceRecord || content.trim().length > 0}
+                      onClick={onVoiceRecord}
+                      size="icon"
+                      title={voiceRecordTitle}
+                      variant="ghost"
+                    >
+                      <IconMicrophone
+                        className={cn(
+                          content.trim().length > 0 && "opacity-50",
+                          isRecording && "text-red-500"
+                        )}
+                      />
+                    </Button>
+                  </TooltipTrigger>
+                  {content.trim().length > 0 && (
+                    <TooltipContent>
+                      <p>Clear text to record audio</p>
+                    </TooltipContent>
+                  )}
+                </Tooltip>
+              </TooltipProvider>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    className="transition-all duration-200"
+                    disabled={!onEmojiSelect || hasAudio}
+                    size="icon"
+                    title="Add emoji"
+                    variant="ghost"
+                  >
+                    <IconMoodPlus className={cn(hasAudio && "opacity-50")} />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent align="end" side="top">
+                  <EmojiPicker
+                    onEmojiSelect={onEmojiSelect ?? (() => undefined)}
+                  >
+                    <EmojiPickerSearch placeholder="Search emoji..." />
+                    <EmojiPickerContent className="max-h-70 overflow-y-auto" />
+                    <EmojiPickerFooter />
+                  </EmojiPicker>
+                </PopoverContent>
+              </Popover>
+              {composerView !== "editor" && onComposerViewChange && (
+                <Button
+                  aria-label="Back to text editor"
+                  className="transition-all duration-200"
+                  onClick={() => onComposerViewChange("editor")}
+                  size="icon"
+                  title="Back to text editor"
+                  variant="ghost"
+                >
+                  <IconKeyboard className="h-3.5 w-3.5" />
+                </Button>
+              )}
+              <Button
+                className="transition-all duration-200"
+                onClick={onFileUpload}
+                size="icon"
+                title="Attach file"
+                variant="ghost"
+              >
+                <IconPaperclip className="h-3.5 w-3.5" />
+              </Button>
+            </ButtonGroup>
+            <Separator orientation="vertical" />
+            <Button
+              aria-label={isMaximized ? "Minimize editor" : "Maximize editor"}
+              onClick={() => {
+                if (isMaximized) {
+                  onMinimize?.();
+                } else {
+                  onMaximize?.();
+                }
+              }}
+              size="icon"
+              title={
+                isMaximized
+                  ? "Minimize Editor (Ctrl+M)"
+                  : "Maximize Editor (Ctrl+M)"
+              }
+              variant="ghost"
+            >
+              {isMaximized ? (
+                <IconMinimize className="h-3.5 w-3.5" />
+              ) : (
+                <IconMaximize className="h-3.5 w-3.5" />
+              )}
+            </Button>
+          </div>
+
+          {/* Right: Send button */}
+          <Button
+            className={cn(
+              "gap-1.5 rounded-full px-4 transition-all duration-200",
+              (content.trim().length > 0 || hasAttachments || hasAudio) &&
+                "scale-105 bg-primary hover:bg-primary/90"
+            )}
+            disabled={
+              isCreatingMessage ||
+              content.length > 5000 ||
+              !(content.trim().length > 0 || hasAttachments || hasAudio)
+            }
+            onClick={onSubmit}
+            size="sm"
+            title="Send message (Enter)"
+            variant={
+              content.trim().length > 0 || hasAttachments || hasAudio
+                ? "default"
+                : "ghost"
+            }
+          >
+            {isCreatingMessage ? (
+              <Spinner />
+            ) : (
+              <>
+                <IconSend className="h-3.5 w-3.5" />
+                <span>Send</span>
+              </>
+            )}
+          </Button>
+        </div>
       </div>
-
-      {/* MIC / SEND */}
-      <Button
-        disabled={content.trim().length > 0}
-        onClick={onVoiceRecord}
-        size="icon-sm"
-        variant="ghost"
-      >
-        <IconMicrophone />
-      </Button>
-
-      <Button
-        disabled={
-          isCreatingMessage || !(content.trim() || hasAttachments || hasAudio)
-        }
-        onClick={onSubmit}
-        size="icon-sm"
-        variant="ghost"
-      >
-        {isCreatingMessage ? <Spinner /> : <IconSend />}
-      </Button>
     </div>
   );
 }

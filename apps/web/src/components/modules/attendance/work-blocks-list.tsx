@@ -48,6 +48,15 @@ const endReasonLabels: Record<string, string> = {
   idle_timeout: "Idle",
 };
 
+const endReasonColors: Record<string, string> = {
+  manual: "text-muted-foreground bg-muted/60",
+  break:
+    "text-yellow-700 bg-yellow-50 dark:text-yellow-400 dark:bg-yellow-950/40",
+  punch_out: "text-red-700 bg-red-50 dark:text-red-400 dark:bg-red-950/40",
+  idle_timeout:
+    "text-slate-600 bg-slate-100 dark:text-slate-400 dark:bg-slate-800/60",
+};
+
 const WorkBlockItem = ({
   block,
   sessionNumber,
@@ -83,39 +92,46 @@ const WorkBlockItem = ({
   }
 
   return (
-    <div className="relative flex items-start">
+    <div className="relative flex items-start gap-4">
       {!isLast && (
-        <div className="absolute top-4 left-4 -ml-px h-full w-0.5 bg-border" />
+        <div className="absolute top-8 left-4 h-full w-px bg-linear-to-b from-border to-transparent" />
       )}
 
-      <div className="z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-background ring-8 ring-card">
+      <div className="z-10 mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border/50 bg-card shadow-sm">
         {iconComponent}
       </div>
 
-      <div className="ml-4 grow space-y-1 pb-8">
-        <div className="flex items-center justify-between">
-          <p className="font-semibold">
-            Session #{sessionNumber}
-            {isOngoing && (
-              <Badge className="ml-2 animate-pulse" variant="destructive">
-                Live
-              </Badge>
-            )}
-          </p>
-          <p className="font-semibold text-lg">
-            {formatDuration(block.durationMinutes)}
-          </p>
-        </div>
-        <div className="flex items-center justify-between text-muted-foreground text-sm">
-          <p>
-            {formatTime(block.startedAt)} -{" "}
-            {isOngoing ? "Now" : formatTime(block.endedAt ?? new Date())}
-          </p>
-          {reason && (
-            <div className="flex items-center justify-end gap-1.5">
-              {endReasonLabels[reason as string]}
+      <div className="min-w-0 grow pb-8">
+        <div className="rounded-xl border border-border/30 bg-muted/10 px-4 py-3 transition-colors hover:bg-muted/20">
+          <div className="mb-1 flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <p className="font-semibold text-sm">Session #{sessionNumber}</p>
+              {isOngoing && (
+                <Badge
+                  className="animate-pulse px-1.5 py-0 text-[10px]"
+                  variant="destructive"
+                >
+                  Live
+                </Badge>
+              )}
             </div>
-          )}
+            <p className="shrink-0 font-bold text-base tabular-nums">
+              {formatDuration(block.durationMinutes)}
+            </p>
+          </div>
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-muted-foreground text-xs tabular-nums">
+              {formatTime(block.startedAt)} →{" "}
+              {isOngoing ? "Now" : formatTime(block.endedAt ?? new Date())}
+            </p>
+            {reason && (
+              <span
+                className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-medium text-[10px] ${endReasonColors[reason as string] ?? "bg-muted/60 text-muted-foreground"}`}
+              >
+                {endReasonLabels[reason as string]}
+              </span>
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -138,15 +154,17 @@ export function WorkBlocksList() {
 
   if (!attendance?.checkInTime) {
     return (
-      <Card className="w-full rounded-3xl border border-white bg-background shadow-[-4px_-4px_12px_rgba(255,255,255,0.8),4px_4px_12px_rgba(0,0,0,0.04)]">
-        <CardContent className="flex flex-col items-center justify-center gap-4 p-12">
-          <div className="rounded-xl bg-muted p-4">
-            <IconClockHour4Filled className="h-10 w-10 text-muted-foreground/60" />
+      <Card className="w-full" variant="neumorphic">
+        <CardContent className="flex flex-col items-center justify-center gap-5 py-14">
+          <div className="rounded-2xl bg-linear-to-br from-slate-100 to-slate-50 p-5 dark:from-slate-800/60 dark:to-slate-700/30">
+            <IconClockHour4Filled className="h-10 w-10 text-slate-400" />
           </div>
-          <div className="space-y-1 text-center">
-            <h3 className="font-semibold text-xl">Not checked-in yet</h3>
-            <p className="text-muted-foreground text-sm">
-              Punch-In to start your work session
+          <div className="space-y-1.5 text-center">
+            <h3 className="font-bold text-xl tracking-tight">
+              Not checked in yet
+            </h3>
+            <p className="max-w-xs text-muted-foreground text-sm">
+              Punch in to start your work session and see your timeline here.
             </p>
           </div>
         </CardContent>
@@ -156,15 +174,18 @@ export function WorkBlocksList() {
 
   if (!blocks || blocks.length === 0) {
     return (
-      <Card className="w-full rounded-3xl border border-white bg-background shadow-[-4px_-4px_12px_rgba(255,255,255,0.8),4px_4px_12px_rgba(0,0,0,0.04)]">
-        <CardContent className="flex flex-col items-center justify-center gap-4 p-12">
-          <div className="rounded-xl bg-muted p-4">
-            <IconBriefcase className="h-10 w-10 text-muted-foreground/60" />
+      <Card className="w-full" variant="neumorphic">
+        <CardContent className="flex flex-col items-center justify-center gap-5 py-14">
+          <div className="rounded-2xl bg-linear-to-br from-violet-100 to-violet-50 p-5 dark:from-violet-950/60 dark:to-violet-900/30">
+            <IconBriefcase className="h-10 w-10 text-violet-400" />
           </div>
-          <div className="space-y-1 text-center">
-            <h3 className="font-semibold text-xl">
-              Your work sessions will appear here once you start working.
+          <div className="space-y-1.5 text-center">
+            <h3 className="font-bold text-xl tracking-tight">
+              No sessions yet
             </h3>
+            <p className="max-w-xs text-muted-foreground text-sm">
+              Your work sessions will appear here as you start working.
+            </p>
           </div>
         </CardContent>
       </Card>
@@ -172,7 +193,7 @@ export function WorkBlocksList() {
   }
 
   return (
-    <Card className="w-full">
+    <Card className="w-full" variant="neumorphic">
       <CardHeader>
         <CardTitle>Work Timeline</CardTitle>
         <CardDescription>
@@ -180,28 +201,17 @@ export function WorkBlocksList() {
         </CardDescription>
       </CardHeader>
       <CardContent className="pt-2">
-        <ScrollArea className="h-[350px] pr-4">
-          {blocks && blocks.length > 0 ? (
-            <div className="relative">
-              {blocks.map((block, index) => (
-                <WorkBlockItem
-                  block={block}
-                  isLast={index === blocks.length - 1}
-                  key={block.id}
-                  sessionNumber={blocks.length - index}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center gap-4 py-12">
-              <div className="rounded-xl bg-muted p-4">
-                <IconBriefcase className="h-10 w-10 text-muted-foreground/60" />
-              </div>
-              <h3 className="text-center font-semibold text-lg">
-                Your work sessions will appear here once you start working.
-              </h3>
-            </div>
-          )}
+        <ScrollArea className="h-88 pr-2">
+          <div className="relative pt-1">
+            {blocks.map((block, index) => (
+              <WorkBlockItem
+                block={block}
+                isLast={index === blocks.length - 1}
+                key={block.id}
+                sessionNumber={blocks.length - index}
+              />
+            ))}
+          </div>
         </ScrollArea>
       </CardContent>
     </Card>
@@ -210,23 +220,17 @@ export function WorkBlocksList() {
 
 export function WorkBlocksListSkeleton() {
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <Skeleton className="h-6 w-1/3" />
-        <Skeleton className="mt-2 h-4 w-2/3" />
+    <Card className="w-full" variant="neumorphic">
+      <CardHeader className="pb-2">
+        <Skeleton className="h-5 w-1/3" />
+        <Skeleton className="mt-1.5 h-4 w-2/3" />
       </CardHeader>
       <CardContent>
-        <div className="space-y-8 pt-4">
+        <div className="space-y-4 pt-2">
           {[...new Array(3)].map((_, i) => (
-            <div className="flex items-start" key={i.toString()}>
-              <Skeleton className="h-8 w-8 shrink-0 rounded-full" />
-              <div className="ml-4 w-full space-y-2">
-                <div className="flex justify-between">
-                  <Skeleton className="h-5 w-1/2" />
-                  <Skeleton className="h-5 w-1/4" />
-                </div>
-                <Skeleton className="h-4 w-1/3" />
-              </div>
+            <div className="flex items-start gap-4" key={i.toString()}>
+              <Skeleton className="mt-0.5 h-8 w-8 shrink-0 rounded-full" />
+              <Skeleton className="h-16 w-full rounded-xl" />
             </div>
           ))}
         </div>

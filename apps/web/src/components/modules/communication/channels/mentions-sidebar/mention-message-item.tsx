@@ -67,8 +67,8 @@ export function MentionMessageItem({ message }: MentionMessageItemProps) {
       <ItemActions>
         <Link
           onClick={handleViewMention}
-          params={{ slug, teamId: "", channelId: message.channel.id }}
-          to="/org/$slug/workspace/teams/$teamId/communication/channels/$channelId"
+          params={{ slug, channelId: message.channel.id }}
+          to="/org/$slug/workspace/communication/channels/$channelId"
         >
           <Button size="sm" variant="secondary">
             View

@@ -1,17 +1,11 @@
-import { IconCalendarWeekFilled } from "@tabler/icons-react";
+import { IconCalendarEventFilled } from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { format, subDays } from "date-fns";
-import { Suspense, useMemo, useState } from "react";
-import { AttendanceAnalyticsSummary } from "@/components/modules/attendance/analytics-summary";
-import {
-  MarkAttendance,
-  MarkAttendanceSkeleton,
-} from "@/components/modules/attendance/mark-attendance";
-import {
-  WorkBlocksList,
-  WorkBlocksListSkeleton,
-} from "@/components/modules/attendance/work-blocks-list";
+import { useMemo, useState } from "react";
+import { AttendanceInsights } from "@/components/modules/attendance/analytics-insights";
+import { AttendanceStatusBreakdown } from "@/components/modules/attendance/analytics-status-breakdown";
+import { AttendanceTrendChart } from "@/components/modules/attendance/analytics-trend-chart";
 import { Badge } from "@/components/ui/badge";
 import {
   Select,
@@ -23,21 +17,21 @@ import {
 import { queryUtils } from "@/utils/orpc";
 
 export const Route = createFileRoute(
-  "/(authenticated)/org/$slug/workspace/(modules)/attendance/"
+  "/(authenticated)/org/$slug/workspace/attendance/analytics"
 )({
-  staticData: { crumb: "Attendance" },
+  staticData: { crumb: "Analytics" },
   component: RouteComponent,
 });
 
-export const RANGE_OPTIONS = [
+const RANGE_OPTIONS = [
   { value: "30", label: "Last 30 days", days: 30 },
   { value: "60", label: "Last 60 days", days: 60 },
   { value: "90", label: "Last 90 days", days: 90 },
 ] as const;
 
-export type RangeOptionValue = (typeof RANGE_OPTIONS)[number]["value"];
+type RangeOptionValue = (typeof RANGE_OPTIONS)[number]["value"];
 
-export function rangeToInput(value: RangeOptionValue) {
+function rangeToInput(value: RangeOptionValue) {
   const option = RANGE_OPTIONS.find((item) => item.value === value);
   const endDate = new Date();
   endDate.setHours(23, 59, 59, 999);
@@ -63,21 +57,21 @@ function RouteComponent() {
   );
 
   return (
-    <div className="space-y-6 p-3">
+    <section className="page-gradient space-y-6 p-6">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="font-bold text-2xl">Attendance</h1>
+          <h1 className="font-bold text-2xl">Analytics</h1>
           <p className="text-muted-foreground text-sm">
-            Track your attendance quality, punctuality, and working patterns.
+            Detailed insights into your attendance patterns and trends.
           </p>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <Select
             onValueChange={(value) => setRange(value as RangeOptionValue)}
             value={range}
           >
-            <SelectTrigger className="h-10 w-44 rounded-2xl border bg-white px-4 shadow-sm">
+            <SelectTrigger className="w-40">
               <SelectValue placeholder="Select range" />
             </SelectTrigger>
             <SelectContent>
@@ -89,27 +83,30 @@ function RouteComponent() {
             </SelectContent>
           </Select>
           <Badge className="gap-2" variant="outline">
-            <IconCalendarWeekFilled />
+            <IconCalendarEventFilled className="h-4 w-4" />
             {format(new Date(analytics.range.startDate), "MMM d")} -{" "}
             {format(new Date(analytics.range.endDate), "MMM d")}
           </Badge>
         </div>
       </div>
 
-      <div className="flex gap-12 p-6">
-        <Suspense fallback={<MarkAttendanceSkeleton />}>
-          <MarkAttendance />
-        </Suspense>
+      <div className="space-y-12">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
+          <div className="*:h-full lg:col-span-2">
+            <AttendanceTrendChart dailyTrends={analytics.dailyTrends} />
+          </div>
+          <AttendanceStatusBreakdown
+            statusBreakdown={analytics.statusBreakdown}
+            summary={analytics.summary}
+          />
+        </div>
 
-        <Suspense fallback={<WorkBlocksListSkeleton />}>
-          <WorkBlocksList />
-        </Suspense>
+        <AttendanceInsights
+          punctuality={analytics.punctuality}
+          streaks={analytics.streaks}
+          summary={analytics.summary}
+        />
       </div>
-
-      <AttendanceAnalyticsSummary
-        punctuality={analytics.punctuality}
-        summary={analytics.summary}
-      />
-    </div>
+    </section>
   );
 }

@@ -1,10 +1,12 @@
 import { formOptions } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { FieldGroup } from "@/components/ui/field";
 import { useAppForm } from "@/components/ui/form/hooks";
+import { InputGroupAddon, InputGroupButton } from "@/components/ui/input-group";
 import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth-client";
 import { SignUpFormSchema } from "@/lib/schemas/auth";
@@ -18,6 +20,10 @@ const formOpts = formOptions({
     email: "",
     password: "",
     confirmPassword: "",
+    formState: {
+      showPassword: false,
+      showConfirmPassword: false,
+    },
   } satisfies SignUpFormType as SignUpFormType,
 });
 
@@ -104,13 +110,77 @@ export function SignUpForm() {
             )}
           </form.AppField>
 
-          <form.AppField name="password">
-            {(field) => <field.Input label="Password" type="password" />}
+          <form.AppField name="formState.showPassword">
+            {(showPasswordField) => (
+              <form.AppField name="password">
+                {(field) => (
+                  <field.InputGroup label="Password">
+                    <field.InputGroupInput
+                      placeholder="Enter password"
+                      type={showPasswordField.state.value ? "text" : "password"}
+                    />
+                    <InputGroupAddon align="inline-end">
+                      <InputGroupButton
+                        aria-label={
+                          showPasswordField.state.value
+                            ? "Hide password"
+                            : "Show password"
+                        }
+                        onClick={() =>
+                          showPasswordField.handleChange(
+                            !showPasswordField.state.value
+                          )
+                        }
+                      >
+                        {showPasswordField.state.value ? (
+                          <EyeOffIcon className="size-4" />
+                        ) : (
+                          <EyeIcon className="size-4" />
+                        )}
+                      </InputGroupButton>
+                    </InputGroupAddon>
+                  </field.InputGroup>
+                )}
+              </form.AppField>
+            )}
           </form.AppField>
 
-          <form.AppField name="confirmPassword">
-            {(field) => (
-              <field.Input label="Confirm Password" type="password" />
+          <form.AppField name="formState.showConfirmPassword">
+            {(showConfirmPasswordField) => (
+              <form.AppField name="confirmPassword">
+                {(field) => (
+                  <field.InputGroup label="Confirm Password">
+                    <field.InputGroupInput
+                      placeholder="Confirm password"
+                      type={
+                        showConfirmPasswordField.state.value
+                          ? "text"
+                          : "password"
+                      }
+                    />
+                    <InputGroupAddon align="inline-end">
+                      <InputGroupButton
+                        aria-label={
+                          showConfirmPasswordField.state.value
+                            ? "Hide password"
+                            : "Show password"
+                        }
+                        onClick={() =>
+                          showConfirmPasswordField.handleChange(
+                            !showConfirmPasswordField.state.value
+                          )
+                        }
+                      >
+                        {showConfirmPasswordField.state.value ? (
+                          <EyeOffIcon className="size-4" />
+                        ) : (
+                          <EyeIcon className="size-4" />
+                        )}
+                      </InputGroupButton>
+                    </InputGroupAddon>
+                  </field.InputGroup>
+                )}
+              </form.AppField>
             )}
           </form.AppField>
 

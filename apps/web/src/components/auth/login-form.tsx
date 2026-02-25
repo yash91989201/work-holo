@@ -1,18 +1,24 @@
 import { formOptions } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FieldGroup } from "@/components/ui/field";
 import { useAppForm } from "@/components/ui/form/hooks";
+import { InputGroupAddon, InputGroupButton } from "@/components/ui/input-group";
 import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth-client";
 import { LogInFormSchema } from "@/lib/schemas/auth";
 import type { LogInFormType } from "@/lib/types";
+import { getOrgRouteByRole } from "@/utils";
 
 const formOpts = formOptions({
   defaultValues: {
     email: "",
     password: "",
+    formState: {
+      showPassword: false,
+    },
   } satisfies LogInFormType as LogInFormType,
 });
 
@@ -53,10 +59,9 @@ export function LogInForm() {
             organizationSlug: org.slug,
           });
 
-          navigate({
-            to: "/org/$slug/workspace",
-            params: { slug: org.slug },
-          });
+          const { data: memberData } =
+            await authClient.organization.getActiveMemberRole();
+          navigate(getOrgRouteByRole(memberData?.role ?? "member", org.slug));
           return;
         }
 
@@ -92,13 +97,38 @@ export function LogInForm() {
             )}
           </form.AppField>
 
-          <form.AppField name="password">
-            {(field) => (
-              <field.Input
-                label="Password"
-                placeholder="Enter your password"
-                type="password"
-              />
+          <form.AppField name="formState.showPassword">
+            {(showPasswordField) => (
+              <form.AppField name="password">
+                {(field) => (
+                  <field.InputGroup label="Password">
+                    <field.InputGroupInput
+                      placeholder="Enter your password"
+                      type={showPasswordField.state.value ? "text" : "password"}
+                    />
+                    <InputGroupAddon align="inline-end">
+                      <InputGroupButton
+                        aria-label={
+                          showPasswordField.state.value
+                            ? "Hide password"
+                            : "Show password"
+                        }
+                        onClick={() =>
+                          showPasswordField.handleChange(
+                            !showPasswordField.state.value
+                          )
+                        }
+                      >
+                        {showPasswordField.state.value ? (
+                          <EyeOffIcon className="size-4" />
+                        ) : (
+                          <EyeIcon className="size-4" />
+                        )}
+                      </InputGroupButton>
+                    </InputGroupAddon>
+                  </field.InputGroup>
+                )}
+              </form.AppField>
             )}
           </form.AppField>
 

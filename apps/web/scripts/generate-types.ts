@@ -7,7 +7,7 @@ import chokidar from "chokidar";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 // Adjust "..", ".." if your script lives elsewhere
-const projectRoot = path.resolve(__dirname, "..", "..");
+const projectRoot = path.resolve(__dirname, "..");
 
 const schemasDir = path.join(projectRoot, "src", "lib", "schemas");
 const outputFile = path.join(projectRoot, "src", "lib", "types.ts");

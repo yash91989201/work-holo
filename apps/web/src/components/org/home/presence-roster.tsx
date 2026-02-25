@@ -138,7 +138,10 @@ export function PresenceRoster() {
   const filteredCount = filteredAndSortedMembers?.length ?? 0;
 
   return (
-    <Card className="w-full min-w-0 overflow-hidden rounded-2xl shadow-sm ring-1 ring-foreground/5">
+    <Card
+      className="w-full min-w-0 overflow-hidden rounded-2xl ring-1 ring-foreground/5"
+      variant="neumorphic"
+    >
       <CardHeader>
         <CardTitle className="flex flex-wrap items-center gap-2">
           <IconUsers className="h-5 w-5 shrink-0" />

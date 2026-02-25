@@ -1,4 +1,8 @@
-import { IconAdjustmentsHorizontal, IconDownload } from "@tabler/icons-react";
+import {
+  IconAdjustmentsHorizontal,
+  IconChartBar,
+  IconDownload,
+} from "@tabler/icons-react";
 import type { AttendanceAnalyticsOutput } from "@work-holo/api/lib/schemas/attendance";
 import { format, getDay } from "date-fns";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
@@ -40,14 +44,22 @@ export function AttendanceTrendChart({ dailyTrends }: Props) {
   });
 
   return (
-    <Card className="flex h-full flex-col gap-4 rounded-2xl p-6 shadow-sm">
+    <Card
+      className="flex h-full flex-col gap-4 rounded-2xl p-6"
+      variant="neumorphic"
+    >
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <h3 className="font-semibold text-lg">Productivity Trend</h3>
-          <p className="text-muted-foreground text-sm">
-            Daily hours worked this period
-          </p>
+        <div className="flex items-center gap-3">
+          <div className="rounded-xl bg-violet-100 p-2.5 dark:bg-violet-900/30">
+            <IconChartBar className="h-5 w-5 text-violet-600 dark:text-violet-400" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg">Productivity Trend</h3>
+            <p className="text-muted-foreground text-sm">
+              Daily hours worked this period
+            </p>
+          </div>
         </div>
         <div className="flex shrink-0 items-center gap-2">
           <Button className="gap-2 rounded-lg" size="sm" variant="outline">
@@ -118,11 +130,16 @@ export function AttendanceTrendChart({ dailyTrends }: Props) {
 
 function EmptyState() {
   return (
-    <div className="flex h-[220px] flex-col items-center justify-center rounded-lg bg-muted/40 p-6 text-center sm:h-[280px]">
-      <p className="font-medium text-sm">No data available</p>
-      <p className="mt-1 text-muted-foreground text-sm">
-        No working hours recorded for this range.
-      </p>
+    <div className="flex h-[220px] flex-col items-center justify-center gap-3 rounded-xl p-6 text-center sm:h-[280px]">
+      <div className="rounded-2xl bg-violet-100/60 p-4 dark:bg-violet-900/20">
+        <IconChartBar className="h-8 w-8 text-violet-400" />
+      </div>
+      <div>
+        <p className="font-medium text-sm">No data available</p>
+        <p className="mt-0.5 text-muted-foreground text-sm">
+          No working hours recorded for this range.
+        </p>
+      </div>
     </div>
   );
 }
