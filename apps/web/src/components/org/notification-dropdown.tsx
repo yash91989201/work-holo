@@ -461,14 +461,13 @@ function NotificationItem({
       const fallbackTeamId = session?.session?.activeTeamId ?? null;
       const resolvedTeamId = channelTeamId ?? fallbackTeamId;
 
-      if (message && resolvedTeamId) {
+      if (message) {
         highlightMessage(notification.entityId);
         onClose();
         navigate({
-          to: "/org/$slug/workspace/teams/$teamId/communication/channels/$channelId",
+          to: "/org/$slug/workspace/communication/channels/$channelId",
           params: {
             slug,
-            teamId: resolvedTeamId,
             channelId: message.channelId,
           },
         });

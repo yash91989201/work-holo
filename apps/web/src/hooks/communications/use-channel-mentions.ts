@@ -37,7 +37,7 @@ export type MentionFilter = "all" | "unseen" | "seen";
 
 export function useChannelMentions() {
   const { channelId: currentChannelId } = useParams({
-    from: "/(authenticated)/org/$slug/workspace/teams/$teamId/(modules)/communication/channels/$channelId",
+    from: "/(authenticated)/org/$slug/workspace/communication/channels/$channelId",
   });
 
   const { user } = useAuthedSession();

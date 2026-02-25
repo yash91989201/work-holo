@@ -234,7 +234,7 @@ const MultiFilePreview = ({
         </div>
       </div>
 
-      <div className="h-0.5 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+      <div className="h-0.5 bg-linear-to-r from-primary/10 via-primary/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
     </div>
   );
 };

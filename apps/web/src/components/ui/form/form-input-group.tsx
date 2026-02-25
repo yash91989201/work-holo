@@ -6,6 +6,7 @@ import {
   InputGroupTextarea,
 } from "@/components/ui/input-group";
 import { Spinner } from "@/components/ui/spinner";
+import { cn } from "@/lib/utils";
 import { FormBase, type FormControlProps } from "./form-base";
 import { useFieldContext } from "./hooks";
 
@@ -30,7 +31,7 @@ function FormInputGroup({
 
   return (
     <FormBase {...props}>
-      <InputGroup className={className} data-invalid={isInvalid}>
+      <InputGroup className={cn("overflow-hidden")} data-invalid={isInvalid}>
         {children}
       </InputGroup>
     </FormBase>

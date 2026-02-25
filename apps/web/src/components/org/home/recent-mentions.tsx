@@ -104,12 +104,6 @@ export function RecentMentions() {
   };
 
   const handleReply = (mention: (typeof mentions)[number]) => {
-    const resolvedTeamId = mention.channel.teamId;
-
-    if (!resolvedTeamId) {
-      return;
-    }
-
     if (isMentionSidebarOpen) {
       closeMentionsSidebar();
     }
@@ -124,10 +118,9 @@ export function RecentMentions() {
     openMessageThread(mention.messageId);
 
     navigate({
-      to: "/org/$slug/workspace/teams/$teamId/communication/channels/$channelId",
+      to: "/org/$slug/workspace/communication/channels/$channelId",
       params: {
         slug,
-        teamId: resolvedTeamId,
         channelId: mention.channel.id,
       },
     });
@@ -140,7 +133,10 @@ export function RecentMentions() {
   const quickReactions = ["👍", "❤", "😂", "🎉", "🚀", "👀"] as const;
 
   return (
-    <Card className="min-w-0 gap-0 overflow-hidden rounded-2xl p-0 shadow-sm">
+    <Card
+      className="min-w-0 gap-0 overflow-hidden rounded-2xl p-0"
+      variant="neumorphic"
+    >
       <CardHeader className="border-b px-6 pt-5 pb-4">
         <CardTitle className="font-semibold text-lg">Recent Mentions</CardTitle>
         {unreadMentionCount > 0 && (

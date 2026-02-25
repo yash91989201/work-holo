@@ -27,8 +27,8 @@ import {
 import { queryUtils } from "@/utils/orpc";
 
 export const RecentChannels = () => {
-  const { slug, teamId } = useParams({
-    from: "/(authenticated)/org/$slug/workspace/teams/$teamId",
+  const { slug } = useParams({
+    from: "/(authenticated)/org/$slug/workspace",
   });
 
   const { data: channels } = useSuspenseQuery(
@@ -53,12 +53,7 @@ export const RecentChannels = () => {
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {channels.map((channel) => (
-            <ChannelCard
-              channel={channel}
-              key={channel.id}
-              slug={slug}
-              teamId={teamId}
-            />
+            <ChannelCard channel={channel} key={channel.id} slug={slug} />
           ))}
         </div>
       )}
@@ -69,17 +64,15 @@ export const RecentChannels = () => {
 export const ChannelCard = ({
   channel,
   slug,
-  teamId,
 }: {
   channel: ListChannelsOutputType["channels"][number];
   slug: string;
-  teamId: string;
 }) => {
   const navigate = useNavigate();
   const handleClick = () => {
     navigate({
-      to: "/org/$slug/workspace/teams/$teamId/communication/channels/$channelId",
-      params: { slug, teamId, channelId: channel.id },
+      to: "/org/$slug/workspace/communication/channels/$channelId",
+      params: { slug, channelId: channel.id },
     });
   };
 

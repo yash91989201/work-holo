@@ -5,16 +5,27 @@ import { cn } from "@/lib/utils";
 function Card({
   className,
   size = "default",
+  variant = "default",
   ...props
-}: React.ComponentProps<"div"> & { size?: "default" | "sm" }) {
+}: React.ComponentProps<"div"> & {
+  size?: "default" | "sm";
+  variant?: "default" | "neumorphic";
+}) {
   return (
     <div
       className={cn(
-        "group/card flex flex-col gap-6 overflow-hidden rounded-2xl bg-card py-6 text-card-foreground text-sm ring-1 ring-foreground/10 has-[>img:first-child]:pt-0 data-[size=sm]:gap-4 data-[size=sm]:py-4 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl",
+        "group/card relative flex flex-col gap-6 overflow-hidden rounded-2xl bg-card py-6 text-card-foreground text-sm transition-shadow duration-300 ease-out",
+        variant === "default" && "shadow-sm",
+        variant === "neumorphic" && [
+          "shadow-[8px_8px_16px_rgba(0,0,0,0.1),-8px_-8px_16px_rgba(255,255,255,0.9),0_0_20px_rgba(139,92,246,0.12)] hover:shadow-[10px_10px_20px_rgba(0,0,0,0.12),-10px_-10px_20px_rgba(255,255,255,0.95),0_0_32px_rgba(139,92,246,0.2)]",
+          "dark:shadow-[8px_8px_18px_rgba(0,0,0,0.4),-8px_-8px_18px_rgba(255,255,255,0.04),0_0_22px_rgba(168,130,255,0.15)] dark:hover:shadow-[10px_10px_24px_rgba(0,0,0,0.45),-10px_-10px_24px_rgba(255,255,255,0.06),0_0_36px_rgba(168,130,255,0.25)]",
+        ],
+        "has-[>img:first-child]:pt-0 data-[size=sm]:gap-4 data-[size=sm]:py-4 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl",
         className
       )}
       data-size={size}
       data-slot="card"
+      data-variant={variant}
       {...props}
     />
   );

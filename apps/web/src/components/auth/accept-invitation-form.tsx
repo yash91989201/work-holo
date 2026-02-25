@@ -1,14 +1,22 @@
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate, useParams, useSearch } from "@tanstack/react-router";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { FieldGroup } from "@/components/ui/field";
 import { useAppForm } from "@/components/ui/form/hooks";
+import { InputGroupAddon, InputGroupButton } from "@/components/ui/input-group";
 import { Spinner } from "@/components/ui/spinner";
 import { acceptOrgInvitation } from "@/lib/auth/invitation";
+import { authClient } from "@/lib/auth-client";
 import { AcceptInvitationFormSchema } from "@/lib/schemas/auth";
 import type { AcceptInvitationFormType } from "@/lib/types";
+import { getOrgRouteByRole } from "@/utils";
+
+type AcceptInvitationFormValues = AcceptInvitationFormType & {
+  formState: { showPassword: boolean };
+};
 
 export function AcceptInvitationForm() {
   const navigate = useNavigate();
@@ -30,7 +38,8 @@ export function AcceptInvitationForm() {
       name: "",
       password: "",
       invitationId,
-    } satisfies AcceptInvitationFormType,
+      formState: { showPassword: false },
+    } satisfies AcceptInvitationFormValues as AcceptInvitationFormValues,
     validators: {
       onSubmit: AcceptInvitationFormSchema,
     },
@@ -42,13 +51,17 @@ export function AcceptInvitationForm() {
   const { mutateAsync: acceptInvitation, isPending } = useMutation({
     mutationKey: ["acceptInvitation", invitationId],
     mutationFn: acceptOrgInvitation,
-    onSuccess: (slug) => {
+    onSuccess: async (slug) => {
       toast.success("Invitation accepted successfully!");
 
-      navigate({
-        to: slug ? "/org/$slug" : "/org/new",
-        params: slug ? { slug } : undefined,
-      });
+      if (slug) {
+        const { data: memberData } =
+          await authClient.organization.getActiveMemberRole();
+
+        navigate(getOrgRouteByRole(memberData?.role ?? "member", slug));
+      } else {
+        navigate({ to: "/org/new" });
+      }
     },
     onError: (error) => {
       const message =
@@ -85,14 +98,40 @@ export function AcceptInvitationForm() {
             )}
           </form.AppField>
 
-          <form.AppField name="password">
-            {(field) => (
-              <field.Input
-                disabled={formDisabled}
-                label="Password"
-                placeholder="Create a password"
-                type="password"
-              />
+          <form.AppField name="formState.showPassword">
+            {(showPasswordField) => (
+              <form.AppField name="password">
+                {(field) => (
+                  <field.InputGroup label="Password">
+                    <field.InputGroupInput
+                      disabled={formDisabled}
+                      placeholder="Create a password"
+                      type={showPasswordField.state.value ? "text" : "password"}
+                    />
+                    <InputGroupAddon align="inline-end">
+                      <InputGroupButton
+                        aria-label={
+                          showPasswordField.state.value
+                            ? "Hide password"
+                            : "Show password"
+                        }
+                        disabled={formDisabled}
+                        onClick={() =>
+                          showPasswordField.handleChange(
+                            !showPasswordField.state.value
+                          )
+                        }
+                      >
+                        {showPasswordField.state.value ? (
+                          <EyeOffIcon className="size-4" />
+                        ) : (
+                          <EyeIcon className="size-4" />
+                        )}
+                      </InputGroupButton>
+                    </InputGroupAddon>
+                  </field.InputGroup>
+                )}
+              </form.AppField>
             )}
           </form.AppField>
         </FieldGroup>

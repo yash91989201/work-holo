@@ -1,8 +1,7 @@
 import {
   IconPlayerPauseFilled,
   IconPlayerPlayFilled,
-  IconSend,
-  IconTrashFilled,
+  IconTrash,
   IconX,
 } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
@@ -13,7 +12,6 @@ interface AudioRecorderProps {
   duration: number;
   isRecording: boolean;
   onCancel: () => void;
-  onSend: () => void;
   onStart: () => void;
   onStop: () => void;
 }
@@ -30,7 +28,6 @@ export function AudioRecorder({
   duration,
   onStop,
   onCancel,
-  onSend,
 }: AudioRecorderProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackTime, setPlaybackTime] = useState(0);
@@ -100,40 +97,51 @@ export function AudioRecorder({
       <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
         {/** biome-ignore lint/a11y/useMediaCaption: <track is not required here> */}
         <audio className="hidden" ref={audioRef} />
-        <Button onClick={togglePlayback} size="icon-sm" variant="ghost">
+
+        {/* Play/Pause Button */}
+        <Button
+          className="shrink-0"
+          onClick={togglePlayback}
+          size="icon-sm"
+          variant="secondary"
+        >
           {isPlaying ? (
             <IconPlayerPauseFilled className="size-4" />
           ) : (
             <IconPlayerPlayFilled className="size-4" />
           )}
         </Button>
-        <div className="flex-1">
-          <div className="mb-1 h-1.5 overflow-hidden rounded-full bg-muted">
+
+        {/* Progress Bar and Time */}
+        <div className="flex min-w-0 flex-1 flex-col gap-1">
+          <div className="h-1.5 overflow-hidden rounded-full bg-muted">
             <div
-              className="h-full bg-primary transition-all"
+              className="h-full rounded-full bg-primary transition-all duration-100"
               style={{
                 width: `${duration > 0 ? (playbackTime / duration) * 100 : 0}%`,
               }}
             />
           </div>
-          <p className="font-mono text-muted-foreground text-xs">
-            {formatDuration(isPlaying ? playbackTime : duration)}
-          </p>
+          <div className="flex items-center justify-between">
+            <p className="font-mono text-muted-foreground text-xs">
+              {formatDuration(isPlaying ? playbackTime : duration)}
+            </p>
+            <p className="font-mono text-muted-foreground text-xs">
+              {formatDuration(duration)}
+            </p>
+          </div>
         </div>
-        <div className="flex items-center gap-1">
-          <Button onClick={onSend} size="sm" variant="default">
-            <IconSend className="mr-1 size-3" />
-            Send
-          </Button>
-          <Button
-            onClick={onCancel}
-            size="icon-sm"
-            title="Delete audio"
-            variant="ghost"
-          >
-            <IconTrashFilled className="size-4 text-destructive" />
-          </Button>
-        </div>
+
+        {/* Delete Button */}
+        <Button
+          className="shrink-0 text-destructive hover:bg-destructive/10 hover:text-destructive"
+          onClick={onCancel}
+          size="icon-sm"
+          title="Delete audio"
+          variant="ghost"
+        >
+          <IconTrash className="size-4" />
+        </Button>
       </div>
     );
   }

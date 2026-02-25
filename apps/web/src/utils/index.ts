@@ -1,4 +1,6 @@
+import { linkOptions } from "@tanstack/react-router";
 import { UAParser } from "ua-parser-js";
+import type { OrgRolesType } from "@/lib/types";
 
 export const generateSlug = (value: string) => {
   return (
@@ -41,4 +43,14 @@ export const getBrowserInformation = (userAgent?: string | null) => {
   } catch {
     return "Unknown Device";
   }
+};
+
+export const getOrgRouteByRole = (role: OrgRolesType, slug: string) => {
+  if (role === "owner") {
+    return linkOptions({ to: "/org/$slug/manage", params: { slug } });
+  }
+  if (role === "admin") {
+    return linkOptions({ to: "/org/$slug/console", params: { slug } });
+  }
+  return linkOptions({ to: "/org/$slug/workspace", params: { slug } });
 };
