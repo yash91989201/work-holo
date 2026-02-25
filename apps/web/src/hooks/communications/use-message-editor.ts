@@ -156,7 +156,7 @@ export function useMessageEditor({
           "prose prose-sm max-w-none break-words focus:outline-none",
           isMaximized && isInMaximizedComposer
             ? "min-h-[56vh] overflow-y-auto sm:min-h-[64vh]"
-            : "max-h-36 min-h-32 overflow-y-auto"
+            : "max-h-36 min-h-24 overflow-y-auto"
         ),
       },
       handleKeyDown: (view, event) => {
