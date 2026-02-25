@@ -60,16 +60,20 @@ const StatCard = ({
   icon,
   label,
   value,
+  accent = "bg-muted",
 }: {
   icon: React.ReactNode;
   label: string;
   value: string;
+  accent?: string;
 }) => (
-  <div className="flex items-center gap-3 rounded-lg border bg-background p-4">
-    <div className="rounded-full bg-muted p-2">{icon}</div>
-    <div>
-      <p className="text-muted-foreground text-sm">{label}</p>
-      <p className="font-semibold text-lg">{value}</p>
+  <div className="flex items-center gap-4 rounded-xl border border-border/30 bg-muted/20 p-4 transition-colors hover:bg-muted/30">
+    <div className={`rounded-xl p-2.5 ${accent}`}>{icon}</div>
+    <div className="min-w-0">
+      <p className="font-medium text-muted-foreground text-xs uppercase tracking-wider">
+        {label}
+      </p>
+      <p className="font-bold text-xl tabular-nums">{value}</p>
     </div>
   </div>
 );
@@ -131,19 +135,21 @@ export const MarkAttendance = () => {
 
   if (!hasCheckedIn) {
     return (
-      <Card className="w-full rounded-3xl border border-white bg-background shadow-[-4px_-4px_12px_rgba(255,255,255,0.8),4px_4px_12px_rgba(0,0,0,0.04)]">
-        <CardContent className="flex flex-col items-center justify-center gap-4 p-12">
-          <div className="rounded-xl bg-muted p-4">
-            <IconBriefcase className="h-10 w-10 text-muted-foreground/60" />
+      <Card className="w-full" variant="neumorphic">
+        <CardContent className="flex flex-col items-center gap-6 py-10">
+          <div className="rounded-2xl bg-linear-to-br from-violet-100 to-violet-50 p-5 dark:from-violet-950/60 dark:to-violet-900/30">
+            <IconBriefcase className="h-12 w-12 text-violet-500" />
           </div>
-          <div className="space-y-1 text-center">
-            <h3 className="font-semibold text-xl">Ready to Start?</h3>
-            <p className="text-muted-foreground text-sm">
-              Punch in to begin your workday.
+          <div className="space-y-1.5 text-center">
+            <h3 className="font-bold text-2xl tracking-tight">
+              Ready to Start?
+            </h3>
+            <p className="max-w-xs text-muted-foreground text-sm">
+              Punch in to begin your workday and start tracking your time.
             </p>
           </div>
           <Button
-            className="mt-2 rounded-lg bg-green-600 px-8 hover:bg-green-700"
+            className="w-full bg-green-600 font-semibold text-white hover:bg-green-700"
             disabled={isActionPending}
             onClick={() => punchIn({})}
             size="lg"
@@ -166,31 +172,43 @@ export const MarkAttendance = () => {
 
     return (
       <>
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle>Work Session in Progress</CardTitle>
-            <CardDescription>You are currently punched in.</CardDescription>
+        <Card className="w-full" variant="neumorphic">
+          <CardHeader className="pb-2">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex h-2 w-2 animate-pulse rounded-full bg-green-500" />
+              <CardTitle className="font-semibold text-base">
+                Work Session in Progress
+              </CardTitle>
+            </div>
+            <CardDescription>
+              You are currently punched in and tracking time.
+            </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid grid-cols-1 gap-4">
+          <CardContent className="space-y-5">
+            <div className="grid grid-cols-1 gap-3">
               <StatCard
-                icon={<IconClockHour4Filled className="text-blue-500" />}
+                accent="bg-blue-100 dark:bg-blue-950/50"
+                icon={
+                  <IconClockHour4Filled className="h-5 w-5 text-blue-500" />
+                }
                 label="Checked In"
                 value={formatDateTime(attendance.checkInTime)}
               />
               <StatCard
-                icon={<IconBriefcase className="text-green-500" />}
+                accent="bg-green-100 dark:bg-green-950/50"
+                icon={<IconBriefcase className="h-5 w-5 text-green-500" />}
                 label="Total Work Time"
                 value={formatDuration(workMinutes)}
               />
               <StatCard
-                icon={<IconCoffee className="text-orange-500" />}
+                accent="bg-orange-100 dark:bg-orange-950/50"
+                icon={<IconCoffee className="h-5 w-5 text-orange-500" />}
                 label="Break Time"
                 value={formatDuration(breakMinutes)}
               />
             </div>
             <Button
-              className="bg-red-600 hover:bg-red-700"
+              className="w-full bg-red-600 font-semibold text-white hover:bg-red-700"
               disabled={isActionPending}
               onClick={handlePunchOut}
               size="lg"
@@ -253,38 +271,42 @@ export const MarkAttendance = () => {
   const workMinutes = totalMinutes - breakMinutes;
 
   return (
-    <Card className="w-full">
-      <CardHeader>
+    <Card className="w-full" variant="neumorphic">
+      <CardHeader className="pb-2">
         <CardTitle>Day Complete!</CardTitle>
         <CardDescription>Here's a summary of your workday.</CardDescription>
       </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <CardContent className="space-y-5">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <StatCard
-            icon={<IconClockHour4Filled className="text-blue-500" />}
+            accent="bg-blue-100 dark:bg-blue-950/50"
+            icon={<IconClockHour4Filled className="h-5 w-5 text-blue-500" />}
             label="Checked In"
             value={formatDateTime(attendance.checkInTime)}
           />
           <StatCard
-            icon={<IconLogout className="text-red-500" />}
+            accent="bg-red-100 dark:bg-red-950/50"
+            icon={<IconLogout className="h-5 w-5 text-red-500" />}
             label="Checked Out"
             value={formatDateTime(attendance.checkOutTime)}
           />
           <StatCard
-            icon={<IconBriefcase className="text-green-500" />}
+            accent="bg-green-100 dark:bg-green-950/50"
+            icon={<IconBriefcase className="h-5 w-5 text-green-500" />}
             label="Total Work Time"
             value={formatDuration(workMinutes)}
           />
           <StatCard
-            icon={<IconCoffee className="text-orange-500" />}
+            accent="bg-orange-100 dark:bg-orange-950/50"
+            icon={<IconCoffee className="h-5 w-5 text-orange-500" />}
             label="Break Time"
             value={formatDuration(breakMinutes)}
           />
         </div>
-        <div className="mt-6 flex items-center gap-3 rounded-lg bg-green-50 p-4 text-green-800 dark:bg-green-950 dark:text-green-300">
-          <IconCircleCheckFilled className="h-6 w-6" />
-          <p className="font-medium">
-            You have successfully punched out for the day. Great work!
+        <div className="flex items-center gap-3 rounded-xl border border-green-200/60 bg-green-50/80 p-4 text-green-800 dark:border-green-800/40 dark:bg-green-950/40 dark:text-green-300">
+          <IconCircleCheckFilled className="h-5 w-5 shrink-0" />
+          <p className="font-medium text-sm">
+            You've successfully punched out for the day. Great work!
           </p>
         </div>
       </CardContent>
@@ -293,18 +315,19 @@ export const MarkAttendance = () => {
 };
 
 export const MarkAttendanceSkeleton = () => (
-  <Card className="w-full">
-    <CardHeader>
-      <Skeleton className="h-7 w-48" />
-      <Skeleton className="mt-2 h-4 w-64" />
+  <Card className="w-full" variant="neumorphic">
+    <CardHeader className="pb-2">
+      <Skeleton className="h-5 w-48" />
+      <Skeleton className="mt-1.5 h-4 w-64" />
     </CardHeader>
-    <CardContent className="space-y-6">
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-        <Skeleton className="h-20 w-full" />
-        <Skeleton className="h-20 w-full" />
-        <Skeleton className="h-20 w-full" />
+    <CardContent className="space-y-5">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <Skeleton className="h-18 w-full rounded-xl" />
+        <Skeleton className="h-18 w-full rounded-xl" />
+        <Skeleton className="h-18 w-full rounded-xl" />
+        <Skeleton className="h-18 w-full rounded-xl" />
       </div>
-      <Skeleton className="h-12 w-full" />
+      <Skeleton className="h-11 w-full rounded-lg" />
     </CardContent>
   </Card>
 );

@@ -21,7 +21,7 @@ function StatCard({ stat }: { stat: StatItem }) {
   const Icon = stat.icon;
 
   return (
-    <Card>
+    <Card variant="neumorphic">
       <CardContent className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <div className={`rounded-xl p-2.5 ${stat.iconBg}`}>
@@ -131,7 +131,7 @@ export function OrgStatsSkeleton() {
       {stats.map((stat) => {
         const Icon = stat.icon;
         return (
-          <Card key={stat.title}>
+          <Card key={stat.title} variant="neumorphic">
             <CardContent className="flex flex-col gap-3">
               <div className="flex items-center justify-between">
                 <div className={`rounded-xl p-2.5 ${stat.iconBg}`}>

@@ -49,7 +49,7 @@ export function ProductivityChart() {
 
   if (chartData.length === 0) {
     return (
-      <Card className="gap-4 rounded-2xl p-6 shadow-sm">
+      <Card className="gap-4 rounded-2xl p-6" variant="neumorphic">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h3 className="font-semibold text-lg">Attendance Hours</h3>
@@ -79,7 +79,7 @@ export function ProductivityChart() {
   }
 
   return (
-    <Card className="gap-4 rounded-2xl p-6 shadow-sm">
+    <Card className="gap-4 rounded-2xl p-6" variant="neumorphic">
       {/* Header */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
@@ -143,7 +143,7 @@ export function ProductivityChart() {
 
 export function ProductivityChartSkeleton() {
   return (
-    <Card className="gap-4 rounded-2xl p-6 shadow-sm">
+    <Card className="gap-4 rounded-2xl p-6" variant="neumorphic">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h3 className="font-semibold text-lg">Attendance Hours</h3>

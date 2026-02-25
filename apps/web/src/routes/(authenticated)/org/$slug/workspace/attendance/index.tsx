@@ -63,7 +63,7 @@ function RouteComponent() {
   );
 
   return (
-    <div className="space-y-6 p-3">
+    <section className="page-gradient space-y-6 p-6">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-bold text-2xl">Attendance</h1>
@@ -77,7 +77,7 @@ function RouteComponent() {
             onValueChange={(value) => setRange(value as RangeOptionValue)}
             value={range}
           >
-            <SelectTrigger className="h-10 w-44 rounded-2xl border bg-white px-4 shadow-sm">
+            <SelectTrigger>
               <SelectValue placeholder="Select range" />
             </SelectTrigger>
             <SelectContent>
@@ -110,6 +110,6 @@ function RouteComponent() {
         punctuality={analytics.punctuality}
         summary={analytics.summary}
       />
-    </div>
+    </section>
   );
 }

@@ -47,14 +47,19 @@ export function AttendanceInsights({ punctuality, streaks, summary }: Props) {
   ];
 
   return (
-    <Card className="rounded-2xl bg-gradient-to-br from-slate-50 via-white to-violet-50/50 p-6 shadow-sm dark:from-slate-900 dark:via-slate-900 dark:to-violet-950/30">
+    <Card className="rounded-2xl p-6" variant="neumorphic">
       {/* Header */}
-      <div className="mb-6 flex items-start justify-between">
-        <div>
-          <h3 className="font-semibold text-lg">Insights</h3>
-          <p className="text-muted-foreground text-sm">
-            Punctuality and streaks from your history
-          </p>
+      <div className="mb-6 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="rounded-xl bg-violet-100 p-2.5 dark:bg-violet-900/30">
+            <IconSparkles className="h-5 w-5 text-violet-600 dark:text-violet-400" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg">Insights</h3>
+            <p className="text-muted-foreground text-sm">
+              Punctuality and streaks from your history
+            </p>
+          </div>
         </div>
         <Badge className="gap-1.5" variant="outline">
           <IconSparkles className="h-3.5 w-3.5" />
@@ -63,25 +68,25 @@ export function AttendanceInsights({ punctuality, streaks, summary }: Props) {
       </div>
 
       {/* Content */}
-      <div className="grid gap-8 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2 md:gap-8">
         {/* Punctuality Section */}
         <div>
           <div className="mb-4 font-medium text-muted-foreground text-xs uppercase tracking-wider">
             Punctuality
           </div>
-          <div className="space-y-4">
+          <div className="space-y-3">
             {punctualityRows.map((row) => (
               <div
-                className="flex items-center justify-between"
+                className="flex items-center justify-between rounded-xl bg-white/70 p-3 shadow-[0_1px_4px_rgba(0,0,0,0.06)] dark:bg-white/5 dark:shadow-none"
                 key={row.label}
               >
                 <div className="flex items-center gap-3">
-                  <div className={`rounded-xl p-2.5 ${row.iconBg}`}>
+                  <div className={`rounded-xl p-2 ${row.iconBg}`}>
                     {row.icon}
                   </div>
                   <span className="text-sm">{row.label}</span>
                 </div>
-                <span className="font-medium text-muted-foreground">
+                <span className="font-semibold text-sm tabular-nums">
                   {row.value}
                 </span>
               </div>
@@ -94,9 +99,9 @@ export function AttendanceInsights({ punctuality, streaks, summary }: Props) {
           <div className="mb-4 font-medium text-muted-foreground text-xs uppercase tracking-wider">
             Reliability
           </div>
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             {/* Current Streak */}
-            <div className="flex items-center justify-between rounded-xl bg-white p-4 shadow-sm dark:bg-slate-800/50">
+            <div className="flex items-center justify-between rounded-xl bg-white/70 p-4 shadow-[0_1px_4px_rgba(0,0,0,0.06)] dark:bg-white/5 dark:shadow-none">
               <div>
                 <div className="text-muted-foreground text-xs uppercase tracking-wide">
                   Current Streak
@@ -111,7 +116,7 @@ export function AttendanceInsights({ punctuality, streaks, summary }: Props) {
             </div>
 
             {/* Best Streak */}
-            <div className="flex items-center justify-between rounded-xl bg-white p-4 shadow-sm dark:bg-slate-800/50">
+            <div className="flex items-center justify-between rounded-xl bg-white/70 p-4 shadow-[0_1px_4px_rgba(0,0,0,0.06)] dark:bg-white/5 dark:shadow-none">
               <div>
                 <div className="text-muted-foreground text-xs uppercase tracking-wide">
                   Best Streak
@@ -126,20 +131,20 @@ export function AttendanceInsights({ punctuality, streaks, summary }: Props) {
             </div>
 
             {/* Stats Row */}
-            <div className="mt-4 grid grid-cols-3 gap-3">
-              <div className="text-center">
+            <div className="mt-2 grid grid-cols-3 gap-2">
+              <div className="rounded-xl bg-white/70 p-2.5 text-center shadow-[0_1px_4px_rgba(0,0,0,0.06)] dark:bg-white/5 dark:shadow-none">
                 <div className="text-muted-foreground text-xs uppercase tracking-wide">
                   Total Tracked
                 </div>
                 <div className="font-bold text-xl">{summary.totalDays}</div>
               </div>
-              <div className="text-center">
+              <div className="rounded-xl bg-white/70 p-2.5 text-center shadow-[0_1px_4px_rgba(0,0,0,0.06)] dark:bg-white/5 dark:shadow-none">
                 <div className="text-muted-foreground text-xs uppercase tracking-wide">
                   Late Arrivals
                 </div>
                 <div className="font-bold text-xl">{summary.lateDays}</div>
               </div>
-              <div className="text-center">
+              <div className="rounded-xl bg-white/70 p-2.5 text-center shadow-[0_1px_4px_rgba(0,0,0,0.06)] dark:bg-white/5 dark:shadow-none">
                 <div className="text-muted-foreground text-xs uppercase tracking-wide">
                   Sick Days
                 </div>

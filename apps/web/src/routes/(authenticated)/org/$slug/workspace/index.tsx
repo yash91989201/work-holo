@@ -21,7 +21,7 @@ export const Route = createFileRoute("/(authenticated)/org/$slug/workspace/")({
 
 function RouteComponent() {
   return (
-    <section className="relative min-h-screen space-y-6 p-6 before:pointer-events-none before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_top_right,hsl(var(--primary)/0.15),transparent_50%),radial-gradient(circle_at_bottom_left,hsl(var(--accent)/0.1),transparent_50%)] before:dark:bg-[radial-gradient(circle_at_top_right,hsl(var(--primary)/0.25),transparent_60%),radial-gradient(circle_at_bottom_left,hsl(var(--accent)/0.15),transparent_60%)]">
+    <section className="page-gradient relative min-h-screen space-y-6 p-6 *:relative *:z-10">
       <Greeting />
 
       <Suspense fallback={<OrgStatsSkeleton />}>
