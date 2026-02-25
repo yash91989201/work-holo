@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate, useParams, useSearch } from "@tanstack/react-router";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -123,9 +123,9 @@ export function AcceptInvitationForm() {
                         }
                       >
                         {showPasswordField.state.value ? (
-                          <EyeOffIcon className="size-4" />
+                          <IconEyeOff className="size-4" />
                         ) : (
-                          <EyeIcon className="size-4" />
+                          <IconEye className="size-4" />
                         )}
                       </InputGroupButton>
                     </InputGroupAddon>

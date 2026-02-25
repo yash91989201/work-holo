@@ -1,7 +1,7 @@
 import { formOptions } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { FieldGroup } from "@/components/ui/field";
 import { useAppForm } from "@/components/ui/form/hooks";
@@ -120,9 +120,9 @@ export function LogInForm() {
                         }
                       >
                         {showPasswordField.state.value ? (
-                          <EyeOffIcon className="size-4" />
+                          <IconEyeOff className="size-4" />
                         ) : (
-                          <EyeIcon className="size-4" />
+                          <IconEye className="size-4" />
                         )}
                       </InputGroupButton>
                     </InputGroupAddon>
