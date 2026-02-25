@@ -57,7 +57,7 @@ function RouteComponent() {
   );
 
   return (
-    <div className="space-y-6 p-6">
+    <section className="page-gradient space-y-6 p-6">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-bold text-2xl">Analytics</h1>
@@ -107,6 +107,6 @@ function RouteComponent() {
           summary={analytics.summary}
         />
       </div>
-    </div>
+    </section>
   );
 }

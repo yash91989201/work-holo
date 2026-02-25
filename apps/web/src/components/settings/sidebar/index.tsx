@@ -12,7 +12,9 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useActiveMemberRole } from "@/hooks/use-active-member-role";
 import { useActiveOrgSlug } from "@/hooks/use-active-org-slug";
+import { getOrgRouteByRole } from "@/utils";
 import { NavMain } from "./nav-main";
 
 export function SettingsSidebar({
@@ -37,15 +39,16 @@ export function SettingsSidebar({
 
 function BackToOrgButton() {
   const activeOrg = useActiveOrgSlug();
+  const role = useActiveMemberRole();
 
-  if (activeOrg === null) {
+  if (activeOrg === null || !role) {
     return null;
   }
 
   return (
     <SidebarMenuItem>
       <SidebarMenuButton asChild>
-        <Link params={{ slug: activeOrg }} to="/org/$slug">
+        <Link {...getOrgRouteByRole(role, activeOrg)}>
           <IconArrowLeft />
           <span>Back to Org</span>
         </Link>
