@@ -9,6 +9,13 @@ import {
   ChannelReadProcessedWatermarkSchema,
   ChannelReadSchema,
   ChannelSchema,
+  DmAttachmentSchema,
+  DmConversationMuteSchema,
+  DmConversationReadSchema,
+  DmConversationSchema,
+  DmMessageReactionSchema,
+  DmMessageReadSchema,
+  DmMessageSchema,
   InvitationSchema,
   MemberSchema,
   MessageMentionSchema,
@@ -407,6 +414,129 @@ export const channelReadProcessedWatermarkCollection = createCollection(
       url: `${ELECTRIC_SHAPE_BASE_URL}/channel-read-processed-watermark`,
       params: {
         table: "channelReadProcessedWatermark",
+      },
+      fetchClient,
+      parser: {
+        timestamptz: (s: string) => new Date(s),
+      },
+    },
+  })
+);
+
+// ============================================================
+// Direct Message Collections
+// ============================================================
+
+export const dmConversationsCollection = createCollection(
+  electricCollectionOptions({
+    getKey: (c) => c.id,
+    schema: DmConversationSchema,
+    shapeOptions: {
+      url: `${ELECTRIC_SHAPE_BASE_URL}/dm-conversations`,
+      params: {
+        table: "dmConversation",
+      },
+      fetchClient,
+      parser: {
+        timestamptz: (s: string) => new Date(s),
+      },
+    },
+  })
+);
+
+export const dmMessagesCollection = createCollection(
+  electricCollectionOptions({
+    getKey: (m) => m.id,
+    schema: DmMessageSchema,
+    shapeOptions: {
+      url: `${ELECTRIC_SHAPE_BASE_URL}/dm-messages`,
+      params: {
+        table: "dmMessage",
+      },
+      fetchClient,
+      parser: {
+        timestamptz: (s: string) => new Date(s),
+      },
+    },
+  })
+);
+
+export const dmAttachmentsCollection = createCollection(
+  electricCollectionOptions({
+    getKey: (a) => a.id,
+    schema: DmAttachmentSchema,
+    shapeOptions: {
+      url: `${ELECTRIC_SHAPE_BASE_URL}/dm-attachments`,
+      params: {
+        table: "dmAttachment",
+      },
+      fetchClient,
+      parser: {
+        timestamptz: (s: string) => new Date(s),
+      },
+    },
+  })
+);
+
+export const dmReactionsCollection = createCollection(
+  electricCollectionOptions({
+    getKey: (r) => r.id,
+    schema: DmMessageReactionSchema,
+    shapeOptions: {
+      url: `${ELECTRIC_SHAPE_BASE_URL}/dm-reactions`,
+      params: {
+        table: "dmMessageReaction",
+      },
+      fetchClient,
+      parser: {
+        timestamptz: (s: string) => new Date(s),
+      },
+    },
+  })
+);
+
+export const dmMessageReadsCollection = createCollection(
+  electricCollectionOptions({
+    getKey: (mr) => mr.id,
+    schema: DmMessageReadSchema,
+    shapeOptions: {
+      url: `${ELECTRIC_SHAPE_BASE_URL}/dm-message-reads`,
+      params: {
+        table: "dmMessageRead",
+      },
+      fetchClient,
+      parser: {
+        timestamptz: (s: string) => new Date(s),
+      },
+    },
+  })
+);
+
+export const dmConversationReadsCollection = createCollection(
+  electricCollectionOptions({
+    getKey: (cr) => cr.id,
+    schema: DmConversationReadSchema,
+    shapeOptions: {
+      url: `${ELECTRIC_SHAPE_BASE_URL}/dm-conversation-reads`,
+      params: {
+        table: "dmConversationRead",
+      },
+      fetchClient,
+      parser: {
+        timestamptz: (s: string) => new Date(s),
+      },
+    },
+  })
+);
+
+export const dmConversationMutesCollection = createCollection(
+  electricCollectionOptions({
+    getKey: (cm) => cm.id,
+    schema: DmConversationMuteSchema,
+    shapeOptions: {
+      url: `${ELECTRIC_SHAPE_BASE_URL}/dm-conversation-mutes`,
+      params: {
+        table: "dmConversationMute",
       },
       fetchClient,
       parser: {

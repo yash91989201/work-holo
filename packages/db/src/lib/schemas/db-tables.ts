@@ -30,6 +30,15 @@ import {
   messageTable,
   notificationTable,
 } from "../../schema/communication";
+import {
+  dmAttachmentTable,
+  dmConversationMuteTable,
+  dmConversationReadTable,
+  dmConversationTable,
+  dmMessageReactionTable,
+  dmMessageReadTable,
+  dmMessageTable,
+} from "../../schema/direct-message";
 
 export const AccountSchema = createSelectSchema(account);
 export const UserSchema = createSelectSchema(user, {
@@ -143,4 +152,49 @@ export const ChannelReadProcessedWatermarkUpdateSchema = createUpdateSchema(
 );
 export const ChannelReadProcessedWatermarkInsertSchema = createInsertSchema(
   channelReadProcessedWatermarkTable
+);
+
+// Direct Message schemas
+export const DmConversationSchema = createSelectSchema(dmConversationTable);
+export const DmMessageSchema = createSelectSchema(dmMessageTable);
+export const DmAttachmentSchema = createSelectSchema(dmAttachmentTable);
+export const DmMessageReactionSchema = createSelectSchema(
+  dmMessageReactionTable
+);
+export const DmMessageReadSchema = createSelectSchema(dmMessageReadTable);
+export const DmConversationReadSchema = createSelectSchema(
+  dmConversationReadTable
+);
+export const DmConversationMuteSchema = createSelectSchema(
+  dmConversationMuteTable
+);
+
+export const DmConversationUpdateSchema =
+  createUpdateSchema(dmConversationTable);
+export const DmMessageUpdateSchema = createUpdateSchema(dmMessageTable);
+export const DmAttachmentUpdateSchema = createUpdateSchema(dmAttachmentTable);
+export const DmMessageReactionUpdateSchema = createUpdateSchema(
+  dmMessageReactionTable
+);
+export const DmMessageReadUpdateSchema = createUpdateSchema(dmMessageReadTable);
+export const DmConversationReadUpdateSchema = createUpdateSchema(
+  dmConversationReadTable
+);
+export const DmConversationMuteUpdateSchema = createUpdateSchema(
+  dmConversationMuteTable
+);
+
+export const DmConversationInsertSchema =
+  createInsertSchema(dmConversationTable);
+export const DmMessageInsertSchema = createInsertSchema(dmMessageTable);
+export const DmAttachmentInsertSchema = createInsertSchema(dmAttachmentTable);
+export const DmMessageReactionInsertSchema = createInsertSchema(
+  dmMessageReactionTable
+);
+export const DmMessageReadInsertSchema = createInsertSchema(dmMessageReadTable);
+export const DmConversationReadInsertSchema = createInsertSchema(
+  dmConversationReadTable
+);
+export const DmConversationMuteInsertSchema = createInsertSchema(
+  dmConversationMuteTable
 );
