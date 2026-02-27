@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/sidebar";
 import { AttendanceGroup } from "./groups/attendance";
 import { ChannelGroup } from "./groups/channel";
+import { DmGroup } from "./groups/dm";
 import { OverviewGroup } from "./groups/overview";
 import { QuickActionGroup } from "./groups/quick-action";
 
@@ -30,6 +31,9 @@ export function Sidebar({
         <AttendanceGroup />
         <Suspense fallback={<ChannelGroup.Fallback />}>
           <ChannelGroup />
+        </Suspense>
+        <Suspense fallback={<DmGroup.Fallback />}>
+          <DmGroup />
         </Suspense>
       </SidebarContent>
       <SidebarRail />
