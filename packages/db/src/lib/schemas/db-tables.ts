@@ -28,8 +28,11 @@ import {
   messageReadSummaryTable,
   messageReadTable,
   messageTable,
+} from "../../schema/channel";
+import {
   notificationTable,
-} from "../../schema/communication";
+  pushSubscriptionTable,
+} from "../../schema/notification";
 import {
   dmAttachmentTable,
   dmConversationMuteTable,
@@ -153,6 +156,16 @@ export const ChannelReadProcessedWatermarkUpdateSchema = createUpdateSchema(
 export const ChannelReadProcessedWatermarkInsertSchema = createInsertSchema(
   channelReadProcessedWatermarkTable
 );
+
+// Notification schemas
+export const NotificationSchema = createSelectSchema(notificationTable);
+export const NotificationUpdateSchema = createUpdateSchema(notificationTable);
+export const NotificationInsertSchema = createInsertSchema(notificationTable);
+
+// Push Subscription schemas
+export const PushSubscriptionSchema = createSelectSchema(pushSubscriptionTable);
+export const PushSubscriptionUpdateSchema = createUpdateSchema(pushSubscriptionTable);
+export const PushSubscriptionInsertSchema = createInsertSchema(pushSubscriptionTable);
 
 // Direct Message schemas
 export const DmConversationSchema = createSelectSchema(dmConversationTable);

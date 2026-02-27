@@ -5,7 +5,6 @@ import {
   foreignKey,
   index,
   integer,
-  json,
   pgEnum,
   pgTable,
   primaryKey,
@@ -27,31 +26,12 @@ export const messageTypeEnum = pgEnum("messageType", [
   "audio",
 ]);
 
-export const notificationTypeEnum = pgEnum("notificationType", [
-  "message",
-  "mention",
-  "channel_invite",
-  "direct_message",
-]);
-
-export const notificationStatusEnum = pgEnum("notificationStatus", [
-  "unread",
-  "read",
-  "dismissed",
-]);
-
 export const attachmentTypeEnum = pgEnum("attachmentType", [
   "image",
   "document",
   "video",
   "audio",
   "archive",
-]);
-
-export const joinRequestStatusEnum = pgEnum("joinRequestStatus", [
-  "pending",
-  "approved",
-  "rejected",
 ]);
 
 export const channelTable = pgTable("channel", {
@@ -100,32 +80,6 @@ export const channelMemberTable = pgTable(
     uniqueIndex("unique_channel_user").on(table.channelId, table.userId),
   ]
 );
-
-export const channelJoinRequestTable = pgTable("channelJoinRequest", {
-  id: cuid2().defaultRandom().primaryKey(),
-  channelId: cuid2()
-    .notNull()
-    .references(() => channelTable.id, { onDelete: "cascade" }),
-  userId: text()
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
-  status: joinRequestStatusEnum().notNull().default("pending"),
-  note: text(),
-  requestedAt: timestamp({ withTimezone: true })
-    .$defaultFn(() => new Date())
-    .notNull(),
-  reviewedBy: text().references(() => user.id, {
-    onDelete: "set null",
-  }),
-  reviewedAt: timestamp({ withTimezone: true }),
-  createdAt: timestamp({ withTimezone: true })
-    .$defaultFn(() => new Date())
-    .notNull(),
-  updatedAt: timestamp({ withTimezone: true })
-    .$defaultFn(() => new Date())
-    .$onUpdate(() => new Date())
-    .notNull(),
-});
 
 export const messageTable = pgTable(
   "message",
@@ -233,47 +187,6 @@ export const attachmentTable = pgTable("attachment", {
     .$onUpdate(() => new Date())
     .notNull(),
 });
-
-export const notificationTable = pgTable("notification", {
-  id: cuid2().defaultRandom().primaryKey(),
-  userId: text()
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
-  type: notificationTypeEnum().notNull(),
-  status: notificationStatusEnum().notNull().default("unread"),
-  title: text().notNull(),
-  message: text(),
-  entityId: text(),
-  entityType: text(),
-  actionUrl: text(),
-  metadata: json(),
-  readAt: timestamp({ withTimezone: true }),
-  dismissedAt: timestamp({ withTimezone: true }),
-  createdAt: timestamp({ withTimezone: true })
-    .$defaultFn(() => new Date())
-    .notNull(),
-});
-
-export const pushSubscriptionTable = pgTable(
-  "pushSubscription",
-  {
-    id: cuid2().defaultRandom().primaryKey(),
-    userId: text()
-      .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
-    endpoint: text().notNull(),
-    p256dh: text().notNull(),
-    auth: text().notNull(),
-    userAgent: text(),
-    createdAt: timestamp({ withTimezone: true })
-      .$defaultFn(() => new Date())
-      .notNull(),
-  },
-  (table) => [
-    uniqueIndex("unique_user_endpoint").on(table.userId, table.endpoint),
-    index("idx_push_subscription_user").on(table.userId),
-  ]
-);
 
 export const messageReadTable = pgTable(
   "messageRead",
@@ -439,7 +352,6 @@ export const channelTableRelations = relations(
     }),
     members: many(channelMemberTable),
     messages: many(messageTable),
-    joinRequests: many(channelJoinRequestTable),
   })
 );
 
@@ -458,25 +370,6 @@ export const channelMemberTableRelations = relations(
   })
 );
 
-// Channel join request relations
-export const channelJoinRequestTableRelations = relations(
-  channelJoinRequestTable,
-  ({ one }) => ({
-    channel: one(channelTable, {
-      fields: [channelJoinRequestTable.channelId],
-      references: [channelTable.id],
-    }),
-    user: one(user, {
-      fields: [channelJoinRequestTable.userId],
-      references: [user.id],
-    }),
-    reviewedBy: one(user, {
-      fields: [channelJoinRequestTable.reviewedBy],
-      references: [user.id],
-    }),
-  })
-);
-
 // Attachment relations
 export const attachmentTableRelations = relations(
   attachmentTable,
@@ -487,17 +380,6 @@ export const attachmentTableRelations = relations(
     }),
     uploadedBy: one(user, {
       fields: [attachmentTable.uploadedBy],
-      references: [user.id],
-    }),
-  })
-);
-
-// Notification relations
-export const notificationTableRelations = relations(
-  notificationTable,
-  ({ one }) => ({
-    user: one(user, {
-      fields: [notificationTable.userId],
       references: [user.id],
     }),
   })
@@ -545,17 +427,6 @@ export const messageReactionTableRelations = relations(
     }),
     user: one(user, {
       fields: [messageReactionTable.userId],
-      references: [user.id],
-    }),
-  })
-);
-
-// Push subscription relations
-export const pushSubscriptionTableRelations = relations(
-  pushSubscriptionTable,
-  ({ one }) => ({
-    user: one(user, {
-      fields: [pushSubscriptionTable.userId],
       references: [user.id],
     }),
   })
