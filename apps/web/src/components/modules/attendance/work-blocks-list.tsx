@@ -15,18 +15,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
+import { formatDuration } from "@/utils";
 import { queryUtils } from "@/utils/orpc";
-
-const formatDuration = (minutes: number | null) => {
-  if (!minutes) return "0m";
-  const hrs = Math.floor(minutes / 60);
-  const mins = minutes % 60;
-  if (hrs === 0) return `${mins}m`;
-  return `${hrs}h ${mins}m`;
-};
 
 const formatTime = (date: Date | string) =>
   new Date(date).toLocaleTimeString([], {

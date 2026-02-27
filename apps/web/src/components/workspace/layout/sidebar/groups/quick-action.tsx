@@ -6,7 +6,7 @@ import {
   IconPlayerPlay,
 } from "@tabler/icons-react";
 import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,20 +26,25 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
 import { useSetManualStatus } from "@/hooks/use-presence";
 import { queryClient, queryUtils } from "@/utils/orpc";
 
-export function NavQuickActions() {
+export function QuickActionGroup() {
   return (
     <SidebarGroup>
       <SidebarGroupContent>
         <SidebarMenu>
           <SidebarMenuItem>
-            <MarkAttendanceButton />
+            <Suspense fallback={<MarkAttendanceButton.Fallback />}>
+              <MarkAttendanceButton />
+            </Suspense>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <WorkBlockToggle />
+            <Suspense fallback={<WorkBlockToggle.Fallback />}>
+              <WorkBlockToggle />
+            </Suspense>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarGroupContent>
@@ -47,7 +52,7 @@ export function NavQuickActions() {
   );
 }
 
-function WorkBlockToggle() {
+const WorkBlockToggle = () => {
   const { state } = useSidebar();
   const { data: attendance, refetch: refetchAttendance } = useSuspenseQuery(
     queryUtils.attendance.records.getStatus.queryOptions({})
@@ -62,7 +67,7 @@ function WorkBlockToggle() {
     })
   );
 
-  const [elapsed, setElapsed] = useState<string>("00:00:00");
+  const [elapsed, setElapsed] = useState("00:00:00");
 
   useEffect(() => {
     if (!activeBlock?.startedAt) {
@@ -146,7 +151,11 @@ function WorkBlockToggle() {
 
   return (
     <SidebarMenuButton
-      className={isWorking ? "text-amber-600 hover:text-amber-700" : ""}
+      className={
+        isWorking
+          ? "border-amber-700 bg-amber-500 font-medium text-white hover:bg-amber-600 hover:text-white [&>svg:first-child]:border-white/30! [&>svg:first-child]:bg-white! [&>svg:first-child]:text-amber-500!"
+          : "border-amber-600/50 bg-amber-500/15 font-medium text-amber-600 hover:bg-amber-500/25 hover:text-amber-600 [&>svg:first-child]:border-amber-300! [&>svg:first-child]:bg-white! [&>svg:first-child]:text-amber-500!"
+      }
       disabled={isPending}
       onClick={handleToggle}
       tooltip={state === "collapsed" ? tooltipContent : undefined}
@@ -164,9 +173,18 @@ function WorkBlockToggle() {
       )}
     </SidebarMenuButton>
   );
-}
+};
 
-function MarkAttendanceButton() {
+WorkBlockToggle.Fallback = () => {
+  return (
+    <SidebarMenuButton disabled>
+      <Skeleton className="h-4 w-4 rounded-sm" />
+      <Skeleton className="h-4 w-20" />
+    </SidebarMenuButton>
+  );
+};
+
+const MarkAttendanceButton = () => {
   const { data: attendance, refetch } = useSuspenseQuery(
     queryUtils.attendance.records.getStatus.queryOptions({})
   );
@@ -219,7 +237,7 @@ function MarkAttendanceButton() {
   if (!hasCheckedIn) {
     return (
       <SidebarMenuButton
-        className="bg-green-600 font-medium text-white hover:bg-green-700 hover:text-white active:bg-green-700 active:text-white"
+        className="border-green-700 bg-green-600 font-medium text-white hover:bg-green-700 hover:text-white active:bg-green-700 active:text-white [&>svg:first-child]:border-white/30! [&>svg:first-child]:bg-white! [&>svg:first-child]:text-green-600!"
         disabled={isActionPending}
         onClick={() => punchIn({})}
         tooltip="Punch In"
@@ -243,7 +261,7 @@ function MarkAttendanceButton() {
     return (
       <>
         <SidebarMenuButton
-          className="h-10 min-w-8 rounded-lg bg-red-600 font-medium text-white hover:bg-red-700 hover:text-white active:bg-red-700 active:text-white"
+          className="border-red-700 bg-red-600 font-medium text-white hover:bg-red-700 hover:text-white active:bg-red-700 active:text-white [&>svg:first-child]:border-white/30! [&>svg:first-child]:bg-white! [&>svg:first-child]:text-red-600!"
           disabled={isActionPending}
           onClick={handlePunchOut}
           tooltip="Punch Out"
@@ -310,4 +328,13 @@ function MarkAttendanceButton() {
       <span>Attendance Complete</span>
     </SidebarMenuButton>
   );
-}
+};
+
+MarkAttendanceButton.Fallback = () => {
+  return (
+    <SidebarMenuButton disabled>
+      <Skeleton className="h-4 w-4 rounded-sm" />
+      <Skeleton className="h-4 w-24" />
+    </SidebarMenuButton>
+  );
+};

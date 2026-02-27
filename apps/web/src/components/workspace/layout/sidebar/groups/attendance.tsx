@@ -1,5 +1,10 @@
 import { IconChartBar, IconLayoutDashboard } from "@tabler/icons-react";
-import { Link, linkOptions, useParams } from "@tanstack/react-router";
+import {
+  Link,
+  linkOptions,
+  useLocation,
+  useParams,
+} from "@tanstack/react-router";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -9,10 +14,11 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-export function NavAttendance() {
+export function AttendanceGroup() {
   const { slug } = useParams({
     from: "/(authenticated)/org/$slug",
   });
+  const location = useLocation();
 
   const attendanceLinks = linkOptions([
     {
@@ -34,16 +40,24 @@ export function NavAttendance() {
       <SidebarGroupLabel>Attendance</SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
-          {attendanceLinks.map((link) => (
-            <SidebarMenuItem key={link.label}>
-              <SidebarMenuButton asChild tooltip={link.label}>
-                <Link {...link}>
-                  {link.icon && <link.icon />}
-                  <span>{link.label}</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
+          {attendanceLinks.map((link) => {
+            const isActive =
+              location.pathname === link.to.replace("$slug", slug);
+            return (
+              <SidebarMenuItem key={link.label}>
+                <SidebarMenuButton
+                  asChild
+                  isActive={isActive}
+                  tooltip={link.label}
+                >
+                  <Link {...link}>
+                    {link.icon && <link.icon />}
+                    <span>{link.label}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            );
+          })}
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>

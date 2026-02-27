@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
+import { formatDuration } from "@/utils";
 import { queryUtils } from "@/utils/orpc";
 
 const formatDateTime = (value: Date | string | null | undefined) => {
@@ -47,13 +48,6 @@ const calculateWorkDuration = (
   const start = new Date(checkIn);
   const end = checkOut ? new Date(checkOut) : new Date();
   return Math.floor((end.getTime() - start.getTime()) / (1000 * 60));
-};
-
-const formatDuration = (minutes = 0) => {
-  const hrs = Math.floor(minutes / 60);
-  const mins = minutes % 60;
-  if (hrs === 0) return `${mins}m`;
-  return `${hrs}h ${mins}m`;
 };
 
 const StatCard = ({

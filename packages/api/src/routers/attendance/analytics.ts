@@ -266,12 +266,6 @@ export const analyticsRouter = {
         excusedStatuses.has(r.status)
       ).length;
 
-      const toNumber = (value: unknown) => {
-        if (value === null || value === undefined) return 0;
-        const num = Number(value);
-        return Number.isFinite(num) ? num : 0;
-      };
-
       const totalHours = records.reduce(
         (sum, record) => sum + toNumber(record.totalHours),
         0

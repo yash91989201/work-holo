@@ -17,13 +17,19 @@ export const generateSlug = (value: string) => {
   );
 };
 
-export const getNameInitials = (name: string) =>
-  name
+export const getInitials = (name: string | null | undefined): string => {
+  if (!name) return "?";
+  return name
     .split(" ")
-    .map((n) => n[0])
+    .map((part) => part[0])
+    .filter(Boolean)
+    .slice(0, 2)
     .join("")
-    .toUpperCase()
-    .slice(0, 2);
+    .toUpperCase();
+};
+
+/** @deprecated Use getInitials instead */
+export const getNameInitials = getInitials;
 
 export const getBrowserInformation = (userAgent?: string | null) => {
   if (!userAgent) return "Unknown Device";
@@ -54,3 +60,45 @@ export const getOrgRouteByRole = (role: OrgRolesType, slug: string) => {
   }
   return linkOptions({ to: "/org/$slug/workspace", params: { slug } });
 };
+
+export function formatTimeAgo(date: Date): string {
+  const now = new Date();
+  const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+  if (seconds < 60) return "just now";
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h`;
+  const days = Math.floor(hours / 24);
+  if (days < 7) return `${days}d`;
+  return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
+export function formatDuration(minutes: number | null | undefined): string {
+  if (!minutes) return "0m";
+  const hrs = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  if (hrs === 0) return `${mins}m`;
+  return `${hrs}h ${mins}m`;
+}
+
+export function formatFileSize(bytes: number): string {
+  if (bytes === 0) return "0 Bytes";
+  const k = 1024;
+  const sizes = ["Bytes", "KB", "MB", "GB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return `${Number.parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`;
+}
+
+export function getAvatarColor(name: string): string {
+  const colors = [
+    "bg-teal-700",
+    "bg-violet-600",
+    "bg-rose-600",
+    "bg-blue-600",
+    "bg-amber-600",
+  ];
+  const index = name.charCodeAt(0) % colors.length;
+  return colors[index];
+}

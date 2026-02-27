@@ -23,11 +23,15 @@ async function ensureAuthenticatedUser({
   email,
   password,
   name,
+  username,
+  displayUsername,
 }: AcceptInvitationFormType) {
   const signUpResult = await authClient.signUp.email({
     email,
     password,
     name,
+    username,
+    displayUsername,
   });
 
   if (signUpResult.error === null) {

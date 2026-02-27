@@ -1,11 +1,4 @@
-import {
-  IconCheck,
-  IconInnerShadowTop,
-  IconPlus,
-  IconSelector,
-} from "@tabler/icons-react";
-import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
+import { IconCheck, IconPlus, IconSelector } from "@tabler/icons-react";
 import { Image } from "@/components/shared/image";
 import {
   DropdownMenu,
@@ -17,24 +10,20 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useActiveMemberRole } from "@/hooks/use-active-member-role";
 import { useActiveOrganization } from "@/hooks/use-active-organization";
-import { getAuthQueryKey } from "@/lib/auth/query-keys";
+import { useOrgSwitcher } from "@/hooks/use-org-switcher";
 import { authClient } from "@/lib/auth-client";
-import { getOrgRouteByRole } from "@/utils";
-import { queryClient } from "@/utils/orpc";
 
-const DEFAULT_LOGO = "/logo.webp";
-
-interface OrgLogoProps {
+const OrgLogo = ({
+  name,
+  logo,
+  size,
+}: {
   logo?: string | null;
   name: string;
   size: "sm" | "md";
-}
-
-const OrgLogo = ({ name, logo, size }: OrgLogoProps) => {
-  const src = logo ?? DEFAULT_LOGO;
-
+}) => {
+  const src = logo ?? "/logo.webp";
   if (size === "md") {
     return (
       <div className="flex aspect-square size-8 items-center justify-center rounded-lg">
@@ -62,63 +51,7 @@ const OrgLogo = ({ name, logo, size }: OrgLogoProps) => {
   );
 };
 
-// ---------------------------------------------------------------------------
-// Hook
-// ---------------------------------------------------------------------------
-
-const useOrgSwitcher = () => {
-  const navigate = useNavigate();
-  const { mutate: switchOrganization, isPending: isSwitching } = useMutation({
-    mutationFn: async ({
-      organizationId,
-      organizationSlug,
-    }: {
-      organizationId: string;
-      organizationSlug: string;
-    }) => {
-      const { error } = await authClient.organization.setActive({
-        organizationId,
-        organizationSlug,
-      });
-      if (error !== null) {
-        throw new Error(`Failed to switch organization: ${error}`);
-      }
-
-      await queryClient.invalidateQueries({
-        queryKey: getAuthQueryKey.invalidation.allOrganizations(),
-      });
-      await queryClient.invalidateQueries({
-        queryKey: getAuthQueryKey.user.activeMemberRole(),
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ["active-organization"],
-      });
-
-      const newRole = await authClient.organization.getActiveMemberRole();
-
-      return { role: newRole.data?.role ?? "member", organizationSlug };
-    },
-    onSuccess: ({ role, organizationSlug }) => {
-      const route = getOrgRouteByRole(role, organizationSlug);
-      navigate(route);
-    },
-    onError: (err) => {
-      console.error("Error switching organization:", err);
-    },
-  });
-
-  const createOrganization = () => {
-    navigate({ to: "/org/new" });
-  };
-  return { isSwitching, switchOrganization, createOrganization };
-};
-
-// ---------------------------------------------------------------------------
-// Main component
-// ---------------------------------------------------------------------------
-
 export const OrgSwitcher = () => {
-  const role = useActiveMemberRole();
   const activeOrganization = useActiveOrganization();
   const { isSwitching, switchOrganization, createOrganization } =
     useOrgSwitcher();
@@ -126,15 +59,8 @@ export const OrgSwitcher = () => {
   const { data: organizations, isPending: isLoadingOrgs } =
     authClient.useListOrganizations();
 
-  if (activeOrganization === null || role === undefined) {
-    return (
-      <SidebarMenuItem>
-        <SidebarMenuButton disabled>
-          <IconInnerShadowTop className="size-5!" />
-          <span className="font-semibold text-base">Loading...</span>
-        </SidebarMenuButton>
-      </SidebarMenuItem>
-    );
+  if (activeOrganization === null) {
+    return null;
   }
 
   const otherOrganizations =
@@ -154,10 +80,10 @@ export const OrgSwitcher = () => {
               name={activeOrganization.name}
               size="md"
             />
-            <span className="truncate font-semibold">
+            <span className="truncate font-semibold group-data-[collapsible=icon]:hidden">
               {activeOrganization.name}
             </span>
-            <IconSelector className="ml-auto size-4" />
+            <IconSelector className="ml-auto size-4 group-data-[collapsible=icon]:hidden" />
           </SidebarMenuButton>
         </DropdownMenuTrigger>
 
@@ -170,7 +96,6 @@ export const OrgSwitcher = () => {
             Organizations
           </DropdownMenuLabel>
 
-          {/* Active org -- always rendered first */}
           <DropdownMenuItem className="gap-2 p-2">
             <OrgLogo
               logo={activeOrganization.logo}
@@ -183,7 +108,6 @@ export const OrgSwitcher = () => {
             <IconCheck className="size-4" />
           </DropdownMenuItem>
 
-          {/* Other orgs or loading skeleton */}
           {isLoadingOrgs ? (
             <DropdownMenuItem className="gap-2 p-2" disabled>
               <Skeleton className="size-6" />
@@ -223,18 +147,47 @@ export const OrgSwitcher = () => {
   );
 };
 
-// ---------------------------------------------------------------------------
-// Skeleton
-// ---------------------------------------------------------------------------
-
-export const OrgSwitcherSkeleton = () => (
+const OrgSwitcherSkeleton = () => (
   <SidebarMenuItem>
-    <SidebarMenuButton disabled size="lg">
-      <Skeleton className="size-8" />
-      <div className="grid flex-1 gap-1">
-        <Skeleton className="h-4 w-24" />
-        <Skeleton className="h-3 w-16" />
-      </div>
-    </SidebarMenuButton>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <SidebarMenuButton disabled size="lg">
+          <Skeleton className="size-8" />
+          <Skeleton className="h-4 w-32 group-data-[collapsible=icon]:hidden" />
+          <IconSelector className="ml-auto size-4 group-data-[collapsible=icon]:hidden" />
+        </SidebarMenuButton>
+      </DropdownMenuTrigger>
+
+      <DropdownMenuContent
+        className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+        side="right"
+        sideOffset={4}
+      >
+        <DropdownMenuLabel className="text-muted-foreground text-xs">
+          Organizations
+        </DropdownMenuLabel>
+
+        {/* Active org placeholder */}
+        <DropdownMenuItem className="gap-2 p-2" disabled>
+          <Skeleton className="size-6" />
+          <Skeleton className="h-4 flex-1" />
+          <IconCheck className="size-4" />
+        </DropdownMenuItem>
+
+        {/* Loading skeleton for other orgs */}
+        <DropdownMenuItem className="gap-2 p-2" disabled>
+          <Skeleton className="size-6" />
+          <Skeleton className="h-4 flex-1" />
+        </DropdownMenuItem>
+
+        <DropdownMenuSeparator />
+        <DropdownMenuItem className="gap-2 p-2" disabled>
+          <IconPlus className="size-4" />
+          New Organization
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   </SidebarMenuItem>
 );
+
+OrgSwitcher.Fallback = OrgSwitcherSkeleton;

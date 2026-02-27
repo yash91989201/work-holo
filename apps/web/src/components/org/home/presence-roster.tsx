@@ -32,6 +32,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useListOrgMembers } from "@/hooks/use-list-org-members";
 import type { PresenceStatus } from "@/hooks/use-presence";
 import { useOrgPresence } from "@/hooks/use-presence";
+import { getInitials } from "@/utils";
 
 const presenceConfig: Record<
   PresenceStatus,
@@ -86,14 +87,6 @@ const presenceConfig: Record<
     icon: <IconCalendar className="h-3 w-3 text-purple-600" />,
   },
 };
-
-const getInitials = (name: string) =>
-  name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
 
 export function PresenceRoster() {
   const { members } = useListOrgMembers();

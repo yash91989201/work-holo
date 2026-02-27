@@ -1,6 +1,6 @@
+import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate, useParams, useSearch } from "@tanstack/react-router";
-import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -14,9 +14,7 @@ import { AcceptInvitationFormSchema } from "@/lib/schemas/auth";
 import type { AcceptInvitationFormType } from "@/lib/types";
 import { getOrgRouteByRole } from "@/utils";
 
-type AcceptInvitationFormValues = AcceptInvitationFormType & {
-  formState: { showPassword: boolean };
-};
+type AcceptInvitationFormValues = AcceptInvitationFormType;
 
 export function AcceptInvitationForm() {
   const navigate = useNavigate();
@@ -36,6 +34,8 @@ export function AcceptInvitationForm() {
     defaultValues: {
       email,
       name: "",
+      username: "",
+      displayUsername: "",
       password: "",
       invitationId,
       formState: { showPassword: false },
@@ -94,6 +94,43 @@ export function AcceptInvitationForm() {
                 disabled={formDisabled}
                 label="Name"
                 placeholder="Your full name"
+              />
+            )}
+          </form.AppField>
+
+          <form.AppField
+            name="username"
+            validators={{
+              onChangeAsyncDebounceMs: 500,
+              onChangeAsync: async ({ value }) => {
+                const result =
+                  await AcceptInvitationFormSchema.shape.username.safeParseAsync(
+                    value
+                  );
+
+                return result.success
+                  ? undefined
+                  : result.error.issues[0]?.message;
+              },
+            }}
+          >
+            {(field) => (
+              <field.InputGroup label="Username">
+                <field.InputGroupInput
+                  disabled={formDisabled}
+                  placeholder="Enter unique username"
+                />
+                <field.InputGroupSpinner />
+              </field.InputGroup>
+            )}
+          </form.AppField>
+
+          <form.AppField name="displayUsername">
+            {(field) => (
+              <field.Input
+                disabled={formDisabled}
+                label="Display Username"
+                placeholder="Enter display username"
               />
             )}
           </form.AppField>

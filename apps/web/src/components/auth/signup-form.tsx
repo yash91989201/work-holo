@@ -1,7 +1,7 @@
+import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import { formOptions } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { FieldGroup } from "@/components/ui/field";

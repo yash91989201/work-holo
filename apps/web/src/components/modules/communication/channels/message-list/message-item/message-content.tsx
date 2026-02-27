@@ -4,7 +4,7 @@ import DOMPurify from "dompurify";
 import parse from "html-react-parser";
 import { type JSX, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn, formatFileSize } from "@/lib/utils";
 import { LinkPreview } from "../../message-composer/link-preview";
 
 interface MessageContentProps {
@@ -191,14 +191,6 @@ export function MessageContent({
       )}
     </div>
   );
-}
-
-function formatFileSize(bytes: number): string {
-  if (bytes === 0) return "0 Bytes";
-  const k = 1024;
-  const sizes = ["Bytes", "KB", "MB", "GB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return `${Number.parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`;
 }
 
 function AudioPlayer({ url }: { url: string }) {

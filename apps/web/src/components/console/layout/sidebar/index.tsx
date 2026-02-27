@@ -7,10 +7,7 @@ import {
 import { Link, useParams } from "@tanstack/react-router";
 import type * as React from "react";
 import { Suspense } from "react";
-import {
-  OrgSwitcher,
-  OrgSwitcherSkeleton,
-} from "@/components/org/org-switcher";
+import { OrgSwitcher } from "@/components/org/org-switcher";
 import {
   Sidebar as BaseSidebar,
   SidebarContent,
@@ -35,7 +32,7 @@ export function Sidebar({
     <BaseSidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarMenu>
-          <Suspense fallback={<OrgSwitcherSkeleton />}>
+          <Suspense fallback={<OrgSwitcher.Fallback />}>
             <OrgSwitcher />
           </Suspense>
         </SidebarMenu>

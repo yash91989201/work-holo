@@ -3,12 +3,9 @@ import {
   IconCalendarEventFilled,
   IconCircleChevronLeftFilled,
   IconCircleChevronRightFilled,
-  IconCrownFilled,
   IconDots,
   IconLayoutDashboardFilled,
   IconSearch,
-  IconShieldFilled,
-  IconUserFilled,
   IconX,
 } from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -93,35 +90,10 @@ import {
 } from "@/components/ui/table";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { authClient } from "@/lib/auth-client";
+import { getRoleBadgeVariant, getRoleIcon } from "@/lib/org";
 import { UpdateMemberRoleSchema } from "@/lib/schemas/member";
 import type { UpdateMemberRoleType } from "@/lib/types";
 import { queryClient, queryUtils } from "@/utils/orpc";
-
-const getRoleBadgeVariant = (role: string) => {
-  switch (role) {
-    case "owner":
-      return "default";
-    case "admin":
-      return "secondary";
-    case "member":
-      return "outline";
-    default:
-      return "outline";
-  }
-};
-
-const getRoleIcon = (role: string) => {
-  switch (role) {
-    case "owner":
-      return IconCrownFilled;
-    case "admin":
-      return IconShieldFilled;
-    case "member":
-      return IconUserFilled;
-    default:
-      return IconUserFilled;
-  }
-};
 
 function UpdateMemberRole({
   member,

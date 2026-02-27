@@ -1,4 +1,3 @@
-import { IconArrowBackUp, IconCheck } from "@tabler/icons-react";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import DOMPurify from "dompurify";
 import parse from "html-react-parser";
@@ -38,41 +37,7 @@ import {
   useMentionsSidebar,
   useMessageThreadSidebar,
 } from "@/stores/channel-store";
-
-function getInitials(name: string) {
-  return name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
-}
-
-function getAvatarColor(name: string) {
-  const colors = [
-    "bg-teal-700",
-    "bg-violet-600",
-    "bg-rose-600",
-    "bg-blue-600",
-    "bg-amber-600",
-  ];
-  const index = name.charCodeAt(0) % colors.length;
-  return colors[index];
-}
-
-function formatTimeAgo(date: Date): string {
-  const now = new Date();
-  const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-
-  if (seconds < 60) return "just now";
-  const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes}m`;
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h`;
-  const days = Math.floor(hours / 24);
-  if (days < 7) return `${days}d`;
-  return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-}
+import { getAvatarColor, getInitials } from "@/utils";
 
 export function RecentMentions() {
   const { mentions, isLoading, unreadMentionCount } = useRecentMentions();

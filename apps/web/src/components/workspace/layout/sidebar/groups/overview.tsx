@@ -1,5 +1,5 @@
 import { IconHomeFilled } from "@tabler/icons-react";
-import { Link, useParams } from "@tanstack/react-router";
+import { Link, useLocation, useParams } from "@tanstack/react-router";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -8,17 +8,19 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-export function NavOverview() {
+export function OverviewGroup() {
   const { slug } = useParams({
     from: "/(authenticated)/org/$slug",
   });
+  const location = useLocation();
+  const isActive = location.pathname === `/org/${slug}/workspace`;
 
   return (
     <SidebarGroup>
       <SidebarGroupContent>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip="Home">
+            <SidebarMenuButton asChild isActive={isActive} tooltip="Home">
               <Link params={{ slug }} to="/org/$slug/workspace">
                 <IconHomeFilled />
                 <span>Home</span>
