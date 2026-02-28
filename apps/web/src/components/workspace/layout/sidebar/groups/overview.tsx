@@ -23,7 +23,7 @@ export function OverviewGroup() {
             <SidebarMenuButton asChild isActive={isActive} tooltip="Home">
               <Link params={{ slug }} to="/org/$slug/workspace">
                 <IconHomeFilled />
-                <span>Home</span>
+                <span>Workspace</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
