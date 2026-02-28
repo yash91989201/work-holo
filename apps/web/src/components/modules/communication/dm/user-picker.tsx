@@ -1,5 +1,5 @@
 import { IconPlus } from "@tabler/icons-react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { Suspense, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -31,6 +31,14 @@ function DmUserList({ onPicked }: DmUserListProps) {
   const { user } = useAuthedSession();
   const { members } = useListOrgMembers();
   const { conversations } = useDmConversations();
+
+  const { data: allowedData } = useSuspenseQuery(
+    queryUtils.org.moduleConfig.listAllowedUsers.queryOptions({
+      input: { module: "direct_message" },
+    })
+  );
+  const allowedUserIdsSet =
+    allowedData?.userIds === null ? null : new Set(allowedData?.userIds ?? []);
 
   const { slug } = useParams({ from: "/(authenticated)/org/$slug" });
   const navigate = useNavigate();
@@ -65,9 +73,12 @@ function DmUserList({ onPicked }: DmUserListProps) {
   const availableMembers = useMemo(
     () =>
       members.filter(
-        (m) => m.userId !== user.id && !existingParticipantIds.has(m.userId)
+        (m) =>
+          m.userId !== user.id &&
+          !existingParticipantIds.has(m.userId) &&
+          (allowedUserIdsSet === null || allowedUserIdsSet.has(m.userId))
       ),
-    [members, user.id, existingParticipantIds]
+    [members, user.id, existingParticipantIds, allowedUserIdsSet]
   );
 
   const handleSelectUser = async (participantId: string) => {

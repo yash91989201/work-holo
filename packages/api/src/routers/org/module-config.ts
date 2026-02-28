@@ -261,4 +261,64 @@ export const moduleConfigRouter = {
 
       return { allowed: true as const };
     }),
+
+  listAllowedUsers: orgMemberProcedure
+    .input(z.object({ module: moduleSchema }))
+    .handler(async ({ context, input }) => {
+      const { db, orgId } = context;
+
+      const config = await db.query.orgModuleConfigTable.findFirst({
+        where: and(
+          eq(orgModuleConfigTable.organizationId, orgId),
+          eq(orgModuleConfigTable.module, input.module)
+        ),
+      });
+
+      if (!config || config.mode === "disabled") {
+        return { userIds: [] as string[] };
+      }
+
+      if (config.mode === "org_wide") {
+        return { userIds: null };
+      }
+
+      if (config.mode === "team_based") {
+        const grantedTeams = await db
+          .select({ teamId: moduleTeamAccessTable.teamId })
+          .from(moduleTeamAccessTable)
+          .where(
+            and(
+              eq(moduleTeamAccessTable.organizationId, orgId),
+              eq(moduleTeamAccessTable.module, input.module)
+            )
+          );
+
+        const grantedTeamIds = grantedTeams.map((t) => t.teamId);
+        if (grantedTeamIds.length === 0) {
+          return { userIds: [] as string[] };
+        }
+
+        const members = await db
+          .select({ userId: teamMember.userId })
+          .from(teamMember)
+          .where(inArray(teamMember.teamId, grantedTeamIds));
+
+        const userIds = [...new Set(members.map((m) => m.userId))];
+        return { userIds };
+      }
+
+      // user_based
+      const userAccess = await db
+        .select({ userId: moduleUserAccessTable.userId })
+        .from(moduleUserAccessTable)
+        .where(
+          and(
+            eq(moduleUserAccessTable.organizationId, orgId),
+            eq(moduleUserAccessTable.module, input.module)
+          )
+        );
+
+      const userIds = userAccess.map((u) => u.userId);
+      return { userIds };
+    }),
 };

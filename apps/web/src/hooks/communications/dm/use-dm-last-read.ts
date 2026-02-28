@@ -3,9 +3,6 @@ import { useParams } from "@tanstack/react-router";
 import { dmConversationReadsCollection } from "@/db/collections";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 
-/**
- * Hook to get the last read message info for the current DM conversation and user
- */
 export function useDmLastRead() {
   const { conversationId } = useParams({
     from: "/(authenticated)/org/$slug/workspace/communication/dm/$conversationId",
