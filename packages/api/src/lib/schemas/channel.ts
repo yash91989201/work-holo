@@ -1,6 +1,5 @@
 import {
   ChannelInsertSchema,
-  ChannelJoinRequestSchema,
   ChannelSchema,
   ChannelTypeSchema,
   UserSchema,
@@ -226,17 +225,9 @@ export const ChannelJoinRequestInput = z.object({
   note: z.string().optional(),
 });
 
-export const ChannelJoinRequestOutput = ChannelJoinRequestSchema;
-
 export const ListJoinRequestInput = z.object({
   channelId: z.string(),
 });
-
-export const ListJoinRequestOutput = z.array(
-  ChannelJoinRequestSchema.extend({
-    user: UserSchema,
-  })
-);
 
 // Get channel unread counts
 export const GetChannelUnreadCountsInput = z.object({});

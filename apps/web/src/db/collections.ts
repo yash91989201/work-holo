@@ -4,7 +4,6 @@ import {
   AccountSchema,
   AttachmentSchema,
   AttendanceSchema,
-  ChannelJoinRequestSchema,
   ChannelMemberSchema,
   ChannelReadProcessedWatermarkSchema,
   ChannelReadSchema,
@@ -330,23 +329,6 @@ export const messageReadCollection = createCollection(
       url: `${ELECTRIC_SHAPE_BASE_URL}/message-read`,
       params: {
         table: "messageRead",
-      },
-      fetchClient,
-      parser: {
-        timestamptz: (s: string) => new Date(s),
-      },
-    },
-  })
-);
-
-export const channelJoinRequestsCollection = createCollection(
-  electricCollectionOptions({
-    getKey: (cjr) => cjr.id,
-    schema: ChannelJoinRequestSchema,
-    shapeOptions: {
-      url: `${ELECTRIC_SHAPE_BASE_URL}/channel-join-requests`,
-      params: {
-        table: "channelJoinRequest",
       },
       fetchClient,
       parser: {
