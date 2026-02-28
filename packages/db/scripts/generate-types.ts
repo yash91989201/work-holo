@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import chokidar from "chokidar";
 
 // Regex patterns
@@ -8,8 +9,14 @@ const SCHEMA_EXPORT_REGEX =
   /export\s+(?:const|var|let)\s+(\w+(?:Schema|Input|Output))\s*=/g;
 const SIMPLE_SCHEMA_REGEX = /Schema$/;
 
-const schemasDir = path.resolve("../lib/schemas");
-const outputFile = path.resolve("../lib/types.ts");
+// __dirname equivalent for ESM / tsx
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Script is at scripts/generate-types.ts
+// src/ is a sibling of scripts/, so go up one level then into src/
+const schemasDir = path.resolve(__dirname, "../src/lib/schemas");
+const outputFile = path.resolve(__dirname, "../src/lib/types.ts");
 
 // Ensure directories exist
 if (!fs.existsSync(schemasDir)) {
@@ -58,7 +65,6 @@ function generateTypes() {
     try {
       const content = fs.readFileSync(file, "utf-8");
       const schemaNames = extractSchemaNames(content);
-
       if (schemaNames.length === 0) continue;
 
       const relPath = path
@@ -66,7 +72,6 @@ function generateTypes() {
         .replace(/\\/g, "/")
         .replace(TS_EXTENSION_REGEX, "");
 
-      // FIXED: Correct relative import path
       const importPath = `./schemas/${relPath}`;
 
       for (const schemaName of schemaNames) {
