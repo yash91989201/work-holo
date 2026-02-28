@@ -90,7 +90,6 @@ export const AcceptInvitationFormSchema = z.object({
         message: "Username already taken",
       }
     ),
-  displayUsername: z.string().min(3, "Enter a display username"),
   password: z
     .string()
     .min(8, "Password must be at least 8 characters")

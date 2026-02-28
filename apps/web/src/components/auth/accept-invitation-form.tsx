@@ -35,13 +35,12 @@ export function AcceptInvitationForm() {
       email,
       name: "",
       username: "",
-      displayUsername: "",
       password: "",
       invitationId,
       formState: { showPassword: false },
     } satisfies AcceptInvitationFormValues as AcceptInvitationFormValues,
     validators: {
-      onSubmit: AcceptInvitationFormSchema,
+      onSubmitAsync: AcceptInvitationFormSchema,
     },
     onSubmit: async ({ value }) => {
       await acceptInvitation(value);
@@ -122,16 +121,6 @@ export function AcceptInvitationForm() {
                 />
                 <field.InputGroupSpinner />
               </field.InputGroup>
-            )}
-          </form.AppField>
-
-          <form.AppField name="displayUsername">
-            {(field) => (
-              <field.Input
-                disabled={formDisabled}
-                label="Display Username"
-                placeholder="Enter display username"
-              />
             )}
           </form.AppField>
 
