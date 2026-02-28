@@ -41,8 +41,8 @@ function RouteComponent() {
   useEffect(() => {
     if (data) {
       setMode((data.mode as ModuleMode) || "disabled");
-      setSelectedTeamIds(data.teams?.map((t: any) => t.id) || []);
-      setSelectedUserIds(data.users?.map((u: any) => u.id) || []);
+      setSelectedTeamIds(data.teams?.map((t) => t.id) ?? []);
+      setSelectedUserIds(data.users?.map((u) => u.id) ?? []);
     }
   }, [data]);
 
