@@ -2,15 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Suspense } from "react";
 import { Greeting } from "@/components/modules/attendance/greeting";
 
-import { OrgStats, OrgStatsSkeleton } from "@/components/org/home/org-stats";
-import {
-  PresenceRoster,
-  PresenceRosterSkeleton,
-} from "@/components/org/home/presence-roster";
-import {
-  ProductivityChart,
-  ProductivityChartSkeleton,
-} from "@/components/org/home/productivity-chart";
+import { OrgStats } from "@/components/org/home/org-stats";
+import { PresenceRoster } from "@/components/org/home/presence-roster";
+import { ProductivityChart } from "@/components/org/home/productivity-chart";
 import { RecentMentions } from "@/components/org/home/recent-mentions";
 import { RecentMessages } from "@/components/org/home/recent-messages";
 
@@ -24,12 +18,12 @@ function RouteComponent() {
     <section className="page-gradient relative min-h-screen space-y-6 p-6 *:relative *:z-10">
       <Greeting />
 
-      <Suspense fallback={<OrgStatsSkeleton />}>
+      <Suspense fallback={<OrgStats.Fallback />}>
         <OrgStats />
       </Suspense>
 
       <div className="grid gap-6 lg:grid-cols-[3fr_2fr]">
-        <Suspense fallback={<ProductivityChartSkeleton />}>
+        <Suspense fallback={<ProductivityChart.Fallback />}>
           <ProductivityChart />
         </Suspense>
         <RecentMessages />
@@ -37,7 +31,7 @@ function RouteComponent() {
 
       <div className="grid gap-6 lg:grid-cols-[3fr_2fr]">
         <RecentMentions />
-        <Suspense fallback={<PresenceRosterSkeleton />}>
+        <Suspense fallback={<PresenceRoster.Fallback />}>
           <PresenceRoster />
         </Suspense>
       </div>

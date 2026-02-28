@@ -325,3 +325,5 @@ export const MarkAttendanceSkeleton = () => (
     </CardContent>
   </Card>
 );
+
+MarkAttendance.Fallback = MarkAttendanceSkeleton;

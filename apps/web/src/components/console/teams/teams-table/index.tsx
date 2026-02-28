@@ -54,6 +54,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -285,12 +291,12 @@ export const TeamsTable = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem asChild>
-                    <Suspense fallback={<Skeleton className="h-9 w-full" />}>
+                    <Suspense fallback={<AddTeamMemberDialog.Fallback />}>
                       <AddTeamMemberDialog teamId={team.id} />
                     </Suspense>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Suspense fallback={<Skeleton className="h-9 w-full" />}>
+                    <Suspense fallback={<RemoveTeamMemberDialog.Fallback />}>
                       <RemoveTeamMemberDialog teamId={team.id} />
                     </Suspense>
                   </DropdownMenuItem>
@@ -355,8 +361,8 @@ export const TeamsTable = () => {
   }
 
   return (
-    <div className="w-full rounded-md border bg-card text-card-foreground shadow-sm">
-      <div className="flex items-center justify-between gap-4 border-b p-4">
+    <Card className="w-full" variant="neumorphic">
+      <CardHeader className="flex flex-row items-center justify-between gap-4 border-b py-4">
         <div className="flex flex-1 items-center gap-2">
           <InputGroup className="w-full max-w-sm">
             <InputGroupAddon>
@@ -435,9 +441,9 @@ export const TeamsTable = () => {
         <div className="ml-auto">
           <CreateTeamForm />
         </div>
-      </div>
+      </CardHeader>
 
-      <div>
+      <CardContent className="py-0">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -485,9 +491,9 @@ export const TeamsTable = () => {
             )}
           </TableBody>
         </Table>
-      </div>
+      </CardContent>
 
-      <div className="flex items-center justify-between p-4">
+      <CardFooter className="flex items-center justify-between border-t pt-4">
         <div className="flex items-center gap-2 text-muted-foreground text-sm">
           <div className="flex items-center gap-2">
             <p className="hidden sm:block">Rows per page</p>
@@ -555,22 +561,22 @@ export const TeamsTable = () => {
             <IconCircleChevronsRightFilled />
           </Button>
         </div>
-      </div>
-    </div>
+      </CardFooter>
+    </Card>
   );
 };
 
-export const TeamsTableSkeleton = () => (
-  <div className="w-full rounded-md border bg-card shadow-sm">
-    <div className="flex items-center justify-between border-b p-4">
+const TeamsTableSkeleton = () => (
+  <Card className="w-full" variant="neumorphic">
+    <CardHeader className="flex flex-row items-center justify-between gap-4 border-b py-4">
       <Skeleton className="h-9 w-75" />
       <Skeleton className="h-9 w-37" />
-    </div>
-    <div className="relative w-full">
+    </CardHeader>
+    <CardContent className="py-0">
       <Table>
         <TableHeader>
           <TableRow>
-            {Array.from({ length: 5 }).map((_, i) => (
+            {Array.from({ length: 4 }).map((_, i) => (
               <TableHead key={i.toString()}>
                 <Skeleton className="h-4 w-24" />
               </TableHead>
@@ -580,7 +586,7 @@ export const TeamsTableSkeleton = () => (
         <TableBody>
           {Array.from({ length: 5 }).map((_, i) => (
             <TableRow key={i.toString()}>
-              {Array.from({ length: 5 }).map((_, j) => (
+              {Array.from({ length: 4 }).map((_, j) => (
                 <TableCell key={j.toString()}>
                   <Skeleton className="h-6 w-full" />
                 </TableCell>
@@ -589,10 +595,12 @@ export const TeamsTableSkeleton = () => (
           ))}
         </TableBody>
       </Table>
-    </div>
-    <div className="flex items-center justify-between border-t p-4">
+    </CardContent>
+    <CardFooter className="flex items-center justify-between border-t pt-4">
       <Skeleton className="h-8 w-50" />
       <Skeleton className="h-8 w-75" />
-    </div>
-  </div>
+    </CardFooter>
+  </Card>
 );
+
+TeamsTable.Fallback = TeamsTableSkeleton;

@@ -1,9 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Suspense } from "react";
-import {
-  ChannelsListTable,
-  ChannelsListTableSkeleton,
-} from "@/components/modules/communication/channels/channels-list-table";
+import { ChannelsListTable } from "@/components/modules/communication/channels/channels-list-table";
 import { CreateChannelForm } from "@/components/modules/communication/channels/create-channel-form";
 import {
   ChannelFeatures,
@@ -27,7 +24,7 @@ function RouteComponent() {
 
       <CreateChannelForm />
 
-      <Suspense fallback={<ChannelsListTableSkeleton />}>
+      <Suspense fallback={<ChannelsListTable.Fallback />}>
         <ChannelsListTable />
       </Suspense>
       <GettingStarted />

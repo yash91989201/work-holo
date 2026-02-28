@@ -12,7 +12,7 @@ import { orpcClient } from "@/utils/orpc";
 import { uploadToStorage } from "@/utils/upload-helper";
 import { AttachmentPreviewList } from "./attachment-preview-list";
 import { AudioRecorder } from "./audio-recorder";
-import { MessageEditor } from "./message-editor";
+import { type ComposerView, MessageEditor } from "./message-editor";
 import { TypingIndicator } from "./typing-indicator";
 
 /** Debounce delay for mention user search API calls (in milliseconds) */
@@ -49,7 +49,6 @@ interface MessageComposerProps {
   onSendSuccess?: () => void;
   parentMessageId?: string;
   placeholder?: string;
-  showHelpText?: boolean;
 }
 
 export function MessageComposer({

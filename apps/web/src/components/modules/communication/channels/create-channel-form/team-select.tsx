@@ -82,3 +82,5 @@ export function TeamSelectSkeleton() {
     </div>
   );
 }
+
+TeamSelect.Fallback = TeamSelectSkeleton;

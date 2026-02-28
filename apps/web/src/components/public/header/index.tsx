@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Suspense } from "react";
 import { Image } from "@/components/shared/image";
 import { cn } from "@/lib/utils";
-import { MyOrgButton, MyOrgButtonSkeleton } from "./my-org-button";
+import { MyOrgButton } from "./my-org-button";
 import { ThemeToggle } from "./theme-toggle";
 import UserMenu from "./user-menu";
 
@@ -57,7 +57,7 @@ export function Header() {
           </div>
 
           <nav className="flex items-center space-x-2">
-            <Suspense fallback={<MyOrgButtonSkeleton />}>
+            <Suspense fallback={<MyOrgButton.Fallback />}>
               <MyOrgButton />
             </Suspense>
             <ThemeToggle />

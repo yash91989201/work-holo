@@ -311,11 +311,13 @@ export function AccountDropdown() {
   );
 }
 
-export function AccountDropdownSkeleton() {
+const AccountDropdownSkeleton = () => {
   return (
     <div className="relative flex items-center justify-center">
       <Skeleton className="h-9 w-9 rounded-full" />
       <span className="absolute right-0 bottom-0 block h-2.5 w-2.5 rounded-full border-2 border-background bg-muted" />
     </div>
   );
-}
+};
+
+AccountDropdown.Fallback = AccountDropdownSkeleton;

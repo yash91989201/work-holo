@@ -805,3 +805,5 @@ function UsernameSectionSkeleton() {
     </Item>
   );
 }
+
+Profile.Fallback = ProfileSkeleton;

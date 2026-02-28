@@ -40,7 +40,7 @@ import {
   useMentionsSidebar,
   useMessageThreadSidebar,
 } from "@/stores/channel-store";
-import { getAvatarColor, getInitials } from "@/utils";
+import { formatTimeAgo, getAvatarColor, getInitials } from "@/utils";
 
 export function RecentMessages() {
   const { messages, isLoading, totalUnreadCount } = useRecentMessages();

@@ -230,3 +230,5 @@ export function WorkBlocksListSkeleton() {
     </Card>
   );
 }
+
+WorkBlocksList.Fallback = WorkBlocksListSkeleton;

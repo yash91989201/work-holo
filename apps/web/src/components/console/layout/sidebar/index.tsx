@@ -4,7 +4,7 @@ import {
   IconSitemapFilled,
   IconUsers,
 } from "@tabler/icons-react";
-import { Link, useParams } from "@tanstack/react-router";
+import { Link, useLocation, useParams } from "@tanstack/react-router";
 import type * as React from "react";
 import { Suspense } from "react";
 import { OrgSwitcher } from "@/components/org/org-switcher";
@@ -13,7 +13,6 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -27,6 +26,13 @@ export function Sidebar({
   const { slug } = useParams({
     from: "/(authenticated)/org/$slug",
   });
+  const location = useLocation();
+
+  const isConsoleActive = location.pathname === `/org/${slug}/console`;
+  const isMembersActive = location.pathname === `/org/${slug}/console/members`;
+  const isInvitationsActive =
+    location.pathname === `/org/${slug}/console/members/invitations`;
+  const isTeamsActive = location.pathname === `/org/${slug}/console/teams`;
 
   return (
     <BaseSidebar collapsible="icon" {...props}>
@@ -42,10 +48,14 @@ export function Sidebar({
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Console">
+                <SidebarMenuButton
+                  asChild
+                  isActive={isConsoleActive}
+                  tooltip="Console"
+                >
                   <Link params={{ slug }} to="/org/$slug/console">
                     <IconDeviceLaptop />
-                    Console
+                    <span>Console</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -53,13 +63,14 @@ export function Sidebar({
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel className="font-semibold text-muted-foreground text-xs tracking-wider">
-            Members
-          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Members">
+                <SidebarMenuButton
+                  asChild
+                  isActive={isMembersActive}
+                  tooltip="Members"
+                >
                   <Link params={{ slug }} to="/org/$slug/console/members">
                     <IconUsers />
                     <span>Members</span>
@@ -67,7 +78,11 @@ export function Sidebar({
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Invitations">
+                <SidebarMenuButton
+                  asChild
+                  isActive={isInvitationsActive}
+                  tooltip="Invitations"
+                >
                   <Link
                     params={{ slug }}
                     to="/org/$slug/console/members/invitations"
@@ -81,13 +96,14 @@ export function Sidebar({
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel className="font-semibold text-muted-foreground text-xs tracking-wider">
-            Teams
-          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Teams">
+                <SidebarMenuButton
+                  asChild
+                  isActive={isTeamsActive}
+                  tooltip="Teams"
+                >
                   <Link params={{ slug }} to="/org/$slug/console/teams">
                     <IconSitemapFilled />
                     <span>Teams</span>

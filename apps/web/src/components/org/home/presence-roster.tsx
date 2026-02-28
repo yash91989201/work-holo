@@ -323,3 +323,5 @@ export function PresenceRosterSkeleton() {
     </Card>
   );
 }
+
+PresenceRoster.Fallback = PresenceRosterSkeleton;

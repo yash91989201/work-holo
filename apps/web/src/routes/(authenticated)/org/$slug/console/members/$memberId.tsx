@@ -1,4 +1,10 @@
-import { IconArrowLeft, IconMail, IconTrash } from "@tabler/icons-react";
+import {
+  IconArrowLeft,
+  IconMail,
+  IconShieldFilled,
+  IconTrash,
+  IconUserFilled,
+} from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import type { MemberWithUserType } from "@work-holo/api/lib/types";
@@ -404,7 +410,7 @@ function MemberDetailContent() {
 function RouteComponent() {
   return (
     <div className="flex h-full flex-col py-4">
-      <Suspense fallback={<MemberDetailSkeleton />}>
+      <Suspense fallback={<MemberDetailContent.Fallback />}>
         <MemberDetailContent />
       </Suspense>
     </div>
@@ -452,3 +458,5 @@ function MemberDetailSkeleton() {
     </div>
   );
 }
+
+MemberDetailContent.Fallback = MemberDetailSkeleton;

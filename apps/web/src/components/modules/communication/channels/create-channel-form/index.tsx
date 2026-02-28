@@ -20,8 +20,8 @@ import { useAuthedSession } from "@/hooks/use-authed-session";
 import { CreateChannelFormSchema } from "@/lib/schemas/communication/channel";
 import { queryClient, queryUtils } from "@/utils/orpc";
 import { channelFormOpts } from "./form-options";
-import { MembersSelect, MembersSelectSkeleton } from "./members-select";
-import { TeamSelect, TeamSelectSkeleton } from "./team-select";
+import { MembersSelect } from "./members-select";
+import { TeamSelect } from "./team-select";
 
 interface CreateChannelFormProps {
   trigger?: ReactNode;
@@ -133,11 +133,11 @@ export const CreateChannelForm = ({ trigger }: CreateChannelFormProps) => {
               <form.Subscribe selector={(state) => state.values.type}>
                 {(channelType) =>
                   channelType === "team" ? (
-                    <Suspense fallback={<TeamSelectSkeleton />}>
+                    <Suspense fallback={<TeamSelect.Fallback />}>
                       <TeamSelect form={form} />
                     </Suspense>
                   ) : (
-                    <Suspense fallback={<MembersSelectSkeleton />}>
+                    <Suspense fallback={<MembersSelect.Fallback />}>
                       <MembersSelect form={form} />
                     </Suspense>
                   )

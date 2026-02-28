@@ -1,3 +1,4 @@
+import { IconArrowBackUp, IconCheck } from "@tabler/icons-react";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import DOMPurify from "dompurify";
 import parse from "html-react-parser";
@@ -37,7 +38,7 @@ import {
   useMentionsSidebar,
   useMessageThreadSidebar,
 } from "@/stores/channel-store";
-import { getAvatarColor, getInitials } from "@/utils";
+import { formatTimeAgo, getAvatarColor, getInitials } from "@/utils";
 
 export function RecentMentions() {
   const { mentions, isLoading, unreadMentionCount } = useRecentMentions();

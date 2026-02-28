@@ -3,6 +3,7 @@ import { Link, useParams } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { withForm } from "@/components/ui/form/hooks";
 import { SelectItem } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 import { authClient } from "@/lib/auth-client";
 import { inviteFormOpts } from "./form-options";
 
@@ -61,3 +62,14 @@ export const TeamsDropdown = withForm({
     );
   },
 });
+
+export function TeamsDropdownSkeleton() {
+  return (
+    <div className="space-y-2">
+      <Skeleton className="h-4 w-10" />
+      <Skeleton className="h-10 w-full" />
+    </div>
+  );
+}
+
+TeamsDropdown.Fallback = TeamsDropdownSkeleton;

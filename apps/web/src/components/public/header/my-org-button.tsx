@@ -35,3 +35,5 @@ export function MyOrgButton() {
 export function MyOrgButtonSkeleton() {
   return <Skeleton className="h-9 w-20" />;
 }
+
+MyOrgButton.Fallback = MyOrgButtonSkeleton;

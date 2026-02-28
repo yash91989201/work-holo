@@ -6,6 +6,8 @@ import {
   IconDots,
   IconLayoutDashboardFilled,
   IconSearch,
+  IconShieldFilled,
+  IconUserFilled,
   IconX,
 } from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -42,7 +44,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
@@ -536,9 +543,9 @@ export const MembersTable = () => {
 
   return (
     <>
-      <Card>
-        <CardContent>
-          <div className="mb-4 flex flex-wrap items-center gap-3">
+      <Card variant="neumorphic">
+        <CardHeader className="flex flex-row items-start justify-between gap-4 border-b py-4">
+          <div className="flex flex-1 flex-wrap items-center gap-3">
             <InputGroup className="w-full max-w-xs">
               <InputGroupAddon>
                 <IconSearch className="size-4" />
@@ -638,7 +645,9 @@ export const MembersTable = () => {
               </Button>
             )}
           </div>
+        </CardHeader>
 
+        <CardContent className="py-0">
           <div className="overflow-hidden">
             <Table>
               <TableHeader>
@@ -699,62 +708,62 @@ export const MembersTable = () => {
               </TableBody>
             </Table>
           </div>
+        </CardContent>
 
-          <div className="mt-4 flex items-center justify-between border-border border-t px-4 py-4">
-            <div className="flex items-center gap-4 text-muted-foreground text-sm">
-              <div className="flex items-center gap-2">
-                <p className="hidden sm:block">Rows per page</p>
-                <Select
-                  onValueChange={(value) => {
-                    navigate({
-                      search: (prev) => ({
-                        ...prev,
-                        perPage: Number(value),
-                        page: 1,
-                      }),
-                    });
-                  }}
-                  value={`${pagination.pageSize}`}
-                >
-                  <SelectTrigger className="h-8 w-17">
-                    <SelectValue placeholder={pagination.pageSize} />
-                  </SelectTrigger>
-                  <SelectContent side="top">
-                    {[10, 20, 30, 40, 50].map((pageSize) => (
-                      <SelectItem key={pageSize} value={`${pageSize}`}>
-                        {pageSize}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                {table.getFilteredSelectedRowModel().rows.length} of{" "}
-                {table.getFilteredRowModel().rows.length} row(s) selected.
-              </div>
+        <CardFooter className="flex items-center justify-between border-t pt-4">
+          <div className="flex items-center gap-4 text-muted-foreground text-sm">
+            <div className="flex items-center gap-2">
+              <p className="hidden sm:block">Rows per page</p>
+              <Select
+                onValueChange={(value) => {
+                  navigate({
+                    search: (prev) => ({
+                      ...prev,
+                      perPage: Number(value),
+                      page: 1,
+                    }),
+                  });
+                }}
+                value={`${pagination.pageSize}`}
+              >
+                <SelectTrigger className="h-8 w-17">
+                  <SelectValue placeholder={pagination.pageSize} />
+                </SelectTrigger>
+                <SelectContent side="top">
+                  {[10, 20, 30, 40, 50].map((pageSize) => (
+                    <SelectItem key={pageSize} value={`${pageSize}`}>
+                      {pageSize}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-            <div className="flex items-center space-x-2">
-              <Button
-                className="h-8 px-3"
-                disabled={!table.getCanPreviousPage()}
-                onClick={() => table.previousPage()}
-                size="sm"
-                variant="outline"
-              >
-                <IconCircleChevronLeftFilled className="h-4 w-4" />
-              </Button>
-              <Button
-                className="h-8 px-3"
-                disabled={!table.getCanNextPage()}
-                onClick={() => table.nextPage()}
-                size="sm"
-                variant="outline"
-              >
-                <IconCircleChevronRightFilled className="h-4 w-4" />
-              </Button>
+            <div>
+              {table.getFilteredSelectedRowModel().rows.length} of{" "}
+              {table.getFilteredRowModel().rows.length} row(s) selected.
             </div>
           </div>
-        </CardContent>
+          <div className="flex items-center space-x-2">
+            <Button
+              className="h-8 px-3"
+              disabled={!table.getCanPreviousPage()}
+              onClick={() => table.previousPage()}
+              size="sm"
+              variant="outline"
+            >
+              <IconCircleChevronLeftFilled className="h-4 w-4" />
+            </Button>
+            <Button
+              className="h-8 px-3"
+              disabled={!table.getCanNextPage()}
+              onClick={() => table.nextPage()}
+              size="sm"
+              variant="outline"
+            >
+              <IconCircleChevronRightFilled className="h-4 w-4" />
+            </Button>
+          </div>
+        </CardFooter>
       </Card>
 
       {updateRoleMember && (
@@ -786,18 +795,16 @@ export const MembersTable = () => {
   );
 };
 
-export const MemberListTableSkeleton = () => (
-  <Card>
-    <CardHeader>
-      <div className="flex items-center justify-between">
-        <div className="space-y-2">
-          <Skeleton className="h-7 w-48" />
-          <Skeleton className="h-4 w-96" />
-        </div>
+const MembersTableSkeleton = () => (
+  <Card variant="neumorphic">
+    <CardHeader className="flex flex-row items-start justify-between gap-4 border-b py-4">
+      <div className="flex flex-1 flex-wrap items-center gap-3">
+        <Skeleton className="h-10 w-full max-w-xs" />
+        <Skeleton className="h-10 w-32" />
+        <Skeleton className="h-10 w-40" />
       </div>
     </CardHeader>
-    <CardContent>
-      <Skeleton className="mb-4 h-10 w-64" />
+    <CardContent className="py-0">
       <div className="overflow-hidden">
         <Table>
           <TableHeader>
@@ -841,13 +848,15 @@ export const MemberListTableSkeleton = () => (
           </TableBody>
         </Table>
       </div>
-      <div className="mt-4 flex items-center justify-between border-border border-t px-4 py-4">
-        <Skeleton className="h-4 w-32" />
-        <div className="flex items-center space-x-2">
-          <Skeleton className="h-8 w-20" />
-          <Skeleton className="h-8 w-20" />
-        </div>
-      </div>
     </CardContent>
+    <CardFooter className="flex items-center justify-between border-t pt-4">
+      <Skeleton className="h-4 w-32" />
+      <div className="flex items-center space-x-2">
+        <Skeleton className="h-8 w-20" />
+        <Skeleton className="h-8 w-20" />
+      </div>
+    </CardFooter>
   </Card>
 );
+
+MembersTable.Fallback = MembersTableSkeleton;

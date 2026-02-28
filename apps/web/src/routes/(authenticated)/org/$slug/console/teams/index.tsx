@@ -1,10 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Suspense } from "react";
 import { z } from "zod";
-import {
-  TeamsTable,
-  TeamsTableSkeleton,
-} from "@/components/console/teams/teams-table";
+import { TeamsTable } from "@/components/console/teams/teams-table";
 
 const TeamsSearchSchema = z.object({
   page: z.number().int().positive().optional().default(1),
@@ -24,9 +21,8 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   return (
-    <section className="relative min-h-screen space-y-6 p-6 before:pointer-events-none before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_top_right,hsl(var(--primary)/0.15),transparent_50%),radial-gradient(circle_at_bottom_left,hsl(var(--accent)/0.1),transparent_50%)] before:dark:bg-[radial-gradient(circle_at_top_right,hsl(var(--primary)/0.25),transparent_60%),radial-gradient(circle_at_bottom_left,hsl(var(--accent)/0.15),transparent_60%)]">
-      <h1 className="mt-2 font-bold text-2xl">Teams</h1>
-      <Suspense fallback={<TeamsTableSkeleton />}>
+    <section className="space-y-6 p-6">
+      <Suspense fallback={<TeamsTable.Fallback />}>
         <TeamsTable />
       </Suspense>
     </section>
