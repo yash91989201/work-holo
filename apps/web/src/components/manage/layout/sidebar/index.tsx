@@ -24,7 +24,7 @@ export function Sidebar({
   });
   const location = useLocation();
 
-  const isActive = location.pathname === `/org/${slug}/workspace`;
+  const isActive = location.pathname === `/org/${slug}/manage`;
 
   return (
     <BaseSidebar collapsible="icon" {...props}>
@@ -46,7 +46,7 @@ export function Sidebar({
                   isActive={isActive}
                   tooltip="Organization Overview"
                 >
-                  <Link params={{ slug }} to="/org/$slug/workspace">
+                  <Link params={{ slug }} to="/org/$slug/manage">
                     <IconBuildingCommunity />
                     <span>Overview</span>
                   </Link>
