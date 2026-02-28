@@ -11,7 +11,7 @@ import {
   uniqueIndex,
 } from "drizzle-orm/pg-core";
 import { organization, user } from "./auth";
-import { attachmentTypeEnum, messageTypeEnum } from "./communication";
+import { attachmentTypeEnum, messageTypeEnum } from "./channel";
 
 export const dmConversationTable = pgTable(
   "dmConversation",

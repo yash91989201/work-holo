@@ -5,6 +5,7 @@ import {
   foreignKey,
   index,
   integer,
+  json,
   pgEnum,
   pgTable,
   primaryKey,
@@ -14,11 +15,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { organization, team, user } from "./auth";
 
-export const channelTypeEnum = pgEnum("channelType", [
-  "team",
-  "group",
-  "direct",
-]);
+export const channelTypeEnum = pgEnum("channelType", ["team", "group"]);
 
 export const messageTypeEnum = pgEnum("messageType", [
   "text",
@@ -305,7 +302,6 @@ export const messageReactionTable = pgTable(
 export const messageTableRelations = relations(
   messageTable,
   ({ one, many }) => ({
-    // Relations to other tables (foreign keys in messageTable)
     channel: one(channelTable, {
       fields: [messageTable.channelId],
       references: [channelTable.id],
@@ -326,7 +322,6 @@ export const messageTableRelations = relations(
       fields: [messageTable.pinnedBy],
       references: [user.id],
     }),
-    // Inverse relations (other tables reference messageTable)
     attachments: many(attachmentTable),
     reads: many(messageReadTable),
     mentions: many(messageMentionTable),
@@ -334,7 +329,6 @@ export const messageTableRelations = relations(
   })
 );
 
-// Channel relations
 export const channelTableRelations = relations(
   channelTable,
   ({ one, many }) => ({
@@ -355,7 +349,6 @@ export const channelTableRelations = relations(
   })
 );
 
-// Channel member relations
 export const channelMemberTableRelations = relations(
   channelMemberTable,
   ({ one }) => ({
@@ -370,7 +363,6 @@ export const channelMemberTableRelations = relations(
   })
 );
 
-// Attachment relations
 export const attachmentTableRelations = relations(
   attachmentTable,
   ({ one }) => ({
@@ -432,7 +424,6 @@ export const messageReactionTableRelations = relations(
   })
 );
 
-// Channel read relations
 export const channelReadTableRelations = relations(
   channelReadTable,
   ({ one }) => ({
@@ -451,7 +442,6 @@ export const channelReadTableRelations = relations(
   })
 );
 
-// Message read summary relations
 export const messageReadSummaryTableRelations = relations(
   messageReadSummaryTable,
   ({ one }) => ({
@@ -462,7 +452,6 @@ export const messageReadSummaryTableRelations = relations(
   })
 );
 
-// Channel read processed watermark relations
 export const channelReadProcessedWatermarkTableRelations = relations(
   channelReadProcessedWatermarkTable,
   ({ one }) => ({
