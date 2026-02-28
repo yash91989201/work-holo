@@ -1,4 +1,4 @@
-import { IconBuildingCommunity } from "@tabler/icons-react";
+import { IconBuildingCommunity, IconSettings } from "@tabler/icons-react";
 import { Link, useLocation, useParams } from "@tanstack/react-router";
 import type * as React from "react";
 import { Suspense } from "react";
@@ -49,6 +49,20 @@ export function Sidebar({
                   <Link params={{ slug }} to="/org/$slug/manage">
                     <IconBuildingCommunity />
                     <span>Overview</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={location.pathname.startsWith(
+                    `/org/${slug}/manage/settings`
+                  )}
+                  tooltip="Organization Settings"
+                >
+                  <Link params={{ slug }} to="/org/$slug/manage/settings">
+                    <IconSettings />
+                    <span>Settings</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
