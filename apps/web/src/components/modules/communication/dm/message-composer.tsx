@@ -94,7 +94,8 @@ export function DmMessageComposer({
           participantOneId: conversation.participantOneId,
           participantTwoId: conversation.participantTwoId,
         }))
-        .limit(1),
+        .limit(1)
+        .orderBy(({ conversation }) => conversation.createdAt, "desc"),
     [conversationId]
   );
 

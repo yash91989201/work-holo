@@ -15,7 +15,6 @@ import {
 import { PusherClient } from "@work-holo/infrastructure";
 import { and, count, desc, eq, ilike, or, sql } from "drizzle-orm";
 import { z } from "zod";
-import { orgMemberProcedure } from "../../index";
 import { generateTxId } from "../../lib/electric-proxy";
 import {
   CreateDmConversationInput,
@@ -33,6 +32,7 @@ import {
   ToggleDmReactionInput,
   UnmuteDmConversationInput,
 } from "../../lib/schemas/dm";
+import { dmProcedure } from "../../procedures/dm-procedure";
 
 async function verifyParticipant(
   db: typeof _dbType,
@@ -103,7 +103,7 @@ const emitNotificationEvent = async (
 };
 
 export const dmRouter = {
-  createOrGetConversation: orgMemberProcedure
+  createOrGetConversation: dmProcedure
     .input(CreateDmConversationInput)
     .handler(async ({ input, context: { db, orgId, session } }) => {
       const callerId = session.user.id;
@@ -178,7 +178,7 @@ export const dmRouter = {
       return result;
     }),
 
-  getConversations: orgMemberProcedure
+  getConversations: dmProcedure
     .input(GetDmConversationsInput)
     .handler(async ({ input, context: { db, orgId, session } }) => {
       const callerId = session.user.id;
@@ -305,7 +305,7 @@ export const dmRouter = {
       };
     }),
 
-  getConversation: orgMemberProcedure
+  getConversation: dmProcedure
     .input(GetDmConversationInput)
     .handler(async ({ input, context: { db, session } }) => {
       const callerId = session.user.id;
@@ -329,7 +329,7 @@ export const dmRouter = {
       return conversation;
     }),
 
-  muteConversation: orgMemberProcedure
+  muteConversation: dmProcedure
     .input(MuteDmConversationInput)
     .handler(async ({ input, context: { db, session } }) => {
       const callerId = session.user.id;
@@ -347,7 +347,7 @@ export const dmRouter = {
       return { success: true, message: "Conversation muted." };
     }),
 
-  unmuteConversation: orgMemberProcedure
+  unmuteConversation: dmProcedure
     .input(UnmuteDmConversationInput)
     .handler(async ({ input, context: { db, session } }) => {
       const callerId = session.user.id;
@@ -366,7 +366,7 @@ export const dmRouter = {
       return { success: true, message: "Conversation unmuted." };
     }),
 
-  sendMessage: orgMemberProcedure
+  sendMessage: dmProcedure
     .input(SendDmMessageInput)
     .handler(async ({ input, context: { db, orgId, session } }) => {
       const userId = session.user.id;
@@ -496,7 +496,7 @@ export const dmRouter = {
       return { txid: result.txid, message: result.message };
     }),
 
-  getMessages: orgMemberProcedure
+  getMessages: dmProcedure
     .input(GetDmMessagesInput)
     .handler(async ({ input, context: { db, orgId, session } }) => {
       const userId = session.user.id;
@@ -602,7 +602,7 @@ export const dmRouter = {
       };
     }),
 
-  editMessage: orgMemberProcedure
+  editMessage: dmProcedure
     .input(EditDmMessageInput)
     .handler(async ({ input, context: { db, orgId, session } }) => {
       const userId = session.user.id;
@@ -663,7 +663,7 @@ export const dmRouter = {
       return result;
     }),
 
-  deleteMessage: orgMemberProcedure
+  deleteMessage: dmProcedure
     .input(DeleteDmMessageInput)
     .handler(async ({ input, context: { db, orgId, session } }) => {
       const userId = session.user.id;
@@ -727,7 +727,7 @@ export const dmRouter = {
       return result;
     }),
 
-  toggleReaction: orgMemberProcedure
+  toggleReaction: dmProcedure
     .input(ToggleDmReactionInput)
     .handler(async ({ input, context: { db, orgId, session } }) => {
       const userId = session.user.id;
@@ -797,7 +797,7 @@ export const dmRouter = {
       return result;
     }),
 
-  togglePin: orgMemberProcedure
+  togglePin: dmProcedure
     .input(ToggleDmPinInput)
     .handler(async ({ input, context: { db, orgId, session } }) => {
       const userId = session.user.id;
@@ -862,7 +862,7 @@ export const dmRouter = {
       return result;
     }),
 
-  markRead: orgMemberProcedure
+  markRead: dmProcedure
     .input(MarkDmReadInput)
     .handler(async ({ input, context: { db, orgId, session } }) => {
       const userId = session.user.id;
@@ -942,7 +942,7 @@ export const dmRouter = {
       return result;
     }),
 
-  searchMessages: orgMemberProcedure
+  searchMessages: dmProcedure
     .input(SearchDmMessagesInput)
     .handler(async ({ input, context: { db, orgId, session } }) => {
       const userId = session.user.id;
@@ -999,7 +999,7 @@ export const dmRouter = {
       return { messages };
     }),
 
-  getThreadMessages: orgMemberProcedure
+  getThreadMessages: dmProcedure
     .input(
       z.object({
         parentMessageId: z.cuid2(),
@@ -1051,7 +1051,7 @@ export const dmRouter = {
       };
     }),
 
-  addAttachment: orgMemberProcedure
+  addAttachment: dmProcedure
     .input(DmAttachmentInput)
     .handler(async ({ input, context: { db, orgId, session } }) => {
       const userId = session.user.id;

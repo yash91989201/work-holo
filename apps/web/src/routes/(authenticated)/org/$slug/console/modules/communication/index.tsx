@@ -23,7 +23,7 @@ import {
 import { queryUtils } from "@/utils/orpc";
 
 export const Route = createFileRoute(
-  "/(authenticated)/org/$slug/manage/settings/"
+  "/(authenticated)/org/$slug/console/modules/communication/"
 )({
   component: RouteComponent,
 });
@@ -75,9 +75,9 @@ function RouteComponent() {
     return (
       <section className="space-y-6 p-6">
         <div>
-          <h1 className="font-semibold text-2xl">Settings</h1>
+          <h1 className="font-semibold text-2xl">Communication</h1>
           <p className="text-muted-foreground text-sm">
-            Configure organization module settings
+            Configure communication module settings
           </p>
         </div>
         <Card>
@@ -100,9 +100,9 @@ function RouteComponent() {
   return (
     <section className="space-y-6 p-6">
       <div>
-        <h1 className="font-semibold text-2xl">Settings</h1>
+        <h1 className="font-semibold text-2xl">Communication</h1>
         <p className="text-muted-foreground text-sm">
-          Configure organization module settings
+          Configure communication module settings
         </p>
       </div>
       <Card>

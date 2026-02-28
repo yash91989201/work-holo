@@ -8,6 +8,13 @@
       "when": 1772180875937,
       "tag": "0000_slimy_lionheart",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1772284309836,
+      "tag": "0001_left_logan",
+      "breakpoints": true
     }
   ]
 }

@@ -1,6 +1,7 @@
 import {
   IconDeviceLaptop,
   IconMailFilled,
+  IconPuzzle,
   IconSitemapFilled,
   IconUsers,
 } from "@tabler/icons-react";
@@ -13,6 +14,7 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -33,6 +35,9 @@ export function Sidebar({
   const isInvitationsActive =
     location.pathname === `/org/${slug}/console/members/invitations`;
   const isTeamsActive = location.pathname === `/org/${slug}/console/teams`;
+  const isModulesActive = location.pathname.startsWith(
+    `/org/${slug}/console/modules`
+  );
 
   return (
     <BaseSidebar collapsible="icon" {...props}>
@@ -107,6 +112,30 @@ export function Sidebar({
                   <Link params={{ slug }} to="/org/$slug/console/teams">
                     <IconSitemapFilled />
                     <span>Teams</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>Modules</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={location.pathname.startsWith(
+                    `/org/${slug}/console/modules/communication`
+                  )}
+                  tooltip="Communication"
+                >
+                  <Link
+                    params={{ slug }}
+                    to="/org/$slug/console/modules/communication"
+                  >
+                    <IconPuzzle />
+                    <span>Communication</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

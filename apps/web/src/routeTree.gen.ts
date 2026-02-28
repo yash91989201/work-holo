@@ -39,6 +39,7 @@ import { Route as authenticatedOrgSlugConsoleMembersInvitationsRouteImport } fro
 import { Route as authenticatedOrgSlugConsoleMembersMemberIdRouteImport } from './routes/(authenticated)/org/$slug/console/members/$memberId'
 import { Route as authenticatedOrgSlugWorkspaceCommunicationDmIndexRouteImport } from './routes/(authenticated)/org/$slug/workspace/communication/dm/index'
 import { Route as authenticatedOrgSlugWorkspaceCommunicationChannelsIndexRouteImport } from './routes/(authenticated)/org/$slug/workspace/communication/channels/index'
+import { Route as authenticatedOrgSlugConsoleModulesCommunicationIndexRouteImport } from './routes/(authenticated)/org/$slug/console/modules/communication/index'
 import { Route as authenticatedOrgSlugWorkspaceCommunicationDmConversationIdRouteRouteImport } from './routes/(authenticated)/org/$slug/workspace/communication/dm/$conversationId/route'
 import { Route as authenticatedOrgSlugWorkspaceCommunicationChannelsChannelIdRouteRouteImport } from './routes/(authenticated)/org/$slug/workspace/communication/channels/$channelId/route'
 import { Route as authenticatedOrgSlugWorkspaceCommunicationDmConversationIdIndexRouteImport } from './routes/(authenticated)/org/$slug/workspace/communication/dm/$conversationId/index'
@@ -215,6 +216,12 @@ const authenticatedOrgSlugWorkspaceCommunicationChannelsIndexRoute =
     path: '/communication/channels/',
     getParentRoute: () => authenticatedOrgSlugWorkspaceRouteRoute,
   } as any)
+const authenticatedOrgSlugConsoleModulesCommunicationIndexRoute =
+  authenticatedOrgSlugConsoleModulesCommunicationIndexRouteImport.update({
+    id: '/modules/communication/',
+    path: '/modules/communication/',
+    getParentRoute: () => authenticatedOrgSlugConsoleRouteRoute,
+  } as any)
 const authenticatedOrgSlugWorkspaceCommunicationDmConversationIdRouteRoute =
   authenticatedOrgSlugWorkspaceCommunicationDmConversationIdRouteRouteImport.update(
     {
@@ -279,6 +286,7 @@ export interface FileRoutesByFullPath {
   '/org/$slug/workspace/teams/': typeof authenticatedOrgSlugWorkspaceTeamsIndexRoute
   '/org/$slug/workspace/communication/channels/$channelId': typeof authenticatedOrgSlugWorkspaceCommunicationChannelsChannelIdRouteRouteWithChildren
   '/org/$slug/workspace/communication/dm/$conversationId': typeof authenticatedOrgSlugWorkspaceCommunicationDmConversationIdRouteRouteWithChildren
+  '/org/$slug/console/modules/communication/': typeof authenticatedOrgSlugConsoleModulesCommunicationIndexRoute
   '/org/$slug/workspace/communication/channels/': typeof authenticatedOrgSlugWorkspaceCommunicationChannelsIndexRoute
   '/org/$slug/workspace/communication/dm/': typeof authenticatedOrgSlugWorkspaceCommunicationDmIndexRoute
   '/org/$slug/workspace/communication/channels/$channelId/': typeof authenticatedOrgSlugWorkspaceCommunicationChannelsChannelIdIndexRoute
@@ -308,6 +316,7 @@ export interface FileRoutesByTo {
   '/org/$slug/console/teams': typeof authenticatedOrgSlugConsoleTeamsIndexRoute
   '/org/$slug/workspace/attendance': typeof authenticatedOrgSlugWorkspaceAttendanceIndexRoute
   '/org/$slug/workspace/teams': typeof authenticatedOrgSlugWorkspaceTeamsIndexRoute
+  '/org/$slug/console/modules/communication': typeof authenticatedOrgSlugConsoleModulesCommunicationIndexRoute
   '/org/$slug/workspace/communication/channels': typeof authenticatedOrgSlugWorkspaceCommunicationChannelsIndexRoute
   '/org/$slug/workspace/communication/dm': typeof authenticatedOrgSlugWorkspaceCommunicationDmIndexRoute
   '/org/$slug/workspace/communication/channels/$channelId': typeof authenticatedOrgSlugWorkspaceCommunicationChannelsChannelIdIndexRoute
@@ -345,6 +354,7 @@ export interface FileRoutesById {
   '/(authenticated)/org/$slug/workspace/teams/': typeof authenticatedOrgSlugWorkspaceTeamsIndexRoute
   '/(authenticated)/org/$slug/workspace/communication/channels/$channelId': typeof authenticatedOrgSlugWorkspaceCommunicationChannelsChannelIdRouteRouteWithChildren
   '/(authenticated)/org/$slug/workspace/communication/dm/$conversationId': typeof authenticatedOrgSlugWorkspaceCommunicationDmConversationIdRouteRouteWithChildren
+  '/(authenticated)/org/$slug/console/modules/communication/': typeof authenticatedOrgSlugConsoleModulesCommunicationIndexRoute
   '/(authenticated)/org/$slug/workspace/communication/channels/': typeof authenticatedOrgSlugWorkspaceCommunicationChannelsIndexRoute
   '/(authenticated)/org/$slug/workspace/communication/dm/': typeof authenticatedOrgSlugWorkspaceCommunicationDmIndexRoute
   '/(authenticated)/org/$slug/workspace/communication/channels/$channelId/': typeof authenticatedOrgSlugWorkspaceCommunicationChannelsChannelIdIndexRoute
@@ -381,6 +391,7 @@ export interface FileRouteTypes {
     | '/org/$slug/workspace/teams/'
     | '/org/$slug/workspace/communication/channels/$channelId'
     | '/org/$slug/workspace/communication/dm/$conversationId'
+    | '/org/$slug/console/modules/communication/'
     | '/org/$slug/workspace/communication/channels/'
     | '/org/$slug/workspace/communication/dm/'
     | '/org/$slug/workspace/communication/channels/$channelId/'
@@ -410,6 +421,7 @@ export interface FileRouteTypes {
     | '/org/$slug/console/teams'
     | '/org/$slug/workspace/attendance'
     | '/org/$slug/workspace/teams'
+    | '/org/$slug/console/modules/communication'
     | '/org/$slug/workspace/communication/channels'
     | '/org/$slug/workspace/communication/dm'
     | '/org/$slug/workspace/communication/channels/$channelId'
@@ -446,6 +458,7 @@ export interface FileRouteTypes {
     | '/(authenticated)/org/$slug/workspace/teams/'
     | '/(authenticated)/org/$slug/workspace/communication/channels/$channelId'
     | '/(authenticated)/org/$slug/workspace/communication/dm/$conversationId'
+    | '/(authenticated)/org/$slug/console/modules/communication/'
     | '/(authenticated)/org/$slug/workspace/communication/channels/'
     | '/(authenticated)/org/$slug/workspace/communication/dm/'
     | '/(authenticated)/org/$slug/workspace/communication/channels/$channelId/'
@@ -672,6 +685,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authenticatedOrgSlugWorkspaceCommunicationChannelsIndexRouteImport
       parentRoute: typeof authenticatedOrgSlugWorkspaceRouteRoute
     }
+    '/(authenticated)/org/$slug/console/modules/communication/': {
+      id: '/(authenticated)/org/$slug/console/modules/communication/'
+      path: '/modules/communication'
+      fullPath: '/org/$slug/console/modules/communication/'
+      preLoaderRoute: typeof authenticatedOrgSlugConsoleModulesCommunicationIndexRouteImport
+      parentRoute: typeof authenticatedOrgSlugConsoleRouteRoute
+    }
     '/(authenticated)/org/$slug/workspace/communication/dm/$conversationId': {
       id: '/(authenticated)/org/$slug/workspace/communication/dm/$conversationId'
       path: '/communication/dm/$conversationId'
@@ -736,6 +756,7 @@ interface authenticatedOrgSlugConsoleRouteRouteChildren {
   authenticatedOrgSlugConsoleMembersInvitationsRoute: typeof authenticatedOrgSlugConsoleMembersInvitationsRoute
   authenticatedOrgSlugConsoleMembersIndexRoute: typeof authenticatedOrgSlugConsoleMembersIndexRoute
   authenticatedOrgSlugConsoleTeamsIndexRoute: typeof authenticatedOrgSlugConsoleTeamsIndexRoute
+  authenticatedOrgSlugConsoleModulesCommunicationIndexRoute: typeof authenticatedOrgSlugConsoleModulesCommunicationIndexRoute
 }
 
 const authenticatedOrgSlugConsoleRouteRouteChildren: authenticatedOrgSlugConsoleRouteRouteChildren =
@@ -750,6 +771,8 @@ const authenticatedOrgSlugConsoleRouteRouteChildren: authenticatedOrgSlugConsole
       authenticatedOrgSlugConsoleMembersIndexRoute,
     authenticatedOrgSlugConsoleTeamsIndexRoute:
       authenticatedOrgSlugConsoleTeamsIndexRoute,
+    authenticatedOrgSlugConsoleModulesCommunicationIndexRoute:
+      authenticatedOrgSlugConsoleModulesCommunicationIndexRoute,
   }
 
 const authenticatedOrgSlugConsoleRouteRouteWithChildren =
