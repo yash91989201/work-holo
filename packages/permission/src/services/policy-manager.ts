@@ -9,7 +9,10 @@ import {
 import { casbinRule } from "@work-holo/db/schema/casbin";
 import type { RedisClient } from "bun";
 import { type Enforcer, newEnforcer } from "casbin";
-import DrizzleAdapter from "drizzle-adapter";
+import * as DrizzleAdapterModule from "drizzle-adapter";
+
+const DrizzleAdapter = DrizzleAdapterModule.default || DrizzleAdapterModule;
+
 import { and, eq, gt, inArray, isNull, or } from "drizzle-orm";
 import { keyMatchColonFunc } from "../lib/casbin-matchers";
 import { resolvePermissionKey } from "../lib/permission-resolver";
