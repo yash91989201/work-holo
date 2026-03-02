@@ -238,3 +238,13 @@ export const GetChannelUnreadCountsOutput = z.array(
     unreadCount: z.number(),
   })
 );
+
+// Get channel unread counts
+export const GetChannelUnreadCountsInput = z.object({});
+
+export const GetChannelUnreadCountsOutput = z.array(
+  z.object({
+    channelId: z.string(),
+    unreadCount: z.number(),
+  })
+);

@@ -35,9 +35,6 @@ export function Sidebar({
   const isInvitationsActive =
     location.pathname === `/org/${slug}/console/members/invitations`;
   const isTeamsActive = location.pathname === `/org/${slug}/console/teams`;
-  const isModulesActive = location.pathname.startsWith(
-    `/org/${slug}/console/modules`
-  );
 
   return (
     <BaseSidebar collapsible="icon" {...props}>

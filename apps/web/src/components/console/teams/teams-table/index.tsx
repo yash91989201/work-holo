@@ -437,7 +437,6 @@ export const TeamsTable = () => {
             </Button>
           )}
         </div>
-
         <div className="ml-auto">
           <CreateTeamForm />
         </div>

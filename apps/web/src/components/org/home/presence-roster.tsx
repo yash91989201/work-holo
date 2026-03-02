@@ -88,6 +88,7 @@ const presenceConfig: Record<
   },
 };
 
+
 export function PresenceRoster() {
   const { members } = useListOrgMembers();
   const { data: presenceData } = useOrgPresence();
@@ -248,6 +249,7 @@ export function PresenceRoster() {
                         {config.label}
                       </p>
                     </div>
+
                   </div>
                 );
               })

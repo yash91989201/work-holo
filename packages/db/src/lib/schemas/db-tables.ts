@@ -200,3 +200,28 @@ export const DmConversationReadInsertSchema = createInsertSchema(
 export const DmConversationMuteInsertSchema = createInsertSchema(
   dmConversationMuteTable
 );
+
+export const ChannelReadSchema = createSelectSchema(channelReadTable);
+export const ChannelReadUpdateSchema = createUpdateSchema(channelReadTable);
+export const ChannelReadInsertSchema = createInsertSchema(channelReadTable);
+
+export const MessageReadSummarySchema = createSelectSchema(
+  messageReadSummaryTable
+);
+
+export const MessageReadSummaryUpdateSchema = createUpdateSchema(
+  messageReadSummaryTable
+);
+export const MessageReadSummaryInsertSchema = createInsertSchema(
+  messageReadSummaryTable
+);
+
+export const ChannelReadProcessedWatermarkSchema = createSelectSchema(
+  channelReadProcessedWatermarkTable
+);
+export const ChannelReadProcessedWatermarkUpdateSchema = createUpdateSchema(
+  channelReadProcessedWatermarkTable
+);
+export const ChannelReadProcessedWatermarkInsertSchema = createInsertSchema(
+  channelReadProcessedWatermarkTable
+);

@@ -1,0 +1,1 @@
+ALTER TABLE "channel" ALTER COLUMN "teamId" SET NOT NULL;

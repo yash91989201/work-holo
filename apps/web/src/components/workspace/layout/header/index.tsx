@@ -4,6 +4,7 @@ import { Navigator } from "@/components/org/navigator";
 import { NotificationDropdown } from "@/components/org/notification-dropdown";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+
 import { TeamSwitcher } from "./team-switcher";
 
 export function Header() {

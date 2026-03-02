@@ -266,12 +266,18 @@ export const analyticsRouter = {
         excusedStatuses.has(r.status)
       ).length;
 
+      const toNumber = (value: unknown) => {
+        if (value === null || value === undefined) return 0;
+        const num = Number(value);
+        return Number.isFinite(num) ? num : 0;
+      };
+
       const totalHours = records.reduce(
-        (sum, record) => sum + Number(record.totalHours),
+        (sum, record) => sum + toNumber(record.totalHours),
         0
       );
       const overtimeHours = records.reduce(
-        (sum, record) => sum + Number(record.overtimeHours),
+        (sum, record) => sum + toNumber(record.overtimeHours),
         0
       );
       const totalBreakMinutes = records.reduce(
@@ -293,7 +299,7 @@ export const analyticsRouter = {
       const dailyTrends = records.map((record) => ({
         date: record.date.toISOString(),
         status: record.status,
-        totalHours: record.totalHours ? Number(record.totalHours) : null,
+        totalHours: record.totalHours ? toNumber(record.totalHours) : null,
         breakMinutes: record.breakDuration ?? null,
         checkInTime: record.checkInTime?.toISOString() ?? null,
         checkOutTime: record.checkOutTime?.toISOString() ?? null,

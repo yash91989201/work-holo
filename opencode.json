@@ -1,6 +1,11 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
+    "browsermcp": {
+      "type": "local",
+      "command": ["npx", "-y", "@browsermcp/mcp@latest"],
+      "enabled": false
+    },
     "tanstack": {
       "type": "local",
       "command": ["npx", "-y", "@tanstack/cli", "mcp"],
@@ -29,8 +34,7 @@
       "type": "local",
       "environment": {
         "TAVILY_API_KEY": "{env:TAVILY_API_KEY}"
-      },
-      "enabled": false
+      }
     }
   }
 }

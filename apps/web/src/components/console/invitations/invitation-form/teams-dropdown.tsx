@@ -63,7 +63,7 @@ export const TeamsDropdown = withForm({
   },
 });
 
-export function TeamsDropdownSkeleton() {
+function TeamsDropdownSkeleton() {
   return (
     <div className="space-y-2">
       <Skeleton className="h-4 w-10" />

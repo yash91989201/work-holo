@@ -1,6 +1,5 @@
 import { IconSettings } from "@tabler/icons-react";
 import { createFileRoute } from "@tanstack/react-router";
-
 import {
   Empty,
   EmptyDescription,

@@ -19,7 +19,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDuration } from "@/utils";
 import { queryUtils } from "@/utils/orpc";
-
 const formatTime = (date: Date | string) =>
   new Date(date).toLocaleTimeString([], {
     hour: "2-digit",

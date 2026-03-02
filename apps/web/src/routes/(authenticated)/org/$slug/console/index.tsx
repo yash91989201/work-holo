@@ -110,7 +110,6 @@ function AdminStats() {
 }
 
 AdminStats.Fallback = AdminStatsSkeleton;
-
 function RouteComponent() {
   return (
     <section className="space-y-6 p-6">
