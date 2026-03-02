@@ -8,7 +8,7 @@ import {
 } from "@work-holo/db/schema/authorization";
 import { casbinRule } from "@work-holo/db/schema/casbin";
 import type { RedisClient } from "bun";
-import { type Enforcer, newEnforcer } from "casbin";
+import { type Enforcer, newEnforcer, newModel } from "casbin";
 import { DrizzleAdapter } from "casbin-drizzle-adapter";
 import { and, eq, gt, inArray, isNull, or } from "drizzle-orm";
 import { keyMatchColonFunc } from "../lib/casbin-matchers";
@@ -20,7 +20,21 @@ import type {
   PolicyEffect,
 } from "../lib/types";
 
-const MODEL_CONF_PATH = `${import.meta.dir}/../lib/model.conf`;
+// Casbin model configuration (inlined to avoid bundling issues with external files)
+const MODEL_CONFIG = `[request_definition]
+r = sub, dom, obj, act
+
+[policy_definition]
+p = sub, dom, obj, act, eft
+
+[role_definition]
+g = _, _, _
+
+[policy_effect]
+e = some(where (p.eft == allow)) && !some(where (p.eft == deny))
+
+[matchers]
+m = (r.sub == p.sub || g(r.sub, p.sub, r.dom)) && r.dom == p.dom && keyMatchColon(r.obj.name, p.obj) && r.act == p.act`;
 
 const POLICY_VERSION_PREFIX = "policy_version:";
 
@@ -114,8 +128,9 @@ export class PolicyManager {
   getEnforcer(): Promise<Enforcer> {
     if (!this.enforcerPromise) {
       this.enforcerPromise = (async () => {
-        const adapter = await DrizzleAdapter.newAdapter(this.db, casbinRule);
-        const enforcer = await newEnforcer(MODEL_CONF_PATH, adapter);
+        const model = newModel(MODEL_CONFIG);
+        const adapter = DrizzleAdapter.newAdapter(this.db, casbinRule);
+        const enforcer = await newEnforcer(model, adapter);
         await enforcer.addFunction("keyMatchColon", keyMatchColonFunc);
         await enforcer.loadPolicy();
         return enforcer;
