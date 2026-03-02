@@ -10,3 +10,6 @@ export const casbinRule = pgTable("casbin_rule", {
   v4: varchar("v4", { length: 255 }),
   v5: varchar("v5", { length: 255 }),
 });
+
+// Alias for casbin-drizzle-adapter compatibility
+export const casbinTable = casbinRule;

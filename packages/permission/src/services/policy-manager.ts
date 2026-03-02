@@ -6,7 +6,7 @@ import {
   rolePermissionTable,
   roleTemplateTable,
 } from "@work-holo/db/schema/authorization";
-import { casbinRule } from "@work-holo/db/schema/casbin";
+import { casbinTable } from "@work-holo/db/schema/casbin";
 import type { RedisClient } from "bun";
 import { type Enforcer, newEnforcer, newModel } from "casbin";
 import { DrizzleAdapter } from "casbin-drizzle-adapter";
@@ -129,7 +129,7 @@ export class PolicyManager {
     if (!this.enforcerPromise) {
       this.enforcerPromise = (async () => {
         const model = newModel(MODEL_CONFIG);
-        const adapter = DrizzleAdapter.newAdapter(this.db, casbinRule);
+        const adapter = DrizzleAdapter.newAdapter(this.db, casbinTable);
         const enforcer = await newEnforcer(model, adapter);
         await enforcer.addFunction("keyMatchColon", keyMatchColonFunc);
         await enforcer.loadPolicy();
@@ -332,11 +332,11 @@ export class PolicyManager {
       await this.db.transaction(async (tx) => {
         const domain = this.buildDomain(orgId);
         await tx
-          .delete(casbinRule)
+          .delete(casbinTable)
           .where(
             or(
-              and(eq(casbinRule.ptype, "p"), eq(casbinRule.v1, domain)),
-              and(eq(casbinRule.ptype, "g"), eq(casbinRule.v2, domain))
+              and(eq(casbinTable.ptype, "p"), eq(casbinTable.v1, domain)),
+              and(eq(casbinTable.ptype, "g"), eq(casbinTable.v2, domain))
             )
           );
 
@@ -375,7 +375,7 @@ export class PolicyManager {
         }
 
         if (rows.length > 0) {
-          await tx.insert(casbinRule).values(rows);
+          await tx.insert(casbinTable).values(rows);
         }
       });
 
