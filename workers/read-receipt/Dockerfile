@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM oven/bun:1.3.6-slim AS base
+FROM oven/bun:1.3.10-slim AS base
 WORKDIR /app
 
 FROM base AS deps

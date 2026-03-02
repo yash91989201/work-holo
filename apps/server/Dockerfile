@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM oven/bun:1.3.9-slim AS base
+FROM oven/bun:1.3.10-slim AS base
 WORKDIR /app
 
 FROM base AS deps
@@ -44,7 +44,7 @@ COPY apps/server/src apps/server/src
 
 RUN bun run --cwd apps/server build
 
-FROM oven/bun:1.3.9-slim AS runtime
+FROM oven/bun:1.3.10-slim AS runtime
 WORKDIR /app
 
 COPY --from=deps /app/node_modules/.bun node_modules/.bun
