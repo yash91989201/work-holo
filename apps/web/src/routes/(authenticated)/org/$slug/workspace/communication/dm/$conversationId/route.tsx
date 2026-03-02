@@ -8,13 +8,6 @@ import { DmThreadSidebar } from "@/components/modules/communication/dm/thread-si
 export const Route = createFileRoute(
   "/(authenticated)/org/$slug/workspace/communication/dm/$conversationId"
 )({
-  beforeLoad: ({ context: { queryClient, queryUtils }, params }) => {
-    queryClient.prefetchQuery(
-      queryUtils.communication.dm.getConversation.queryOptions({
-        input: { conversationId: params.conversationId },
-      })
-    );
-  },
   loader: async ({ context: { queryClient, queryUtils }, params }) => {
     const conversation = await queryClient.ensureQueryData(
       queryUtils.communication.dm.getConversation.queryOptions({
