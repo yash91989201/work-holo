@@ -18,7 +18,6 @@ import {
 import { FieldGroup } from "@/components/ui/field";
 import { useAppForm } from "@/components/ui/form/hooks";
 import { SelectItem } from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth-client";
 import { InvitationFormSchema } from "@/lib/schemas/member";
@@ -128,7 +127,7 @@ export const InvitationForm = () => {
                 <form.Subscribe selector={(state) => state.values.role}>
                   {(selectedRole) =>
                     selectedRole === "member" && (
-                      <Suspense fallback={<Skeleton className="h-9 w-full" />}>
+                      <Suspense fallback={<TeamsDropdown.Fallback />}>
                         <TeamsDropdown form={form} />
                       </Suspense>
                     )

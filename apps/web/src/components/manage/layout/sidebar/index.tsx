@@ -1,11 +1,8 @@
 import { IconBuildingCommunity } from "@tabler/icons-react";
-import { Link, useParams } from "@tanstack/react-router";
+import { Link, useLocation, useParams } from "@tanstack/react-router";
 import type * as React from "react";
 import { Suspense } from "react";
-import {
-  OrgSwitcher,
-  OrgSwitcherSkeleton,
-} from "@/components/org/org-switcher";
+import { OrgSwitcher } from "@/components/org/org-switcher";
 import {
   Sidebar as BaseSidebar,
   SidebarContent,
@@ -25,12 +22,15 @@ export function Sidebar({
   const { slug } = useParams({
     from: "/(authenticated)/org/$slug",
   });
+  const location = useLocation();
+
+  const isActive = location.pathname === `/org/${slug}/manage`;
 
   return (
     <BaseSidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarMenu>
-          <Suspense fallback={<OrgSwitcherSkeleton />}>
+          <Suspense fallback={<OrgSwitcher.Fallback />}>
             <OrgSwitcher />
           </Suspense>
         </SidebarMenu>
@@ -41,8 +41,12 @@ export function Sidebar({
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Organization Overview">
-                  <Link params={{ slug }} to="/org/$slug/workspace">
+                <SidebarMenuButton
+                  asChild
+                  isActive={isActive}
+                  tooltip="Organization Overview"
+                >
+                  <Link params={{ slug }} to="/org/$slug/manage">
                     <IconBuildingCommunity />
                     <span>Overview</span>
                   </Link>

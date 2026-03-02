@@ -176,3 +176,5 @@ export function ProductivityChartSkeleton() {
     </Card>
   );
 }
+
+ProductivityChart.Fallback = ProductivityChartSkeleton;

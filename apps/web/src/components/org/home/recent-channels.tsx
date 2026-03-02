@@ -33,6 +33,7 @@ import {
   ItemTitle,
 } from "@/components/ui/item";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { getInitials } from "@/utils";
 import { queryUtils } from "@/utils/orpc";
 
 export function RecentChannels() {
@@ -139,15 +140,6 @@ function getBadgeVariant(
     return "secondary";
   }
   return "outline";
-}
-
-function getInitials(name: string): string {
-  return name
-    .split(" ")
-    .map((part) => part[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
 }
 
 function NoRecentChannels() {

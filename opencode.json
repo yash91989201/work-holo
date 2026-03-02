@@ -13,8 +13,7 @@
     },
     "context7": {
       "type": "local",
-      "command": ["npx", "-y", "@upstash/context7-mcp"],
-      "enabled": true
+      "command": ["npx", "-y", "@upstash/context7-mcp"]
     },
     "shadcn": {
       "type": "local",
@@ -24,7 +23,7 @@
     "morph": {
       "type": "local",
       "command": ["npx", "-y", "@morphllm/morphmcp"],
-      "enabled": true,
+      "enabled": false,
       "environment": {
         "MORPH_API_KEY": "{env:MORPH_API_KEY}",
         "ENABLED_TOOLS": "edit_file,warpgrep_codebase_search"

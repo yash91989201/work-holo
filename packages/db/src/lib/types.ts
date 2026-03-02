@@ -12,9 +12,6 @@ import type {
   AttendanceSchema,
   AttendanceUpdateSchema,
   ChannelInsertSchema,
-  ChannelJoinRequestInsertSchema,
-  ChannelJoinRequestSchema,
-  ChannelJoinRequestUpdateSchema,
   ChannelMemberInsertSchema,
   ChannelMemberSchema,
   ChannelMemberUpdateSchema,
@@ -27,6 +24,27 @@ import type {
   ChannelSchema,
   ChannelTypeSchema,
   ChannelUpdateSchema,
+  DmAttachmentInsertSchema,
+  DmAttachmentSchema,
+  DmAttachmentUpdateSchema,
+  DmConversationInsertSchema,
+  DmConversationMuteInsertSchema,
+  DmConversationMuteSchema,
+  DmConversationMuteUpdateSchema,
+  DmConversationReadInsertSchema,
+  DmConversationReadSchema,
+  DmConversationReadUpdateSchema,
+  DmConversationSchema,
+  DmConversationUpdateSchema,
+  DmMessageInsertSchema,
+  DmMessageReactionInsertSchema,
+  DmMessageReactionSchema,
+  DmMessageReactionUpdateSchema,
+  DmMessageReadInsertSchema,
+  DmMessageReadSchema,
+  DmMessageReadUpdateSchema,
+  DmMessageSchema,
+  DmMessageUpdateSchema,
   InvitationInsertSchema,
   InvitationSchema,
   InvitationUpdateSchema,
@@ -45,7 +63,6 @@ import type {
   MessageReadSummaryInsertSchema,
   MessageReadSummarySchema,
   MessageReadSummaryUpdateSchema,
-  MessageReadUpdateSchema,
   MessageSchema,
   MessageUpdateSchema,
   NotificationInsertSchema,
@@ -54,6 +71,9 @@ import type {
   OrganizationInsertSchema,
   OrganizationSchema,
   OrganizationUpdateSchema,
+  PushSubscriptionInsertSchema,
+  PushSubscriptionSchema,
+  PushSubscriptionUpdateSchema,
   SessionInsertSchema,
   SessionSchema,
   SessionUpdateSchema,
@@ -84,13 +104,6 @@ export type AttendanceInsertType = z.infer<typeof AttendanceInsertSchema>;
 export type AttendanceType = z.infer<typeof AttendanceSchema>;
 export type AttendanceUpdateType = z.infer<typeof AttendanceUpdateSchema>;
 export type ChannelInsertType = z.infer<typeof ChannelInsertSchema>;
-export type ChannelJoinRequestInsertType = z.infer<
-  typeof ChannelJoinRequestInsertSchema
->;
-export type ChannelJoinRequestType = z.infer<typeof ChannelJoinRequestSchema>;
-export type ChannelJoinRequestUpdateType = z.infer<
-  typeof ChannelJoinRequestUpdateSchema
->;
 export type ChannelMemberInsertType = z.infer<typeof ChannelMemberInsertSchema>;
 export type ChannelMemberType = z.infer<typeof ChannelMemberSchema>;
 export type ChannelMemberUpdateType = z.infer<typeof ChannelMemberUpdateSchema>;
@@ -109,6 +122,43 @@ export type ChannelReadUpdateType = z.infer<typeof ChannelReadUpdateSchema>;
 export type ChannelType = z.infer<typeof ChannelSchema>;
 export type ChannelTypeType = z.infer<typeof ChannelTypeSchema>;
 export type ChannelUpdateType = z.infer<typeof ChannelUpdateSchema>;
+export type DmAttachmentInsertType = z.infer<typeof DmAttachmentInsertSchema>;
+export type DmAttachmentType = z.infer<typeof DmAttachmentSchema>;
+export type DmAttachmentUpdateType = z.infer<typeof DmAttachmentUpdateSchema>;
+export type DmConversationInsertType = z.infer<
+  typeof DmConversationInsertSchema
+>;
+export type DmConversationMuteInsertType = z.infer<
+  typeof DmConversationMuteInsertSchema
+>;
+export type DmConversationMuteType = z.infer<typeof DmConversationMuteSchema>;
+export type DmConversationMuteUpdateType = z.infer<
+  typeof DmConversationMuteUpdateSchema
+>;
+export type DmConversationReadInsertType = z.infer<
+  typeof DmConversationReadInsertSchema
+>;
+export type DmConversationReadType = z.infer<typeof DmConversationReadSchema>;
+export type DmConversationReadUpdateType = z.infer<
+  typeof DmConversationReadUpdateSchema
+>;
+export type DmConversationType = z.infer<typeof DmConversationSchema>;
+export type DmConversationUpdateType = z.infer<
+  typeof DmConversationUpdateSchema
+>;
+export type DmMessageInsertType = z.infer<typeof DmMessageInsertSchema>;
+export type DmMessageReactionInsertType = z.infer<
+  typeof DmMessageReactionInsertSchema
+>;
+export type DmMessageReactionType = z.infer<typeof DmMessageReactionSchema>;
+export type DmMessageReactionUpdateType = z.infer<
+  typeof DmMessageReactionUpdateSchema
+>;
+export type DmMessageReadInsertType = z.infer<typeof DmMessageReadInsertSchema>;
+export type DmMessageReadType = z.infer<typeof DmMessageReadSchema>;
+export type DmMessageReadUpdateType = z.infer<typeof DmMessageReadUpdateSchema>;
+export type DmMessageType = z.infer<typeof DmMessageSchema>;
+export type DmMessageUpdateType = z.infer<typeof DmMessageUpdateSchema>;
 export type InvitationInsertType = z.infer<typeof InvitationInsertSchema>;
 export type InvitationType = z.infer<typeof InvitationSchema>;
 export type InvitationUpdateType = z.infer<typeof InvitationUpdateSchema>;
@@ -139,7 +189,6 @@ export type MessageReadSummaryUpdateType = z.infer<
   typeof MessageReadSummaryUpdateSchema
 >;
 export type MessageReadType = z.infer<typeof MessageReadSchema>;
-export type MessageReadUpdateType = z.infer<typeof MessageReadUpdateSchema>;
 export type MessageType = z.infer<typeof MessageSchema>;
 export type MessageUpdateType = z.infer<typeof MessageUpdateSchema>;
 export type NotificationInsertType = z.infer<typeof NotificationInsertSchema>;
@@ -148,6 +197,13 @@ export type NotificationUpdateType = z.infer<typeof NotificationUpdateSchema>;
 export type OrganizationInsertType = z.infer<typeof OrganizationInsertSchema>;
 export type OrganizationType = z.infer<typeof OrganizationSchema>;
 export type OrganizationUpdateType = z.infer<typeof OrganizationUpdateSchema>;
+export type PushSubscriptionInsertType = z.infer<
+  typeof PushSubscriptionInsertSchema
+>;
+export type PushSubscriptionType = z.infer<typeof PushSubscriptionSchema>;
+export type PushSubscriptionUpdateType = z.infer<
+  typeof PushSubscriptionUpdateSchema
+>;
 export type SessionInsertType = z.infer<typeof SessionInsertSchema>;
 export type SessionType = z.infer<typeof SessionSchema>;
 export type SessionUpdateType = z.infer<typeof SessionUpdateSchema>;

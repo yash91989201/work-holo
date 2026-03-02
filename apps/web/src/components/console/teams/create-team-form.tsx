@@ -32,7 +32,6 @@ const baseModules = [
 export const CreateTeamForm = () => {
   const [open, setOpen] = React.useState(false);
 
-  // Initialize form
   const form = useAppForm({
     defaultValues: {
       name: "",
@@ -64,8 +63,8 @@ export const CreateTeamForm = () => {
     <Dialog onOpenChange={setOpen} open={open}>
       <DialogTrigger asChild>
         <Button className="gap-1.5">
-          <IconPlus className="h-4 w-4" />
-          Create Team
+          <IconPlus />
+          New Team
         </Button>
       </DialogTrigger>
 

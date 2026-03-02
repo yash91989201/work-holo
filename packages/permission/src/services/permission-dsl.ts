@@ -33,14 +33,14 @@ export class PermissionDSL {
   /**
    * Returns channel permission builders, optionally team scoped.
    */
-  channel(teamId?: string) {
-    return Channel(teamId);
+  channel() {
+    return Channel();
   }
 
   /**
    * Returns attendance permission builders, optionally team scoped.
    */
-  attendance(teamId?: string) {
-    return Attendance(teamId);
+  attendance() {
+    return Attendance();
   }
 }

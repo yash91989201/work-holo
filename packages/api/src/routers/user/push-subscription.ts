@@ -1,4 +1,4 @@
-import { pushSubscriptionTable } from "@work-holo/db/schema/communication";
+import { pushSubscriptionTable } from "@work-holo/db/schema/notification";
 import { and, eq } from "drizzle-orm";
 import webpush from "web-push";
 import { protectedProcedure, publicProcedure } from "../../index";

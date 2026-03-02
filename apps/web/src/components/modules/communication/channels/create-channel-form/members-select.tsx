@@ -1,9 +1,4 @@
-import {
-  IconChevronDown,
-  IconRefresh,
-  IconUserFilled,
-  IconUsers,
-} from "@tabler/icons-react";
+import { IconChevronDown, IconRefresh, IconUsers } from "@tabler/icons-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,11 +9,13 @@ import {
 } from "@/components/ui/multi-select";
 import { useListOrgMembers } from "@/hooks/use-list-org-members";
 import { cn } from "@/lib/utils";
+import { withFallback } from "@/types/component-fallback";
 import { channelFormOpts } from "./form-options";
 
-export const MembersSelect = withForm({
+const MembersSelectBase = withForm({
   ...channelFormOpts,
   render({ form }) {
+    // biome-ignore lint/correctness/useHookAtTopLevel: render() inside withForm is a valid React component context
     const { members, refetchTeamMembers, isRefetching } = useListOrgMembers();
 
     const memberOptions: MultiSelectOption[] = members
@@ -38,52 +35,39 @@ export const MembersSelect = withForm({
       }));
 
     return (
-      <form.Subscribe selector={(state) => state.values.type}>
-        {(channelType) => (
-          <form.AppField mode="array" name="memberIds">
-            {(field) => (
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <span className="flex-1 font-medium text-sm">Members</span>
-                  <Badge className="ml-2" variant="secondary">
-                    {channelType === "direct" ? (
-                      <>
-                        <span>1</span>
-                        <IconUserFilled />
-                      </>
-                    ) : (
-                      <>
-                        <span>1+</span>
-                        <IconUsers />
-                      </>
-                    )}
-                  </Badge>
-                  <Button
-                    className="size-6 rounded-sm"
-                    disabled={isRefetching}
-                    onClick={() => refetchTeamMembers()}
-                    size="icon"
-                    type="button"
-                    variant="outline"
-                  >
-                    <IconRefresh
-                      className={cn("size-3", isRefetching && "animate-spin")}
-                    />
-                  </Button>
-                </div>
-                <MultiSelect
-                  className="w-full"
-                  maxCount={1}
-                  onValueChange={field.handleChange}
-                  options={memberOptions}
-                  placeholder="Select channel members"
-                  value={field.state.value}
+      <form.AppField mode="array" name="memberIds">
+        {(field) => (
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <span className="flex-1 font-medium text-sm">Members</span>
+              <Badge className="ml-2" variant="secondary">
+                <span>1+</span>
+                <IconUsers />
+              </Badge>
+              <Button
+                className="size-6 rounded-sm"
+                disabled={isRefetching}
+                onClick={() => refetchTeamMembers()}
+                size="icon"
+                type="button"
+                variant="outline"
+              >
+                <IconRefresh
+                  className={cn("size-3", isRefetching && "animate-spin")}
                 />
-              </div>
-            )}
-          </form.AppField>
+              </Button>
+            </div>
+            <MultiSelect
+              className="w-full"
+              maxCount={1}
+              onValueChange={field.handleChange}
+              options={memberOptions}
+              placeholder="Select channel members"
+              value={field.state.value}
+            />
+          </div>
         )}
-      </form.Subscribe>
+      </form.AppField>
     );
   },
 });
@@ -114,3 +98,8 @@ export function MembersSelectSkeleton() {
     </div>
   );
 }
+
+export const MembersSelect = withFallback(
+  MembersSelectBase,
+  MembersSelectSkeleton
+);

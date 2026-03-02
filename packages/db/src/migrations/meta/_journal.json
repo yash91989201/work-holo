@@ -5,36 +5,15 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1764866882450,
-      "tag": "0000_third_lightspeed",
+      "when": 1772180875937,
+      "tag": "0000_slimy_lionheart",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "7",
-      "when": 1764886080316,
-      "tag": "0001_stormy_saracen",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1765157188289,
-      "tag": "0002_marvelous_skullbuster",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1765261903989,
-      "tag": "0003_dazzling_spectrum",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1765365790139,
-      "tag": "0004_ancient_mimic",
+      "when": 1772284309836,
+      "tag": "0001_left_logan",
       "breakpoints": true
     },
     {

@@ -1,7 +1,6 @@
-import { formOptions } from "@tanstack/react-form";
-import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
+import { formOptions } from "@tanstack/react-form";
+import { useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { FieldGroup } from "@/components/ui/field";
 import { useAppForm } from "@/components/ui/form/hooks";
@@ -14,7 +13,7 @@ import { getOrgRouteByRole } from "@/utils";
 
 const formOpts = formOptions({
   defaultValues: {
-    email: "",
+    identifier: "",
     password: "",
     formState: {
       showPassword: false,
@@ -25,13 +24,6 @@ const formOpts = formOptions({
 export function LogInForm() {
   const navigate = useNavigate();
 
-  const { mutateAsync: login } = useMutation({
-    mutationKey: ["login"],
-    mutationFn: (values: LogInFormType) => {
-      return authClient.signIn.email(values);
-    },
-  });
-
   const form = useAppForm({
     ...formOpts,
     validators: {
@@ -39,7 +31,16 @@ export function LogInForm() {
     },
     onSubmit: async ({ value }) => {
       try {
-        const loginResult = await login(value);
+        const isEmail = value.identifier.includes("@");
+        const loginResult = isEmail
+          ? await authClient.signIn.email({
+              email: value.identifier,
+              password: value.password,
+            })
+          : await authClient.signIn.username({
+              username: value.identifier,
+              password: value.password,
+            });
 
         if (loginResult?.error) {
           throw new Error(loginResult.error.message);
@@ -67,7 +68,7 @@ export function LogInForm() {
 
         navigate({ to: "/org/new" });
       } catch (err) {
-        form.setFieldMeta("email", (prev) => ({
+        form.setFieldMeta("identifier", (prev) => ({
           ...prev,
           errorMap: {
             onSubmit: err instanceof Error ? err.message : "Login failed",
@@ -87,12 +88,13 @@ export function LogInForm() {
         }}
       >
         <FieldGroup>
-          <form.AppField name="email">
+          <form.AppField name="identifier">
             {(field) => (
               <field.Input
-                label="Email"
-                placeholder="Enter your email"
-                type="email"
+                autoComplete="username"
+                label="Email or Username"
+                placeholder="Enter your email or username"
+                type="text"
               />
             )}
           </form.AppField>

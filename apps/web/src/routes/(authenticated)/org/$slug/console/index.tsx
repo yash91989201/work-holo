@@ -99,6 +99,17 @@ function AdminStatsSkeleton() {
   );
 }
 
+function AdminStats() {
+  return (
+    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      {adminStats.map((stat, index) => (
+        <AdminStatCard key={index.toString()} stat={stat} />
+      ))}
+    </div>
+  );
+}
+
+AdminStats.Fallback = AdminStatsSkeleton;
 function RouteComponent() {
   return (
     <section className="space-y-6 p-6">
@@ -106,12 +117,8 @@ function RouteComponent() {
       <h1 className="font-bold text-3xl tracking-tight">Console</h1>
 
       {/* Stats */}
-      <Suspense fallback={<AdminStatsSkeleton />}>
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-          {adminStats.map((stat, index) => (
-            <AdminStatCard key={index.toString()} stat={stat} />
-          ))}
-        </div>
+      <Suspense fallback={<AdminStats.Fallback />}>
+        <AdminStats />
       </Suspense>
     </section>
   );

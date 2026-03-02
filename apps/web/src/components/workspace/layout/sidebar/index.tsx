@@ -1,9 +1,5 @@
-import type * as React from "react";
 import { Suspense } from "react";
-import {
-  OrgSwitcher,
-  OrgSwitcherSkeleton,
-} from "@/components/org/org-switcher";
+import { OrgSwitcher } from "@/components/org/org-switcher";
 import {
   Sidebar as BaseSidebar,
   SidebarContent,
@@ -11,10 +7,11 @@ import {
   SidebarMenu,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { NavAttendance } from "./nav-modules/nav-attendance";
-import { NavChannels } from "./nav-modules/nav-communication";
-import { NavOverview } from "./nav-modules/nav-overview";
-import { NavQuickActions } from "./nav-quick-actions";
+import { AttendanceGroup } from "./groups/attendance";
+import { ChannelGroup } from "./groups/channel";
+import { DmGroup } from "./groups/dm";
+import { OverviewGroup } from "./groups/overview";
+import { QuickActionGroup } from "./groups/quick-action";
 
 export function Sidebar({
   ...props
@@ -23,16 +20,21 @@ export function Sidebar({
     <BaseSidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarMenu>
-          <Suspense fallback={<OrgSwitcherSkeleton />}>
+          <Suspense fallback={<OrgSwitcher.Fallback />}>
             <OrgSwitcher />
           </Suspense>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent className="gap-0">
-        <NavQuickActions />
-        <NavOverview />
-        <NavAttendance />
-        <NavChannels />
+        <QuickActionGroup />
+        <OverviewGroup />
+        <AttendanceGroup />
+        <Suspense fallback={<ChannelGroup.Fallback />}>
+          <ChannelGroup />
+        </Suspense>
+        <Suspense fallback={<DmGroup.Fallback />}>
+          <DmGroup />
+        </Suspense>
       </SidebarContent>
       <SidebarRail />
     </BaseSidebar>

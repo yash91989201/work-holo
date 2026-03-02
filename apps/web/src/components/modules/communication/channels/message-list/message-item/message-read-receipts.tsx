@@ -162,7 +162,7 @@ function MessageReadersDialog({
         </DialogHeader>
 
         <ScrollArea className="max-h-96">
-          <Suspense fallback={<MessageReadersListSkeleton />}>
+          <Suspense fallback={<MessageReadersList.Fallback />}>
             <MessageReadersList messageId={messageId} />
           </Suspense>
         </ScrollArea>
@@ -223,6 +223,7 @@ function MessageReadersList({ messageId }: { messageId: string }) {
 function MessageReadersListSkeleton() {
   return (
     <ItemGroup>
+      // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton list
       {Array.from({ length: 5 }).map((_, index) => (
         <Item key={index.toString()}>
           <ItemMedia>
@@ -240,3 +241,5 @@ function MessageReadersListSkeleton() {
     </ItemGroup>
   );
 }
+
+MessageReadersList.Fallback = MessageReadersListSkeleton;

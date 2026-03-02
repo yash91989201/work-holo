@@ -18,7 +18,6 @@ import {
 } from "../../schema/auth";
 import {
   attachmentTable,
-  channelJoinRequestTable,
   channelMemberTable,
   channelReadProcessedWatermarkTable,
   channelReadTable,
@@ -28,8 +27,20 @@ import {
   messageReadSummaryTable,
   messageReadTable,
   messageTable,
+} from "../../schema/channel";
+import {
+  dmAttachmentTable,
+  dmConversationMuteTable,
+  dmConversationReadTable,
+  dmConversationTable,
+  dmMessageReactionTable,
+  dmMessageReadTable,
+  dmMessageTable,
+} from "../../schema/direct-message";
+import {
   notificationTable,
-} from "../../schema/communication";
+  pushSubscriptionTable,
+} from "../../schema/notification";
 
 export const AccountSchema = createSelectSchema(account);
 export const UserSchema = createSelectSchema(user, {
@@ -84,7 +95,6 @@ export const MessageMentionSchema = createSelectSchema(messageMentionTable);
 export const MessageReactionSchema = createSelectSchema(messageReactionTable);
 export const MessageSchema = createSelectSchema(messageTable);
 export const AttachmentSchema = createSelectSchema(attachmentTable);
-export const NotificationSchema = createSelectSchema(notificationTable);
 export const MessageReadSchema = createSelectSchema(messageReadTable);
 
 export const ChannelUpdateSchema = createUpdateSchema(channelTable);
@@ -95,8 +105,6 @@ export const MessageReactionUpdateSchema =
   createUpdateSchema(messageReactionTable);
 export const MessageUpdateSchema = createUpdateSchema(messageTable);
 export const AttachmentUpdateSchema = createUpdateSchema(attachmentTable);
-export const NotificationUpdateSchema = createUpdateSchema(notificationTable);
-export const MessageReadUpdateSchema = createUpdateSchema(messageReadTable);
 
 export const ChannelInsertSchema = createInsertSchema(channelTable);
 export const ChannelMemberInsertSchema = createInsertSchema(channelMemberTable);
@@ -106,20 +114,9 @@ export const MessageReactionInsertSchema =
   createInsertSchema(messageReactionTable);
 export const MessageInsertSchema = createInsertSchema(messageTable);
 export const AttachmentInsertSchema = createInsertSchema(attachmentTable);
-export const NotificationInsertSchema = createInsertSchema(notificationTable);
 export const MessageReadInsertSchema = createInsertSchema(messageReadTable);
 
 export const ChannelTypeSchema = ChannelSchema.shape.type;
-export const ChannelJoinRequestSchema = createSelectSchema(
-  channelJoinRequestTable
-);
-export const ChannelJoinRequestUpdateSchema = createUpdateSchema(
-  channelJoinRequestTable
-);
-export const ChannelJoinRequestInsertSchema = createInsertSchema(
-  channelJoinRequestTable
-);
-
 export const ChannelReadSchema = createSelectSchema(channelReadTable);
 export const ChannelReadUpdateSchema = createUpdateSchema(channelReadTable);
 export const ChannelReadInsertSchema = createInsertSchema(channelReadTable);
@@ -143,4 +140,63 @@ export const ChannelReadProcessedWatermarkUpdateSchema = createUpdateSchema(
 );
 export const ChannelReadProcessedWatermarkInsertSchema = createInsertSchema(
   channelReadProcessedWatermarkTable
+);
+
+// Notification schemas
+export const NotificationSchema = createSelectSchema(notificationTable);
+export const NotificationUpdateSchema = createUpdateSchema(notificationTable);
+export const NotificationInsertSchema = createInsertSchema(notificationTable);
+
+// Push Subscription schemas
+export const PushSubscriptionSchema = createSelectSchema(pushSubscriptionTable);
+export const PushSubscriptionUpdateSchema = createUpdateSchema(
+  pushSubscriptionTable
+);
+export const PushSubscriptionInsertSchema = createInsertSchema(
+  pushSubscriptionTable
+);
+
+// Direct Message schemas
+export const DmConversationSchema = createSelectSchema(dmConversationTable);
+export const DmMessageSchema = createSelectSchema(dmMessageTable);
+export const DmAttachmentSchema = createSelectSchema(dmAttachmentTable);
+export const DmMessageReactionSchema = createSelectSchema(
+  dmMessageReactionTable
+);
+export const DmMessageReadSchema = createSelectSchema(dmMessageReadTable);
+export const DmConversationReadSchema = createSelectSchema(
+  dmConversationReadTable
+);
+export const DmConversationMuteSchema = createSelectSchema(
+  dmConversationMuteTable
+);
+
+export const DmConversationUpdateSchema =
+  createUpdateSchema(dmConversationTable);
+export const DmMessageUpdateSchema = createUpdateSchema(dmMessageTable);
+export const DmAttachmentUpdateSchema = createUpdateSchema(dmAttachmentTable);
+export const DmMessageReactionUpdateSchema = createUpdateSchema(
+  dmMessageReactionTable
+);
+export const DmMessageReadUpdateSchema = createUpdateSchema(dmMessageReadTable);
+export const DmConversationReadUpdateSchema = createUpdateSchema(
+  dmConversationReadTable
+);
+export const DmConversationMuteUpdateSchema = createUpdateSchema(
+  dmConversationMuteTable
+);
+
+export const DmConversationInsertSchema =
+  createInsertSchema(dmConversationTable);
+export const DmMessageInsertSchema = createInsertSchema(dmMessageTable);
+export const DmAttachmentInsertSchema = createInsertSchema(dmAttachmentTable);
+export const DmMessageReactionInsertSchema = createInsertSchema(
+  dmMessageReactionTable
+);
+export const DmMessageReadInsertSchema = createInsertSchema(dmMessageReadTable);
+export const DmConversationReadInsertSchema = createInsertSchema(
+  dmConversationReadTable
+);
+export const DmConversationMuteInsertSchema = createInsertSchema(
+  dmConversationMuteTable
 );

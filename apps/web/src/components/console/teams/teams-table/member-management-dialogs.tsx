@@ -289,3 +289,35 @@ export function RemoveTeamMemberDialog({ teamId }: { teamId: string }) {
     </Dialog>
   );
 }
+
+export function AddTeamMemberDialogSkeleton() {
+  return (
+    <Button
+      className="flex w-full items-center justify-start gap-1.5"
+      disabled
+      size="sm"
+      variant="ghost"
+    >
+      <IconUserPlus className="size-4" />
+      Add members
+    </Button>
+  );
+}
+
+AddTeamMemberDialog.Fallback = AddTeamMemberDialogSkeleton;
+
+export function RemoveTeamMemberDialogSkeleton() {
+  return (
+    <Button
+      className="flex w-full items-center justify-start gap-1.5"
+      disabled
+      size="sm"
+      variant="ghost"
+    >
+      <IconUserMinus className="size-4" />
+      <span>Remove Members</span>
+    </Button>
+  );
+}
+
+RemoveTeamMemberDialog.Fallback = RemoveTeamMemberDialogSkeleton;

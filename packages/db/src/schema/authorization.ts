@@ -263,6 +263,81 @@ export const teamModuleConfigTable = pgTable(
   ]
 );
 
+export const moduleAccessModeEnum = pgEnum("module_access_mode", [
+  "disabled",
+  "org_wide",
+  "team_based",
+  "user_based",
+]);
+
+export const orgModuleConfigTable = pgTable(
+  "orgModuleConfig",
+  {
+    id: cuid2("id").defaultRandom().primaryKey(),
+    organizationId: text("organizationId")
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    module: text("module").notNull(),
+    mode: moduleAccessModeEnum("mode").notNull().default("disabled"),
+    updatedAt: timestamp("updatedAt", { withTimezone: true })
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date()),
+    updatedBy: text("updatedBy").references(() => user.id, {
+      onDelete: "set null",
+    }),
+  },
+  (table) => [
+    uniqueIndex("orgModuleConfigOrgModuleIdx").on(
+      table.organizationId,
+      table.module
+    ),
+  ]
+);
+
+export const moduleTeamAccessTable = pgTable(
+  "moduleTeamAccess",
+  {
+    id: cuid2("id").defaultRandom().primaryKey(),
+    organizationId: text("organizationId")
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    module: text("module").notNull(),
+    teamId: text("teamId")
+      .notNull()
+      .references(() => team.id, { onDelete: "cascade" }),
+    createdAt: timestamp("createdAt", { withTimezone: true }).defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("moduleTeamAccessOrgModuleTeamIdx").on(
+      table.organizationId,
+      table.module,
+      table.teamId
+    ),
+  ]
+);
+
+export const moduleUserAccessTable = pgTable(
+  "moduleUserAccess",
+  {
+    id: cuid2("id").defaultRandom().primaryKey(),
+    organizationId: text("organizationId")
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    module: text("module").notNull(),
+    userId: text("userId")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    createdAt: timestamp("createdAt", { withTimezone: true }).defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("moduleUserAccessOrgModuleUserIdx").on(
+      table.organizationId,
+      table.module,
+      table.userId
+    ),
+  ]
+);
+
 export const permissionNodeRelations = relations(
   permissionNodeTable,
   ({ many }) => ({
@@ -401,6 +476,48 @@ export const teamModuleConfigRelations = relations(
     }),
     updatedByUser: one(user, {
       fields: [teamModuleConfigTable.updatedBy],
+      references: [user.id],
+    }),
+  })
+);
+
+export const orgModuleConfigRelations = relations(
+  orgModuleConfigTable,
+  ({ one }) => ({
+    organization: one(organization, {
+      fields: [orgModuleConfigTable.organizationId],
+      references: [organization.id],
+    }),
+    updatedByUser: one(user, {
+      fields: [orgModuleConfigTable.updatedBy],
+      references: [user.id],
+    }),
+  })
+);
+
+export const moduleTeamAccessRelations = relations(
+  moduleTeamAccessTable,
+  ({ one }) => ({
+    organization: one(organization, {
+      fields: [moduleTeamAccessTable.organizationId],
+      references: [organization.id],
+    }),
+    team: one(team, {
+      fields: [moduleTeamAccessTable.teamId],
+      references: [team.id],
+    }),
+  })
+);
+
+export const moduleUserAccessRelations = relations(
+  moduleUserAccessTable,
+  ({ one }) => ({
+    organization: one(organization, {
+      fields: [moduleUserAccessTable.organizationId],
+      references: [organization.id],
+    }),
+    user: one(user, {
+      fields: [moduleUserAccessTable.userId],
       references: [user.id],
     }),
   })

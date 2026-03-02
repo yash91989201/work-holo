@@ -151,3 +151,5 @@ export function OrgStatsSkeleton() {
     </div>
   );
 }
+
+OrgStats.Fallback = OrgStatsSkeleton;

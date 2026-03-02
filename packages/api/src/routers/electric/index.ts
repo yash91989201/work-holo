@@ -290,14 +290,6 @@ electricRouter.get("/shapes/message-read", requireAuth, (c) => {
   return sendProxyResponse(originUrl);
 });
 
-electricRouter.get("/shapes/channel-join-requests", requireAuth, (c) => {
-  const originUrl = prepareElectricUrl(c.req.url);
-
-  originUrl.searchParams.set("table", '"channelJoinRequest"');
-
-  return sendProxyResponse(originUrl);
-});
-
 electricRouter.get("/shapes/channel-read", requireAuth, (c) => {
   const context = c.var.context;
   const originUrl = prepareElectricUrl(c.req.url);
@@ -334,6 +326,102 @@ electricRouter.get("/shapes/push-subscriptions", requireAuth, (c) => {
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", '"pushSubscription"');
+  const filter = `"userId" = '${context.session?.user.id}'`;
+  originUrl.searchParams.set("where", filter);
+
+  return sendProxyResponse(originUrl);
+});
+
+// ============================================================
+// Direct Message Shape Endpoints
+// ============================================================
+
+electricRouter.get("/shapes/dm-conversations", requireOrgMember, async (c) => {
+  const context = c.var.context;
+  const orgId = context.session?.session.activeOrganizationId;
+  const userId = context.session?.user.id;
+
+  const originUrl = prepareElectricUrl(c.req.url);
+  originUrl.searchParams.set("table", '"dmConversation"');
+
+  const filter = `("participantOneId" = '${userId}' OR "participantTwoId" = '${userId}') AND "organizationId" = '${orgId}'`;
+  originUrl.searchParams.set("where", filter);
+
+  return sendProxyResponse(originUrl);
+});
+
+electricRouter.get("/shapes/dm-messages", requireOrgMember, async (c) => {
+  const context = c.var.context;
+  const orgId = context.session?.session.activeOrganizationId;
+  const userId = context.session?.user.id;
+
+  const originUrl = prepareElectricUrl(c.req.url);
+  originUrl.searchParams.set("table", '"dmMessage"');
+
+  const filter = `"conversationId" IN (SELECT id FROM "dmConversation" WHERE ("participantOneId" = '${userId}' OR "participantTwoId" = '${userId}') AND "organizationId" = '${orgId}')`;
+  originUrl.searchParams.set("where", filter);
+
+  return sendProxyResponse(originUrl);
+});
+
+electricRouter.get("/shapes/dm-attachments", requireOrgMember, async (c) => {
+  const context = c.var.context;
+  const orgId = context.session?.session.activeOrganizationId;
+  const userId = context.session?.user.id;
+
+  const originUrl = prepareElectricUrl(c.req.url);
+  originUrl.searchParams.set("table", '"dmAttachment"');
+
+  const filter = `"messageId" IN (SELECT id FROM "dmMessage" WHERE "conversationId" IN (SELECT id FROM "dmConversation" WHERE ("participantOneId" = '${userId}' OR "participantTwoId" = '${userId}') AND "organizationId" = '${orgId}'))`;
+  originUrl.searchParams.set("where", filter);
+
+  return sendProxyResponse(originUrl);
+});
+
+electricRouter.get("/shapes/dm-reactions", requireOrgMember, async (c) => {
+  const context = c.var.context;
+  const orgId = context.session?.session.activeOrganizationId;
+  const userId = context.session?.user.id;
+
+  const originUrl = prepareElectricUrl(c.req.url);
+  originUrl.searchParams.set("table", '"dmMessageReaction"');
+
+  const filter = `"messageId" IN (SELECT id FROM "dmMessage" WHERE "conversationId" IN (SELECT id FROM "dmConversation" WHERE ("participantOneId" = '${userId}' OR "participantTwoId" = '${userId}') AND "organizationId" = '${orgId}'))`;
+  originUrl.searchParams.set("where", filter);
+
+  return sendProxyResponse(originUrl);
+});
+
+electricRouter.get("/shapes/dm-message-reads", requireOrgMember, async (c) => {
+  const context = c.var.context;
+  const orgId = context.session?.session.activeOrganizationId;
+  const userId = context.session?.user.id;
+
+  const originUrl = prepareElectricUrl(c.req.url);
+  originUrl.searchParams.set("table", '"dmMessageRead"');
+
+  const filter = `"userId" = '${userId}' AND "messageId" IN (SELECT id FROM "dmMessage" WHERE "conversationId" IN (SELECT id FROM "dmConversation" WHERE ("participantOneId" = '${userId}' OR "participantTwoId" = '${userId}') AND "organizationId" = '${orgId}'))`;
+  originUrl.searchParams.set("where", filter);
+
+  return sendProxyResponse(originUrl);
+});
+
+electricRouter.get("/shapes/dm-conversation-reads", requireAuth, (c) => {
+  const context = c.var.context;
+  const originUrl = prepareElectricUrl(c.req.url);
+
+  originUrl.searchParams.set("table", '"dmConversationRead"');
+  const filter = `"userId" = '${context.session?.user.id}'`;
+  originUrl.searchParams.set("where", filter);
+
+  return sendProxyResponse(originUrl);
+});
+
+electricRouter.get("/shapes/dm-conversation-mutes", requireAuth, (c) => {
+  const context = c.var.context;
+  const originUrl = prepareElectricUrl(c.req.url);
+
+  originUrl.searchParams.set("table", '"dmConversationMute"');
   const filter = `"userId" = '${context.session?.user.id}'`;
   originUrl.searchParams.set("where", filter);
 

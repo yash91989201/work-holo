@@ -203,7 +203,6 @@ export function MessageThreadSidebar() {
             onMaximize={handleMaximizedReply}
             parentMessageId={message.id}
             placeholder="Reply in thread..."
-            showHelpText={false}
           />
         )}
       </div>

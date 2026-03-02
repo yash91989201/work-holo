@@ -35,9 +35,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { channelsCollection, messagesCollection } from "@/db/collections";
+import { messagesCollection } from "@/db/collections";
 import { useNotifications } from "@/hooks/communications/use-notifications";
-import { useSession } from "@/hooks/use-session";
 import { cn } from "@/lib/utils";
 import { useChannelMessageHighlight } from "@/stores/channel-store";
 
@@ -191,7 +190,7 @@ export function NotificationDropdown() {
           <TooltipTrigger asChild>
             <PopoverTrigger asChild>
               <Button
-                className="group relative size-10 rounded-xl bg-gradient-to-br from-primary/5 to-primary/0 shadow-lg shadow-primary/5 transition-all duration-300 hover:scale-105 hover:shadow-primary/10 hover:shadow-xl"
+                className="group relative size-10 rounded-xl bg-linear-to-br from-primary/5 to-primary/0 shadow-lg shadow-primary/5 transition-all duration-300 hover:scale-105 hover:shadow-primary/10 hover:shadow-xl"
                 size="icon"
                 variant="ghost"
               >
@@ -209,8 +208,8 @@ export function NotificationDropdown() {
                 </div>
                 {unreadCount > 0 && (
                   <>
-                    <span className="absolute -top-1 -right-1 h-3 w-3 animate-pulse rounded-full bg-gradient-to-br from-red-500 to-red-600 shadow-lg shadow-red-500/30" />
-                    <span className="absolute -top-1 -right-1 h-3 w-3 animate-ping rounded-full bg-gradient-to-br from-red-500 to-red-600 opacity-50" />
+                    <span className="absolute -top-1 -right-1 h-3 w-3 animate-pulse rounded-full bg-linear-to-br from-red-500 to-red-600 shadow-lg shadow-red-500/30" />
+                    <span className="absolute -top-1 -right-1 h-3 w-3 animate-ping rounded-full bg-linear-to-br from-red-500 to-red-600 opacity-50" />
                   </>
                 )}
               </Button>
@@ -230,7 +229,7 @@ export function NotificationDropdown() {
           sideOffset={12}
         >
           <div className="relative overflow-hidden border-border/40 border-b">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-primary/0 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-primary/0 to-transparent" />
             <div className="relative px-5 pt-5 pb-4">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
@@ -240,7 +239,7 @@ export function NotificationDropdown() {
                     </h2>
                     {unreadCount > 0 && (
                       <Badge
-                        className="h-6 rounded-full bg-gradient-to-r from-primary to-primary/80 font-bold text-[10px] uppercase tracking-wider"
+                        className="h-6 rounded-full bg-linear-to-r from-primary to-primary/80 font-bold text-[10px] uppercase tracking-wider"
                         variant="default"
                       >
                         {unreadCount}
@@ -296,7 +295,7 @@ export function NotificationDropdown() {
             </div>
           </div>
 
-          <ScrollArea className="h-[28rem]">
+          <ScrollArea className="h-112">
             <NotificationContent
               filter={filter}
               groupedNotifications={groupedNotifications}
@@ -404,7 +403,7 @@ function TimeGroupSection({
         <span className="font-bold text-[10px] text-muted-foreground/70 uppercase tracking-widest">
           {label}
         </span>
-        <div className="h-px flex-1 bg-gradient-to-r from-border/40 to-transparent" />
+        <div className="h-px flex-1 bg-linear-to-r from-border/40 to-transparent" />
         <span className="font-medium text-[10px] text-muted-foreground/50">
           {notifications.length}
         </span>
@@ -435,7 +434,6 @@ function NotificationItem({
   onMarkAsRead,
   onClose,
 }: NotificationItemProps) {
-  const session = useSession();
   const { highlightMessage } = useChannelMessageHighlight();
   const navigate = useNavigate();
   const { slug } = useParams({
@@ -455,11 +453,6 @@ function NotificationItem({
       typeof slug === "string"
     ) {
       const message = messagesCollection.get(notification.entityId);
-      const channelTeamId = message
-        ? channelsCollection.get(message.channelId)?.teamId
-        : null;
-      const fallbackTeamId = session?.session?.activeTeamId ?? null;
-      const resolvedTeamId = channelTeamId ?? fallbackTeamId;
 
       if (message) {
         highlightMessage(notification.entityId);
@@ -492,13 +485,13 @@ function NotificationItem({
       className={cn(
         "group relative rounded-xl transition-all duration-200",
         isUnread &&
-          "border-l-2 border-l-primary bg-gradient-to-r from-primary/5 via-primary/[0.02] to-transparent"
+          "border-l-2 border-l-primary bg-linear-to-r from-primary/5 via-primary/2 to-transparent"
       )}
     >
       <button
         className={cn(
           "flex w-full items-start gap-3 rounded-xl px-4 py-3 text-left transition-all duration-200",
-          isUnread ? "hover:bg-primary/[0.08]" : "hover:bg-muted/40"
+          isUnread ? "hover:bg-primary/8" : "hover:bg-muted/40"
         )}
         onClick={handleClick}
         onKeyDown={handleKeyDown}
@@ -599,10 +592,10 @@ function EmptyState({ filter }: { filter: string }) {
   const { title, description } = messages[filter] ?? messages.all;
 
   return (
-    <Empty className="h-full min-h-[20rem] border-0">
+    <Empty className="h-full min-h-80 border-0">
       <EmptyHeader className="gap-4">
         <EmptyMedia
-          className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/0 shadow-lg shadow-primary/5 ring-1 ring-border/30"
+          className="h-16 w-16 rounded-2xl bg-linear-to-br from-primary/10 to-primary/0 shadow-lg shadow-primary/5 ring-1 ring-border/30"
           variant="icon"
         >
           <IconBell className="h-8 w-8 text-primary/40" />
@@ -611,7 +604,7 @@ function EmptyState({ filter }: { filter: string }) {
           <EmptyTitle className="font-semibold text-base tracking-tight">
             {title}
           </EmptyTitle>
-          <EmptyDescription className="max-w-[14rem] text-sm">
+          <EmptyDescription className="max-w-56 text-sm">
             {description}
           </EmptyDescription>
         </div>
@@ -627,7 +620,7 @@ function NotificationListSkeleton() {
         <div className="flex flex-col" key={groupIndex}>
           <div className="flex items-center gap-2 px-5 py-2">
             <Skeleton className="h-2.5 w-16 rounded-full" />
-            <div className="h-px flex-1 bg-gradient-to-r from-border/40 to-transparent" />
+            <div className="h-px flex-1 bg-linear-to-r from-border/40 to-transparent" />
             <Skeleton className="h-2.5 w-4 rounded-full" />
           </div>
 

@@ -4,14 +4,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { format, subDays } from "date-fns";
 import { Suspense, useMemo, useState } from "react";
 import { AttendanceAnalyticsSummary } from "@/components/modules/attendance/analytics-summary";
-import {
-  MarkAttendance,
-  MarkAttendanceSkeleton,
-} from "@/components/modules/attendance/mark-attendance";
-import {
-  WorkBlocksList,
-  WorkBlocksListSkeleton,
-} from "@/components/modules/attendance/work-blocks-list";
+import { MarkAttendance } from "@/components/modules/attendance/mark-attendance";
+import { WorkBlocksList } from "@/components/modules/attendance/work-blocks-list";
 import { Badge } from "@/components/ui/badge";
 import {
   Select,
@@ -97,11 +91,11 @@ function RouteComponent() {
       </div>
 
       <div className="flex gap-12 p-6">
-        <Suspense fallback={<MarkAttendanceSkeleton />}>
+        <Suspense fallback={<MarkAttendance.Fallback />}>
           <MarkAttendance />
         </Suspense>
 
-        <Suspense fallback={<WorkBlocksListSkeleton />}>
+        <Suspense fallback={<WorkBlocksList.Fallback />}>
           <WorkBlocksList />
         </Suspense>
       </div>

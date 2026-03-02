@@ -24,7 +24,7 @@ export function SettingsSidebar({
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarMenu>
-          <Suspense fallback={<Skeleton className="h-9 w-full" />}>
+          <Suspense fallback={<BackToOrgButton.Fallback />}>
             <BackToOrgButton />
           </Suspense>
         </SidebarMenu>
@@ -56,3 +56,16 @@ function BackToOrgButton() {
     </SidebarMenuItem>
   );
 }
+
+function BackToOrgButtonSkeleton() {
+  return (
+    <SidebarMenuItem>
+      <SidebarMenuButton disabled>
+        <IconArrowLeft />
+        <Skeleton className="h-4 w-24" />
+      </SidebarMenuButton>
+    </SidebarMenuItem>
+  );
+}
+
+BackToOrgButton.Fallback = BackToOrgButtonSkeleton;

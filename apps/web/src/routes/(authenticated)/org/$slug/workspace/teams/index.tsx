@@ -1,10 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Suspense } from "react";
 import { CreateTeamForm } from "@/components/console/teams/create-team-form";
-import {
-  TeamsTable,
-  TeamsTableSkeleton,
-} from "@/components/console/teams/teams-table";
+import { TeamsTable } from "@/components/console/teams/teams-table";
 
 export const Route = createFileRoute(
   "/(authenticated)/org/$slug/workspace/teams/"
@@ -26,7 +23,7 @@ function RouteComponent() {
         </div>
       </div>
 
-      <Suspense fallback={<TeamsTableSkeleton />}>
+      <Suspense fallback={<TeamsTable.Fallback />}>
         <TeamsTable />
       </Suspense>
     </div>

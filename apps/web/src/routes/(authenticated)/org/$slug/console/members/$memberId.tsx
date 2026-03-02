@@ -1,6 +1,5 @@
 import {
   IconArrowLeft,
-  IconCrownFilled,
   IconMail,
   IconShieldFilled,
   IconTrash,
@@ -41,7 +40,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { authClient } from "@/lib/auth-client";
-import { getRoleBadgeVariant } from "@/lib/org";
+import { getRoleBadgeVariant, getRoleIcon } from "@/lib/org";
 import { UpdateMemberRoleSchema } from "@/lib/schemas/member";
 import type { UpdateMemberRoleType } from "@/lib/types";
 import { queryClient, queryUtils } from "@/utils/orpc";
@@ -52,19 +51,6 @@ export const Route = createFileRoute(
   staticData: { crumb: "Member Details" },
   component: RouteComponent,
 });
-
-const getRoleIcon = (role: string) => {
-  switch (role) {
-    case "owner":
-      return IconCrownFilled;
-    case "admin":
-      return IconShieldFilled;
-    case "member":
-      return IconUserFilled;
-    default:
-      return IconUserFilled;
-  }
-};
 
 function UpdateMemberRole({
   member,
@@ -424,7 +410,7 @@ function MemberDetailContent() {
 function RouteComponent() {
   return (
     <div className="flex h-full flex-col py-4">
-      <Suspense fallback={<MemberDetailSkeleton />}>
+      <Suspense fallback={<MemberDetailContent.Fallback />}>
         <MemberDetailContent />
       </Suspense>
     </div>
@@ -472,3 +458,5 @@ function MemberDetailSkeleton() {
     </div>
   );
 }
+
+MemberDetailContent.Fallback = MemberDetailSkeleton;

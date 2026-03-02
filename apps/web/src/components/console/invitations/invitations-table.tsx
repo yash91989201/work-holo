@@ -41,7 +41,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Card, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -463,9 +468,9 @@ export const InvitationsTable = () => {
   });
 
   return (
-    <Card>
-      <CardContent className="pt-6">
-        <div className="mb-4 flex flex-wrap items-center gap-3">
+    <Card variant="neumorphic">
+      <CardHeader className="flex flex-row items-start justify-between gap-4 border-b py-4">
+        <div className="flex flex-1 flex-wrap items-center gap-3">
           <InputGroup className="w-full max-w-xs">
             <InputGroupAddon>
               <IconSearch className="size-4" />
@@ -606,142 +611,142 @@ export const InvitationsTable = () => {
               Reset
             </Button>
           )}
-
-          <div className="ml-auto">
-            <InvitationForm />
-          </div>
         </div>
 
-        <div className="rounded-md border">
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow className="hover:bg-transparent" key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    className="hover:bg-muted/50"
-                    data-state={row.getIsSelected() && "selected"}
-                    key={row.id}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
+        <div className="shrink-0">
+          <InvitationForm />
+        </div>
+      </CardHeader>
+
+      <CardContent className="py-0">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow className="hover:bg-transparent" key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
                         )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    className="h-24 text-center"
-                    colSpan={columns.length}
-                  >
-                    <div className="flex flex-col items-center gap-2">
-                      <IconMailFilled className="h-8 w-8 text-muted-foreground" />
-                      <p className="text-muted-foreground text-sm">
-                        No invitations found
-                      </p>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
-
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-muted-foreground text-sm">
-            <div className="flex items-center gap-2">
-              <p className="hidden sm:block">Rows per page</p>
-              <Select
-                onValueChange={(value) => {
-                  table.setPageSize(Number(value));
-                }}
-                value={`${table.getState().pagination.pageSize}`}
-              >
-                <SelectTrigger className="h-8 w-18">
-                  <SelectValue
-                    placeholder={table.getState().pagination.pageSize}
-                  />
-                </SelectTrigger>
-                <SelectContent side="top">
-                  {[10, 20, 30, 40, 50].map((pageSize) => (
-                    <SelectItem key={pageSize} value={`${pageSize}`}>
-                      {pageSize}
-                    </SelectItem>
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  className="hover:bg-muted/50"
+                  data-state={row.getIsSelected() && "selected"}
+                  key={row.id}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
                   ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>{total} row(s) total</div>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Button
-              className="h-8 px-2 lg:px-3"
-              disabled={!table.getCanPreviousPage()}
-              onClick={() => table.setPageIndex(0)}
-              variant="outline"
-            >
-              <span className="sr-only">Go to first page</span>
-              <IconCircleChevronsLeftFilled />
-            </Button>
-            <Button
-              className="h-8 px-2 lg:px-3"
-              disabled={!table.getCanPreviousPage()}
-              onClick={() => table.previousPage()}
-              variant="outline"
-            >
-              <span className="sr-only">Go to previous page</span>
-              <IconCircleChevronLeftFilled />
-            </Button>
-            <div className="flex items-center justify-center font-medium text-sm">
-              {table.getState().pagination.pageIndex + 1} /{" "}
-              {table.getPageCount() || 1}
-            </div>
-            <Button
-              className="h-8 px-2 lg:px-3"
-              disabled={!table.getCanNextPage()}
-              onClick={() => table.nextPage()}
-              variant="outline"
-            >
-              <span className="sr-only">Go to next page</span>
-              <IconCircleChevronRightFilled />
-            </Button>
-            <Button
-              className="h-8 px-2 lg:px-3"
-              disabled={!table.getCanNextPage()}
-              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-              variant="outline"
-            >
-              <span className="sr-only">Go to last page</span>
-              <IconCircleChevronsRightFilled />
-            </Button>
-          </div>
-        </div>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  className="h-24 text-center"
+                  colSpan={columns.length}
+                >
+                  <div className="flex flex-col items-center gap-2">
+                    <IconMailFilled className="h-8 w-8 text-muted-foreground" />
+                    <p className="text-muted-foreground text-sm">
+                      No invitations found
+                    </p>
+                  </div>
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       </CardContent>
+
+      <CardFooter className="flex items-center justify-between border-t pt-4">
+        <div className="flex items-center gap-2 text-muted-foreground text-sm">
+          <div className="flex items-center gap-2">
+            <p className="hidden sm:block">Rows per page</p>
+            <Select
+              onValueChange={(value) => {
+                table.setPageSize(Number(value));
+              }}
+              value={`${table.getState().pagination.pageSize}`}
+            >
+              <SelectTrigger className="h-8 w-18">
+                <SelectValue
+                  placeholder={table.getState().pagination.pageSize}
+                />
+              </SelectTrigger>
+              <SelectContent side="top">
+                {[10, 20, 30, 40, 50].map((pageSize) => (
+                  <SelectItem key={pageSize} value={`${pageSize}`}>
+                    {pageSize}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>{total} row(s) total</div>
+        </div>
+        <div className="flex items-center space-x-2">
+          <Button
+            className="h-8 px-2 lg:px-3"
+            disabled={!table.getCanPreviousPage()}
+            onClick={() => table.setPageIndex(0)}
+            variant="outline"
+          >
+            <span className="sr-only">Go to first page</span>
+            <IconCircleChevronsLeftFilled />
+          </Button>
+          <Button
+            className="h-8 px-2 lg:px-3"
+            disabled={!table.getCanPreviousPage()}
+            onClick={() => table.previousPage()}
+            variant="outline"
+          >
+            <span className="sr-only">Go to previous page</span>
+            <IconCircleChevronLeftFilled />
+          </Button>
+          <div className="flex items-center justify-center font-medium text-sm">
+            {table.getState().pagination.pageIndex + 1} /{" "}
+            {table.getPageCount() || 1}
+          </div>
+          <Button
+            className="h-8 px-2 lg:px-3"
+            disabled={!table.getCanNextPage()}
+            onClick={() => table.nextPage()}
+            variant="outline"
+          >
+            <span className="sr-only">Go to next page</span>
+            <IconCircleChevronRightFilled />
+          </Button>
+          <Button
+            className="h-8 px-2 lg:px-3"
+            disabled={!table.getCanNextPage()}
+            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+            variant="outline"
+          >
+            <span className="sr-only">Go to last page</span>
+            <IconCircleChevronsRightFilled />
+          </Button>
+        </div>
+      </CardFooter>
     </Card>
   );
 };
 
-export const InvitationListTableSkeleton = () => (
+const InvitationsTableSkeleton = () => (
   <Card>
     <CardContent className="pt-6">
       <div className="mb-4 flex flex-wrap items-center gap-3">
@@ -803,3 +808,5 @@ export const InvitationListTableSkeleton = () => (
     </CardContent>
   </Card>
 );
+
+InvitationsTable.Fallback = InvitationsTableSkeleton;

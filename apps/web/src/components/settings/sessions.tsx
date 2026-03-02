@@ -276,3 +276,6 @@ export function ManageSessionsSkeleton() {
     </div>
   );
 }
+
+CurrentSession.Fallback = CurrentSessionSkeleton;
+OtherSessions.Fallback = OtherSessionsSkeleton;

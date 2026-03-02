@@ -17,6 +17,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { getInitials } from "@/utils";
 import { queryUtils } from "@/utils/orpc";
 
 // Props for the main component
@@ -40,17 +41,6 @@ const getStatusColor = (status: string) => {
     default:
       return "outline";
   }
-};
-
-// Helper to get initials from a name string
-const getInitials = (name: string | null) => {
-  if (!name) return "U";
-  return name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
 };
 
 // Reusable component for displaying a detail item with an icon and label

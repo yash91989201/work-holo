@@ -220,19 +220,19 @@ export const ChannelsListTable = () => {
 
               <DropdownMenuContent className="flex flex-col items-stretch gap-1.5">
                 <DropdownMenuItem asChild>
-                  <Suspense fallback={<Skeleton className="h-9" />}>
+                  <Suspense fallback={<AddMemberDialog.Fallback />}>
                     <AddMemberDialog channelId={channel.id} />
                   </Suspense>
                 </DropdownMenuItem>
 
                 <DropdownMenuItem asChild>
-                  <Suspense fallback={<Skeleton className="h-9" />}>
+                  <Suspense fallback={<RemoveMemberDialog.Fallback />}>
                     <RemoveMemberDialog channelId={channel.id} />
                   </Suspense>
                 </DropdownMenuItem>
 
                 <DropdownMenuItem asChild>
-                  <Suspense fallback={<Skeleton className="h-9" />}>
+                  <Suspense fallback={<UpdateChannelDialog.Fallback />}>
                     <UpdateChannelDialog channelId={channel.id} />
                   </Suspense>
                 </DropdownMenuItem>
@@ -940,6 +940,50 @@ export function UpdateChannelDialog({ channelId }: { channelId: string }) {
   );
 }
 
+export function AddMemberDialogSkeleton() {
+  return (
+    <Button
+      className="flex items-center justify-start gap-1.5"
+      disabled
+      variant="ghost"
+    >
+      <IconUserPlus className="size-4" />
+      Add Members
+    </Button>
+  );
+}
+
+AddMemberDialog.Fallback = AddMemberDialogSkeleton;
+
+export function RemoveMemberDialogSkeleton() {
+  return (
+    <Button
+      className="flex items-center justify-start gap-1.5"
+      disabled
+      variant="ghost"
+    >
+      <IconUserMinus className="size-4" />
+      <span>Remove Members</span>
+    </Button>
+  );
+}
+
+RemoveMemberDialog.Fallback = RemoveMemberDialogSkeleton;
+
+export function UpdateChannelDialogSkeleton() {
+  return (
+    <Button
+      className="flex items-center justify-start gap-1.5"
+      disabled
+      variant="ghost"
+    >
+      <IconEdit className="size-4" />
+      Edit Channel
+    </Button>
+  );
+}
+
+UpdateChannelDialog.Fallback = UpdateChannelDialogSkeleton;
 export const ChannelsListTableSkeleton = () => (
   <div className="space-y-4">
     <div className="flex items-center justify-between">
@@ -967,3 +1011,5 @@ export const ChannelsListTableSkeleton = () => (
     </div>
   </div>
 );
+
+ChannelsListTable.Fallback = ChannelsListTableSkeleton;
