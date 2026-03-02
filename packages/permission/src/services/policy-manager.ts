@@ -114,8 +114,11 @@ export class PolicyManager {
     if (!this.enforcerPromise) {
       this.enforcerPromise = (async () => {
         const drizzleAdapterModule = await import("drizzle-adapter");
+        // Handle double-wrapped default exports from bundler
         const DrizzleAdapterClass =
-          drizzleAdapterModule.default || drizzleAdapterModule;
+          drizzleAdapterModule.default?.default ||
+          drizzleAdapterModule.default ||
+          drizzleAdapterModule;
         const adapter = await DrizzleAdapterClass.newAdapter({
           db: this.db,
           table: casbinRule,
