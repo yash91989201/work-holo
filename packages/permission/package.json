@@ -28,7 +28,7 @@
     "@work-holo/db": "workspace:*",
     "@work-holo/env": "workspace:*",
     "casbin": "^5.49.0",
-    "drizzle-adapter": "^1.4.0",
+    "casbin-drizzle-adapter": "^1.1.2",
     "drizzle-orm": "^0.45.1"
   }
 }
