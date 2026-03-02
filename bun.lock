@@ -328,7 +328,7 @@
         "@work-holo/db": "workspace:*",
         "@work-holo/env": "workspace:*",
         "casbin": "^5.49.0",
-        "drizzle-adapter": "^1.4.0",
+        "casbin-drizzle-adapter": "^1.1.2",
         "drizzle-orm": "^0.45.1",
       },
       "devDependencies": {
@@ -346,14 +346,14 @@
         "@work-holo/db": "workspace:*",
         "@work-holo/env": "workspace:*",
         "@work-holo/infrastructure": "workspace:*",
-        "drizzle-orm": "^0.45.1",
+        "drizzle-orm": "latest",
       },
       "devDependencies": {
-        "@types/amqplib": "^0.10.8",
-        "@types/bun": "^1.3.9",
+        "@types/amqplib": "latest",
+        "@types/bun": "latest",
       },
       "peerDependencies": {
-        "typescript": "^5.9.3",
+        "typescript": "latest",
       },
     },
   },
@@ -1942,6 +1942,8 @@
 
     "casbin": ["casbin@5.49.0", "", { "dependencies": { "@casbin/expression-eval": "^5.3.0", "await-lock": "^2.0.1", "buffer": "^6.0.3", "csv-parse": "^5.5.6", "minimatch": "^10.2.1" } }, "sha512-G+rAnuEjm4l50DLsbXGv9Q7J6uDLlqFu4W7obZh/4tzZyOHZTr7PDc+WQHNZLRcQGVopmzXdLhz4YmLsd34C/g=="],
 
+    "casbin-drizzle-adapter": ["casbin-drizzle-adapter@1.1.2", "", {}, "sha512-1+jolddn8MtW399JTssYrbBIOEib9m2cXZl9Ka+ni/P016kqrxeNZn6qsZfYgTRsNHmgxNWcTCYlO9GuLKCYMw=="],
+
     "ccount": ["ccount@2.0.1", "", {}, "sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg=="],
 
     "chalk": ["chalk@5.6.2", "", {}, "sha512-7NzBL0rN6fMUW+f7A6Io4h40qQlG+xGmtMxfbnH/K7TAtt8JQWVQK+6g0UXKMeVJoyV5EkkNsErQ8pVD3bLHbA=="],
@@ -2189,8 +2191,6 @@
     "dotenv": ["dotenv@17.3.1", "", {}, "sha512-IO8C/dzEb6O3F9/twg6ZLXz164a2fhTnEWb95H23Dm4OuN+92NmEAlTrupP9VW6Jm3sO26tQlqyvyi4CsnY9GA=="],
 
     "dotenv-expand": ["dotenv-expand@11.0.7", "", { "dependencies": { "dotenv": "^16.4.5" } }, "sha512-zIHwmZPRshsCdpMDyVsqGmgyP0yT8GAgXUnkdAoJisxvf33k7yO6OuoKmcTGuXPWSsm8Oh88nZicRLA9Y0rUeA=="],
-
-    "drizzle-adapter": ["drizzle-adapter@1.4.0", "", { "peerDependencies": { "casbin": "^5.0.0", "drizzle-orm": ">=0.29.0" } }, "sha512-UU4ZcGYIZeSSdfZaTlZBUNjQ+Aj1T64QsB/ayBsskHo6bRQiw5fbX3CSyc7yllTCZ+jE5207EKvwAJpHgT2nNw=="],
 
     "drizzle-cuid2": ["drizzle-cuid2@2.2.0", "", { "dependencies": { "@paralleldrive/cuid2": "^2.2.2" }, "peerDependencies": { "drizzle-orm": ">=0.28.3" } }, "sha512-LvTzxJhEocN/AWgJvio/JlPMKQ7tTjeogNBRo9TauEH0gu8yaMkDWPmN8NTIO/mrD4pwH44Lt0BJQ81NTtGhAw=="],
 
