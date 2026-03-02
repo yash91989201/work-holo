@@ -9,11 +9,13 @@ import {
 } from "@/components/ui/multi-select";
 import { useListOrgMembers } from "@/hooks/use-list-org-members";
 import { cn } from "@/lib/utils";
+import { withFallback } from "@/types/component-fallback";
 import { channelFormOpts } from "./form-options";
 
-export const MembersSelect = withForm({
+const MembersSelectBase = withForm({
   ...channelFormOpts,
   render({ form }) {
+    // biome-ignore lint/correctness/useHookAtTopLevel: render() inside withForm is a valid React component context
     const { members, refetchTeamMembers, isRefetching } = useListOrgMembers();
 
     const memberOptions: MultiSelectOption[] = members
@@ -97,4 +99,7 @@ export function MembersSelectSkeleton() {
   );
 }
 
-MembersSelect.Fallback = MembersSelectSkeleton;
+export const MembersSelect = withFallback(
+  MembersSelectBase,
+  MembersSelectSkeleton
+);

@@ -10,11 +10,13 @@ import {
 } from "@/components/ui/select";
 import { useListOrgTeams } from "@/hooks/use-list-org-teams";
 import { cn } from "@/lib/utils";
+import { withFallback } from "@/types/component-fallback";
 import { channelFormOpts } from "./form-options";
 
-export const TeamSelect = withForm({
+const TeamSelectBase = withForm({
   ...channelFormOpts,
   render({ form }) {
+    // biome-ignore lint/correctness/useHookAtTopLevel: render() inside withForm is a valid React component context
     const { teams, refetchTeams, isRefetching } = useListOrgTeams();
 
     return (
@@ -83,4 +85,4 @@ export function TeamSelectSkeleton() {
   );
 }
 
-TeamSelect.Fallback = TeamSelectSkeleton;
+export const TeamSelect = withFallback(TeamSelectBase, TeamSelectSkeleton);

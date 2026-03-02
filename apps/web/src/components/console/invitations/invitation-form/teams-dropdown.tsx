@@ -5,15 +5,18 @@ import { withForm } from "@/components/ui/form/hooks";
 import { SelectItem } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { authClient } from "@/lib/auth-client";
+import { withFallback } from "@/types/component-fallback";
 import { inviteFormOpts } from "./form-options";
 
-export const TeamsDropdown = withForm({
+const TeamsDropdownBase = withForm({
   ...inviteFormOpts,
   render({ form }) {
+    // biome-ignore lint/correctness/useHookAtTopLevel: render() inside withForm is a valid React component context
     const { slug } = useParams({
       from: "/(authenticated)/org/$slug",
     });
 
+    // biome-ignore lint/correctness/useHookAtTopLevel: render() inside withForm is a valid React component context
     const { data: teams } = useSuspenseQuery({
       queryKey: ["teams"],
       queryFn: async () => {
@@ -72,4 +75,7 @@ function TeamsDropdownSkeleton() {
   );
 }
 
-TeamsDropdown.Fallback = TeamsDropdownSkeleton;
+export const TeamsDropdown = withFallback(
+  TeamsDropdownBase,
+  TeamsDropdownSkeleton
+);

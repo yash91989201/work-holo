@@ -290,14 +290,6 @@ electricRouter.get("/shapes/message-read", requireAuth, (c) => {
   return sendProxyResponse(originUrl);
 });
 
-electricRouter.get("/shapes/channel-join-requests", requireAuth, (c) => {
-  const originUrl = prepareElectricUrl(c.req.url);
-
-  originUrl.searchParams.set("table", '"channelJoinRequest"');
-
-  return sendProxyResponse(originUrl);
-});
-
 electricRouter.get("/shapes/channel-read", requireAuth, (c) => {
   const context = c.var.context;
   const originUrl = prepareElectricUrl(c.req.url);

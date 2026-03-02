@@ -47,20 +47,12 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
-interface MentionUser {
-  email: string;
-  id: string;
-  image: string | null;
-  name: string | null;
-}
-
 interface DmMessageEditorProps {
   attachmentPreview?: React.ReactNode;
   audioPreview?: React.ReactNode;
   composerView: "editor" | "attachments" | "audio";
   content: string;
   disabled?: boolean;
-  fetchUsers: (query: string) => Promise<MentionUser[]>;
   hasAttachments: boolean;
   hasAudio: boolean;
   isCreatingMessage: boolean;

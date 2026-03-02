@@ -63,8 +63,6 @@ import type {
 } from "./schemas/attendance";
 import type {
   ArchiveChannelInput,
-  ChannelJoinRequestInput,
-  ChannelJoinRequestOutput,
   ChannelMemberOutput,
   ChannelMembersListOutput,
   ChannelOutput,
@@ -86,8 +84,6 @@ import type {
   ListChannelMembersOutput,
   ListChannelsInput,
   ListChannelsOutput,
-  ListJoinRequestInput,
-  ListJoinRequestOutput,
   ModifyChannelMembersInput,
   RemoveChannelMemberInput,
   SuccessOutput,
@@ -227,12 +223,6 @@ export type AttendanceRecordWithUserType = z.infer<
   typeof AttendanceRecordWithUserSchema
 >;
 export type AttendanceSelectType = z.infer<typeof AttendanceSelectSchema>;
-export type ChannelJoinRequestInputType = z.infer<
-  typeof ChannelJoinRequestInput
->;
-export type ChannelJoinRequestOutputType = z.infer<
-  typeof ChannelJoinRequestOutput
->;
 export type ChannelMemberOutputType = z.infer<typeof ChannelMemberOutput>;
 export type ChannelMembersListOutputType = z.infer<
   typeof ChannelMembersListOutput
@@ -362,8 +352,6 @@ export type ListChannelsInputType = z.infer<typeof ListChannelsInput>;
 export type ListChannelsOutputType = z.infer<typeof ListChannelsOutput>;
 export type ListInvitationsInputType = z.infer<typeof ListInvitationsInput>;
 export type ListInvitationsOutputType = z.infer<typeof ListInvitationsOutput>;
-export type ListJoinRequestInputType = z.infer<typeof ListJoinRequestInput>;
-export type ListJoinRequestOutputType = z.infer<typeof ListJoinRequestOutput>;
 export type ListMembersInputType = z.infer<typeof ListMembersInput>;
 export type ListMembersOutputType = z.infer<typeof ListMembersOutput>;
 export type ListTeamsInputType = z.infer<typeof ListTeamsInput>;

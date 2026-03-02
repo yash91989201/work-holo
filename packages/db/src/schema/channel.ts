@@ -39,9 +39,7 @@ export const channelTable = pgTable("channel", {
   organizationId: text()
     .notNull()
     .references(() => organization.id, { onDelete: "cascade" }),
-  teamId: text()
-    .references(() => team.id, { onDelete: "cascade" })
-    .notNull(),
+  teamId: text().references(() => team.id, { onDelete: "cascade" }),
   createdBy: text()
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
@@ -79,7 +77,6 @@ export const channelMemberTable = pgTable(
     uniqueIndex("unique_channel_user").on(table.channelId, table.userId),
   ]
 );
-
 
 export const messageTable = pgTable(
   "message",
@@ -210,7 +207,6 @@ export const messageReadTable = pgTable(
     ),
   ]
 );
-
 
 export const channelReadTable = pgTable(
   "channelRead",
@@ -465,5 +461,3 @@ export const channelReadProcessedWatermarkTableRelations = relations(
     }),
   })
 );
-
-

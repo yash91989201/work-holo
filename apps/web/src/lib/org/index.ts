@@ -2,9 +2,9 @@ import {
   IconCrownFilled,
   IconShieldFilled,
   IconUserFilled,
+  type TablerIcon,
 } from "@tabler/icons-react";
 import { authClient } from "@/lib/auth-client";
-import type { TablerIcon } from "@/lib/types";
 
 export const getActiveOrgSlug = async () => {
   const { data: session } = await authClient.getSession();
@@ -65,7 +65,6 @@ export const getRoleIcon = (role: string): TablerIcon => {
       return IconCrownFilled;
     case "admin":
       return IconShieldFilled;
-    case "member":
     default:
       return IconUserFilled;
   }

@@ -2,6 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { create } from "zustand";
 import { useDmPresence } from "@/hooks/communications/dm/use-dm-presence";
+import { useAuthedSession } from "@/hooks/use-authed-session";
 import { queryUtils } from "@/utils/orpc";
 
 interface DmParticipant {
@@ -140,12 +141,9 @@ export function useDmConversation(conversationId: string) {
 
   const { isUserOnline } = useDmPresence(conversationId);
 
-  // Determine the other participant
-  const { data: session } = useSuspenseQuery(
-    queryUtils.auth.getSession.queryOptions()
-  );
+  const { user } = useAuthedSession();
 
-  const currentUserId = session?.user?.id;
+  const currentUserId = user.id;
 
   const otherParticipant = useMemo<DmParticipant | null>(() => {
     if (!(conversation && currentUserId)) return null;

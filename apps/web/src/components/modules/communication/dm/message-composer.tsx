@@ -1,8 +1,7 @@
 import { eq, useLiveQuery } from "@tanstack/react-db";
-import { useAsyncDebouncer } from "@tanstack/react-pacer";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { dmConversationsCollection, usersCollection } from "@/db/collections";
+import { dmConversationsCollection } from "@/db/collections";
 import { useDmMessageMutations } from "@/hooks/communications/dm/use-dm-message-mutations";
 import { useDmTyping } from "@/hooks/communications/dm/use-dm-typing";
 import { useAudioRecorder } from "@/hooks/use-audio-recorder";
@@ -15,15 +14,6 @@ import { DmAttachmentPreviewList } from "./attachment-preview-list";
 import { DmAudioRecorder } from "./audio-recorder";
 import { DmMessageEditor } from "./message-editor";
 import { DmTypingIndicator } from "./typing-indicator";
-
-const MENTION_DEBOUNCE_DELAY_MS = 300;
-
-type MentionUser = {
-  id: string;
-  name: string | null;
-  email: string;
-  image: string | null;
-};
 
 interface AttachmentPreview {
   file: File;
@@ -99,79 +89,6 @@ export function DmMessageComposer({
     [conversationId]
   );
 
-  const { data: allUsers = [] } = useLiveQuery(
-    (q) =>
-      q.from({ user: usersCollection }).select(({ user }) => ({ ...user })),
-    []
-  );
-
-  const fetchMentionUsersFromApi = useCallback(
-    (query: string): Promise<MentionUser[]> => {
-      const participant = conversationParticipants[0];
-      if (!participant) return [];
-
-      const participantIds = [
-        participant.participantOneId,
-        participant.participantTwoId,
-      ].filter((id): id is string => id !== null && id !== user.id);
-
-      const filtered = allUsers.filter(
-        (u) =>
-          participantIds.includes(u.id) &&
-          (!query.trim() ||
-            u.name?.toLowerCase().includes(query.toLowerCase()) ||
-            u.email.toLowerCase().includes(query.toLowerCase()))
-      );
-
-      return filtered.map((u) => ({
-        id: u.id,
-        name: u.name ?? null,
-        email: u.email,
-        image: u.image ?? null,
-      }));
-    },
-    [conversationParticipants, allUsers, user.id]
-  );
-
-  const mentionUserSearchDebouncer = useAsyncDebouncer(
-    (query: string) => fetchMentionUsersFromApi(query),
-    {
-      key: `dm-mention-user-search:${conversationId}`,
-      wait: MENTION_DEBOUNCE_DELAY_MS,
-    }
-  );
-
-  const fetchUsers = useCallback(
-    async (query: string): Promise<MentionUser[]> => {
-      const normalizedQuery = query.trim().toLowerCase();
-
-      const { lastArgs, lastResult } = mentionUserSearchDebouncer.store.state;
-      if (lastArgs && lastResult) {
-        const [lastQuery] = lastArgs;
-        if (lastQuery === query) {
-          const cached = await lastResult;
-          if (cached.length > 0) return cached;
-        }
-      }
-
-      if (normalizedQuery.length === 0) {
-        try {
-          return await fetchMentionUsersFromApi(query);
-        } catch {
-          return [];
-        }
-      }
-
-      try {
-        const result = await mentionUserSearchDebouncer.maybeExecute(query);
-        return result ?? [];
-      } catch {
-        return [];
-      }
-    },
-    [fetchMentionUsersFromApi, mentionUserSearchDebouncer]
-  );
-
   const handleTypingBroadcast = useCallback(
     (content: string) => {
       if (!user?.name) return;
@@ -225,18 +142,6 @@ export function DmMessageComposer({
     }
 
     try {
-      // Extract mentions from content
-      const mentionRegex =
-        /<span[^>]*data-type="mention"[^>]*data-id="([^"]+)"[^>]*>/g;
-      const mentionUserIds = new Set<string>();
-      let match: RegExpExecArray | null;
-
-      while (true) {
-        match = mentionRegex.exec(textToSend || "");
-        if (match === null) break;
-        mentionUserIds.add(match[1]);
-      }
-
       // Determine message type
       let messageType: "text" | "attachment" | "audio" = "text";
       if (!textToSend && audioBlobToUpload) {
@@ -314,8 +219,6 @@ export function DmMessageComposer({
       const messageData = {
         conversationId,
         content: textToSend,
-        mentions:
-          mentionUserIds.size > 0 ? Array.from(mentionUserIds) : undefined,
         parentMessageId,
         type: messageType,
         attachments:
@@ -510,7 +413,6 @@ export function DmMessageComposer({
               composerView={composerView}
               content={text}
               disabled={isRecording || audioUrl !== null}
-              fetchUsers={fetchUsers}
               hasAttachments={attachments.length > 0}
               hasAudio={audioUrl !== null}
               isCreatingMessage={false}

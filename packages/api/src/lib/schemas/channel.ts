@@ -220,25 +220,6 @@ export const IsChannelMemberInput = z.object({
 
 export const IsChannelMemberOutput = z.boolean();
 
-export const ChannelJoinRequestInput = z.object({
-  channelId: z.string(),
-  note: z.string().optional(),
-});
-
-export const ListJoinRequestInput = z.object({
-  channelId: z.string(),
-});
-
-// Get channel unread counts
-export const GetChannelUnreadCountsInput = z.object({});
-
-export const GetChannelUnreadCountsOutput = z.array(
-  z.object({
-    channelId: z.string(),
-    unreadCount: z.number(),
-  })
-);
-
 // Get channel unread counts
 export const GetChannelUnreadCountsInput = z.object({});
 

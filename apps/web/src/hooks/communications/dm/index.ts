@@ -4,7 +4,7 @@
 
 export { useDmConversations } from "./use-dm-conversations";
 export { useDmLastRead } from "./use-dm-last-read";
-export { useDmMarkMessagesRead } from "./use-dm-mark-messages-read";
+export { useMarkDmMessagesRead } from "./use-dm-mark-messages-read";
 export { useDmMessageMutations } from "./use-dm-message-mutations";
 export {
   useDmMessageThread,
@@ -23,4 +23,4 @@ export {
 export { useDmReadReceipts } from "./use-dm-read-receipts";
 export { useDmTyping } from "./use-dm-typing";
 export { useDmUnreadCount } from "./use-dm-unread-count";
-export { useDmVisibleMessages } from "./use-dm-visible-messages";
+export { useVisibleDmMessages } from "./use-dm-visible-messages";
