@@ -58,6 +58,7 @@ export default defineConfig({
             "@tanstack/react-virtual",
             "@tanstack/react-form",
             "@tanstack/react-db",
+            "@tanstack/electric-db-collection",
           ],
           tiptap: [
             "@tiptap/react",
@@ -95,7 +96,6 @@ export default defineConfig({
           ],
           charts: ["recharts"],
           auth: ["better-auth"],
-          electric: ["@tanstack/electric-db-collection"],
           state: ["zustand"],
           calendar: ["react-day-picker"],
           orpc: ["@orpc/client", "@orpc/server", "@orpc/tanstack-query"],
