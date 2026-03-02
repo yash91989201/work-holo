@@ -9,10 +9,6 @@ import {
 import { casbinRule } from "@work-holo/db/schema/casbin";
 import type { RedisClient } from "bun";
 import { type Enforcer, newEnforcer } from "casbin";
-import * as DrizzleAdapterModule from "drizzle-adapter";
-
-const DrizzleAdapter = DrizzleAdapterModule.default || DrizzleAdapterModule;
-
 import { and, eq, gt, inArray, isNull, or } from "drizzle-orm";
 import { keyMatchColonFunc } from "../lib/casbin-matchers";
 import { resolvePermissionKey } from "../lib/permission-resolver";
@@ -117,7 +113,10 @@ export class PolicyManager {
   getEnforcer(): Promise<Enforcer> {
     if (!this.enforcerPromise) {
       this.enforcerPromise = (async () => {
-        const adapter = await DrizzleAdapter.newAdapter({
+        const drizzleAdapterModule = await import("drizzle-adapter");
+        const DrizzleAdapterClass =
+          drizzleAdapterModule.default || drizzleAdapterModule;
+        const adapter = await DrizzleAdapterClass.newAdapter({
           db: this.db,
           table: casbinRule,
         });
