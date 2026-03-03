@@ -65,7 +65,7 @@ export class NotificationService implements NotificationServiceInterface {
   }
 
   async emit(event: NotificationDomainEvent): Promise<void> {
-    if (event.actorId === this.userId) {
+    if (event.targetUserId === this.userId) {
       return;
     }
 
