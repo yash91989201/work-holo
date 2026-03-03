@@ -46,13 +46,16 @@ export class Redis {
     return connectPromise;
   }
 
-  static getClient(): RedisClient {
-    if (!client?.connected) {
-      throw new Error(
-        "Redis client not connected. Call Redis.connect() first."
-      );
+  static async getClient(): Promise<RedisClient> {
+    if (client?.connected) {
+      return client;
     }
-    return client;
+
+    if (connectPromise) {
+      return connectPromise;
+    }
+
+    throw new Error("Redis client not connected. Call Redis.connect() first.");
   }
 
   static close(): void {

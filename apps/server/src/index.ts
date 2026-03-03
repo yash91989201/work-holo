@@ -31,7 +31,7 @@ await Queue.connect({ url: env.RABBITMQ_URL });
 
 PermissionManagers.initialize({
   db,
-  redis: Redis.getClient(),
+  redis: await Redis.getClient(),
   pusher: PusherClient.getClient(),
 });
 

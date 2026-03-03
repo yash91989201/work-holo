@@ -12,7 +12,7 @@ export type Context = {
   headers: Headers;
   session: Awaited<ReturnType<typeof auth.api.getSession>>;
   db: typeof db;
-  redis: ReturnType<typeof Redis.getClient>;
+  redis: Awaited<ReturnType<typeof Redis.getClient>>;
   permission?: PermissionService;
   orgId?: string;
   orgMembership?: {
@@ -30,7 +30,7 @@ export async function createContext({
     headers: context.req.raw.headers,
   });
 
-  const redis = Redis.getClient();
+  const redis = await Redis.getClient();
 
   return {
     headers: context.req.raw.headers,
