@@ -20,7 +20,7 @@ export const ChannelInfoSidebar = () => {
   return (
     <Sheet onOpenChange={toggleInfoSidebar} open={isOpen}>
       <SheetContent
-        className="flex h-full flex-col gap-0 border-border border-l bg-background/95 p-0 backdrop-blur-sm supports-backdrop-filter:bg-background/60 sm:max-w-xl min-w-xl"
+        className="flex h-full min-w-xl flex-col gap-0 border-border border-l bg-background/95 p-0 backdrop-blur-sm supports-backdrop-filter:bg-background/60 sm:max-w-xl"
         side="right"
       >
         <div className="shrink-0 border-border border-b bg-muted/30 p-4">
