@@ -1,30 +1,200 @@
-import { eq, useLiveQuery } from "@tanstack/react-db";
-import { useParams } from "@tanstack/react-router";
-import { useEffect, useRef } from "react";
-import { messagesCollection, notificationsCollection } from "@/db/collections";
+import type { Channel } from "pusher-js";
+import { useCallback, useEffect, useRef } from "react";
 import { useAuthedSession } from "@/hooks/use-authed-session";
+import { getPusherClient } from "@/lib/pusher";
+import { orpcClient } from "@/utils/orpc";
+
+interface NotificationPayload {
+  actorId: string;
+  actorName: string;
+  channelName: string | null;
+  entityId: string | null;
+  entityType: string | null;
+  eventType: string;
+  messagePreview: string | null;
+  notificationId: string;
+  timestamp: string;
+}
+
+interface SoundPreference {
+  customSoundUrl: string | null;
+  presetId: string | null;
+  soundType: string;
+}
+
+interface SoundPreset {
+  filename: string;
+  id: string;
+}
+
+interface CacheEntry<T> {
+  data: T;
+  expiresAt: number;
+}
+
+const CACHE_TTL_MS = 5 * 60 * 1000;
+
+const preferenceCache = new Map<string, CacheEntry<SoundPreference | null>>();
+const presetCache = new Map<string, CacheEntry<SoundPreset | null>>();
+
+function getCached<T>(
+  cache: Map<string, CacheEntry<T>>,
+  key: string
+): T | undefined {
+  const entry = cache.get(key);
+  if (!entry) return undefined;
+  if (Date.now() > entry.expiresAt) {
+    cache.delete(key);
+    return undefined;
+  }
+  return entry.data;
+}
+
+function setCache<T>(
+  cache: Map<string, CacheEntry<T>>,
+  key: string,
+  data: T
+): void {
+  cache.set(key, { data, expiresAt: Date.now() + CACHE_TTL_MS });
+}
+
+async function fetchPreference(
+  scope: "global" | "channel" | "dm_conversation" | "event_type",
+  entityId?: string | null
+): Promise<SoundPreference | null> {
+  const cacheKey = `${scope}:${entityId ?? ""}`;
+  const cached = getCached(preferenceCache, cacheKey);
+  if (cached !== undefined) return cached;
+
+  try {
+    const { preference } =
+      await orpcClient.notification.soundPreferences.getPreference({
+        scope,
+        entityId: entityId ?? undefined,
+      });
+
+    const result: SoundPreference | null = preference
+      ? {
+          soundType: preference.soundType,
+          presetId: preference.presetId ?? null,
+          customSoundUrl: preference.customSoundUrl ?? null,
+        }
+      : null;
+
+    setCache(preferenceCache, cacheKey, result);
+    return result;
+  } catch (error) {
+    console.error("[NotificationSound] Failed to fetch preference:", error);
+    return null;
+  }
+}
+
+async function fetchPresetFilename(presetId: string): Promise<string | null> {
+  const cached = getCached(presetCache, presetId);
+  if (cached !== undefined) return cached?.filename ?? null;
+
+  try {
+    const { presets } =
+      await orpcClient.notification.soundPreferences.listPresets({});
+
+    for (const preset of presets) {
+      setCache(presetCache, preset.id, {
+        id: preset.id,
+        filename: preset.filename,
+      });
+    }
+
+    const matched = presets.find((p) => p.id === presetId);
+    if (!matched) {
+      setCache(presetCache, presetId, null);
+      return null;
+    }
+    return matched.filename;
+  } catch (error) {
+    console.error("[NotificationSound] Failed to fetch presets:", error);
+    return null;
+  }
+}
+
+function resolveGlobalEntityId(entityType: string | null): string | null {
+  if (entityType === "channel") return "global_channel";
+  if (entityType === "dm_conversation") return "global_dm";
+  return null;
+}
+
+async function resolveSoundUrl(payload: NotificationPayload): Promise<string> {
+  const DEFAULT_SOUND = "/assets/sounds/notify.webm";
+
+  if (payload.entityType && payload.entityId) {
+    const scope = payload.entityType as
+      | "channel"
+      | "dm_conversation"
+      | "event_type";
+    const pref = await fetchPreference(scope, payload.entityId);
+    const url = await preferenceToUrl(pref);
+    if (url) return url;
+  }
+
+  const categoryEntityId = resolveGlobalEntityId(payload.entityType);
+
+  if (categoryEntityId) {
+    const pref = await fetchPreference("global", categoryEntityId);
+    const url = await preferenceToUrl(pref);
+    if (url) return url;
+  }
+
+  return DEFAULT_SOUND;
+}
+
+async function preferenceToUrl(
+  pref: SoundPreference | null
+): Promise<string | null> {
+  if (!pref) return null;
+
+  if (pref.soundType === "custom" && pref.customSoundUrl) {
+    return pref.customSoundUrl;
+  }
+
+  if (pref.soundType === "preset" && pref.presetId) {
+    const filename = await fetchPresetFilename(pref.presetId);
+    if (filename) return `/assets/sounds/${filename}`;
+  }
+
+  return null;
+}
+
+function playSound(url: string): void {
+  const audio = new Audio(url);
+  audio.play().catch((error) => {
+    console.error("[NotificationSound] Error playing sound:", error);
+  });
+}
 
 export function useNotificationSound() {
   const { user } = useAuthedSession();
+  const channelRef = useRef<Channel | null>(null);
 
-  const { data: notifications, isLoading } = useLiveQuery(
-    (q) =>
-      q
-        .from({ notification: notificationsCollection })
-        .where(({ notification }) => eq(notification.userId, user.id))
-        .where(({ notification }) => eq(notification.status, "unread"))
-        .orderBy(({ notification }) => notification.createdAt, "desc"),
-    [user.id]
-  );
+  const handleNotification = useCallback(async (data: NotificationPayload) => {
+    const soundUrl = await resolveSoundUrl(data);
+    playSound(soundUrl);
+  }, []);
 
-  const activeChannelId =
-    useParams({
-      from: "/(authenticated)/org/$slug/workspace/communication/channels/$channelId",
-      shouldThrow: false,
-    })?.channelId ?? null;
+  useEffect(() => {
+    if (!user?.id) return;
 
-  const seenNotificationIdsRef = useRef<Set<string>>(new Set());
-  const isFirstLoadRef = useRef(true);
+    const pusher = getPusherClient();
+    const channelName = `private-user-${user.id}`;
+    const channel = pusher.subscribe(channelName);
+    channelRef.current = channel;
+
+    channel.bind("notification:new", handleNotification);
+
+    return () => {
+      channel.unbind("notification:new", handleNotification);
+      pusher.unsubscribe(channelName);
+      channelRef.current = null;
+    };
+  }, [user?.id, handleNotification]);
 
   // Play sound when service worker requests it (Chromium on Linux won't play system sound)
   useEffect(() => {
@@ -35,10 +205,7 @@ export function useNotificationSound() {
         ? "/assets/sounds/mention.webm"
         : "/assets/sounds/notify.webm";
 
-      const audio = new Audio(soundPath);
-      audio.play().catch((error) => {
-        console.error("Error playing notification sound:", error);
-      });
+      playSound(soundPath);
     };
 
     if ("serviceWorker" in navigator) {
@@ -50,53 +217,4 @@ export function useNotificationSound() {
 
     return;
   }, []);
-
-  useEffect(() => {
-    if (isLoading || !notifications) return;
-
-    const seenIds = seenNotificationIdsRef.current;
-    const newNotifications = notifications.filter(
-      (notification) => !seenIds.has(notification.id)
-    );
-
-    if (isFirstLoadRef.current) {
-      isFirstLoadRef.current = false;
-      newNotifications.forEach((notification) => {
-        seenIds.add(notification.id);
-      });
-      return;
-    }
-
-    const shouldPlaySound = newNotifications.some((notification) => {
-      if (
-        notification.type === "channel_mention" &&
-        activeChannelId &&
-        notification.entityId
-      ) {
-        const message = messagesCollection.get(notification.entityId);
-        if (message?.channelId === activeChannelId) {
-          return false;
-        }
-      }
-      return true;
-    });
-
-    if (shouldPlaySound && newNotifications.length > 0) {
-      const hasMentionNotification = newNotifications.some(
-        (notification) => notification.type === "channel_mention"
-      );
-      const soundPath = hasMentionNotification
-        ? "/assets/sounds/mention.webm"
-        : "/assets/sounds/notify.webm";
-
-      const audio = new Audio(soundPath);
-      audio.play().catch((error) => {
-        console.error("Error playing notification sound:", error);
-      });
-    }
-
-    newNotifications.forEach((notification) => {
-      seenIds.add(notification.id);
-    });
-  }, [activeChannelId, isLoading, notifications]);
 }

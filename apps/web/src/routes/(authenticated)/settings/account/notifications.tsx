@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import {
-  PushNotifications,
-  WebNotifications,
+  DesktopNotifications,
+  EmailNotifications,
+  SoundNotifications,
 } from "@/components/settings/notifications";
 
 export const Route = createFileRoute(
@@ -16,8 +17,9 @@ function RouteComponent() {
       <div className="space-y-6">
         <h2 className="font-semibold text-2xl tracking-tight">Notifications</h2>
         <div className="space-y-8">
-          <WebNotifications />
-          <PushNotifications />
+          <SoundNotifications />
+          <DesktopNotifications />
+          <EmailNotifications />
         </div>
       </div>
     </div>

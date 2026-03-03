@@ -21,6 +21,11 @@ export interface NotificationContext {
   entityType?: "channel" | "dm";
 }
 
+export interface NotificationEvent {
+  actorName: string;
+  channelName: string | null;
+}
+
 function buildActionUrl(
   slug: string,
   entityType: string | null,
@@ -46,13 +51,16 @@ function buildToastTitle(payload: NotificationPayload): string {
 
 export function useNotificationPusher(
   orgSlug: string,
-  currentContext?: NotificationContext
+  currentContext?: NotificationContext,
+  onNotification?: (event: NotificationEvent) => void
 ) {
   const { user } = useAuthedSession();
   const channelRef = useRef<Channel | null>(null);
   const seenIdsRef = useRef<Set<string>>(new Set());
   const currentContextRef = useRef(currentContext);
   currentContextRef.current = currentContext;
+  const onNotificationRef = useRef(onNotification);
+  onNotificationRef.current = onNotification;
 
   useEffect(() => {
     if (!user?.id) return;
@@ -89,6 +97,11 @@ export function useNotificationPusher(
             }
           : undefined,
         duration: 5000,
+      });
+
+      onNotificationRef.current?.({
+        actorName: data.actorName,
+        channelName: data.channelName,
       });
     };
 

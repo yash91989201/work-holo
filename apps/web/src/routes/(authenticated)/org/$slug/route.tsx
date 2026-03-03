@@ -1,10 +1,12 @@
 import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
 import { Suspense, useMemo } from "react";
 import { FullScreenLoader } from "@/components/shared/full-screen-loader";
+import { useNotifications } from "@/hooks/communications/use-notifications";
 import {
   type NotificationContext,
   useNotificationPusher,
 } from "@/hooks/notifications/use-notification-pusher";
+import { useTabNotification } from "@/hooks/notifications/use-tab-notification";
 import { authClient } from "@/lib/auth-client";
 import { PermissionProvider } from "@/lib/permission";
 import { queryClient, queryUtils } from "@/utils/orpc";
@@ -63,7 +65,9 @@ function RouteComponent() {
   const { slug } = Route.useParams();
   const { pathname } = useLocation();
   const context = useCurrentNotificationContext(pathname);
-  useNotificationPusher(slug, context);
+  const { unreadCount } = useNotifications();
+  const { notify } = useTabNotification({ unreadCount });
+  useNotificationPusher(slug, context, notify);
 
   return (
     <Suspense fallback={<FullScreenLoader />}>

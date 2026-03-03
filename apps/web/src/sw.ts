@@ -11,8 +11,6 @@ sw.addEventListener("activate", (event: ExtendableEvent) => {
   event.waitUntil(sw.clients.claim());
 });
 
-// ---------- Push payload types ----------
-
 interface PushPayloadData {
   notificationId?: string;
   type?: string;
@@ -31,17 +29,13 @@ interface PushPayload {
   eventType?: string;
   icon?: string;
   messagePreview?: string;
-  // New structured fields
   notificationId?: string;
   tag?: string;
   timestamp?: string;
   title?: string;
 }
 
-// ---------- Title generation for event types ----------
-
 function getNotificationTitle(payload: PushPayload): string {
-  // If server already provided a title, use it
   if (payload.title) {
     return payload.title;
   }
@@ -89,7 +83,6 @@ function getNotificationTag(payload: PushPayload): string {
 }
 
 function getNotificationUrl(payload: PushPayload): string {
-  // Prefer explicit url from data
   if (payload.data?.url) {
     return payload.data.url;
   }
@@ -101,8 +94,6 @@ function isMentionEvent(payload: PushPayload): boolean {
   const eventType = payload.eventType ?? payload.data?.type ?? "";
   return eventType === "channel_mention";
 }
-
-// ---------- Push handler ----------
 
 sw.addEventListener("push", (event: PushEvent) => {
   if (!event.data) {
@@ -158,8 +149,6 @@ sw.addEventListener("push", (event: PushEvent) => {
     console.error("[Service Worker] Error showing notification:", error);
   }
 });
-
-// ---------- Notification click handler ----------
 
 sw.addEventListener("notificationclick", (event: NotificationEvent) => {
   event.notification.close();
