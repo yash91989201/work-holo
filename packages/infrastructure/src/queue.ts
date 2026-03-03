@@ -55,7 +55,7 @@ export class Queue {
       durable: true,
       arguments: {
         "x-message-ttl": 3_600_000,
-        "x-max-length": 10_000,
+        "x-max-length": 50_000,
       },
     });
 
