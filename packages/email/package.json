@@ -1,0 +1,34 @@
+{
+  "name": "@work-holo/email",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {
+    "dev": "email dev --dir src/templates --port 3200",
+    "build": "email build --dir src/templates"
+  },
+  "dependencies": {
+    "@react-email/components": "^0.0.41",
+    "@react-email/render": "^1.1.2",
+    "@react-email/tailwind": "^2.0.5",
+    "nodemailer": "^7.0.5",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/nodemailer": "^6.4.17",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@work-holo/config": "workspace:*",
+    "react-email": "^4.0.12"
+  },
+  "peerDependencies": {
+    "typescript": "^5.9.3"
+  }
+}

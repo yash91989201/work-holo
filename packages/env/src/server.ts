@@ -29,6 +29,11 @@ export const env = createEnv({
     PUSHER_APP_SECRET: z.string().min(1),
     PUSHER_HOST: z.string(),
     PUSHER_PORT: z.coerce.number().default(6001),
+    SMTP_HOST: z.string(),
+    SMTP_PORT: z.coerce.number().default(587),
+    SMTP_USER: z.string(),
+    SMTP_PASS: z.string(),
+    SMTP_FROM: z.string().email(),
     CASBIN_ENFORCE: z
       .enum(["true", "false"])
       .default("true")
