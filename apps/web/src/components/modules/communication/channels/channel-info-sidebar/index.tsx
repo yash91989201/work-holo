@@ -5,6 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useChannel, useChannelInfoSidebar } from "@/stores/channel-store";
+import { ChannelNotificationSettings } from "../channel-notification-settings";
 import { ChannelInfo } from "./channel-info";
 import { Members } from "./members";
 
@@ -63,6 +64,8 @@ export const ChannelInfoSidebar = () => {
               createdAt={channel.createdAt}
               createdByName={channel.creator.name}
             />
+            <Separator className="bg-border/50" />
+            <ChannelNotificationSettings channelId={channelId} />
           </div>
         </ScrollArea>
       </SheetContent>
