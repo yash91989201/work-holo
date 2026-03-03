@@ -2,12 +2,13 @@ CREATE TYPE "public"."attendanceStatus" AS ENUM('present', 'absent', 'late', 'ex
 CREATE TYPE "public"."clockInMethod" AS ENUM('manual', 'qr_code', 'geofence', 'ip_restriction', 'biometric', 'rfid');--> statement-breakpoint
 CREATE TYPE "public"."clockOutMethod" AS ENUM('manual', 'qr_code', 'geofence', 'ip_restriction', 'biometric', 'rfid', 'auto');--> statement-breakpoint
 CREATE TYPE "public"."endReason" AS ENUM('manual', 'break', 'punch_out', 'idle_timeout');--> statement-breakpoint
+CREATE TYPE "public"."module_access_mode" AS ENUM('disabled', 'org_wide', 'team_based', 'user_based');--> statement-breakpoint
 CREATE TYPE "public"."scope" AS ENUM('org', 'team');--> statement-breakpoint
 CREATE TYPE "public"."attachmentType" AS ENUM('image', 'document', 'video', 'audio', 'archive');--> statement-breakpoint
 CREATE TYPE "public"."channelType" AS ENUM('team', 'group');--> statement-breakpoint
 CREATE TYPE "public"."messageType" AS ENUM('text', 'attachment', 'audio');--> statement-breakpoint
 CREATE TYPE "public"."notificationStatus" AS ENUM('unread', 'read', 'dismissed');--> statement-breakpoint
-CREATE TYPE "public"."notificationType" AS ENUM('message', 'mention', 'channel_invite', 'direct_message');--> statement-breakpoint
+CREATE TYPE "public"."notificationType" AS ENUM('channel_message', 'channel_reply', 'channel_reaction', 'channel_mention', 'dm_message', 'dm_reply', 'dm_reaction');--> statement-breakpoint
 CREATE TABLE "attendance" (
 	"id" varchar(24) PRIMARY KEY NOT NULL,
 	"userId" text NOT NULL,
@@ -178,6 +179,31 @@ CREATE TABLE "verification" (
 	"expiresAt" timestamp NOT NULL,
 	"createdAt" timestamp DEFAULT now() NOT NULL,
 	"updatedAt" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "moduleTeamAccess" (
+	"id" varchar(24) PRIMARY KEY NOT NULL,
+	"organizationId" text NOT NULL,
+	"module" text NOT NULL,
+	"teamId" text NOT NULL,
+	"createdAt" timestamp with time zone DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "moduleUserAccess" (
+	"id" varchar(24) PRIMARY KEY NOT NULL,
+	"organizationId" text NOT NULL,
+	"module" text NOT NULL,
+	"userId" text NOT NULL,
+	"createdAt" timestamp with time zone DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "orgModuleConfig" (
+	"id" varchar(24) PRIMARY KEY NOT NULL,
+	"organizationId" text NOT NULL,
+	"module" text NOT NULL,
+	"mode" "module_access_mode" DEFAULT 'disabled' NOT NULL,
+	"updatedAt" timestamp with time zone DEFAULT now(),
+	"updatedBy" text
 );
 --> statement-breakpoint
 CREATE TABLE "permissionAuditLog" (
@@ -479,9 +505,48 @@ CREATE TABLE "dmMessage" (
 	"updatedAt" timestamp with time zone NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE "notificationPreference" (
+	"id" varchar(24) PRIMARY KEY NOT NULL,
+	"userId" text NOT NULL,
+	"orgId" text NOT NULL,
+	"eventType" "notificationType" NOT NULL,
+	"deliveryChannel" text NOT NULL,
+	"enabled" boolean DEFAULT true NOT NULL,
+	"entityType" text,
+	"entityId" text,
+	"emailDigestInterval" text,
+	"createdAt" timestamp with time zone NOT NULL,
+	"updatedAt" timestamp with time zone NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "notificationSoundPreference" (
+	"id" varchar(24) PRIMARY KEY NOT NULL,
+	"userId" text NOT NULL,
+	"orgId" text NOT NULL,
+	"scope" text NOT NULL,
+	"entityId" text,
+	"soundType" text NOT NULL,
+	"presetId" text,
+	"customSoundUrl" text,
+	"customSoundName" text,
+	"createdAt" timestamp with time zone NOT NULL,
+	"updatedAt" timestamp with time zone NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "notificationSoundPreset" (
+	"id" varchar(24) PRIMARY KEY NOT NULL,
+	"name" text NOT NULL,
+	"filename" text NOT NULL,
+	"category" text NOT NULL,
+	"sortOrder" integer NOT NULL,
+	"createdAt" timestamp with time zone NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE "notification" (
 	"id" varchar(24) PRIMARY KEY NOT NULL,
 	"userId" text NOT NULL,
+	"actorId" text,
+	"orgId" text,
 	"type" "notificationType" NOT NULL,
 	"status" "notificationStatus" DEFAULT 'unread' NOT NULL,
 	"title" text NOT NULL,
@@ -492,6 +557,16 @@ CREATE TABLE "notification" (
 	"metadata" json,
 	"readAt" timestamp with time zone,
 	"dismissedAt" timestamp with time zone,
+	"createdAt" timestamp with time zone NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "pendingEmailDigest" (
+	"id" varchar(24) PRIMARY KEY NOT NULL,
+	"userId" text NOT NULL,
+	"orgId" text NOT NULL,
+	"notificationId" text NOT NULL,
+	"scheduledAt" timestamp with time zone NOT NULL,
+	"sent" boolean DEFAULT false NOT NULL,
 	"createdAt" timestamp with time zone NOT NULL
 );
 --> statement-breakpoint
@@ -523,6 +598,12 @@ ALTER TABLE "team" ADD CONSTRAINT "team_organizationId_organization_id_fk" FOREI
 ALTER TABLE "teamMember" ADD CONSTRAINT "teamMember_teamId_team_id_fk" FOREIGN KEY ("teamId") REFERENCES "public"."team"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "teamMember" ADD CONSTRAINT "teamMember_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "twoFactor" ADD CONSTRAINT "twoFactor_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "moduleTeamAccess" ADD CONSTRAINT "moduleTeamAccess_organizationId_organization_id_fk" FOREIGN KEY ("organizationId") REFERENCES "public"."organization"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "moduleTeamAccess" ADD CONSTRAINT "moduleTeamAccess_teamId_team_id_fk" FOREIGN KEY ("teamId") REFERENCES "public"."team"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "moduleUserAccess" ADD CONSTRAINT "moduleUserAccess_organizationId_organization_id_fk" FOREIGN KEY ("organizationId") REFERENCES "public"."organization"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "moduleUserAccess" ADD CONSTRAINT "moduleUserAccess_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "orgModuleConfig" ADD CONSTRAINT "orgModuleConfig_organizationId_organization_id_fk" FOREIGN KEY ("organizationId") REFERENCES "public"."organization"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "orgModuleConfig" ADD CONSTRAINT "orgModuleConfig_updatedBy_user_id_fk" FOREIGN KEY ("updatedBy") REFERENCES "public"."user"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "permissionAuditLog" ADD CONSTRAINT "permissionAuditLog_organizationId_organization_id_fk" FOREIGN KEY ("organizationId") REFERENCES "public"."organization"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "permissionSnapshot" ADD CONSTRAINT "permissionSnapshot_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "permissionSnapshot" ADD CONSTRAINT "permissionSnapshot_organizationId_organization_id_fk" FOREIGN KEY ("organizationId") REFERENCES "public"."organization"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -585,7 +666,17 @@ ALTER TABLE "dmMessage" ADD CONSTRAINT "dmMessage_conversationId_dmConversation_
 ALTER TABLE "dmMessage" ADD CONSTRAINT "dmMessage_senderId_user_id_fk" FOREIGN KEY ("senderId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "dmMessage" ADD CONSTRAINT "dmMessage_pinnedBy_user_id_fk" FOREIGN KEY ("pinnedBy") REFERENCES "public"."user"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "dmMessage" ADD CONSTRAINT "fk_dm_message_parent" FOREIGN KEY ("parentMessageId") REFERENCES "public"."dmMessage"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "notificationPreference" ADD CONSTRAINT "notificationPreference_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "notificationPreference" ADD CONSTRAINT "notificationPreference_orgId_organization_id_fk" FOREIGN KEY ("orgId") REFERENCES "public"."organization"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "notificationSoundPreference" ADD CONSTRAINT "notificationSoundPreference_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "notificationSoundPreference" ADD CONSTRAINT "notificationSoundPreference_orgId_organization_id_fk" FOREIGN KEY ("orgId") REFERENCES "public"."organization"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "notificationSoundPreference" ADD CONSTRAINT "notificationSoundPreference_presetId_notificationSoundPreset_id_fk" FOREIGN KEY ("presetId") REFERENCES "public"."notificationSoundPreset"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "notification" ADD CONSTRAINT "notification_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "notification" ADD CONSTRAINT "notification_actorId_user_id_fk" FOREIGN KEY ("actorId") REFERENCES "public"."user"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "notification" ADD CONSTRAINT "notification_orgId_organization_id_fk" FOREIGN KEY ("orgId") REFERENCES "public"."organization"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "pendingEmailDigest" ADD CONSTRAINT "pendingEmailDigest_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "pendingEmailDigest" ADD CONSTRAINT "pendingEmailDigest_orgId_organization_id_fk" FOREIGN KEY ("orgId") REFERENCES "public"."organization"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "pendingEmailDigest" ADD CONSTRAINT "pendingEmailDigest_notificationId_notification_id_fk" FOREIGN KEY ("notificationId") REFERENCES "public"."notification"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "pushSubscription" ADD CONSTRAINT "pushSubscription_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "account_userId_idx" ON "account" USING btree ("userId");--> statement-breakpoint
 CREATE INDEX "invitation_organizationId_idx" ON "invitation" USING btree ("organizationId");--> statement-breakpoint
@@ -601,6 +692,9 @@ CREATE INDEX "teamMember_userId_idx" ON "teamMember" USING btree ("userId");--> 
 CREATE INDEX "twoFactor_secret_idx" ON "twoFactor" USING btree ("secret");--> statement-breakpoint
 CREATE INDEX "twoFactor_userId_idx" ON "twoFactor" USING btree ("userId");--> statement-breakpoint
 CREATE INDEX "verification_identifier_idx" ON "verification" USING btree ("identifier");--> statement-breakpoint
+CREATE UNIQUE INDEX "moduleTeamAccessOrgModuleTeamIdx" ON "moduleTeamAccess" USING btree ("organizationId","module","teamId");--> statement-breakpoint
+CREATE UNIQUE INDEX "moduleUserAccessOrgModuleUserIdx" ON "moduleUserAccess" USING btree ("organizationId","module","userId");--> statement-breakpoint
+CREATE UNIQUE INDEX "orgModuleConfigOrgModuleIdx" ON "orgModuleConfig" USING btree ("organizationId","module");--> statement-breakpoint
 CREATE INDEX "permissionAuditLogOrgCreatedIdx" ON "permissionAuditLog" USING btree ("organizationId","createdAt");--> statement-breakpoint
 CREATE INDEX "permissionAuditLogActorIdIdx" ON "permissionAuditLog" USING btree ("actorId");--> statement-breakpoint
 CREATE INDEX "permissionAuditLogTargetUserIdIdx" ON "permissionAuditLog" USING btree ("targetUserId");--> statement-breakpoint
@@ -664,5 +758,11 @@ CREATE INDEX "idx_dm_message_conversation_created_id" ON "dmMessage" USING btree
 CREATE INDEX "idx_dm_message_sender" ON "dmMessage" USING btree ("senderId");--> statement-breakpoint
 CREATE INDEX "idx_dm_message_parent" ON "dmMessage" USING btree ("parentMessageId");--> statement-breakpoint
 CREATE INDEX "idx_dm_message_is_deleted" ON "dmMessage" USING btree ("isDeleted");--> statement-breakpoint
+CREATE UNIQUE INDEX "unique_notification_preference" ON "notificationPreference" USING btree ("userId","orgId","eventType","deliveryChannel","entityType","entityId");--> statement-breakpoint
+CREATE INDEX "idx_notification_preference_user_org" ON "notificationPreference" USING btree ("userId","orgId");--> statement-breakpoint
+CREATE UNIQUE INDEX "unique_notification_sound_preference" ON "notificationSoundPreference" USING btree ("userId","orgId","scope","entityId");--> statement-breakpoint
+CREATE INDEX "idx_notification_sound_preference_user_org" ON "notificationSoundPreference" USING btree ("userId","orgId");--> statement-breakpoint
+CREATE INDEX "idx_pending_email_digest_scheduled" ON "pendingEmailDigest" USING btree ("scheduledAt","sent");--> statement-breakpoint
+CREATE INDEX "idx_pending_email_digest_user_org" ON "pendingEmailDigest" USING btree ("userId","orgId");--> statement-breakpoint
 CREATE UNIQUE INDEX "unique_user_endpoint" ON "pushSubscription" USING btree ("userId","endpoint");--> statement-breakpoint
 CREATE INDEX "idx_push_subscription_user" ON "pushSubscription" USING btree ("userId");
