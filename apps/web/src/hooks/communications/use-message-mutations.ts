@@ -356,7 +356,7 @@ export function useMessageMutations() {
       // Mark mention notifications as read optimistically
       notificationsCollection.forEach((notification) => {
         if (
-          notification.type === "mention" &&
+          notification.type === "channel_mention" &&
           notification.entityId &&
           messageIds.includes(notification.entityId) &&
           notification.userId === userId &&

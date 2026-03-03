@@ -9,9 +9,9 @@ import {
   messageReadTable,
   messageTable,
   notificationTable,
-  pushSubscriptionTable,
   user as userTable,
 } from "@work-holo/db/schema/index";
+import { Queue } from "@work-holo/infrastructure";
 import {
   and,
   count,
@@ -23,11 +23,6 @@ import {
   or,
   sql,
 } from "drizzle-orm";
-import webpush from "web-push";
-import "../../lib/push-notifications";
-import { auth } from "@work-holo/auth";
-import { Queue } from "@work-holo/infrastructure";
-import { env } from "../../env";
 import { orgMemberProcedure } from "../../index";
 import { generateTxId } from "../../lib/electric-proxy";
 import {
@@ -74,6 +69,7 @@ import {
 } from "../../lib/schemas/message";
 import { deleteFile } from "../../lib/storage";
 import type { BucketName } from "../../lib/storage/types";
+import type { NotificationDomainEvent } from "../../services/notification/types";
 
 const MAX_MEMBERS_FOR_DETAILED_TRACKING =
   Number(process.env.MAX_MEMBERS_FOR_DETAILED_TRACKING) || 25;
@@ -133,21 +129,19 @@ export const messageRouter = {
   create: orgMemberProcedure
     .input(CreateMessageInput)
     .output(CreateMessageOutput)
-    .handler(
-      async ({
-        context: {
-          db,
-          session: { user },
-          headers,
-          permission,
-        },
-        input,
-      }) => {
-        await permission.requireChannelAccess(
-          input.channelId,
-          permission.channel().message.create
-        );
-        const { txid, message } = await db.transaction(async (tx) => {
+    .handler(async ({ context, input }) => {
+      const {
+        db,
+        orgId,
+        session: { user },
+        permission,
+      } = context;
+      await permission.requireChannelAccess(
+        input.channelId,
+        permission.channel().message.create
+      );
+      const { txid, message, mentionEvents, channelMessageEvents, replyEvent } =
+        await db.transaction(async (tx) => {
           const txid = await generateTxId(tx);
 
           const channel = await tx.query.channelTable.findFirst({
@@ -193,6 +187,10 @@ export const messageRouter = {
             await tx.insert(attachmentTable).values(attachmentValues);
           }
 
+          const messagePreview =
+            input.content?.slice(0, 200) || "New message in channel";
+          const mentionEvents: NotificationDomainEvent[] = [];
+
           if (input.mentions && input.mentions.length > 0) {
             const mentionValues = input.mentions.map((mentionedUserId) => ({
               messageId: newMessage.id,
@@ -211,89 +209,86 @@ export const messageRouter = {
                 ],
               });
 
-            const mentionNotifications = input.mentions.map(
-              (mentionedUserId) => ({
-                userId: mentionedUserId,
+            mentionEvents.push(
+              ...Array.from(new Set(input.mentions)).map((targetUserId) => ({
                 type: "channel_mention" as const,
-                title: `${user.name} mentioned you in ${channel.name}`,
-                message:
-                  input.content?.slice(0, 200) ||
-                  "You were mentioned in a message",
+                actorId: user.id,
+                orgId,
+                targetUserId,
                 entityId: newMessage.id,
-                entityType: "message",
-              })
+                entityType: "message" as const,
+                metadata: {
+                  channelId: input.channelId,
+                  channelName: channel.name,
+                  messagePreview,
+                  mentionedById: user.id,
+                  mentionedByName: user.name,
+                },
+              }))
             );
-
-            await tx.insert(notificationTable).values(mentionNotifications);
-            const org = await auth.api.getFullOrganization({
-              headers,
-            });
-
-            const url = `${env.CORS_ORIGIN}/org/${org?.slug}/communication/channels/${input.channelId}`;
-            Promise.resolve().then(async () => {
-              try {
-                const subscriptions = await db
-                  .select()
-                  .from(pushSubscriptionTable)
-                  .where(
-                    inArray(pushSubscriptionTable.userId, input.mentions || [])
-                  );
-
-                await Promise.allSettled(
-                  subscriptions.map(async (sub) => {
-                    try {
-                      await webpush.sendNotification(
-                        {
-                          endpoint: sub.endpoint,
-                          keys: { p256dh: sub.p256dh, auth: sub.auth },
-                        },
-                        JSON.stringify({
-                          title: "Work Holo",
-                          body: `${user.name} mentioned you in '${channel.name}' channel`,
-                          icon: "/favicon.ico",
-                          badge: "/favicon.ico",
-                          tag: "work-holo-mention",
-                          data: {
-                            type: "channel_mention",
-                            url,
-                          },
-                        })
-                      );
-                    } catch (error: unknown) {
-                      if (
-                        error &&
-                        typeof error === "object" &&
-                        "statusCode" in error &&
-                        (error.statusCode === 410 || error.statusCode === 404)
-                      ) {
-                        await db
-                          .delete(pushSubscriptionTable)
-                          .where(eq(pushSubscriptionTable.id, sub.id));
-                      }
-                    }
-                  })
-                );
-              } catch (error) {
-                console.error("Error sending push notifications:", error);
-              }
-            });
           }
 
+          let replyEvent: NotificationDomainEvent | null = null;
+
           if (input.parentMessageId) {
+            const parentMessage = await tx.query.messageTable.findFirst({
+              where: eq(messageTable.id, input.parentMessageId),
+              columns: {
+                senderId: true,
+              },
+            });
+
             await tx
               .update(messageTable)
               .set({
                 threadCount: sql`${messageTable.threadCount} + 1`,
               })
               .where(eq(messageTable.id, input.parentMessageId));
+
+            if (parentMessage) {
+              replyEvent = {
+                type: "channel_reply",
+                actorId: user.id,
+                orgId,
+                targetUserId: parentMessage.senderId,
+                entityId: newMessage.id,
+                entityType: "message",
+                metadata: {
+                  channelId: input.channelId,
+                  channelName: channel.name,
+                  threadId: input.parentMessageId,
+                  messagePreview,
+                  replySenderId: user.id,
+                  replySenderName: user.name,
+                },
+              };
+            }
           }
 
-          const readTimestamp = new Date();
-          const memberCount = await tx
-            .select({ count: count() })
+          const channelMembers = await tx
+            .select({ userId: channelMemberTable.userId })
             .from(channelMemberTable)
-            .where(eq(channelMemberTable.channelId, input.channelId))
-            .then((result) => result[0]?.count ?? 0);
+            .where(eq(channelMemberTable.channelId, input.channelId));
+
+          const channelMessageEvents: NotificationDomainEvent[] =
+            channelMembers.map(({ userId: targetUserId }) => ({
+              type: "channel_message",
+              actorId: user.id,
+              orgId,
+              targetUserId,
+              entityId: newMessage.id,
+              entityType: "message",
+              metadata: {
+                channelId: input.channelId,
+                channelName: channel.name,
+                messagePreview,
+                senderId: user.id,
+                senderName: user.name,
+              },
+            }));
+
+          const readTimestamp = new Date();
+          const memberCount = channelMembers.length;
 
           if (memberCount <= MAX_MEMBERS_FOR_DETAILED_TRACKING) {
             await tx
@@ -353,12 +348,37 @@ export const messageRouter = {
               },
             });
 
-          return { txid, message: newMessage };
+          return {
+            txid,
+            message: newMessage,
+            mentionEvents,
+            channelMessageEvents,
+            replyEvent,
+          };
         });
 
-        return { txid, message };
+      if (context.notification) {
+        Promise.resolve().then(async () => {
+          try {
+            for (const event of mentionEvents) {
+              await context.notification.emit(event);
+            }
+
+            if (channelMessageEvents.length > 0) {
+              await context.notification.emitBulk(channelMessageEvents);
+            }
+
+            if (replyEvent) {
+              await context.notification.emit(replyEvent);
+            }
+          } catch (error) {
+            console.error("Error emitting notifications:", error);
+          }
+        });
       }
-    ),
+
+      return { txid, message };
+    }),
 
   /**
    * Updates a message's content and mention metadata. Replaces existing mentions
@@ -374,20 +394,19 @@ export const messageRouter = {
   update: orgMemberProcedure
     .input(UpdateMessageInput)
     .output(UpdateMessageOutput)
-    .handler(
-      async ({
-        context: {
-          db,
-          session: { user },
-          permission,
-        },
-        input,
-      }) => {
-        await permission.requireMessageAccess(
-          input.messageId,
-          permission.channel().message.update
-        );
-        const { txid, message } = await db.transaction(async (tx) => {
+    .handler(async ({ context, input }) => {
+      const {
+        db,
+        orgId,
+        session: { user },
+        permission,
+      } = context;
+      await permission.requireMessageAccess(
+        input.messageId,
+        permission.channel().message.update
+      );
+      const { txid, message, mentionEvents } = await db.transaction(
+        async (tx) => {
           const txid = await generateTxId(tx);
 
           const [updatedMessage] = await tx
@@ -419,7 +438,20 @@ export const messageRouter = {
             });
           }
 
+          const mentionEvents: NotificationDomainEvent[] = [];
+
           if (input.mentions !== undefined) {
+            const existingMentions = await tx
+              .select({
+                mentionedUserId: messageMentionTable.mentionedUserId,
+              })
+              .from(messageMentionTable)
+              .where(eq(messageMentionTable.messageId, input.messageId));
+
+            const existingMentionSet = new Set(
+              existingMentions.map(({ mentionedUserId }) => mentionedUserId)
+            );
+
             await tx
               .delete(messageMentionTable)
               .where(eq(messageMentionTable.messageId, input.messageId));
@@ -442,87 +474,56 @@ export const messageRouter = {
                   ],
                 });
 
-              const mentionNotifications = input.mentions.map(
-                (mentionedUserId) => ({
-                  userId: mentionedUserId,
+              const newMentionUserIds = Array.from(
+                new Set(input.mentions)
+              ).filter((targetUserId) => !existingMentionSet.has(targetUserId));
+
+              mentionEvents.push(
+                ...newMentionUserIds.map((targetUserId) => ({
                   type: "channel_mention" as const,
-                  title: `${user.name} mentioned you in ${channel.name}`,
-                  message:
-                    input.content?.slice(0, 200) ??
-                    "You were mentioned in a message",
+                  actorId: user.id,
+                  orgId,
+                  targetUserId,
                   entityId: updatedMessage.id,
-                  entityType: "message",
-                })
+                  entityType: "message" as const,
+                  metadata: {
+                    channelId: updatedMessage.channelId,
+                    channelName: channel.name,
+                    messagePreview:
+                      input.content?.slice(0, 200) ||
+                      "You were mentioned in a message",
+                    mentionedById: user.id,
+                    mentionedByName: user.name,
+                  },
+                }))
               );
-
-              await tx.insert(notificationTable).values(mentionNotifications);
-
-              Promise.resolve().then(async () => {
-                try {
-                  const subscriptions = await db
-                    .select()
-                    .from(pushSubscriptionTable)
-                    .where(
-                      inArray(
-                        pushSubscriptionTable.userId,
-                        input.mentions || []
-                      )
-                    );
-
-                  await Promise.allSettled(
-                    subscriptions.map(async (sub) => {
-                      try {
-                        await webpush.sendNotification(
-                          {
-                            endpoint: sub.endpoint,
-                            keys: { p256dh: sub.p256dh, auth: sub.auth },
-                          },
-                          JSON.stringify({
-                            title: "Work Holo",
-                            body: `${user.name} mentioned you in '${channel.name}' channel`,
-                            icon: "/favicon.ico",
-                            badge: "/favicon.ico",
-                            tag: "work-holo-mention",
-                            data: {
-                              messageId: updatedMessage.id,
-                              channelId: updatedMessage.channelId,
-                              type: "channel_mention",
-                            },
-                          })
-                        );
-                      } catch (error: unknown) {
-                        if (
-                          error &&
-                          typeof error === "object" &&
-                          "statusCode" in error &&
-                          (error.statusCode === 410 || error.statusCode === 404)
-                        ) {
-                          await db
-                            .delete(pushSubscriptionTable)
-                            .where(eq(pushSubscriptionTable.id, sub.id));
-                        }
-                      }
-                    })
-                  );
-                } catch (error) {
-                  console.error("Error sending push notifications:", error);
-                }
-              });
             }
           }
 
-          return { txid, message: updatedMessage };
-        });
+          return { txid, message: updatedMessage, mentionEvents };
+        }
+      );
 
-        return {
-          txid,
-          message: {
-            ...message,
-            sender: user,
-          },
-        };
+      if (context.notification && mentionEvents.length > 0) {
+        Promise.resolve().then(async () => {
+          try {
+            for (const event of mentionEvents) {
+              await context.notification.emit(event);
+            }
+          } catch (error) {
+            console.error("Error emitting mention notifications:", error);
+          }
+        });
       }
-    ),
+
+      return {
+        txid,
+        message: {
+          ...message,
+          sender: user,
+        },
+      };
+    }),
 
   /**
    * Retrieves all non-deleted messages for a channel, including sender details,

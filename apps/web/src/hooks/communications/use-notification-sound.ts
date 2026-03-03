@@ -69,7 +69,7 @@ export function useNotificationSound() {
 
     const shouldPlaySound = newNotifications.some((notification) => {
       if (
-        notification.type === "mention" &&
+        notification.type === "channel_mention" &&
         activeChannelId &&
         notification.entityId
       ) {
@@ -83,7 +83,7 @@ export function useNotificationSound() {
 
     if (shouldPlaySound && newNotifications.length > 0) {
       const hasMentionNotification = newNotifications.some(
-        (notification) => notification.type === "mention"
+        (notification) => notification.type === "channel_mention"
       );
       const soundPath = hasMentionNotification
         ? "/assets/sounds/mention.webm"

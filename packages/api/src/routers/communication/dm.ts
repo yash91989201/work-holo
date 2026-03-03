@@ -9,7 +9,6 @@ import {
   dmMessageReadTable,
   dmMessageTable,
   member as memberTable,
-  notificationTable,
   user as userTable,
 } from "@work-holo/db/schema/index";
 import { PusherClient } from "@work-holo/infrastructure";
@@ -84,21 +83,6 @@ const emitDmEvent = async (
     );
   } catch (error) {
     console.error("Failed to emit DM event:", error);
-  }
-};
-
-const emitNotificationEvent = async (
-  userId: string,
-  payload: Record<string, unknown>
-) => {
-  try {
-    await PusherClient.getClient().trigger(
-      `private-user-${userId}`,
-      "notification:new",
-      payload
-    );
-  } catch (error) {
-    console.error("Failed to emit DM notification event:", error);
   }
 };
 
@@ -368,8 +352,10 @@ export const dmRouter = {
 
   sendMessage: dmProcedure
     .input(SendDmMessageInput)
-    .handler(async ({ input, context: { db, orgId, session } }) => {
+    .handler(async ({ input, context }) => {
+      const { db, orgId, session } = context;
       const userId = session.user.id;
+      const senderName = session.user.name ?? "Someone";
 
       const result = await db.transaction(async (tx) => {
         const txid = await generateTxId(tx);
@@ -456,30 +442,20 @@ export const dmRouter = {
           ),
         });
 
-        let notification: typeof notificationTable.$inferSelect | null = null;
-        if (!mute) {
-          const notificationMessage = (
-            normalizedContent ??
-            input.attachments?.[0]?.originalName ??
-            "Sent an attachment"
-          ).slice(0, 200);
+        const notificationMessage = (
+          normalizedContent ??
+          input.attachments?.[0]?.originalName ??
+          "Sent an attachment"
+        ).slice(0, 200);
 
-          const [createdNotification] = await tx
-            .insert(notificationTable)
-            .values({
-              userId: recipientId,
-              type: "dm_message",
-              title: `${session.user.name} sent you a message`,
-              message: notificationMessage,
-              entityId: message.id,
-              entityType: "dm_message",
-            })
-            .returning();
-
-          notification = createdNotification ?? null;
-        }
-
-        return { txid, message, notification, recipientId };
+        return {
+          isMuted: Boolean(mute),
+          message,
+          notificationMessage,
+          parentMessageId: input.parentMessageId,
+          recipientId,
+          txid,
+        };
       });
 
       await emitDmEvent(input.conversationId, DM_EVENTS.NEW_MESSAGE, {
@@ -487,10 +463,39 @@ export const dmRouter = {
         message: result.message,
       });
 
-      if (result.notification) {
-        await emitNotificationEvent(result.recipientId, {
-          notification: result.notification,
-        });
+      if (!result.isMuted && context.notification) {
+        if (result.parentMessageId) {
+          await context.notification.emit({
+            actorId: userId,
+            entityId: result.message.id,
+            entityType: "message",
+            metadata: {
+              conversationId: input.conversationId,
+              messagePreview: result.notificationMessage,
+              replySenderId: userId,
+              replySenderName: senderName,
+              threadId: result.parentMessageId,
+            },
+            orgId,
+            targetUserId: result.recipientId,
+            type: "dm_reply",
+          });
+        } else {
+          await context.notification.emit({
+            actorId: userId,
+            entityId: result.message.id,
+            entityType: "message",
+            metadata: {
+              conversationId: input.conversationId,
+              messagePreview: result.notificationMessage,
+              senderId: userId,
+              senderName,
+            },
+            orgId,
+            targetUserId: result.recipientId,
+            type: "dm_message",
+          });
+        }
       }
 
       return { txid: result.txid, message: result.message };

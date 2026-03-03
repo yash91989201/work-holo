@@ -295,7 +295,7 @@ export function useDmMessageMutations() {
       // Mark notifications as read optimistically
       notificationsCollection.forEach((notification) => {
         if (
-          notification.type === "direct_message" &&
+          notification.type === "dm_message" &&
           notification.entityId &&
           messageIds.includes(notification.entityId) &&
           notification.userId === user.id &&

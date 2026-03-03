@@ -448,7 +448,7 @@ function NotificationItem({
     }
 
     if (
-      notification.type === "mention" &&
+      notification.type === "channel_mention" &&
       notification.entityId &&
       typeof slug === "string"
     ) {

@@ -1,4 +1,5 @@
 import { db } from "@work-holo/db";
+import { createEmailTransport } from "@work-holo/email";
 import { env } from "@work-holo/env/notification-worker";
 import {
   type NotificationQueueMessage,
@@ -8,6 +9,8 @@ import {
 } from "@work-holo/infrastructure";
 import type { Channel } from "amqplib";
 import webpush from "web-push";
+import { startDigestProcessor } from "./lib/digest-processor";
+import { handleEmailDelivery as sendEmailNotification } from "./lib/handlers/email";
 import { handlePushDelivery as sendPushNotifications } from "./lib/handlers/push";
 
 webpush.setVapidDetails(
@@ -15,6 +18,15 @@ webpush.setVapidDetails(
   env.VAPID_PUBLIC_KEY,
   env.VAPID_PRIVATE_KEY
 );
+
+const emailTransport = createEmailTransport({
+  host: env.SMTP_HOST,
+  port: env.SMTP_PORT,
+  auth: {
+    user: env.SMTP_USER,
+    pass: env.SMTP_PASS,
+  },
+});
 
 const PREFETCH_COUNT = 5;
 const DEDUP_WINDOW_MS = 30_000;
@@ -66,11 +78,15 @@ async function handlePushDelivery(
   });
 }
 
-function handleEmailDelivery(message: NotificationQueueMessage): Promise<void> {
-  console.log(
-    `[Notification Worker] Email delivery placeholder (Task 10) for notification ${message.notificationId}`
-  );
-  return Promise.resolve();
+async function handleEmailDelivery(
+  message: NotificationQueueMessage
+): Promise<void> {
+  await sendEmailNotification({
+    db,
+    transport: emailTransport,
+    fromAddress: env.SMTP_FROM,
+    message,
+  });
 }
 
 async function handleMessage(message: NotificationQueueMessage): Promise<void> {
@@ -199,11 +215,19 @@ async function startWorker() {
   });
   console.log("Pusher client initialized");
 
+  const digestIntervalId = startDigestProcessor(
+    db,
+    emailTransport,
+    env.SMTP_FROM
+  );
+  console.log("Email digest processor started");
+
   try {
     await worker.connect();
     await worker.consume();
 
     const shutdown = async () => {
+      clearInterval(digestIntervalId);
       await worker.close();
       process.exit(0);
     };
