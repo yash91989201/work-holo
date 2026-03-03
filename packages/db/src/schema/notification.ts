@@ -160,6 +160,34 @@ export const notificationSoundPreferenceTable = pgTable(
   ]
 );
 
+export const pendingEmailDigestTable = pgTable(
+  "pendingEmailDigest",
+  {
+    id: cuid2().defaultRandom().primaryKey(),
+    userId: text()
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    orgId: text()
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    notificationId: text()
+      .notNull()
+      .references(() => notificationTable.id, { onDelete: "cascade" }),
+    scheduledAt: timestamp({ withTimezone: true }).notNull(),
+    sent: boolean().notNull().default(false),
+    createdAt: timestamp({ withTimezone: true })
+      .$defaultFn(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    index("idx_pending_email_digest_scheduled").on(
+      table.scheduledAt,
+      table.sent
+    ),
+    index("idx_pending_email_digest_user_org").on(table.userId, table.orgId),
+  ]
+);
+
 // Notification relations
 export const notificationTableRelations = relations(
   notificationTable,
@@ -220,6 +248,24 @@ export const notificationSoundPreferenceTableRelations = relations(
     preset: one(notificationSoundPresetTable, {
       fields: [notificationSoundPreferenceTable.presetId],
       references: [notificationSoundPresetTable.id],
+    }),
+  })
+);
+
+export const pendingEmailDigestTableRelations = relations(
+  pendingEmailDigestTable,
+  ({ one }) => ({
+    user: one(user, {
+      fields: [pendingEmailDigestTable.userId],
+      references: [user.id],
+    }),
+    organization: one(organization, {
+      fields: [pendingEmailDigestTable.orgId],
+      references: [organization.id],
+    }),
+    notification: one(notificationTable, {
+      fields: [pendingEmailDigestTable.notificationId],
+      references: [notificationTable.id],
     }),
   })
 );

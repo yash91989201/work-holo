@@ -1,10 +1,20 @@
+import { db } from "@work-holo/db";
 import { env } from "@work-holo/env/notification-worker";
 import {
   type NotificationQueueMessage,
+  PusherClient,
   QUEUES,
   Queue,
 } from "@work-holo/infrastructure";
 import type { Channel } from "amqplib";
+import webpush from "web-push";
+import { handlePushDelivery as sendPushNotifications } from "./lib/handlers/push";
+
+webpush.setVapidDetails(
+  env.VAPID_SUBJECT,
+  env.VAPID_PUBLIC_KEY,
+  env.VAPID_PRIVATE_KEY
+);
 
 const PREFETCH_COUNT = 5;
 const DEDUP_WINDOW_MS = 30_000;
@@ -43,11 +53,17 @@ function handleSoundDelivery(message: NotificationQueueMessage): Promise<void> {
   return Promise.resolve();
 }
 
-function handlePushDelivery(message: NotificationQueueMessage): Promise<void> {
-  console.log(
-    `[Notification Worker] Push delivery placeholder (Task 9) for notification ${message.notificationId}`
-  );
-  return Promise.resolve();
+async function handlePushDelivery(
+  message: NotificationQueueMessage
+): Promise<void> {
+  await sendPushNotifications({
+    actorId: message.actorId,
+    db,
+    eventType: message.eventType,
+    metadata: message.metadata,
+    notificationId: message.notificationId,
+    targetUserId: message.targetUserId,
+  });
 }
 
 function handleEmailDelivery(message: NotificationQueueMessage): Promise<void> {
@@ -172,6 +188,16 @@ async function startWorker() {
   console.log("===========================================\n");
 
   const worker = new QueueWorker();
+
+  PusherClient.connect({
+    appId: env.PUSHER_APP_ID,
+    host: env.PUSHER_HOST,
+    key: env.PUSHER_APP_KEY,
+    port: env.PUSHER_PORT,
+    secret: env.PUSHER_APP_SECRET,
+    useTLS: env.ENV === "production",
+  });
+  console.log("Pusher client initialized");
 
   try {
     await worker.connect();
