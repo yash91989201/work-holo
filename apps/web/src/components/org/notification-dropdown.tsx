@@ -1,4 +1,5 @@
 import {
+  IconArrowBackUp,
   IconAt,
   IconBell,
   IconBellFilled,
@@ -7,7 +8,7 @@ import {
   IconChevronRight,
   IconMail,
   IconMessage,
-  IconUsers,
+  IconMoodSmile,
 } from "@tabler/icons-react";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import DOMPurify from "dompurify";
@@ -35,15 +36,19 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { messagesCollection } from "@/db/collections";
+import { dmMessagesCollection, messagesCollection } from "@/db/collections";
 import { useNotifications } from "@/hooks/communications/use-notifications";
 import { cn } from "@/lib/utils";
 import { useChannelMessageHighlight } from "@/stores/channel-store";
 
 type NotificationType =
-  | "mention"
-  | "channel_invite"
-  | "direct_message"
+  | "channel_message"
+  | "channel_reply"
+  | "channel_reaction"
+  | "channel_mention"
+  | "dm_message"
+  | "dm_reply"
+  | "dm_reaction"
   | "default";
 type TimeGroup = "today" | "yesterday" | "earlier";
 type FilterType = "all" | "unread" | "read";
@@ -58,7 +63,31 @@ interface NotificationConfig {
 }
 
 const notificationConfig: Record<NotificationType, NotificationConfig> = {
-  mention: {
+  channel_message: {
+    icon: <IconMessage className="h-4 w-4" />,
+    label: "New message in #{channel}",
+    tone: "text-muted-foreground",
+    bgTone: "bg-muted/50",
+    accentColor: "border-border/30",
+    gradient: "from-muted/20 via-muted/10 to-transparent",
+  },
+  channel_reply: {
+    icon: <IconArrowBackUp className="h-4 w-4" />,
+    label: "Replied to your message",
+    tone: "text-blue-600 dark:text-blue-400",
+    bgTone: "bg-blue-500/10 dark:bg-blue-500/15",
+    accentColor: "border-blue-400/30",
+    gradient: "from-blue-500/20 via-blue-400/10 to-transparent",
+  },
+  channel_reaction: {
+    icon: <IconMoodSmile className="h-4 w-4" />,
+    label: "Reacted to your message",
+    tone: "text-purple-600 dark:text-purple-400",
+    bgTone: "bg-purple-500/10 dark:bg-purple-500/15",
+    accentColor: "border-purple-400/30",
+    gradient: "from-purple-500/20 via-purple-400/10 to-transparent",
+  },
+  channel_mention: {
     icon: <IconAt className="h-4 w-4" />,
     label: "Mentioned you",
     tone: "text-amber-600 dark:text-amber-400",
@@ -66,21 +95,29 @@ const notificationConfig: Record<NotificationType, NotificationConfig> = {
     accentColor: "border-amber-400/30",
     gradient: "from-amber-500/20 via-amber-400/10 to-transparent",
   },
-  channel_invite: {
-    icon: <IconUsers className="h-4 w-4" />,
-    label: "Invited you",
-    tone: "text-emerald-600 dark:text-emerald-400",
-    bgTone: "bg-emerald-500/10 dark:bg-emerald-500/15",
-    accentColor: "border-emerald-400/30",
-    gradient: "from-emerald-500/20 via-emerald-400/10 to-transparent",
-  },
-  direct_message: {
+  dm_message: {
     icon: <IconMail className="h-4 w-4" />,
-    label: "Sent a message",
+    label: "Sent you a message",
     tone: "text-blue-600 dark:text-blue-400",
     bgTone: "bg-blue-500/10 dark:bg-blue-500/15",
     accentColor: "border-blue-400/30",
     gradient: "from-blue-500/20 via-blue-400/10 to-transparent",
+  },
+  dm_reply: {
+    icon: <IconArrowBackUp className="h-4 w-4" />,
+    label: "Replied to your message",
+    tone: "text-blue-600 dark:text-blue-400",
+    bgTone: "bg-blue-500/10 dark:bg-blue-500/15",
+    accentColor: "border-blue-400/30",
+    gradient: "from-blue-500/20 via-blue-400/10 to-transparent",
+  },
+  dm_reaction: {
+    icon: <IconMoodSmile className="h-4 w-4" />,
+    label: "Reacted to your message",
+    tone: "text-purple-600 dark:text-purple-400",
+    bgTone: "bg-purple-500/10 dark:bg-purple-500/15",
+    accentColor: "border-purple-400/30",
+    gradient: "from-purple-500/20 via-purple-400/10 to-transparent",
   },
   default: {
     icon: <IconMessage className="h-4 w-4" />,
@@ -442,16 +479,25 @@ function NotificationItem({
   const meta = getNotificationMeta(notification.type);
   const isUnread = notification.status === "unread";
 
+  const metadata = notification.metadata as Record<string, unknown> | null;
+  const actorName =
+    (metadata?.senderName as string) ??
+    (metadata?.replySenderName as string) ??
+    (metadata?.reactorName as string) ??
+    (metadata?.actorName as string) ??
+    "Someone";
+
   const handleClick = () => {
     if (isUnread) {
       onMarkAsRead({ notificationId: notification.id });
     }
 
-    if (
-      notification.type === "channel_mention" &&
-      notification.entityId &&
-      typeof slug === "string"
-    ) {
+    if (!notification.entityId || typeof slug !== "string") return;
+
+    const isChannelEvent = notification.type.startsWith("channel_");
+    const isDmEvent = notification.type.startsWith("dm_");
+
+    if (isChannelEvent) {
       const message = messagesCollection.get(notification.entityId);
 
       if (message) {
@@ -462,6 +508,19 @@ function NotificationItem({
           params: {
             slug,
             channelId: message.channelId,
+          },
+        });
+      }
+    } else if (isDmEvent) {
+      const message = dmMessagesCollection.get(notification.entityId);
+
+      if (message) {
+        onClose();
+        navigate({
+          to: "/org/$slug/workspace/communication/dm/$conversationId",
+          params: {
+            slug,
+            conversationId: message.conversationId,
           },
         });
       }
@@ -525,7 +584,7 @@ function NotificationItem({
                 isUnread ? "text-foreground" : "text-foreground/70"
               )}
             >
-              {notification.title}
+              {actorName}
             </span>
             <span className="ml-2 shrink-0 font-medium text-[10px] text-muted-foreground/50 tabular-nums">
               {formatTimeAgo(new Date(notification.createdAt))}

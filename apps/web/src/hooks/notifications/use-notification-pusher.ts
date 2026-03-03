@@ -1,0 +1,103 @@
+import type { Channel } from "pusher-js";
+import { useEffect, useRef } from "react";
+import { toast } from "sonner";
+import { useAuthedSession } from "@/hooks/use-authed-session";
+import { getPusherClient } from "@/lib/pusher";
+
+interface NotificationPayload {
+  actorId: string;
+  actorName: string;
+  channelName: string | null;
+  entityId: string | null;
+  entityType: string | null;
+  eventType: string;
+  messagePreview: string | null;
+  notificationId: string;
+  timestamp: string;
+}
+
+export interface NotificationContext {
+  entityId?: string;
+  entityType?: "channel" | "dm";
+}
+
+function buildActionUrl(
+  slug: string,
+  entityType: string | null,
+  entityId: string | null
+): string | null {
+  if (!(entityType && entityId)) return null;
+
+  if (entityType === "channel") {
+    return `/org/${slug}/workspace/communication/channels/${entityId}`;
+  }
+  if (entityType === "dm_conversation") {
+    return `/org/${slug}/workspace/communication/dm/${entityId}`;
+  }
+  return null;
+}
+
+function buildToastTitle(payload: NotificationPayload): string {
+  if (payload.channelName) {
+    return `${payload.actorName} in #${payload.channelName}`;
+  }
+  return payload.actorName;
+}
+
+export function useNotificationPusher(
+  orgSlug: string,
+  currentContext?: NotificationContext
+) {
+  const { user } = useAuthedSession();
+  const channelRef = useRef<Channel | null>(null);
+  const seenIdsRef = useRef<Set<string>>(new Set());
+  const currentContextRef = useRef(currentContext);
+  currentContextRef.current = currentContext;
+
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const pusher = getPusherClient();
+    const channelName = `private-user-${user.id}`;
+    const channel = pusher.subscribe(channelName);
+    channelRef.current = channel;
+
+    const handleNotification = (data: NotificationPayload) => {
+      if (seenIdsRef.current.has(data.notificationId)) return;
+      seenIdsRef.current.add(data.notificationId);
+
+      if (seenIdsRef.current.size > 500) {
+        const entries = Array.from(seenIdsRef.current);
+        seenIdsRef.current = new Set(entries.slice(-250));
+      }
+
+      const ctx = currentContextRef.current;
+      if (ctx?.entityId && ctx.entityId === data.entityId) {
+        return;
+      }
+
+      const actionUrl = buildActionUrl(orgSlug, data.entityType, data.entityId);
+
+      toast(buildToastTitle(data), {
+        description: data.messagePreview ?? undefined,
+        action: actionUrl
+          ? {
+              label: "View",
+              onClick: () => {
+                window.location.href = actionUrl;
+              },
+            }
+          : undefined,
+        duration: 5000,
+      });
+    };
+
+    channel.bind("notification:new", handleNotification);
+
+    return () => {
+      channel.unbind("notification:new", handleNotification);
+      pusher.unsubscribe(channelName);
+      channelRef.current = null;
+    };
+  }, [user?.id, orgSlug]);
+}

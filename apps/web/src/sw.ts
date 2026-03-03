@@ -11,20 +11,122 @@ sw.addEventListener("activate", (event: ExtendableEvent) => {
   event.waitUntil(sw.clients.claim());
 });
 
+// ---------- Push payload types ----------
+
+interface PushPayloadData {
+  notificationId?: string;
+  type?: string;
+  url?: string;
+}
+
+interface PushPayload {
+  actorId?: string;
+  actorName?: string;
+  badge?: string;
+  body?: string;
+  channelName?: string;
+  data?: PushPayloadData;
+  entityId?: string;
+  entityType?: string;
+  eventType?: string;
+  icon?: string;
+  messagePreview?: string;
+  // New structured fields
+  notificationId?: string;
+  tag?: string;
+  timestamp?: string;
+  title?: string;
+}
+
+// ---------- Title generation for event types ----------
+
+function getNotificationTitle(payload: PushPayload): string {
+  // If server already provided a title, use it
+  if (payload.title) {
+    return payload.title;
+  }
+
+  const actorName = payload.actorName ?? "Someone";
+  const channelName = payload.channelName ?? "";
+
+  switch (payload.eventType) {
+    case "channel_mention":
+      return `${actorName} mentioned you in #${channelName}`;
+    case "channel_message":
+      return `${actorName} sent a message in #${channelName}`;
+    case "channel_reply":
+      return `${actorName} replied in #${channelName}`;
+    case "channel_reaction":
+      return `${actorName} reacted in #${channelName}`;
+    case "dm_message":
+      return `${actorName} sent you a message`;
+    case "dm_reply":
+      return `${actorName} replied to your message`;
+    case "dm_reaction":
+      return `${actorName} reacted to your message`;
+    default:
+      return "New notification";
+  }
+}
+
+function getNotificationBody(payload: PushPayload): string {
+  if (payload.body) {
+    return payload.body;
+  }
+
+  const preview = payload.messagePreview ?? "";
+  return preview.length > 100 ? `${preview.slice(0, 97)}...` : preview;
+}
+
+function getNotificationTag(payload: PushPayload): string {
+  if (payload.tag) {
+    return payload.tag;
+  }
+
+  const eventType = payload.eventType ?? "unknown";
+  const entityId = payload.entityId ?? payload.notificationId ?? "";
+  return `notification-${eventType}-${entityId}`;
+}
+
+function getNotificationUrl(payload: PushPayload): string {
+  // Prefer explicit url from data
+  if (payload.data?.url) {
+    return payload.data.url;
+  }
+
+  return "/";
+}
+
+function isMentionEvent(payload: PushPayload): boolean {
+  const eventType = payload.eventType ?? payload.data?.type ?? "";
+  return eventType === "channel_mention";
+}
+
+// ---------- Push handler ----------
+
 sw.addEventListener("push", (event: PushEvent) => {
   if (!event.data) {
     return;
   }
 
   try {
-    const data = event.data.json();
+    const data = event.data.json() as PushPayload;
+
+    const title = getNotificationTitle(data);
+    const body = getNotificationBody(data);
+    const url = getNotificationUrl(data);
 
     const options: NotificationOptions = {
-      body: data.body,
-      icon: data.icon,
-      badge: data.badge,
-      tag: data.tag,
-      data: data.data,
+      body,
+      icon: data.icon ?? "/favicon.ico",
+      badge: data.badge ?? "/favicon.ico",
+      tag: getNotificationTag(data),
+      data: {
+        ...data.data,
+        url,
+        notificationId: data.notificationId ?? data.data?.notificationId,
+        type: data.eventType ?? data.data?.type,
+      },
       requireInteraction: false,
       silent: false,
     };
@@ -35,7 +137,7 @@ sw.addEventListener("push", (event: PushEvent) => {
 
     event.waitUntil(
       (async () => {
-        await sw.registration.showNotification(data.title, options);
+        await sw.registration.showNotification(title, options);
 
         // Ask open clients to play a sound (Chromium on Linux does not play sounds for notifications)
         const clients = await sw.clients.matchAll({
@@ -46,7 +148,7 @@ sw.addEventListener("push", (event: PushEvent) => {
           client.postMessage({
             type: "PLAY_NOTIFICATION_SOUND",
             payload: {
-              hasMention: data?.data?.type === "mention",
+              hasMention: isMentionEvent(data),
             },
           });
         }
@@ -57,11 +159,15 @@ sw.addEventListener("push", (event: PushEvent) => {
   }
 });
 
-// Handle notification clicks
+// ---------- Notification click handler ----------
+
 sw.addEventListener("notificationclick", (event: NotificationEvent) => {
   event.notification.close();
 
-  const urlToOpen = event.notification.data.url as string;
+  const notificationData = event.notification.data as
+    | PushPayloadData
+    | undefined;
+  const urlToOpen = notificationData?.url ?? "/";
 
   event.waitUntil(handleNotificationClick(urlToOpen));
 });
