@@ -12,6 +12,7 @@ import webpush from "web-push";
 import { startDigestProcessor } from "./lib/digest-processor";
 import { handleEmailDelivery as sendEmailNotification } from "./lib/handlers/email";
 import { handlePushDelivery as sendPushNotifications } from "./lib/handlers/push";
+import { handlePusherDelivery } from "./lib/handlers/pusher";
 
 webpush.setVapidDetails(
   env.VAPID_SUBJECT,
@@ -58,11 +59,16 @@ const isDuplicateNotification = (
   return false;
 };
 
-function handleSoundDelivery(message: NotificationQueueMessage): Promise<void> {
-  console.log(
-    `[Notification Worker] Sound delivery placeholder (Task 11) for notification ${message.notificationId}`
-  );
-  return Promise.resolve();
+async function handleSoundDelivery(
+  message: NotificationQueueMessage
+): Promise<void> {
+  await handlePusherDelivery({
+    actorId: message.actorId,
+    eventType: message.eventType,
+    metadata: message.metadata,
+    notificationId: message.notificationId,
+    targetUserId: message.targetUserId,
+  });
 }
 
 async function handlePushDelivery(
@@ -213,6 +219,7 @@ async function startWorker() {
     secret: env.PUSHER_APP_SECRET,
     useTLS: env.ENV === "production",
   });
+
   console.log("Pusher client initialized");
 
   const digestIntervalId = startDigestProcessor(
