@@ -9,6 +9,7 @@
     "./native": "./src/native.ts",
     "./realtime": "./src/realtime.ts",
     "./read-receipt": "./src/read-receipt.ts",
+    "./notification-worker": "./src/notification-worker.ts",
     "./db": "./src/db.ts"
   },
   "dependencies": {

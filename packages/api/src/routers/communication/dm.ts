@@ -468,7 +468,7 @@ export const dmRouter = {
             .insert(notificationTable)
             .values({
               userId: recipientId,
-              type: "direct_message",
+              type: "dm_message",
               title: `${session.user.name} sent you a message`,
               message: notificationMessage,
               entityId: message.id,

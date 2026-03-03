@@ -214,7 +214,7 @@ export const messageRouter = {
             const mentionNotifications = input.mentions.map(
               (mentionedUserId) => ({
                 userId: mentionedUserId,
-                type: "mention" as const,
+                type: "channel_mention" as const,
                 title: `${user.name} mentioned you in ${channel.name}`,
                 message:
                   input.content?.slice(0, 200) ||
@@ -254,7 +254,7 @@ export const messageRouter = {
                           badge: "/favicon.ico",
                           tag: "work-holo-mention",
                           data: {
-                            type: "mention",
+                            type: "channel_mention",
                             url,
                           },
                         })
@@ -445,7 +445,7 @@ export const messageRouter = {
               const mentionNotifications = input.mentions.map(
                 (mentionedUserId) => ({
                   userId: mentionedUserId,
-                  type: "mention" as const,
+                  type: "channel_mention" as const,
                   title: `${user.name} mentioned you in ${channel.name}`,
                   message:
                     input.content?.slice(0, 200) ??
@@ -486,7 +486,7 @@ export const messageRouter = {
                             data: {
                               messageId: updatedMessage.id,
                               channelId: updatedMessage.channelId,
-                              type: "mention",
+                              type: "channel_mention",
                             },
                           })
                         );
@@ -1312,7 +1312,7 @@ export const messageRouter = {
             .where(
               and(
                 eq(notificationTable.userId, userId),
-                eq(notificationTable.type, "mention"),
+                eq(notificationTable.type, "channel_mention"),
                 inArray(notificationTable.entityId, messageIdsArray),
                 eq(notificationTable.status, "unread")
               )

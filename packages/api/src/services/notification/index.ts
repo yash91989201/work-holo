@@ -8,6 +8,14 @@ export {
   getDefaultPreference,
   isDeliveryEnabledByDefault,
 } from "./defaults";
+export { NotificationService } from "./notification.service";
+export type { AllNotificationManagers } from "./notification-managers";
+export { NotificationManagers } from "./notification-managers";
+export {
+  getEmailDigestInterval,
+  isMuted,
+  resolveDeliveryChannels,
+} from "./preference-resolver";
 export type {
   NotificationDeliveryChannel,
   NotificationDomainEvent,
