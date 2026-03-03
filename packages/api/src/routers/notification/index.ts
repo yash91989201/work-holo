@@ -35,6 +35,7 @@ import {
 } from "../../lib/schemas/notification";
 import { DEFAULT_NOTIFICATION_PREFERENCES } from "../../services/notification/defaults";
 import type { NotificationEventType } from "../../services/notification/types";
+import { soundPreferencesRouter } from "./sound-preferences";
 
 export const notificationRouter = {
   getNotifications: protectedProcedure
@@ -503,4 +504,6 @@ export const notificationRouter = {
 
       return { success: true, muted: input.muted };
     }),
+
+  soundPreferences: soundPreferencesRouter,
 };

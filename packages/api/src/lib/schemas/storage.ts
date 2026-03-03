@@ -7,6 +7,7 @@ export const BucketSchema = z.enum([
   BUCKETS.MESSAGE_IMAGE,
   BUCKETS.USER_PROFILE,
   BUCKETS.ORG_LOGO,
+  BUCKETS.NOTIFICATION_SOUND,
 ]);
 
 export const GetUploadUrlInput = z.object({

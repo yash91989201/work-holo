@@ -38,7 +38,11 @@ import {
   dmMessageTable,
 } from "../../schema/direct-message";
 import {
+  notificationPreferenceTable,
+  notificationSoundPreferenceTable,
+  notificationSoundPresetTable,
   notificationTable,
+  pendingEmailDigestTable,
   pushSubscriptionTable,
 } from "../../schema/notification";
 
@@ -146,6 +150,50 @@ export const ChannelReadProcessedWatermarkInsertSchema = createInsertSchema(
 export const NotificationSchema = createSelectSchema(notificationTable);
 export const NotificationUpdateSchema = createUpdateSchema(notificationTable);
 export const NotificationInsertSchema = createInsertSchema(notificationTable);
+
+// Notification Preference schemas
+export const NotificationPreferenceSchema = createSelectSchema(
+  notificationPreferenceTable
+);
+export const NotificationPreferenceUpdateSchema = createUpdateSchema(
+  notificationPreferenceTable
+);
+export const NotificationPreferenceInsertSchema = createInsertSchema(
+  notificationPreferenceTable
+);
+
+// Notification Sound Preset schemas
+export const NotificationSoundPresetSchema = createSelectSchema(
+  notificationSoundPresetTable
+);
+export const NotificationSoundPresetUpdateSchema = createUpdateSchema(
+  notificationSoundPresetTable
+);
+export const NotificationSoundPresetInsertSchema = createInsertSchema(
+  notificationSoundPresetTable
+);
+
+// Notification Sound Preference schemas
+export const NotificationSoundPreferenceSchema = createSelectSchema(
+  notificationSoundPreferenceTable
+);
+export const NotificationSoundPreferenceUpdateSchema = createUpdateSchema(
+  notificationSoundPreferenceTable
+);
+export const NotificationSoundPreferenceInsertSchema = createInsertSchema(
+  notificationSoundPreferenceTable
+);
+
+// Pending Email Digest schemas
+export const PendingEmailDigestSchema = createSelectSchema(
+  pendingEmailDigestTable
+);
+export const PendingEmailDigestUpdateSchema = createUpdateSchema(
+  pendingEmailDigestTable
+);
+export const PendingEmailDigestInsertSchema = createInsertSchema(
+  pendingEmailDigestTable
+);
 
 // Push Subscription schemas
 export const PushSubscriptionSchema = createSelectSchema(pushSubscriptionTable);

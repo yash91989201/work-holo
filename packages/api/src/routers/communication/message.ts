@@ -1062,44 +1062,87 @@ export const messageRouter = {
   addReaction: orgMemberProcedure
     .input(AddReactionInput)
     .output(AddReactionOutput)
-    .handler(async ({ context: { db, session, permission }, input }) => {
+    .handler(async ({ context, input }) => {
+      const { db, session, permission, notification, orgId } = context;
       await permission.requireMessageAccess(
         input.messageId,
         permission.channel().message.react
       );
       const userId = session.user.id;
 
-      const { txid } = await db.transaction(async (tx) => {
-        const txid = await generateTxId(tx);
+      const { txid, messageSenderId, channelId, messagePreview } =
+        await db.transaction(async (tx) => {
+          const txid = await generateTxId(tx);
 
-        const message = await tx.query.messageTable.findFirst({
-          where: eq(messageTable.id, input.messageId),
-          columns: { id: true },
+          const message = await tx.query.messageTable.findFirst({
+            where: eq(messageTable.id, input.messageId),
+            columns: {
+              id: true,
+              senderId: true,
+              channelId: true,
+              content: true,
+            },
+          });
+
+          if (!message) {
+            throw new ORPCError("NOT_FOUND", {
+              message: "Message not found.",
+            });
+          }
+
+          await tx
+            .insert(messageReactionTable)
+            .values({
+              messageId: input.messageId,
+              userId,
+              reaction: input.emoji,
+            })
+            .onConflictDoNothing({
+              target: [
+                messageReactionTable.messageId,
+                messageReactionTable.userId,
+                messageReactionTable.reaction,
+              ],
+            });
+
+          return {
+            txid,
+            messageSenderId: message.senderId,
+            channelId: message.channelId,
+            messagePreview: message.content?.slice(0, 100) ?? "",
+          };
         });
 
-        if (!message) {
-          throw new ORPCError("NOT_FOUND", {
-            message: "Message not found.",
-          });
-        }
+      // Emit channel_reaction notification (skip self-reactions)
+      if (notification && userId !== messageSenderId) {
+        const channel = await db.query.channelTable.findFirst({
+          where: eq(channelTable.id, channelId),
+          columns: { name: true },
+        });
 
-        await tx
-          .insert(messageReactionTable)
-          .values({
-            messageId: input.messageId,
-            userId,
-            reaction: input.emoji,
-          })
-          .onConflictDoNothing({
-            target: [
-              messageReactionTable.messageId,
-              messageReactionTable.userId,
-              messageReactionTable.reaction,
-            ],
-          });
-
-        return { txid };
-      });
+        Promise.resolve().then(async () => {
+          try {
+            await notification.emit({
+              type: "channel_reaction",
+              actorId: userId,
+              targetUserId: messageSenderId,
+              orgId,
+              entityId: input.messageId,
+              entityType: "reaction",
+              metadata: {
+                channelId,
+                channelName: channel?.name ?? "",
+                messagePreview,
+                reactorId: userId,
+                reactorName: session.user.name ?? "Someone",
+                emoji: input.emoji,
+              },
+            });
+          } catch (error) {
+            console.error("Error emitting reaction notification:", error);
+          }
+        });
+      }
 
       return {
         txid,

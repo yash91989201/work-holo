@@ -734,73 +734,109 @@ export const dmRouter = {
 
   toggleReaction: dmProcedure
     .input(ToggleDmReactionInput)
-    .handler(async ({ input, context: { db, orgId, session } }) => {
-      const userId = session.user.id;
+    .handler(
+      async ({ input, context: { db, orgId, session, notification } }) => {
+        const userId = session.user.id;
 
-      const result = await db.transaction(async (tx) => {
-        const txid = await generateTxId(tx);
-        const message = await tx.query.dmMessageTable.findFirst({
-          where: eq(dmMessageTable.id, input.messageId),
+        const result = await db.transaction(async (tx) => {
+          const txid = await generateTxId(tx);
+          const message = await tx.query.dmMessageTable.findFirst({
+            where: eq(dmMessageTable.id, input.messageId),
+          });
+
+          if (!message) {
+            throw new ORPCError("NOT_FOUND", {
+              message: "Message not found.",
+            });
+          }
+
+          const conversation = await tx.query.dmConversationTable.findFirst({
+            where: and(
+              eq(dmConversationTable.id, message.conversationId),
+              eq(dmConversationTable.organizationId, orgId),
+              or(
+                eq(dmConversationTable.participantOneId, userId),
+                eq(dmConversationTable.participantTwoId, userId)
+              )
+            ),
+          });
+
+          if (!conversation) {
+            throw new ORPCError("FORBIDDEN", {
+              message: "You are not a participant of this conversation.",
+            });
+          }
+
+          const existing = await tx.query.dmMessageReactionTable.findFirst({
+            where: and(
+              eq(dmMessageReactionTable.messageId, input.messageId),
+              eq(dmMessageReactionTable.userId, userId),
+              eq(dmMessageReactionTable.emoji, input.emoji)
+            ),
+          });
+
+          let action: "added" | "removed";
+          if (existing) {
+            await tx
+              .delete(dmMessageReactionTable)
+              .where(eq(dmMessageReactionTable.id, existing.id));
+            action = "removed";
+          } else {
+            await tx.insert(dmMessageReactionTable).values({
+              messageId: input.messageId,
+              userId,
+              emoji: input.emoji,
+            });
+            action = "added";
+          }
+
+          return {
+            txid,
+            action,
+            conversationId: message.conversationId,
+            messageSenderId: message.senderId,
+            messagePreview: message.content?.slice(0, 100) ?? "",
+          };
         });
 
-        if (!message) {
-          throw new ORPCError("NOT_FOUND", {
-            message: "Message not found.",
+        await emitDmEvent(result.conversationId, DM_EVENTS.REACTION, {
+          messageId: input.messageId,
+          userId,
+          emoji: input.emoji,
+          action: result.action,
+        });
+
+        if (
+          notification &&
+          result.action === "added" &&
+          userId !== result.messageSenderId
+        ) {
+          Promise.resolve().then(async () => {
+            try {
+              await notification.emit({
+                type: "dm_reaction",
+                actorId: userId,
+                targetUserId: result.messageSenderId,
+                orgId,
+                entityId: input.messageId,
+                entityType: "reaction",
+                metadata: {
+                  conversationId: result.conversationId,
+                  messagePreview: result.messagePreview,
+                  reactorId: userId,
+                  reactorName: session.user.name ?? "Someone",
+                  emoji: input.emoji,
+                },
+              });
+            } catch (error) {
+              console.error("Error emitting DM reaction notification:", error);
+            }
           });
         }
 
-        const conversation = await tx.query.dmConversationTable.findFirst({
-          where: and(
-            eq(dmConversationTable.id, message.conversationId),
-            eq(dmConversationTable.organizationId, orgId),
-            or(
-              eq(dmConversationTable.participantOneId, userId),
-              eq(dmConversationTable.participantTwoId, userId)
-            )
-          ),
-        });
-
-        if (!conversation) {
-          throw new ORPCError("FORBIDDEN", {
-            message: "You are not a participant of this conversation.",
-          });
-        }
-
-        const existing = await tx.query.dmMessageReactionTable.findFirst({
-          where: and(
-            eq(dmMessageReactionTable.messageId, input.messageId),
-            eq(dmMessageReactionTable.userId, userId),
-            eq(dmMessageReactionTable.emoji, input.emoji)
-          ),
-        });
-
-        let action: "added" | "removed";
-        if (existing) {
-          await tx
-            .delete(dmMessageReactionTable)
-            .where(eq(dmMessageReactionTable.id, existing.id));
-          action = "removed";
-        } else {
-          await tx.insert(dmMessageReactionTable).values({
-            messageId: input.messageId,
-            userId,
-            emoji: input.emoji,
-          });
-          action = "added";
-        }
-
-        return { txid, action, conversationId: message.conversationId };
-      });
-
-      await emitDmEvent(result.conversationId, DM_EVENTS.REACTION, {
-        messageId: input.messageId,
-        userId,
-        emoji: input.emoji,
-        action: result.action,
-      });
-
-      return result;
-    }),
+        return result;
+      }
+    ),
 
   togglePin: dmProcedure
     .input(ToggleDmPinInput)
