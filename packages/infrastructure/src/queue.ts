@@ -53,10 +53,6 @@ export class Queue {
 
     await Queue.channel.assertQueue(QUEUES.NOTIFICATIONS, {
       durable: true,
-      arguments: {
-        "x-message-ttl": 3_600_000,
-        "x-max-length": 50_000,
-      },
     });
 
     console.log("RabbitMQ queues setup completed");

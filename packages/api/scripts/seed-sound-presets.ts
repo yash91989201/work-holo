@@ -1,4 +1,6 @@
-import type { db as Db } from "@work-holo/db";
+#!/usr/bin/env bun
+
+import { db } from "@work-holo/db";
 import { notificationSoundPresetTable } from "@work-holo/db/schema/notification";
 import { eq } from "drizzle-orm";
 
@@ -10,7 +12,6 @@ interface SoundPreset {
 }
 
 const DEFAULT_SOUND_PRESETS: SoundPreset[] = [
-  // System sounds (webm)
   {
     name: "Mention",
     filename: "mention.webm",
@@ -23,56 +24,6 @@ const DEFAULT_SOUND_PRESETS: SoundPreset[] = [
     category: "system",
     sortOrder: 2,
   },
-  // WebM presets
-  {
-    name: "Chime",
-    filename: "chime.webm",
-    category: "default",
-    sortOrder: 10,
-  },
-  {
-    name: "Bell",
-    filename: "bell.webm",
-    category: "default",
-    sortOrder: 11,
-  },
-  {
-    name: "Pop",
-    filename: "pop.webm",
-    category: "default",
-    sortOrder: 12,
-  },
-  {
-    name: "Ding",
-    filename: "ding.webm",
-    category: "default",
-    sortOrder: 13,
-  },
-  {
-    name: "Gentle",
-    filename: "gentle.webm",
-    category: "default",
-    sortOrder: 14,
-  },
-  {
-    name: "Alert",
-    filename: "alert.webm",
-    category: "default",
-    sortOrder: 15,
-  },
-  {
-    name: "Bubble",
-    filename: "bubble.webm",
-    category: "default",
-    sortOrder: 16,
-  },
-  {
-    name: "Wood",
-    filename: "wood.webm",
-    category: "default",
-    sortOrder: 17,
-  },
-  // MP3 presets (in presets/ folder)
   {
     name: "Ascend",
     filename: "presets/ascend.mp3",
@@ -183,20 +134,17 @@ const DEFAULT_SOUND_PRESETS: SoundPreset[] = [
   },
 ];
 
-/**
- * Seeds the notification sound presets table with default sounds.
- * Uses upsert pattern — safe to call multiple times.
- */
-export async function seedSoundPresets(database: typeof Db): Promise<void> {
+async function seedSoundPresets(): Promise<void> {
+  console.log("🎵 Seeding notification sound presets...");
+
   for (const preset of DEFAULT_SOUND_PRESETS) {
-    const existing =
-      await database.query.notificationSoundPresetTable.findFirst({
-        where: eq(notificationSoundPresetTable.filename, preset.filename),
-        columns: { id: true },
-      });
+    const existing = await db.query.notificationSoundPresetTable.findFirst({
+      where: eq(notificationSoundPresetTable.filename, preset.filename),
+      columns: { id: true },
+    });
 
     if (existing) {
-      await database
+      await db
         .update(notificationSoundPresetTable)
         .set({
           name: preset.name,
@@ -204,15 +152,27 @@ export async function seedSoundPresets(database: typeof Db): Promise<void> {
           sortOrder: preset.sortOrder,
         })
         .where(eq(notificationSoundPresetTable.id, existing.id));
+      console.log(`  🔄 Updated: ${preset.name}`);
     } else {
-      await database.insert(notificationSoundPresetTable).values({
+      await db.insert(notificationSoundPresetTable).values({
         name: preset.name,
         filename: preset.filename,
         category: preset.category,
         sortOrder: preset.sortOrder,
       });
+      console.log(`  ✅ Inserted: ${preset.name}`);
     }
   }
+
+  console.log(`🎉 Seeded ${DEFAULT_SOUND_PRESETS.length} sound presets`);
 }
 
-export { DEFAULT_SOUND_PRESETS };
+seedSoundPresets()
+  .then(() => {
+    console.log("✨ Done!");
+    process.exit(0);
+  })
+  .catch((error) => {
+    console.error("❌ Error seeding sound presets:", error);
+    process.exit(1);
+  });

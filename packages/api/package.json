@@ -9,6 +9,9 @@
     }
   },
   "type": "module",
+  "scripts": {
+    "seed:sound-presets": "bun run ./scripts/seed-sound-presets.ts"
+  },
   "devDependencies": {
     "@types/web-push": "^3.6.4",
     "@work-holo/config": "workspace:*",
