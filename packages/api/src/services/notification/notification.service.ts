@@ -5,6 +5,7 @@ import {
   QUEUES,
   type Queue,
 } from "@work-holo/infrastructure";
+import { resolveDeliveryChannels } from "./preference-resolver";
 import type {
   NotificationDomainEvent,
   NotificationServiceInterface,
@@ -91,7 +92,18 @@ export class NotificationService implements NotificationServiceInterface {
       return;
     }
 
-    const deliveryChannels = ["sound", "push", "email"];
+    const deliveryChannels = await resolveDeliveryChannels({
+      userId: event.targetUserId,
+      orgId: event.orgId,
+      eventType: event.type,
+      entityType: event.entityType,
+      entityId: event.entityId,
+      db: this.db,
+    });
+
+    if (deliveryChannels.length === 0) {
+      return;
+    }
 
     const payload: NotificationQueueMessage = {
       notificationId: notification.id,
