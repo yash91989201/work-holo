@@ -26,7 +26,7 @@ import { Separator } from "@/components/ui/separator";
 import { useNotificationPermission } from "@/hooks/use-notification-permission";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
 import { testPushNotification } from "@/lib/push-subscription";
-import { queryUtils } from "@/utils/orpc";
+import { queryClient, queryUtils } from "@/utils/orpc";
 import { uploadNotificationSound } from "@/utils/upload-helper";
 import { Spinner } from "../ui/spinner";
 import { Switch } from "../ui/switch";
@@ -94,12 +94,33 @@ export function SoundNotifications() {
   );
 
   const updatePreference = useMutation(
-    queryUtils.notification.updatePreference.mutationOptions({})
+    queryUtils.notification.updatePreference.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: queryUtils.notification.getPreferences.queryKey({
+            input: {},
+          }),
+        });
+      },
+    })
   );
   const updateSoundPreference = useMutation(
-    queryUtils.notification.soundPreferences.updatePreference.mutationOptions(
-      {}
-    )
+    queryUtils.notification.soundPreferences.updatePreference.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey:
+            queryUtils.notification.soundPreferences.getPreference.queryKey({
+              input: { scope: "channel" },
+            }),
+        });
+        queryClient.invalidateQueries({
+          queryKey:
+            queryUtils.notification.soundPreferences.getPreference.queryKey({
+              input: { scope: "dm_conversation" },
+            }),
+        });
+      },
+    })
   );
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -315,7 +336,15 @@ export function DesktopNotifications() {
     queryUtils.notification.getPreferences.queryOptions({ input: {} })
   );
   const updatePreference = useMutation(
-    queryUtils.notification.updatePreference.mutationOptions({})
+    queryUtils.notification.updatePreference.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: queryUtils.notification.getPreferences.queryKey({
+            input: {},
+          }),
+        });
+      },
+    })
   );
 
   const handleTogglePermission = async (enabled: boolean) => {
@@ -482,7 +511,15 @@ export function EmailNotifications() {
     queryUtils.notification.getPreferences.queryOptions({ input: {} })
   );
   const updatePreference = useMutation(
-    queryUtils.notification.updatePreference.mutationOptions({})
+    queryUtils.notification.updatePreference.mutationOptions({
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: queryUtils.notification.getPreferences.queryKey({
+            input: {},
+          }),
+        });
+      },
+    })
   );
 
   const handleToggleEvent = (
