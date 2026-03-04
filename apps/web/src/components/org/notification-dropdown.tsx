@@ -5,7 +5,6 @@ import {
   IconBellFilled,
   IconCheck,
   IconChecks,
-  IconChevronRight,
   IconMail,
   IconMessage,
   IconMoodSmile,
@@ -13,8 +12,8 @@ import {
 import { useNavigate, useParams } from "@tanstack/react-router";
 import DOMPurify from "dompurify";
 import parse from "html-react-parser";
+import type React from "react";
 import { useCallback, useMemo, useState } from "react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -245,7 +244,7 @@ export function NotificationDropdown() {
           <TooltipTrigger asChild>
             <PopoverTrigger asChild>
               <Button
-                className="group relative size-10 rounded-xl bg-linear-to-br from-primary/5 to-primary/0 shadow-lg shadow-primary/5 transition-all duration-300 hover:scale-105 hover:shadow-primary/10 hover:shadow-xl"
+                className="group relative size-9 rounded-full transition-all duration-300 hover:bg-primary/5"
                 size="icon"
                 variant="ghost"
               >
@@ -258,14 +257,14 @@ export function NotificationDropdown() {
                   {unreadCount > 0 ? (
                     <IconBellFilled className="h-5 w-5 text-primary transition-transform group-hover:scale-110" />
                   ) : (
-                    <IconBell className="h-5 w-5 text-foreground/60 transition-transform group-hover:scale-110 group-hover:text-foreground" />
+                    <IconBell className="h-5 w-5 text-foreground/70 transition-transform group-hover:scale-110 group-hover:text-foreground" />
                   )}
                 </div>
                 {unreadCount > 0 && (
-                  <>
-                    <span className="absolute -top-1 -right-1 h-3 w-3 animate-pulse rounded-full bg-linear-to-br from-red-500 to-red-600 shadow-lg shadow-red-500/30" />
-                    <span className="absolute -top-1 -right-1 h-3 w-3 animate-ping rounded-full bg-linear-to-br from-red-500 to-red-600 opacity-50" />
-                  </>
+                  <div className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 font-bold text-[10px] text-primary-foreground shadow-sm ring-2 ring-background">
+                    {unreadCount > 9 ? "9+" : unreadCount}
+                    <span className="absolute inset-0 -z-10 animate-ping rounded-full bg-primary opacity-50" />
+                  </div>
                 )}
               </Button>
             </PopoverTrigger>
@@ -280,77 +279,59 @@ export function NotificationDropdown() {
 
         <PopoverContent
           align="end"
-          className="w-[24rem] overflow-hidden rounded-2xl border border-border/40 bg-background/95 p-0 shadow-2xl shadow-primary/5 backdrop-blur-xl"
-          sideOffset={12}
+          className="w-120 overflow-hidden rounded-xl border border-border/50 bg-background/95 p-0 shadow-black/5 shadow-xl backdrop-blur-xl"
+          sideOffset={8}
         >
-          <div className="relative overflow-hidden border-border/40 border-b">
-            <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-primary/0 to-transparent" />
-            <div className="relative px-5 pt-5 pb-4">
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1">
-                  <div className="flex items-baseline gap-3">
-                    <h2 className="font-bold text-foreground text-xl tracking-tight">
-                      Notifications
-                    </h2>
-                    {unreadCount > 0 && (
-                      <Badge
-                        className="h-6 rounded-full bg-linear-to-r from-primary to-primary/80 font-bold text-[10px] uppercase tracking-wider"
-                        variant="default"
-                      >
-                        {unreadCount}
-                      </Badge>
-                    )}
-                  </div>
-                  <p className="mt-1 text-muted-foreground text-xs">
-                    {unreadCount > 0
-                      ? `${unreadCount} unread notification${unreadCount > 1 ? "s" : ""}`
-                      : "You're all caught up"}
-                  </p>
-                </div>
-
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      className="h-9 w-9 rounded-lg bg-background/60 shadow-sm backdrop-blur-sm transition-all duration-200 hover:bg-primary hover:text-primary-foreground"
-                      disabled={unreadCount === 0}
-                      onClick={handleMarkAllAsRead}
-                      size="icon"
-                      variant="ghost"
-                    >
-                      <IconChecks className="h-4 w-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom">
-                    <p>Mark all as read</p>
-                  </TooltipContent>
-                </Tooltip>
-              </div>
-
-              <div className="mt-4 flex gap-2">
-                {filterOptions.map((option) => (
-                  <button
-                    className={cn(
-                      "relative overflow-hidden rounded-lg px-3 py-1.5 font-medium text-xs transition-all duration-200",
-                      "border",
-                      filter === option.value
-                        ? "border-primary/50 bg-primary/10 text-primary shadow-primary/10 shadow-sm"
-                        : "border-border/40 bg-background/60 text-muted-foreground hover:border-border/60 hover:bg-background hover:text-foreground"
-                    )}
-                    key={option.value}
-                    onClick={() => setFilter(option.value)}
-                    type="button"
+          <div className="flex flex-col gap-3 border-border/40 border-b bg-background/50 px-4 py-3 backdrop-blur-md">
+            <div className="flex items-center justify-between">
+              <h2 className="font-semibold text-base text-foreground tracking-tight">
+                Notifications
+              </h2>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    className="h-7 w-7 rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
+                    disabled={unreadCount === 0}
+                    onClick={handleMarkAllAsRead}
+                    size="icon"
+                    variant="ghost"
                   >
+                    <IconChecks className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>Mark all as read</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+
+            <div className="flex w-full rounded-lg bg-muted/50 p-0.5">
+              {filterOptions.map((option) => (
+                <button
+                  className={cn(
+                    "flex-1 rounded-md px-3 py-1.5 font-medium text-xs transition-all duration-200",
+                    filter === option.value
+                      ? "bg-background text-foreground shadow-sm ring-1 ring-border/50"
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                  key={option.value}
+                  onClick={() => setFilter(option.value)}
+                  type="button"
+                >
+                  <div className="flex items-center justify-center gap-1.5">
                     {option.label}
                     {option.value === "unread" && unreadCount > 0 && (
-                      <span className="ml-1.5 h-1.5 w-1.5 rounded-full bg-primary" />
+                      <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-primary/10 px-1 font-semibold text-[10px] text-primary">
+                        {unreadCount}
+                      </span>
                     )}
-                  </button>
-                ))}
-              </div>
+                  </div>
+                </button>
+              ))}
             </div>
           </div>
 
-          <ScrollArea className="h-112">
+          <ScrollArea className="h-140" type="always">
             <NotificationContent
               filter={filter}
               groupedNotifications={groupedNotifications}
@@ -360,17 +341,18 @@ export function NotificationDropdown() {
             />
           </ScrollArea>
 
-          <div className="flex items-center justify-between border-border/40 border-t bg-muted/30 px-5 py-3">
-            <span className="font-medium text-[11px] text-muted-foreground/70">
+          <div className="flex items-center justify-between border-border/40 border-t bg-background/50 px-4 py-2 backdrop-blur-md">
+            <span className="text-muted-foreground text-xs">
               {filteredNotifications.length}{" "}
-              {filteredNotifications.length === 1 ? "item" : "items"}
+              {filteredNotifications.length === 1
+                ? "notification"
+                : "notifications"}
             </span>
             <Button
-              className="h-7 gap-1.5 rounded-lg px-2.5 font-medium text-muted-foreground text-xs transition-all hover:bg-primary/5 hover:text-foreground"
+              className="h-8 px-2 font-medium text-muted-foreground text-xs hover:text-foreground"
               variant="ghost"
             >
               View all
-              <IconChevronRight className="h-3.5 w-3.5" />
             </Button>
           </div>
         </PopoverContent>
@@ -410,7 +392,7 @@ function NotificationContent({
   }
 
   return (
-    <div className="flex flex-col py-2">
+    <div className="flex flex-col pb-2">
       {groupedNotifications.today.length > 0 && (
         <TimeGroupSection
           label="Today"
@@ -454,17 +436,17 @@ function TimeGroupSection({
 }: TimeGroupSectionProps) {
   return (
     <div className="flex flex-col">
-      <div className="sticky top-0 z-10 flex items-center gap-2 bg-background/95 px-5 py-2 backdrop-blur-sm">
-        <span className="font-bold text-[10px] text-muted-foreground/70 uppercase tracking-widest">
-          {label}
+      <div className="sticky top-0 z-10 flex items-center gap-3 bg-background/80 px-4 py-2 backdrop-blur-md">
+        <span className="font-medium text-[11px] text-muted-foreground uppercase tracking-wider">
+          {label}{" "}
+          <span className="text-muted-foreground/50">
+            ({notifications.length})
+          </span>
         </span>
-        <div className="h-px flex-1 bg-linear-to-r from-border/40 to-transparent" />
-        <span className="font-medium text-[10px] text-muted-foreground/50">
-          {notifications.length}
-        </span>
+        <div className="h-px flex-1 bg-border/40" />
       </div>
 
-      <div className="flex flex-col gap-1 px-2 py-1">
+      <div className="flex flex-col">
         {notifications.map((notification) => (
           <NotificationItem
             key={notification.id}
@@ -514,16 +496,6 @@ function NotificationItem({
     sender?.name ??
     actor?.name ??
     "Someone";
-
-  const channelName =
-    typeof metadata?.channelName === "string" && metadata.channelName.length > 0
-      ? metadata.channelName
-      : null;
-
-  const labelText =
-    notification.type === "channel_message" && channelName
-      ? `New message in #${channelName}`
-      : meta.label;
 
   const handleClick = () => {
     if (isUnread) {
@@ -580,90 +552,64 @@ function NotificationItem({
   return (
     <div
       className={cn(
-        "group relative rounded-xl transition-all duration-200",
-        isUnread &&
-          "border-l-2 border-l-primary bg-linear-to-r from-primary/5 via-primary/2 to-transparent"
+        "group flex items-start gap-3 px-4 py-3 transition-all duration-200",
+        isUnread
+          ? "bg-primary/[0.03] hover:bg-primary/[0.06]"
+          : "hover:bg-muted/40",
+        isUnread && "border-l-[3px] border-l-primary"
       )}
     >
+      <div className="mt-0.5 shrink-0">
+        <div
+          className={cn(
+            "flex h-10 w-10 items-center justify-center rounded-full transition-transform duration-200 group-hover:scale-105",
+            meta.bgTone
+          )}
+        >
+          <span className={cn(meta.tone)}>{meta.icon}</span>
+        </div>
+      </div>
+
       <button
-        className={cn(
-          "flex w-full items-start gap-3 rounded-xl px-4 py-3 text-left transition-all duration-200",
-          isUnread ? "hover:bg-primary/8" : "hover:bg-muted/40"
-        )}
+        className="flex min-w-0 flex-1 flex-col gap-0.5 text-left"
         onClick={handleClick}
         onKeyDown={handleKeyDown}
         type="button"
       >
-        <div className="relative">
-          <div
+        <span
+          className={cn(
+            "truncate font-semibold text-[15px]",
+            isUnread ? "text-foreground" : "text-foreground/70"
+          )}
+        >
+          {actorName}
+        </span>
+
+        {notification.message && (
+          <p
             className={cn(
-              "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ring-1 transition-transform duration-200",
-              meta.bgTone,
-              meta.accentColor,
-              "group-hover:scale-105 group-hover:shadow-lg",
-              isUnread && "shadow-md"
+              "line-clamp-2 text-sm leading-snug",
+              isUnread ? "text-foreground/85" : "text-muted-foreground"
             )}
           >
-            <span className={cn(meta.tone)}>{meta.icon}</span>
-          </div>
-          {isUnread && (
-            <div className="absolute -right-0.5 -bottom-0.5 flex h-3 w-3 items-center justify-center">
-              <div className="h-2 w-2 animate-ping rounded-full bg-primary" />
-              <div className="absolute h-2 w-2 rounded-full bg-primary" />
-            </div>
-          )}
-        </div>
+            {parse(DOMPurify.sanitize(notification.message))}
+          </p>
+        )}
 
-        <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-          <div className="flex items-center justify-between">
-            <span
-              className={cn(
-                "min-w-0 flex-1 truncate font-medium text-sm leading-snug",
-                isUnread ? "text-foreground" : "text-foreground/70"
-              )}
-            >
-              {actorName}
-            </span>
-            <span className="ml-2 shrink-0 font-medium text-[10px] text-muted-foreground/50 tabular-nums">
-              {formatTimeAgo(new Date(notification.createdAt))}
-            </span>
-          </div>
-
-          <div
-            className={cn(
-              "inline-flex w-fit items-center gap-1.5 rounded-full border px-2 py-0.5 font-medium text-[10px] leading-none",
-              meta.bgTone,
-              meta.accentColor,
-              meta.tone
-            )}
-          >
-            {labelText}
-          </div>
-
-          {notification.message && (
-            <p className="line-clamp-2 text-muted-foreground/60 text-xs leading-relaxed">
-              {parse(DOMPurify.sanitize(notification.message))}
-            </p>
-          )}
-        </div>
+        <span className="text-[11px] text-muted-foreground/70 tabular-nums">
+          {formatTimeAgo(new Date(notification.createdAt))}
+        </span>
       </button>
 
       {isUnread && (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              aria-label="Mark as read"
-              className="absolute top-1/2 right-3 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-lg bg-background/80 opacity-0 shadow-sm backdrop-blur-sm transition-all duration-150 hover:bg-primary hover:text-primary-foreground group-hover:opacity-100"
-              onClick={handleMarkAsReadClick}
-              type="button"
-            >
-              <IconCheck className="h-3.5 w-3.5 text-muted-foreground" />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent side="left">
-            <p>Mark as read</p>
-          </TooltipContent>
-        </Tooltip>
+        <Button
+          className="h-8 w-8 shrink-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+          onClick={handleMarkAsReadClick}
+          size="icon"
+          variant="ghost"
+        >
+          <IconCheck className="h-4 w-4" />
+        </Button>
       )}
     </div>
   );
@@ -689,19 +635,19 @@ function EmptyState({ filter }: { filter: string }) {
   const { title, description } = messages[filter] ?? messages.all;
 
   return (
-    <Empty className="h-full min-h-80 border-0">
-      <EmptyHeader className="gap-4">
+    <Empty className="h-full min-h-64 border-0">
+      <EmptyHeader className="gap-3">
         <EmptyMedia
-          className="h-16 w-16 rounded-2xl bg-linear-to-br from-primary/10 to-primary/0 shadow-lg shadow-primary/5 ring-1 ring-border/30"
+          className="h-12 w-12 rounded-full bg-muted/50"
           variant="icon"
         >
-          <IconBell className="h-8 w-8 text-primary/40" />
+          <IconBell className="h-6 w-6 text-muted-foreground/50" />
         </EmptyMedia>
-        <div className="space-y-1.5">
-          <EmptyTitle className="font-semibold text-base tracking-tight">
+        <div className="space-y-1">
+          <EmptyTitle className="font-medium text-foreground text-sm">
             {title}
           </EmptyTitle>
-          <EmptyDescription className="max-w-56 text-sm">
+          <EmptyDescription className="max-w-50 text-muted-foreground text-xs">
             {description}
           </EmptyDescription>
         </div>
@@ -715,28 +661,21 @@ function NotificationListSkeleton() {
     <div className="flex flex-col py-2">
       {([0, 1] as const).map((groupIndex) => (
         <div className="flex flex-col" key={groupIndex}>
-          <div className="flex items-center gap-2 px-5 py-2">
-            <Skeleton className="h-2.5 w-16 rounded-full" />
-            <div className="h-px flex-1 bg-linear-to-r from-border/40 to-transparent" />
-            <Skeleton className="h-2.5 w-4 rounded-full" />
+          <div className="flex items-center gap-3 px-4 py-2">
+            <Skeleton className="h-3 w-16 rounded-sm" />
+            <div className="h-px flex-1 bg-border/40" />
           </div>
 
-          <div className="flex flex-col gap-1 px-2 py-1">
+          <div className="flex flex-col">
             {([0, 1, 2] as const).map((itemIndex) => (
-              <div
-                className="flex items-start gap-3 rounded-xl px-4 py-3"
-                key={itemIndex}
-              >
-                <Skeleton className="h-10 w-10 shrink-0 rounded-xl" />
-                <div className="flex flex-1 flex-col gap-1.5">
-                  <div className="flex items-start justify-between gap-2">
-                    <Skeleton className="h-3.5 w-32 rounded-full" />
-                    <Skeleton className="h-2.5 w-10 rounded-full" />
-                  </div>
-                  <Skeleton className="h-3 w-20 rounded-full" />
-                  <Skeleton className="mt-0.5 h-2.5 w-full rounded-full" />
-                  <Skeleton className="h-2.5 w-3/4 rounded-full" />
+              <div className="flex items-start gap-3 px-4 py-3" key={itemIndex}>
+                <Skeleton className="h-10 w-10 shrink-0 rounded-full" />
+                <div className="flex flex-1 flex-col gap-0.5">
+                  <Skeleton className="h-4 w-32 rounded-sm" />
+                  <Skeleton className="h-3.5 w-full rounded-sm" />
+                  <Skeleton className="h-3 w-20 rounded-sm" />
                 </div>
+                <Skeleton className="h-8 w-8 shrink-0 rounded-md" />
               </div>
             ))}
           </div>

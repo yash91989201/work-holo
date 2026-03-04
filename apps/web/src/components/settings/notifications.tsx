@@ -1,7 +1,10 @@
 import {
+  IconBell,
   IconBellFilled,
+  IconMail,
   IconPlayerPlay,
   IconUpload,
+  IconVolume,
 } from "@tabler/icons-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import type { NotificationEventType } from "@work-holo/api/services/notification/types";
@@ -23,6 +26,20 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useNotificationPermission } from "@/hooks/use-notification-permission";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
 import { testPushNotification } from "@/lib/push-subscription";
@@ -73,10 +90,20 @@ const EVENT_TYPES: {
   },
 ];
 
+const CHANNEL_EVENTS: NotificationEventType[] = [
+  "channel_message",
+  "channel_reply",
+  "channel_reaction",
+  "channel_mention",
+];
+
+const DM_EVENTS: NotificationEventType[] = [
+  "dm_message",
+  "dm_reply",
+  "dm_reaction",
+];
+
 export function SoundNotifications() {
-  const { data: preferences } = useQuery(
-    queryUtils.notification.getPreferences.queryOptions({ input: {} })
-  );
   const { data: presetsData } = useQuery(
     queryUtils.notification.soundPreferences.listPresets.queryOptions({
       input: {},
@@ -93,17 +120,6 @@ export function SoundNotifications() {
     })
   );
 
-  const updatePreference = useMutation(
-    queryUtils.notification.updatePreference.mutationOptions({
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: queryUtils.notification.getPreferences.queryKey({
-            input: {},
-          }),
-        });
-      },
-    })
-  );
   const updateSoundPreference = useMutation(
     queryUtils.notification.soundPreferences.updatePreference.mutationOptions({
       onSuccess: () => {
@@ -127,14 +143,6 @@ export function SoundNotifications() {
   const [uploadingScope, setUploadingScope] = useState<
     "channel" | "dm_conversation" | null
   >(null);
-
-  const handleToggle = (eventType: NotificationEventType, enabled: boolean) => {
-    updatePreference.mutate({
-      eventType,
-      deliveryChannel: "sound",
-      enabled,
-    });
-  };
 
   const handleSoundChange = (
     scope: "channel" | "dm_conversation",
@@ -274,7 +282,7 @@ export function SoundNotifications() {
 
   return (
     <div className="space-y-3">
-      <h3>Sound Notifications</h3>
+      <h3>Sound Settings</h3>
       <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
         {renderSoundPicker(
           "channel",
@@ -289,24 +297,6 @@ export function SoundNotifications() {
           "Default sound for direct messages",
           dmSoundPref
         )}
-        <Separator />
-        {EVENT_TYPES.map((event, index) => (
-          <div key={event.id}>
-            <Item>
-              <ItemContent>
-                <ItemTitle>{event.label}</ItemTitle>
-                <ItemDescription>{event.description}</ItemDescription>
-              </ItemContent>
-              <ItemActions>
-                <Switch
-                  checked={preferences?.global[event.id]?.sound ?? false}
-                  onCheckedChange={(checked) => handleToggle(event.id, checked)}
-                />
-              </ItemActions>
-            </Item>
-            {index < EVENT_TYPES.length - 1 && <Separator />}
-          </div>
-        ))}
       </div>
       <input
         accept="audio/*"
@@ -331,22 +321,6 @@ export function DesktopNotifications() {
   } = usePushNotifications();
 
   const [isTesting, setIsTesting] = useState(false);
-
-  const { data: preferences } = useQuery(
-    queryUtils.notification.getPreferences.queryOptions({ input: {} })
-  );
-
-  const updatePreference = useMutation(
-    queryUtils.notification.updatePreference.mutationOptions({
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: queryUtils.notification.getPreferences.queryKey({
-            input: {},
-          }),
-        });
-      },
-    })
-  );
 
   const handleTogglePermission = async (enabled: boolean) => {
     if (!isSupported) {
@@ -397,17 +371,6 @@ export function DesktopNotifications() {
     }
   };
 
-  const handleToggleEvent = (
-    eventType: NotificationEventType,
-    enabled: boolean
-  ) => {
-    updatePreference.mutate({
-      eventType,
-      deliveryChannel: "push",
-      enabled,
-    });
-  };
-
   return (
     <div className="space-y-3">
       <h3>Desktop Notifications</h3>
@@ -434,8 +397,8 @@ export function DesktopNotifications() {
             <Item>
               <ItemContent>
                 <ItemDescription className="text-yellow-600 dark:text-yellow-500">
-                  To enable notifications, click the lock icon in your browser's
-                  address bar and update permissions.
+                  To enable notifications, click the lock icon in your
+                  browser&apos;s address bar and update permissions.
                 </ItemDescription>
               </ItemContent>
             </Item>
@@ -476,7 +439,7 @@ export function DesktopNotifications() {
               <ItemContent>
                 <ItemTitle>Test Notification</ItemTitle>
                 <ItemDescription>
-                  Send a test notification to verify it's working
+                  Send a test notification to verify it&apos;s working
                 </ItemDescription>
               </ItemContent>
               <ItemActions>
@@ -489,43 +452,17 @@ export function DesktopNotifications() {
                   {isTesting ? (
                     <>
                       <Spinner />
-                      <span>Testing...</span>
+                      <span>Sending...</span>
                     </>
                   ) : (
                     <>
                       <IconBellFilled className="size-3" />
-                      <span>Test</span>
+                      <span>Send Test</span>
                     </>
                   )}
                 </Button>
               </ItemActions>
             </Item>
-
-            <Separator />
-            <div className="px-4 py-2 font-medium text-muted-foreground text-sm">
-              Notify me about:
-            </div>
-            <Separator />
-
-            {EVENT_TYPES.map((event, index) => (
-              <div key={event.id}>
-                <Item>
-                  <ItemContent>
-                    <ItemTitle>{event.label}</ItemTitle>
-                    <ItemDescription>{event.description}</ItemDescription>
-                  </ItemContent>
-                  <ItemActions>
-                    <Switch
-                      checked={preferences?.global[event.id]?.push ?? false}
-                      onCheckedChange={(checked) =>
-                        handleToggleEvent(event.id, checked)
-                      }
-                    />
-                  </ItemActions>
-                </Item>
-                {index < EVENT_TYPES.length - 1 && <Separator />}
-              </div>
-            ))}
           </>
         )}
       </div>
@@ -537,6 +474,7 @@ export function EmailNotifications() {
   const { data: preferences } = useQuery(
     queryUtils.notification.getPreferences.queryOptions({ input: {} })
   );
+
   const updatePreference = useMutation(
     queryUtils.notification.updatePreference.mutationOptions({
       onSuccess: () => {
@@ -549,79 +487,178 @@ export function EmailNotifications() {
     })
   );
 
-  const handleToggleEvent = (
+  const { isSubscribed, isSupported } = usePushNotifications();
+  const { isGranted } = useNotificationPermission();
+  const isDesktopReady = isGranted && isSubscribed && isSupported;
+
+  const handleToggle = (
     eventType: NotificationEventType,
+    deliveryChannel: "sound" | "push",
     enabled: boolean
   ) => {
-    updatePreference.mutate({
-      eventType,
-      deliveryChannel: "email",
-      enabled,
-    });
+    updatePreference.mutate({ eventType, deliveryChannel, enabled });
   };
 
-  const handleDigestChange = (
+  const handleEmailChange = (
     eventType: NotificationEventType,
-    interval: "immediate" | "15min" | "hourly" | "daily"
+    value: "off" | "immediate" | "15min" | "hourly" | "daily"
   ) => {
-    updatePreference.mutate({
-      eventType,
-      deliveryChannel: "email",
-      enabled: true,
-      emailDigestInterval: interval,
-    });
+    if (value === "off") {
+      updatePreference.mutate({
+        eventType,
+        deliveryChannel: "email",
+        enabled: false,
+      });
+    } else {
+      updatePreference.mutate({
+        eventType,
+        deliveryChannel: "email",
+        enabled: true,
+        emailDigestInterval: value,
+      });
+    }
+  };
+
+  const getEmailValue = (eventId: NotificationEventType): string => {
+    const isEnabled = preferences?.global[eventId]?.email ?? false;
+    if (!isEnabled) return "off";
+
+    const override = preferences?.overrides.find(
+      (o) => o.eventType === eventId && o.deliveryChannel === "email"
+    );
+    return override?.emailDigestInterval ?? "immediate";
+  };
+
+  const renderEventRow = (event: (typeof EVENT_TYPES)[number]) => {
+    const soundEnabled = preferences?.global[event.id]?.sound ?? false;
+    const pushEnabled = preferences?.global[event.id]?.push ?? false;
+    const emailValue = getEmailValue(event.id);
+
+    return (
+      <TableRow key={event.id}>
+        <TableCell>
+          <div className="min-w-0">
+            <div className="truncate font-medium text-sm">{event.label}</div>
+            <div className="truncate text-muted-foreground text-xs">
+              {event.description}
+            </div>
+          </div>
+        </TableCell>
+        <TableCell className="text-center">
+          <Switch
+            checked={soundEnabled}
+            onCheckedChange={(checked) =>
+              handleToggle(event.id, "sound", checked)
+            }
+          />
+        </TableCell>
+        <TableCell className="text-center">
+          {isDesktopReady ? (
+            <Switch
+              checked={pushEnabled}
+              onCheckedChange={(checked) =>
+                handleToggle(event.id, "push", checked)
+              }
+            />
+          ) : (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="inline-block">
+                  <Switch checked={false} disabled />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>
+                  Enable push notifications above to configure per-event
+                  settings
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          )}
+        </TableCell>
+        <TableCell className="text-right">
+          <Select
+            onValueChange={(
+              val: "off" | "immediate" | "15min" | "hourly" | "daily"
+            ) => handleEmailChange(event.id, val)}
+            value={emailValue}
+          >
+            <SelectTrigger className="h-8 w-36 text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="off">Off</SelectItem>
+              <SelectItem value="immediate">Immediate</SelectItem>
+              <SelectItem value="15min">Every 15 min</SelectItem>
+              <SelectItem value="hourly">Hourly</SelectItem>
+              <SelectItem value="daily">Daily</SelectItem>
+            </SelectContent>
+          </Select>
+        </TableCell>
+      </TableRow>
+    );
   };
 
   return (
-    <div className="space-y-3">
-      <h3>Email Notifications</h3>
-      <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
-        {EVENT_TYPES.map((event, index) => {
-          const isEnabled = preferences?.global[event.id]?.email ?? false;
-          const override = preferences?.overrides.find(
-            (o) => o.eventType === event.id && o.deliveryChannel === "email"
-          );
-          const digestInterval = override?.emailDigestInterval || "immediate";
-
-          return (
-            <div key={event.id}>
-              <Item>
-                <ItemContent>
-                  <ItemTitle>{event.label}</ItemTitle>
-                  <ItemDescription>{event.description}</ItemDescription>
-                </ItemContent>
-                <ItemActions className="flex items-center gap-4">
-                  {isEnabled && (
-                    <Select
-                      onValueChange={(
-                        val: "immediate" | "15min" | "hourly" | "daily"
-                      ) => handleDigestChange(event.id, val)}
-                      value={digestInterval}
-                    >
-                      <SelectTrigger className="w-35">
-                        <SelectValue placeholder="Frequency" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="immediate">Immediate</SelectItem>
-                        <SelectItem value="15min">Every 15 mins</SelectItem>
-                        <SelectItem value="hourly">Hourly</SelectItem>
-                        <SelectItem value="daily">Daily</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  )}
-                  <Switch
-                    checked={isEnabled}
-                    onCheckedChange={(checked) =>
-                      handleToggleEvent(event.id, checked)
-                    }
-                  />
-                </ItemActions>
-              </Item>
-              {index < EVENT_TYPES.length - 1 && <Separator />}
-            </div>
-          );
-        })}
+    <TooltipProvider>
+      <div className="space-y-3">
+        <h3>Notification Preferences</h3>
+        <div className="overflow-hidden rounded-xl border bg-card text-card-foreground shadow-sm">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[50%]">Event</TableHead>
+                <TableHead className="w-[16%] text-center">
+                  <div className="flex items-center justify-center gap-1">
+                    <IconVolume className="size-3.5" />
+                    <span>Sound</span>
+                  </div>
+                </TableHead>
+                <TableHead className="w-[16%] text-center">
+                  <div className="flex items-center justify-center gap-1">
+                    <IconBell className="size-3.5" />
+                    <span>Desktop</span>
+                  </div>
+                </TableHead>
+                <TableHead className="w-[18%] text-right">
+                  <div className="flex items-center justify-end gap-1">
+                    <IconMail className="size-3.5" />
+                    <span>Email</span>
+                  </div>
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow className="bg-muted/30">
+                <TableCell
+                  className="py-2 font-medium text-muted-foreground text-xs uppercase tracking-wide"
+                  colSpan={4}
+                >
+                  Channel Events
+                </TableCell>
+              </TableRow>
+              {CHANNEL_EVENTS.map((eventId) => {
+                const event = EVENT_TYPES.find((e) => e.id === eventId);
+                if (!event) return null;
+                return renderEventRow(event);
+              })}
+              <TableRow className="bg-muted/30">
+                <TableCell
+                  className="py-2 font-medium text-muted-foreground text-xs uppercase tracking-wide"
+                  colSpan={4}
+                >
+                  Direct Messages
+                </TableCell>
+              </TableRow>
+              {DM_EVENTS.map((eventId) => {
+                const event = EVENT_TYPES.find((e) => e.id === eventId);
+                if (!event) return null;
+                return renderEventRow(event);
+              })}
+            </TableBody>
+          </Table>
+        </div>
       </div>
-    </div>
+    </TooltipProvider>
   );
 }
