@@ -21,7 +21,7 @@ export const GetNotificationsInput = z.object({
   orgId: z.string().optional(),
 });
 
-export const GetUnreadCountInput = z.object({
+export const GetNotificationUnreadCountInput = z.object({
   orgId: z.string().optional(),
 });
 

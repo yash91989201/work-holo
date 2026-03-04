@@ -4,6 +4,7 @@ import { Redis } from "@work-holo/infrastructure";
 import type { PermissionService } from "@work-holo/permission";
 import type { Context as HonoContext } from "hono";
 import type { NotificationService } from "./services/notification";
+import type { StorageService } from "./services/storage";
 
 export type CreateContextOptions = {
   context: HonoContext;
@@ -16,6 +17,7 @@ export type Context = {
   redis: ReturnType<typeof Redis.getClient>;
   permission?: PermissionService;
   notification?: NotificationService;
+  storage?: StorageService;
   orgId?: string;
   orgMembership?: {
     memberId: string;

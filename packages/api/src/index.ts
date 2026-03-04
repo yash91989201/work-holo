@@ -7,6 +7,7 @@ import {
   NotificationManagers,
   NotificationService,
 } from "./services/notification";
+import { StorageService } from "./services/storage";
 
 export const o = os.$context<Context>();
 
@@ -17,9 +18,12 @@ export const protectedProcedure = publicProcedure.use(({ context, next }) => {
     throw new ORPCError("UNAUTHORIZED");
   }
 
+  const storage = new StorageService({ userId: context.session.user.id });
+
   return next({
     context: {
       session: context.session,
+      storage,
     },
   });
 });

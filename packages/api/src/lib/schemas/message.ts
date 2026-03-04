@@ -117,7 +117,7 @@ export const MarkMessageAsReadInput = z.object({
 });
 
 // Get unread count input
-export const GetUnreadCountInput = z.object({
+export const GetMessageUnreadCountInput = z.object({
   channelId: z.string(),
 });
 

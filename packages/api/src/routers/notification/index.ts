@@ -17,9 +17,9 @@ import {
   GetChannelMuteStatusInput,
   GetChannelMuteStatusOutput,
   GetNotificationsInput,
+  GetNotificationUnreadCountInput,
   GetPreferencesInput,
   GetPreferencesOutput,
-  GetUnreadCountInput,
   GetUnreadCountOutput,
   MarkAllNotificationsAsReadInput,
   MarkAllNotificationsAsReadOutput,
@@ -127,7 +127,7 @@ export const notificationRouter = {
     }),
 
   getUnreadCount: protectedProcedure
-    .input(GetUnreadCountInput)
+    .input(GetNotificationUnreadCountInput)
     .output(GetUnreadCountOutput)
     .handler(async ({ context: { db, session }, input }) => {
       const { user } = session;

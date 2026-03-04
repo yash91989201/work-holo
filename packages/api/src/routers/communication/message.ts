@@ -44,9 +44,9 @@ import {
   GetMenionUsersOutput,
   GetMessageInput,
   GetMessageOutput,
+  GetMessageUnreadCountInput,
   GetPinnedMessagesInput,
   GetPinnedMessagesOutput,
-  GetUnreadCountInput,
   MarkAllMentionsSeenInput,
   MarkAllMentionsSeenOutput,
   MarkMentionSeenInput,
@@ -655,7 +655,7 @@ export const messageRouter = {
    * @returns Object with unread message count
    */
   getUnreadCount: orgMemberProcedure
-    .input(GetUnreadCountInput)
+    .input(GetMessageUnreadCountInput)
     .output(UnreadCountOutput)
     .handler(async ({ input, context: { db, session, permission } }) => {
       await permission.requireChannelAccess(
