@@ -3,7 +3,7 @@ import {
   notificationSoundPreferenceTable,
   notificationSoundPresetTable,
 } from "@work-holo/db/schema/notification";
-import { and, asc, eq, isNull } from "drizzle-orm";
+import { and, asc, desc, eq, isNull } from "drizzle-orm";
 import { z } from "zod";
 import { orgMemberProcedure } from "../../index";
 import {
@@ -91,7 +91,7 @@ export const soundPreferencesRouter = {
         eq(notificationSoundPreferenceTable.scope, input.scope),
       ];
 
-      if (input.entityId) {
+      if (input.entityId != null) {
         conditions.push(
           eq(notificationSoundPreferenceTable.entityId, input.entityId)
         );
@@ -102,6 +102,11 @@ export const soundPreferencesRouter = {
       const preference =
         await db.query.notificationSoundPreferenceTable.findFirst({
           where: and(...conditions),
+          orderBy: [
+            desc(notificationSoundPreferenceTable.updatedAt),
+            desc(notificationSoundPreferenceTable.createdAt),
+            desc(notificationSoundPreferenceTable.id),
+          ],
         });
 
       return { preference: preference ?? null };
@@ -148,25 +153,55 @@ export const soundPreferencesRouter = {
       }
 
       const soundFields = buildSoundFields(input);
+      const entityId = input.entityId ?? null;
 
-      await db
-        .insert(notificationSoundPreferenceTable)
-        .values({
+      if (entityId !== null) {
+        await db
+          .insert(notificationSoundPreferenceTable)
+          .values({
+            userId,
+            orgId,
+            scope: input.scope,
+            entityId,
+            ...soundFields,
+          })
+          .onConflictDoUpdate({
+            target: [
+              notificationSoundPreferenceTable.userId,
+              notificationSoundPreferenceTable.orgId,
+              notificationSoundPreferenceTable.scope,
+              notificationSoundPreferenceTable.entityId,
+            ],
+            set: soundFields,
+          });
+
+        return { success: true as const };
+      }
+
+      const whereConditions = [
+        eq(notificationSoundPreferenceTable.userId, userId),
+        eq(notificationSoundPreferenceTable.orgId, orgId),
+        eq(notificationSoundPreferenceTable.scope, input.scope),
+        entityId === null
+          ? isNull(notificationSoundPreferenceTable.entityId)
+          : eq(notificationSoundPreferenceTable.entityId, entityId),
+      ];
+
+      const updatedRows = await db
+        .update(notificationSoundPreferenceTable)
+        .set(soundFields)
+        .where(and(...whereConditions))
+        .returning({ id: notificationSoundPreferenceTable.id });
+
+      if (updatedRows.length === 0) {
+        await db.insert(notificationSoundPreferenceTable).values({
           userId,
           orgId,
           scope: input.scope,
-          entityId: input.entityId ?? null,
+          entityId,
           ...soundFields,
-        })
-        .onConflictDoUpdate({
-          target: [
-            notificationSoundPreferenceTable.userId,
-            notificationSoundPreferenceTable.orgId,
-            notificationSoundPreferenceTable.scope,
-            notificationSoundPreferenceTable.entityId,
-          ],
-          set: soundFields,
         });
+      }
 
       return { success: true as const };
     }),
@@ -188,7 +223,7 @@ export const soundPreferencesRouter = {
         eq(notificationSoundPreferenceTable.scope, input.scope),
       ];
 
-      if (input.entityId) {
+      if (input.entityId != null) {
         conditions.push(
           eq(notificationSoundPreferenceTable.entityId, input.entityId)
         );

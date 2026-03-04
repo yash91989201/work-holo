@@ -8,7 +8,7 @@ import {
   notificationPreferenceTable,
   notificationTable,
 } from "@work-holo/db/schema/index";
-import { and, count, desc, eq, or, sql } from "drizzle-orm";
+import { and, count, desc, eq, isNull, or, sql } from "drizzle-orm";
 import { orgMemberProcedure, protectedProcedure } from "../../index";
 import { generateTxId } from "../../lib/electric-proxy";
 import {
@@ -277,14 +277,48 @@ export const notificationRouter = {
             eq(notificationPreferenceTable.userId, userId),
             eq(notificationPreferenceTable.orgId, orgId)
           ),
+          orderBy: [
+            desc(notificationPreferenceTable.updatedAt),
+            desc(notificationPreferenceTable.createdAt),
+            desc(notificationPreferenceTable.id),
+          ],
         });
 
       const globalPrefs = userPreferences.filter(
         (p) => !(p.entityType || p.entityId)
       );
-      const overridePrefs = userPreferences.filter(
-        (p) => p.entityType || p.entityId
-      );
+      const latestOverrideMap = new Map<
+        string,
+        {
+          eventType: (typeof userPreferences)[number]["eventType"];
+          deliveryChannel: (typeof userPreferences)[number]["deliveryChannel"];
+          enabled: boolean;
+          entityType: string | null;
+          entityId: string | null;
+          emailDigestInterval: string | null;
+        }
+      >();
+
+      for (const pref of userPreferences) {
+        if (!(pref.entityType || pref.entityId)) {
+          continue;
+        }
+
+        const key = `${pref.eventType}:${pref.deliveryChannel}:${pref.entityType ?? ""}:${pref.entityId ?? ""}`;
+
+        if (latestOverrideMap.has(key)) {
+          continue;
+        }
+
+        latestOverrideMap.set(key, {
+          eventType: pref.eventType,
+          deliveryChannel: pref.deliveryChannel,
+          enabled: pref.enabled,
+          entityType: pref.entityType,
+          entityId: pref.entityId,
+          emailDigestInterval: pref.emailDigestInterval,
+        });
+      }
 
       const eventTypes = Object.keys(
         DEFAULT_NOTIFICATION_PREFERENCES
@@ -315,7 +349,7 @@ export const notificationRouter = {
         };
       }
 
-      const overrides = overridePrefs.map((p) => ({
+      const overrides = Array.from(latestOverrideMap.values()).map((p) => ({
         eventType: p.eventType,
         deliveryChannel: p.deliveryChannel as "sound" | "push" | "email",
         enabled: p.enabled,
@@ -332,33 +366,75 @@ export const notificationRouter = {
     .output(UpdatePreferenceOutput)
     .handler(async ({ context: { db, session, orgId }, input }) => {
       const userId = session.user.id;
+      const entityType = input.entityType ?? null;
+      const entityId = input.entityId ?? null;
+      const hasScopedTarget = entityType !== null && entityId !== null;
 
-      await db
-        .insert(notificationPreferenceTable)
-        .values({
+      if (hasScopedTarget) {
+        await db
+          .insert(notificationPreferenceTable)
+          .values({
+            userId,
+            orgId,
+            eventType: input.eventType,
+            deliveryChannel: input.deliveryChannel,
+            enabled: input.enabled,
+            entityType,
+            entityId,
+            emailDigestInterval: input.emailDigestInterval ?? null,
+          })
+          .onConflictDoUpdate({
+            target: [
+              notificationPreferenceTable.userId,
+              notificationPreferenceTable.orgId,
+              notificationPreferenceTable.eventType,
+              notificationPreferenceTable.deliveryChannel,
+              notificationPreferenceTable.entityType,
+              notificationPreferenceTable.entityId,
+            ],
+            set: {
+              enabled: input.enabled,
+              emailDigestInterval: input.emailDigestInterval ?? null,
+            },
+          });
+
+        return { success: true };
+      }
+
+      const whereConditions = [
+        eq(notificationPreferenceTable.userId, userId),
+        eq(notificationPreferenceTable.orgId, orgId),
+        eq(notificationPreferenceTable.eventType, input.eventType),
+        eq(notificationPreferenceTable.deliveryChannel, input.deliveryChannel),
+        entityType === null
+          ? isNull(notificationPreferenceTable.entityType)
+          : eq(notificationPreferenceTable.entityType, entityType),
+        entityId === null
+          ? isNull(notificationPreferenceTable.entityId)
+          : eq(notificationPreferenceTable.entityId, entityId),
+      ];
+
+      const updatedRows = await db
+        .update(notificationPreferenceTable)
+        .set({
+          enabled: input.enabled,
+          emailDigestInterval: input.emailDigestInterval ?? null,
+        })
+        .where(and(...whereConditions))
+        .returning({ id: notificationPreferenceTable.id });
+
+      if (updatedRows.length === 0) {
+        await db.insert(notificationPreferenceTable).values({
           userId,
           orgId,
           eventType: input.eventType,
           deliveryChannel: input.deliveryChannel,
           enabled: input.enabled,
-          entityType: input.entityType ?? null,
-          entityId: input.entityId ?? null,
+          entityType,
+          entityId,
           emailDigestInterval: input.emailDigestInterval ?? null,
-        })
-        .onConflictDoUpdate({
-          target: [
-            notificationPreferenceTable.userId,
-            notificationPreferenceTable.orgId,
-            notificationPreferenceTable.eventType,
-            notificationPreferenceTable.deliveryChannel,
-            notificationPreferenceTable.entityType,
-            notificationPreferenceTable.entityId,
-          ],
-          set: {
-            enabled: input.enabled,
-            emailDigestInterval: input.emailDigestInterval ?? null,
-          },
         });
+      }
 
       return { success: true };
     }),
@@ -371,32 +447,48 @@ export const notificationRouter = {
 
       await db.transaction(async (tx) => {
         for (const pref of input.preferences) {
-          await tx
-            .insert(notificationPreferenceTable)
-            .values({
-              userId,
-              orgId,
-              eventType: pref.eventType,
-              deliveryChannel: pref.deliveryChannel,
+          const entityType = pref.entityType ?? null;
+          const entityId = pref.entityId ?? null;
+
+          const whereConditions = [
+            eq(notificationPreferenceTable.userId, userId),
+            eq(notificationPreferenceTable.orgId, orgId),
+            eq(notificationPreferenceTable.eventType, pref.eventType),
+            eq(
+              notificationPreferenceTable.deliveryChannel,
+              pref.deliveryChannel
+            ),
+            entityType === null
+              ? isNull(notificationPreferenceTable.entityType)
+              : eq(notificationPreferenceTable.entityType, entityType),
+            entityId === null
+              ? isNull(notificationPreferenceTable.entityId)
+              : eq(notificationPreferenceTable.entityId, entityId),
+          ];
+
+          const updatedRows = await tx
+            .update(notificationPreferenceTable)
+            .set({
               enabled: pref.enabled,
-              entityType: pref.entityType ?? null,
-              entityId: pref.entityId ?? null,
               emailDigestInterval: pref.emailDigestInterval ?? null,
             })
-            .onConflictDoUpdate({
-              target: [
-                notificationPreferenceTable.userId,
-                notificationPreferenceTable.orgId,
-                notificationPreferenceTable.eventType,
-                notificationPreferenceTable.deliveryChannel,
-                notificationPreferenceTable.entityType,
-                notificationPreferenceTable.entityId,
-              ],
-              set: {
-                enabled: pref.enabled,
-                emailDigestInterval: pref.emailDigestInterval ?? null,
-              },
-            });
+            .where(and(...whereConditions))
+            .returning({ id: notificationPreferenceTable.id });
+
+          if (updatedRows.length > 0) {
+            continue;
+          }
+
+          await tx.insert(notificationPreferenceTable).values({
+            userId,
+            orgId,
+            eventType: pref.eventType,
+            deliveryChannel: pref.deliveryChannel,
+            enabled: pref.enabled,
+            entityType,
+            entityId,
+            emailDigestInterval: pref.emailDigestInterval ?? null,
+          });
         }
       });
 

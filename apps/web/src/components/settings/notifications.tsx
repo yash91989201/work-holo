@@ -250,7 +250,7 @@ export function SoundNotifications() {
             onValueChange={(val) => handleSoundChange(scope, val)}
             value={currentValue}
           >
-            <SelectTrigger className="w-[200px]">
+            <SelectTrigger className="w-50">
               <SelectValue placeholder="Select a sound" />
             </SelectTrigger>
             <SelectContent>
@@ -320,7 +320,7 @@ export function SoundNotifications() {
 }
 
 export function DesktopNotifications() {
-  const { requestPermission, isGranted, isDenied, isDefault } =
+  const { requestPermission, isGranted, isDenied } =
     useNotificationPermission();
   const {
     isSubscribed,
@@ -335,6 +335,7 @@ export function DesktopNotifications() {
   const { data: preferences } = useQuery(
     queryUtils.notification.getPreferences.queryOptions({ input: {} })
   );
+
   const updatePreference = useMutation(
     queryUtils.notification.updatePreference.mutationOptions({
       onSuccess: () => {
@@ -348,8 +349,34 @@ export function DesktopNotifications() {
   );
 
   const handleTogglePermission = async (enabled: boolean) => {
-    if (enabled && isDefault) {
-      await requestPermission();
+    if (!isSupported) {
+      return;
+    }
+
+    if (enabled) {
+      if (isGranted) {
+        return;
+      }
+
+      if (isDenied) {
+        toast.message(
+          "Notifications are blocked in browser settings. Use the lock icon in the address bar to allow them."
+        );
+        return;
+      }
+
+      const permission = await requestPermission();
+      if (permission !== "granted") {
+        toast.error("Notification permission is required");
+      }
+
+      return;
+    }
+
+    if (isGranted) {
+      toast.message(
+        "Browser notification permission can be revoked from site settings."
+      );
     }
   };
 
@@ -389,13 +416,13 @@ export function DesktopNotifications() {
           <ItemContent>
             <ItemTitle>Browser Permission</ItemTitle>
             <ItemDescription>
-              Allow browser to show notifications
+              Allow browser to show notifications (browser-level permission)
             </ItemDescription>
           </ItemContent>
           <ItemActions>
             <Switch
               checked={isGranted}
-              disabled={isDenied}
+              disabled={!isSupported || isPushLoading}
               onCheckedChange={handleTogglePermission}
             />
           </ItemActions>
@@ -571,7 +598,7 @@ export function EmailNotifications() {
                       ) => handleDigestChange(event.id, val)}
                       value={digestInterval}
                     >
-                      <SelectTrigger className="w-[140px]">
+                      <SelectTrigger className="w-35">
                         <SelectValue placeholder="Frequency" />
                       </SelectTrigger>
                       <SelectContent>
