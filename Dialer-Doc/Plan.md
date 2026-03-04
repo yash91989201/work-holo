@@ -199,6 +199,19 @@ startCall → enqueue RabbitMQ → SIP Worker → FreeSWITCH originate
 
 ---
 
+### 📊 Progress Tracker
+
+| Detail           | Value                                                            |
+| ---------------- | ---------------------------------------------------------------- |
+| **VPS IP**       | `135.181.31.20`                                                  |
+| **OS**           | Ubuntu (Hetzner)                                                 |
+| **FreeSWITCH**   | v1.10.13-dev (compiled from source, running since Feb 22, 2026)  |
+| **Install Path** | `/usr/local/freeswitch/`                                         |
+| **Config Path**  | `/usr/local/freeswitch/conf/` and `/etc/freeswitch/`             |
+| **fs_cli Path**  | `/usr/local/freeswitch/bin/fs_cli`                               |
+
+---
+
 ## ✅ Phase 1 — Core Telephony Foundation _(Weeks 1–3)_
 
 ### 🎯 Objective
@@ -207,38 +220,39 @@ Establish a stable telephony backbone capable of making and receiving real PSTN 
 
 ---
 
-### 🧱 Step 1 — Infrastructure Preparation
+### ✅ ~~Step 1 — Infrastructure Preparation~~ _COMPLETED_
 
 **Tasks**
 
-- Provision VPS / server (minimum 4 vCPU, 8 GB RAM recommended)
-- Assign static public IP
-- Configure firewall rules
+- [x] Provision VPS / server — `135.181.31.20` (Hetzner)
+- [x] Assign static public IP — `135.181.31.20`
+- [x] Configure firewall rules
 
-**Ports to Open**
+**Ports Opened**
 
-- `5060 / 5080` — SIP
-- `7443` — WSS for WebRTC
-- `16384–32768 UDP` — RTP media range
+- [x] `5060 / 5080` — SIP (UDP + TCP)
+- [x] `7443` — WSS for WebRTC
+- [x] `8021` — ESL (Event Socket)
+- [x] `16384–32768 UDP` — RTP media range
 
-**✅ Deliverable:** Reachable FreeSWITCH server
+**✅ Deliverable:** Reachable FreeSWITCH server — **DONE**
 
 ---
 
-### 🧱 Step 2 — Install & Verify FreeSWITCH
+### ✅ ~~Step 2 — Install & Verify FreeSWITCH~~ _COMPLETED_
 
 **Tasks**
 
-- Install FreeSWITCH packages
-- Start service
-- Access `fs_cli`
+- [x] Install FreeSWITCH — compiled from source at `/usr/local/freeswitch/`
+- [x] Start service — running since Feb 22 (PID 345337)
+- [x] Access `fs_cli` — available at `/usr/local/freeswitch/bin/fs_cli`
 
 **Validation**
 
-- `fs_cli` connects successfully
-- Sofia profiles running
+- [x] `fs_cli` connects successfully
+- [ ] Sofia profiles running — _needs verification_
 
-**✅ Deliverable:** Operational FreeSWITCH instance
+**✅ Deliverable:** Operational FreeSWITCH instance — **DONE**
 
 ---
 
