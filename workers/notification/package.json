@@ -4,13 +4,14 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "bun --hot index.ts",
-    "start": "bun index.ts"
+    "dev": "bun --hot ./src/index.ts",
+    "start": "bun ./src/index.ts"
   },
   "dependencies": {
     "@work-holo/db": "workspace:*",
     "@work-holo/email": "workspace:*",
     "@work-holo/env": "workspace:*",
+    "@work-holo/config": "workspace:*",
     "@work-holo/infrastructure": "workspace:*",
     "amqplib": "^0.10.9",
     "drizzle-orm": "^0.45.1",

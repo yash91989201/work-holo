@@ -14,7 +14,7 @@ export interface ReadReceiptQueueMessage {
 
 export interface NotificationQueueMessage {
   actorId: string;
-  deliveryChannels: string[];
+  deliveryChannels: Array<"realtime" | "sound" | "push" | "email">;
   entityId: string;
   entityType: string;
   eventType: string;

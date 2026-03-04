@@ -1,5 +1,5 @@
 import type { db as Db } from "@work-holo/db";
-import { user } from "@work-holo/db/schema/auth";
+import { organization, user } from "@work-holo/db/schema/auth";
 import {
   notificationPreferenceTable,
   pendingEmailDigestTable,
@@ -13,7 +13,7 @@ import {
   sendEmail,
 } from "@work-holo/email";
 import type { NotificationQueueMessage } from "@work-holo/infrastructure";
-import { and, eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 import type { Transporter } from "nodemailer";
 import { createElement } from "react";
 
@@ -62,7 +62,9 @@ async function getEmailDigestInterval(
           notificationPreferenceTable.eventType,
           eventType as "channel_message"
         ),
-        eq(notificationPreferenceTable.deliveryChannel, "email")
+        eq(notificationPreferenceTable.deliveryChannel, "email"),
+        isNull(notificationPreferenceTable.entityType),
+        isNull(notificationPreferenceTable.entityId)
       )
     )
     .limit(1);
@@ -205,6 +207,7 @@ const TEMPLATE_BUILDERS: Record<
 
 function buildImmediateEmailOptions(
   message: NotificationQueueMessage,
+  metadata: Record<string, string>,
   recipientName: string,
   recipientEmail: string,
   fromAddress: string
@@ -215,8 +218,69 @@ function buildImmediateEmailOptions(
   }
 
   const builder = TEMPLATE_BUILDERS[templateType];
-  const metadata = message.metadata as Record<string, string>;
   return builder(metadata, recipientName, recipientEmail, fromAddress);
+}
+
+async function getOrgSlug(
+  db: typeof Db,
+  orgId: string
+): Promise<string | null> {
+  const [org] = await db
+    .select({ slug: organization.slug })
+    .from(organization)
+    .where(eq(organization.id, orgId))
+    .limit(1);
+
+  return org?.slug ?? null;
+}
+
+function getConversationUrl(
+  orgSlug: string | null,
+  conversationId: string | null
+): string {
+  if (!(orgSlug && conversationId)) {
+    return "#";
+  }
+
+  return `/org/${orgSlug}/workspace/communication/dm/${conversationId}`;
+}
+
+function getChannelMessageUrl(
+  orgSlug: string | null,
+  channelId: string | null
+): string {
+  if (!(orgSlug && channelId)) {
+    return "#";
+  }
+
+  return `/org/${orgSlug}/workspace/communication/channels/${channelId}`;
+}
+
+function buildTemplateMetadata(
+  message: NotificationQueueMessage,
+  orgSlug: string | null
+): Record<string, string> {
+  const metadata = message.metadata as Record<string, string | undefined>;
+  const channelId = metadata.channelId ?? null;
+  const conversationId = metadata.conversationId ?? null;
+  const channelUrl = getChannelMessageUrl(orgSlug, channelId);
+  const conversationUrl = getConversationUrl(orgSlug, conversationId);
+  let threadUrl = "#";
+
+  if (channelId !== null) {
+    threadUrl = channelUrl;
+  } else if (conversationId !== null) {
+    threadUrl = conversationUrl;
+  }
+
+  return {
+    ...metadata,
+    messageUrl: channelUrl,
+    threadUrl,
+    conversationUrl,
+    originalMessagePreview:
+      metadata.originalMessagePreview ?? metadata.messagePreview ?? "",
+  } as Record<string, string>;
 }
 
 export async function handleEmailDelivery(
@@ -240,8 +304,12 @@ export async function handleEmailDelivery(
   );
 
   if (interval === "immediate") {
+    const orgSlug = await getOrgSlug(db, message.orgId);
+    const templateMetadata = buildTemplateMetadata(message, orgSlug);
+
     const emailOptions = buildImmediateEmailOptions(
       message,
+      templateMetadata,
       userInfo.name,
       userInfo.email,
       fromAddress

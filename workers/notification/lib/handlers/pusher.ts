@@ -2,28 +2,51 @@ import { PusherClient } from "@work-holo/infrastructure";
 
 interface PusherDeliveryParams {
   actorId: string;
+  entityId: string;
+  entityType: string;
   eventType: string;
   metadata: Record<string, unknown>;
   notificationId: string;
+  playSound: boolean;
   targetUserId: string;
+}
+
+function resolveActorName(metadata: Record<string, unknown>): string {
+  const actorName =
+    (metadata.senderName as string | undefined) ??
+    (metadata.replySenderName as string | undefined) ??
+    (metadata.reactorName as string | undefined) ??
+    (metadata.mentionedByName as string | undefined);
+
+  return actorName ?? "Someone";
 }
 
 export async function handlePusherDelivery(
   params: PusherDeliveryParams
 ): Promise<void> {
-  const { actorId, eventType, metadata, notificationId, targetUserId } = params;
+  const {
+    actorId,
+    entityId,
+    entityType,
+    eventType,
+    metadata,
+    notificationId,
+    playSound,
+    targetUserId,
+  } = params;
 
   const channel = `private-user-${targetUserId}`;
 
   const payload = {
     actorId,
-    actorName: (metadata.actorName as string) ?? "Unknown",
+    actorName: resolveActorName(metadata),
     channelName: (metadata.channelName as string) ?? null,
-    entityId: (metadata.entityId as string) ?? null,
-    entityType: (metadata.entityType as string) ?? null,
+    entityId,
+    entityType,
     eventType,
     messagePreview: (metadata.messagePreview as string) ?? null,
     notificationId,
+    playSound,
     timestamp: new Date().toISOString(),
   };
 

@@ -8,8 +8,9 @@ const SCHEMA_EXPORT_REGEX =
   /export\s+(?:const|var|let)\s+(\w+(?:Schema|Input|Output))\s*=/g;
 const SIMPLE_SCHEMA_REGEX = /Schema$/;
 
-const schemasDir = path.resolve("../lib/schemas");
-const outputFile = path.resolve("../lib/types.ts");
+// Paths relative to the package root (scripts folder is at packages/api/scripts/)
+const schemasDir = path.resolve("src/lib/schemas");
+const outputFile = path.resolve("src/lib/types.ts");
 
 // Ensure directories exist
 if (!fs.existsSync(schemasDir)) {
@@ -66,7 +67,7 @@ function generateTypes() {
         .replace(/\\/g, "/")
         .replace(TS_EXTENSION_REGEX, "");
 
-      // FIXED: Correct relative import path
+      // Import path relative to the output file (types.ts is in lib/, schemas are in lib/schemas/)
       const importPath = `./schemas/${relPath}`;
 
       for (const schemaName of schemaNames) {

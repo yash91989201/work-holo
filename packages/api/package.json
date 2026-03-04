@@ -10,6 +10,7 @@
   },
   "type": "module",
   "scripts": {
+    "generate:types": "bun run ./scripts/generate-types.ts",
     "seed:sound-presets": "bun run ./scripts/seed-sound-presets.ts"
   },
   "devDependencies": {

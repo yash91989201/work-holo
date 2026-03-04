@@ -36,7 +36,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { dmMessagesCollection, messagesCollection } from "@/db/collections";
+import {
+  dmMessagesCollection,
+  messagesCollection,
+  usersCollection,
+} from "@/db/collections";
 import { useNotifications } from "@/hooks/communications/use-notifications";
 import { cn } from "@/lib/utils";
 import { useChannelMessageHighlight } from "@/stores/channel-store";
@@ -65,7 +69,7 @@ interface NotificationConfig {
 const notificationConfig: Record<NotificationType, NotificationConfig> = {
   channel_message: {
     icon: <IconMessage className="h-4 w-4" />,
-    label: "New message in #{channel}",
+    label: "New message in channel",
     tone: "text-muted-foreground",
     bgTone: "bg-muted/50",
     accentColor: "border-border/30",
@@ -139,6 +143,20 @@ function getNotificationMeta(type: string): NotificationConfig {
   return (
     notificationConfig[type as NotificationType] ?? notificationConfig.default
   );
+}
+
+function parseNotificationMetadata(
+  metadata: unknown
+): Record<string, unknown> | null {
+  if (!metadata) {
+    return null;
+  }
+
+  if (typeof metadata === "object") {
+    return metadata as Record<string, unknown>;
+  }
+
+  return null;
 }
 
 function formatTimeAgo(date: Date): string {
@@ -479,13 +497,33 @@ function NotificationItem({
   const meta = getNotificationMeta(notification.type);
   const isUnread = notification.status === "unread";
 
-  const metadata = notification.metadata as Record<string, unknown> | null;
+  const metadata = parseNotificationMetadata(notification.metadata);
+  const senderId = metadata?.senderId;
+  const sender =
+    typeof senderId === "string" ? usersCollection.get(senderId) : undefined;
+  const actor = notification.actorId
+    ? usersCollection.get(notification.actorId)
+    : undefined;
+
   const actorName =
     (metadata?.senderName as string) ??
     (metadata?.replySenderName as string) ??
     (metadata?.reactorName as string) ??
+    (metadata?.mentionedByName as string) ??
     (metadata?.actorName as string) ??
+    sender?.name ??
+    actor?.name ??
     "Someone";
+
+  const channelName =
+    typeof metadata?.channelName === "string" && metadata.channelName.length > 0
+      ? metadata.channelName
+      : null;
+
+  const labelText =
+    notification.type === "channel_message" && channelName
+      ? `New message in #${channelName}`
+      : meta.label;
 
   const handleClick = () => {
     if (isUnread) {
@@ -599,7 +637,7 @@ function NotificationItem({
               meta.tone
             )}
           >
-            {meta.label}
+            {labelText}
           </div>
 
           {notification.message && (

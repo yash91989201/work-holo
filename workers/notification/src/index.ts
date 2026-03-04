@@ -9,10 +9,10 @@ import {
 } from "@work-holo/infrastructure";
 import type { Channel } from "amqplib";
 import webpush from "web-push";
-import { startDigestProcessor } from "./lib/digest-processor";
-import { handleEmailDelivery as sendEmailNotification } from "./lib/handlers/email";
-import { handlePushDelivery as sendPushNotifications } from "./lib/handlers/push";
-import { handlePusherDelivery } from "./lib/handlers/pusher";
+import { startDigestProcessor } from "../lib/digest-processor";
+import { handleEmailDelivery as sendEmailNotification } from "../lib/handlers/email";
+import { handlePushDelivery as sendPushNotifications } from "../lib/handlers/push";
+import { handlePusherDelivery } from "../lib/handlers/pusher";
 
 webpush.setVapidDetails(
   env.VAPID_SUBJECT,
@@ -31,6 +31,7 @@ const emailTransport = createEmailTransport({
 
 const PREFETCH_COUNT = 5;
 const DEDUP_WINDOW_MS = 30_000;
+let emailDeliveryDisabled = false;
 
 const recentlyProcessedNotifications = new Map<string, number>();
 
@@ -48,25 +49,52 @@ const isDuplicateNotification = (
     }
   }
 
-  const dedupKey = getDedupKey(message);
-  const lastProcessedAt = recentlyProcessedNotifications.get(dedupKey);
+  const lastProcessedAt = recentlyProcessedNotifications.get(
+    getDedupKey(message)
+  );
 
   if (lastProcessedAt && now - lastProcessedAt <= DEDUP_WINDOW_MS) {
     return true;
   }
 
-  recentlyProcessedNotifications.set(dedupKey, now);
   return false;
 };
 
-async function handleSoundDelivery(
-  message: NotificationQueueMessage
+const markNotificationProcessed = (message: NotificationQueueMessage): void => {
+  recentlyProcessedNotifications.set(getDedupKey(message), Date.now());
+};
+
+function resolveRealtimeEntity(message: NotificationQueueMessage): {
+  entityId: string;
+  entityType: "channel" | "dm_conversation" | "event";
+} {
+  const channelId = message.metadata.channelId;
+  if (typeof channelId === "string") {
+    return { entityType: "channel", entityId: channelId };
+  }
+
+  const conversationId = message.metadata.conversationId;
+  if (typeof conversationId === "string") {
+    return { entityType: "dm_conversation", entityId: conversationId };
+  }
+
+  return { entityType: "event", entityId: message.entityId };
+}
+
+async function handleRealtimeDelivery(
+  message: NotificationQueueMessage,
+  playSound: boolean
 ): Promise<void> {
+  const realtimeEntity = resolveRealtimeEntity(message);
+
   await handlePusherDelivery({
     actorId: message.actorId,
+    entityId: realtimeEntity.entityId,
+    entityType: realtimeEntity.entityType,
     eventType: message.eventType,
     metadata: message.metadata,
     notificationId: message.notificationId,
+    playSound,
     targetUserId: message.targetUserId,
   });
 }
@@ -80,6 +108,7 @@ async function handlePushDelivery(
     eventType: message.eventType,
     metadata: message.metadata,
     notificationId: message.notificationId,
+    orgId: message.orgId,
     targetUserId: message.targetUserId,
   });
 }
@@ -87,12 +116,33 @@ async function handlePushDelivery(
 async function handleEmailDelivery(
   message: NotificationQueueMessage
 ): Promise<void> {
-  await sendEmailNotification({
-    db,
-    transport: emailTransport,
-    fromAddress: env.SMTP_FROM,
-    message,
-  });
+  if (emailDeliveryDisabled) {
+    return;
+  }
+
+  try {
+    await sendEmailNotification({
+      db,
+      transport: emailTransport,
+      fromAddress: env.SMTP_FROM,
+      message,
+    });
+  } catch (error) {
+    const errorText = String(error);
+    const isDnsResolutionError =
+      errorText.includes("ENOTFOUND") || errorText.includes("getaddrinfo");
+
+    if (isDnsResolutionError) {
+      emailDeliveryDisabled = true;
+      console.warn(
+        `[Notification Worker] Email delivery disabled due SMTP DNS resolution failure. Check SMTP_HOST in worker env (current: ${env.SMTP_HOST}).`,
+        error
+      );
+      return;
+    }
+
+    throw error;
+  }
 }
 
 async function handleMessage(message: NotificationQueueMessage): Promise<void> {
@@ -108,10 +158,20 @@ async function handleMessage(message: NotificationQueueMessage): Promise<void> {
     return;
   }
 
-  const deliveryPromises = message.deliveryChannels.map(async (channel) => {
+  const playSound = message.deliveryChannels.includes("sound");
+  const normalizedChannels = message.deliveryChannels.filter(
+    (channel) => channel !== "sound"
+  );
+
+  const channelsToProcess =
+    normalizedChannels.length > 0
+      ? normalizedChannels
+      : (["realtime"] as const);
+
+  const deliveryPromises = channelsToProcess.map(async (channel) => {
     switch (channel) {
-      case "sound":
-        await handleSoundDelivery(message);
+      case "realtime":
+        await handleRealtimeDelivery(message, playSound);
         return;
       case "push":
         await handlePushDelivery(message);
@@ -128,10 +188,28 @@ async function handleMessage(message: NotificationQueueMessage): Promise<void> {
 
   const results = await Promise.allSettled(deliveryPromises);
 
-  for (const result of results) {
-    if (result.status === "rejected") {
-      throw result.reason;
+  let realtimeFailure: unknown = null;
+
+  for (const [index, result] of results.entries()) {
+    if (result.status !== "rejected") {
+      continue;
     }
+
+    const failedChannel = channelsToProcess[index];
+
+    if (failedChannel === "realtime") {
+      realtimeFailure = result.reason;
+      continue;
+    }
+
+    console.warn(
+      `[Notification Worker] Non-critical ${failedChannel} delivery failed for notification ${message.notificationId}. Realtime delivery already handled; skipping retry for this channel.`,
+      result.reason
+    );
+  }
+
+  if (realtimeFailure) {
+    throw realtimeFailure;
   }
 }
 
@@ -166,6 +244,7 @@ class QueueWorker {
           const message: NotificationQueueMessage = JSON.parse(content);
 
           await handleMessage(message);
+          markNotificationProcessed(message);
 
           if (this.channel) {
             this.channel.ack(msg);

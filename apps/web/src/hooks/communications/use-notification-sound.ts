@@ -13,6 +13,7 @@ interface NotificationPayload {
   eventType: string;
   messagePreview: string | null;
   notificationId: string;
+  playSound?: boolean;
   timestamp: string;
 }
 
@@ -173,8 +174,24 @@ function playSound(url: string): void {
 export function useNotificationSound() {
   const { user } = useAuthedSession();
   const channelRef = useRef<Channel | null>(null);
+  const handledNotificationIdsRef = useRef<Set<string>>(new Set());
 
   const handleNotification = useCallback(async (data: NotificationPayload) => {
+    if (handledNotificationIdsRef.current.has(data.notificationId)) {
+      return;
+    }
+
+    handledNotificationIdsRef.current.add(data.notificationId);
+
+    if (handledNotificationIdsRef.current.size > 1000) {
+      handledNotificationIdsRef.current.clear();
+      handledNotificationIdsRef.current.add(data.notificationId);
+    }
+
+    if (data.playSound === false) {
+      return;
+    }
+
     const soundUrl = await resolveSoundUrl(data);
     playSound(soundUrl);
   }, []);
@@ -186,6 +203,7 @@ export function useNotificationSound() {
     const channelName = `private-user-${user.id}`;
     const channel = pusher.subscribe(channelName);
     channelRef.current = channel;
+    handledNotificationIdsRef.current.clear();
 
     channel.bind("notification:new", handleNotification);
 
@@ -195,26 +213,4 @@ export function useNotificationSound() {
       channelRef.current = null;
     };
   }, [user?.id, handleNotification]);
-
-  // Play sound when service worker requests it (Chromium on Linux won't play system sound)
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      if (event.data?.type !== "PLAY_NOTIFICATION_SOUND") return;
-      const hasMention = Boolean(event.data?.payload?.hasMention);
-      const soundPath = hasMention
-        ? "/assets/sounds/mention.webm"
-        : "/assets/sounds/notify.webm";
-
-      playSound(soundPath);
-    };
-
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.addEventListener("message", handleMessage);
-      return () => {
-        navigator.serviceWorker.removeEventListener("message", handleMessage);
-      };
-    }
-
-    return;
-  }, []);
 }

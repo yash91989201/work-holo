@@ -11,6 +11,13 @@ import {
 import type { NotificationEventType } from "./types";
 
 const CONFIGURABLE_CHANNELS = ["sound", "push", "email"] as const;
+type ConfigurableDeliveryChannel = (typeof CONFIGURABLE_CHANNELS)[number];
+
+function isConfigurableDeliveryChannel(
+  value: string
+): value is ConfigurableDeliveryChannel {
+  return CONFIGURABLE_CHANNELS.some((channel) => channel === value);
+}
 
 export async function resolveDeliveryChannels(params: {
   userId: string;
@@ -19,7 +26,7 @@ export async function resolveDeliveryChannels(params: {
   entityType: string | null;
   entityId: string | null;
   db: typeof Db;
-}): Promise<string[]> {
+}): Promise<ConfigurableDeliveryChannel[]> {
   const { userId, orgId, eventType, entityType, entityId, db } = params;
 
   const preferences = await db
@@ -38,10 +45,16 @@ export async function resolveDeliveryChannels(params: {
       )
     );
 
-  const entityOverrides = new Map<string, boolean>();
-  const globalOverrides = new Map<string, boolean>();
+  const entityOverrides = new Map<ConfigurableDeliveryChannel, boolean>();
+  const globalOverrides = new Map<ConfigurableDeliveryChannel, boolean>();
 
   for (const pref of preferences) {
+    if (!isConfigurableDeliveryChannel(pref.deliveryChannel)) {
+      continue;
+    }
+
+    const deliveryChannel = pref.deliveryChannel;
+
     const isEntityMatch =
       entityType !== null &&
       entityId !== null &&
@@ -51,14 +64,14 @@ export async function resolveDeliveryChannels(params: {
     const isGlobalOverride = pref.entityType === null && pref.entityId === null;
 
     if (isEntityMatch) {
-      entityOverrides.set(pref.deliveryChannel, pref.enabled);
+      entityOverrides.set(deliveryChannel, pref.enabled);
     } else if (isGlobalOverride) {
-      globalOverrides.set(pref.deliveryChannel, pref.enabled);
+      globalOverrides.set(deliveryChannel, pref.enabled);
     }
   }
 
   const staticDefaults = DEFAULT_NOTIFICATION_PREFERENCES[eventType];
-  const enabledChannels: string[] = [];
+  const enabledChannels: ConfigurableDeliveryChannel[] = [];
 
   for (const channel of CONFIGURABLE_CHANNELS) {
     const enabled =

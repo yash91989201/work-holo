@@ -1,4 +1,5 @@
 import type { db as Db } from "@work-holo/db";
+import { organization } from "@work-holo/db/schema/auth";
 import { pushSubscriptionTable, user } from "@work-holo/db/schema/index";
 import { eq } from "drizzle-orm";
 import webpush from "web-push";
@@ -9,6 +10,7 @@ interface HandlePushDeliveryParams {
   eventType: string;
   metadata: Record<string, unknown>;
   notificationId: string;
+  orgId: string;
   targetUserId: string;
 }
 
@@ -55,16 +57,36 @@ function getActionText(eventType: string): string {
   }
 }
 
-function buildDeepLinkUrl(metadata: Record<string, unknown>): string {
+async function getOrgSlug(
+  db: typeof Db,
+  orgId: string
+): Promise<string | null> {
+  const [org] = await db
+    .select({ slug: organization.slug })
+    .from(organization)
+    .where(eq(organization.id, orgId))
+    .limit(1);
+
+  return org?.slug ?? null;
+}
+
+function buildDeepLinkUrl(
+  metadata: Record<string, unknown>,
+  orgSlug: string | null
+): string {
   const channelId = metadata.channelId as string | undefined;
   const conversationId = metadata.conversationId as string | undefined;
 
   if (channelId) {
-    return `/channels/${channelId}`;
+    return orgSlug
+      ? `/org/${orgSlug}/workspace/communication/channels/${channelId}`
+      : `/channels/${channelId}`;
   }
 
   if (conversationId) {
-    return `/dm/${conversationId}`;
+    return orgSlug
+      ? `/org/${orgSlug}/workspace/communication/dm/${conversationId}`
+      : `/dm/${conversationId}`;
   }
 
   return "/";
@@ -73,7 +95,8 @@ function buildDeepLinkUrl(metadata: Record<string, unknown>): string {
 export async function handlePushDelivery(
   params: HandlePushDeliveryParams
 ): Promise<void> {
-  const { notificationId, targetUserId, eventType, metadata, db } = params;
+  const { notificationId, targetUserId, eventType, metadata, db, orgId } =
+    params;
 
   const subscriptions = await db
     .select()
@@ -88,6 +111,7 @@ export async function handlePushDelivery(
   }
 
   const actorName = await getActorName(params);
+  const orgSlug = await getOrgSlug(db, orgId);
   const actionText = getActionText(eventType);
   const messagePreview = (metadata.messagePreview as string | undefined) ?? "";
   const entityId =
@@ -108,7 +132,7 @@ export async function handlePushDelivery(
     badge: "/favicon.ico",
     tag: `notification-${eventType}-${entityId}`,
     data: {
-      url: buildDeepLinkUrl(metadata),
+      url: buildDeepLinkUrl(metadata, orgSlug),
       notificationId,
       type: eventType,
     },

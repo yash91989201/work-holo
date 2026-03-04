@@ -3,9 +3,9 @@ import { notificationTable } from "@work-holo/db/schema/index";
 import {
   type NotificationQueueMessage,
   QUEUES,
-  type Queue,
+  Queue,
 } from "@work-holo/infrastructure";
-import { resolveDeliveryChannels } from "./preference-resolver";
+import { isMuted, resolveDeliveryChannels } from "./preference-resolver";
 import type {
   NotificationDomainEvent,
   NotificationServiceInterface,
@@ -15,7 +15,6 @@ type NotificationServiceConstructor = {
   userId: string;
   db: typeof Db;
   orgId: string;
-  queueClient: ReturnType<typeof Queue.getClient>;
 };
 
 const DEDUP_WINDOW_MS = 30_000;
@@ -25,8 +24,56 @@ export class NotificationService implements NotificationServiceInterface {
   readonly orgId: string;
   readonly db: typeof Db;
 
-  private readonly queueClient: ReturnType<typeof Queue.getClient>;
   private readonly recentlyEmitted = new Map<string, number>();
+
+  private normalizeMetadata(metadata: unknown): Record<string, unknown> {
+    if (typeof metadata === "string") {
+      try {
+        const parsed = JSON.parse(metadata);
+        if (parsed && typeof parsed === "object") {
+          return parsed as Record<string, unknown>;
+        }
+      } catch {
+        return {};
+      }
+      return {};
+    }
+
+    if (metadata && typeof metadata === "object") {
+      return metadata as Record<string, unknown>;
+    }
+
+    return {};
+  }
+
+  private getPreferenceScopeEntity(metadata: Record<string, unknown>): {
+    entityId: string | null;
+    entityType: "channel" | "dm_conversation" | null;
+  } {
+    const metadataFields = metadata as {
+      channelId?: unknown;
+      conversationId?: unknown;
+    };
+
+    if (typeof metadataFields.channelId === "string") {
+      return {
+        entityType: "channel",
+        entityId: metadataFields.channelId,
+      };
+    }
+
+    if (typeof metadataFields.conversationId === "string") {
+      return {
+        entityType: "dm_conversation",
+        entityId: metadataFields.conversationId,
+      };
+    }
+
+    return {
+      entityType: null,
+      entityId: null,
+    };
+  }
 
   private getDedupKey(event: NotificationDomainEvent): string {
     return `${event.targetUserId}:${event.type}:${event.entityId}`;
@@ -52,16 +99,10 @@ export class NotificationService implements NotificationServiceInterface {
     return false;
   }
 
-  constructor({
-    userId,
-    db,
-    orgId,
-    queueClient,
-  }: NotificationServiceConstructor) {
+  constructor({ userId, db, orgId }: NotificationServiceConstructor) {
     this.userId = userId;
     this.db = db;
     this.orgId = orgId;
-    this.queueClient = queueClient;
   }
 
   async emit(event: NotificationDomainEvent): Promise<void> {
@@ -70,6 +111,35 @@ export class NotificationService implements NotificationServiceInterface {
     }
 
     if (this.isDuplicate(event)) {
+      return;
+    }
+
+    const normalizedMetadata = this.normalizeMetadata(event.metadata);
+    const preferenceScope = this.getPreferenceScopeEntity(normalizedMetadata);
+
+    if (preferenceScope.entityType && preferenceScope.entityId) {
+      const muted = await isMuted({
+        userId: event.targetUserId,
+        entityType: preferenceScope.entityType,
+        entityId: preferenceScope.entityId,
+        db: this.db,
+      });
+
+      if (muted) {
+        return;
+      }
+    }
+
+    const configurableChannels = await resolveDeliveryChannels({
+      userId: event.targetUserId,
+      orgId: event.orgId,
+      eventType: event.type,
+      entityType: preferenceScope.entityType,
+      entityId: preferenceScope.entityId,
+      db: this.db,
+    });
+
+    if (configurableChannels.length === 0) {
       return;
     }
 
@@ -82,26 +152,13 @@ export class NotificationService implements NotificationServiceInterface {
         orgId: event.orgId,
         entityId: event.entityId,
         entityType: event.entityType,
-        metadata: event.metadata,
+        metadata: normalizedMetadata,
         status: "unread",
         title: "Notification",
       })
       .returning({ id: notificationTable.id });
 
     if (!notification) {
-      return;
-    }
-
-    const deliveryChannels = await resolveDeliveryChannels({
-      userId: event.targetUserId,
-      orgId: event.orgId,
-      eventType: event.type,
-      entityType: event.entityType,
-      entityId: event.entityId,
-      db: this.db,
-    });
-
-    if (deliveryChannels.length === 0) {
       return;
     }
 
@@ -113,18 +170,17 @@ export class NotificationService implements NotificationServiceInterface {
       eventType: event.type,
       entityId: event.entityId,
       entityType: event.entityType,
-      metadata: event.metadata,
-      deliveryChannels,
+      metadata: normalizedMetadata,
+      deliveryChannels: ["realtime", ...configurableChannels],
     };
 
-    this.queueClient.sendToQueue(
-      QUEUES.NOTIFICATIONS,
-      Buffer.from(JSON.stringify(payload)),
-      {
-        persistent: true,
-        timestamp: Date.now(),
-      }
-    );
+    const published = Queue.publish("NOTIFICATIONS", payload);
+
+    if (!published) {
+      throw new Error(
+        `Failed to publish notification ${notification.id} to ${QUEUES.NOTIFICATIONS}`
+      );
+    }
   }
 
   async emitBulk(events: NotificationDomainEvent[]): Promise<void> {

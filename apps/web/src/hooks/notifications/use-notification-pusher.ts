@@ -13,6 +13,7 @@ interface NotificationPayload {
   eventType: string;
   messagePreview: string | null;
   notificationId: string;
+  playSound?: boolean;
   timestamp: string;
 }
 

@@ -90,11 +90,6 @@ function getNotificationUrl(payload: PushPayload): string {
   return "/";
 }
 
-function isMentionEvent(payload: PushPayload): boolean {
-  const eventType = payload.eventType ?? payload.data?.type ?? "";
-  return eventType === "channel_mention";
-}
-
 sw.addEventListener("push", (event: PushEvent) => {
   if (!event.data) {
     return;
@@ -129,20 +124,6 @@ sw.addEventListener("push", (event: PushEvent) => {
     event.waitUntil(
       (async () => {
         await sw.registration.showNotification(title, options);
-
-        // Ask open clients to play a sound (Chromium on Linux does not play sounds for notifications)
-        const clients = await sw.clients.matchAll({
-          type: "window",
-          includeUncontrolled: true,
-        });
-        for (const client of clients) {
-          client.postMessage({
-            type: "PLAY_NOTIFICATION_SOUND",
-            payload: {
-              hasMention: isMentionEvent(data),
-            },
-          });
-        }
       })()
     );
   } catch (error) {

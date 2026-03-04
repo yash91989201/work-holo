@@ -364,6 +364,7 @@
     "workers/notification": {
       "name": "@work-holo/notification-worker",
       "dependencies": {
+        "@work-holo/config": "workspace:*",
         "@work-holo/db": "workspace:*",
         "@work-holo/email": "workspace:*",
         "@work-holo/env": "workspace:*",

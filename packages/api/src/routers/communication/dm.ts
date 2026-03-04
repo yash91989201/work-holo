@@ -464,38 +464,45 @@ export const dmRouter = {
       });
 
       if (!result.isMuted && context.notification) {
-        if (result.parentMessageId) {
-          await context.notification.emit({
-            actorId: userId,
-            entityId: result.message.id,
-            entityType: "message",
-            metadata: {
-              conversationId: input.conversationId,
-              messagePreview: result.notificationMessage,
-              replySenderId: userId,
-              replySenderName: senderName,
-              threadId: result.parentMessageId,
-            },
-            orgId,
-            targetUserId: result.recipientId,
-            type: "dm_reply",
-          });
-        } else {
-          await context.notification.emit({
-            actorId: userId,
-            entityId: result.message.id,
-            entityType: "message",
-            metadata: {
-              conversationId: input.conversationId,
-              messagePreview: result.notificationMessage,
-              senderId: userId,
-              senderName,
-            },
-            orgId,
-            targetUserId: result.recipientId,
-            type: "dm_message",
-          });
-        }
+        Promise.resolve().then(async () => {
+          try {
+            if (result.parentMessageId) {
+              await context.notification.emit({
+                actorId: userId,
+                entityId: result.message.id,
+                entityType: "message",
+                metadata: {
+                  conversationId: input.conversationId,
+                  messagePreview: result.notificationMessage,
+                  replySenderId: userId,
+                  replySenderName: senderName,
+                  threadId: result.parentMessageId,
+                },
+                orgId,
+                targetUserId: result.recipientId,
+                type: "dm_reply",
+              });
+              return;
+            }
+
+            await context.notification.emit({
+              actorId: userId,
+              entityId: result.message.id,
+              entityType: "message",
+              metadata: {
+                conversationId: input.conversationId,
+                messagePreview: result.notificationMessage,
+                senderId: userId,
+                senderName,
+              },
+              orgId,
+              targetUserId: result.recipientId,
+              type: "dm_message",
+            });
+          } catch (error) {
+            console.error("Error emitting DM message notification:", error);
+          }
+        });
       }
 
       return { txid: result.txid, message: result.message };

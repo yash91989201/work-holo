@@ -3,7 +3,7 @@ import {
   notificationSoundPreferenceTable,
   notificationSoundPresetTable,
 } from "@work-holo/db/schema/notification";
-import { and, asc, eq } from "drizzle-orm";
+import { and, asc, eq, isNull } from "drizzle-orm";
 import { z } from "zod";
 import { orgMemberProcedure } from "../../index";
 import {
@@ -95,6 +95,8 @@ export const soundPreferencesRouter = {
         conditions.push(
           eq(notificationSoundPreferenceTable.entityId, input.entityId)
         );
+      } else {
+        conditions.push(isNull(notificationSoundPreferenceTable.entityId));
       }
 
       const preference =
@@ -190,6 +192,8 @@ export const soundPreferencesRouter = {
         conditions.push(
           eq(notificationSoundPreferenceTable.entityId, input.entityId)
         );
+      } else {
+        conditions.push(isNull(notificationSoundPreferenceTable.entityId));
       }
 
       await db
