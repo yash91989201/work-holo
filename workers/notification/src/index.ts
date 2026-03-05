@@ -36,7 +36,7 @@ let emailDeliveryDisabled = false;
 const recentlyProcessedNotifications = new Map<string, number>();
 
 const getDedupKey = (message: NotificationQueueMessage): string =>
-  `${message.targetUserId}:${message.eventType}:${message.entityId}`;
+  message.notificationId;
 
 const isDuplicateNotification = (
   message: NotificationQueueMessage

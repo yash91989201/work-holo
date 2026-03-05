@@ -1,10 +1,12 @@
 import type { db as Db } from "@work-holo/db";
+import { organization } from "@work-holo/db/schema/auth";
 import { notificationTable } from "@work-holo/db/schema/index";
 import {
   type NotificationQueueMessage,
   QUEUES,
   Queue,
 } from "@work-holo/infrastructure";
+import { eq } from "drizzle-orm";
 import { isMuted, resolveDeliveryChannels } from "./preference-resolver";
 import type {
   NotificationDomainEvent,
@@ -19,6 +21,24 @@ type NotificationServiceConstructor = {
 export class NotificationService implements NotificationServiceInterface {
   readonly userId: string;
   readonly db: typeof Db;
+
+  private getMetadataString(
+    metadata: Record<string, unknown>,
+    key: string
+  ): string | null {
+    const value = metadata[key];
+
+    if (typeof value !== "string") {
+      return null;
+    }
+
+    const trimmed = value.trim();
+    if (trimmed.length === 0) {
+      return null;
+    }
+
+    return trimmed;
+  }
 
   private normalizeMetadata(metadata: unknown): Record<string, unknown> {
     if (typeof metadata === "string") {
@@ -69,6 +89,88 @@ export class NotificationService implements NotificationServiceInterface {
     };
   }
 
+  private async getOrgSlug(orgId: string): Promise<string | null> {
+    const [org] = await this.db
+      .select({ slug: organization.slug })
+      .from(organization)
+      .where(eq(organization.id, orgId))
+      .limit(1);
+
+    return org?.slug ?? null;
+  }
+
+  private buildTitle(
+    eventType: NotificationDomainEvent["type"],
+    metadata: Record<string, unknown>
+  ): string {
+    const actorName =
+      this.getMetadataString(metadata, "senderName") ??
+      this.getMetadataString(metadata, "replySenderName") ??
+      this.getMetadataString(metadata, "reactorName") ??
+      this.getMetadataString(metadata, "mentionedByName") ??
+      "Someone";
+
+    const channelName =
+      this.getMetadataString(metadata, "channelName") ?? "a channel";
+
+    switch (eventType) {
+      case "channel_message":
+        return `${actorName} sent a message in #${channelName}`;
+      case "channel_reply":
+        return `${actorName} replied in #${channelName}`;
+      case "channel_reaction":
+        return `${actorName} reacted in #${channelName}`;
+      case "channel_mention":
+        return `${actorName} mentioned you in #${channelName}`;
+      case "dm_message":
+        return `New message from ${actorName}`;
+      case "dm_reply":
+        return `${actorName} replied to your message`;
+      case "dm_reaction":
+        return `${actorName} reacted to your message`;
+      default:
+        return "Notification";
+    }
+  }
+
+  private buildActionUrl(
+    metadata: Record<string, unknown>,
+    orgSlug: string | null
+  ): string | null {
+    const channelId = this.getMetadataString(metadata, "channelId");
+    if (channelId) {
+      return orgSlug
+        ? `/org/${orgSlug}/workspace/communication/channels/${channelId}`
+        : `/channels/${channelId}`;
+    }
+
+    const conversationId = this.getMetadataString(metadata, "conversationId");
+    if (conversationId) {
+      return orgSlug
+        ? `/org/${orgSlug}/workspace/communication/dm/${conversationId}`
+        : `/dm/${conversationId}`;
+    }
+
+    return null;
+  }
+
+  private async buildPersistedNotification(
+    event: NotificationDomainEvent,
+    metadata: Record<string, unknown>
+  ): Promise<{
+    title: string;
+    message: string | null;
+    actionUrl: string | null;
+  }> {
+    const orgSlug = await this.getOrgSlug(event.orgId);
+
+    return {
+      title: this.buildTitle(event.type, metadata),
+      message: this.getMetadataString(metadata, "messagePreview"),
+      actionUrl: this.buildActionUrl(metadata, orgSlug),
+    };
+  }
+
   constructor({ userId, db }: NotificationServiceConstructor) {
     this.userId = userId;
     this.db = db;
@@ -81,6 +183,10 @@ export class NotificationService implements NotificationServiceInterface {
 
     const normalizedMetadata = this.normalizeMetadata(event.metadata);
     const preferenceScope = this.getPreferenceScopeEntity(normalizedMetadata);
+    const persistedNotification = await this.buildPersistedNotification(
+      event,
+      normalizedMetadata
+    );
 
     if (preferenceScope.entityType && preferenceScope.entityId) {
       const muted = await isMuted({
@@ -119,7 +225,9 @@ export class NotificationService implements NotificationServiceInterface {
         entityType: event.entityType,
         metadata: normalizedMetadata,
         status: "unread",
-        title: "Notification",
+        title: persistedNotification.title,
+        message: persistedNotification.message,
+        actionUrl: persistedNotification.actionUrl,
       })
       .returning({ id: notificationTable.id });
 

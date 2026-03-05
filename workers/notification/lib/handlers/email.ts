@@ -265,6 +265,7 @@ function buildTemplateMetadata(
   const conversationId = metadata.conversationId ?? null;
   const channelUrl = getChannelMessageUrl(orgSlug, channelId);
   const conversationUrl = getConversationUrl(orgSlug, conversationId);
+  const messageUrl = channelId !== null ? channelUrl : conversationUrl;
   let threadUrl = "#";
 
   if (channelId !== null) {
@@ -275,7 +276,7 @@ function buildTemplateMetadata(
 
   return {
     ...metadata,
-    messageUrl: channelUrl,
+    messageUrl,
     threadUrl,
     conversationUrl,
     originalMessagePreview:
