@@ -134,6 +134,29 @@ export function SoundNotifications() {
         ? "custom"
         : pref?.preference?.presetId || presetsData?.presets[0]?.id || "";
 
+    const handlePlaySound = () => {
+      if (
+        pref?.preference?.soundType === "custom" &&
+        pref.preference.customSoundUrl
+      ) {
+        playSound(pref.preference.customSoundUrl);
+        return;
+      }
+
+      const presetId = pref?.preference?.presetId || currentValue;
+      const preset = presetsData?.presets.find(
+        (p: { id: string; filename: string }) => p.id === presetId
+      );
+      if (preset) {
+        playSound(`/assets/sounds/${preset.filename}`);
+      }
+    };
+
+    const canPlay =
+      (pref?.preference?.soundType === "custom" &&
+        pref.preference.customSoundUrl) ||
+      currentValue;
+
     return (
       <Item>
         <ItemContent>
@@ -141,38 +164,11 @@ export function SoundNotifications() {
           <ItemDescription>{description}</ItemDescription>
         </ItemContent>
         <ItemActions className="flex items-center gap-2">
-          {pref?.preference?.soundType === "custom" &&
-            pref.preference.customSoundUrl && (
-              <Button
-                onClick={() => {
-                  if (pref.preference?.customSoundUrl) {
-                    playSound(pref.preference.customSoundUrl);
-                  }
-                }}
-                size="icon"
-                variant="ghost"
-              >
-                <IconPlayerPlay className="size-4" />
-              </Button>
-            )}
-          {pref?.preference?.soundType === "preset" &&
-            pref?.preference?.presetId && (
-              <Button
-                onClick={() => {
-                  const preset = presetsData?.presets.find(
-                    (p: { id: string; filename: string }) =>
-                      p.id === pref?.preference?.presetId
-                  );
-                  if (preset) {
-                    playSound(`/assets/sounds/${preset.filename}`);
-                  }
-                }}
-                size="icon"
-                variant="ghost"
-              >
-                <IconPlayerPlay className="size-4" />
-              </Button>
-            )}
+          {canPlay && (
+            <Button onClick={handlePlaySound} size="icon" variant="ghost">
+              <IconPlayerPlay className="size-4" />
+            </Button>
+          )}
           <Select
             onValueChange={(val) => handleSoundChange(scope, val)}
             value={currentValue}
@@ -237,7 +233,9 @@ export function SoundNotificationsSkeleton() {
         <Item>
           <ItemContent>
             <ItemTitle>Channels Sound</ItemTitle>
-            <ItemDescription>Default sound for channel notifications</ItemDescription>
+            <ItemDescription>
+              Default sound for channel notifications
+            </ItemDescription>
           </ItemContent>
           <ItemActions className="flex items-center gap-2">
             <Skeleton className="h-9 w-9 rounded-md" />

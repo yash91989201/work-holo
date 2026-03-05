@@ -5,8 +5,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useChannel, useChannelInfoSidebar } from "@/stores/channel-store";
-import { ChannelNotificationSettings } from "../channel-notification-settings";
 import { ChannelInfo } from "./channel-info";
+import { ChannelNotificationSettings } from "./channel-notification-settings";
 import { Members } from "./members";
 
 export const ChannelInfoSidebar = () => {
@@ -20,7 +20,7 @@ export const ChannelInfoSidebar = () => {
   return (
     <Sheet onOpenChange={toggleInfoSidebar} open={isOpen}>
       <SheetContent
-        className="flex h-full min-w-xl flex-col gap-0 border-border border-l bg-background/95 p-0 backdrop-blur-sm supports-backdrop-filter:bg-background/60 sm:max-w-xl"
+        className="flex h-full min-w-3xl flex-col gap-0 border-border border-l bg-background/95 p-0 backdrop-blur-sm supports-backdrop-filter:bg-background/60 sm:max-w-xl"
         side="right"
       >
         <div className="shrink-0 border-border border-b bg-muted/30 p-4">

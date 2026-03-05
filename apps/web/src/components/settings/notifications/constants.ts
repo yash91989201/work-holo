@@ -42,6 +42,55 @@ export const EVENT_TYPES: {
   },
 ];
 
+export const CHANNEL_EVENT_DEFINITIONS: {
+  id: NotificationEventType;
+  label: string;
+  description: string;
+}[] = [
+  {
+    id: "channel_message",
+    label: "Channel Messages",
+    description: "New messages in this channel",
+  },
+  {
+    id: "channel_reply",
+    label: "Channel Replies",
+    description: "Replies to threads in this channel",
+  },
+  {
+    id: "channel_reaction",
+    label: "Channel Reactions",
+    description: "Reactions to your messages in this channel",
+  },
+  {
+    id: "channel_mention",
+    label: "Channel Mentions",
+    description: "When you are mentioned in this channel",
+  },
+];
+
+export const DM_EVENT_DEFINITIONS: {
+  id: NotificationEventType;
+  label: string;
+  description: string;
+}[] = [
+  {
+    id: "dm_message",
+    label: "Direct Messages",
+    description: "New messages in this conversation",
+  },
+  {
+    id: "dm_reply",
+    label: "DM Replies",
+    description: "Replies to threads in this conversation",
+  },
+  {
+    id: "dm_reaction",
+    label: "DM Reactions",
+    description: "Reactions to your messages in this conversation",
+  },
+];
+
 export const CHANNEL_EVENTS: NotificationEventType[] = [
   "channel_message",
   "channel_reply",

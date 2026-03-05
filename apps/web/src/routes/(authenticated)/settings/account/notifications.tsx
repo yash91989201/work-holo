@@ -1,5 +1,5 @@
-import { Suspense } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { Suspense } from "react";
 import { DesktopNotifications } from "@/components/settings/notifications/desktop-notifications";
 import { EmailNotifications } from "@/components/settings/notifications/email-notifications";
 import { SoundNotifications } from "@/components/settings/notifications/sound-notifications";

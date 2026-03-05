@@ -1,12 +1,6 @@
 import { IconBell, IconMail, IconVolume } from "@tabler/icons-react";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
-import {
-  Item,
-  ItemActions,
-  ItemContent,
-  ItemDescription,
-  ItemTitle,
-} from "@/components/ui/item";
+import type { NotificationEventType } from "@work-holo/api/services/notification/types";
 import {
   Select,
   SelectContent,
@@ -14,6 +8,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Switch } from "@/components/ui/switch";
 import {
   Table,
   TableBody,
@@ -28,12 +24,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Switch } from "@/components/ui/switch";
 import { useNotificationPermission } from "@/hooks/use-notification-permission";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
 import { queryClient, queryUtils } from "@/utils/orpc";
-import type { NotificationEventType } from "@work-holo/api/services/notification/types";
 import { CHANNEL_EVENTS, DM_EVENTS, EVENT_TYPES } from "./constants";
 
 export function EmailNotifications() {

@@ -1,8 +1,15 @@
-import { IconPlayerPlay, IconUpload } from "@tabler/icons-react";
+import {
+  IconBell,
+  IconMail,
+  IconPlayerPlay,
+  IconUpload,
+  IconVolume,
+} from "@tabler/icons-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { NotificationEventType } from "@work-holo/api/services/notification/types";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
+import { CHANNEL_EVENT_DEFINITIONS } from "@/components/settings/notifications/constants";
 import { Button } from "@/components/ui/button";
 import {
   Item,
@@ -18,37 +25,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { queryUtils } from "@/utils/orpc";
 import { uploadNotificationSound } from "@/utils/upload-helper";
-
-const CHANNEL_EVENTS: {
-  id: NotificationEventType;
-  label: string;
-  description: string;
-}[] = [
-  {
-    id: "channel_message",
-    label: "Channel Messages",
-    description: "New messages in this channel",
-  },
-  {
-    id: "channel_reply",
-    label: "Channel Replies",
-    description: "Replies to threads in this channel",
-  },
-  {
-    id: "channel_reaction",
-    label: "Channel Reactions",
-    description: "Reactions to your messages in this channel",
-  },
-  {
-    id: "channel_mention",
-    label: "Channel Mentions",
-    description: "When you are mentioned in this channel",
-  },
-];
 
 interface ChannelNotificationSettingsProps {
   channelId: string;
@@ -246,8 +233,93 @@ export function ChannelNotificationSettings({
     }
   }
 
+  const handlePlaySound = () => {
+    const preference = soundPref?.preference;
+    if (preference?.soundType === "custom" && preference.customSoundUrl) {
+      playSound(preference.customSoundUrl);
+      return;
+    }
+
+    if (preference?.soundType === "preset" && preference.presetId) {
+      const preset = presetsData?.presets.find(
+        (p) => p.id === preference.presetId
+      );
+      if (preset) {
+        playSound(`/assets/sounds/${preset.filename}`);
+      }
+      return;
+    }
+
+    playSound("/assets/sounds/notify.webm");
+  };
+
+  const canPlaySound =
+    currentSoundValue !== "custom" ||
+    (soundPref?.preference?.soundType === "custom" &&
+      soundPref?.preference?.customSoundUrl);
+
+  const renderEventRow = (
+    event: (typeof CHANNEL_EVENT_DEFINITIONS)[number]
+  ) => {
+    const soundState = getPreferenceState(event.id, "sound");
+    const pushState = getPreferenceState(event.id, "push");
+    const emailState = getPreferenceState(event.id, "email");
+
+    return (
+      <TableRow key={event.id}>
+        <TableCell>
+          <div className="min-w-0">
+            <div className="truncate font-medium text-sm">{event.label}</div>
+            <div className="truncate text-muted-foreground text-xs">
+              {event.description}
+            </div>
+          </div>
+        </TableCell>
+        <TableCell className="text-center">
+          <div className="flex items-center justify-center gap-1">
+            <Switch
+              checked={soundState.enabled}
+              onCheckedChange={(checked) =>
+                handlePreferenceToggle(event.id, "sound", checked)
+              }
+            />
+            {!soundState.isOverride && (
+              <span className="text-muted-foreground text-xs">(Default)</span>
+            )}
+          </div>
+        </TableCell>
+        <TableCell className="text-center">
+          <div className="flex items-center justify-center gap-1">
+            <Switch
+              checked={pushState.enabled}
+              onCheckedChange={(checked) =>
+                handlePreferenceToggle(event.id, "push", checked)
+              }
+            />
+            {!pushState.isOverride && (
+              <span className="text-muted-foreground text-xs">(Default)</span>
+            )}
+          </div>
+        </TableCell>
+        <TableCell className="text-center">
+          <div className="flex items-center justify-center gap-1">
+            <Switch
+              checked={emailState.enabled}
+              onCheckedChange={(checked) =>
+                handlePreferenceToggle(event.id, "email", checked)
+              }
+            />
+            {!emailState.isOverride && (
+              <span className="text-muted-foreground text-xs">(Default)</span>
+            )}
+          </div>
+        </TableCell>
+      </TableRow>
+    );
+  };
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
         <Item>
           <ItemContent>
@@ -264,115 +336,88 @@ export function ChannelNotificationSettings({
 
       {!isMuted && (
         <>
-          <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
-            <Item>
-              <ItemContent>
-                <ItemTitle>Notification Sound</ItemTitle>
-                <ItemDescription>
-                  Override the default sound for this channel
-                </ItemDescription>
-              </ItemContent>
-              <ItemActions className="flex items-center gap-2">
-                {soundPref?.preference?.soundType === "custom" &&
-                  soundPref.preference.customSoundUrl && (
+          <div className="space-y-3">
+            <h3 className="font-medium text-sm">Sound Settings</h3>
+            <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
+              <Item>
+                <ItemContent>
+                  <ItemTitle>Notification Sound</ItemTitle>
+                  <ItemDescription>
+                    Override the default sound for this channel
+                  </ItemDescription>
+                </ItemContent>
+                <ItemActions className="flex items-center gap-2">
+                  {canPlaySound && (
                     <Button
-                      onClick={() => {
-                        if (soundPref.preference?.customSoundUrl) {
-                          playSound(soundPref.preference.customSoundUrl);
-                        }
-                      }}
+                      onClick={handlePlaySound}
                       size="icon"
                       variant="ghost"
                     >
                       <IconPlayerPlay className="size-4" />
                     </Button>
                   )}
-                {soundPref?.preference?.soundType === "preset" &&
-                  soundPref.preference.presetId && (
-                    <Button
-                      onClick={() => {
-                        const preset = presetsData?.presets.find(
-                          (p) => p.id === soundPref.preference?.presetId
-                        );
-                        if (preset) {
-                          playSound(`/assets/sounds/${preset.filename}`);
-                        }
-                      }}
-                      size="icon"
-                      variant="ghost"
-                    >
-                      <IconPlayerPlay className="size-4" />
-                    </Button>
-                  )}
-                <Select
-                  disabled={isUploading}
-                  onValueChange={handleSoundChange}
-                  value={currentSoundValue}
-                >
-                  <SelectTrigger className="w-[200px]">
-                    <SelectValue placeholder="Select a sound" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="default">Default (Global)</SelectItem>
-                    {presetsData?.presets.map((preset) => (
-                      <SelectItem key={preset.id} value={preset.id}>
-                        {preset.name}
+                  <Select
+                    disabled={isUploading}
+                    onValueChange={handleSoundChange}
+                    value={currentSoundValue}
+                  >
+                    <SelectTrigger className="w-50">
+                      <SelectValue placeholder="Select a sound" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="default">Default (Global)</SelectItem>
+                      {presetsData?.presets.map((preset) => (
+                        <SelectItem key={preset.id} value={preset.id}>
+                          {preset.name}
+                        </SelectItem>
+                      ))}
+                      <SelectItem value="custom">
+                        <div className="flex items-center gap-2">
+                          <IconUpload className="size-4" />
+                          <span>Upload Custom...</span>
+                        </div>
                       </SelectItem>
-                    ))}
-                    <SelectItem value="custom">
-                      <div className="flex items-center gap-2">
-                        <IconUpload className="size-4" />
-                        <span>Upload Custom...</span>
-                      </div>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </ItemActions>
-            </Item>
+                    </SelectContent>
+                  </Select>
+                </ItemActions>
+              </Item>
+            </div>
           </div>
 
-          <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
-            <div className="p-4 font-medium text-sm">Event Overrides</div>
-            <Separator />
-            {CHANNEL_EVENTS.map((event, index) => (
-              <div key={event.id}>
-                <div className="p-4">
-                  <div className="mb-3">
-                    <div className="font-medium text-sm">{event.label}</div>
-                    <div className="text-muted-foreground text-xs">
-                      {event.description}
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
-                    {(["sound", "push", "email"] as const).map((channel) => {
-                      const state = getPreferenceState(event.id, channel);
-                      return (
-                        <div
-                          className="flex items-center gap-2"
-                          key={`${event.id}-${channel}`}
-                        >
-                          <Switch
-                            checked={state.enabled}
-                            onCheckedChange={(checked) =>
-                              handlePreferenceToggle(event.id, channel, checked)
-                            }
-                          />
-                          <span className="text-sm capitalize">
-                            {channel}
-                            {!state.isOverride && (
-                              <span className="ml-1 text-muted-foreground text-xs">
-                                (Default)
-                              </span>
-                            )}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-                {index < CHANNEL_EVENTS.length - 1 && <Separator />}
-              </div>
-            ))}
+          <div className="space-y-3">
+            <h3 className="font-medium text-sm">Event Overrides</h3>
+            <div className="overflow-hidden rounded-xl border bg-card text-card-foreground shadow-sm">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[40%]">Event</TableHead>
+                    <TableHead className="w-[20%] text-center">
+                      <div className="flex items-center justify-center gap-1">
+                        <IconVolume className="size-3.5" />
+                        <span>Sound</span>
+                      </div>
+                    </TableHead>
+                    <TableHead className="w-[20%] text-center">
+                      <div className="flex items-center justify-center gap-1">
+                        <IconBell className="size-3.5" />
+                        <span>Push</span>
+                      </div>
+                    </TableHead>
+                    <TableHead className="w-[20%] text-center">
+                      <div className="flex items-center justify-center gap-1">
+                        <IconMail className="size-3.5" />
+                        <span>Email</span>
+                      </div>
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {CHANNEL_EVENT_DEFINITIONS.map((event) =>
+                    renderEventRow(event)
+                  )}
+                </TableBody>
+              </Table>
+            </div>
           </div>
         </>
       )}
