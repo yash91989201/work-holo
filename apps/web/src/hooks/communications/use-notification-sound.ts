@@ -5,16 +5,16 @@ import { getPusherClient } from "@/lib/pusher";
 import { orpcClient } from "@/utils/orpc";
 
 interface NotificationPayload {
-  actorId: string;
-  actorName: string;
-  channelName: string | null;
-  entityId: string | null;
-  entityType: string | null;
-  eventType: string;
-  messagePreview: string | null;
-  notificationId: string;
+  actorId?: string;
+  actorName?: string;
+  channelName?: string | null;
+  entityId?: string | null;
+  entityType?: string | null;
+  eventType?: string;
+  messagePreview?: string | null;
+  notificationId?: string;
   playSound?: boolean;
-  timestamp: string;
+  timestamp?: string;
 }
 
 interface SoundPreference {
@@ -117,29 +117,31 @@ async function fetchPresetFilename(presetId: string): Promise<string | null> {
   }
 }
 
-function resolveGlobalEntityId(entityType: string | null): string | null {
-  if (entityType === "channel") return "global_channel";
-  if (entityType === "dm_conversation") return "global_dm";
+function normalizeEntityType(
+  entityType: string | null | undefined
+): "channel" | "dm_conversation" | "event_type" | null {
+  if (entityType === "channel") return "channel";
+  if (entityType === "dm_conversation") return "dm_conversation";
+  if (entityType === "event" || entityType === "event_type") {
+    return "event_type";
+  }
   return null;
 }
 
 async function resolveSoundUrl(payload: NotificationPayload): Promise<string> {
   const DEFAULT_SOUND = "/assets/sounds/notify.webm";
 
-  if (payload.entityType && payload.entityId) {
-    const scope = payload.entityType as
-      | "channel"
-      | "dm_conversation"
-      | "event_type";
+  const normalizedEntityType = normalizeEntityType(payload.entityType);
+
+  if (normalizedEntityType && payload.entityId) {
+    const scope = normalizedEntityType;
     const pref = await fetchPreference(scope, payload.entityId);
     const url = await preferenceToUrl(pref);
     if (url) return url;
   }
 
-  const categoryEntityId = resolveGlobalEntityId(payload.entityType);
-
-  if (categoryEntityId) {
-    const pref = await fetchPreference("global", categoryEntityId);
+  if (normalizedEntityType) {
+    const pref = await fetchPreference(normalizedEntityType);
     const url = await preferenceToUrl(pref);
     if (url) return url;
   }
@@ -171,21 +173,48 @@ function playSound(url: string): void {
   });
 }
 
+function buildNotificationDedupKey(payload: NotificationPayload): string {
+  if (payload.notificationId) {
+    return payload.notificationId;
+  }
+
+  return [
+    payload.eventType ?? "unknown",
+    payload.entityType ?? "global",
+    payload.entityId ?? "none",
+    payload.timestamp ?? String(Date.now()),
+  ].join(":");
+}
+
+function isNotificationPayload(value: unknown): value is NotificationPayload {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const payload = value as { eventType?: unknown };
+  return (
+    payload.eventType === undefined || typeof payload.eventType === "string"
+  );
+}
+
 export function useNotificationSound() {
   const { user } = useAuthedSession();
   const channelRef = useRef<Channel | null>(null);
   const handledNotificationIdsRef = useRef<Set<string>>(new Set());
+  const lastSubscribedUserIdRef = useRef<string | undefined>(undefined);
 
   const handleNotification = useCallback(async (data: NotificationPayload) => {
-    if (handledNotificationIdsRef.current.has(data.notificationId)) {
+    const dedupeKey = buildNotificationDedupKey(data);
+
+    if (handledNotificationIdsRef.current.has(dedupeKey)) {
       return;
     }
 
-    handledNotificationIdsRef.current.add(data.notificationId);
+    handledNotificationIdsRef.current.add(dedupeKey);
 
     if (handledNotificationIdsRef.current.size > 1000) {
       handledNotificationIdsRef.current.clear();
-      handledNotificationIdsRef.current.add(data.notificationId);
+      handledNotificationIdsRef.current.add(dedupeKey);
     }
 
     if (data.playSound === false) {
@@ -197,13 +226,61 @@ export function useNotificationSound() {
   }, []);
 
   useEffect(() => {
+    if (!("serviceWorker" in navigator)) {
+      return;
+    }
+
+    const handleServiceWorkerMessage = (event: MessageEvent<unknown>) => {
+      const message = event.data;
+      if (!message || typeof message !== "object") {
+        return;
+      }
+
+      const typedMessage = message as { payload?: unknown; type?: unknown };
+      if (typedMessage.type !== "push-notification-received") {
+        return;
+      }
+
+      if (!isNotificationPayload(typedMessage.payload)) {
+        return;
+      }
+
+      handleNotification(typedMessage.payload).catch((error) => {
+        console.error(
+          "[NotificationSound] Failed to handle SW message:",
+          error
+        );
+      });
+    };
+
+    navigator.serviceWorker.addEventListener(
+      "message",
+      handleServiceWorkerMessage
+    );
+
+    return () => {
+      navigator.serviceWorker.removeEventListener(
+        "message",
+        handleServiceWorkerMessage
+      );
+    };
+  }, [handleNotification]);
+
+  useEffect(() => {
     if (!user?.id) return;
 
     const pusher = getPusherClient();
     const channelName = `private-user-${user.id}`;
     const channel = pusher.subscribe(channelName);
     channelRef.current = channel;
-    handledNotificationIdsRef.current.clear();
+
+    if (
+      lastSubscribedUserIdRef.current &&
+      lastSubscribedUserIdRef.current !== user.id
+    ) {
+      handledNotificationIdsRef.current.clear();
+    }
+    lastSubscribedUserIdRef.current = user.id;
 
     channel.bind("notification:new", handleNotification);
 

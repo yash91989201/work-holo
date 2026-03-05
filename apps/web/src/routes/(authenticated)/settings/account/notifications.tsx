@@ -1,9 +1,8 @@
+import { Suspense } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  DesktopNotifications,
-  EmailNotifications,
-  SoundNotifications,
-} from "@/components/settings/notifications";
+import { DesktopNotifications } from "@/components/settings/notifications/desktop-notifications";
+import { EmailNotifications } from "@/components/settings/notifications/email-notifications";
+import { SoundNotifications } from "@/components/settings/notifications/sound-notifications";
 
 export const Route = createFileRoute(
   "/(authenticated)/settings/account/notifications"
@@ -17,9 +16,13 @@ function RouteComponent() {
       <div className="space-y-6">
         <h2 className="font-semibold text-2xl tracking-tight">Notifications</h2>
         <div className="space-y-8">
-          <SoundNotifications />
+          <Suspense fallback={<SoundNotifications.Fallback />}>
+            <SoundNotifications />
+          </Suspense>
           <DesktopNotifications />
-          <EmailNotifications />
+          <Suspense fallback={<EmailNotifications.Fallback />}>
+            <EmailNotifications />
+          </Suspense>
         </div>
       </div>
     </section>

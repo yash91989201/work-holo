@@ -13,7 +13,6 @@ export function usePushNotifications() {
 
   const hasInitialized = useRef(false);
 
-  // Check initial subscription status and permission
   useEffect(() => {
     if (hasInitialized.current) return;
     hasInitialized.current = true;
@@ -21,12 +20,10 @@ export function usePushNotifications() {
     async function checkStatus() {
       setIsLoading(true);
 
-      // Check notification permission
       if ("Notification" in window) {
         setPermission(Notification.permission);
       }
 
-      // Check if already subscribed
       const subscribed = await isPushSubscribed();
       setIsSubscribed(subscribed);
 
@@ -36,7 +33,6 @@ export function usePushNotifications() {
     checkStatus();
   }, []);
 
-  // Subscribe to push notifications
   const subscribe = async () => {
     setIsLoading(true);
 
@@ -58,7 +54,6 @@ export function usePushNotifications() {
     }
   };
 
-  // Unsubscribe from push notifications
   const unsubscribe = async () => {
     setIsLoading(true);
 

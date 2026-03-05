@@ -12,7 +12,10 @@ sw.addEventListener("activate", (event: ExtendableEvent) => {
 });
 
 interface PushPayloadData {
+  entityId?: string;
+  entityType?: string;
   notificationId?: string;
+  playSound?: boolean;
   type?: string;
   url?: string;
 }
@@ -30,9 +33,23 @@ interface PushPayload {
   icon?: string;
   messagePreview?: string;
   notificationId?: string;
+  playSound?: boolean;
   tag?: string;
   timestamp?: string;
   title?: string;
+}
+
+interface SoundForwardPayload {
+  actorId?: string;
+  actorName?: string;
+  channelName?: string | null;
+  entityId?: string | null;
+  entityType?: string | null;
+  eventType?: string;
+  messagePreview?: string | null;
+  notificationId?: string;
+  playSound?: boolean;
+  timestamp?: string;
 }
 
 function getNotificationTitle(payload: PushPayload): string {
@@ -90,6 +107,47 @@ function getNotificationUrl(payload: PushPayload): string {
   return "/";
 }
 
+function getSoundForwardPayload(payload: PushPayload): SoundForwardPayload {
+  return {
+    actorId: payload.actorId,
+    actorName: payload.actorName,
+    channelName: payload.channelName ?? null,
+    entityId: payload.entityId ?? payload.data?.entityId ?? null,
+    entityType: payload.entityType ?? payload.data?.entityType ?? null,
+    eventType: payload.eventType ?? payload.data?.type,
+    messagePreview: payload.messagePreview ?? null,
+    notificationId: payload.notificationId ?? payload.data?.notificationId,
+    playSound: payload.playSound ?? payload.data?.playSound,
+    timestamp: payload.timestamp,
+  };
+}
+
+function getWindowClients(): Promise<readonly WindowClient[]> {
+  return sw.clients.matchAll({
+    type: "window",
+    includeUncontrolled: true,
+  });
+}
+
+function notifyClientsForSound(
+  payload: SoundForwardPayload,
+  clients: readonly WindowClient[]
+) {
+  if (clients.length === 0) {
+    return;
+  }
+
+  const visibleClient = clients.find(
+    (client) => client.visibilityState === "visible"
+  );
+  const targetClient = visibleClient ?? clients[0];
+
+  targetClient.postMessage({
+    type: "push-notification-received",
+    payload,
+  });
+}
+
 sw.addEventListener("push", (event: PushEvent) => {
   if (!event.data) {
     return;
@@ -97,6 +155,7 @@ sw.addEventListener("push", (event: PushEvent) => {
 
   try {
     const data = event.data.json() as PushPayload;
+    const soundPayload = getSoundForwardPayload(data);
 
     const title = getNotificationTitle(data);
     const body = getNotificationBody(data);
@@ -114,7 +173,7 @@ sw.addEventListener("push", (event: PushEvent) => {
         type: data.eventType ?? data.data?.type,
       },
       requireInteraction: false,
-      silent: false,
+      silent: soundPayload.playSound === false,
     };
 
     if ("vibrate" in Notification.prototype) {
@@ -123,7 +182,25 @@ sw.addEventListener("push", (event: PushEvent) => {
 
     event.waitUntil(
       (async () => {
-        await sw.registration.showNotification(title, options);
+        try {
+          const windowClients = await getWindowClients();
+          const shouldForwardSound =
+            soundPayload.playSound !== false && windowClients.length > 0;
+
+          await sw.registration.showNotification(title, {
+            ...options,
+            silent: options.silent || shouldForwardSound,
+          });
+
+          if (shouldForwardSound) {
+            notifyClientsForSound(soundPayload, windowClients);
+          }
+        } catch (asyncError) {
+          console.error(
+            "[Service Worker] Async push handler failure:",
+            asyncError
+          );
+        }
       })()
     );
   } catch (error) {

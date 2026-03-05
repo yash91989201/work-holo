@@ -66,7 +66,7 @@ const markNotificationProcessed = (message: NotificationQueueMessage): void => {
 
 function resolveRealtimeEntity(message: NotificationQueueMessage): {
   entityId: string;
-  entityType: "channel" | "dm_conversation" | "event";
+  entityType: "channel" | "dm_conversation" | "event_type";
 } {
   const channelId = message.metadata.channelId;
   if (typeof channelId === "string") {
@@ -78,7 +78,7 @@ function resolveRealtimeEntity(message: NotificationQueueMessage): {
     return { entityType: "dm_conversation", entityId: conversationId };
   }
 
-  return { entityType: "event", entityId: message.entityId };
+  return { entityType: "event_type", entityId: message.entityId };
 }
 
 async function handleRealtimeDelivery(
@@ -100,7 +100,8 @@ async function handleRealtimeDelivery(
 }
 
 async function handlePushDelivery(
-  message: NotificationQueueMessage
+  message: NotificationQueueMessage,
+  playSound: boolean
 ): Promise<void> {
   await sendPushNotifications({
     actorId: message.actorId,
@@ -109,6 +110,7 @@ async function handlePushDelivery(
     metadata: message.metadata,
     notificationId: message.notificationId,
     orgId: message.orgId,
+    playSound,
     targetUserId: message.targetUserId,
   });
 }
@@ -174,7 +176,7 @@ async function handleMessage(message: NotificationQueueMessage): Promise<void> {
         await handleRealtimeDelivery(message, playSound);
         return;
       case "push":
-        await handlePushDelivery(message);
+        await handlePushDelivery(message, playSound);
         return;
       case "email":
         await handleEmailDelivery(message);

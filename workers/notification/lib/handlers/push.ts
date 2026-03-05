@@ -11,6 +11,7 @@ interface HandlePushDeliveryParams {
   metadata: Record<string, unknown>;
   notificationId: string;
   orgId: string;
+  playSound: boolean;
   targetUserId: string;
 }
 
@@ -92,11 +93,38 @@ function buildDeepLinkUrl(
   return "/";
 }
 
+function resolvePushEntity(
+  metadata: Record<string, unknown>,
+  eventType: string
+): {
+  entityId: string;
+  entityType: "channel" | "dm_conversation" | "event_type";
+} {
+  const channelId = metadata.channelId;
+  if (typeof channelId === "string") {
+    return { entityType: "channel", entityId: channelId };
+  }
+
+  const conversationId = metadata.conversationId;
+  if (typeof conversationId === "string") {
+    return { entityType: "dm_conversation", entityId: conversationId };
+  }
+
+  return { entityType: "event_type", entityId: eventType };
+}
+
 export async function handlePushDelivery(
   params: HandlePushDeliveryParams
 ): Promise<void> {
-  const { notificationId, targetUserId, eventType, metadata, db, orgId } =
-    params;
+  const {
+    notificationId,
+    targetUserId,
+    eventType,
+    metadata,
+    db,
+    orgId,
+    playSound,
+  } = params;
 
   const subscriptions = await db
     .select()
@@ -114,10 +142,7 @@ export async function handlePushDelivery(
   const orgSlug = await getOrgSlug(db, orgId);
   const actionText = getActionText(eventType);
   const messagePreview = (metadata.messagePreview as string | undefined) ?? "";
-  const entityId =
-    (metadata.channelId as string | undefined) ??
-    (metadata.conversationId as string | undefined) ??
-    "";
+  const pushEntity = resolvePushEntity(metadata, eventType);
 
   const title = `${actorName} ${actionText}`;
   const body =
@@ -130,11 +155,21 @@ export async function handlePushDelivery(
     body,
     icon: "/favicon.ico",
     badge: "/favicon.ico",
-    tag: `notification-${eventType}-${entityId}`,
+    notificationId,
+    eventType,
+    entityType: pushEntity.entityType,
+    entityId: pushEntity.entityId,
+    actorName,
+    messagePreview,
+    playSound,
+    tag: `notification-${eventType}-${pushEntity.entityId}`,
     data: {
       url: buildDeepLinkUrl(metadata, orgSlug),
       notificationId,
       type: eventType,
+      entityType: pushEntity.entityType,
+      entityId: pushEntity.entityId,
+      playSound,
     },
   });
 
