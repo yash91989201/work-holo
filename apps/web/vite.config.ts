@@ -23,7 +23,11 @@ export default defineConfig({
         description: "Work Holo - PWA Application",
         theme_color: "#0c0c0c",
       },
-      pwaAssets: { disabled: false, config: true },
+      pwaAssets: {
+        disabled: false,
+        config: true,
+        includeHtmlHeadLinks: false,
+      },
       devOptions: {
         enabled: true,
         navigateFallback: undefined,

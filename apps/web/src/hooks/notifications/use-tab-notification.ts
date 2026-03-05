@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef } from "react";
 
 interface TabNotificationOptions {
+  defaultTitle?: string;
   unreadCount: number;
 }
 
@@ -12,22 +13,55 @@ interface NotificationInfo {
 const FLASH_INTERVAL_MS = 2000;
 const BADGE_RADIUS = 4;
 const BADGE_COLOR = "#ef4444";
+const NOTIFICATION_FAVICON_ATTR = "data-tab-notification-favicon";
+const ICON_LINK_SELECTOR = 'link[rel~="icon"]';
 
 const noop = () => undefined;
 
-function getExistingFaviconHref(): string {
-  const link = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
-  return link?.href ?? "/favicon.ico";
+function getCurrentManagedFaviconHref(): string {
+  const links = Array.from(
+    document.querySelectorAll<HTMLLinkElement>(ICON_LINK_SELECTOR)
+  );
+
+  for (let index = links.length - 1; index >= 0; index -= 1) {
+    const link = links[index];
+    if (link.hasAttribute(NOTIFICATION_FAVICON_ATTR)) continue;
+    if (!link.href || link.href.startsWith("data:")) continue;
+    return link.href;
+  }
+
+  return "/favicon.ico";
 }
 
-function setFaviconHref(href: string): void {
-  let link = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
+function setNotificationFaviconHref(href: string): void {
+  let link = document.querySelector<HTMLLinkElement>(
+    `link[${NOTIFICATION_FAVICON_ATTR}]`
+  );
+
   if (!link) {
     link = document.createElement("link");
     link.rel = "icon";
-    document.head.appendChild(link);
+    link.type = "image/png";
+    link.sizes = "32x32";
+    link.setAttribute(NOTIFICATION_FAVICON_ATTR, "true");
+
+    const firstIconLink =
+      document.querySelector<HTMLLinkElement>(ICON_LINK_SELECTOR);
+    if (firstIconLink) {
+      document.head.insertBefore(link, firstIconLink);
+    } else {
+      document.head.appendChild(link);
+    }
   }
+
   link.href = href;
+}
+
+function clearNotificationFavicon(): void {
+  const link = document.querySelector<HTMLLinkElement>(
+    `link[${NOTIFICATION_FAVICON_ATTR}]`
+  );
+  link?.remove();
 }
 
 function buildNotificationTitle(info: NotificationInfo): string {
@@ -78,19 +112,22 @@ function createBadgedFavicon(originalHref: string): Promise<string> {
   });
 }
 
-export function useTabNotification({ unreadCount }: TabNotificationOptions) {
+export function useTabNotification({
+  unreadCount,
+  defaultTitle,
+}: TabNotificationOptions) {
   const originalTitleRef = useRef<string>(document.title);
-  const originalFaviconRef = useRef<string>(getExistingFaviconHref());
   const flashIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const isBadgeActiveRef = useRef(false);
   const latestNotificationRef = useRef<NotificationInfo | null>(null);
+  const activeNotificationTitleRef = useRef<string | null>(null);
 
   const startTitleFlash = useCallback((info: NotificationInfo) => {
     if (document.visibilityState === "visible") return;
 
     latestNotificationRef.current = info;
 
-    if (!flashIntervalRef.current) {
+    if (document.title !== activeNotificationTitleRef.current) {
       originalTitleRef.current = document.title;
     }
 
@@ -99,6 +136,7 @@ export function useTabNotification({ unreadCount }: TabNotificationOptions) {
     }
 
     const notificationTitle = buildNotificationTitle(info);
+    activeNotificationTitleRef.current = notificationTitle;
     let showingNotification = true;
     document.title = notificationTitle;
 
@@ -115,6 +153,7 @@ export function useTabNotification({ unreadCount }: TabNotificationOptions) {
       clearInterval(flashIntervalRef.current);
       flashIntervalRef.current = null;
     }
+    activeNotificationTitleRef.current = null;
     document.title = originalTitleRef.current;
     latestNotificationRef.current = null;
   }, []);
@@ -123,8 +162,9 @@ export function useTabNotification({ unreadCount }: TabNotificationOptions) {
     if (isBadgeActiveRef.current) return;
 
     try {
-      const badgedHref = await createBadgedFavicon(originalFaviconRef.current);
-      setFaviconHref(badgedHref);
+      const managedFaviconHref = getCurrentManagedFaviconHref();
+      const badgedHref = await createBadgedFavicon(managedFaviconHref);
+      setNotificationFaviconHref(badgedHref);
       isBadgeActiveRef.current = true;
     } catch {
       return;
@@ -132,8 +172,7 @@ export function useTabNotification({ unreadCount }: TabNotificationOptions) {
   }, []);
 
   const clearBadge = useCallback(() => {
-    if (!isBadgeActiveRef.current) return;
-    setFaviconHref(originalFaviconRef.current);
+    clearNotificationFavicon();
     isBadgeActiveRef.current = false;
   }, []);
 
@@ -151,6 +190,14 @@ export function useTabNotification({ unreadCount }: TabNotificationOptions) {
   );
 
   useEffect(() => {
+    if (!defaultTitle) return;
+    if (activeNotificationTitleRef.current !== null) return;
+
+    originalTitleRef.current = defaultTitle;
+    document.title = defaultTitle;
+  }, [defaultTitle]);
+
+  useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible") {
         clearTitle();
@@ -166,16 +213,26 @@ export function useTabNotification({ unreadCount }: TabNotificationOptions) {
   useEffect(() => {
     if (unreadCount === 0) {
       clearAll();
-    } else if (unreadCount > 0 && !isBadgeActiveRef.current) {
-      showBadge().catch(noop);
     }
-  }, [unreadCount, clearAll, showBadge]);
+  }, [unreadCount, clearAll]);
 
   useEffect(() => {
-    const currentHref = getExistingFaviconHref();
-    if (currentHref && !currentHref.startsWith("data:")) {
-      originalFaviconRef.current = currentHref;
-    }
+    const observer = new MutationObserver(() => {
+      const currentTitle = document.title;
+      if (currentTitle !== activeNotificationTitleRef.current) {
+        originalTitleRef.current = currentTitle;
+      }
+    });
+
+    observer.observe(document.head, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+    });
+
+    return () => {
+      observer.disconnect();
+    };
   }, []);
 
   useEffect(() => {

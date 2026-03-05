@@ -12,7 +12,7 @@ import { PermissionProvider } from "@/lib/permission";
 import { queryClient, queryUtils } from "@/utils/orpc";
 
 export const Route = createFileRoute("/(authenticated)/org/$slug")({
-  loader: async () => {
+  loader: async ({ params }) => {
     const [activeOrganization, memberRole] = await Promise.all([
       authClient.organization.getFullOrganization(),
       authClient.organization.getActiveMemberRole(),
@@ -26,16 +26,20 @@ export const Route = createFileRoute("/(authenticated)/org/$slug")({
     }
 
     return {
-      logoSrc: activeOrganization.data?.logo ?? undefined,
+      orgName:
+        activeOrganization.data?.name ??
+        params.slug
+          .split("-")
+          .filter(Boolean)
+          .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+          .join(" "),
       role: memberRole.data.role,
     };
   },
   head: ({ loaderData }) => ({
-    links: [
+    meta: [
       {
-        rel: "icon",
-        type: "image/png",
-        href: loaderData?.logoSrc,
+        title: loaderData?.orgName ?? "Work Holo",
       },
     ],
   }),
@@ -63,10 +67,12 @@ function useCurrentNotificationContext(
 
 function RouteComponent() {
   const { slug } = Route.useParams();
+  const loaderData = Route.useLoaderData();
+  const orgName = loaderData?.orgName ?? "Work Holo";
   const { pathname } = useLocation();
   const context = useCurrentNotificationContext(pathname);
   const { unreadCount } = useNotifications();
-  const { notify } = useTabNotification({ unreadCount });
+  const { notify } = useTabNotification({ unreadCount, defaultTitle: orgName });
   useNotificationPusher(slug, context, notify);
 
   return (
