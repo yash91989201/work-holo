@@ -1,6 +1,14 @@
-import { IconBellFilled } from "@tabler/icons-react";
+import {
+  IconBellFilled,
+  IconCheck,
+  IconCopy,
+  IconInfoCircle,
+} from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
 import { toast } from "sonner";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Item,
@@ -15,6 +23,131 @@ import { Switch } from "@/components/ui/switch";
 import { useNotificationPermission } from "@/hooks/use-notification-permission";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
 import { queryUtils } from "@/utils/orpc";
+
+const BRAVE_PUSH_FIX_TOAST_ID = "brave-push-notification-fix";
+const BRAVE_PUSH_SETTINGS_URL = "brave://settings/privacy";
+
+async function isBraveBrowser(): Promise<boolean> {
+  if (typeof navigator === "undefined") {
+    return false;
+  }
+
+  const navigatorWithBrave = navigator as Navigator & {
+    brave?: { isBrave?: () => Promise<boolean> };
+  };
+
+  if (typeof navigatorWithBrave.brave?.isBrave === "function") {
+    try {
+      return await navigatorWithBrave.brave.isBrave();
+    } catch {
+      return false;
+    }
+  }
+
+  return navigator.userAgent.includes("Brave");
+}
+
+async function copyToClipboard(value: string): Promise<boolean> {
+  if (typeof navigator === "undefined") {
+    return false;
+  }
+
+  if (!navigator.clipboard?.writeText) {
+    return false;
+  }
+
+  try {
+    await navigator.clipboard.writeText(value);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+interface BravePushFixToastContentProps {
+  onCopyUrl: () => Promise<boolean>;
+  onDismiss: () => void;
+}
+
+function BravePushFixToastContent({
+  onCopyUrl,
+  onDismiss,
+}: BravePushFixToastContentProps) {
+  const [isCopied, setIsCopied] = useState(false);
+
+  const handleCopy = async () => {
+    const copied = await onCopyUrl();
+    if (copied) {
+      setIsCopied(true);
+    }
+  };
+
+  return (
+    <div className="w-[min(26rem,calc(100vw-2rem))] space-y-3 rounded-lg border bg-background p-4 text-foreground shadow-lg">
+      <div className="space-y-1.5">
+        <Badge className="rounded-md" variant="outline">
+          Brave Fix
+        </Badge>
+        <p className="font-medium text-sm leading-tight">
+          Push notifications could not be enabled in Brave
+        </p>
+      </div>
+
+      <Alert className="bg-muted/30 px-3 py-2" variant="default">
+        <IconInfoCircle className="size-4" />
+        <AlertTitle className="text-xs">Why this happens</AlertTitle>
+        <AlertDescription className="text-xs leading-relaxed">
+          Brave can block web push registration until one privacy setting is
+          enabled.
+        </AlertDescription>
+      </Alert>
+
+      <Separator />
+
+      <div className="space-y-2">
+        <p className="font-medium text-xs">How to fix this</p>
+
+        <ol className="list-decimal space-y-1.5 pl-4 text-xs leading-relaxed">
+          <li>
+            Open{" "}
+            <code className="rounded bg-muted px-1 py-0.5 font-mono">
+              {BRAVE_PUSH_SETTINGS_URL}
+            </code>{" "}
+            in Brave.
+          </li>
+          <li>Enable &quot;Use Google services for push messaging&quot;.</li>
+          <li>Click the Relaunch button shown to the left of the toggle.</li>
+          <li>
+            After Brave relaunches, try enabling Push Notifications again.
+          </li>
+        </ol>
+      </div>
+
+      <div className="flex items-center justify-end gap-2">
+        <Button
+          onClick={() => {
+            handleCopy().catch(() => {
+              setIsCopied(false);
+            });
+          }}
+          size="xs"
+          type="button"
+          variant="outline"
+        >
+          {isCopied ? (
+            <IconCheck className="size-3 text-emerald-500" />
+          ) : (
+            <IconCopy className="size-3" />
+          )}
+          <span>{isCopied ? "Copied" : "Copy URL"}</span>
+        </Button>
+        <Button onClick={onDismiss} size="xs" type="button">
+          Ok, understood
+        </Button>
+      </div>
+    </div>
+  );
+}
 
 export function DesktopNotifications() {
   const { requestPermission, isGranted, isDenied } =
@@ -80,7 +213,32 @@ export function DesktopNotifications() {
 
   const handleTogglePushNotifications = async (enabled: boolean) => {
     if (enabled) {
-      await subscribe();
+      const subscribed = await subscribe();
+
+      if (subscribed) {
+        toast.dismiss(BRAVE_PUSH_FIX_TOAST_ID);
+        return;
+      }
+
+      if (await isBraveBrowser()) {
+        const handleCopySettingsUrl = async () =>
+          copyToClipboard(BRAVE_PUSH_SETTINGS_URL);
+
+        toast.custom(
+          () => (
+            <BravePushFixToastContent
+              onCopyUrl={handleCopySettingsUrl}
+              onDismiss={() => {
+                toast.dismiss(BRAVE_PUSH_FIX_TOAST_ID);
+              }}
+            />
+          ),
+          {
+            id: BRAVE_PUSH_FIX_TOAST_ID,
+            duration: Number.POSITIVE_INFINITY,
+          }
+        );
+      }
     } else {
       await unsubscribe();
     }
