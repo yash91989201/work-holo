@@ -140,138 +140,163 @@ export const messageRouter = {
         input.channelId,
         permission.channel().message.create
       );
-      const { txid, message, mentionEvents, channelMessageEvents, replyEvent } =
-        await db.transaction(async (tx) => {
-          const txid = await generateTxId(tx);
+      const {
+        txid,
+        message,
+        mentionEvents,
+        channelMessageEvents,
+        replyEvents,
+      } = await db.transaction(async (tx) => {
+        const txid = await generateTxId(tx);
 
-          const channel = await tx.query.channelTable.findFirst({
-            where: eq(channelTable.id, input.channelId),
+        const channel = await tx.query.channelTable.findFirst({
+          where: eq(channelTable.id, input.channelId),
+        });
+
+        if (!channel) {
+          throw new ORPCError("NOT_FOUND", {
+            message: "Channel not found",
+          });
+        }
+
+        const [newMessage] = await tx
+          .insert(messageTable)
+          .values({
+            channelId: input.channelId,
+            receiverId: input.receiverId,
+            content: input.content,
+            type: input.type,
+            parentMessageId: input.parentMessageId,
+            senderId: user.id,
+          })
+          .returning();
+
+        if (!newMessage) {
+          throw new ORPCError("NOT_FOUND", {
+            message: "Failed to create message",
+          });
+        }
+
+        if (input.attachments && input.attachments.length > 0) {
+          const attachmentValues = input.attachments.map((attachment) => ({
+            messageId: newMessage.id,
+            fileName: attachment.fileName,
+            originalName: attachment.originalName,
+            fileSize: attachment.fileSize,
+            mimeType: attachment.mimeType,
+            type: attachment.type,
+            url: attachment.url,
+            uploadedBy: user.id,
+          }));
+
+          await tx.insert(attachmentTable).values(attachmentValues);
+        }
+
+        const messagePreview =
+          input.content?.slice(0, 200) || "New message in channel";
+        const mentionEvents: NotificationDomainEvent[] = [];
+
+        if (input.mentions && input.mentions.length > 0) {
+          const mentionValues = input.mentions.map((mentionedUserId) => ({
+            messageId: newMessage.id,
+            mentionedById: user.id,
+            mentionedUserId,
+            isSeen: false,
+          }));
+
+          await tx
+            .insert(messageMentionTable)
+            .values(mentionValues)
+            .onConflictDoNothing({
+              target: [
+                messageMentionTable.messageId,
+                messageMentionTable.mentionedUserId,
+              ],
+            });
+
+          mentionEvents.push(
+            ...Array.from(new Set(input.mentions)).map((targetUserId) => ({
+              type: "channel_mention" as const,
+              actorId: user.id,
+              orgId,
+              targetUserId,
+              entityId: newMessage.id,
+              entityType: "message" as const,
+              metadata: {
+                channelId: input.channelId,
+                channelName: channel.name,
+                messagePreview,
+                mentionedById: user.id,
+                mentionedByName: user.name,
+              },
+            }))
+          );
+        }
+
+        let replyEvents: NotificationDomainEvent[] = [];
+
+        if (input.parentMessageId) {
+          const parentMessage = await tx.query.messageTable.findFirst({
+            where: eq(messageTable.id, input.parentMessageId),
+            columns: {
+              senderId: true,
+            },
           });
 
-          if (!channel) {
-            throw new ORPCError("NOT_FOUND", {
-              message: "Channel not found",
-            });
-          }
-
-          const [newMessage] = await tx
-            .insert(messageTable)
-            .values({
-              channelId: input.channelId,
-              receiverId: input.receiverId,
-              content: input.content,
-              type: input.type,
-              parentMessageId: input.parentMessageId,
-              senderId: user.id,
+          await tx
+            .update(messageTable)
+            .set({
+              threadCount: sql`${messageTable.threadCount} + 1`,
             })
-            .returning();
+            .where(eq(messageTable.id, input.parentMessageId));
 
-          if (!newMessage) {
-            throw new ORPCError("NOT_FOUND", {
-              message: "Failed to create message",
-            });
-          }
+          if (parentMessage) {
+            const threadParticipants = await tx
+              .selectDistinct({ senderId: messageTable.senderId })
+              .from(messageTable)
+              .where(
+                and(
+                  eq(messageTable.parentMessageId, input.parentMessageId),
+                  eq(messageTable.isDeleted, false)
+                )
+              );
 
-          if (input.attachments && input.attachments.length > 0) {
-            const attachmentValues = input.attachments.map((attachment) => ({
-              messageId: newMessage.id,
-              fileName: attachment.fileName,
-              originalName: attachment.originalName,
-              fileSize: attachment.fileSize,
-              mimeType: attachment.mimeType,
-              type: attachment.type,
-              url: attachment.url,
-              uploadedBy: user.id,
-            }));
-
-            await tx.insert(attachmentTable).values(attachmentValues);
-          }
-
-          const messagePreview =
-            input.content?.slice(0, 200) || "New message in channel";
-          const mentionEvents: NotificationDomainEvent[] = [];
-
-          if (input.mentions && input.mentions.length > 0) {
-            const mentionValues = input.mentions.map((mentionedUserId) => ({
-              messageId: newMessage.id,
-              mentionedById: user.id,
-              mentionedUserId,
-              isSeen: false,
-            }));
-
-            await tx
-              .insert(messageMentionTable)
-              .values(mentionValues)
-              .onConflictDoNothing({
-                target: [
-                  messageMentionTable.messageId,
-                  messageMentionTable.mentionedUserId,
-                ],
-              });
-
-            mentionEvents.push(
-              ...Array.from(new Set(input.mentions)).map((targetUserId) => ({
-                type: "channel_mention" as const,
-                actorId: user.id,
-                orgId,
-                targetUserId,
-                entityId: newMessage.id,
-                entityType: "message" as const,
-                metadata: {
-                  channelId: input.channelId,
-                  channelName: channel.name,
-                  messagePreview,
-                  mentionedById: user.id,
-                  mentionedByName: user.name,
-                },
-              }))
+            const participantIds = new Set(
+              threadParticipants.map((p) => p.senderId)
             );
-          }
+            participantIds.add(parentMessage.senderId);
 
-          let replyEvent: NotificationDomainEvent | null = null;
-
-          if (input.parentMessageId) {
-            const parentMessage = await tx.query.messageTable.findFirst({
-              where: eq(messageTable.id, input.parentMessageId),
-              columns: {
-                senderId: true,
+            const threadId = input.parentMessageId;
+            replyEvents = Array.from(participantIds).map((targetUserId) => ({
+              type: "channel_reply" as const,
+              actorId: user.id,
+              orgId,
+              targetUserId,
+              entityId: newMessage.id,
+              entityType: "message" as const,
+              metadata: {
+                channelId: input.channelId,
+                channelName: channel.name,
+                threadId,
+                messagePreview,
+                replySenderId: user.id,
+                replySenderName: user.name,
               },
-            });
-
-            await tx
-              .update(messageTable)
-              .set({
-                threadCount: sql`${messageTable.threadCount} + 1`,
-              })
-              .where(eq(messageTable.id, input.parentMessageId));
-
-            if (parentMessage) {
-              replyEvent = {
-                type: "channel_reply",
-                actorId: user.id,
-                orgId,
-                targetUserId: parentMessage.senderId,
-                entityId: newMessage.id,
-                entityType: "message",
-                metadata: {
-                  channelId: input.channelId,
-                  channelName: channel.name,
-                  threadId: input.parentMessageId,
-                  messagePreview,
-                  replySenderId: user.id,
-                  replySenderName: user.name,
-                },
-              };
-            }
+            }));
           }
+        }
 
-          const channelMembers = await tx
-            .select({ userId: channelMemberTable.userId })
-            .from(channelMemberTable)
-            .where(eq(channelMemberTable.channelId, input.channelId));
+        // Always query channel members first (needed for both notifications and memberCount)
+        const channelMembers = await tx
+          .select({ userId: channelMemberTable.userId })
+          .from(channelMemberTable)
+          .where(eq(channelMemberTable.channelId, input.channelId));
 
-          const channelMessageEvents: NotificationDomainEvent[] =
-            channelMembers.map(({ userId: targetUserId }) => ({
+        let channelMessageEvents: NotificationDomainEvent[] = [];
+
+        if (!input.parentMessageId) {
+          channelMessageEvents = channelMembers.map(
+            ({ userId: targetUserId }) => ({
               type: "channel_message",
               actorId: user.id,
               orgId,
@@ -285,37 +310,39 @@ export const messageRouter = {
                 senderId: user.id,
                 senderName: user.name,
               },
-            }));
-
-          const readTimestamp = new Date();
-          const memberCount = channelMembers.length;
-
-          if (memberCount <= MAX_MEMBERS_FOR_DETAILED_TRACKING) {
-            await tx
-              .insert(messageReadTable)
-              .values({
-                messageId: newMessage.id,
-                userId: user.id,
-                readAt: readTimestamp,
-              })
-              .onConflictDoNothing();
-          }
-
-          const newMessageCreatedAtIso = newMessage.createdAt.toISOString();
-          const readTimestampIso = readTimestamp.toISOString();
-
-          await tx
-            .insert(channelReadTable)
-            .values({
-              channelId: input.channelId,
-              userId: user.id,
-              lastReadMessageId: newMessage.id,
-              lastReadAt: readTimestamp,
             })
-            .onConflictDoUpdate({
-              target: [channelReadTable.channelId, channelReadTable.userId],
-              set: {
-                lastReadMessageId: sql`
+          );
+        }
+
+        const readTimestamp = new Date();
+        const memberCount = channelMembers.length;
+
+        if (memberCount <= MAX_MEMBERS_FOR_DETAILED_TRACKING) {
+          await tx
+            .insert(messageReadTable)
+            .values({
+              messageId: newMessage.id,
+              userId: user.id,
+              readAt: readTimestamp,
+            })
+            .onConflictDoNothing();
+        }
+
+        const newMessageCreatedAtIso = newMessage.createdAt.toISOString();
+        const readTimestampIso = readTimestamp.toISOString();
+
+        await tx
+          .insert(channelReadTable)
+          .values({
+            channelId: input.channelId,
+            userId: user.id,
+            lastReadMessageId: newMessage.id,
+            lastReadAt: readTimestamp,
+          })
+          .onConflictDoUpdate({
+            target: [channelReadTable.channelId, channelReadTable.userId],
+            set: {
+              lastReadMessageId: sql`
                   CASE
                     WHEN ${sql.raw(`'${newMessageCreatedAtIso}'::timestamp`)} >
                     COALESCE(
@@ -330,7 +357,7 @@ export const messageRouter = {
                     ELSE ${channelReadTable.lastReadMessageId}
                   END
                 `,
-                lastReadAt: sql`
+              lastReadAt: sql`
                   CASE
                     WHEN ${sql.raw(`'${newMessageCreatedAtIso}'::timestamp`)} >
                     COALESCE(
@@ -345,17 +372,17 @@ export const messageRouter = {
                     ELSE ${channelReadTable.lastReadAt}
                   END
                 `,
-              },
-            });
+            },
+          });
 
-          return {
-            txid,
-            message: newMessage,
-            mentionEvents,
-            channelMessageEvents,
-            replyEvent,
-          };
-        });
+        return {
+          txid,
+          message: newMessage,
+          mentionEvents,
+          channelMessageEvents,
+          replyEvents,
+        };
+      });
 
       if (context.notification) {
         Promise.resolve().then(async () => {
@@ -368,8 +395,8 @@ export const messageRouter = {
               await context.notification.emitBulk(channelMessageEvents);
             }
 
-            if (replyEvent) {
-              await context.notification.emit(replyEvent);
+            for (const event of replyEvents) {
+              await context.notification.emit(event);
             }
           } catch (error) {
             console.error("Error emitting notifications:", error);

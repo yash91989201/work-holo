@@ -17,14 +17,10 @@ type NotificationServiceConstructor = {
   orgId: string;
 };
 
-const DEDUP_WINDOW_MS = 30_000;
-
 export class NotificationService implements NotificationServiceInterface {
   readonly userId: string;
   readonly orgId: string;
   readonly db: typeof Db;
-
-  private readonly recentlyEmitted = new Map<string, number>();
 
   private normalizeMetadata(metadata: unknown): Record<string, unknown> {
     if (typeof metadata === "string") {
@@ -75,30 +71,6 @@ export class NotificationService implements NotificationServiceInterface {
     };
   }
 
-  private getDedupKey(event: NotificationDomainEvent): string {
-    return `${event.targetUserId}:${event.type}:${event.entityId}`;
-  }
-
-  private isDuplicate(event: NotificationDomainEvent): boolean {
-    const now = Date.now();
-
-    for (const [key, timestamp] of this.recentlyEmitted) {
-      if (now - timestamp > DEDUP_WINDOW_MS) {
-        this.recentlyEmitted.delete(key);
-      }
-    }
-
-    const dedupKey = this.getDedupKey(event);
-    const lastEmittedAt = this.recentlyEmitted.get(dedupKey);
-
-    if (lastEmittedAt && now - lastEmittedAt <= DEDUP_WINDOW_MS) {
-      return true;
-    }
-
-    this.recentlyEmitted.set(dedupKey, now);
-    return false;
-  }
-
   constructor({ userId, db, orgId }: NotificationServiceConstructor) {
     this.userId = userId;
     this.db = db;
@@ -107,10 +79,6 @@ export class NotificationService implements NotificationServiceInterface {
 
   async emit(event: NotificationDomainEvent): Promise<void> {
     if (event.targetUserId === this.userId) {
-      return;
-    }
-
-    if (this.isDuplicate(event)) {
       return;
     }
 
