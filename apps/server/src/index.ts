@@ -7,7 +7,6 @@ import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
 import { createContext } from "@work-holo/api/context";
 import { electricRouter } from "@work-holo/api/routers/electric/index";
 import { appRouter } from "@work-holo/api/routers/index";
-import { NotificationManagers } from "@work-holo/api/services/notification/index";
 import { auth } from "@work-holo/auth";
 import { db } from "@work-holo/db";
 import { env } from "@work-holo/env/server";
@@ -34,10 +33,6 @@ PermissionManagers.initialize({
   db,
   redis: Redis.getClient(),
   pusher: PusherClient.getClient(),
-});
-
-NotificationManagers.initialize({
-  queueClient: Queue.getClient(),
 });
 
 const app = new Hono();

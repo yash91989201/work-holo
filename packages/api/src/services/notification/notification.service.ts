@@ -14,12 +14,10 @@ import type {
 type NotificationServiceConstructor = {
   userId: string;
   db: typeof Db;
-  orgId: string;
 };
 
 export class NotificationService implements NotificationServiceInterface {
   readonly userId: string;
-  readonly orgId: string;
   readonly db: typeof Db;
 
   private normalizeMetadata(metadata: unknown): Record<string, unknown> {
@@ -71,10 +69,9 @@ export class NotificationService implements NotificationServiceInterface {
     };
   }
 
-  constructor({ userId, db, orgId }: NotificationServiceConstructor) {
+  constructor({ userId, db }: NotificationServiceConstructor) {
     this.userId = userId;
     this.db = db;
-    this.orgId = orgId;
   }
 
   async emit(event: NotificationDomainEvent): Promise<void> {

@@ -9,8 +9,6 @@ export {
   isDeliveryEnabledByDefault,
 } from "./defaults";
 export { NotificationService } from "./notification.service";
-export type { AllNotificationManagers } from "./notification-managers";
-export { NotificationManagers } from "./notification-managers";
 export {
   getEmailDigestInterval,
   isMuted,

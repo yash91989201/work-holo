@@ -3,10 +3,7 @@ import { member } from "@work-holo/db/schema/auth";
 import { PermissionManagers, PermissionService } from "@work-holo/permission";
 import { and, eq } from "drizzle-orm";
 import type { Context } from "./context";
-import {
-  NotificationManagers,
-  NotificationService,
-} from "./services/notification";
+import { NotificationService } from "./services/notification";
 import { StorageService } from "./services/storage";
 
 export const o = os.$context<Context>();
@@ -38,7 +35,6 @@ export const orgProcedure = protectedProcedure.use(({ context, next }) => {
   }
 
   const managers = PermissionManagers.getAll();
-  const notificationManagers = NotificationManagers.getAll();
 
   const permission = new PermissionService({
     userId: context.session.user.id,
@@ -50,8 +46,6 @@ export const orgProcedure = protectedProcedure.use(({ context, next }) => {
   const notification = new NotificationService({
     userId: context.session.user.id,
     db: context.db,
-    orgId: activeOrganizationId,
-    ...notificationManagers,
   });
 
   return next({
