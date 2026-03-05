@@ -94,6 +94,12 @@ export function DmNotificationSettings({
     })
   );
 
+  const { data: globalSoundPref } = useQuery(
+    queryUtils.notification.soundPreferences.getPreference.queryOptions({
+      input: { scope: "dm_conversation" },
+    })
+  );
+
   const updateSoundPreference = useMutation(
     queryUtils.notification.soundPreferences.updatePreference.mutationOptions({
       onSuccess: () => {
@@ -234,19 +240,34 @@ export function DmNotificationSettings({
   }
 
   const handlePlaySound = () => {
-    const preference = soundPref?.preference;
-    if (preference?.soundType === "custom" && preference.customSoundUrl) {
-      playSound(preference.customSoundUrl);
+    const effectivePreference =
+      soundPref?.preference ?? globalSoundPref?.preference;
+
+    if (effectivePreference?.soundType === "custom") {
+      if (!effectivePreference.customSoundUrl) {
+        toast.error("Custom sound is unavailable");
+        return;
+      }
+
+      playSound(effectivePreference.customSoundUrl);
       return;
     }
 
-    if (preference?.soundType === "preset" && preference.presetId) {
-      const preset = presetsData?.presets.find(
-        (p) => p.id === preference.presetId
-      );
-      if (preset) {
-        playSound(`/assets/sounds/${preset.filename}`);
+    if (effectivePreference?.soundType === "preset") {
+      if (!effectivePreference.presetId) {
+        playSound("/assets/sounds/notify.webm");
+        return;
       }
+
+      const preset = presetsData?.presets.find(
+        (p) => p.id === effectivePreference.presetId
+      );
+      if (!preset) {
+        toast.error("Selected sound is still loading");
+        return;
+      }
+
+      playSound(`/assets/sounds/${preset.filename}`);
       return;
     }
 
