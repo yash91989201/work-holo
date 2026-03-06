@@ -34,6 +34,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useNotificationPermission } from "@/hooks/use-notification-permission";
+import { usePushNotifications } from "@/hooks/use-push-notifications";
 import { queryUtils } from "@/utils/orpc";
 import { uploadNotificationSound } from "@/utils/upload-helper";
 
@@ -47,6 +49,9 @@ export function DmNotificationSettings({
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const { isSubscribed, isSupported } = usePushNotifications();
+  const { isGranted } = useNotificationPermission();
+  const isDesktopReady = isGranted && isSubscribed && isSupported;
 
   const { data: muteStatus } = useQuery(
     queryUtils.notification.getChannelMuteStatus.queryOptions({
@@ -141,6 +146,10 @@ export function DmNotificationSettings({
     deliveryChannel: "sound" | "push" | "email",
     enabled: boolean
   ) => {
+    if (deliveryChannel === "push" && !isDesktopReady) {
+      return;
+    }
+
     updatePreference.mutate({
       eventType,
       deliveryChannel,
@@ -213,6 +222,10 @@ export function DmNotificationSettings({
     eventType: NotificationEventType,
     deliveryChannel: "sound" | "push" | "email"
   ) => {
+    if (deliveryChannel === "push" && !isDesktopReady) {
+      return { isOverride: false, enabled: false };
+    }
+
     const override = preferences?.overrides.find(
       (o) =>
         o.eventType === eventType &&
@@ -311,6 +324,7 @@ export function DmNotificationSettings({
           <div className="flex items-center justify-center gap-1">
             <Switch
               checked={pushState.enabled}
+              disabled={!isDesktopReady}
               onCheckedChange={(checked) =>
                 handlePreferenceToggle(event.id, "push", checked)
               }
