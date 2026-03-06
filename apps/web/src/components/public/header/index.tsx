@@ -2,9 +2,8 @@ import { Link } from "@tanstack/react-router";
 import { Suspense } from "react";
 import { Image } from "@/components/shared/image";
 import { cn } from "@/lib/utils";
+import { AccountDropdown } from "./account-dropdown";
 import { MyOrgButton } from "./my-org-button";
-import { ThemeToggle } from "./theme-toggle";
-import UserMenu from "./user-menu";
 
 export function Header() {
   const links = [{ to: "/", label: "Home" }] as const;
@@ -60,8 +59,9 @@ export function Header() {
             <Suspense fallback={<MyOrgButton.Fallback />}>
               <MyOrgButton />
             </Suspense>
-            <ThemeToggle />
-            <UserMenu />
+            <Suspense fallback={<AccountDropdown.Fallback />}>
+              <AccountDropdown />
+            </Suspense>
           </nav>
         </div>
       </div>
