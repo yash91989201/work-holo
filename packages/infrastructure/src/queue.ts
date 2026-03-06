@@ -2,6 +2,7 @@ import amqp, { type Channel, type ChannelModel } from "amqplib";
 
 export const QUEUES = {
   READ_RECEIPTS: "read_receipts",
+  NOTIFICATIONS: "notifications",
 } as const;
 
 export interface ReadReceiptQueueMessage {
@@ -11,7 +12,19 @@ export interface ReadReceiptQueueMessage {
   type: "process_channel";
 }
 
-export type QueueMessage = ReadReceiptQueueMessage;
+export interface NotificationQueueMessage {
+  actorId: string;
+  deliveryChannels: Array<"realtime" | "sound" | "push" | "email">;
+  entityId: string;
+  entityType: string;
+  eventType: string;
+  metadata: Record<string, unknown>;
+  notificationId: string;
+  orgId: string;
+  targetUserId: string;
+}
+
+export type QueueMessage = ReadReceiptQueueMessage | NotificationQueueMessage;
 
 export interface QueueConfig {
   url: string;
@@ -35,6 +48,14 @@ export class Queue {
       arguments: {
         "x-message-ttl": 3_600_000,
         "x-max-length": 10_000,
+      },
+    });
+
+    await Queue.channel.assertQueue(QUEUES.NOTIFICATIONS, {
+      durable: true,
+      arguments: {
+        "x-message-ttl": 3_600_000,
+        "x-max-length": 50_000,
       },
     });
 

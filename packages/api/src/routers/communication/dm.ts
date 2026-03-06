@@ -9,7 +9,6 @@ import {
   dmMessageReadTable,
   dmMessageTable,
   member as memberTable,
-  notificationTable,
   user as userTable,
 } from "@work-holo/db/schema/index";
 import { PusherClient } from "@work-holo/infrastructure";
@@ -84,21 +83,6 @@ const emitDmEvent = async (
     );
   } catch (error) {
     console.error("Failed to emit DM event:", error);
-  }
-};
-
-const emitNotificationEvent = async (
-  userId: string,
-  payload: Record<string, unknown>
-) => {
-  try {
-    await PusherClient.getClient().trigger(
-      `private-user-${userId}`,
-      "notification:new",
-      payload
-    );
-  } catch (error) {
-    console.error("Failed to emit DM notification event:", error);
   }
 };
 
@@ -368,8 +352,10 @@ export const dmRouter = {
 
   sendMessage: dmProcedure
     .input(SendDmMessageInput)
-    .handler(async ({ input, context: { db, orgId, session } }) => {
+    .handler(async ({ input, context }) => {
+      const { db, orgId, session } = context;
       const userId = session.user.id;
+      const senderName = session.user.name ?? "Someone";
 
       const result = await db.transaction(async (tx) => {
         const txid = await generateTxId(tx);
@@ -456,30 +442,20 @@ export const dmRouter = {
           ),
         });
 
-        let notification: typeof notificationTable.$inferSelect | null = null;
-        if (!mute) {
-          const notificationMessage = (
-            normalizedContent ??
-            input.attachments?.[0]?.originalName ??
-            "Sent an attachment"
-          ).slice(0, 200);
+        const notificationMessage = (
+          normalizedContent ??
+          input.attachments?.[0]?.originalName ??
+          "Sent an attachment"
+        ).slice(0, 200);
 
-          const [createdNotification] = await tx
-            .insert(notificationTable)
-            .values({
-              userId: recipientId,
-              type: "direct_message",
-              title: `${session.user.name} sent you a message`,
-              message: notificationMessage,
-              entityId: message.id,
-              entityType: "dm_message",
-            })
-            .returning();
-
-          notification = createdNotification ?? null;
-        }
-
-        return { txid, message, notification, recipientId };
+        return {
+          isMuted: Boolean(mute),
+          message,
+          notificationMessage,
+          parentMessageId: input.parentMessageId,
+          recipientId,
+          txid,
+        };
       });
 
       await emitDmEvent(input.conversationId, DM_EVENTS.NEW_MESSAGE, {
@@ -487,9 +463,45 @@ export const dmRouter = {
         message: result.message,
       });
 
-      if (result.notification) {
-        await emitNotificationEvent(result.recipientId, {
-          notification: result.notification,
+      if (!result.isMuted && context.notification) {
+        Promise.resolve().then(async () => {
+          try {
+            if (result.parentMessageId) {
+              await context.notification.emit({
+                actorId: userId,
+                entityId: result.message.id,
+                entityType: "message",
+                metadata: {
+                  conversationId: input.conversationId,
+                  messagePreview: result.notificationMessage,
+                  replySenderId: userId,
+                  replySenderName: senderName,
+                  threadId: result.parentMessageId,
+                },
+                orgId,
+                targetUserId: result.recipientId,
+                type: "dm_reply",
+              });
+              return;
+            }
+
+            await context.notification.emit({
+              actorId: userId,
+              entityId: result.message.id,
+              entityType: "message",
+              metadata: {
+                conversationId: input.conversationId,
+                messagePreview: result.notificationMessage,
+                senderId: userId,
+                senderName,
+              },
+              orgId,
+              targetUserId: result.recipientId,
+              type: "dm_message",
+            });
+          } catch (error) {
+            console.error("Error emitting DM message notification:", error);
+          }
         });
       }
 
@@ -729,73 +741,109 @@ export const dmRouter = {
 
   toggleReaction: dmProcedure
     .input(ToggleDmReactionInput)
-    .handler(async ({ input, context: { db, orgId, session } }) => {
-      const userId = session.user.id;
+    .handler(
+      async ({ input, context: { db, orgId, session, notification } }) => {
+        const userId = session.user.id;
 
-      const result = await db.transaction(async (tx) => {
-        const txid = await generateTxId(tx);
-        const message = await tx.query.dmMessageTable.findFirst({
-          where: eq(dmMessageTable.id, input.messageId),
+        const result = await db.transaction(async (tx) => {
+          const txid = await generateTxId(tx);
+          const message = await tx.query.dmMessageTable.findFirst({
+            where: eq(dmMessageTable.id, input.messageId),
+          });
+
+          if (!message) {
+            throw new ORPCError("NOT_FOUND", {
+              message: "Message not found.",
+            });
+          }
+
+          const conversation = await tx.query.dmConversationTable.findFirst({
+            where: and(
+              eq(dmConversationTable.id, message.conversationId),
+              eq(dmConversationTable.organizationId, orgId),
+              or(
+                eq(dmConversationTable.participantOneId, userId),
+                eq(dmConversationTable.participantTwoId, userId)
+              )
+            ),
+          });
+
+          if (!conversation) {
+            throw new ORPCError("FORBIDDEN", {
+              message: "You are not a participant of this conversation.",
+            });
+          }
+
+          const existing = await tx.query.dmMessageReactionTable.findFirst({
+            where: and(
+              eq(dmMessageReactionTable.messageId, input.messageId),
+              eq(dmMessageReactionTable.userId, userId),
+              eq(dmMessageReactionTable.emoji, input.emoji)
+            ),
+          });
+
+          let action: "added" | "removed";
+          if (existing) {
+            await tx
+              .delete(dmMessageReactionTable)
+              .where(eq(dmMessageReactionTable.id, existing.id));
+            action = "removed";
+          } else {
+            await tx.insert(dmMessageReactionTable).values({
+              messageId: input.messageId,
+              userId,
+              emoji: input.emoji,
+            });
+            action = "added";
+          }
+
+          return {
+            txid,
+            action,
+            conversationId: message.conversationId,
+            messageSenderId: message.senderId,
+            messagePreview: message.content?.slice(0, 100) ?? "",
+          };
         });
 
-        if (!message) {
-          throw new ORPCError("NOT_FOUND", {
-            message: "Message not found.",
+        await emitDmEvent(result.conversationId, DM_EVENTS.REACTION, {
+          messageId: input.messageId,
+          userId,
+          emoji: input.emoji,
+          action: result.action,
+        });
+
+        if (
+          notification &&
+          result.action === "added" &&
+          userId !== result.messageSenderId
+        ) {
+          Promise.resolve().then(async () => {
+            try {
+              await notification.emit({
+                type: "dm_reaction",
+                actorId: userId,
+                targetUserId: result.messageSenderId,
+                orgId,
+                entityId: input.messageId,
+                entityType: "reaction",
+                metadata: {
+                  conversationId: result.conversationId,
+                  messagePreview: result.messagePreview,
+                  reactorId: userId,
+                  reactorName: session.user.name ?? "Someone",
+                  emoji: input.emoji,
+                },
+              });
+            } catch (error) {
+              console.error("Error emitting DM reaction notification:", error);
+            }
           });
         }
 
-        const conversation = await tx.query.dmConversationTable.findFirst({
-          where: and(
-            eq(dmConversationTable.id, message.conversationId),
-            eq(dmConversationTable.organizationId, orgId),
-            or(
-              eq(dmConversationTable.participantOneId, userId),
-              eq(dmConversationTable.participantTwoId, userId)
-            )
-          ),
-        });
-
-        if (!conversation) {
-          throw new ORPCError("FORBIDDEN", {
-            message: "You are not a participant of this conversation.",
-          });
-        }
-
-        const existing = await tx.query.dmMessageReactionTable.findFirst({
-          where: and(
-            eq(dmMessageReactionTable.messageId, input.messageId),
-            eq(dmMessageReactionTable.userId, userId),
-            eq(dmMessageReactionTable.emoji, input.emoji)
-          ),
-        });
-
-        let action: "added" | "removed";
-        if (existing) {
-          await tx
-            .delete(dmMessageReactionTable)
-            .where(eq(dmMessageReactionTable.id, existing.id));
-          action = "removed";
-        } else {
-          await tx.insert(dmMessageReactionTable).values({
-            messageId: input.messageId,
-            userId,
-            emoji: input.emoji,
-          });
-          action = "added";
-        }
-
-        return { txid, action, conversationId: message.conversationId };
-      });
-
-      await emitDmEvent(result.conversationId, DM_EVENTS.REACTION, {
-        messageId: input.messageId,
-        userId,
-        emoji: input.emoji,
-        action: result.action,
-      });
-
-      return result;
-    }),
+        return result;
+      }
+    ),
 
   togglePin: dmProcedure
     .input(ToggleDmPinInput)

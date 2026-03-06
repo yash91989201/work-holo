@@ -3,6 +3,8 @@ import { member } from "@work-holo/db/schema/auth";
 import { PermissionManagers, PermissionService } from "@work-holo/permission";
 import { and, eq } from "drizzle-orm";
 import type { Context } from "./context";
+import { NotificationService } from "./services/notification";
+import { StorageService } from "./services/storage";
 
 export const o = os.$context<Context>();
 
@@ -13,9 +15,12 @@ export const protectedProcedure = publicProcedure.use(({ context, next }) => {
     throw new ORPCError("UNAUTHORIZED");
   }
 
+  const storage = new StorageService({ userId: context.session.user.id });
+
   return next({
     context: {
       session: context.session,
+      storage,
     },
   });
 });
@@ -30,6 +35,7 @@ export const orgProcedure = protectedProcedure.use(({ context, next }) => {
   }
 
   const managers = PermissionManagers.getAll();
+
   const permission = new PermissionService({
     userId: context.session.user.id,
     db: context.db,
@@ -37,10 +43,16 @@ export const orgProcedure = protectedProcedure.use(({ context, next }) => {
     ...managers,
   });
 
+  const notification = new NotificationService({
+    userId: context.session.user.id,
+    db: context.db,
+  });
+
   return next({
     context: {
       orgId: activeOrganizationId,
       permission,
+      notification,
     },
   });
 });

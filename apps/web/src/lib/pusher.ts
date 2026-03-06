@@ -11,12 +11,13 @@ export function getPusherClient(): Pusher {
     return pusherClient;
   }
 
+  const isProduction = env.VITE_ENV === "production";
+
   pusherClient = new Pusher(env.VITE_PUSHER_KEY, {
     wsHost: env.VITE_PUSHER_HOST,
-    // FIX: Enable ports when deploying on k3s, disabled for now to work on coolify
-    // wsPort: env.VITE_PUSHER_PORT,
-    // wssPort: env.VITE_PUSHER_PORT,
-    forceTLS: env.VITE_ENV === "production",
+    wsPort: isProduction ? undefined : env.VITE_PUSHER_PORT,
+    wssPort: isProduction ? undefined : env.VITE_PUSHER_PORT,
+    forceTLS: isProduction,
     disableStats: true,
     enabledTransports: ["ws", "wss"],
     cluster: "mt1",

@@ -11,6 +11,7 @@ import {
   IconPhone,
   IconSettingsFilled,
   IconShieldFilled,
+  IconSunFilled,
   IconUserFilled,
 } from "@tabler/icons-react";
 import {
@@ -40,6 +41,7 @@ import { useMemberRole } from "@/hooks/use-member-role";
 import { useOrgPresence, useSetManualStatus } from "@/hooks/use-presence";
 import { authClient } from "@/lib/auth-client";
 import { queryClient } from "@/utils/orpc";
+import { useTheme } from "@/providers/theme-provider";
 
 const STATUS_CONFIG = {
   available: {
@@ -94,6 +96,7 @@ export function AccountDropdown() {
   const { slug } = useParams({
     from: "/(authenticated)/org/$slug",
   });
+  const { theme, setTheme } = useTheme();
 
   const { user } = useAuthedSession();
   const role = useMemberRole();
@@ -260,6 +263,30 @@ export function AccountDropdown() {
               Security & Access
             </Link>
           </DropdownMenuItem>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger className="gap-2">
+              {theme === "dark" ? (
+                <IconMoonFilled className="h-4 w-4" />
+              ) : (
+                <IconSunFilled className="h-4 w-4" />
+              )}
+              <span>Theme</span>
+            </DropdownMenuSubTrigger>
+            <DropdownMenuSubContent className="min-w-32" sideOffset={8}>
+              <DropdownMenuItem onClick={() => setTheme("light")}>
+                <IconSunFilled className="mr-2 h-4 w-4" />
+                Light
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setTheme("dark")}>
+                <IconMoonFilled className="mr-2 h-4 w-4" />
+                Dark
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setTheme("system")}>
+                <IconSettingsFilled className="mr-2 h-4 w-4" />
+                System
+              </DropdownMenuItem>
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator />

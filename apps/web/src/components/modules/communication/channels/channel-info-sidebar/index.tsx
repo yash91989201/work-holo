@@ -6,6 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { useChannel, useChannelInfoSidebar } from "@/stores/channel-store";
 import { ChannelInfo } from "./channel-info";
+import { ChannelNotificationSettings } from "./channel-notification-settings";
 import { Members } from "./members";
 
 export const ChannelInfoSidebar = () => {
@@ -19,7 +20,7 @@ export const ChannelInfoSidebar = () => {
   return (
     <Sheet onOpenChange={toggleInfoSidebar} open={isOpen}>
       <SheetContent
-        className="flex h-full flex-col gap-0 border-border border-l bg-background/95 p-0 backdrop-blur-sm supports-backdrop-filter:bg-background/60 sm:max-w-md"
+        className="flex h-full min-w-3xl flex-col gap-0 border-border border-l bg-background/95 p-0 backdrop-blur-sm supports-backdrop-filter:bg-background/60 sm:max-w-xl"
         side="right"
       >
         <div className="shrink-0 border-border border-b bg-muted/30 p-4">
@@ -63,6 +64,8 @@ export const ChannelInfoSidebar = () => {
               createdAt={channel.createdAt}
               createdByName={channel.creator.name}
             />
+            <Separator className="bg-border/50" />
+            <ChannelNotificationSettings channelId={channelId} />
           </div>
         </ScrollArea>
       </SheetContent>

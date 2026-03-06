@@ -7,6 +7,33 @@ import { orpcClient } from "@/utils/orpc";
 
 export type NotificationFilter = "all" | "unread" | "read";
 
+export const TAB_UNREAD_COUNT_CHANGED_EVENT =
+  "work-holo:tab-unread-count-changed";
+
+function getUnreadCountSnapshot(userId: string): number {
+  let count = 0;
+
+  notificationsCollection.forEach((notification) => {
+    if (notification.userId === userId && notification.status === "unread") {
+      count += 1;
+    }
+  });
+
+  return count;
+}
+
+function emitUnreadCountChanged(userId: string): void {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  window.dispatchEvent(
+    new CustomEvent<{ unreadCount: number }>(TAB_UNREAD_COUNT_CHANGED_EVENT, {
+      detail: { unreadCount: getUnreadCountSnapshot(userId) },
+    })
+  );
+}
+
 export function useNotifications() {
   const { user } = useAuthedSession();
   const [filter, setFilter] = useState<NotificationFilter>("unread");
@@ -47,6 +74,8 @@ export function useNotifications() {
         draft.status = "read";
         draft.readAt = new Date();
       });
+
+      emitUnreadCountChanged(user.id);
     },
     mutationFn: async ({ notificationId }: MarkNotificationAsReadInputType) => {
       const { txid } = await orpcClient.notification.markAsRead({
@@ -54,6 +83,7 @@ export function useNotifications() {
       });
 
       await notificationsCollection.utils.awaitTxId(txid);
+      emitUnreadCountChanged(user.id);
     },
   });
 
@@ -77,11 +107,14 @@ export function useNotifications() {
           draft.readAt = new Date();
         });
       });
+
+      emitUnreadCountChanged(user.id);
     },
     mutationFn: async () => {
       const { txid } = await orpcClient.notification.markAllAsRead({});
 
       await notificationsCollection.utils.awaitTxId(txid);
+      emitUnreadCountChanged(user.id);
     },
   });
 

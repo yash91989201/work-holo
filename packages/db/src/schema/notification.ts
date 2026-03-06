@@ -1,7 +1,9 @@
 import { cuid2 } from "drizzle-cuid2/postgres";
 import { relations } from "drizzle-orm";
 import {
+  boolean,
   index,
+  integer,
   json,
   pgEnum,
   pgTable,
@@ -9,13 +11,16 @@ import {
   timestamp,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
-import { user } from "./auth";
+import { organization, user } from "./auth";
 
 export const notificationTypeEnum = pgEnum("notificationType", [
-  "message",
-  "mention",
-  "channel_invite",
-  "direct_message",
+  "channel_message",
+  "channel_reply",
+  "channel_reaction",
+  "channel_mention",
+  "dm_message",
+  "dm_reply",
+  "dm_reaction",
 ]);
 
 export const notificationStatusEnum = pgEnum("notificationStatus", [
@@ -29,6 +34,8 @@ export const notificationTable = pgTable("notification", {
   userId: text()
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
+  actorId: text().references(() => user.id, { onDelete: "set null" }),
+  orgId: text().references(() => organization.id, { onDelete: "cascade" }),
   type: notificationTypeEnum().notNull(),
   status: notificationStatusEnum().notNull().default("unread"),
   title: text().notNull(),
@@ -65,6 +72,122 @@ export const pushSubscriptionTable = pgTable(
   ]
 );
 
+export const notificationPreferenceTable = pgTable(
+  "notificationPreference",
+  {
+    id: cuid2().defaultRandom().primaryKey(),
+    userId: text()
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    orgId: text()
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    eventType: notificationTypeEnum().notNull(),
+    deliveryChannel: text().notNull(),
+    enabled: boolean().notNull().default(true),
+    entityType: text(),
+    entityId: text(),
+    emailDigestInterval: text(),
+    createdAt: timestamp({ withTimezone: true })
+      .$defaultFn(() => new Date())
+      .notNull(),
+    updatedAt: timestamp({ withTimezone: true })
+      .$defaultFn(() => new Date())
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    uniqueIndex("unique_notification_preference").on(
+      table.userId,
+      table.orgId,
+      table.eventType,
+      table.deliveryChannel,
+      table.entityType,
+      table.entityId
+    ),
+    index("idx_notification_preference_user_org").on(table.userId, table.orgId),
+  ]
+);
+
+export const notificationSoundPresetTable = pgTable("notificationSoundPreset", {
+  id: cuid2().defaultRandom().primaryKey(),
+  name: text().notNull(),
+  filename: text().notNull(),
+  category: text().notNull(),
+  sortOrder: integer().notNull(),
+  createdAt: timestamp({ withTimezone: true })
+    .$defaultFn(() => new Date())
+    .notNull(),
+});
+
+export const notificationSoundPreferenceTable = pgTable(
+  "notificationSoundPreference",
+  {
+    id: cuid2().defaultRandom().primaryKey(),
+    userId: text()
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    orgId: text()
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    scope: text().notNull(),
+    entityId: text(),
+    soundType: text().notNull(),
+    presetId: text().references(() => notificationSoundPresetTable.id, {
+      onDelete: "set null",
+    }),
+    customSoundUrl: text(),
+    customSoundName: text(),
+    createdAt: timestamp({ withTimezone: true })
+      .$defaultFn(() => new Date())
+      .notNull(),
+    updatedAt: timestamp({ withTimezone: true })
+      .$defaultFn(() => new Date())
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    uniqueIndex("unique_notification_sound_preference").on(
+      table.userId,
+      table.orgId,
+      table.scope,
+      table.entityId
+    ),
+    index("idx_notification_sound_preference_user_org").on(
+      table.userId,
+      table.orgId
+    ),
+  ]
+);
+
+export const pendingEmailDigestTable = pgTable(
+  "pendingEmailDigest",
+  {
+    id: cuid2().defaultRandom().primaryKey(),
+    userId: text()
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    orgId: text()
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    notificationId: text()
+      .notNull()
+      .references(() => notificationTable.id, { onDelete: "cascade" }),
+    scheduledAt: timestamp({ withTimezone: true }).notNull(),
+    sent: boolean().notNull().default(false),
+    createdAt: timestamp({ withTimezone: true })
+      .$defaultFn(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    index("idx_pending_email_digest_scheduled").on(
+      table.scheduledAt,
+      table.sent
+    ),
+    index("idx_pending_email_digest_user_org").on(table.userId, table.orgId),
+  ]
+);
+
 // Notification relations
 export const notificationTableRelations = relations(
   notificationTable,
@@ -72,6 +195,16 @@ export const notificationTableRelations = relations(
     user: one(user, {
       fields: [notificationTable.userId],
       references: [user.id],
+      relationName: "notificationUser",
+    }),
+    actor: one(user, {
+      fields: [notificationTable.actorId],
+      references: [user.id],
+      relationName: "notificationActor",
+    }),
+    organization: one(organization, {
+      fields: [notificationTable.orgId],
+      references: [organization.id],
     }),
   })
 );
@@ -83,6 +216,56 @@ export const pushSubscriptionTableRelations = relations(
     user: one(user, {
       fields: [pushSubscriptionTable.userId],
       references: [user.id],
+    }),
+  })
+);
+
+export const notificationPreferenceTableRelations = relations(
+  notificationPreferenceTable,
+  ({ one }) => ({
+    user: one(user, {
+      fields: [notificationPreferenceTable.userId],
+      references: [user.id],
+    }),
+    organization: one(organization, {
+      fields: [notificationPreferenceTable.orgId],
+      references: [organization.id],
+    }),
+  })
+);
+
+export const notificationSoundPreferenceTableRelations = relations(
+  notificationSoundPreferenceTable,
+  ({ one }) => ({
+    user: one(user, {
+      fields: [notificationSoundPreferenceTable.userId],
+      references: [user.id],
+    }),
+    organization: one(organization, {
+      fields: [notificationSoundPreferenceTable.orgId],
+      references: [organization.id],
+    }),
+    preset: one(notificationSoundPresetTable, {
+      fields: [notificationSoundPreferenceTable.presetId],
+      references: [notificationSoundPresetTable.id],
+    }),
+  })
+);
+
+export const pendingEmailDigestTableRelations = relations(
+  pendingEmailDigestTable,
+  ({ one }) => ({
+    user: one(user, {
+      fields: [pendingEmailDigestTable.userId],
+      references: [user.id],
+    }),
+    organization: one(organization, {
+      fields: [pendingEmailDigestTable.orgId],
+      references: [organization.id],
+    }),
+    notification: one(notificationTable, {
+      fields: [pendingEmailDigestTable.notificationId],
+      references: [notificationTable.id],
     }),
   })
 );

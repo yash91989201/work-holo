@@ -22,8 +22,12 @@ import {
   MessageReadSchema,
   MessageReadSummarySchema,
   MessageSchema,
+  NotificationPreferenceSchema,
   NotificationSchema,
+  NotificationSoundPreferenceSchema,
+  NotificationSoundPresetSchema,
   OrganizationSchema,
+  PendingEmailDigestSchema,
   SessionSchema,
   TeamMemberSchema,
   TeamSchema,
@@ -515,6 +519,74 @@ export const channelReadProcessedWatermarkCollection = createCollection(
       url: `${ELECTRIC_SHAPE_BASE_URL}/channel-read-processed-watermark`,
       params: {
         table: "channelReadProcessedWatermark",
+      },
+      fetchClient,
+      parser: {
+        timestamptz: (s: string) => new Date(s),
+      },
+    },
+  })
+);
+
+export const notificationPreferenceCollection = createCollection(
+  electricCollectionOptions({
+    getKey: (np) => np.id,
+    schema: NotificationPreferenceSchema,
+    shapeOptions: {
+      url: `${ELECTRIC_SHAPE_BASE_URL}/notification-preference`,
+      params: {
+        table: "notificationPreference",
+      },
+      fetchClient,
+      parser: {
+        timestamptz: (s: string) => new Date(s),
+      },
+    },
+  })
+);
+
+export const notificationSoundPresetCollection = createCollection(
+  electricCollectionOptions({
+    getKey: (nsp) => nsp.id,
+    schema: NotificationSoundPresetSchema,
+    shapeOptions: {
+      url: `${ELECTRIC_SHAPE_BASE_URL}/notification-sound-preset`,
+      params: {
+        table: "notificationSoundPreset",
+      },
+      fetchClient,
+      parser: {
+        timestamptz: (s: string) => new Date(s),
+      },
+    },
+  })
+);
+
+export const notificationSoundPreferenceCollection = createCollection(
+  electricCollectionOptions({
+    getKey: (nsp) => nsp.id,
+    schema: NotificationSoundPreferenceSchema,
+    shapeOptions: {
+      url: `${ELECTRIC_SHAPE_BASE_URL}/notification-sound-preference`,
+      params: {
+        table: "notificationSoundPreference",
+      },
+      fetchClient,
+      parser: {
+        timestamptz: (s: string) => new Date(s),
+      },
+    },
+  })
+);
+
+export const pendingEmailDigestCollection = createCollection(
+  electricCollectionOptions({
+    getKey: (ped) => ped.id,
+    schema: PendingEmailDigestSchema,
+    shapeOptions: {
+      url: `${ELECTRIC_SHAPE_BASE_URL}/pending-email-digest`,
+      params: {
+        table: "pendingEmailDigest",
       },
       fetchClient,
       parser: {

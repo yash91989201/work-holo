@@ -1,7 +1,13 @@
 import { IconArrowLeft } from "@tabler/icons-react";
-import { Link } from "@tanstack/react-router";
+import { Link, useCanGoBack, useRouter } from "@tanstack/react-router";
 import type * as React from "react";
 import { Suspense } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Sidebar,
   SidebarContent,
@@ -24,8 +30,8 @@ export function SettingsSidebar({
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarMenu>
-          <Suspense fallback={<BackToOrgButton.Fallback />}>
-            <BackToOrgButton />
+          <Suspense fallback={<BackToOrgDropdown.Fallback />}>
+            <BackToOrgDropdown />
           </Suspense>
         </SidebarMenu>
       </SidebarHeader>
@@ -37,27 +43,49 @@ export function SettingsSidebar({
   );
 }
 
-function BackToOrgButton() {
+function BackToOrgDropdown() {
   const activeOrg = useActiveOrgSlug();
   const role = useActiveMemberRole();
+  const router = useRouter();
+  const canGoBack = useCanGoBack();
 
   if (activeOrg === null || !role) {
     return null;
   }
 
+  const orgRoute = getOrgRouteByRole(role, activeOrg);
+
+  const handleGoBack = () => {
+    router.history.back();
+  };
+
   return (
     <SidebarMenuItem>
-      <SidebarMenuButton asChild>
-        <Link {...getOrgRouteByRole(role, activeOrg)}>
-          <IconArrowLeft />
-          <span>Back to Org</span>
-        </Link>
-      </SidebarMenuButton>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <SidebarMenuButton>
+            <IconArrowLeft />
+            <span>Back to Org</span>
+          </SidebarMenuButton>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" sideOffset={4}>
+          <DropdownMenuItem asChild>
+            <Link {...orgRoute}>
+              <span>Go to Organization</span>
+            </Link>
+          </DropdownMenuItem>
+          {canGoBack && (
+            <DropdownMenuItem onClick={handleGoBack}>
+              <span>Go Back</span>
+            </DropdownMenuItem>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
     </SidebarMenuItem>
   );
 }
 
-function BackToOrgButtonSkeleton() {
+function BackToOrgDropdownSkeleton() {
   return (
     <SidebarMenuItem>
       <SidebarMenuButton disabled>
@@ -68,4 +96,4 @@ function BackToOrgButtonSkeleton() {
   );
 }
 
-BackToOrgButton.Fallback = BackToOrgButtonSkeleton;
+BackToOrgDropdown.Fallback = BackToOrgDropdownSkeleton;

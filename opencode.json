@@ -1,11 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
-    "browsermcp": {
-      "type": "local",
-      "command": ["npx", "-y", "@browsermcp/mcp@latest"],
-      "enabled": false
-    },
     "tanstack": {
       "type": "local",
       "command": ["npx", "-y", "@tanstack/cli", "mcp"],
@@ -19,15 +14,6 @@
       "type": "local",
       "command": ["npx", "shadcn@latest", "mcp"],
       "enabled": false
-    },
-    "morph": {
-      "type": "local",
-      "command": ["npx", "-y", "@morphllm/morphmcp"],
-      "enabled": false,
-      "environment": {
-        "MORPH_API_KEY": "{env:MORPH_API_KEY}",
-        "ENABLED_TOOLS": "edit_file,warpgrep_codebase_search"
-      }
     },
     "tavily": {
       "command": ["npx", "-y", "tavily-mcp"],

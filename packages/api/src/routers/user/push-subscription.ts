@@ -131,6 +131,8 @@ export const pushSubscriptionRouter = {
 
           const sendPromises = subscriptions.map(async (subscription) => {
             try {
+              const testNotificationId = `test-${Date.now()}-${subscription.id}`;
+
               const pushSubscription = {
                 endpoint: subscription.endpoint,
                 keys: {
@@ -147,6 +149,19 @@ export const pushSubscriptionRouter = {
                   icon: "/favicon.ico",
                   badge: "/favicon.ico",
                   tag: "test-notification",
+                  notificationId: testNotificationId,
+                  eventType: "test",
+                  entityType: "event_type",
+                  entityId: "test",
+                  playSound: true,
+                  data: {
+                    url: "/",
+                    notificationId: testNotificationId,
+                    type: "test",
+                    entityType: "event_type",
+                    entityId: "test",
+                    playSound: true,
+                  },
                 })
               );
 

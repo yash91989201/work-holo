@@ -5,7 +5,8 @@ export type StorageBucket =
   | "message-audio"
   | "message-image"
   | "user-profile"
-  | "org-logo";
+  | "org-logo"
+  | "notification-sound";
 
 export interface UploadResult {
   bucket: StorageBucket;
@@ -73,4 +74,10 @@ export async function uploadMessageImage(file: File): Promise<string> {
 export async function uploadOrgLogo(file: File): Promise<string> {
   const result = await uploadToStorage(file, "org-logo");
   return result.url;
+}
+
+export async function uploadNotificationSound(
+  file: File
+): Promise<UploadResult> {
+  return await uploadToStorage(file, "notification-sound");
 }

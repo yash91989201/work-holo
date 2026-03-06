@@ -1,6 +1,7 @@
 export { ensureBucket, getStorageClient } from "./client";
 export {
   ALL_BUCKETS,
+  ALLOWED_MIME_TYPES,
   BUCKETS,
   FILE_SIZE_LIMITS,
   URL_EXPIRY,

@@ -9,6 +9,7 @@ import { useDmConversations } from "@/hooks/communications/dm/use-dm-conversatio
 import { useDmPresence } from "@/hooks/communications/dm/use-dm-presence";
 import { cn } from "@/lib/utils";
 import { useDmInfoSidebar } from "@/stores/dm-store";
+import { DmNotificationSettings } from "./dm-notification-settings";
 
 export function DmInfoSidebar() {
   const { conversationId } = useParams({
@@ -120,6 +121,9 @@ export function DmInfoSidebar() {
                 </div>
               </div>
             </div>
+
+            <Separator className="bg-border/50" />
+            <DmNotificationSettings conversationId={conversationId} />
           </div>
         </ScrollArea>
       </SheetContent>
