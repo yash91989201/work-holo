@@ -9,10 +9,10 @@ import {
 } from "@work-holo/infrastructure";
 import type { Channel } from "amqplib";
 import webpush from "web-push";
-import { startDigestProcessor } from "../lib/digest-processor";
-import { handleEmailDelivery as sendEmailNotification } from "../lib/handlers/email";
-import { handlePushDelivery as sendPushNotifications } from "../lib/handlers/push";
-import { handlePusherDelivery } from "../lib/handlers/pusher";
+import { startDigestProcessor } from "./lib/digest-processor";
+import { handleEmailDelivery as sendEmailNotification } from "./lib/handlers/email";
+import { handlePushDelivery as sendPushNotifications } from "./lib/handlers/push";
+import { handlePusherDelivery } from "./lib/handlers/pusher";
 
 webpush.setVapidDetails(
   env.VAPID_SUBJECT,
