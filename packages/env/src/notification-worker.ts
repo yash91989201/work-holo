@@ -17,7 +17,7 @@ export const env = createEnv({
     SMTP_PORT: z.coerce.number().default(587),
     SMTP_USER: z.string().min(1),
     SMTP_PASS: z.string().min(1),
-    SMTP_FROM: z.string().email().default("notifications@workholo.com"),
+    SMTP_FROM: z.email(),
     ENV: z
       .enum(["development", "staging", "testing", "production"])
       .default("development"),

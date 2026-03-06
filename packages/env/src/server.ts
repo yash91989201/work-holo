@@ -22,18 +22,12 @@ export const env = createEnv({
     S3_ENDPOINT: z.string(),
     S3_ACCESS_KEY: z.string(),
     S3_SECRET_KEY: z.string(),
-    RESEND_API_KEY: z.string(),
     REDIS_URL: z.url(),
     PUSHER_APP_ID: z.string().min(1),
     PUSHER_APP_KEY: z.string().min(1),
     PUSHER_APP_SECRET: z.string().min(1),
     PUSHER_HOST: z.string(),
     PUSHER_PORT: z.coerce.number().default(6001),
-    SMTP_HOST: z.string(),
-    SMTP_PORT: z.coerce.number().default(587),
-    SMTP_USER: z.string(),
-    SMTP_PASS: z.string(),
-    SMTP_FROM: z.string().email(),
     CASBIN_ENFORCE: z
       .enum(["true", "false"])
       .default("true")
