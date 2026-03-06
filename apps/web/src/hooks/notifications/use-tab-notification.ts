@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
+import { TAB_UNREAD_COUNT_CHANGED_EVENT } from "@/hooks/communications/use-notifications";
 
 interface TabNotificationOptions {
   defaultTitle?: string;
@@ -8,15 +9,56 @@ interface TabNotificationOptions {
 interface NotificationInfo {
   actorName: string;
   channelName: string | null;
+  eventType: string;
 }
 
 const FLASH_INTERVAL_MS = 2000;
-const BADGE_RADIUS = 4;
 const BADGE_COLOR = "#ef4444";
+const BADGE_TEXT_COLOR = "#ffffff";
+const BADGE_FONT_SIZE = 15;
+const BADGE_MIN_WIDTH = 20;
+const BADGE_HEIGHT = 20;
+const BADGE_HORIZONTAL_PADDING = 3;
 const NOTIFICATION_FAVICON_ATTR = "data-tab-notification-favicon";
 const ICON_LINK_SELECTOR = 'link[rel~="icon"]';
 
 const noop = () => undefined;
+
+function formatUnreadCount(unreadCount: number): string {
+  if (unreadCount > 99) {
+    return "99+";
+  }
+
+  return String(Math.max(1, unreadCount));
+}
+
+function drawRoundedRect(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  radius: number
+): void {
+  const cornerRadius = Math.min(radius, width / 2, height / 2);
+
+  ctx.beginPath();
+  ctx.moveTo(x + cornerRadius, y);
+  ctx.lineTo(x + width - cornerRadius, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + cornerRadius);
+  ctx.lineTo(x + width, y + height - cornerRadius);
+  ctx.quadraticCurveTo(
+    x + width,
+    y + height,
+    x + width - cornerRadius,
+    y + height
+  );
+  ctx.lineTo(x + cornerRadius, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - cornerRadius);
+  ctx.lineTo(x, y + cornerRadius);
+  ctx.quadraticCurveTo(x, y, x + cornerRadius, y);
+  ctx.closePath();
+}
 
 function getCurrentManagedFaviconHref(): string {
   const links = Array.from(
@@ -61,17 +103,54 @@ function clearNotificationFavicon(): void {
   const link = document.querySelector<HTMLLinkElement>(
     `link[${NOTIFICATION_FAVICON_ATTR}]`
   );
-  link?.remove();
+
+  if (!link) {
+    return;
+  }
+
+  const resetHref = getCurrentManagedFaviconHref();
+
+  try {
+    const resetUrl = new URL(resetHref, window.location.href);
+    resetUrl.searchParams.set("tabNotificationReset", `${Date.now()}`);
+    link.href = resetUrl.toString();
+  } catch {
+    link.href = resetHref;
+  }
+
+  requestAnimationFrame(() => {
+    link.remove();
+  });
 }
 
 function buildNotificationTitle(info: NotificationInfo): string {
-  if (info.channelName) {
-    return `🔔 ${info.actorName} mentioned you in #${info.channelName}`;
+  switch (info.eventType) {
+    case "channel_mention":
+      return `🔔 ${info.actorName} mentioned you in #${info.channelName ?? "a channel"}`;
+    case "channel_message":
+      return `🔔 ${info.actorName} sent a message in #${info.channelName ?? "a channel"}`;
+    case "channel_reply":
+      return `🔔 ${info.actorName} replied in #${info.channelName ?? "a channel"}`;
+    case "channel_reaction":
+      return `🔔 ${info.actorName} reacted in #${info.channelName ?? "a channel"}`;
+    case "dm_reply":
+      return `🔔 ${info.actorName} replied to your message`;
+    case "dm_reaction":
+      return `🔔 ${info.actorName} reacted to your message`;
+    case "dm_message":
+      return `🔔 ${info.actorName} sent you a message`;
+    default:
+      if (info.channelName) {
+        return `🔔 ${info.actorName} in #${info.channelName}`;
+      }
+      return `🔔 ${info.actorName} sent you a message`;
   }
-  return `🔔 ${info.actorName} sent you a message`;
 }
 
-function createBadgedFavicon(originalHref: string): Promise<string> {
+function createBadgedFavicon(
+  originalHref: string,
+  unreadCount: number
+): Promise<string> {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.crossOrigin = "anonymous";
@@ -90,16 +169,35 @@ function createBadgedFavicon(originalHref: string): Promise<string> {
 
       ctx.drawImage(img, 0, 0, size, size);
 
-      ctx.beginPath();
-      ctx.arc(
-        size - BADGE_RADIUS - 1,
-        BADGE_RADIUS + 1,
-        BADGE_RADIUS,
-        0,
-        2 * Math.PI
+      const badgeText = formatUnreadCount(unreadCount);
+      ctx.font = `800 ${BADGE_FONT_SIZE}px sans-serif`;
+      const textWidth = ctx.measureText(badgeText).width;
+      const badgeWidth = Math.max(
+        BADGE_MIN_WIDTH,
+        Math.ceil(textWidth + BADGE_HORIZONTAL_PADDING * 2)
+      );
+      const badgeX = (size - badgeWidth) / 2;
+      const badgeY = (size - BADGE_HEIGHT) / 2;
+
+      drawRoundedRect(
+        ctx,
+        badgeX,
+        badgeY,
+        badgeWidth,
+        BADGE_HEIGHT,
+        BADGE_HEIGHT / 2
       );
       ctx.fillStyle = BADGE_COLOR;
       ctx.fill();
+
+      ctx.fillStyle = BADGE_TEXT_COLOR;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(
+        badgeText,
+        badgeX + badgeWidth / 2,
+        badgeY + BADGE_HEIGHT / 2
+      );
 
       resolve(canvas.toDataURL("image/png"));
     };
@@ -119,6 +217,8 @@ export function useTabNotification({
   const originalTitleRef = useRef<string>(document.title);
   const flashIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const isBadgeActiveRef = useRef(false);
+  const badgeGenerationIdRef = useRef(0);
+  const lastBadgeCountRef = useRef<number | null>(null);
   const latestNotificationRef = useRef<NotificationInfo | null>(null);
   const activeNotificationTitleRef = useRef<string | null>(null);
 
@@ -158,22 +258,39 @@ export function useTabNotification({
     latestNotificationRef.current = null;
   }, []);
 
-  const showBadge = useCallback(async () => {
-    if (isBadgeActiveRef.current) return;
+  const showBadge = useCallback(async (badgeCount: number) => {
+    if (badgeCount <= 0) return;
+
+    if (isBadgeActiveRef.current && lastBadgeCountRef.current === badgeCount) {
+      return;
+    }
+
+    const generationId = ++badgeGenerationIdRef.current;
 
     try {
       const managedFaviconHref = getCurrentManagedFaviconHref();
-      const badgedHref = await createBadgedFavicon(managedFaviconHref);
+      const badgedHref = await createBadgedFavicon(
+        managedFaviconHref,
+        badgeCount
+      );
+
+      if (generationId !== badgeGenerationIdRef.current) {
+        return;
+      }
+
       setNotificationFaviconHref(badgedHref);
       isBadgeActiveRef.current = true;
+      lastBadgeCountRef.current = badgeCount;
     } catch {
       return;
     }
   }, []);
 
   const clearBadge = useCallback(() => {
+    badgeGenerationIdRef.current += 1;
     clearNotificationFavicon();
     isBadgeActiveRef.current = false;
+    lastBadgeCountRef.current = null;
   }, []);
 
   const clearAll = useCallback(() => {
@@ -184,9 +301,13 @@ export function useTabNotification({
   const notify = useCallback(
     (info: NotificationInfo) => {
       startTitleFlash(info);
-      showBadge().catch(noop);
+
+      const optimisticNextCount =
+        Math.max(lastBadgeCountRef.current ?? 0, unreadCount, 0) + 1;
+
+      showBadge(optimisticNextCount).catch(noop);
     },
-    [startTitleFlash, showBadge]
+    [startTitleFlash, showBadge, unreadCount]
   );
 
   useEffect(() => {
@@ -213,8 +334,41 @@ export function useTabNotification({
   useEffect(() => {
     if (unreadCount === 0) {
       clearAll();
+      return;
     }
-  }, [unreadCount, clearAll]);
+
+    showBadge(unreadCount).catch(noop);
+  }, [unreadCount, clearAll, showBadge]);
+
+  useEffect(() => {
+    const handleUnreadCountChanged = (event: Event) => {
+      const customEvent = event as CustomEvent<{ unreadCount: number }>;
+      const nextUnreadCount = customEvent.detail?.unreadCount;
+
+      if (typeof nextUnreadCount !== "number") {
+        return;
+      }
+
+      if (nextUnreadCount <= 0) {
+        clearAll();
+        return;
+      }
+
+      showBadge(nextUnreadCount).catch(noop);
+    };
+
+    window.addEventListener(
+      TAB_UNREAD_COUNT_CHANGED_EVENT,
+      handleUnreadCountChanged
+    );
+
+    return () => {
+      window.removeEventListener(
+        TAB_UNREAD_COUNT_CHANGED_EVENT,
+        handleUnreadCountChanged
+      );
+    };
+  }, [clearAll, showBadge]);
 
   useEffect(() => {
     const observer = new MutationObserver(() => {

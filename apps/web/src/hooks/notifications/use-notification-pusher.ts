@@ -25,6 +25,7 @@ export interface NotificationContext {
 export interface NotificationEvent {
   actorName: string;
   channelName: string | null;
+  eventType: string;
 }
 
 function buildActionUrl(
@@ -48,6 +49,39 @@ function buildToastTitle(payload: NotificationPayload): string {
     return `${payload.actorName} in #${payload.channelName}`;
   }
   return payload.actorName;
+}
+
+function mapNotificationEntityType(
+  entityType: string | null
+): NotificationContext["entityType"] | null {
+  if (entityType === "channel") {
+    return "channel";
+  }
+
+  if (entityType === "dm_conversation") {
+    return "dm";
+  }
+
+  return null;
+}
+
+function shouldSkipForActiveContext(
+  context: NotificationContext | undefined,
+  payload: NotificationPayload
+): boolean {
+  if (document.visibilityState !== "visible") {
+    return false;
+  }
+
+  const mappedEntityType = mapNotificationEntityType(payload.entityType);
+  if (!(context?.entityId && mappedEntityType)) {
+    return false;
+  }
+
+  return (
+    context.entityId === payload.entityId &&
+    context.entityType === mappedEntityType
+  );
 }
 
 export function useNotificationPusher(
@@ -80,8 +114,7 @@ export function useNotificationPusher(
         seenIdsRef.current = new Set(entries.slice(-250));
       }
 
-      const ctx = currentContextRef.current;
-      if (ctx?.entityId && ctx.entityId === data.entityId) {
+      if (shouldSkipForActiveContext(currentContextRef.current, data)) {
         return;
       }
 
@@ -103,6 +136,7 @@ export function useNotificationPusher(
       onNotificationRef.current?.({
         actorName: data.actorName,
         channelName: data.channelName,
+        eventType: data.eventType,
       });
     };
 
