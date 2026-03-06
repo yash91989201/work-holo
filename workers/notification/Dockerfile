@@ -38,7 +38,7 @@ RUN bun build \
   --compile \
   --minify \
   --sourcemap=none \
-  --outfile=read-receipt-worker \
+  --outfile=notification-worker \
   ./src/index.ts
 
 FROM debian:bookworm-slim AS runtime
