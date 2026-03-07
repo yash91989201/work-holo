@@ -4,47 +4,10 @@ import {
   rolePermissionTable,
   roleTemplateTable,
 } from "@work-holo/db/schema/authorization";
-import { PERMISSIONS, SYSTEM_ROLES } from "@work-holo/permission";
 import { eq, inArray } from "drizzle-orm";
-
-// All permission keys from the runtime vocabulary
-const ALL_KEYS = PERMISSIONS.map((p) => p.key);
-
-// Communication-related keys
-const CHANNEL_KEYS = ALL_KEYS.filter((k) => k.startsWith("channel."));
-const COMMUNICATION_KEYS = [...CHANNEL_KEYS];
-const MEMBER_BLOCKED_CHANNEL_KEYS = new Set([
-  "channel.create",
-  "channel.update",
-  "channel.delete",
-]);
-const MEMBER_COMMUNICATION_KEYS = COMMUNICATION_KEYS.filter(
-  (key) => !MEMBER_BLOCKED_CHANNEL_KEYS.has(key)
-);
-
-// Attendance keys
-const ATTENDANCE_KEYS = ALL_KEYS.filter((k) => k.startsWith("attendance."));
-const ATTENDANCE_VIEW_KEYS = ATTENDANCE_KEYS.filter(
-  (k) => k.endsWith(".read") || k.endsWith(".list") || k.endsWith(".create")
-);
-
-// Role permission assignments using runtime vocabulary keys
-const ROLE_PERMISSIONS: Record<string, string[]> = {
-  [SYSTEM_ROLES.OWNER]: ALL_KEYS,
-  [SYSTEM_ROLES.ADMIN]: ALL_KEYS.filter(
-    (k) => !(k === "org.delete" || k === "org.create")
-  ),
-  [SYSTEM_ROLES.MEMBER]: [
-    ...MEMBER_COMMUNICATION_KEYS,
-    ...ATTENDANCE_VIEW_KEYS,
-    "org.read",
-    "org.active.read",
-    "org.active.switch",
-    "team.read",
-    "team.member.read",
-    "team.module.access",
-  ],
-};
+import { SYSTEM_ROLE_PERMISSIONS } from "../src/lib/system-role-permissions";
+import { SYSTEM_ROLES } from "../src/lib/types";
+import { PERMISSIONS } from "../src/lib/vocabulary";
 
 const ROLE_DEFINITIONS: Array<{
   name: string;
@@ -158,7 +121,7 @@ async function seedPermissions() {
 
   let totalRolePerms = 0;
 
-  for (const [roleName, permKeys] of Object.entries(ROLE_PERMISSIONS)) {
+  for (const [roleName, permKeys] of Object.entries(SYSTEM_ROLE_PERMISSIONS)) {
     const roleId = roleMap.get(roleName);
     if (!roleId) {
       console.warn(`  Role ${roleName} not found, skipping permissions`);
