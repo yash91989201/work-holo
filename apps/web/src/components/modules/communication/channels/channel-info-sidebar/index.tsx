@@ -11,8 +11,8 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useChannel, useChannelInfoSidebar } from "@/stores/channel-store";
 import { ChannelInfo } from "./channel-info";
+import { ChannelMembers } from "./channel-members";
 import { ChannelNotificationSettings } from "./channel-notification-settings";
-import { Members } from "./members";
 
 export const ChannelInfoSidebar = () => {
   const { channelId } = useParams({
@@ -42,19 +42,13 @@ export const ChannelInfoSidebar = () => {
 
         <Tabs className="flex min-h-0 flex-1 flex-col" defaultValue="members">
           <TabsList className="w-full rounded-none">
-            <TabsTrigger className="rounded-none" value="members">
-              Members
-            </TabsTrigger>
-            <TabsTrigger className="rounded-none" value="notifications">
-              Notifications
-            </TabsTrigger>
-            <TabsTrigger className="rounded-none" value="info">
-              About
-            </TabsTrigger>
+            <TabsTrigger value="members">Members</TabsTrigger>
+            <TabsTrigger value="notifications">Notifications</TabsTrigger>
+            <TabsTrigger value="info">About</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="members">
-            <Members members={channelMembers} />
+          <TabsContent className="flex min-h-0 flex-col" value="members">
+            <ChannelMembers channelId={channelId} members={channelMembers} />
           </TabsContent>
 
           <TabsContent value="notifications">
@@ -64,7 +58,7 @@ export const ChannelInfoSidebar = () => {
           </TabsContent>
           <TabsContent value="info">
             <ChannelInfo
-              channelDescription={channel.description ?? ""}
+              channelDescription={channel.description}
               createdAt={channel.createdAt}
               createdByName={channel.creator.name}
             />

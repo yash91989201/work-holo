@@ -17,6 +17,16 @@ import { toast } from "sonner";
 import { CHANNEL_EVENT_DEFINITIONS } from "@/components/settings/notifications/constants";
 import { Button } from "@/components/ui/button";
 import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemSeparator,
+  ItemTitle,
+} from "@/components/ui/item";
+import { Label } from "@/components/ui/label";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -284,60 +294,56 @@ export function ChannelNotificationSettings({
       soundPref.preference?.customSoundUrl);
 
   return (
-    <div className="space-y-6 p-3">
-      <div className="space-y-1">
-        <p className="font-medium text-muted-foreground text-xs uppercase tracking-wider">
+    <div className="space-y-4 p-3">
+      <div className="space-y-1.5">
+        <p className="px-1 font-medium text-muted-foreground text-xs uppercase tracking-wider">
           Channel
         </p>
-        <div className="rounded-lg border bg-card">
-          <div className="flex items-center justify-between px-3 py-3">
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-muted">
+        <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
+          <Item size="sm">
+            <ItemContent>
+              <ItemTitle>
                 {isMuted ? (
-                  <IconBellOff className="h-3.5 w-3.5 text-muted-foreground" />
+                  <IconBellOff className="size-3.5 text-muted-foreground" />
                 ) : (
-                  <IconBell className="h-3.5 w-3.5 text-muted-foreground" />
+                  <IconBell className="size-3.5 text-muted-foreground" />
                 )}
-              </div>
-              <div>
-                <p className="font-medium text-foreground text-sm">
-                  Mute Channel
-                </p>
-                <p className="text-muted-foreground text-xs">
-                  Silence all notifications
-                </p>
-              </div>
-            </div>
-            <Switch checked={isMuted} onCheckedChange={handleMuteToggle} />
-          </div>
+                Mute Channel
+              </ItemTitle>
+              <ItemDescription>Silence all notifications</ItemDescription>
+            </ItemContent>
+            <ItemActions>
+              <Switch checked={isMuted} onCheckedChange={handleMuteToggle} />
+            </ItemActions>
+          </Item>
         </div>
       </div>
 
       {!isMuted && (
         <>
           <div className="space-y-1.5">
-            <p className="font-medium text-muted-foreground text-xs uppercase tracking-wider">
+            <p className="px-1 font-medium text-muted-foreground text-xs uppercase tracking-wider">
               Sound
             </p>
-            <div className="rounded-lg border bg-card">
-              <div className="flex items-center justify-between px-3 py-3">
-                <div className="flex items-center gap-2.5">
-                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-muted">
-                    <IconVolume className="h-3.5 w-3.5 text-muted-foreground" />
-                  </div>
-                  <p className="font-medium text-foreground text-sm">
+            <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
+              <Item size="sm">
+                <ItemContent>
+                  <ItemTitle>
+                    <IconVolume className="size-3.5 text-muted-foreground" />
                     Notification Sound
-                  </p>
-                </div>
-                <div className="flex items-center gap-1.5">
+                  </ItemTitle>
+                  <ItemDescription>
+                    Sound played for this channel
+                  </ItemDescription>
+                </ItemContent>
+                <ItemActions>
                   {canPlaySound && (
                     <Button
-                      className="h-7 w-7"
                       onClick={handlePlaySound}
                       size="icon"
                       variant="ghost"
                     >
-                      <IconPlayerPlay className="h-3.5 w-3.5" />
+                      <IconPlayerPlay className="size-4" />
                     </Button>
                   )}
                   <Select
@@ -345,7 +351,7 @@ export function ChannelNotificationSettings({
                     onValueChange={handleSoundChange}
                     value={currentSoundValue}
                   >
-                    <SelectTrigger className="h-7 w-36 text-xs">
+                    <SelectTrigger className="w-36">
                       <SelectValue placeholder="Select sound" />
                     </SelectTrigger>
                     <SelectContent>
@@ -357,85 +363,104 @@ export function ChannelNotificationSettings({
                       ))}
                       <SelectItem value="custom">
                         <div className="flex items-center gap-1.5">
-                          <IconUpload className="h-3.5 w-3.5" />
+                          <IconUpload className="size-3.5" />
                           <span>Upload Custom…</span>
                         </div>
                       </SelectItem>
                     </SelectContent>
                   </Select>
-                </div>
-              </div>
+                </ItemActions>
+              </Item>
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <p className="font-medium text-muted-foreground text-xs uppercase tracking-wider">
+            <p className="px-1 font-medium text-muted-foreground text-xs uppercase tracking-wider">
               Event Overrides
             </p>
-            <div className="divide-y rounded-lg border bg-card">
-              {CHANNEL_EVENT_DEFINITIONS.map((event) => {
-                const soundState = getPreferenceState(event.id, "sound");
-                const pushState = getPreferenceState(event.id, "push");
-                const emailState = getPreferenceState(event.id, "email");
+            <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
+              <ItemGroup className="gap-0">
+                {CHANNEL_EVENT_DEFINITIONS.map((event, index) => {
+                  const soundState = getPreferenceState(event.id, "sound");
+                  const pushState = getPreferenceState(event.id, "push");
+                  const emailState = getPreferenceState(event.id, "email");
 
-                return (
-                  <div className="space-y-2.5 px-3 py-3" key={event.id}>
-                    <div>
-                      <p className="font-medium text-foreground text-sm leading-tight">
-                        {event.label}
-                      </p>
-                      <p className="text-muted-foreground text-xs leading-snug">
-                        {event.description}
-                      </p>
+                  return (
+                    <div key={event.id}>
+                      {index > 0 && <ItemSeparator />}
+                      <Item size="sm">
+                        <ItemContent>
+                          <ItemTitle>{event.label}</ItemTitle>
+                          <ItemDescription>{event.description}</ItemDescription>
+                        </ItemContent>
+                        <ItemActions className="gap-3">
+                          <div className="flex flex-col items-center gap-1">
+                            <Switch
+                              checked={soundState.enabled}
+                              onCheckedChange={(checked) =>
+                                handlePreferenceToggle(
+                                  event.id,
+                                  "sound",
+                                  checked
+                                )
+                              }
+                            />
+                            <Label className="flex cursor-default items-center gap-0.5 text-[10px] text-muted-foreground">
+                              <IconVolume className="size-2.5" />
+                              {soundState.isOverride ? (
+                                <span className="text-foreground">on</span>
+                              ) : (
+                                "dflt"
+                              )}
+                            </Label>
+                          </div>
+                          <div className="flex flex-col items-center gap-1">
+                            <Switch
+                              checked={pushState.enabled}
+                              disabled={!isDesktopReady}
+                              onCheckedChange={(checked) =>
+                                handlePreferenceToggle(
+                                  event.id,
+                                  "push",
+                                  checked
+                                )
+                              }
+                            />
+                            <Label className="flex cursor-default items-center gap-0.5 text-[10px] text-muted-foreground">
+                              <IconBell className="size-2.5" />
+                              {pushState.isOverride ? (
+                                <span className="text-foreground">on</span>
+                              ) : (
+                                "dflt"
+                              )}
+                            </Label>
+                          </div>
+                          <div className="flex flex-col items-center gap-1">
+                            <Switch
+                              checked={emailState.enabled}
+                              onCheckedChange={(checked) =>
+                                handlePreferenceToggle(
+                                  event.id,
+                                  "email",
+                                  checked
+                                )
+                              }
+                            />
+                            <Label className="flex cursor-default items-center gap-0.5 text-[10px] text-muted-foreground">
+                              <IconMail className="size-2.5" />
+                              {emailState.isOverride ? (
+                                <span className="text-foreground">on</span>
+                              ) : (
+                                "dflt"
+                              )}
+                            </Label>
+                          </div>
+                        </ItemActions>
+                      </Item>
                     </div>
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-1.5">
-                        <IconVolume className="h-3 w-3 text-muted-foreground" />
-                        <Switch
-                          checked={soundState.enabled}
-                          onCheckedChange={(checked) =>
-                            handlePreferenceToggle(event.id, "sound", checked)
-                          }
-                        />
-                        {!soundState.isOverride && (
-                          <span className="text-[10px] text-muted-foreground/60">
-                            default
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <IconBell className="h-3 w-3 text-muted-foreground" />
-                        <Switch
-                          checked={pushState.enabled}
-                          disabled={!isDesktopReady}
-                          onCheckedChange={(checked) =>
-                            handlePreferenceToggle(event.id, "push", checked)
-                          }
-                        />
-                        {!pushState.isOverride && (
-                          <span className="text-[10px] text-muted-foreground/60">
-                            default
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <IconMail className="h-3 w-3 text-muted-foreground" />
-                        <Switch
-                          checked={emailState.enabled}
-                          onCheckedChange={(checked) =>
-                            handlePreferenceToggle(event.id, "email", checked)
-                          }
-                        />
-                        {!emailState.isOverride && (
-                          <span className="text-[10px] text-muted-foreground/60">
-                            default
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </ItemGroup>
             </div>
           </div>
         </>
@@ -454,82 +479,74 @@ export function ChannelNotificationSettings({
 
 const ChannelNotificationSettingsSkeleton = () => {
   return (
-    <div className="space-y-6 p-3">
-      <div className="space-y-1">
-        <p className="font-medium text-muted-foreground text-xs uppercase tracking-wider">
+    <div className="space-y-4 p-3">
+      <div className="space-y-1.5">
+        <p className="px-1 font-medium text-muted-foreground text-xs uppercase tracking-wider">
           Channel
         </p>
-        <div className="rounded-lg border bg-card">
-          <div className="flex items-center justify-between px-3 py-3">
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-muted">
-                <IconBell className="h-3.5 w-3.5 text-muted-foreground" />
-              </div>
-              <div>
-                <p className="font-medium text-foreground text-sm">
-                  Mute Channel
-                </p>
-                <p className="text-muted-foreground text-xs">
-                  Silence all notifications
-                </p>
-              </div>
-            </div>
-            <Skeleton className="h-5 w-9 rounded-full" />
-          </div>
+        <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
+          <Item size="sm">
+            <ItemContent>
+              <ItemTitle>
+                <IconBell className="size-3.5 text-muted-foreground" />
+                Mute Channel
+              </ItemTitle>
+              <ItemDescription>Silence all notifications</ItemDescription>
+            </ItemContent>
+            <ItemActions>
+              <Skeleton className="h-5 w-9 rounded-full" />
+            </ItemActions>
+          </Item>
         </div>
       </div>
 
       <div className="space-y-1.5">
-        <p className="font-medium text-muted-foreground text-xs uppercase tracking-wider">
+        <p className="px-1 font-medium text-muted-foreground text-xs uppercase tracking-wider">
           Sound
         </p>
-        <div className="rounded-lg border bg-card">
-          <div className="flex items-center justify-between px-3 py-3">
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-muted">
-                <IconVolume className="h-3.5 w-3.5 text-muted-foreground" />
-              </div>
-              <p className="font-medium text-foreground text-sm">
+        <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
+          <Item size="sm">
+            <ItemContent>
+              <ItemTitle>
+                <IconVolume className="size-3.5 text-muted-foreground" />
                 Notification Sound
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <Skeleton className="h-7 w-36 rounded-md" />
-            </div>
-          </div>
+              </ItemTitle>
+              <ItemDescription>Sound played for this channel</ItemDescription>
+            </ItemContent>
+            <ItemActions>
+              <Skeleton className="h-9 w-9 rounded-md" />
+              <Skeleton className="h-9 w-36 rounded-md" />
+            </ItemActions>
+          </Item>
         </div>
       </div>
 
       <div className="space-y-1.5">
-        <p className="font-medium text-muted-foreground text-xs uppercase tracking-wider">
+        <p className="px-1 font-medium text-muted-foreground text-xs uppercase tracking-wider">
           Event Overrides
         </p>
-        <div className="divide-y rounded-lg border bg-card">
-          {Array.from({ length: CHANNEL_EVENT_DEFINITIONS.length }).map(
-            (_, i) => (
-              // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton list
-              <div className="space-y-2.5 px-3 py-3" key={i}>
-                <div>
-                  <Skeleton className="mb-1 h-4 w-32" />
-                  <Skeleton className="h-3 w-48" />
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-1.5">
-                    <IconVolume className="h-3 w-3 text-muted-foreground" />
-                    <Skeleton className="h-5 w-9 rounded-full" />
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <IconBell className="h-3 w-3 text-muted-foreground" />
-                    <Skeleton className="h-5 w-9 rounded-full" />
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <IconMail className="h-3 w-3 text-muted-foreground" />
-                    <Skeleton className="h-5 w-9 rounded-full" />
-                  </div>
-                </div>
+        <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
+          <ItemGroup className="gap-0">
+            {CHANNEL_EVENT_DEFINITIONS.map((event, i) => (
+              <div key={event.id}>
+                {i > 0 && <ItemSeparator />}
+                <Item size="sm">
+                  <ItemContent>
+                    <ItemTitle>{event.label}</ItemTitle>
+                    <ItemDescription>{event.description}</ItemDescription>
+                  </ItemContent>
+                  <ItemActions className="gap-3">
+                    {[0, 1, 2].map((j) => (
+                      <div className="flex flex-col items-center gap-1" key={j}>
+                        <Skeleton className="h-5 w-9 rounded-full" />
+                        <Skeleton className="h-3 w-6 rounded" />
+                      </div>
+                    ))}
+                  </ItemActions>
+                </Item>
               </div>
-            )
-          )}
+            ))}
+          </ItemGroup>
         </div>
       </div>
     </div>

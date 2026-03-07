@@ -6,7 +6,7 @@ import {
 import type React from "react";
 
 interface ChannelInfoProps {
-  channelDescription: string;
+  channelDescription: string | null;
   createdAt: Date;
   createdByName: string;
 }
@@ -23,13 +23,15 @@ export const ChannelInfo = ({
   channelDescription,
 }: ChannelInfoProps) => (
   <div className="space-y-2.5 p-3">
-    <InfoItem
-      icon={
-        <IconFileDescription className="h-3.5 w-3.5 text-muted-foreground" />
-      }
-      label="Description"
-      value={channelDescription || "No description set."}
-    />
+    {channelDescription && (
+      <InfoItem
+        icon={
+          <IconFileDescription className="h-3.5 w-3.5 text-muted-foreground" />
+        }
+        label="Description"
+        value={channelDescription}
+      />
+    )}
     <InfoItem
       icon={<IconUser className="h-3.5 w-3.5 text-muted-foreground" />}
       label="Created by"
