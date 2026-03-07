@@ -317,27 +317,23 @@ export function NotificationDropdown() {
           </ScrollArea>
 
           <div className="flex items-center justify-between border-border/40 border-t bg-background/50 px-4 py-2 backdrop-blur-md">
-            <span className="text-muted-foreground text-xs">
+            <p className="text-muted-foreground text-sm">
               {filteredNotifications.length}{" "}
               {filteredNotifications.length === 1
                 ? "notification"
                 : "notifications"}
-            </span>
+            </p>
             <ButtonGroup className="rounded-md">
               <Button
-                className="h-7 gap-1.5 px-2.5 text-muted-foreground text-xs hover:text-foreground"
                 disabled={unreadCount === 0}
                 onClick={handleMarkAllAsRead}
-                variant="secondary"
-              >
-                <IconChecks className="h-3.5 w-3.5" />
-                <span>Mark all as read</span>
-              </Button>
-              <Button
-                className="h-7 gap-1.5 px-2.5 text-muted-foreground text-xs hover:text-foreground"
                 variant="ghost"
               >
-                <IconEye className="h-3.5 w-3.5" />
+                <IconChecks />
+                <span>Mark all as read</span>
+              </Button>
+              <Button variant="ghost">
+                <IconEye />
                 <span>View all</span>
               </Button>
             </ButtonGroup>
