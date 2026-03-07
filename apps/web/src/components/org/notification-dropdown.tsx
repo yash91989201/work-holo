@@ -5,6 +5,7 @@ import {
   IconBellFilled,
   IconCheck,
   IconChecks,
+  IconEye,
   IconMail,
   IconMessage,
   IconMoodSmile,
@@ -15,6 +16,7 @@ import parse from "html-react-parser";
 import type React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { ButtonGroup } from "@/components/ui/button-group";
 import {
   Empty,
   EmptyDescription,
@@ -29,6 +31,7 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
   Tooltip,
   TooltipContent,
@@ -131,12 +134,6 @@ const notificationConfig: Record<NotificationType, NotificationConfig> = {
     gradient: "from-muted/20 via-muted/10 to-transparent",
   },
 };
-
-const filterOptions: { value: FilterType; label: string }[] = [
-  { value: "all", label: "All" },
-  { value: "unread", label: "Unread" },
-  { value: "read", label: "Read" },
-];
 
 function getNotificationMeta(type: string): NotificationConfig {
   return (
@@ -260,12 +257,12 @@ export function NotificationDropdown() {
                     <IconBell className="h-5 w-5 text-foreground/70 transition-transform group-hover:scale-110 group-hover:text-foreground" />
                   )}
                 </div>
-                {unreadCount > 0 && (
-                  <div className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 font-bold text-[10px] text-primary-foreground shadow-sm ring-2 ring-background">
-                    {unreadCount > 9 ? "9+" : unreadCount}
+                <div className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 font-bold text-[10px] text-primary-foreground shadow-sm ring-2 ring-background">
+                  {unreadCount > 99 ? "99+" : unreadCount}
+                  {unreadCount > 0 && (
                     <span className="absolute inset-0 -z-10 animate-ping rounded-full bg-primary opacity-50" />
-                  </div>
-                )}
+                  )}
+                </div>
               </Button>
             </PopoverTrigger>
           </TooltipTrigger>
@@ -279,56 +276,34 @@ export function NotificationDropdown() {
 
         <PopoverContent
           align="end"
-          className="w-120 overflow-hidden rounded-xl border border-border/50 bg-background/95 p-0 shadow-black/5 shadow-xl backdrop-blur-xl"
+          className="w-140 overflow-hidden rounded-xl border border-border/50 bg-background/95 p-0 shadow-black/5 shadow-xl backdrop-blur-xl"
           sideOffset={8}
         >
-          <div className="flex flex-col gap-3 border-border/40 border-b bg-background/50 px-4 py-3 backdrop-blur-md">
-            <div className="flex items-center justify-between">
-              <h2 className="font-semibold text-base text-foreground tracking-tight">
-                Notifications
-              </h2>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    className="h-7 w-7 rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
-                    disabled={unreadCount === 0}
-                    onClick={handleMarkAllAsRead}
-                    size="icon"
-                    variant="ghost"
-                  >
-                    <IconChecks className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">
-                  <p>Mark all as read</p>
-                </TooltipContent>
-              </Tooltip>
-            </div>
-
-            <div className="flex w-full rounded-lg bg-muted/50 p-0.5">
-              {filterOptions.map((option) => (
-                <button
-                  className={cn(
-                    "flex-1 rounded-md px-3 py-1.5 font-medium text-xs transition-all duration-200",
-                    filter === option.value
-                      ? "bg-background text-foreground shadow-sm ring-1 ring-border/50"
-                      : "text-muted-foreground hover:text-foreground"
-                  )}
-                  key={option.value}
-                  onClick={() => setFilter(option.value)}
-                  type="button"
-                >
-                  <div className="flex items-center justify-center gap-1.5">
-                    {option.label}
-                    {option.value === "unread" && unreadCount > 0 && (
-                      <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-primary/10 px-1 font-semibold text-[10px] text-primary">
-                        {unreadCount}
-                      </span>
-                    )}
-                  </div>
-                </button>
-              ))}
-            </div>
+          <div className="flex items-center justify-between border-border/40 border-b bg-background/50 px-4 py-3 backdrop-blur-md">
+            <h2 className="font-semibold text-base text-foreground tracking-tight">
+              Notifications
+            </h2>
+            <ToggleGroup
+              className="rounded-lg bg-muted/50 p-0.5"
+              onValueChange={(value) => {
+                if (value) setFilter(value as FilterType);
+              }}
+              spacing={0}
+              type="single"
+              value={filter}
+              variant="outline"
+            >
+              <ToggleGroupItem value="all">All</ToggleGroupItem>
+              <ToggleGroupItem value="unread">
+                Unread
+                {unreadCount > 0 && (
+                  <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-primary/10 px-1 font-semibold text-[10px] text-primary">
+                    {unreadCount}
+                  </span>
+                )}
+              </ToggleGroupItem>
+              <ToggleGroupItem value="read">Read</ToggleGroupItem>
+            </ToggleGroup>
           </div>
 
           <ScrollArea className="h-140" type="always">
@@ -348,12 +323,24 @@ export function NotificationDropdown() {
                 ? "notification"
                 : "notifications"}
             </span>
-            <Button
-              className="h-8 px-2 font-medium text-muted-foreground text-xs hover:text-foreground"
-              variant="ghost"
-            >
-              View all
-            </Button>
+            <ButtonGroup className="rounded-md">
+              <Button
+                className="h-7 gap-1.5 px-2.5 text-muted-foreground text-xs hover:text-foreground"
+                disabled={unreadCount === 0}
+                onClick={handleMarkAllAsRead}
+                variant="secondary"
+              >
+                <IconChecks className="h-3.5 w-3.5" />
+                <span>Mark all as read</span>
+              </Button>
+              <Button
+                className="h-7 gap-1.5 px-2.5 text-muted-foreground text-xs hover:text-foreground"
+                variant="ghost"
+              >
+                <IconEye className="h-3.5 w-3.5" />
+                <span>View all</span>
+              </Button>
+            </ButtonGroup>
           </div>
         </PopoverContent>
       </Popover>
@@ -553,9 +540,7 @@ function NotificationItem({
     <div
       className={cn(
         "group flex items-start gap-3 px-4 py-3 transition-all duration-200",
-        isUnread
-          ? "bg-primary/[0.03] hover:bg-primary/[0.06]"
-          : "hover:bg-muted/40",
+        isUnread ? "bg-primary/3 hover:bg-primary/6" : "hover:bg-muted/40",
         isUnread && "border-l-[3px] border-l-primary"
       )}
     >
