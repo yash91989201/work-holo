@@ -1,5 +1,6 @@
 import {
   IconBell,
+  IconBellOff,
   IconMail,
   IconPlayerPlay,
   IconUpload,
@@ -12,13 +13,6 @@ import { toast } from "sonner";
 import { CHANNEL_EVENT_DEFINITIONS } from "@/components/settings/notifications/constants";
 import { Button } from "@/components/ui/button";
 import {
-  Item,
-  ItemActions,
-  ItemContent,
-  ItemDescription,
-  ItemTitle,
-} from "@/components/ui/item";
-import {
   Select,
   SelectContent,
   SelectItem,
@@ -26,14 +20,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { useNotificationPermission } from "@/hooks/use-notification-permission";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
 import { queryUtils } from "@/utils/orpc";
@@ -292,103 +278,61 @@ export function ChannelNotificationSettings({
     (soundPref?.preference?.soundType === "custom" &&
       soundPref?.preference?.customSoundUrl);
 
-  const renderEventRow = (
-    event: (typeof CHANNEL_EVENT_DEFINITIONS)[number]
-  ) => {
-    const soundState = getPreferenceState(event.id, "sound");
-    const pushState = getPreferenceState(event.id, "push");
-    const emailState = getPreferenceState(event.id, "email");
-
-    return (
-      <TableRow key={event.id}>
-        <TableCell>
-          <div className="min-w-0">
-            <div className="truncate font-medium text-sm">{event.label}</div>
-            <div className="truncate text-muted-foreground text-xs">
-              {event.description}
-            </div>
-          </div>
-        </TableCell>
-        <TableCell className="text-center">
-          <div className="flex items-center justify-center gap-1">
-            <Switch
-              checked={soundState.enabled}
-              onCheckedChange={(checked) =>
-                handlePreferenceToggle(event.id, "sound", checked)
-              }
-            />
-            {!soundState.isOverride && (
-              <span className="text-muted-foreground text-xs">(Default)</span>
-            )}
-          </div>
-        </TableCell>
-        <TableCell className="text-center">
-          <div className="flex items-center justify-center gap-1">
-            <Switch
-              checked={pushState.enabled}
-              disabled={!isDesktopReady}
-              onCheckedChange={(checked) =>
-                handlePreferenceToggle(event.id, "push", checked)
-              }
-            />
-            {!pushState.isOverride && (
-              <span className="text-muted-foreground text-xs">(Default)</span>
-            )}
-          </div>
-        </TableCell>
-        <TableCell className="text-center">
-          <div className="flex items-center justify-center gap-1">
-            <Switch
-              checked={emailState.enabled}
-              onCheckedChange={(checked) =>
-                handlePreferenceToggle(event.id, "email", checked)
-              }
-            />
-            {!emailState.isOverride && (
-              <span className="text-muted-foreground text-xs">(Default)</span>
-            )}
-          </div>
-        </TableCell>
-      </TableRow>
-    );
-  };
-
   return (
-    <div className="space-y-6">
-      <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
-        <Item>
-          <ItemContent>
-            <ItemTitle>Mute Channel</ItemTitle>
-            <ItemDescription>
-              Stop receiving all notifications for this channel
-            </ItemDescription>
-          </ItemContent>
-          <ItemActions>
+    <div className="space-y-5">
+      <div className="space-y-1">
+        <p className="font-medium text-muted-foreground text-xs uppercase tracking-wider">
+          Channel
+        </p>
+        <div className="rounded-lg border bg-card">
+          <div className="flex items-center justify-between px-3 py-3">
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-muted">
+                {isMuted ? (
+                  <IconBellOff className="h-3.5 w-3.5 text-muted-foreground" />
+                ) : (
+                  <IconBell className="h-3.5 w-3.5 text-muted-foreground" />
+                )}
+              </div>
+              <div>
+                <p className="font-medium text-foreground text-sm">
+                  Mute Channel
+                </p>
+                <p className="text-muted-foreground text-xs">
+                  Silence all notifications
+                </p>
+              </div>
+            </div>
             <Switch checked={isMuted} onCheckedChange={handleMuteToggle} />
-          </ItemActions>
-        </Item>
+          </div>
+        </div>
       </div>
 
       {!isMuted && (
         <>
-          <div className="space-y-3">
-            <h3 className="font-medium text-sm">Sound Settings</h3>
-            <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
-              <Item>
-                <ItemContent>
-                  <ItemTitle>Notification Sound</ItemTitle>
-                  <ItemDescription>
-                    Override the default sound for this channel
-                  </ItemDescription>
-                </ItemContent>
-                <ItemActions className="flex items-center gap-2">
+          <div className="space-y-1.5">
+            <p className="font-medium text-muted-foreground text-xs uppercase tracking-wider">
+              Sound
+            </p>
+            <div className="rounded-lg border bg-card">
+              <div className="flex items-center justify-between px-3 py-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-muted">
+                    <IconVolume className="h-3.5 w-3.5 text-muted-foreground" />
+                  </div>
+                  <p className="font-medium text-foreground text-sm">
+                    Notification Sound
+                  </p>
+                </div>
+                <div className="flex items-center gap-1.5">
                   {canPlaySound && (
                     <Button
+                      className="h-7 w-7"
                       onClick={handlePlaySound}
                       size="icon"
                       variant="ghost"
                     >
-                      <IconPlayerPlay className="size-4" />
+                      <IconPlayerPlay className="h-3.5 w-3.5" />
                     </Button>
                   )}
                   <Select
@@ -396,8 +340,8 @@ export function ChannelNotificationSettings({
                     onValueChange={handleSoundChange}
                     value={currentSoundValue}
                   >
-                    <SelectTrigger className="w-50">
-                      <SelectValue placeholder="Select a sound" />
+                    <SelectTrigger className="h-7 w-36 text-xs">
+                      <SelectValue placeholder="Select sound" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="default">Default (Global)</SelectItem>
@@ -407,51 +351,86 @@ export function ChannelNotificationSettings({
                         </SelectItem>
                       ))}
                       <SelectItem value="custom">
-                        <div className="flex items-center gap-2">
-                          <IconUpload className="size-4" />
-                          <span>Upload Custom...</span>
+                        <div className="flex items-center gap-1.5">
+                          <IconUpload className="h-3.5 w-3.5" />
+                          <span>Upload Custom…</span>
                         </div>
                       </SelectItem>
                     </SelectContent>
                   </Select>
-                </ItemActions>
-              </Item>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="space-y-3">
-            <h3 className="font-medium text-sm">Event Overrides</h3>
-            <div className="overflow-hidden rounded-xl border bg-card text-card-foreground shadow-sm">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[40%]">Event</TableHead>
-                    <TableHead className="w-[20%] text-center">
-                      <div className="flex items-center justify-center gap-1">
-                        <IconVolume className="size-3.5" />
-                        <span>Sound</span>
+          <div className="space-y-1.5">
+            <p className="font-medium text-muted-foreground text-xs uppercase tracking-wider">
+              Event Overrides
+            </p>
+            <div className="divide-y rounded-lg border bg-card">
+              {CHANNEL_EVENT_DEFINITIONS.map((event) => {
+                const soundState = getPreferenceState(event.id, "sound");
+                const pushState = getPreferenceState(event.id, "push");
+                const emailState = getPreferenceState(event.id, "email");
+
+                return (
+                  <div className="space-y-2.5 px-3 py-3" key={event.id}>
+                    <div>
+                      <p className="font-medium text-foreground text-sm leading-tight">
+                        {event.label}
+                      </p>
+                      <p className="text-muted-foreground text-xs leading-snug">
+                        {event.description}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-1.5">
+                        <IconVolume className="h-3 w-3 text-muted-foreground" />
+                        <Switch
+                          checked={soundState.enabled}
+                          onCheckedChange={(checked) =>
+                            handlePreferenceToggle(event.id, "sound", checked)
+                          }
+                        />
+                        {!soundState.isOverride && (
+                          <span className="text-[10px] text-muted-foreground/60">
+                            default
+                          </span>
+                        )}
                       </div>
-                    </TableHead>
-                    <TableHead className="w-[20%] text-center">
-                      <div className="flex items-center justify-center gap-1">
-                        <IconBell className="size-3.5" />
-                        <span>Push</span>
+                      <div className="flex items-center gap-1.5">
+                        <IconBell className="h-3 w-3 text-muted-foreground" />
+                        <Switch
+                          checked={pushState.enabled}
+                          disabled={!isDesktopReady}
+                          onCheckedChange={(checked) =>
+                            handlePreferenceToggle(event.id, "push", checked)
+                          }
+                        />
+                        {!pushState.isOverride && (
+                          <span className="text-[10px] text-muted-foreground/60">
+                            default
+                          </span>
+                        )}
                       </div>
-                    </TableHead>
-                    <TableHead className="w-[20%] text-center">
-                      <div className="flex items-center justify-center gap-1">
-                        <IconMail className="size-3.5" />
-                        <span>Email</span>
+                      <div className="flex items-center gap-1.5">
+                        <IconMail className="h-3 w-3 text-muted-foreground" />
+                        <Switch
+                          checked={emailState.enabled}
+                          onCheckedChange={(checked) =>
+                            handlePreferenceToggle(event.id, "email", checked)
+                          }
+                        />
+                        {!emailState.isOverride && (
+                          <span className="text-[10px] text-muted-foreground/60">
+                            default
+                          </span>
+                        )}
                       </div>
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {CHANNEL_EVENT_DEFINITIONS.map((event) =>
-                    renderEventRow(event)
-                  )}
-                </TableBody>
-              </Table>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </>

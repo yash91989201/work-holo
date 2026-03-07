@@ -9,11 +9,7 @@ import {
   IconSunFilled,
   IconUserFilled,
 } from "@tabler/icons-react";
-import {
-  Link,
-  useNavigate,
-  useRouter,
-} from "@tanstack/react-router";
+import { Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";

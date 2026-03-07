@@ -1,4 +1,5 @@
-import { IconInfoCircleFilled } from "@tabler/icons-react";
+import { IconCalendar, IconUser } from "@tabler/icons-react";
+import { Separator } from "@/components/ui/separator";
 
 export const ChannelInfo = ({
   createdByName,
@@ -9,24 +10,57 @@ export const ChannelInfo = ({
   createdByName: string;
   createdAt: Date;
 }) => (
-  <div>
-    <div className="mb-3 flex items-center gap-2">
-      <IconInfoCircleFilled className="h-4 w-4 text-muted-foreground" />
-      <h4 className="font-medium text-foreground text-sm">Channel Details</h4>
-    </div>
-    <div className="space-y-3 text-sm">
-      <p className="text-muted-foreground text-sm leading-relaxed">
-        {channelDescription}
-      </p>
-      <div className="flex justify-between">
-        <span className="text-muted-foreground">Created by</span>
-        <span className="font-medium text-foreground">{createdByName}</span>
+  <div className="space-y-4">
+    {channelDescription && (
+      <div className="space-y-1.5">
+        <p className="font-medium text-muted-foreground text-xs uppercase tracking-wider">
+          Description
+        </p>
+        <p className="text-foreground/80 text-sm leading-relaxed">
+          {channelDescription}
+        </p>
       </div>
-      <div className="flex justify-between">
-        <span className="text-muted-foreground">Created On</span>
-        <span className="font-medium text-foreground">
-          {createdAt.toLocaleDateString()}
-        </span>
+    )}
+
+    {!channelDescription && (
+      <p className="text-muted-foreground text-sm italic">
+        No description set.
+      </p>
+    )}
+
+    <Separator />
+
+    <div className="space-y-3">
+      <p className="font-medium text-muted-foreground text-xs uppercase tracking-wider">
+        Details
+      </p>
+      <div className="space-y-2.5">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-muted">
+            <IconUser className="h-3.5 w-3.5 text-muted-foreground" />
+          </div>
+          <div className="min-w-0">
+            <p className="text-muted-foreground text-xs">Created by</p>
+            <p className="truncate font-medium text-foreground text-sm">
+              {createdByName}
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-muted">
+            <IconCalendar className="h-3.5 w-3.5 text-muted-foreground" />
+          </div>
+          <div className="min-w-0">
+            <p className="text-muted-foreground text-xs">Created on</p>
+            <p className="font-medium text-foreground text-sm">
+              {createdAt.toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   </div>

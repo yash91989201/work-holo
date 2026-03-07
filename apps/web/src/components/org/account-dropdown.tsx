@@ -40,8 +40,8 @@ import { useAuthedSession } from "@/hooks/use-authed-session";
 import { useMemberRole } from "@/hooks/use-member-role";
 import { useOrgPresence, useSetManualStatus } from "@/hooks/use-presence";
 import { authClient } from "@/lib/auth-client";
-import { queryClient } from "@/utils/orpc";
 import { useTheme } from "@/providers/theme-provider";
+import { queryClient } from "@/utils/orpc";
 
 const STATUS_CONFIG = {
   available: {

@@ -1,11 +1,5 @@
-import { IconSearch, IconUsers, IconX } from "@tabler/icons-react";
-import { useEffect, useRef, useState, useTransition } from "react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { IconSearch, IconX } from "@tabler/icons-react";
+import { useEffect, useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,8 +19,6 @@ export const Members = ({
 }) => {
   const [showSearch, setShowSearch] = useState(false);
   const [query, setQuery] = useState("");
-  const [accordionValue, setAccordionValue] = useState<string>("members");
-  const [_isPending, startTransition] = useTransition();
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -36,112 +28,124 @@ export const Members = ({
     }
   }, [showSearch]);
 
-  useEffect(() => {
-    if (accordionValue === "" && showSearch) {
-      setShowSearch(false);
-    }
-  }, [accordionValue, showSearch]);
+  const filtered = query.trim()
+    ? members.filter(
+        (m) =>
+          m.name.toLowerCase().includes(query.toLowerCase()) ||
+          m.email.toLowerCase().includes(query.toLowerCase())
+      )
+    : members;
 
-  const handleSearchClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-
-    const isAccordionClosed = accordionValue === "";
-
-    if (isAccordionClosed) {
-      setAccordionValue("members");
-      startTransition(() => {
-        setTimeout(() => {
-          setShowSearch(true);
-        }, 250);
-      });
-    } else {
-      setShowSearch((s) => !s);
-    }
-  };
+  const onlineMembers = filtered.filter((m) => m.isOnline);
+  const offlineMembers = filtered.filter((m) => !m.isOnline);
 
   return (
-    <Accordion
-      collapsible
-      onValueChange={setAccordionValue}
-      type="single"
-      value={accordionValue}
-    >
-      <AccordionItem value="members">
-        <AccordionTrigger className="px-0 hover:no-underline">
-          <div className="flex flex-1 items-center gap-1.5">
-            <IconUsers className="h-4 w-4 text-muted-foreground" />
-            <h4 className="font-medium text-foreground text-sm">Members</h4>
-          </div>
-          <Button
-            aria-label={showSearch ? "Close search" : "Open search"}
-            className="h-6 w-6"
-            onClick={handleSearchClick}
-            size="icon"
-            variant="ghost"
-          >
-            {showSearch ? (
-              <IconX className="h-3 w-3" />
-            ) : (
-              <IconSearch className="h-3 w-3" />
-            )}
-          </Button>
-        </AccordionTrigger>
-        <AccordionContent className="pt-0">
-          <div
-            className={cn(
-              "overflow-hidden transition-[max-height,opacity,transform] duration-200 ease-out",
-              showSearch
-                ? "max-h-16 translate-y-0 opacity-100"
-                : "max-h-0 -translate-y-1 opacity-0"
-            )}
-          >
-            <div className="p-3">
-              <Input
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search members (mock)"
-                ref={inputRef}
-                value={query}
-              />
-            </div>
-          </div>
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <p className="font-medium text-muted-foreground text-xs uppercase tracking-wider">
+          {members.length} {members.length === 1 ? "Member" : "Members"}
+        </p>
+        <Button
+          aria-label={showSearch ? "Close search" : "Search members"}
+          className="h-6 w-6"
+          onClick={() => {
+            if (showSearch) {
+              setShowSearch(false);
+              setQuery("");
+            } else {
+              setShowSearch(true);
+            }
+          }}
+          size="icon"
+          variant="ghost"
+        >
+          {showSearch ? (
+            <IconX className="h-3 w-3" />
+          ) : (
+            <IconSearch className="h-3 w-3" />
+          )}
+        </Button>
+      </div>
 
-          <div className="space-y-1">
-            {members.map((member) => (
-              <div
-                className="flex cursor-pointer items-center gap-3 rounded-lg p-2 transition-colors hover:bg-muted/50"
-                key={member.id}
-              >
-                <div className="relative">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage alt={member.name} />
-                    <AvatarFallback className="text-xs">
-                      {getNameInitials(member.name)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div
-                    className={cn(
-                      "absolute right-0 bottom-0 h-2.5 w-2.5 rounded-full border-2 border-background",
-                      member.isOnline ? "bg-green-500" : "bg-muted-foreground"
-                    )}
-                  />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <p className="truncate font-medium text-foreground text-sm">
-                      {member.name}
-                    </p>
-                  </div>
-                  {member.isOnline && (
-                    <p className="truncate text-muted-foreground text-xs">
-                      Active now
-                    </p>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </AccordionContent>
-      </AccordionItem>
-    </Accordion>
+      <div
+        className={cn(
+          "overflow-hidden transition-[max-height,opacity] duration-200 ease-out",
+          showSearch ? "max-h-16 opacity-100" : "max-h-0 opacity-0"
+        )}
+      >
+        <Input
+          className="h-8 text-sm"
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search members…"
+          ref={inputRef}
+          value={query}
+        />
+      </div>
+
+      {filtered.length === 0 && (
+        <p className="py-4 text-center text-muted-foreground text-sm">
+          No members found.
+        </p>
+      )}
+
+      {onlineMembers.length > 0 && (
+        <div className="space-y-0.5">
+          <p className="mb-1.5 font-medium text-[11px] text-muted-foreground/70 uppercase tracking-wider">
+            Online — {onlineMembers.length}
+          </p>
+          {onlineMembers.map((member) => (
+            <MemberRow key={member.id} member={member} />
+          ))}
+        </div>
+      )}
+
+      {offlineMembers.length > 0 && (
+        <div className="space-y-0.5">
+          <p className="mb-1.5 font-medium text-[11px] text-muted-foreground/70 uppercase tracking-wider">
+            Offline — {offlineMembers.length}
+          </p>
+          {offlineMembers.map((member) => (
+            <MemberRow key={member.id} member={member} />
+          ))}
+        </div>
+      )}
+    </div>
   );
 };
+
+const MemberRow = ({
+  member,
+}: {
+  member: {
+    id: string;
+    name: string;
+    email: string;
+    image?: string | null;
+    isOnline: boolean;
+  };
+}) => (
+  <div className="flex cursor-pointer items-center gap-2.5 rounded-md px-1.5 py-1.5 transition-colors hover:bg-muted/60">
+    <div className="relative shrink-0">
+      <Avatar className="h-7 w-7">
+        <AvatarImage alt={member.name} src={member.image ?? undefined} />
+        <AvatarFallback className="text-[10px]">
+          {getNameInitials(member.name)}
+        </AvatarFallback>
+      </Avatar>
+      <span
+        className={cn(
+          "absolute right-0 bottom-0 h-2 w-2 rounded-full border-[1.5px] border-background",
+          member.isOnline ? "bg-green-500" : "bg-muted-foreground/40"
+        )}
+      />
+    </div>
+    <div className="min-w-0 flex-1">
+      <p className="truncate font-medium text-foreground text-sm leading-tight">
+        {member.name}
+      </p>
+      <p className="truncate text-muted-foreground text-xs leading-tight">
+        {member.isOnline ? "Active now" : member.email}
+      </p>
+    </div>
+  </div>
+);
