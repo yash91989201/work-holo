@@ -28,9 +28,6 @@ export const getInitials = (name: string | null | undefined): string => {
     .toUpperCase();
 };
 
-/** @deprecated Use getInitials instead */
-export const getNameInitials = getInitials;
-
 export const getBrowserInformation = (userAgent?: string | null) => {
   if (!userAgent) return "Unknown Device";
 

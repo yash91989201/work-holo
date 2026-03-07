@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { getNameInitials } from "@/utils";
+import { getInitials } from "@/utils";
 
 export const Members = ({
   members,
@@ -40,7 +40,7 @@ export const Members = ({
   const offlineMembers = filtered.filter((m) => !m.isOnline);
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 p-3">
       <div className="flex items-center justify-between">
         <p className="font-medium text-muted-foreground text-xs uppercase tracking-wider">
           {members.length} {members.length === 1 ? "Member" : "Members"}
@@ -129,7 +129,7 @@ const MemberRow = ({
       <Avatar className="h-7 w-7">
         <AvatarImage alt={member.name} src={member.image ?? undefined} />
         <AvatarFallback className="text-[10px]">
-          {getNameInitials(member.name)}
+          {getInitials(member.name)}
         </AvatarFallback>
       </Avatar>
       <span

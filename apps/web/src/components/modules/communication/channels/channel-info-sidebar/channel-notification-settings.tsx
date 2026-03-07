@@ -6,7 +6,11 @@ import {
   IconUpload,
   IconVolume,
 } from "@tabler/icons-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import type { NotificationEventType } from "@work-holo/api/services/notification/types";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
@@ -19,6 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { useNotificationPermission } from "@/hooks/use-notification-permission";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
@@ -39,7 +44,7 @@ export function ChannelNotificationSettings({
   const { isGranted } = useNotificationPermission();
   const isDesktopReady = isGranted && isSubscribed && isSupported;
 
-  const { data: muteStatus } = useQuery(
+  const { data: muteStatus } = useSuspenseQuery(
     queryUtils.notification.getChannelMuteStatus.queryOptions({
       input: { entityType: "channel", entityId: channelId },
     })
@@ -57,7 +62,7 @@ export function ChannelNotificationSettings({
     })
   );
 
-  const { data: preferences } = useQuery(
+  const { data: preferences } = useSuspenseQuery(
     queryUtils.notification.getPreferences.queryOptions({ input: {} })
   );
 
@@ -73,19 +78,19 @@ export function ChannelNotificationSettings({
     })
   );
 
-  const { data: presetsData } = useQuery(
+  const { data: presetsData } = useSuspenseQuery(
     queryUtils.notification.soundPreferences.listPresets.queryOptions({
       input: {},
     })
   );
 
-  const { data: soundPref } = useQuery(
+  const { data: soundPref } = useSuspenseQuery(
     queryUtils.notification.soundPreferences.getPreference.queryOptions({
       input: { scope: "channel", entityId: channelId },
     })
   );
 
-  const { data: globalSoundPref } = useQuery(
+  const { data: globalSoundPref } = useSuspenseQuery(
     queryUtils.notification.soundPreferences.getPreference.queryOptions({
       input: { scope: "channel" },
     })
@@ -117,7 +122,7 @@ export function ChannelNotificationSettings({
     })
   );
 
-  const isMuted = muteStatus?.muted ?? false;
+  const isMuted = muteStatus.muted ?? false;
 
   const handleMuteToggle = (checked: boolean) => {
     toggleMute.mutate({
@@ -212,7 +217,7 @@ export function ChannelNotificationSettings({
       return { isOverride: false, enabled: false };
     }
 
-    const override = preferences?.overrides.find(
+    const override = preferences.overrides.find(
       (o) =>
         o.eventType === eventType &&
         o.deliveryChannel === deliveryChannel &&
@@ -225,12 +230,12 @@ export function ChannelNotificationSettings({
     }
 
     const globalEnabled =
-      preferences?.global[eventType]?.[deliveryChannel] ?? false;
+      preferences.global[eventType]?.[deliveryChannel] ?? false;
     return { isOverride: false, enabled: globalEnabled };
   };
 
   let currentSoundValue = "default";
-  if (soundPref?.preference) {
+  if (soundPref.preference) {
     if (soundPref.preference.soundType === "custom") {
       currentSoundValue = "custom";
     } else if (soundPref.preference.presetId) {
@@ -240,7 +245,7 @@ export function ChannelNotificationSettings({
 
   const handlePlaySound = () => {
     const effectivePreference =
-      soundPref?.preference ?? globalSoundPref?.preference;
+      soundPref.preference ?? globalSoundPref.preference;
 
     if (effectivePreference?.soundType === "custom") {
       if (!effectivePreference.customSoundUrl) {
@@ -275,11 +280,11 @@ export function ChannelNotificationSettings({
 
   const canPlaySound =
     currentSoundValue !== "custom" ||
-    (soundPref?.preference?.soundType === "custom" &&
-      soundPref?.preference?.customSoundUrl);
+    (soundPref.preference?.soundType === "custom" &&
+      soundPref.preference?.customSoundUrl);
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6 p-3">
       <div className="space-y-1">
         <p className="font-medium text-muted-foreground text-xs uppercase tracking-wider">
           Channel
@@ -345,7 +350,7 @@ export function ChannelNotificationSettings({
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="default">Default (Global)</SelectItem>
-                      {presetsData?.presets.map((preset) => (
+                      {presetsData.presets.map((preset) => (
                         <SelectItem key={preset.id} value={preset.id}>
                           {preset.name}
                         </SelectItem>
@@ -446,3 +451,89 @@ export function ChannelNotificationSettings({
     </div>
   );
 }
+
+const ChannelNotificationSettingsSkeleton = () => {
+  return (
+    <div className="space-y-6 p-3">
+      <div className="space-y-1">
+        <p className="font-medium text-muted-foreground text-xs uppercase tracking-wider">
+          Channel
+        </p>
+        <div className="rounded-lg border bg-card">
+          <div className="flex items-center justify-between px-3 py-3">
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-muted">
+                <IconBell className="h-3.5 w-3.5 text-muted-foreground" />
+              </div>
+              <div>
+                <p className="font-medium text-foreground text-sm">
+                  Mute Channel
+                </p>
+                <p className="text-muted-foreground text-xs">
+                  Silence all notifications
+                </p>
+              </div>
+            </div>
+            <Skeleton className="h-5 w-9 rounded-full" />
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-1.5">
+        <p className="font-medium text-muted-foreground text-xs uppercase tracking-wider">
+          Sound
+        </p>
+        <div className="rounded-lg border bg-card">
+          <div className="flex items-center justify-between px-3 py-3">
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-muted">
+                <IconVolume className="h-3.5 w-3.5 text-muted-foreground" />
+              </div>
+              <p className="font-medium text-foreground text-sm">
+                Notification Sound
+              </p>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <Skeleton className="h-7 w-36 rounded-md" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-1.5">
+        <p className="font-medium text-muted-foreground text-xs uppercase tracking-wider">
+          Event Overrides
+        </p>
+        <div className="divide-y rounded-lg border bg-card">
+          {Array.from({ length: CHANNEL_EVENT_DEFINITIONS.length }).map(
+            (_, i) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton list
+              <div className="space-y-2.5 px-3 py-3" key={i}>
+                <div>
+                  <Skeleton className="mb-1 h-4 w-32" />
+                  <Skeleton className="h-3 w-48" />
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-1.5">
+                    <IconVolume className="h-3 w-3 text-muted-foreground" />
+                    <Skeleton className="h-5 w-9 rounded-full" />
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <IconBell className="h-3 w-3 text-muted-foreground" />
+                    <Skeleton className="h-5 w-9 rounded-full" />
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <IconMail className="h-3 w-3 text-muted-foreground" />
+                    <Skeleton className="h-5 w-9 rounded-full" />
+                  </div>
+                </div>
+              </div>
+            )
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+ChannelNotificationSettings.Fallback = ChannelNotificationSettingsSkeleton;
