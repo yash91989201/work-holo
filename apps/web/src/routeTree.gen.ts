@@ -12,9 +12,11 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as publicRouteRouteImport } from './routes/(public)/route'
 import { Route as authenticatedRouteRouteImport } from './routes/(authenticated)/route'
 import { Route as publicIndexRouteImport } from './routes/(public)/index'
+import { Route as publicHomePageRouteImport } from './routes/(public)/home-page'
 import { Route as authSignupRouteImport } from './routes/(auth)/signup'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as authenticatedSettingsRouteRouteImport } from './routes/(authenticated)/settings/route'
+import { Route as publicBpoSlugRouteImport } from './routes/(public)/bpo/$slug'
 import { Route as authenticatedOrgNewRouteImport } from './routes/(authenticated)/org/new'
 import { Route as authAcceptInvitationIdRouteImport } from './routes/(auth)/accept-invitation.$id'
 import { Route as authenticatedOrgSlugRouteRouteImport } from './routes/(authenticated)/org/$slug/route'
@@ -59,6 +61,11 @@ const publicIndexRoute = publicIndexRouteImport.update({
   path: '/',
   getParentRoute: () => publicRouteRoute,
 } as any)
+const publicHomePageRoute = publicHomePageRouteImport.update({
+  id: '/home-page',
+  path: '/home-page',
+  getParentRoute: () => publicRouteRoute,
+} as any)
 const authSignupRoute = authSignupRouteImport.update({
   id: '/(auth)/signup',
   path: '/signup',
@@ -75,6 +82,11 @@ const authenticatedSettingsRouteRoute =
     path: '/settings',
     getParentRoute: () => authenticatedRouteRoute,
   } as any)
+const publicBpoSlugRoute = publicBpoSlugRouteImport.update({
+  id: '/bpo/$slug',
+  path: '/bpo/$slug',
+  getParentRoute: () => publicRouteRoute,
+} as any)
 const authenticatedOrgNewRoute = authenticatedOrgNewRouteImport.update({
   id: '/org/new',
   path: '/org/new',
@@ -268,10 +280,12 @@ export interface FileRoutesByFullPath {
   '/settings': typeof authenticatedSettingsRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/signup': typeof authSignupRoute
+  '/home-page': typeof publicHomePageRoute
   '/': typeof publicIndexRoute
   '/org/$slug': typeof authenticatedOrgSlugRouteRouteWithChildren
   '/accept-invitation/$id': typeof authAcceptInvitationIdRoute
   '/org/new': typeof authenticatedOrgNewRoute
+  '/bpo/$slug': typeof publicBpoSlugRoute
   '/org/$slug/console': typeof authenticatedOrgSlugConsoleRouteRouteWithChildren
   '/org/$slug/manage': typeof authenticatedOrgSlugManageRouteRouteWithChildren
   '/org/$slug/workspace': typeof authenticatedOrgSlugWorkspaceRouteRouteWithChildren
@@ -304,10 +318,12 @@ export interface FileRoutesByTo {
   '/settings': typeof authenticatedSettingsRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/signup': typeof authSignupRoute
+  '/home-page': typeof publicHomePageRoute
   '/': typeof publicIndexRoute
   '/org/$slug': typeof authenticatedOrgSlugRouteRouteWithChildren
   '/accept-invitation/$id': typeof authAcceptInvitationIdRoute
   '/org/new': typeof authenticatedOrgNewRoute
+  '/bpo/$slug': typeof publicBpoSlugRoute
   '/settings/account/notifications': typeof authenticatedSettingsAccountNotificationsRoute
   '/settings/account/preferences': typeof authenticatedSettingsAccountPreferencesRoute
   '/settings/account/profile': typeof authenticatedSettingsAccountProfileRoute
@@ -338,10 +354,12 @@ export interface FileRoutesById {
   '/(authenticated)/settings': typeof authenticatedSettingsRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/signup': typeof authSignupRoute
+  '/(public)/home-page': typeof publicHomePageRoute
   '/(public)/': typeof publicIndexRoute
   '/(authenticated)/org/$slug': typeof authenticatedOrgSlugRouteRouteWithChildren
   '/(auth)/accept-invitation/$id': typeof authAcceptInvitationIdRoute
   '/(authenticated)/org/new': typeof authenticatedOrgNewRoute
+  '/(public)/bpo/$slug': typeof publicBpoSlugRoute
   '/(authenticated)/org/$slug/console': typeof authenticatedOrgSlugConsoleRouteRouteWithChildren
   '/(authenticated)/org/$slug/manage': typeof authenticatedOrgSlugManageRouteRouteWithChildren
   '/(authenticated)/org/$slug/workspace': typeof authenticatedOrgSlugWorkspaceRouteRouteWithChildren
@@ -376,10 +394,12 @@ export interface FileRouteTypes {
     | '/settings'
     | '/login'
     | '/signup'
+    | '/home-page'
     | '/'
     | '/org/$slug'
     | '/accept-invitation/$id'
     | '/org/new'
+    | '/bpo/$slug'
     | '/org/$slug/console'
     | '/org/$slug/manage'
     | '/org/$slug/workspace'
@@ -412,10 +432,12 @@ export interface FileRouteTypes {
     | '/settings'
     | '/login'
     | '/signup'
+    | '/home-page'
     | '/'
     | '/org/$slug'
     | '/accept-invitation/$id'
     | '/org/new'
+    | '/bpo/$slug'
     | '/settings/account/notifications'
     | '/settings/account/preferences'
     | '/settings/account/profile'
@@ -445,10 +467,12 @@ export interface FileRouteTypes {
     | '/(authenticated)/settings'
     | '/(auth)/login'
     | '/(auth)/signup'
+    | '/(public)/home-page'
     | '/(public)/'
     | '/(authenticated)/org/$slug'
     | '/(auth)/accept-invitation/$id'
     | '/(authenticated)/org/new'
+    | '/(public)/bpo/$slug'
     | '/(authenticated)/org/$slug/console'
     | '/(authenticated)/org/$slug/manage'
     | '/(authenticated)/org/$slug/workspace'
@@ -509,6 +533,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof publicIndexRouteImport
       parentRoute: typeof publicRouteRoute
     }
+    '/(public)/home-page': {
+      id: '/(public)/home-page'
+      path: '/home-page'
+      fullPath: '/home-page'
+      preLoaderRoute: typeof publicHomePageRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
     '/(auth)/signup': {
       id: '/(auth)/signup'
       path: '/signup'
@@ -529,6 +560,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/settings'
       preLoaderRoute: typeof authenticatedSettingsRouteRouteImport
       parentRoute: typeof authenticatedRouteRoute
+    }
+    '/(public)/bpo/$slug': {
+      id: '/(public)/bpo/$slug'
+      path: '/bpo/$slug'
+      fullPath: '/bpo/$slug'
+      preLoaderRoute: typeof publicBpoSlugRouteImport
+      parentRoute: typeof publicRouteRoute
     }
     '/(authenticated)/org/new': {
       id: '/(authenticated)/org/new'
@@ -935,11 +973,15 @@ const authenticatedRouteRouteWithChildren =
   authenticatedRouteRoute._addFileChildren(authenticatedRouteRouteChildren)
 
 interface publicRouteRouteChildren {
+  publicHomePageRoute: typeof publicHomePageRoute
   publicIndexRoute: typeof publicIndexRoute
+  publicBpoSlugRoute: typeof publicBpoSlugRoute
 }
 
 const publicRouteRouteChildren: publicRouteRouteChildren = {
+  publicHomePageRoute: publicHomePageRoute,
   publicIndexRoute: publicIndexRoute,
+  publicBpoSlugRoute: publicBpoSlugRoute,
 }
 
 const publicRouteRouteWithChildren = publicRouteRoute._addFileChildren(

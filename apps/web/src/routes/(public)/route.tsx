@@ -3,7 +3,7 @@ import {
   Outlet,
   useRouterState,
 } from "@tanstack/react-router";
-import { Header } from "@/components/public/header";
+import { LandingHeader } from "@/components/landing/landing-header";
 import { FullScreenLoader } from "@/components/shared/full-screen-loader";
 
 export const Route = createFileRoute("/(public)")({
@@ -11,15 +11,20 @@ export const Route = createFileRoute("/(public)")({
   component: RouteComponent,
 });
 
+import { Footer } from "@/components/landing/footer";
+
 function RouteComponent() {
   const isFetching = useRouterState({
     select: (s) => s.isLoading,
   });
 
   return (
-    <div className="grid h-svh grid-rows-[auto_1fr]">
-      <Header />
-      {isFetching ? <FullScreenLoader /> : <Outlet />}
+    <div className="flex flex-col min-h-svh bg-background">
+      <LandingHeader />
+      <main className="flex-1">
+        <Outlet />
+      </main>
+      <Footer />
     </div>
   );
 }

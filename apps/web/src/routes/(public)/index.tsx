@@ -1,8 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { NewHomePage } from "@/components/landing/home-page";
 
 export const Route = createFileRoute("/(public)/")({
-  component: HomePage,
+  component: NewHomePage,
 });
+
+// ──────────────────────────────────────────────────────
+// Old home page components kept below for future reference
+// ──────────────────────────────────────────────────────
 
 function HeroSection() {
   return (
@@ -129,7 +134,7 @@ function CTASection() {
         </h2>
         <p className="mt-2 text-muted-foreground text-sm">
           Spin up a Docker container and be live in minutes. Add your brand and
-          invite your team when you’re ready.
+          invite your team when you're ready.
         </p>
         <div className="mt-6 flex items-center justify-center gap-4">
           <a
@@ -150,7 +155,7 @@ function CTASection() {
   );
 }
 
-function HomePage() {
+function _OldHomePage() {
   return (
     <main className="container mx-auto w-full">
       <HeroSection />
