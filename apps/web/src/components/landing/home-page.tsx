@@ -19,7 +19,6 @@ export function NewHomePage() {
       <SecuritySection />
       <ComingSoonSection />
       <StatsCtaSection />
-      <Footer />
     </main>
   );
 }

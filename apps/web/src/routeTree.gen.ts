@@ -16,6 +16,7 @@ import { Route as publicHomePageRouteImport } from './routes/(public)/home-page'
 import { Route as authSignupRouteImport } from './routes/(auth)/signup'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as authenticatedSettingsRouteRouteImport } from './routes/(authenticated)/settings/route'
+import { Route as publicFeaturesSlugRouteImport } from './routes/(public)/features/$slug'
 import { Route as publicBpoSlugRouteImport } from './routes/(public)/bpo/$slug'
 import { Route as authenticatedOrgNewRouteImport } from './routes/(authenticated)/org/new'
 import { Route as authAcceptInvitationIdRouteImport } from './routes/(auth)/accept-invitation.$id'
@@ -82,6 +83,11 @@ const authenticatedSettingsRouteRoute =
     path: '/settings',
     getParentRoute: () => authenticatedRouteRoute,
   } as any)
+const publicFeaturesSlugRoute = publicFeaturesSlugRouteImport.update({
+  id: '/features/$slug',
+  path: '/features/$slug',
+  getParentRoute: () => publicRouteRoute,
+} as any)
 const publicBpoSlugRoute = publicBpoSlugRouteImport.update({
   id: '/bpo/$slug',
   path: '/bpo/$slug',
@@ -286,6 +292,7 @@ export interface FileRoutesByFullPath {
   '/accept-invitation/$id': typeof authAcceptInvitationIdRoute
   '/org/new': typeof authenticatedOrgNewRoute
   '/bpo/$slug': typeof publicBpoSlugRoute
+  '/features/$slug': typeof publicFeaturesSlugRoute
   '/org/$slug/console': typeof authenticatedOrgSlugConsoleRouteRouteWithChildren
   '/org/$slug/manage': typeof authenticatedOrgSlugManageRouteRouteWithChildren
   '/org/$slug/workspace': typeof authenticatedOrgSlugWorkspaceRouteRouteWithChildren
@@ -324,6 +331,7 @@ export interface FileRoutesByTo {
   '/accept-invitation/$id': typeof authAcceptInvitationIdRoute
   '/org/new': typeof authenticatedOrgNewRoute
   '/bpo/$slug': typeof publicBpoSlugRoute
+  '/features/$slug': typeof publicFeaturesSlugRoute
   '/settings/account/notifications': typeof authenticatedSettingsAccountNotificationsRoute
   '/settings/account/preferences': typeof authenticatedSettingsAccountPreferencesRoute
   '/settings/account/profile': typeof authenticatedSettingsAccountProfileRoute
@@ -360,6 +368,7 @@ export interface FileRoutesById {
   '/(auth)/accept-invitation/$id': typeof authAcceptInvitationIdRoute
   '/(authenticated)/org/new': typeof authenticatedOrgNewRoute
   '/(public)/bpo/$slug': typeof publicBpoSlugRoute
+  '/(public)/features/$slug': typeof publicFeaturesSlugRoute
   '/(authenticated)/org/$slug/console': typeof authenticatedOrgSlugConsoleRouteRouteWithChildren
   '/(authenticated)/org/$slug/manage': typeof authenticatedOrgSlugManageRouteRouteWithChildren
   '/(authenticated)/org/$slug/workspace': typeof authenticatedOrgSlugWorkspaceRouteRouteWithChildren
@@ -400,6 +409,7 @@ export interface FileRouteTypes {
     | '/accept-invitation/$id'
     | '/org/new'
     | '/bpo/$slug'
+    | '/features/$slug'
     | '/org/$slug/console'
     | '/org/$slug/manage'
     | '/org/$slug/workspace'
@@ -438,6 +448,7 @@ export interface FileRouteTypes {
     | '/accept-invitation/$id'
     | '/org/new'
     | '/bpo/$slug'
+    | '/features/$slug'
     | '/settings/account/notifications'
     | '/settings/account/preferences'
     | '/settings/account/profile'
@@ -473,6 +484,7 @@ export interface FileRouteTypes {
     | '/(auth)/accept-invitation/$id'
     | '/(authenticated)/org/new'
     | '/(public)/bpo/$slug'
+    | '/(public)/features/$slug'
     | '/(authenticated)/org/$slug/console'
     | '/(authenticated)/org/$slug/manage'
     | '/(authenticated)/org/$slug/workspace'
@@ -560,6 +572,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/settings'
       preLoaderRoute: typeof authenticatedSettingsRouteRouteImport
       parentRoute: typeof authenticatedRouteRoute
+    }
+    '/(public)/features/$slug': {
+      id: '/(public)/features/$slug'
+      path: '/features/$slug'
+      fullPath: '/features/$slug'
+      preLoaderRoute: typeof publicFeaturesSlugRouteImport
+      parentRoute: typeof publicRouteRoute
     }
     '/(public)/bpo/$slug': {
       id: '/(public)/bpo/$slug'
@@ -976,12 +995,14 @@ interface publicRouteRouteChildren {
   publicHomePageRoute: typeof publicHomePageRoute
   publicIndexRoute: typeof publicIndexRoute
   publicBpoSlugRoute: typeof publicBpoSlugRoute
+  publicFeaturesSlugRoute: typeof publicFeaturesSlugRoute
 }
 
 const publicRouteRouteChildren: publicRouteRouteChildren = {
   publicHomePageRoute: publicHomePageRoute,
   publicIndexRoute: publicIndexRoute,
   publicBpoSlugRoute: publicBpoSlugRoute,
+  publicFeaturesSlugRoute: publicFeaturesSlugRoute,
 }
 
 const publicRouteRouteWithChildren = publicRouteRoute._addFileChildren(
