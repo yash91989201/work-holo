@@ -161,6 +161,7 @@ export const messageRouter = {
             content: input.content,
             type: input.type,
             parentMessageId: input.parentMessageId,
+            replyToMessageId: input.replyToMessageId,
             senderId: user.id,
           })
           .returning();
