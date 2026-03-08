@@ -97,6 +97,7 @@ export const messageTable = pgTable(
     content: text(),
     type: messageTypeEnum().notNull().default("text"),
     parentMessageId: cuid2(),
+    replyToMessageId: cuid2(),
     threadCount: integer().default(0).notNull(),
     isEdited: boolean().default(false).notNull(),
     editedAt: timestamp({ withTimezone: true }),
@@ -121,7 +122,13 @@ export const messageTable = pgTable(
       foreignColumns: [table.id],
       name: "fk_message_parent",
     }).onDelete("cascade"),
+    foreignKey({
+      columns: [table.replyToMessageId],
+      foreignColumns: [table.id],
+      name: "fk_message_reply_to",
+    }).onDelete("set null"),
     index("idx_message_parent_message_id").on(table.parentMessageId),
+    index("idx_message_reply_to").on(table.replyToMessageId),
     index("idx_message_is_deleted").on(table.isDeleted),
     index("idx_message_channel_id").on(table.channelId),
     index("idx_message_channel_deleted").on(table.channelId, table.isDeleted),
@@ -316,6 +323,10 @@ export const messageTableRelations = relations(
     }),
     parentMessage: one(messageTable, {
       fields: [messageTable.parentMessageId],
+      references: [messageTable.id],
+    }),
+    replyToMessage: one(messageTable, {
+      fields: [messageTable.replyToMessageId],
       references: [messageTable.id],
     }),
     pinnedBy: one(user, {
