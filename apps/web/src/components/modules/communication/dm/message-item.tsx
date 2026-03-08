@@ -131,8 +131,8 @@ export function DmMessageItem({
   const { messageId, openMessageThread, closeMessageThread } =
     useDmMessageThreadSidebar();
 
-  const { setReplyingToMessage } = useDmReplyState();
-const { highlightMessage } = useDmMessageHighlight();
+const { setReplyingToMessage } = useDmReplyState();
+  const { highlightMessage } = useDmMessageHighlight();
   const { setReplyingToMessage: setThreadReplyingToMessage } =
     useDmThreadReplyState();
   const { focusMainComposer, focusThreadComposer } = useDmComposerFocus();
