@@ -3,9 +3,15 @@ import {
   IconPencil,
   IconPinFilled,
 } from "@tabler/icons-react";
+import { eq, useLiveQuery } from "@tanstack/react-db";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  dmAttachmentsCollection,
+  dmMessagesCollection,
+  usersCollection,
+} from "@/db/collections";
 import { useDmMessageMutations } from "@/hooks/communications/dm/use-dm-message-mutations";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import type { DmMessageWithSender } from "@/lib/communications/dm-message";
@@ -95,6 +101,49 @@ export function DmMessageItem({
     openMessageThread(parentMessageId);
   };
 
+  const { data: repliedToMessages = [] } = useLiveQuery(
+    (q) =>
+      q
+        .from({ msg: dmMessagesCollection })
+        .innerJoin({ sender: usersCollection }, ({ msg, sender }) =>
+          eq(msg.senderId, sender.id)
+        )
+        .where(({ msg }) => eq(msg.id, message.replyToMessageId ?? ""))
+        .select(({ msg, sender }) => ({
+          id: msg.id,
+          content: msg.content,
+          senderName: sender.name,
+          isDeleted: msg.isDeleted,
+          type: msg.type,
+        })),
+    [message.replyToMessageId]
+  );
+
+  const { data: repliedToAttachments = [] } = useLiveQuery(
+    (q) =>
+      q
+        .from({ attachment: dmAttachmentsCollection })
+        .where(({ attachment }) =>
+          eq(attachment.messageId, message.replyToMessageId ?? "")
+        )
+        .select(({ attachment }) => ({ id: attachment.id })),
+    [message.replyToMessageId]
+  );
+
+  const repliedToMessage = repliedToMessages[0] ?? null;
+  const hasReplyAttachments = repliedToAttachments.length > 0;
+
+  const getReplyPreviewText = () => {
+    if (!repliedToMessage) return null;
+    if (repliedToMessage.content && repliedToMessage.content.length > 0) {
+      return repliedToMessage.content.length > 80
+        ? `${repliedToMessage.content.slice(0, 80)}…`
+        : repliedToMessage.content;
+    }
+    if (hasReplyAttachments) return "📎 Attachment";
+    return null;
+  };
+
   return (
     <div
       className={cn(
@@ -170,6 +219,27 @@ export function DmMessageItem({
         </div>
 
         <div className="relative w-full">
+          {message.replyToMessageId &&
+            (repliedToMessage && !repliedToMessage.isDeleted ? (
+              <button
+                className="mb-1 w-full cursor-pointer rounded-md border-primary/60 border-l-[3px] bg-muted/60 px-3 py-1.5 text-left transition-colors hover:bg-muted"
+                type="button"
+              >
+                <p className="font-medium text-primary/80 text-xs">
+                  {repliedToMessage.senderName}
+                </p>
+                <p className="truncate text-muted-foreground text-xs">
+                  {getReplyPreviewText()}
+                </p>
+              </button>
+            ) : (
+              <div className="mb-1 rounded-md border-muted-foreground/30 border-l-[3px] bg-muted/40 px-3 py-1.5">
+                <p className="text-muted-foreground text-xs italic">
+                  Original message was deleted
+                </p>
+              </div>
+            ))}
+
           <DmMessageContent isOwnMessage={isOwnMessage} message={message} />
 
           <div
