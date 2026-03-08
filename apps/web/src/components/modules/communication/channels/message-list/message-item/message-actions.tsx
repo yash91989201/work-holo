@@ -1,5 +1,6 @@
 import {
   IconArrowBackUp,
+  IconArrowForwardUp,
   IconEdit,
   IconMoodPlus,
   IconPinFilled,
@@ -42,6 +43,7 @@ interface MessageActionsProps {
   isPinned: boolean;
   onDelete: () => void;
   onEdit: () => void;
+  onInlineReply?: () => void;
   onPin: () => void;
   onReact: (emoji: string) => void;
   onReply: () => void;
@@ -54,6 +56,7 @@ export function MessageActions({
   isPinned,
   canReply,
   onEdit,
+  onInlineReply,
   onReply,
   onDelete,
   onPin,
@@ -105,6 +108,18 @@ export function MessageActions({
             {emoji}
           </Button>
         ))}
+
+        {canReply && onInlineReply && (
+          <Button
+            aria-label="Reply inline"
+            onClick={onInlineReply}
+            size="icon-sm"
+            title="Reply inline"
+            variant="ghost"
+          >
+            <IconArrowForwardUp className="h-3.5 w-3.5" />
+          </Button>
+        )}
 
         {canReply && (
           <Button
