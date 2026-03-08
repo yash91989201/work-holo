@@ -1,4 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
+import type { DmMessageType } from "@work-holo/db/lib/types";
 import { useMemo } from "react";
 import { create } from "zustand";
 import { useDmPresence } from "@/hooks/communications/dm/use-dm-presence";
