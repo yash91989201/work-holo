@@ -66,6 +66,7 @@ export const dmMessageTable = pgTable(
     content: text(),
     type: messageTypeEnum().notNull().default("text"),
     parentMessageId: cuid2(),
+    replyToMessageId: cuid2(),
     threadCount: integer().default(0).notNull(),
     isEdited: boolean().default(false).notNull(),
     editedAt: timestamp({ withTimezone: true }),
@@ -88,6 +89,11 @@ export const dmMessageTable = pgTable(
       foreignColumns: [table.id],
       name: "fk_dm_message_parent",
     }).onDelete("cascade"),
+    foreignKey({
+      columns: [table.replyToMessageId],
+      foreignColumns: [table.id],
+      name: "fk_dm_message_reply_to",
+    }).onDelete("set null"),
     index("idx_dm_message_conversation").on(table.conversationId),
     index("idx_dm_message_conversation_created_id").on(
       table.conversationId,
@@ -96,6 +102,7 @@ export const dmMessageTable = pgTable(
     ),
     index("idx_dm_message_sender").on(table.senderId),
     index("idx_dm_message_parent").on(table.parentMessageId),
+    index("idx_dm_message_reply_to").on(table.replyToMessageId),
     index("idx_dm_message_is_deleted").on(table.isDeleted),
   ]
 );
@@ -260,6 +267,10 @@ export const dmMessageTableRelations = relations(
     }),
     parentMessage: one(dmMessageTable, {
       fields: [dmMessageTable.parentMessageId],
+      references: [dmMessageTable.id],
+    }),
+    replyToMessage: one(dmMessageTable, {
+      fields: [dmMessageTable.replyToMessageId],
       references: [dmMessageTable.id],
     }),
     pinnedBy: one(user, {

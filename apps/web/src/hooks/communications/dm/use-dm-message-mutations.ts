@@ -44,6 +44,7 @@ export function useDmMessageMutations() {
         content: message.content ?? null,
         type: message.type ?? "text",
         parentMessageId: message.parentMessageId ?? null,
+        replyToMessageId: null,
         isEdited: false,
         isDeleted: false,
         createdAt: now,
