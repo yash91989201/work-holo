@@ -1,3 +1,4 @@
+import { IconArrowBackUp, IconX } from "@tabler/icons-react";
 import { useAsyncDebouncer } from "@tanstack/react-pacer";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -7,7 +8,10 @@ import { useAudioRecorder } from "@/hooks/use-audio-recorder";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { CHANNEL_MENTION, CHANNEL_MENTION_ID } from "@/lib/mentions";
 import { cn } from "@/lib/utils";
-import { useMaximizedMessageComposerActions } from "@/stores/channel-store";
+import {
+  useChannelReplyState,
+  useMaximizedMessageComposerActions,
+} from "@/stores/channel-store";
 import { orpcClient } from "@/utils/orpc";
 import { uploadToStorage } from "@/utils/upload-helper";
 import { AttachmentPreviewList } from "./attachment-preview-list";
@@ -68,6 +72,7 @@ export function MessageComposer({
   const [attachments, setAttachments] = useState<AttachmentPreview[]>([]);
   const [composerView, setComposerView] = useState<ComposerView>("editor");
   const { openMaximizedMessageComposer } = useMaximizedMessageComposerActions();
+  const { replyingToMessage, clearReplyingToMessage } = useChannelReplyState();
 
   const {
     isRecording,
@@ -200,6 +205,7 @@ export function MessageComposer({
     setAttachments([]);
     cancelRecording();
     broadcastTyping(false, user.name);
+    clearReplyingToMessage();
 
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
@@ -317,6 +323,7 @@ export function MessageComposer({
         mentions:
           mentionUserIds.size > 0 ? Array.from(mentionUserIds) : undefined,
         parentMessageId,
+        replyToMessageId: replyingToMessage?.id ?? undefined,
         type: messageType,
         attachments:
           uploadedAttachments.length > 0 ? uploadedAttachments : undefined,
@@ -340,6 +347,8 @@ export function MessageComposer({
     user.name,
     user.id,
     parentMessageId,
+    replyingToMessage?.id,
+    clearReplyingToMessage,
     onSendSuccess,
     cancelRecording,
   ]);
@@ -462,6 +471,19 @@ export function MessageComposer({
     setText(initialContent);
   }, [initialContent]);
 
+  useEffect(() => {
+    if (!replyingToMessage) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        clearReplyingToMessage();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [replyingToMessage, clearReplyingToMessage]);
+
   return (
     <>
       <input
@@ -481,6 +503,27 @@ export function MessageComposer({
       >
         <div className="min-w-0">
           <div className="relative min-w-0">
+            {replyingToMessage && !parentMessageId && (
+              <div className="flex items-center gap-2 border-b px-4 py-2 text-sm">
+                <IconArrowBackUp className="h-4 w-4 shrink-0 text-muted-foreground" />
+                <span className="font-medium">
+                  Replying to {replyingToMessage.sender?.name ?? "Unknown"}
+                </span>
+                <span className="truncate text-muted-foreground">
+                  {replyingToMessage.content
+                    ? replyingToMessage.content.slice(0, 100)
+                    : "📎 Attachment"}
+                </span>
+                <button
+                  className="ml-auto shrink-0 rounded p-0.5 hover:bg-muted"
+                  onClick={clearReplyingToMessage}
+                  type="button"
+                >
+                  <IconX className="h-4 w-4 text-muted-foreground" />
+                </button>
+              </div>
+            )}
+
             {typingUsers.length > 0 && (
               <div className="border-b px-4 py-2">
                 <TypingIndicator typingUsers={typingUsers} />

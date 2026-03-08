@@ -1,3 +1,4 @@
+import { IconX } from "@tabler/icons-react";
 import { eq, useLiveQuery } from "@tanstack/react-db";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -6,8 +7,12 @@ import { useDmMessageMutations } from "@/hooks/communications/dm/use-dm-message-
 import { useDmTyping } from "@/hooks/communications/dm/use-dm-typing";
 import { useAudioRecorder } from "@/hooks/use-audio-recorder";
 import { useAuthedSession } from "@/hooks/use-authed-session";
+import type { DmMessageWithSender } from "@/lib/communications/dm-message";
 import { cn } from "@/lib/utils";
-import { useMaximizedDmMessageComposerActions } from "@/stores/dm-store";
+import {
+  useDmReplyState,
+  useMaximizedDmMessageComposerActions,
+} from "@/stores/dm-store";
 import { orpcClient } from "@/utils/orpc";
 import { uploadToStorage } from "@/utils/upload-helper";
 import { DmAttachmentPreviewList } from "./attachment-preview-list";
@@ -61,6 +66,7 @@ export function DmMessageComposer({
   >("editor");
   const { openMaximizedMessageComposer } =
     useMaximizedDmMessageComposerActions();
+  const { replyingToMessage, clearReplyingToMessage } = useDmReplyState();
 
   const {
     isRecording,
@@ -136,13 +142,13 @@ export function DmMessageComposer({
     setAttachments([]);
     cancelRecording();
     broadcastTyping(false, user.name);
+    clearReplyingToMessage();
 
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
     }
 
     try {
-      // Determine message type
       let messageType: "text" | "attachment" | "audio" = "text";
       if (!textToSend && audioBlobToUpload) {
         messageType = "audio";
@@ -150,7 +156,6 @@ export function DmMessageComposer({
         messageType = "attachment";
       }
 
-      // Upload attachments and audio in parallel
       const uploadPromises: Promise<MessageAttachment>[] = [];
 
       if (attachmentsToUpload.length > 0) {
@@ -220,6 +225,7 @@ export function DmMessageComposer({
         conversationId,
         content: textToSend,
         parentMessageId,
+        replyToMessageId: replyingToMessage?.id ?? undefined,
         type: messageType,
         attachments:
           uploadedAttachments.length > 0 ? uploadedAttachments : undefined,
@@ -242,6 +248,8 @@ export function DmMessageComposer({
     broadcastTyping,
     user.name,
     parentMessageId,
+    replyingToMessage,
+    clearReplyingToMessage,
     onSendSuccess,
     cancelRecording,
   ]);
@@ -362,6 +370,29 @@ export function DmMessageComposer({
     setText(initialContent);
   }, [initialContent]);
 
+  useEffect(() => {
+    if (!replyingToMessage) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        clearReplyingToMessage();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [replyingToMessage, clearReplyingToMessage]);
+
+  // Store typed as DmMessageType but runtime value includes sender from DmMessageWithSender
+  const replyMessage = replyingToMessage as DmMessageWithSender | null;
+  const getReplyPreviewContent = () => {
+    if (!replyMessage?.content) return "📎 Attachment";
+    if (replyMessage.content.length > 100) {
+      return `${replyMessage.content.slice(0, 100)}…`;
+    }
+    return replyMessage.content;
+  };
+
   return (
     <>
       <input
@@ -384,6 +415,26 @@ export function DmMessageComposer({
             {typingUsers.length > 0 && (
               <div className="border-b px-4 py-2">
                 <DmTypingIndicator typingUsers={typingUsers} />
+              </div>
+            )}
+
+            {replyMessage && (
+              <div className="mb-1 flex items-center gap-2 rounded-sm border-primary border-l-2 bg-muted/50 px-3 py-2">
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium text-primary text-xs">
+                    Replying to {replyMessage.sender?.name ?? "Unknown"}
+                  </p>
+                  <p className="truncate text-muted-foreground text-xs">
+                    {getReplyPreviewContent()}
+                  </p>
+                </div>
+                <button
+                  className="shrink-0 rounded-sm p-0.5 text-muted-foreground hover:bg-muted hover:text-foreground"
+                  onClick={clearReplyingToMessage}
+                  type="button"
+                >
+                  <IconX size={14} />
+                </button>
               </div>
             )}
 
