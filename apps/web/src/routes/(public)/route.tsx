@@ -4,10 +4,8 @@ import {
   useRouterState,
 } from "@tanstack/react-router";
 import { LandingHeader } from "@/components/landing/landing-header";
-import { FullScreenLoader } from "@/components/shared/full-screen-loader";
 
 export const Route = createFileRoute("/(public)")({
-  pendingComponent: () => <FullScreenLoader />,
   component: RouteComponent,
 });
 

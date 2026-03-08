@@ -88,6 +88,7 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
       ],
     };
   },
+  pendingMs: 800,
   pendingComponent: () => <FullScreenLoader />,
   component: RootComponent,
 });

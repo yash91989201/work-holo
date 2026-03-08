@@ -440,9 +440,9 @@ export function LandingHeader() {
                         <ul className="space-y-4">
                           {category.items.map((item) => (
                             <li key={item.href}>
-                              <a
+                              <Link
                                 className="group block"
-                                href={item.href}
+                                to={item.href as any}
                                 onClick={() => setActiveDropdown(null)}
                               >
                                 <div className="font-semibold text-foreground text-sm transition-colors group-hover:text-[#6366f1]">
@@ -451,7 +451,7 @@ export function LandingHeader() {
                                 <div className="mt-0.5 text-foreground/60 text-xs">
                                   {item.desc}
                                 </div>
-                              </a>
+                              </Link>
                             </li>
                           ))}
                         </ul>
@@ -471,9 +471,9 @@ export function LandingHeader() {
                         <ul className="space-y-4">
                           {category.items.map((item) => (
                             <li key={item.href}>
-                              <a
+                              <Link
                                 className="group block"
-                                href={item.href}
+                                to={item.href as any}
                                 onClick={() => setActiveDropdown(null)}
                               >
                                 <div className="font-semibold text-foreground text-sm transition-colors group-hover:text-[#6366f1]">
@@ -482,7 +482,7 @@ export function LandingHeader() {
                                 <div className="mt-0.5 text-foreground/60 text-xs">
                                   {item.desc}
                                 </div>
-                              </a>
+                              </Link>
                             </li>
                           ))}
                         </ul>
@@ -501,9 +501,9 @@ export function LandingHeader() {
                       <ul className="space-y-4">
                         {category.items.map((item) => (
                           <li key={item.href}>
-                            <a
+                            <Link
                               className="group block"
-                              href={item.href}
+                              to={item.href as any}
                               onClick={() => setActiveDropdown(null)}
                             >
                               <div className="font-semibold text-foreground text-sm transition-colors group-hover:text-[#6366f1]">
@@ -512,7 +512,7 @@ export function LandingHeader() {
                               <div className="mt-0.5 text-foreground/60 text-xs">
                                 {item.desc}
                               </div>
-                            </a>
+                            </Link>
                           </li>
                         ))}
                       </ul>
@@ -526,9 +526,9 @@ export function LandingHeader() {
                     <div className="mb-4 font-bold text-foreground/80 text-xs uppercase tracking-wider">
                       Workholo Marketplace
                     </div>
-                    <a
+                    <Link
                       className="group mb-4 block"
-                      href="/marketplace"
+                      to={"/marketplace" as any}
                       onClick={() => setActiveDropdown(null)}
                     >
                       <div className="relative mb-4 flex aspect-[16/10] w-full items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-blue-900 via-[#10245e] to-[#040e29] shadow-sm transition-transform group-hover:scale-[1.02]">
@@ -545,44 +545,44 @@ export function LandingHeader() {
                         Browse marketplace{" "}
                         <span aria-hidden="true">&rarr;</span>
                       </span>
-                    </a>
+                    </Link>
                   </div>
 
                   <div className="space-y-4 pb-1">
-                    <a
+                    <Link
                       className="block font-semibold text-foreground/80 text-sm transition-colors hover:text-[#6366f1]"
-                      href="/what-is-workholo"
+                      to={"/what-is-workholo" as any}
                       onClick={() => setActiveDropdown(null)}
                     >
                       What is Workholo?
-                    </a>
-                    <a
+                    </Link>
+                    <Link
                       className="block font-semibold text-foreground/80 text-sm transition-colors hover:text-[#6366f1]"
-                      href="/workholo-vs-email"
+                      to={"/workholo-vs-email" as any}
                       onClick={() => setActiveDropdown(null)}
                     >
                       Workholo vs email
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>
 
               {/* Footer links under Col 1 & 2 */}
               <div className="mt-6 flex items-center gap-6 border-border/60 border-t pt-4">
-                <a
+                <Link
                   className="font-semibold text-[#6366f1] text-sm transition-colors hover:text-[#4f52c1]"
-                  href="/demo"
+                  to={"/demo" as any}
                   onClick={() => setActiveDropdown(null)}
                 >
                   Watch demo
-                </a>
-                <a
+                </Link>
+                <Link
                   className="font-semibold text-[#6366f1] text-sm transition-colors hover:text-[#4f52c1]"
-                  href="/download"
+                  to={"/download" as any}
                   onClick={() => setActiveDropdown(null)}
                 >
                   Download Workholo
-                </a>
+                </Link>
               </div>
             </div>
           </div>
@@ -640,16 +640,16 @@ export function LandingHeader() {
                           <ul className="space-y-1.5">
                             {category.items.map((subItem) => (
                               <li key={subItem.href}>
-                                <a
+                                <Link
                                   className="block rounded-md py-1.5 text-foreground/60 text-sm transition-colors hover:text-[#6366f1]"
-                                  href={subItem.href}
+                                  to={subItem.href as any}
                                   onClick={() => {
                                     setMobileMenuOpen(false);
                                     setMobileFeaturesOpen(false);
                                   }}
                                 >
                                   {subItem.label}
-                                </a>
+                                </Link>
                               </li>
                             ))}
                           </ul>
@@ -729,7 +729,7 @@ export function LandingHeader() {
                   className="flex items-center justify-between rounded-md px-4 py-2.5 text-base text-foreground/70 transition-colors hover:bg-muted hover:text-foreground"
                   key={item.label}
                   onClick={() => setMobileMenuOpen(false)}
-                  to={item.href}
+                  to={item.href as any}
                 >
                   {item.label}
                   {item.hasDropdown && (

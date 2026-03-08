@@ -3,6 +3,7 @@ import { FeaturePageTemplate } from "@/components/landing/Features/TeamChannel/f
 import { getFeaturePageBySlug } from "@/components/landing/Features/TeamChannel/feature-page-data";
 import { MessagingPage } from "@/components/landing/Features/DIrectMessaging/messaging-page";
 import { RealTimePage } from "@/components/landing/Features/RealTimeMessaging/real-time-page";
+import { MessageHistoryPage } from "@/components/landing/Features/MessageHistory/history-page";
 
 export const Route = createFileRoute("/(public)/features/$slug")({
   component: FeaturePage,
@@ -19,6 +20,11 @@ function FeaturePage() {
   // Real Time Messaging has its own unique page
   if (slug === "real-time" || slug === "real-time-messaging") {
     return <RealTimePage />;
+  }
+
+  // Message History has its own unique page
+  if (slug === "message-history") {
+    return <MessageHistoryPage />;
   }
 
   // All other features use the TeamChannel template
