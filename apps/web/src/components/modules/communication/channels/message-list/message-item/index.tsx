@@ -62,7 +62,7 @@ function ReplyPreview({
           senderName: sender.name,
           isDeleted: message.isDeleted,
           deletedAt: message.deletedAt,
-          attachmentId: attachment.id,
+          attachmentId: attachment?.id ?? null,
         })),
     [replyToMessageId]
   );
