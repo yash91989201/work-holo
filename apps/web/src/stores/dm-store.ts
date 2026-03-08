@@ -1,4 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
+import type { DmMessageType } from "@work-holo/db/lib/types";
 import { useMemo } from "react";
 import { create } from "zustand";
 import { useDmPresence } from "@/hooks/communications/dm/use-dm-presence";
@@ -47,8 +48,13 @@ interface HighlightedMessageState {
   triggeredAt: number | null;
 }
 
+interface ReplyingToMessageState {
+  message: DmMessageType | null;
+}
+
 interface DmState {
   clearHighlightedMessage: () => void;
+  clearReplyingToMessage: () => void;
   closeInfoSidebar: () => void;
   closeMaximizedMessageComposer: () => void;
   closeMessageThread: () => void;
@@ -65,6 +71,8 @@ interface DmState {
   openMessageThread: (messageId: string) => void;
   openPinnedMessages: () => void;
   pinnedMessages: PinnedMessagesState;
+  replyingToMessage: ReplyingToMessageState;
+  setReplyingToMessage: (message: DmMessageType) => void;
 }
 
 interface OpenMaximizedMessageComposerConfig {
@@ -89,6 +97,9 @@ const useDmStore = create<DmState>((set) => ({
   highlightedMessage: {
     messageId: null,
     triggeredAt: null,
+  },
+  replyingToMessage: {
+    message: null,
   },
   messageThread: {
     messageId: null,
@@ -129,6 +140,14 @@ const useDmStore = create<DmState>((set) => ({
   clearHighlightedMessage: () =>
     set({
       highlightedMessage: { messageId: null, triggeredAt: null },
+    }),
+  setReplyingToMessage: (message) =>
+    set({
+      replyingToMessage: { message },
+    }),
+  clearReplyingToMessage: () =>
+    set({
+      replyingToMessage: { message: null },
     }),
 }));
 
@@ -212,6 +231,24 @@ export function useDmMessageHighlight() {
     highlightedAt,
     highlightMessage,
     clearHighlightedMessage,
+  };
+}
+
+export function useDmReplyState() {
+  const replyingToMessage = useDmStore(
+    (state) => state.replyingToMessage.message
+  );
+  const setReplyingToMessage = useDmStore(
+    (state) => state.setReplyingToMessage
+  );
+  const clearReplyingToMessage = useDmStore(
+    (state) => state.clearReplyingToMessage
+  );
+
+  return {
+    replyingToMessage,
+    setReplyingToMessage,
+    clearReplyingToMessage,
   };
 }
 
