@@ -319,11 +319,13 @@ export function useDmReplyState() {
   const clearReplyingToMessage = useDmStore(
     (state) => state.clearReplyingToMessage
   );
+  const highlightMessage = useDmStore((state) => state.highlightMessage);
 
   return {
     replyingToMessage,
     setReplyingToMessage,
     clearReplyingToMessage,
+    highlightMessage,
   };
 }
 
