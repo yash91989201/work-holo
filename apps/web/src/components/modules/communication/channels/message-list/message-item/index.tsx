@@ -7,6 +7,7 @@ import {
 import { eq, useLiveQuery } from "@tanstack/react-db";
 import type { MessageWithSenderType } from "@work-holo/api/lib/types";
 import { useMemo } from "react";
+import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,7 @@ import { useAuthedSession } from "@/hooks/use-authed-session";
 import type { MessageWithSender } from "@/lib/communications/message";
 import { cn, formatMessageTimestamp } from "@/lib/utils";
 import {
+  useChannelMessageHighlight,
   useChannelReplyState,
   useMaximizedMessageComposerActions,
   useMentionsSidebar,
@@ -44,6 +46,8 @@ function ReplyPreview({
   replyToMessageId: string;
   isOwnMessage: boolean;
 }) {
+  const { highlightMessage } = useChannelMessageHighlight();
+
   const { data: replyRows } = useLiveQuery(
     (q) =>
       q
@@ -86,6 +90,24 @@ function ReplyPreview({
     };
   }, [replyRows]);
 
+  const handleReplyPreviewClick = () => {
+    const targetElement = document.querySelector(
+      `[data-message-id="${replyToMessageId}"]`
+    );
+
+    if (!targetElement) {
+      toast.error("Message not found in view");
+      return;
+    }
+
+    (targetElement as HTMLElement).scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
+
+    highlightMessage(replyToMessageId);
+  };
+
   if (!replyData || replyData.isDeleted) {
     return (
       <button
@@ -115,6 +137,7 @@ function ReplyPreview({
         "flex max-w-full cursor-pointer items-center gap-2 rounded-md border-primary/60 border-l-2 bg-muted/60 px-3 py-1.5 text-left transition-colors hover:bg-muted",
         isOwnMessage && "ml-auto"
       )}
+      onClick={handleReplyPreviewClick}
       type="button"
     >
       <div className="min-w-0 flex-1">

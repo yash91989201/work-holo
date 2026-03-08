@@ -54,7 +54,7 @@ export function DmMessageItem({
   const { messageId, openMessageThread, closeMessageThread } =
     useDmMessageThreadSidebar();
 
-  const { setReplyingToMessage } = useDmReplyState();
+  const { setReplyingToMessage, highlightMessage } = useDmReplyState();
 
   const isMessageThreadActive = messageId === message.id;
 
