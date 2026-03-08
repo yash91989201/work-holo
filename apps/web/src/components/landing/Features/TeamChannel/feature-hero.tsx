@@ -19,6 +19,8 @@ interface FeatureHeroProps {
   bgClass?: string;
   /** Optional ReactNode to render in the hero right column (overrides default) */
   heroMockup?: ReactNode;
+  heroLinksTitle?: string;
+  heroLinks?: { text: string; href: string }[];
 }
 
 /**
@@ -40,6 +42,8 @@ export function FeatureHero({
   hasPlayButton,
   bgClass,
   heroMockup,
+  heroLinksTitle,
+  heroLinks,
 }: FeatureHeroProps) {
   if (layout === "image-right" || layout === "media-preview-badges" || layout === "drag-drop-badges" || layout === "user-management-hero") {
     return (
@@ -68,27 +72,39 @@ export function FeatureHero({
                 <div className="mt-8 flex flex-col items-start space-y-8">
                   <div>
                     <p className="text-sm font-semibold text-foreground mb-4">
-                      Learn how administrators manage users by:
+                      {heroLinksTitle || "Learn how administrators manage users by:"}
                     </p>
                     <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-                      {["ADDING USERS", "MANAGING PERMISSIONS", "ORGANISING ROLES"].map((item) => (
-                        <div key={item} className="flex items-center gap-2">
+                      {(heroLinks || [
+                        { text: "ADDING USERS", href: "#" },
+                        { text: "MANAGING PERMISSIONS", href: "#" },
+                        { text: "ORGANISING ROLES", href: "#" },
+                      ]).map((item) => (
+                        <div key={item.text} className="flex items-center gap-2">
                           <div className="flex size-4 items-center justify-center rounded-full bg-gray-100">
                             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-gray-600"><path d="M20 6 9 17l-5-5"/></svg>
                           </div>
-                          <span className="text-xs font-bold tracking-wider text-foreground underline decoration-1 underline-offset-4">{item}</span>
+                          <span className="text-xs font-bold tracking-wider text-foreground underline decoration-1 underline-offset-4 uppercase">{item.text}</span>
                         </div>
                       ))}
                     </div>
                   </div>
 
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="h-12 rounded-sm border-2 border-black px-8 text-sm font-bold tracking-wide flex items-center justify-center bg-transparent text-black"
-                  >
-                    TALK TO SALES
-                  </Button>
+                  <div className="flex items-center gap-4">
+                    <Button
+                      size="lg"
+                      className="h-12 rounded-sm bg-[#7C5CFF] px-8 text-xs font-bold uppercase tracking-wider text-white hover:bg-[#6a4de6]"
+                    >
+                      {ctaPrimary}
+                    </Button>
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="h-12 rounded-sm border-2 border-[#7C5CFF] bg-transparent px-8 text-xs font-bold uppercase tracking-wider text-[#7C5CFF] hover:bg-[#7C5CFF]/5"
+                    >
+                      {ctaSecondary}
+                    </Button>
+                  </div>
                 </div>
               )}
 

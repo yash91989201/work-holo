@@ -22,6 +22,19 @@ import {
   RbacTabletImageMockup,
   RbacVideoMockup,
 } from "../RoleBasedAccess/rbac-mockups";
+import {
+  WorkspaceHeroMockup,
+  WorkspaceTeamsMockup,
+} from "../WorkspaceControl/workspace-control-mockups";
+import {
+  AdminHeroMockup,
+  AdminChannelsMockup,
+  AdminMembersMockup,
+  AdminTriageMockup,
+  AdminCreateChannelMockup,
+  AdminAddMembersTemplateMockup,
+  AdminRemoveMembersTemplateMockup,
+} from "../AdminDashboard/admin-dashboard-mockups";
 import { LandingHeader } from "@/components/landing/landing-header";
 import { Footer } from "@/components/landing/footer";
 import type { FeaturePageData } from "./feature-page-data";
@@ -45,7 +58,17 @@ export function FeaturePageTemplate({ data }: FeaturePageTemplateProps) {
         imageAlt={data.heroImageAlt}
         hasPlayButton={data.heroHasPlayButton}
         bgClass={data.heroBgClass}
-        heroMockup={data.slug === "role-based-access" ? <RbacHeroMockup /> : undefined}
+        heroLinksTitle={data.heroLinksTitle}
+        heroLinks={data.heroLinks}
+        heroMockup={
+          data.slug === "role-based-access" ? (
+            <RbacHeroMockup />
+          ) : data.slug === "workspace-control" ? (
+            <WorkspaceHeroMockup />
+          ) : data.slug === "admin-dashboard" ? (
+            <AdminHeroMockup />
+          ) : undefined
+        }
       />
       {data.sections.map((section, i) => {
         // Inject coded UI mockups based on slug
@@ -65,6 +88,18 @@ export function FeaturePageTemplate({ data }: FeaturePageTemplateProps) {
               ? <RbacChannelMockup />
               : i === 3
               ? <RbacVideoMockup />
+              : undefined
+            : data.slug === "workspace-control"
+            ? i === 1
+              ? <WorkspaceTeamsMockup />
+              : undefined
+            : data.slug === "admin-dashboard"
+            ? i === 0
+              ? <AdminChannelsMockup />
+              : i === 1
+              ? <AdminMembersMockup />
+              : i === 2
+              ? <AdminTriageMockup />
               : undefined
             : undefined;
 
@@ -129,6 +164,12 @@ export function FeaturePageTemplate({ data }: FeaturePageTemplateProps) {
                   "feedback-tracker": <FeedbackTrackerMockup />,
                   "role-manager": <RoleManagerMockup />,
                   "admin-dashboard": <AdminDashboardMockup />,
+                }
+              : data.slug === "admin-dashboard"
+              ? {
+                  "create-channel": <AdminCreateChannelMockup />,
+                  "add-members": <AdminAddMembersTemplateMockup />,
+                  "remove-members": <AdminRemoveMembersTemplateMockup />,
                 }
               : undefined
           }

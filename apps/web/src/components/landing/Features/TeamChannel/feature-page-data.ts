@@ -54,6 +54,8 @@ export interface FeaturePageData {
   heroImageAlt?: string;
   heroHasPlayButton?: boolean;
   heroBgClass?: string;
+  heroLinksTitle?: string;
+  heroLinks?: { text: string; href: string }[];
   sections: FeatureSection[];
   statsHeadline?: string;
   statsSubtitle?: string;
@@ -521,42 +523,129 @@ const featurePages: FeaturePageData[] = [
   // ─── 11. Workspace Control ───
   {
     slug: "workspace-control",
-    category: "Team & Admin",
-    headingBefore: "Take charge of your",
-    headingHighlight: "entire workspace.",
-    subtitle: "Configure workspace-wide settings, branding, and policies from one centralized admin dashboard.",
+    category: "ORGANIZATION MANAGEMENT",
+    headingBefore: "Organize your work",
+    headingHighlight: "inside one Organization",
+    subtitle: "The owner can create an organization and manage channels, structured teams, and members. Keep everything of your Dialer Team App organized in one place.",
+    heroLinksTitle: "Learn how administrators manage users by:",
+    heroLinks: [
+      { text: "ADDING USERS", href: "#" },
+      { text: "MANAGING PERMISSIONS", href: "#" },
+      { text: "ORGANISING ROLES", href: "#" },
+    ],
     ctaPrimary: "Get Started",
-    ctaSecondary: "Admin Dashboard",
+    ctaSecondary: "Talk to Sales",
+    heroLayout: "user-management-hero" as const,
+    heroImageSrc: "https://images.unsplash.com/photo-1589182373726-e4f658ab50f0?w=600&q=80",
+    heroImageAlt: "Organization management",
+    heroBgClass: "bg-[#f5f0e8]",
     sections: [
-      { layout: "image-left", badge: "Configuration", heading: "One dashboard to rule them all.", description: "Manage workspace settings, branding, default channels, and organization policies from a single admin panel.", imageSrc: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80", imageAlt: "Dashboard", bgVariant: "white" },
-      { layout: "content-left", badge: "Branding", heading: "White-label your workspace.", description: "Customize logos, colours, and product name. Deliver a branded experience that feels like your own product.", imageSrc: "https://images.unsplash.com/photo-1545235617-9465d2a55698?w=800&q=80", imageAlt: "Branding", bgVariant: "gray" },
+      {
+        layout: "image-left" as const,
+        heading: "Create an organization for your team",
+        description: "Owners can create an organization to keep all channels, structured teams, and resources of your Dialer Team App in one place.",
+        imageSrc: "https://images.unsplash.com/photo-1587590227264-0ac64ce63ce8?w=800&q=80", // Machu Picchu
+        imageAlt: "Machu Picchu mist",
+        bgVariant: "white" as const,
+      },
+      {
+        layout: "content-left" as const,
+        heading: "Add channels and structured teams",
+        description: "Within an organization, channels can be created and members assigned to specific teams for organized collaboration.",
+        linkText: "Learn more about managing teams",
+        linkHref: "#",
+        imageSrc: "https://images.unsplash.com/photo-1543716627-839b56ec42e3?w=800&q=80", // Grand Central
+        imageAlt: "Busy station hall",
+        bgVariant: "white" as const,
+      },
+      {
+        layout: "image-left" as const,
+        heading: "Centralized work management",
+        description: "Keep all communications, tasks, and shared resources centralized inside your organization for better productivity and oversight.",
+        imageSrc: "https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=800&q=80", // Train tracks
+        imageAlt: "Train tracks at sunset",
+        bgVariant: "white" as const,
+      },
     ],
-    statsHeadline: "Centralized. Branded. Powerful.",
-    statsSubtitle: "Everything you need to manage your workspace in one place.",
+    statsHeadline: "Centralize your organization",
+    statsSubtitle: "Create an organization to structure channels, assign teams, and keep all resources of your Dialer Team App together in one centralized workspace.",
     stats: [
-      { iconPaths: ICON.settings, title: "Full Configuration", description: "Control every aspect of your workspace from a single settings panel." },
-      { iconPaths: ICON.image, title: "Custom Branding", description: "Logo, colours, and product name customization for white-label deployments." },
-      { iconPaths: ICON.shield, title: "Policy Controls", description: "Set organization-wide policies for security, messaging, and access." },
+      {
+        iconPaths: [
+          "M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z",
+        ],
+        title: "Create an organization",
+        description: "Owners can create an organization to keep all channels, teams, and resources under one roof.",
+        linkText: "Learn about organizations",
+      },
+      {
+        iconPaths: [
+          "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zm0 0V3m9 9H3",
+        ],
+        title: "Manage channels and teams",
+        description: "Inside the organization, channels and structured teams can be created for better collaboration.",
+      },
+      {
+        iconPaths: [
+          "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zm0 0V3m9 9H3m1-7.5l-2 2-2-2m-3 5l2 2 2-2",
+        ],
+        title: "Centralized work management",
+        description: "Keep all Dialer Team App resources, channels, and team communication organized in one place.",
+        linkText: "Get started with organizations",
+      },
     ],
+    resourceCardsHeadline: "Manage your organization efficiently",
+    resourceCards: [
+      {
+        tag: "Tips",
+        title: "How to create an organization",
+        imageSrc: "https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=800&q=80",
+        imageAlt: "Admin creating organization",
+        linkText: "READ STORY",
+        linkHref: "#",
+      },
+      {
+        tag: "Guide",
+        title: "Structure channels and teams effectively",
+        imageSrc: "https://images.unsplash.com/photo-1542224566-6e85f2e6772f?w=800&q=80",
+        imageAlt: "Team structure diagram",
+        linkText: "LEARN MORE",
+        linkHref: "#",
+      },
+      {
+        tag: "Tips",
+        title: "Keep all Dialer Team App resources centralized",
+        imageSrc: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80",
+        imageAlt: "Centralized resources landscape",
+        linkText: "READ STORY",
+        linkHref: "#",
+      },
+    ],
+    faqHeadline: "Frequently asked questions",
     faq: [
-      { question: "Can I white-label the workspace?", answer: "Yes. Customize the logo, colour scheme, and product name to match your brand." },
-      { question: "What settings can I configure?", answer: "Everything from default channels and user permissions to notification preferences and security policies." },
+      { question: "How do I create a new organization?", answer: "Owners can create a new organization directly from the admin dashboard by following the setup wizard." },
+      { question: "Can I add channels inside an organization?", answer: "Yes, once an organization is created, you can add as many public or private channels as needed." },
+      { question: "How do I assign members to structured teams?", answer: "Admins can invite members and assign them to specific teams or channels within the organization settings." },
+      { question: "Can I manage multiple teams in one organization?", answer: "Absolutely. Organizations are designed to house multiple teams with different access levels and resources." },
+      { question: "Is it possible to reorganize channels later?", answer: "Yes, you can rename, archive, or move channels anytime to keep your workspace organized." },
     ],
-    ctaHeading: "Take control of your workspace.",
+    ctaHeading: "Centralize your Dialer Team App workflow",
   },
 
   // ─── 12. Admin Dashboard ───
   {
     slug: "admin-dashboard",
-    category: "Team & Admin",
-    headingBefore: "Centralized controls with",
-    headingHighlight: "admin dashboard.",
-    subtitle: "A powerful dashboard for managing users, channels, permissions, and workspace analytics all in one place.",
-    ctaPrimary: "Get Started",
-    ctaSecondary: "Learn More",
+    category: "TASK LISTS",
+    headingBefore: "Create and manage team channels from the",
+    headingHighlight: "admin dashboard",
+    subtitle: "Admins can create channels for teams, add members to collaborate, remove users when needed and monitor conversations to keep communication organized.",
+    ctaPrimary: "GET STARTED",
+    ctaSecondary: "TALK TO SALES",
+    heroLayout: "user-management-hero", // Using this for central layout + buttons
     sections: [
-      { layout: "image-left", badge: "Overview", heading: "See everything at a glance.", description: "The admin dashboard gives you a bird's-eye view of your workspace — active users, channel activity, storage usage, and recent actions.", imageSrc: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80", imageAlt: "Dashboard overview", bgVariant: "white" },
-      { layout: "content-left", badge: "Actions", heading: "Manage users and channels instantly.", description: "Create users, manage roles, create channels, and configure settings directly from the dashboard with zero friction.", imageSrc: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80", imageAlt: "Admin actions", bgVariant: "gray" },
+      { layout: "image-left", badge: "Overview", heading: "Create channels for every team", description: "Admins can create dedicated channels for different teams such as sales, marketing or support so that conversations stay organized and easy to manage.", linkText: "Learn how admins create team channels", linkHref: "#", imageSrc: "https://images.unsplash.com/photo-1439405326854-014607f694d7?w=800&q=80", imageAlt: "Create channels", bgVariant: "white" },
+      { layout: "content-left", badge: "Actions", heading: "Add and remove members easily", description: "Admins can invite members into channels to start collaboration and remove members whenever access is no longer required.", imageSrc: "https://images.unsplash.com/photo-1549213783-8284d03d6c4f?w=800&q=80", imageAlt: "Manage members", bgVariant: "gray" },
+      { layout: "image-left", badge: "Triage", heading: "Collect, automate and triage requests", description: "Admins can access team channel chats to monitor discussions, track activity and ensure smooth communication across teams.", linkText: "See how admins monitor team channels", linkHref: "#", imageSrc: "https://images.unsplash.com/photo-1503095396549-807759c4bc0e?w=800&q=80", imageAlt: "Triage requests", bgVariant: "white", quote: "'Channel management makes it easy for our admins to organize team communication and ensure that the right members are in the right conversations.'", quoteAuthor: "System Administrator", quoteRole: "Collaboration Platform Manager" },
     ],
     statsHeadline: "Visibility. Control. Efficiency.",
     statsSubtitle: "Everything an admin needs in a single view.",
@@ -565,11 +654,24 @@ const featurePages: FeaturePageData[] = [
       { iconPaths: ICON.users, title: "User Management", description: "Add, remove, and manage user roles directly from the dashboard." },
       { iconPaths: ICON.settings, title: "Quick Actions", description: "Common admin tasks accessible with one click from the overview." },
     ],
+    templatesSection: {
+      heading: "Channel management works for every team in your organization",
+      subtitle: "Admins can organize teams into channels so members can communicate, collaborate and stay aligned in one place.",
+      items: [
+        { id: "create-channel", title: "Create Channel", description: "Admins can create dedicated channels for different teams to organize communication and collaboration.", imageSrc: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=80" },
+        { id: "add-members", title: "Add Members", description: "Invite team members to channels to start collaborating immediately.", imageSrc: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80" },
+        { id: "remove-members", title: "Remove Members", description: "Easily manage channel participation by removing members when needed.", imageSrc: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80" },
+      ],
+    },
+    faqHeadline: "Frequently asked questions",
     faq: [
-      { question: "Who has access to the admin dashboard?", answer: "Only users with Admin roles can access the admin dashboard and its management features." },
-      { question: "Can I export analytics data?", answer: "Yes. Dashboard analytics can be exported as CSV for reporting and compliance." },
+      { question: "Can admins create team channels?", answer: "Yes, admins have full control over channel creation to keep the workspace organized." },
+      { question: "Can admins add members to channels?", answer: "Yes, admins can invite any team member to any channel to facilitate collaboration." },
+      { question: "Can admins remove members from channels?", answer: "Yes, admins can manage channel membership at any time." },
+      { question: "Can admins view channel chats?", answer: "Admins can monitor channel activity to ensure security and organizational compliance." },
+      { question: "Why is channel management important?", answer: "Effective channel management reduces noise, improves focus, and ensures information reaches the right people." },
     ],
-    ctaHeading: "Manage your workspace effortlessly.",
+    ctaHeading: "Manage team communication with powerful channel controls",
   },
 
   // ─── 13. Structured Communication ───
