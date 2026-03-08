@@ -4,14 +4,23 @@ import {
   IconPencil,
   IconPinFilled,
 } from "@tabler/icons-react";
+import { eq, useLiveQuery } from "@tanstack/react-db";
 import type { MessageWithSenderType } from "@work-holo/api/lib/types";
+import { useMemo } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  attachmentsCollection,
+  messagesCollection,
+  usersCollection,
+} from "@/db/collections";
 import { useMessageMutations } from "@/hooks/communications/use-message-mutations";
 import { useAuthedSession } from "@/hooks/use-authed-session";
+import type { MessageWithSender } from "@/lib/communications/message";
 import { cn, formatMessageTimestamp } from "@/lib/utils";
 import {
+  useChannelReplyState,
   useMaximizedMessageComposerActions,
   useMentionsSidebar,
   useMessageThreadSidebar,
@@ -26,6 +35,98 @@ interface MessageItemProps {
   isPinnedMessage?: boolean;
   isThreadMessage?: boolean;
   message: MessageWithSenderType;
+}
+
+function ReplyPreview({
+  replyToMessageId,
+  isOwnMessage,
+}: {
+  replyToMessageId: string;
+  isOwnMessage: boolean;
+}) {
+  const { data: replyRows } = useLiveQuery(
+    (q) =>
+      q
+        .from({ message: messagesCollection })
+        .innerJoin({ sender: usersCollection }, ({ message, sender }) =>
+          eq(message.senderId, sender.id)
+        )
+        .leftJoin(
+          { attachment: attachmentsCollection },
+          ({ message, attachment }) => eq(attachment.messageId, message.id)
+        )
+        .where(({ message }) => eq(message.id, replyToMessageId))
+        .select(({ message, sender, attachment }) => ({
+          id: message.id,
+          content: message.content,
+          senderName: sender.name,
+          isDeleted: message.isDeleted,
+          deletedAt: message.deletedAt,
+          attachmentId: attachment.id,
+        })),
+    [replyToMessageId]
+  );
+
+  const replyData = useMemo(() => {
+    if (!replyRows || replyRows.length === 0) return null;
+
+    const first = replyRows[0];
+    if (!first) return null;
+
+    const hasAttachment = replyRows.some(
+      (r) => r.attachmentId !== null && r.attachmentId !== undefined
+    );
+
+    return {
+      id: first.id,
+      content: first.content,
+      senderName: first.senderName,
+      isDeleted: first.isDeleted || first.deletedAt !== null,
+      hasAttachment,
+    };
+  }, [replyRows]);
+
+  if (!replyData || replyData.isDeleted) {
+    return (
+      <button
+        className={cn(
+          "flex items-center gap-2 rounded-md border-muted-foreground/40 border-l-2 bg-muted/60 px-3 py-1.5 text-left text-muted-foreground text-xs italic",
+          isOwnMessage && "ml-auto"
+        )}
+        type="button"
+      >
+        Original message was deleted
+      </button>
+    );
+  }
+
+  const getDisplayContent = () => {
+    if (replyData.content) {
+      return replyData.content.length > 80
+        ? `${replyData.content.slice(0, 80)}…`
+        : replyData.content;
+    }
+    return replyData.hasAttachment ? "📎 Attachment" : "";
+  };
+
+  return (
+    <button
+      className={cn(
+        "flex max-w-full cursor-pointer items-center gap-2 rounded-md border-primary/60 border-l-2 bg-muted/60 px-3 py-1.5 text-left transition-colors hover:bg-muted",
+        isOwnMessage && "ml-auto"
+      )}
+      type="button"
+    >
+      <div className="min-w-0 flex-1">
+        <span className="font-medium text-foreground text-xs">
+          {replyData.senderName}
+        </span>
+        <p className="truncate text-muted-foreground text-xs">
+          {getDisplayContent()}
+        </p>
+      </div>
+    </button>
+  );
 }
 
 export function MessageItem({
@@ -48,6 +149,8 @@ export function MessageItem({
 
   const { messageId, openMessageThread, closeMessageThread } =
     useMessageThreadSidebar();
+
+  const { setReplyingToMessage } = useChannelReplyState();
 
   const isMessageThreadActive = messageId === message.id;
 
@@ -103,6 +206,10 @@ export function MessageItem({
     }
 
     openMessageThread(parentMessageId);
+  };
+
+  const handleInlineReply = () => {
+    setReplyingToMessage(message as unknown as MessageWithSender);
   };
 
   return (
@@ -180,6 +287,14 @@ export function MessageItem({
         </div>
 
         <div className="relative w-full">
+          {message.replyToMessageId && (
+            <div className="mb-1">
+              <ReplyPreview
+                isOwnMessage={isOwnMessage}
+                replyToMessageId={message.replyToMessageId}
+              />
+            </div>
+          )}
           <MessageContent isOwnMessage={isOwnMessage} message={message} />
 
           <div
@@ -198,6 +313,7 @@ export function MessageItem({
               isPinned={message.isPinned}
               onDelete={handleDelete}
               onEdit={handleEditDialog}
+              onInlineReply={handleInlineReply}
               onPin={handlePin}
               onReact={handleReact}
               onReply={toggleMessageThread}
