@@ -111,7 +111,7 @@ export function MessageActions({
           </Button>
         ))}
 
-        {canInlineReply && onInlineReply && (
+{canInlineReply && onInlineReply && (
           <Button
             aria-label="Reply inline"
             onClick={onInlineReply}
