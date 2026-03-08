@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 interface FeatureCardImageLeftProps {
@@ -12,6 +13,8 @@ interface FeatureCardImageLeftProps {
   /** Unsplash / any image URL — if omitted a gradient placeholder is shown */
   imageSrc?: string;
   imageAlt?: string;
+  /** Optional coded UI mockup — takes priority over imageSrc */
+  mockup?: ReactNode;
   /** Section background colour */
   bgVariant?: "white" | "gray";
   className?: string;
@@ -33,6 +36,7 @@ export function FeatureCardImageLeft({
   linkHref,
   imageSrc,
   imageAlt = "",
+  mockup,
   bgVariant = "white",
   className,
 }: FeatureCardImageLeftProps) {
@@ -44,24 +48,26 @@ export function FeatureCardImageLeft({
         className
       )}
     >
-      <div className="container mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
+      <div className="mx-auto w-full max-w-[1480px] px-6 lg:px-8">
         <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-          {/* ── Image — LEFT ── */}
-          <div className="overflow-hidden rounded-2xl shadow-md">
-            {imageSrc ? (
+          {/* ── Image / Mockup — LEFT ── */}
+          <div className="overflow-hidden rounded-2xl">
+            {mockup ? (
+              mockup
+            ) : imageSrc ? (
               <img
                 src={imageSrc}
                 alt={imageAlt}
-                className="aspect-[4/3] h-full w-full object-cover"
+                className="aspect-[4/3] h-full w-full object-cover rounded-2xl shadow-md"
                 loading="lazy"
               />
             ) : (
-              <div className="aspect-[4/3] w-full bg-gradient-to-br from-[#ede9ff] via-[#f0edff] to-[#ddd5ff]" />
+              <div className="aspect-[4/3] w-full rounded-2xl bg-gradient-to-br from-[#ede9ff] via-[#f0edff] to-[#ddd5ff]" />
             )}
           </div>
 
           {/* ── Content — RIGHT ── */}
-          <div className="max-w-xl">
+          <div className="w-full">
             {badge && (
               <span className="inline-block rounded-full bg-[#7C5CFF] px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-white">
                 {badge}

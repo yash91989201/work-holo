@@ -11,6 +11,7 @@ interface FaqItem {
 }
 
 interface FeatureFaqSectionProps {
+  heading?: string;
   items: FaqItem[];
 }
 
@@ -19,12 +20,12 @@ interface FeatureFaqSectionProps {
  * ─────────────────────────────────────────────────────
  * "Frequently asked questions" section using Shadcn Accordion.
  */
-export function FeatureFaqSection({ items }: FeatureFaqSectionProps) {
+export function FeatureFaqSection({ heading, items }: FeatureFaqSectionProps) {
   return (
     <section className="w-full bg-background py-16 sm:py-20">
-      <div className="container mx-auto max-w-3xl px-6 sm:px-8 lg:px-12">
+      <div className="container mx-auto max-w-5xl px-6 sm:px-8 lg:px-12">
         <h2 className="mb-10 text-center font-bold text-3xl tracking-tight text-foreground sm:text-4xl">
-          Frequently asked questions
+          {heading || "Frequently asked questions"}
         </h2>
         <Accordion type="single" collapsible className="w-full">
           {items.map((item, i) => (

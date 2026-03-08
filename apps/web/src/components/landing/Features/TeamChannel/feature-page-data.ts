@@ -3,7 +3,7 @@
    ═══════════════════════════════════════════════════════ */
 
 export interface FeatureSection {
-  layout: "image-left" | "content-left";
+  layout: "image-left" | "content-left" | "image-right";
   badge?: string;
   heading: string;
   description: string;
@@ -12,12 +12,28 @@ export interface FeatureSection {
   imageSrc?: string;
   imageAlt?: string;
   bgVariant?: "white" | "gray";
+  /** Large bold stat to display below the description (e.g. "100%") */
+  stat?: string;
+  /** Label under the stat number */
+  statLabel?: string;
+  /** Small footnote/citation text */
+  citation?: string;
+  /** Large italic quote text */
+  quote?: string;
+  /** Author of the quote */
+  quoteAuthor?: string;
+  /** Role/Title of the author */
+  quoteRole?: string;
+  /** Team/Organization of the author */
+  quoteTeam?: string;
 }
 
 export interface FeatureStat {
   iconPaths: string[];
   title: string;
   description: string;
+  linkText?: string;
+  linkHref?: string;
 }
 
 export interface FeatureFaq {
@@ -33,10 +49,36 @@ export interface FeaturePageData {
   subtitle: string;
   ctaPrimary: string;
   ctaSecondary: string;
+  heroLayout?: "centered" | "image-right" | "media-preview-badges" | "drag-drop-badges" | "user-management-hero";
+  heroImageSrc?: string;
+  heroImageAlt?: string;
+  heroHasPlayButton?: boolean;
+  heroBgClass?: string;
   sections: FeatureSection[];
-  statsHeadline: string;
-  statsSubtitle: string;
-  stats: FeatureStat[];
+  statsHeadline?: string;
+  statsSubtitle?: string;
+  stats?: FeatureStat[];
+  resourceCardsHeadline?: string;
+  resourceCards?: {
+    imageSrc: string;
+    imageAlt: string;
+    tag: string;
+    title: string;
+    linkText: string;
+    linkHref: string;
+  }[];
+  resourceCardsBgClass?: string;
+  templatesSection?: {
+    heading: string;
+    subtitle: string;
+    items: {
+      id: string;
+      title: string;
+      description: string;
+      imageSrc: string;
+    }[];
+  };
+  faqHeadline?: string;
   faq: FeatureFaq[];
   ctaHeading: string;
 }
@@ -57,6 +99,7 @@ const ICON = {
   monitor: ["M2 3h20v14H2z", "M8 21h8", "M12 17v4"],
   image: ["M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z", "M8.5 10a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z", "m21 15-5-5L5 21"],
   layers: ["M12 2 2 7l10 5 10-5-10-5Z", "M2 17l10 5 10-5", "M2 12l10 5 10-5"],
+  download: ["M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4", "M7 10l5 5 5-5", "M12 15V3"],
 };
 
 const featurePages: FeaturePageData[] = [
@@ -213,111 +256,207 @@ const featurePages: FeaturePageData[] = [
   // ─── 6. File Sharing ───
   {
     slug: "file-sharing",
-    category: "Media & Attachments",
-    headingBefore: "Share documents with",
-    headingHighlight: "seamless file sharing.",
-    subtitle: "Upload and share documents, spreadsheets, and files directly in your conversations. Keep everything organized and accessible.",
-    ctaPrimary: "Get Started",
-    ctaSecondary: "Learn More",
+    category: "DOCUMENT & MEDIA SHARING",
+    headingBefore: "Share files and media with your team seamlessly.",
+    headingHighlight: "",
+    subtitle: "Upload documents, images, or audio and keep everyone in the loop. Collaboration has never been this easy.",
+    ctaPrimary: "GET STARTED",
+    ctaSecondary: "TALK TO SALES",
+    heroLayout: "image-right",
+    heroImageSrc: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80",
+    heroImageAlt: "Media sharing",
+    heroHasPlayButton: true,
     sections: [
-      { layout: "image-left", badge: "Upload", heading: "Share any file type instantly.", description: "Upload documents, spreadsheets, PDFs, and more directly into channels or direct messages. Files are stored securely and accessible to all channel members.", imageSrc: "https://images.unsplash.com/photo-1544396821-4dd40b938ad3?w=800&q=80", imageAlt: "File upload", bgVariant: "white" },
-      { layout: "content-left", badge: "Organization", heading: "All files in one accessible place.", description: "Browse shared files across channels with filterable views. Sort by date, type, or channel to find documents quickly.", imageSrc: "https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=800&q=80", imageAlt: "File organization", bgVariant: "gray" },
-    ],
-    statsHeadline: "Organized. Accessible. Secure.",
-    statsSubtitle: "File sharing designed for productive teams.",
-    stats: [
-      { iconPaths: ICON.file, title: "Any File Type", description: "Share documents, images, videos, code files, and more with no format restrictions." },
-      { iconPaths: ICON.lock, title: "Secure Storage", description: "All files are encrypted at rest and in transit with enterprise-grade security." },
-      { iconPaths: ICON.search, title: "Quick Search", description: "Find shared files instantly with search by name, type, and date." },
+      { layout: "image-left", badge: "", heading: "Upload and share documents in a click.", description: "Easily upload PDFs, spreadsheets, or word files and share them with your team. Keep all your important documents in one place.", imageSrc: "https://images.unsplash.com/photo-1490750967868-88cb4ecb0ee0?w=800&q=80", imageAlt: "Upload documents", bgVariant: "white" },
+      { layout: "content-left", badge: "MEDIA SHARING", heading: "Share images and audio effortlessly.", description: "Upload pictures, recordings, and other media files to keep your team visually and audibly informed, anytime and anywhere.", linkText: "Learn more about media sharing →", linkHref: "#", imageSrc: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=800&q=80", imageAlt: "Share images and audio", bgVariant: "white" },
     ],
     faq: [
-      { question: "What file types are supported?", answer: "All file types are supported including documents, images, videos, archives, and code files." },
-      { question: "What is the file size limit?", answer: "Individual files can be up to 100MB. Contact sales for higher limits on enterprise plans." },
-      { question: "Are shared files backed up?", answer: "Yes. All uploaded files are redundantly stored and backed up with 99.99% durability." },
+      { question: "How do I share documents?", answer: "Click the upload button, select your file, and choose the team or channel you want to share it with." },
+      { question: "Can I share images and audio?", answer: "Yes, you can easily share image and audio files within the platform." },
+      { question: "Are there any file size limits?", answer: "File size limits depend on your workspace's current subscription plan." },
+      { question: "Can I organize my uploads?", answer: "Yes, files can be organized by project, channel, or custom folders." },
+      { question: "Is media sharing secure?", answer: "All uploaded files are encrypted and secure." },
     ],
-    ctaHeading: "Share files smarter with Workholo.",
+    ctaHeading: "Start sharing files and media with your team for free",
   },
 
   // ─── 7. Media Preview ───
   {
     slug: "media-preview",
-    category: "Media & Attachments",
-    headingBefore: "Preview media with",
-    headingHighlight: "inline previews.",
-    subtitle: "See images, videos, and rich media directly in your conversations without leaving the chat. Full-screen viewing and easy downloading included.",
-    ctaPrimary: "Get Started",
-    ctaSecondary: "Learn More",
+    category: "MEDIA TOOLS",
+    headingBefore: "Explore Media Preview Options Instantly",
+    headingHighlight: "",
+    subtitle: "Preview images, videos, and documents directly without downloading. Stay organized and make collaboration effortless.",
+    ctaPrimary: "TRY NOW",
+    ctaSecondary: "LEARN MORE",
+    heroLayout: "media-preview-badges",
+    heroImageAlt: "Media preview options",
+    heroBgClass: "bg-[#F3EBE1]",
     sections: [
-      { layout: "image-left", badge: "Inline Preview", heading: "View images and videos without leaving chat.", description: "Shared media renders directly in conversations with expandable previews. Click to view full-screen with zoom and navigation controls.", imageSrc: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=800&q=80", imageAlt: "Media preview", bgVariant: "white" },
-      { layout: "content-left", badge: "Gallery", heading: "Browse all shared media in one place.", description: "Access a visual gallery of all media shared in a channel. Filter by type, date, or sender for quick reference.", imageSrc: "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=800&q=80", imageAlt: "Media gallery", bgVariant: "gray" },
+      { layout: "image-left", badge: "", heading: "Preview media in the right context", description: "Add notes, comments, or context while previewing files without the hassle of downloading or opening new apps.", imageSrc: "https://images.unsplash.com/photo-1511884642898-4c92249e20b6?w=800&q=80", imageAlt: "Media in context", bgVariant: "white" },
+      { layout: "content-left", badge: "", heading: "Access previews from anywhere", description: "Instantly preview files from your device, cloud storage, or external links, all within your workflow.", linkText: "Explore Integrations →", linkHref: "#", imageSrc: "https://images.unsplash.com/photo-1542332213-31f87348057f?w=800&q=80", imageAlt: "Access previews", bgVariant: "white" },
+      { layout: "image-left", badge: "", heading: "Collaborate on shared media", description: "Work together on images, videos, and documents. Add feedback, highlight sections, and finalize content seamlessly.", imageSrc: "https://images.unsplash.com/photo-1502481851512-e9e2529bfbf9?w=800&q=80", imageAlt: "Collaborate on media", bgVariant: "white" },
     ],
-    statsHeadline: "Rich. Visual. Instant.",
-    statsSubtitle: "Media experience designed for modern teams.",
+    statsHeadline: "Media Preview Options at a glance",
+    statsSubtitle: "Quickly access and preview all your images, videos, and documents in one place. Reduce clutter and speed up collaboration with instant media previews.",
     stats: [
-      { iconPaths: ICON.image, title: "Rich Previews", description: "Images, videos, GIFs, and documents preview directly inline." },
-      { iconPaths: ICON.monitor, title: "Full-Screen View", description: "Expand any media to full-screen with zoom and download options." },
-      { iconPaths: ICON.layers, title: "Media Gallery", description: "Centralized gallery view of all shared media across channels." },
+      { iconPaths: ICON.file, title: "Instant previews", description: "Preview images, videos, and documents directly in the browser without waiting for downloads or opening external apps." },
+      { iconPaths: ICON.globe, title: "Secure and private", description: "All previews are protected. Only authorized users can view your media, keeping sensitive content safe and accessible." },
+      { iconPaths: ICON.monitor, title: "Accessible on all devices", description: "View previews seamlessly on desktop, tablet, or mobile. Your media stays consistent and easy to access wherever you are." },
+    ],
+    resourceCardsHeadline: "Discover Media Preview Options",
+    resourceCardsBgClass: "bg-[#F3EBE1]",
+    resourceCards: [
+      {
+        imageSrc: "https://images.unsplash.com/photo-1520967824495-b529aeba26df?w=600&q=80",
+        imageAlt: "Tower",
+        tag: "Tips",
+        title: "Master media previews for faster collaboration",
+        linkText: "READ STORY",
+        linkHref: "#",
+      },
+      {
+        imageSrc: "https://images.unsplash.com/photo-1504280629986-e3d1ac1d09e5?w=600&q=80",
+        imageAlt: "Deer",
+        tag: "Guide",
+        title: "How to preview videos, images, and documents",
+        linkText: "LEARN MORE",
+        linkHref: "#",
+      },
+      {
+        imageSrc: "https://images.unsplash.com/photo-1414609245224-afa02bfb3fda?w=600&q=80",
+        imageAlt: "Wave",
+        tag: "Tips",
+        title: "Boost teamwork with inline media previews",
+        linkText: "READ STORY",
+        linkHref: "#",
+      },
     ],
     faq: [
-      { question: "What media formats are supported?", answer: "JPEG, PNG, GIF, WebP, MP4, WebM, and most common media formats are supported with inline preview." },
-      { question: "Can I download shared media?", answer: "Yes. Every media preview includes a download button for saving files locally." },
-      { question: "Is there a media gallery?", answer: "Yes. Each channel has a media gallery tab that shows all shared images and videos in a grid view." },
+      { question: "Which media types can I preview?", answer: "We support a wide range of formats including JPEG, PNG, GIF, MP4, WebM, PDF, and more directly in your browser." },
+      { question: "Can I preview media without downloading?", answer: "Yes, you can preview all supported media files entirely within the browser without any extra downloads." },
+      { question: "Does this support cloud storage previews?", answer: "Yes, files linked from external cloud storage providers can optionally be previewed if the integration supports it." },
+      { question: "Is media preview secure and private?", answer: "Absolutely. All media is encrypted and previews are restricted to authorized users across the channels." },
+      { question: "Are there limits to media file size?", answer: "Large videos or excessively large PDFs may require downloading to view fully, depending on your organization's storage limits." },
     ],
-    ctaHeading: "Experience rich media sharing.",
+    faqHeadline: "Frequently asked questions about media previews",
+    ctaHeading: "Enhance collaboration with previews",
   },
 
   // ─── 8. Drag & Drop ───
   {
     slug: "drag-and-drop",
-    category: "Media & Attachments",
-    headingBefore: "Upload files with",
-    headingHighlight: "drag and drop.",
-    subtitle: "Simply drag files from your desktop onto any conversation to share them instantly. No dialogs, no friction.",
-    ctaPrimary: "Get Started",
-    ctaSecondary: "Learn More",
+    category: "FILE MANAGEMENT",
+    headingBefore: "Drag and Drop Your Media Effortlessly",
+    headingHighlight: "",
+    subtitle: "Upload images, files, documents, audio, and more with a simple drag and drop. Collaboration has never been faster or easier.",
+    ctaPrimary: "UPLOAD NOW",
+    ctaSecondary: "LEARN HOW",
+    heroLayout: "drag-drop-badges",
+    heroBgClass: "bg-[#F3EBE1]",
+    heroImageAlt: "Drag and drop interface preview",
     sections: [
-      { layout: "image-left", badge: "Effortless", heading: "Drop files directly into conversations.", description: "Drag any file from your desktop, file manager, or browser directly into a channel or DM. Files upload automatically with progress indicators.", imageSrc: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80", imageAlt: "Drag and drop", bgVariant: "white" },
-      { layout: "content-left", badge: "Batch Upload", heading: "Share multiple files at once.", description: "Select and drop multiple files simultaneously. All files upload in parallel with individual progress tracking.", imageSrc: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80", imageAlt: "Batch upload", bgVariant: "gray" },
+      { layout: "image-left", badge: "", heading: "Drag files into the right spot", description: "Easily upload and share images, documents, audio, and more without extra steps.", imageSrc: "https://images.unsplash.com/photo-1549646401-4c1fa93096e2?w=800&q=80", imageAlt: "Train tracks", bgVariant: "white" },
+      { layout: "image-right", badge: "", heading: "Upload from anywhere", description: "Drag files from your computer or cloud storage and start sharing instantly.", linkText: "See Supported Integrations →", linkHref: "#", imageSrc: "https://images.unsplash.com/photo-1469539070868-8316a9088523?w=800&q=80", imageAlt: "Landscape path", bgVariant: "white" },
+      { layout: "image-left", badge: "", heading: "Collaborate on any file", description: "Share and discuss images, videos, audio, and documents together seamlessly.", imageSrc: "https://images.unsplash.com/photo-1563854746402-463e2d6ae1e6?w=800&q=80", imageAlt: "Walrus on beach", bgVariant: "white" },
     ],
-    statsHeadline: "Fast. Simple. Efficient.",
-    statsSubtitle: "File uploads that stay out of your way.",
+    statsHeadline: "Drag and drop everything in one place",
+    statsSubtitle: "Upload images, documents, audio, and more by dragging them into your workspace. Save time and collaborate faster without switching apps.",
     stats: [
-      { iconPaths: ICON.zap, title: "Instant Upload", description: "Files start uploading the moment you drop them with zero configuration." },
-      { iconPaths: ICON.layers, title: "Batch Support", description: "Drop multiple files at once and they all upload in parallel." },
-      { iconPaths: ICON.file, title: "Progress Tracking", description: "Real-time progress indicators for every file being uploaded." },
+      { iconPaths: ICON.download, title: "Drag & Drop simplicity", description: "Easily move images, files, audio, or documents into your workspace with a simple drag and drop.", linkText: "Learn how to drag and drop →", linkHref: "#" },
+      { iconPaths: ICON.globe, title: "Secure uploads", description: "All uploads are encrypted and accessible only to authorized users. Keep your files safe while sharing seamlessly." },
+      { iconPaths: ICON.globe, title: "Works across devices", description: "Drag and drop files from desktop, mobile, or cloud storage. Your workflow remains uninterrupted everywhere.", linkText: "Try Drag & Drop Now →", linkHref: "#" },
     ],
+    resourceCardsHeadline: "Drag and Drop Media Made Simple",
+    resourceCardsBgClass: "bg-[#F3EBE1]",
+    resourceCards: [
+      {
+        imageSrc: "https://images.unsplash.com/photo-1520967824495-b529aeba26df?w=600&q=80",
+        imageAlt: "How to drag and drop media",
+        tag: "Tips",
+        title: "How to drag and drop media effortlessly",
+        linkText: "READ STORY →",
+        linkHref: "#"
+      },
+      {
+        imageSrc: "https://images.unsplash.com/photo-1469539070868-8316a9088523?w=600&q=80",
+        imageAlt: "Upload images, audio, files",
+        tag: "Guide",
+        title: "Upload images, audio, files, and documents",
+        linkText: "LEARN MORE →",
+        linkHref: "#"
+      },
+      {
+        imageSrc: "https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=600&q=80",
+        imageAlt: "Speed up collaboration",
+        tag: "Tips",
+        title: "Speed up collaboration with drag & drop",
+        linkText: "READ STORY →",
+        linkHref: "#"
+      }
+    ],
+    faqHeadline: "Frequently asked questions about drag & drop",
     faq: [
-      { question: "How many files can I drag at once?", answer: "You can drag and drop up to 10 files simultaneously. Each file uploads independently in parallel." },
-      { question: "What happens if upload fails?", answer: "Failed uploads can be retried with a single click. The system automatically retries on temporary network issues." },
+      { question: "Can I drag and drop any file type?", answer: "Yes, you can drag and drop images, documents, audio files, and most common formats directly into your workspace." },
+      { question: "Do files upload automatically after drag and drop?", answer: "Yes, files begin uploading instantly the moment you release them into the designated area." },
+      { question: "Can I drag from cloud storage directly?", answer: "Yes, if your cloud storage is synced locally to your computer, you can drag files straight from your file explorer." },
+      { question: "Is drag and drop secure?", answer: "Absolutely. All uploads are fully encrypted and only accessible by authorized users in your workspace." },
+      { question: "Are there size limits for drag and drop?", answer: "There are standard storage limits depending on your organization's plan, but most day-to-day files are fully supported." },
     ],
-    ctaHeading: "Upload files the easy way.",
+    ctaHeading: "Drag and drop for seamless uploads",
   },
 
   // ─── 9. User Management ───
   {
     slug: "user-management",
     category: "Team & Admin",
-    headingBefore: "Manage your team with",
-    headingHighlight: "user management.",
-    subtitle: "Create, invite, and manage unlimited users with powerful admin tools. Handle onboarding, offboarding, and everything in between.",
-    ctaPrimary: "Get Started",
-    ctaSecondary: "Admin Dashboard",
+    headingBefore: "User management, directly from one dashboard",
+    headingHighlight: "",
+    subtitle: "User management allows administrators to control user accounts, permissions, and access levels from one centralized dashboard.",
+    ctaPrimary: "REQUEST A DEMO",
+    ctaSecondary: "GET STARTED",
+    heroLayout: "user-management-hero",
+    heroImageSrc: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
     sections: [
-      { layout: "image-left", badge: "User Control", heading: "Complete control over your team roster.", description: "Add new team members individually or in bulk. Manage user profiles, permissions, and access levels from a centralized admin panel.", imageSrc: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=800&q=80", imageAlt: "Team management", bgVariant: "white" },
-      { layout: "content-left", badge: "Onboarding", heading: "Streamlined onboarding for new members.", description: "New users get preconfigured channel access and welcome messages. Automated onboarding flows ensure everyone starts productive from day one.", imageSrc: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80", imageAlt: "Onboarding", bgVariant: "gray" },
-      { layout: "image-left", badge: "Offboarding", heading: "Secure offboarding with data retention.", description: "When team members leave, their messages and files are preserved. Revoke access instantly while keeping institutional knowledge intact.", imageSrc: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&q=80", imageAlt: "Offboarding", bgVariant: "white" },
+      { layout: "image-left", badge: "COLLABORATING", heading: "Add and manage users quickly", description: "Easily add new users to your system and assign them the correct access level so your team can start working immediately. Huddle to chat live with your team, or record a clip to quickly share updates and feedback.", imageSrc: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=800&q=80", imageAlt: "Team management", bgVariant: "white" },
+      { layout: "image-right", badge: "MANAGING PERMISSIONS", heading: "Control user permissions securely", description: "Assign roles and permissions to users to control what actions they can perform within the system. list. Here, teams can manage tasks, prioritise work, monitor progress and drive accountability.", imageSrc: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80", imageAlt: "Onboarding", bgVariant: "white" },
+      { layout: "image-left", badge: "ORGANISING", heading: "Role based user management for better control", description: "Create a canvas to collect and manage project information, including everything from key stakeholders and resources to project timelines and deliverables.", imageSrc: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&q=80", imageAlt: "Offboarding", bgVariant: "white" },
     ],
-    statsHeadline: "Scalable. Secure. Simple.",
-    statsSubtitle: "User management that grows with your organization.",
-    stats: [
-      { iconPaths: ICON.users, title: "Unlimited Users", description: "Add as many team members as needed with no per-seat limits." },
-      { iconPaths: ICON.shield, title: "Instant Deprovisioning", description: "Revoke access immediately when team members depart." },
-      { iconPaths: ICON.settings, title: "Bulk Operations", description: "Import, export, and manage users in bulk with CSV support." },
-    ],
+    templatesSection: {
+      heading: "Simplify user administration",
+      subtitle: "Use predefined user management templates to quickly configure roles, permissions, and access policies.",
+      items: [
+        {
+          id: "starter-kit",
+          title: "User management starter kit",
+          description: "Essentials for keeping projects on track.",
+          imageSrc: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
+        },
+        {
+          id: "feedback-tracker",
+          title: "User feedback tracker",
+          description: "Organize and prioritize user feedback and requests efficiently",
+          imageSrc: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80",
+        },
+        {
+          id: "role-manager",
+          title: "Role permission manager",
+          description: "Essentials for keeping projects on track.",
+          imageSrc: "https://images.unsplash.com/photo-1563986768609-322da13575f2?w=800&q=80",
+        },
+        {
+          id: "admin-dashboard",
+          title: "Admin dashboard checklist",
+          description: "Essentials for keeping projects on track.",
+          imageSrc: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&q=80",
+        }
+      ]
+    },
+    faqHeadline: "Frequently asked questions",
     faq: [
-      { question: "Is there a limit on users?", answer: "No. You can create unlimited users on any plan. Scale your team without worrying about per-seat costs." },
-      { question: "Can I import users from a CSV?", answer: "Yes. Bulk import users from CSV files with automatic profile creation and channel assignment." },
-      { question: "What happens to data when a user is removed?", answer: "Messages and files from removed users are preserved. Only their access is revoked." },
+      { question: "What is project management?", answer: "Project management involves organizing and managing resources to complete a specific project successfully." },
+      { question: "Is Slack a PM tool?", answer: "While Slack is not primarily a PM tool, it integrates with many project management tools to facilitate communication." },
+      { question: "What types of projects can I manage with Slack?", answer: "You can manage a wide variety of collaborative projects, from software launches to marketing campaigns, using dedicated channels and integrations." },
     ],
     ctaHeading: "Manage your team effortlessly.",
   },
@@ -325,29 +464,58 @@ const featurePages: FeaturePageData[] = [
   // ─── 10. Role-Based Access ───
   {
     slug: "role-based-access",
-    category: "Team & Admin",
-    headingBefore: "Secure your workspace with",
-    headingHighlight: "role-based access.",
-    subtitle: "Define granular permissions with Admin and Associate roles. Ensure the right people have the right access to the right resources.",
-    ctaPrimary: "Get Started",
-    ctaSecondary: "Learn More",
+    category: "Role Based Access Control",
+    headingBefore: "Control user access with",
+    headingHighlight: "role-based permissions",
+    subtitle: "Manage user permissions across your system. Owners and administrators can grant or restrict access for any team member instantly.",
+    ctaPrimary: "Get Started Free",
+    ctaSecondary: "Talk to Sales",
+    heroLayout: "user-management-hero" as const,
+    heroImageSrc: "https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=800&q=80",
+    heroImageAlt: "Role-based access control",
+    heroBgClass: "bg-white",
     sections: [
-      { layout: "image-left", badge: "Roles", heading: "Built-in roles for every need.", description: "Assign Admin or Associate roles to control who can create channels, manage users, and access admin settings. Custom roles coming soon.", imageSrc: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&q=80", imageAlt: "Role management", bgVariant: "white" },
-      { layout: "content-left", badge: "Permissions", heading: "Granular control over every action.", description: "Define exactly what each role can do — from channel creation to user management. Permissions cascade through the organization hierarchy.", imageSrc: "https://images.unsplash.com/photo-1563986768609-322da13575f2?w=800&q=80", imageAlt: "Permissions", bgVariant: "gray" },
+      {
+        layout: "image-left" as const,
+        heading: "Just press record",
+        description: "Admins and owners can instantly grant permissions to team members, allowing them to access features, manage resources, or collaborate with the team securely.",
+        bgVariant: "gray" as const,
+      },
+      {
+        layout: "content-left" as const,
+        heading: "Sync on any schedule",
+        description: "Owners and administrators can control who can access specific tools, dashboards, and data. Permissions can be changed anytime to maintain security.",
+        bgVariant: "white" as const,
+        stat: "100%",
+        statLabel: "control over user access using role-based permissions",
+        citation: "* FY24 Customer Tracking Survey, Slack from Salesforce, responses from 46 Slack users, October 2023.",
+      },
+      {
+        layout: "image-left" as const,
+        heading: "Play 'em your way",
+        description: "Assign roles like Owner, Admin, or Member to control what each user can see and do inside your platform.",
+        bgVariant: "gray" as const,
+      },
+      {
+        layout: "content-left" as const,
+        heading: "Quote attribution",
+        description: "Hidden heading for structure",
+        bgVariant: "white" as const,
+        quote: "Our role-based permission system ensures that only the right people have access to critical tools and information across the organization.",
+        quoteAuthor: "Ocado Group",
+        quoteRole: "System Administrator",
+        quoteTeam: "Security & Access Management Team",
+      },
     ],
-    statsHeadline: "Controlled. Flexible. Enterprise-Ready.",
-    statsSubtitle: "Access control designed for modern organizations.",
-    stats: [
-      { iconPaths: ICON.shield, title: "Granular Permissions", description: "Fine-grained control over every workspace action and resource." },
-      { iconPaths: ICON.users, title: "Role Hierarchy", description: "Clear role hierarchy with Admin and Associate levels." },
-      { iconPaths: ICON.lock, title: "Audit Trail", description: "Every permission change is logged for compliance and security." },
-    ],
+    resourceCardsHeadline: undefined,
+    faqHeadline: "Frequently asked questions",
     faq: [
-      { question: "What roles are available?", answer: "Currently Admin and Associate roles are built-in. Custom roles are on our roadmap." },
-      { question: "Can I restrict channel creation?", answer: "Yes. Only Admin-level users can create channels by default. This can be configured in workspace settings." },
-      { question: "Are role changes logged?", answer: "Yes. All role and permission changes are logged in the audit trail for compliance." },
+      { question: "What are role-based permissions?", answer: "Role-based permissions allow administrators to assign specific access levels to users based on their role, ensuring only the right people can access sensitive data and features." },
+      { question: "Who can manage user permissions?", answer: "Workspace owners and administrators can manage user permissions. They can grant, restrict, or revoke access for any team member at any time." },
+      { question: "Can permissions be updated anytime?", answer: "Yes. Permissions can be updated instantly from the admin dashboard. Changes take effect immediately without requiring users to log out." },
+      { question: "Why is role-based access important?", answer: "Role-based access ensures data security, compliance, and productivity by making sure team members only access systems and features relevant to their work." },
     ],
-    ctaHeading: "Secure your workspace today.",
+    ctaHeading: "Secure your workspace with role-based access.",
   },
 
   // ─── 11. Workspace Control ───

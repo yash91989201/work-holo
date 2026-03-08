@@ -5,6 +5,8 @@ interface FeatureStat {
   iconPaths: string[];
   title: string;
   description: string;
+  linkText?: string;
+  linkHref?: string;
 }
 
 interface FeatureStatsSectionProps {
@@ -70,6 +72,14 @@ export function FeatureStatsSection({
                 <p className="mt-1.5 text-sm leading-6 text-muted-foreground">
                   {stat.description}
                 </p>
+                {stat.linkText && stat.linkHref && (
+                  <a
+                    href={stat.linkHref}
+                    className="mt-4 text-sm font-semibold text-[#7C5CFF] hover:text-[#7C5CFF]/80 transition-colors"
+                  >
+                    {stat.linkText}
+                  </a>
+                )}
               </CardContent>
             </Card>
           ))}
