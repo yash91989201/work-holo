@@ -26,6 +26,7 @@ export const CreateMessageInput = z
     content: z.string().max(10_000).optional(),
     type: MessageTypeSchema.default("text"),
     parentMessageId: z.string().optional(),
+    replyToMessageId: z.string().optional(),
     mentions: z.array(z.string()).optional(),
     attachments: z.array(AttachmentInput).optional(),
   })
