@@ -12,7 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-attachmentsCollection,
+  attachmentsCollection,
   channelsCollection,
   messagesCollection,
   usersCollection,
@@ -53,7 +53,7 @@ function ReplyPreview({
   replyToMessageId: string;
   isOwnMessage: boolean;
 }) {
-const { highlightMessage } = useChannelMessageHighlight();
+  const { highlightMessage } = useChannelMessageHighlight();
   const { data: replyRows } = useLiveQuery(
     (q) =>
       q
@@ -72,7 +72,7 @@ const { highlightMessage } = useChannelMessageHighlight();
           senderName: sender.name,
           isDeleted: message.isDeleted,
           deletedAt: message.deletedAt,
-attachmentId: attachment?.id ?? null,
+          attachmentId: attachment?.id ?? null,
         })),
     [replyToMessageId]
   );
@@ -96,7 +96,7 @@ attachmentId: attachment?.id ?? null,
     };
   }, [replyRows]);
 
-const handleReplyPreviewClick = () => {
+  const handleReplyPreviewClick = () => {
     highlightMessage(replyToMessageId);
   };
 
@@ -116,14 +116,14 @@ const handleReplyPreviewClick = () => {
 
   const getDisplayContent = () => {
     if (replyData.content) {
-const plainText = stripHtmlToText(replyData.content);
+      const plainText = stripHtmlToText(replyData.content);
       return truncateText(plainText, 80);
     }
     return replyData.hasAttachment ? "📎 Attachment" : "";
   };
 
   return (
-<Button
+    <Button
       className={cn(
         "flex h-auto max-w-full items-center justify-start gap-2 rounded-md border-primary/60 border-t-0 border-r-0 border-b-0 border-l-2 bg-muted/60 px-3 py-1.5 text-left transition-colors hover:bg-muted",
         isOwnMessage && "ml-auto"
@@ -139,7 +139,7 @@ const plainText = stripHtmlToText(replyData.content);
           {getDisplayContent()}
         </p>
       </div>
-</Button>
+    </Button>
   );
 }
 
@@ -165,7 +165,7 @@ export function MessageItem({
     useMessageThreadSidebar();
 
   const { setReplyingToMessage } = useChannelReplyState();
-const { setReplyingToMessage: setThreadReplyingToMessage } =
+  const { setReplyingToMessage: setThreadReplyingToMessage } =
     useChannelThreadReplyState();
   const { focusMainComposer, focusThreadComposer } = useChannelComposerFocus();
 
@@ -226,7 +226,7 @@ const { setReplyingToMessage: setThreadReplyingToMessage } =
   };
 
   const handleInlineReply = () => {
-const channel = channelsCollection.get(message.channelId);
+    const channel = channelsCollection.get(message.channelId);
     if (!channel) {
       return;
     }
