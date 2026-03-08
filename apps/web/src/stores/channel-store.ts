@@ -2,6 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { create } from "zustand";
 import { useChannelPresence } from "@/hooks/communications/use-channel-presence";
+import type { MessageWithSender } from "@/lib/communications/message";
 import { queryUtils } from "@/utils/orpc";
 
 interface ChannelMember {
@@ -56,6 +57,10 @@ interface SearchSidebarState {
   isOpen: boolean;
 }
 
+interface ReplyingToMessageState {
+  message: MessageWithSender | null;
+}
+
 interface HighlightedMessageState {
   messageId: string | null;
   triggeredAt: number | null;
@@ -63,6 +68,7 @@ interface HighlightedMessageState {
 
 interface ChannelState {
   clearHighlightedMessage: () => void;
+  clearReplyingToMessage: () => void;
   closeInfoSidebar: () => void;
   closeMaximizedMessageComposer: () => void;
   closeMentionsSidebar: () => void;
@@ -90,7 +96,9 @@ interface ChannelState {
   openPinnedMessages: () => void;
   openSearchSidebar: () => void;
   pinnedMessages: PinnedMessagesState;
+  replyingToMessage: ReplyingToMessageState;
   searchSidebar: SearchSidebarState;
+  setReplyingToMessage: (message: MessageWithSender) => void;
 }
 
 const defaultMaximizedComposerState: MaximizedMessageComposerState = {
@@ -120,6 +128,9 @@ const useChannelStore = create<ChannelState>((set) => ({
   messageThread: {
     messageId: null,
     isOpen: false,
+  },
+  replyingToMessage: {
+    message: null,
   },
 
   openInfoSidebar: () => set({ infoSidebar: { isOpen: true } }),
@@ -160,6 +171,14 @@ const useChannelStore = create<ChannelState>((set) => ({
   clearHighlightedMessage: () =>
     set({
       highlightedMessage: { messageId: null, triggeredAt: null },
+    }),
+  clearReplyingToMessage: () =>
+    set({
+      replyingToMessage: { message: null },
+    }),
+  setReplyingToMessage: (message) =>
+    set({
+      replyingToMessage: { message },
     }),
 }));
 
@@ -357,4 +376,22 @@ export function useMaximizedMessageComposerActions() {
   );
 
   return { openMaximizedMessageComposer };
+}
+
+export function useChannelReplyState() {
+  const replyingToMessage = useChannelStore(
+    (state) => state.replyingToMessage.message
+  );
+  const setReplyingToMessage = useChannelStore(
+    (state) => state.setReplyingToMessage
+  );
+  const clearReplyingToMessage = useChannelStore(
+    (state) => state.clearReplyingToMessage
+  );
+
+  return {
+    replyingToMessage,
+    setReplyingToMessage,
+    clearReplyingToMessage,
+  };
 }
