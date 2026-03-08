@@ -5,6 +5,7 @@ import { useDmMessageMutations } from "@/hooks/communications/dm/use-dm-message-
 import { useDmTyping } from "@/hooks/communications/dm/use-dm-typing";
 import { useAudioRecorder } from "@/hooks/use-audio-recorder";
 import { useAuthedSession } from "@/hooks/use-authed-session";
+import type { DmMessageWithSender } from "@/lib/communications/dm-message";
 import { cn } from "@/lib/utils";
 import {
   useDmComposerFocus,
@@ -71,7 +72,7 @@ export function DmMessageComposer({
   >("editor");
   const { openMaximizedMessageComposer } =
     useMaximizedDmMessageComposerActions();
-  const mainReplyState = useDmReplyState();
+const mainReplyState = useDmReplyState();
   const threadReplyState = useDmThreadReplyState();
   const { setMainComposerFocus, setThreadComposerFocus } = useDmComposerFocus();
   const { replyingToMessage, clearReplyingToMessage } = parentMessageId
@@ -154,6 +155,7 @@ export function DmMessageComposer({
     setAttachments([]);
     cancelRecording();
     broadcastTyping(false, user.name);
+    clearReplyingToMessage();
 
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
@@ -236,7 +238,7 @@ export function DmMessageComposer({
         conversationId,
         content: textToSend,
         parentMessageId,
-        replyToMessageId,
+replyToMessageId,
         type: messageType,
         attachments:
           uploadedAttachments.length > 0 ? uploadedAttachments : undefined,
@@ -410,7 +412,7 @@ export function DmMessageComposer({
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [replyingToMessage, clearReplyingToMessage]);
 
-  const getReplyPreviewContent = () => {
+const getReplyPreviewContent = () => {
     if (!replyingToMessage?.content) return "📎 Attachment";
     const plainText = stripHtmlToText(replyingToMessage.content);
     return truncateText(plainText, REPLY_PREVIEW_TRUNCATE_LENGTH);
@@ -441,7 +443,7 @@ export function DmMessageComposer({
               </div>
             )}
 
-            {replyingToMessage && (
+{replyingToMessage && (
               <div className="mb-2 flex items-start gap-3 rounded-lg bg-primary/25 px-4 py-3">
                 <div className="mt-0.5 shrink-0 text-primary">
                   <IconArrowBackUp className="h-4 w-4" />
@@ -471,7 +473,7 @@ export function DmMessageComposer({
                     {getReplyPreviewContent()}
                   </p>
                 </div>
-                <button
+<button
                   className="shrink-0 rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
                   onClick={clearReplyingToMessage}
                   type="button"

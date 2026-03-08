@@ -182,7 +182,7 @@ const { highlightMessage } = useDmMessageHighlight();
     openMessageThread(parentMessageId);
   };
 
-  const handleReplyPreviewClick = () => {
+const handleReplyPreviewClick = () => {
     if (!message.replyToMessageId) return;
 
     highlightMessage(message.replyToMessageId);
@@ -273,7 +273,7 @@ const { highlightMessage } = useDmMessageHighlight();
           )}
         </div>
 
-        <div className="relative w-full">
+<div className="relative w-full">
           {message.replyToMessageId && (
             <DmReplyPreview
               onClick={handleReplyPreviewClick}

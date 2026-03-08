@@ -82,7 +82,7 @@ export function MessageComposer({
   const [attachments, setAttachments] = useState<AttachmentPreview[]>([]);
   const [composerView, setComposerView] = useState<ComposerView>("editor");
   const { openMaximizedMessageComposer } = useMaximizedMessageComposerActions();
-  const mainReplyState = useChannelReplyState();
+const mainReplyState = useChannelReplyState();
   const threadReplyState = useChannelThreadReplyState();
   const { setMainComposerFocus, setThreadComposerFocus } =
     useChannelComposerFocus();
@@ -237,6 +237,7 @@ export function MessageComposer({
     setAttachments([]);
     cancelRecording();
     broadcastTyping(false, user.name);
+    clearReplyingToMessage();
 
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
@@ -354,7 +355,7 @@ export function MessageComposer({
         mentions:
           mentionUserIds.size > 0 ? Array.from(mentionUserIds) : undefined,
         parentMessageId,
-        replyToMessageId,
+replyToMessageId,
         type: messageType,
         attachments:
           uploadedAttachments.length > 0 ? uploadedAttachments : undefined,
@@ -550,6 +551,27 @@ export function MessageComposer({
       >
         <div className="min-w-0">
           <div className="relative min-w-0">
+            {replyingToMessage && !parentMessageId && (
+              <div className="flex items-center gap-2 border-b px-4 py-2 text-sm">
+                <IconArrowBackUp className="h-4 w-4 shrink-0 text-muted-foreground" />
+                <span className="font-medium">
+                  Replying to {replyingToMessage.sender?.name ?? "Unknown"}
+                </span>
+                <span className="truncate text-muted-foreground">
+                  {replyingToMessage.content
+                    ? replyingToMessage.content.slice(0, 100)
+                    : "📎 Attachment"}
+                </span>
+                <button
+                  className="ml-auto shrink-0 rounded p-0.5 hover:bg-muted"
+                  onClick={clearReplyingToMessage}
+                  type="button"
+                >
+                  <IconX className="h-4 w-4 text-muted-foreground" />
+                </button>
+              </div>
+            )}
+
             {typingUsers.length > 0 && (
               <div className="border-b px-4 py-2">
                 <TypingIndicator typingUsers={typingUsers} />
