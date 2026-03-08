@@ -1,4 +1,5 @@
 import {
+  IconArrowForwardUp,
   IconDots,
   IconEdit,
   IconMessageReply,
@@ -30,6 +31,7 @@ interface DmMessageActionsProps {
   isPinned: boolean;
   onDelete: () => void;
   onEdit: () => void;
+  onInlineReply?: () => void;
   onPin: () => void;
   onReact: (emoji: string) => void;
   onReply: () => void;
@@ -48,6 +50,7 @@ export function DmMessageActions({
   onPin,
   onReact,
   onReply,
+  onInlineReply,
 }: DmMessageActionsProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -85,6 +88,13 @@ export function DmMessageActions({
           </Tooltip>
 
           <DropdownMenuContent align="end" className="w-48">
+            {canReply && onInlineReply && (
+              <DropdownMenuItem onClick={onInlineReply}>
+                <IconArrowForwardUp className="mr-2 h-4 w-4" />
+                Reply
+              </DropdownMenuItem>
+            )}
+
             {canReply && (
               <DropdownMenuItem onClick={onReply}>
                 <IconMessageReply className="mr-2 h-4 w-4" />

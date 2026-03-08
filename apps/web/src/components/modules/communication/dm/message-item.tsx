@@ -12,6 +12,7 @@ import type { DmMessageWithSender } from "@/lib/communications/dm-message";
 import { cn, formatMessageTimestamp } from "@/lib/utils";
 import {
   useDmMessageThreadSidebar,
+  useDmReplyState,
   useMaximizedDmMessageComposerActions,
 } from "@/stores/dm-store";
 import { DmMessageActions } from "./message-actions";
@@ -46,6 +47,8 @@ export function DmMessageItem({
 
   const { messageId, openMessageThread, closeMessageThread } =
     useDmMessageThreadSidebar();
+
+  const { setReplyingToMessage } = useDmReplyState();
 
   const isMessageThreadActive = messageId === message.id;
 
@@ -185,6 +188,7 @@ export function DmMessageItem({
               isPinned={message.isPinned}
               onDelete={handleDelete}
               onEdit={handleEditDialog}
+              onInlineReply={() => setReplyingToMessage(message)}
               onPin={handlePin}
               onReact={handleReact}
               onReply={toggleMessageThread}
