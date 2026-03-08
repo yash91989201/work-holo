@@ -61,6 +61,10 @@ interface SearchSidebarState {
   isOpen: boolean;
 }
 
+interface ReplyingToMessageState {
+  message: MessageWithSender | null;
+}
+
 interface HighlightedMessageState {
   messageId: string | null;
   triggeredAt: number | null;
