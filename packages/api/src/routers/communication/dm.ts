@@ -392,6 +392,7 @@ export const dmRouter = {
             content: normalizedContent,
             type: input.type,
             parentMessageId: input.parentMessageId,
+            replyToMessageId: input.replyToMessageId,
           })
           .returning();
 
