@@ -10,6 +10,7 @@
     "./realtime": "./src/realtime.ts",
     "./read-receipt": "./src/read-receipt.ts",
     "./notification-worker": "./src/notification-worker.ts",
+    "./search-worker": "./src/search-worker.ts",
     "./db": "./src/db.ts"
   },
   "dependencies": {
