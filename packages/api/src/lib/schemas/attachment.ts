@@ -146,6 +146,10 @@ export const StorageStatsOutput = z.object({
   audioCount: z.number(),
   archiveCount: z.number(),
   otherCount: z.number(),
+  channelCount: z.number(),
+  channelSize: z.number(),
+  dmCount: z.number(),
+  dmSize: z.number(),
 });
 
 export const RecentAttachmentOutput = z.object({
