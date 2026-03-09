@@ -3,7 +3,11 @@ import { useParams } from "@tanstack/react-router";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import {
   Sheet,
   SheetContent,
@@ -51,22 +55,27 @@ export function SearchSidebar() {
   };
 
   return (
-    <Sheet onOpenChange={(open) => !open && closeSearchSidebar()} open={isOpen}>
+    <Sheet
+      modal={false}
+      onOpenChange={(open) => !open && closeSearchSidebar()}
+      open={isOpen}
+    >
       <SheetContent className="flex w-full flex-col gap-0 p-0 sm:max-w-md">
         <SheetHeader className="border-b p-4 text-left">
           <SheetTitle className="font-semibold text-lg">
             Search Messages
           </SheetTitle>
-          <div className="relative mt-4">
-            <IconSearch className="absolute top-2.5 left-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
+          <InputGroup className="mt-4">
+            <InputGroupAddon align="inline-start">
+              <IconSearch className="h-4 w-4 text-muted-foreground" />
+            </InputGroupAddon>
+            <InputGroupInput
               autoFocus
-              className="pl-9"
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search in channel..."
               value={query}
             />
-          </div>
+          </InputGroup>
         </SheetHeader>
 
         <div className="flex-1 overflow-y-auto p-4">

@@ -25,10 +25,6 @@ export function ChannelHeader() {
     from: "/(authenticated)/org/$slug",
   });
 
-  const channelParams = useParams({
-    from: "/(authenticated)/org/$slug/workspace/communication/channels/$channelId",
-  });
-
   const { toggleInfoSidebar } = useChannelInfoSidebar();
   const { isOpen, togglePinnedMessages } = usePinnedMessagesSidebar();
   const { isOpen: mentionsOpen, toggleMentionsSidebar } = useMentionsSidebar();
