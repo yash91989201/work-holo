@@ -7,8 +7,10 @@ export const AttachmentTypeSchema = z.enum([
   "video",
   "audio",
   "archive",
-  "other",
 ]);
+
+// Source types for attachment origin
+export const SourceSchema = z.enum(["channel", "dm"]);
 
 // Input schemas
 export const CreateAttachmentInput = z.object({
@@ -47,6 +49,7 @@ export const GetUserAttachmentsInput = z.object({
   limit: z.number().min(1).max(100).default(50),
   offset: z.number().min(0).default(0),
   type: AttachmentTypeSchema.optional(),
+  source: z.enum(["all", "channel", "dm"]).optional().default("all"),
 });
 
 export const GetChannelAttachmentsInput = z.object({
@@ -61,6 +64,7 @@ export const SearchAttachmentsInput = z.object({
   limit: z.number().min(1).max(100).default(20),
   offset: z.number().min(0).default(0),
   type: AttachmentTypeSchema.optional(),
+  source: z.enum(["all", "channel", "dm"]).optional().default("all"),
 });
 
 export const UpdateAttachmentInput = z.object({
@@ -90,13 +94,17 @@ export const AttachmentOutput = z.object({
   fileSize: z.number(),
   mimeType: z.string(),
   type: AttachmentTypeSchema,
-  storagePath: z.string(),
-  bucket: z.string(),
-  thumbnailPath: z.string().nullable(),
+  url: z.string().nullable(),
+  thumbnailUrl: z.string().nullable(),
   uploadedBy: z.string(),
   uploaderName: z.string().nullable(),
   uploaderImage: z.string().nullable(),
   isPublic: z.boolean(),
+  source: SourceSchema,
+  sourceContext: z.object({
+    name: z.string(),
+    id: z.string(),
+  }),
   createdAt: z.date(),
 });
 
