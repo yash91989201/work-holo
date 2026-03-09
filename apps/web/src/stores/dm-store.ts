@@ -48,6 +48,11 @@ interface HighlightedMessageState {
   triggeredAt: number | null;
 }
 
+interface ComposerFocusState {
+  main: (() => void) | null;
+  thread: (() => void) | null;
+}
+
 interface ReplyingToMessageState {
   message: DmMessageType | null;
 }
@@ -60,6 +65,9 @@ interface DmState {
   closeMaximizedMessageComposer: () => void;
   closeMessageThread: () => void;
   closePinnedMessages: () => void;
+  composerFocus: ComposerFocusState;
+  focusMainComposer: () => void;
+  focusThreadComposer: () => void;
   highlightedMessage: HighlightedMessageState;
   highlightMessage: (messageId: string) => void;
   infoSidebar: InfoSidebarState;
@@ -73,7 +81,9 @@ interface DmState {
   openPinnedMessages: () => void;
   pinnedMessages: PinnedMessagesState;
   replyingToMessage: ReplyingToMessageState;
+  setMainComposerFocus: (handler: (() => void) | null) => void;
   setReplyingToMessage: (message: DmMessageType) => void;
+  setThreadComposerFocus: (handler: (() => void) | null) => void;
   setThreadReplyingToMessage: (message: DmMessageType) => void;
   threadReplyingToMessage: ReplyingToMessageState;
 }
@@ -93,10 +103,14 @@ const defaultMaximizedComposerState: MaximizedMessageComposerState = {
   onComplete: undefined,
 };
 
-const useDmStore = create<DmState>((set) => ({
+const useDmStore = create<DmState>((set, get) => ({
   infoSidebar: { isOpen: false },
   maximizedMessageComposer: { ...defaultMaximizedComposerState },
   pinnedMessages: { isOpen: false },
+  composerFocus: {
+    main: null,
+    thread: null,
+  },
   highlightedMessage: {
     messageId: null,
     triggeredAt: null,
@@ -136,6 +150,26 @@ const useDmStore = create<DmState>((set) => ({
     set({ messageThread: { messageId: null, isOpen: false } }),
   openPinnedMessages: () => set({ pinnedMessages: { isOpen: true } }),
   closePinnedMessages: () => set({ pinnedMessages: { isOpen: false } }),
+  setMainComposerFocus: (handler) =>
+    set((state) => ({
+      composerFocus: {
+        ...state.composerFocus,
+        main: handler,
+      },
+    })),
+  setThreadComposerFocus: (handler) =>
+    set((state) => ({
+      composerFocus: {
+        ...state.composerFocus,
+        thread: handler,
+      },
+    })),
+  focusMainComposer: () => {
+    get().composerFocus.main?.();
+  },
+  focusThreadComposer: () => {
+    get().composerFocus.thread?.();
+  },
   highlightMessage: (messageId) =>
     set({
       highlightedMessage: {
@@ -283,6 +317,24 @@ export function useDmThreadReplyState() {
     replyingToMessage,
     setReplyingToMessage,
     clearReplyingToMessage,
+  };
+}
+
+export function useDmComposerFocus() {
+  const setMainComposerFocus = useDmStore(
+    (state) => state.setMainComposerFocus
+  );
+  const setThreadComposerFocus = useDmStore(
+    (state) => state.setThreadComposerFocus
+  );
+  const focusMainComposer = useDmStore((state) => state.focusMainComposer);
+  const focusThreadComposer = useDmStore((state) => state.focusThreadComposer);
+
+  return {
+    setMainComposerFocus,
+    setThreadComposerFocus,
+    focusMainComposer,
+    focusThreadComposer,
   };
 }
 

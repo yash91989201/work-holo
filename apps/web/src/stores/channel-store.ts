@@ -62,6 +62,11 @@ interface HighlightedMessageState {
   triggeredAt: number | null;
 }
 
+interface ComposerFocusState {
+  main: (() => void) | null;
+  thread: (() => void) | null;
+}
+
 interface ChannelState {
   clearHighlightedMessage: () => void;
   clearReplyingToMessage: () => void;
@@ -71,6 +76,9 @@ interface ChannelState {
   closeMentionsSidebar: () => void;
   closeMessageThread: () => void;
   closePinnedMessages: () => void;
+  composerFocus: ComposerFocusState;
+  focusMainComposer: () => void;
+  focusThreadComposer: () => void;
   highlightedMessage: HighlightedMessageState;
 
   highlightMessage: (messageId: string) => void;
@@ -92,7 +100,9 @@ interface ChannelState {
   openPinnedMessages: () => void;
   pinnedMessages: PinnedMessagesState;
   replyingToMessage: ReplyingToMessageState;
+  setMainComposerFocus: (handler: (() => void) | null) => void;
   setReplyingToMessage: (message: MessageWithSender) => void;
+  setThreadComposerFocus: (handler: (() => void) | null) => void;
   setThreadReplyingToMessage: (message: MessageWithSender) => void;
   threadReplyingToMessage: ReplyingToMessageState;
 }
@@ -105,7 +115,7 @@ const defaultMaximizedComposerState: MaximizedMessageComposerState = {
   onComplete: undefined,
 };
 
-const useChannelStore = create<ChannelState>((set) => ({
+const useChannelStore = create<ChannelState>((set, get) => ({
   infoSidebar: { isOpen: false },
   maximizedMessageComposer: { ...defaultMaximizedComposerState },
   pinnedMessages: {
@@ -113,6 +123,10 @@ const useChannelStore = create<ChannelState>((set) => ({
   },
   mentionsSidebar: {
     isOpen: false,
+  },
+  composerFocus: {
+    main: null,
+    thread: null,
   },
   highlightedMessage: {
     messageId: null,
@@ -155,6 +169,26 @@ const useChannelStore = create<ChannelState>((set) => ({
   closePinnedMessages: () => set({ pinnedMessages: { isOpen: false } }),
   openMentionsSidebar: () => set({ mentionsSidebar: { isOpen: true } }),
   closeMentionsSidebar: () => set({ mentionsSidebar: { isOpen: false } }),
+  setMainComposerFocus: (handler) =>
+    set((state) => ({
+      composerFocus: {
+        ...state.composerFocus,
+        main: handler,
+      },
+    })),
+  setThreadComposerFocus: (handler) =>
+    set((state) => ({
+      composerFocus: {
+        ...state.composerFocus,
+        thread: handler,
+      },
+    })),
+  focusMainComposer: () => {
+    get().composerFocus.main?.();
+  },
+  focusThreadComposer: () => {
+    get().composerFocus.thread?.();
+  },
   highlightMessage: (messageId) =>
     set({
       highlightedMessage: {
@@ -376,6 +410,26 @@ export function useChannelReplyState() {
     replyingToMessage,
     setReplyingToMessage,
     clearReplyingToMessage,
+  };
+}
+
+export function useChannelComposerFocus() {
+  const setMainComposerFocus = useChannelStore(
+    (state) => state.setMainComposerFocus
+  );
+  const setThreadComposerFocus = useChannelStore(
+    (state) => state.setThreadComposerFocus
+  );
+  const focusMainComposer = useChannelStore((state) => state.focusMainComposer);
+  const focusThreadComposer = useChannelStore(
+    (state) => state.focusThreadComposer
+  );
+
+  return {
+    setMainComposerFocus,
+    setThreadComposerFocus,
+    focusMainComposer,
+    focusThreadComposer,
   };
 }
 

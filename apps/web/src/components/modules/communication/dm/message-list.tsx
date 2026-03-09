@@ -1,5 +1,4 @@
 import { IconArrowDown, IconLoader2 } from "@tabler/icons-react";
-import { useParams } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { useMarkDmMessagesRead } from "@/hooks/communications/dm/use-dm-mark-messages-read";
 import { useVirtualDmMessages } from "@/hooks/communications/dm/use-dm-messages";
@@ -35,10 +34,6 @@ function isNewMessagesSeparator(
 }
 
 export function DmMessageList() {
-  const { conversationId } = useParams({
-    from: "/(authenticated)/org/$slug/workspace/communication/dm/$conversationId",
-  });
-
   const {
     scrollRef,
     virtualizer,
@@ -159,7 +154,6 @@ export function DmMessageList() {
                   ref={virtualizer.measureElement}
                 >
                   <DmMessageItem
-                    conversationId={conversationId}
                     isHighlighted={highlightedMessageId === item.id}
                     message={item}
                   />

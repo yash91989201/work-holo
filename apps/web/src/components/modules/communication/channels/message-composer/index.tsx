@@ -11,6 +11,7 @@ import { useAuthedSession } from "@/hooks/use-authed-session";
 import { CHANNEL_MENTION, CHANNEL_MENTION_ID } from "@/lib/mentions";
 import { cn } from "@/lib/utils";
 import {
+  useChannelComposerFocus,
   useChannelReplyState,
   useChannelThreadReplyState,
   useMaximizedMessageComposerActions,
@@ -70,6 +71,7 @@ export function MessageComposer({
   const { user } = useAuthedSession();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const composerFocusHandlerRef = useRef<(() => void) | null>(null);
 
   const [text, setText] = useState(initialContent);
   const [isEditorMaximized, setIsEditorMaximized] = useState(false);
@@ -78,9 +80,26 @@ export function MessageComposer({
   const { openMaximizedMessageComposer } = useMaximizedMessageComposerActions();
   const mainReplyState = useChannelReplyState();
   const threadReplyState = useChannelThreadReplyState();
+  const { setMainComposerFocus, setThreadComposerFocus } =
+    useChannelComposerFocus();
   const { replyingToMessage, clearReplyingToMessage } = parentMessageId
     ? threadReplyState
     : mainReplyState;
+
+  const handleFocusHandlerChange = useCallback(
+    (handler: (() => void) | null) => {
+      composerFocusHandlerRef.current = handler;
+    },
+    []
+  );
+
+  const focusComposer = useCallback(() => {
+    setComposerView("editor");
+
+    requestAnimationFrame(() => {
+      composerFocusHandlerRef.current?.();
+    });
+  }, []);
 
   const {
     isRecording,
@@ -381,6 +400,21 @@ export function MessageComposer({
     }
   }, [composerView, isRecording, audioUrl]);
 
+  useEffect(() => {
+    if (parentMessageId) {
+      setThreadComposerFocus(focusComposer);
+      return () => setThreadComposerFocus(null);
+    }
+
+    setMainComposerFocus(focusComposer);
+    return () => setMainComposerFocus(null);
+  }, [
+    focusComposer,
+    parentMessageId,
+    setMainComposerFocus,
+    setThreadComposerFocus,
+  ]);
+
   const handleFileUpload = useCallback((files?: FileList) => {
     const filesToAdd = files || fileInputRef.current?.files;
     if (!filesToAdd) return;
@@ -583,6 +617,7 @@ export function MessageComposer({
               onComposerViewChange={setComposerView}
               onEmojiSelect={handleEmojiSelect}
               onFileUpload={() => fileInputRef.current?.click()}
+              onFocusHandlerChange={handleFocusHandlerChange}
               onMaximize={handleMaximize}
               onSubmit={handleSubmit}
               onVoiceRecord={handleVoiceRecord}
