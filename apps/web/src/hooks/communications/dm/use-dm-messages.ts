@@ -137,6 +137,7 @@ export function useVirtualDmMessages() {
   }, [messages, virtualizer]);
 
   // Restore scroll position after loading older messages
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Need to track message count changes
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -198,6 +199,7 @@ export function useVirtualDmMessages() {
   }, []);
 
   // Handle highlighted message scroll
+  // biome-ignore lint/correctness/useExhaustiveDependencies: checking of highlightedAt is required
   useEffect(() => {
     if (!highlightedMessageId) return;
 
@@ -219,9 +221,16 @@ export function useVirtualDmMessages() {
     const frameId = requestAnimationFrame(() => {
       virtualizer.scrollToIndex(targetIndex, {
         align: "center",
-        behavior: "smooth",
+        behavior: "auto",
       });
     });
+
+    const settleScrollTimeout = window.setTimeout(() => {
+      virtualizer.scrollToIndex(targetIndex, {
+        align: "center",
+        behavior: "auto",
+      });
+    }, 120);
 
     const resetAutoScrollTimeout = window.setTimeout(() => {
       isAutoScrollingRef.current = false;
@@ -233,6 +242,7 @@ export function useVirtualDmMessages() {
 
     return () => {
       cancelAnimationFrame(frameId);
+      window.clearTimeout(settleScrollTimeout);
       window.clearTimeout(timeoutId);
       window.clearTimeout(resetAutoScrollTimeout);
     };
