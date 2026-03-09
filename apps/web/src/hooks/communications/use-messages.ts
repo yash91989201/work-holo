@@ -231,9 +231,16 @@ export function useVirtualMessages() {
     const frameId = requestAnimationFrame(() => {
       virtualizer.scrollToIndex(targetIndex, {
         align: "center",
-        behavior: "smooth",
+        behavior: "auto",
       });
     });
+
+    const settleScrollTimeout = window.setTimeout(() => {
+      virtualizer.scrollToIndex(targetIndex, {
+        align: "center",
+        behavior: "auto",
+      });
+    }, 120);
 
     const resetAutoScrollTimeout = window.setTimeout(() => {
       isAutoScrollingRef.current = false;
@@ -245,6 +252,7 @@ export function useVirtualMessages() {
 
     return () => {
       cancelAnimationFrame(frameId);
+      window.clearTimeout(settleScrollTimeout);
       window.clearTimeout(timeoutId);
       window.clearTimeout(resetAutoScrollTimeout);
     };
