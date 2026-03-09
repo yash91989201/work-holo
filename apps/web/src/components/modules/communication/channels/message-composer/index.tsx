@@ -2,6 +2,8 @@ import { IconArrowBackUp, IconX } from "@tabler/icons-react";
 import { useAsyncDebouncer } from "@tanstack/react-pacer";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import { useMessageMutations } from "@/hooks/communications/use-message-mutations";
 import { useTypingIndicator } from "@/hooks/communications/use-typing-indicator";
 import { useAudioRecorder } from "@/hooks/use-audio-recorder";
@@ -509,55 +511,40 @@ export function MessageComposer({
       >
         <div className="min-w-0">
           <div className="relative min-w-0">
-            {replyingToMessage && (
-              <div className="mb-2 flex items-start gap-3 rounded-lg bg-primary/25 px-4 py-3">
-                <div className="mt-0.5 shrink-0 text-primary">
-                  <IconArrowBackUp className="h-4 w-4" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    {replyingToMessage.sender?.image ? (
-                      <img
-                        alt={replyingToMessage.sender.name}
-                        className="h-5 w-5 rounded-full object-cover"
-                        height={20}
-                        src={replyingToMessage.sender.image}
-                        width={20}
-                      />
-                    ) : (
-                      <div className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 font-medium text-[10px] text-primary">
-                        {replyingToMessage.sender?.name
-                          ?.slice(0, 2)
-                          .toUpperCase() || "??"}
-                      </div>
-                    )}
-                    <span className="font-semibold text-foreground text-sm">
-                      {replyingToMessage.sender?.name ?? "Unknown"}
-                    </span>
-                  </div>
-                  <p className="mt-1 truncate text-muted-foreground text-sm">
-                    {replyingToMessage.content
-                      ? truncateText(
-                          stripHtmlToText(replyingToMessage.content),
-                          80
-                        )
-                      : "📎 Attachment"}
-                  </p>
-                </div>
-                <button
-                  className="shrink-0 rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
-                  onClick={clearReplyingToMessage}
-                  type="button"
-                >
-                  <IconX className="h-4 w-4" />
-                </button>
-              </div>
-            )}
-
             {typingUsers.length > 0 && (
               <div className="border-b px-4 py-2">
                 <TypingIndicator typingUsers={typingUsers} />
               </div>
+            )}
+
+            {replyingToMessage && (
+              <Alert className="mb-3 border-primary/30 bg-primary/5">
+                <div className="flex items-start gap-3">
+                  <div className="mt-0.5 shrink-0 text-primary">
+                    <IconArrowBackUp className="h-4 w-4" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <AlertTitle>
+                      Replying to {replyingToMessage.sender?.name ?? "Unknown"}
+                    </AlertTitle>
+                    <AlertDescription className="truncate text-sm">
+                      {replyingToMessage.content
+                        ? truncateText(
+                            stripHtmlToText(replyingToMessage.content),
+                            120
+                          )
+                        : "📎 Attachment"}
+                    </AlertDescription>
+                  </div>
+                  <Button
+                    onClick={clearReplyingToMessage}
+                    size="icon"
+                    variant="destructive"
+                  >
+                    <IconX className="h-4 w-4" />
+                  </Button>
+                </div>
+              </Alert>
             )}
 
             <MessageEditor
