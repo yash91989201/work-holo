@@ -4,7 +4,11 @@ import { format } from "date-fns";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Sheet,
@@ -70,15 +74,16 @@ export function DmSearchSidebar() {
               <IconX className="h-4 w-4" />
             </Button>
           </div>
-          <div className="relative mt-2">
-            <IconSearch className="absolute top-2.5 left-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              className="pl-9"
+          <InputGroup className="mt-2">
+            <InputGroupAddon align="inline-start">
+              <IconSearch className="h-4 w-4 text-muted-foreground" />
+            </InputGroupAddon>
+            <InputGroupInput
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search in conversation..."
               value={query}
             />
-          </div>
+          </InputGroup>
         </SheetHeader>
 
         <div className="flex-1 overflow-hidden">
