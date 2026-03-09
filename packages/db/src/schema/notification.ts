@@ -16,10 +16,12 @@ import { organization, user } from "./auth";
 export const notificationTypeEnum = pgEnum("notificationType", [
   "channel_message",
   "channel_reply",
+  "channel_direct_reply",
   "channel_reaction",
   "channel_mention",
   "dm_message",
   "dm_reply",
+  "dm_direct_reply",
   "dm_reaction",
 ]);
 
