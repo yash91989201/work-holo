@@ -146,6 +146,7 @@ export const messageRouter = {
         mentionEvents,
         channelMessageEvents,
         replyEvents,
+        directReplyEvent,
       } = await db.transaction(async (tx) => {
         const txid = await generateTxId(tx);
 
@@ -287,6 +288,34 @@ export const messageRouter = {
           }
         }
 
+        let directReplyEvent: NotificationDomainEvent | null = null;
+
+        if (input.replyToMessageId) {
+          const originalMessage = await tx.query.messageTable.findFirst({
+            where: eq(messageTable.id, input.replyToMessageId),
+            columns: { senderId: true },
+          });
+
+          if (originalMessage && originalMessage.senderId !== user.id) {
+            directReplyEvent = {
+              type: "channel_direct_reply",
+              actorId: user.id,
+              orgId,
+              targetUserId: originalMessage.senderId,
+              entityId: newMessage.id,
+              entityType: "message",
+              metadata: {
+                channelId: input.channelId,
+                channelName: channel.name,
+                messagePreview,
+                replySenderId: user.id,
+                replySenderName: user.name,
+                originalMessageId: input.replyToMessageId,
+              },
+            };
+          }
+        }
+
         // Always query channel members first (needed for both notifications and memberCount)
         const channelMembers = await tx
           .select({ userId: channelMemberTable.userId })
@@ -382,6 +411,7 @@ export const messageRouter = {
           mentionEvents,
           channelMessageEvents,
           replyEvents,
+          directReplyEvent,
         };
       });
 
@@ -398,6 +428,10 @@ export const messageRouter = {
 
             for (const event of replyEvents) {
               await context.notification.emit(event);
+            }
+
+            if (directReplyEvent) {
+              await context.notification.emit(directReplyEvent);
             }
           } catch (error) {
             console.error("Error emitting notifications:", error);

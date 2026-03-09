@@ -60,12 +60,22 @@ export const DEFAULT_NOTIFICATION_PREFERENCES: Record<
     push: true,
     email: true,
   },
+  channel_direct_reply: {
+    sound: true,
+    push: true,
+    email: true,
+  },
   dm_message: {
     sound: true,
     push: true,
     email: true,
   },
   dm_reply: {
+    sound: true,
+    push: true,
+    email: true,
+  },
+  dm_direct_reply: {
     sound: true,
     push: true,
     email: true,
