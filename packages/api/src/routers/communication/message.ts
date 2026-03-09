@@ -11,7 +11,7 @@ import {
   notificationTable,
   user as userTable,
 } from "@work-holo/db/schema/index";
-import { Queue } from "@work-holo/infrastructure";
+import { Queue, type SearchIndexQueueMessage } from "@work-holo/infrastructure";
 import {
   and,
   count,
@@ -439,6 +439,36 @@ export const messageRouter = {
         });
       }
 
+      // Publish to search indexing queue
+      try {
+        const searchPayload: SearchIndexQueueMessage = {
+          action: "upsert",
+          messageId: message.id,
+          organizationId: orgId,
+          scopeType: "channel",
+          scopeId: input.channelId,
+          contentHtml: message.content || undefined,
+          senderId: user.id,
+          senderName: user.name || undefined,
+          messageType: message.type || undefined,
+          createdAt: message.createdAt.toISOString(),
+          updatedAt: message.updatedAt?.toISOString() || undefined,
+          parentMessageId: message.parentMessageId || undefined,
+          hasAttachments:
+            input.attachments && input.attachments.length > 0
+              ? true
+              : undefined,
+          isPinned: message.isPinned || undefined,
+          mentionedUserIds:
+            input.mentions && input.mentions.length > 0
+              ? input.mentions
+              : undefined,
+        };
+        Queue.publish("SEARCH_INDEXING", searchPayload);
+      } catch (error) {
+        console.error("Failed to publish to search indexing queue:", error);
+      }
+
       return { txid, message };
     }),
 
@@ -578,6 +608,30 @@ export const messageRouter = {
         });
       }
 
+      // Publish to search indexing queue
+      try {
+        const searchPayload: SearchIndexQueueMessage = {
+          action: "upsert",
+          messageId: message.id,
+          organizationId: orgId,
+          scopeType: "channel",
+          scopeId: message.channelId,
+          contentHtml: message.content || undefined,
+          senderId: message.senderId || undefined,
+          senderName: user.name || undefined,
+          messageType: message.type || undefined,
+          updatedAt: message.updatedAt?.toISOString() || undefined,
+          parentMessageId: message.parentMessageId || undefined,
+          mentionedUserIds:
+            input.mentions && input.mentions.length > 0
+              ? input.mentions
+              : undefined,
+        };
+        Queue.publish("SEARCH_INDEXING", searchPayload);
+      } catch (error) {
+        console.error("Failed to publish to search indexing queue:", error);
+      }
+
       return {
         txid,
         message: {
@@ -640,13 +694,13 @@ export const messageRouter = {
   delete: orgMemberProcedure
     .input(DeleteMessageInput)
     .output(DeleteMessageOutput)
-    .handler(async ({ input, context: { db, permission } }) => {
+    .handler(async ({ input, context: { db, permission, orgId } }) => {
       await permission.requireMessageAccess(
         input.messageId,
         permission.channel().message.delete
       );
 
-      const { txid } = await db.transaction(async (tx) => {
+      const { txid, childMessageIds } = await db.transaction(async (tx) => {
         const txid = await generateTxId(tx);
 
         const message = await tx.query.messageTable.findFirst({
@@ -689,6 +743,14 @@ export const messageRouter = {
           }
         }
 
+        // Get child message IDs before deleting
+        const childMessages = await tx
+          .select({ id: messageTable.id })
+          .from(messageTable)
+          .where(eq(messageTable.parentMessageId, input.messageId));
+
+        const childMessageIds = childMessages.map((msg) => msg.id);
+
         await tx
           .delete(messageTable)
           .where(eq(messageTable.id, input.messageId));
@@ -701,8 +763,31 @@ export const messageRouter = {
           .delete(messageTable)
           .where(eq(messageTable.parentMessageId, input.messageId));
 
-        return { txid };
+        return { txid, childMessageIds };
       });
+
+      // Publish to search indexing queue for deleted messages
+      try {
+        const deletePayload: SearchIndexQueueMessage = {
+          action: "delete",
+          messageId: input.messageId,
+          organizationId: orgId,
+          scopeType: "channel",
+        };
+        Queue.publish("SEARCH_INDEXING", deletePayload);
+
+        for (const childMessageId of childMessageIds) {
+          const childDeletePayload: SearchIndexQueueMessage = {
+            action: "delete",
+            messageId: childMessageId,
+            organizationId: orgId,
+            scopeType: "channel",
+          };
+          Queue.publish("SEARCH_INDEXING", childDeletePayload);
+        }
+      } catch (error) {
+        console.error("Failed to publish to search indexing queue:", error);
+      }
 
       return {
         txid,
