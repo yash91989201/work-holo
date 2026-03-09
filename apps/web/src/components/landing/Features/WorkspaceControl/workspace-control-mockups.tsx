@@ -196,3 +196,43 @@ export function WorkspaceTeamsMockup() {
     </div>
   );
 }
+
+/**
+ * WorkspaceMembersMockup — Section 3 "Assign members effectively"
+ * A member management UI with role badges.
+ */
+export function WorkspaceMembersMockup() {
+  const members = [
+    { name: "Alex Rivera", role: "Admin", avatar: "21" },
+    { name: "Sarah Chen", role: "Editor", avatar: "22" },
+    { name: "Mike Jordan", role: "Viewer", avatar: "23" },
+    { name: "Emma Wilson", role: "Admin", avatar: "24" },
+  ];
+
+  return (
+    <div className="w-full aspect-video rounded-3xl bg-[#f8fafc] border border-gray-200 shadow-xl p-6 flex flex-col gap-4">
+      <div className="flex items-center justify-between pb-4 border-b border-gray-100">
+        <div className="h-4 w-32 bg-gray-200 rounded" />
+        <div className="size-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-xs">+</div>
+      </div>
+      <div className="space-y-3">
+        {members.map((m) => (
+          <div key={m.name} className="flex items-center justify-between bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="size-10 rounded-full overflow-hidden bg-gray-100">
+                <img src={`https://i.pravatar.cc/100?u=${m.avatar}`} alt={m.name} className="size-full object-cover" />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-gray-900">{m.name}</p>
+                <p className="text-xs text-gray-500 font-medium">{m.role}</p>
+              </div>
+            </div>
+            <div className="px-2.5 py-1 rounded-full bg-blue-50 text-[10px] font-bold text-blue-600 uppercase tracking-wider">
+              {m.role}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

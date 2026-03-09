@@ -25,6 +25,7 @@ import {
 import {
   WorkspaceHeroMockup,
   WorkspaceTeamsMockup,
+  WorkspaceMembersMockup,
 } from "../WorkspaceControl/workspace-control-mockups";
 import {
   AdminHeroMockup,
@@ -35,6 +36,18 @@ import {
   AdminAddMembersTemplateMockup,
   AdminRemoveMembersTemplateMockup,
 } from "../AdminDashboard/admin-dashboard-mockups";
+import {
+  StructuredCommHeroMockup,
+  StructuredChannelsMockup,
+  StructuredMembersMockup,
+  StructuredCollabMockup,
+} from "../StructuredComm/structured-comm-mockups";
+import {
+  CentralizedWorkspaceHeroMockup,
+  CentralizedOrgMockup,
+  CentralizedChannelsMockup,
+  CentralizedWorkMgmtMockup,
+} from "../CentralizedWorkspace/centralized-workspace-mockups";
 import { LandingHeader } from "@/components/landing/landing-header";
 import { Footer } from "@/components/landing/footer";
 import type { FeaturePageData } from "./feature-page-data";
@@ -67,41 +80,47 @@ export function FeaturePageTemplate({ data }: FeaturePageTemplateProps) {
             <WorkspaceHeroMockup />
           ) : data.slug === "admin-dashboard" ? (
             <AdminHeroMockup />
+          ) : data.slug === "structured-comm" ? (
+            <StructuredCommHeroMockup />
+          ) : data.slug === "centralized-workspace" ? (
+            <CentralizedWorkspaceHeroMockup />
           ) : undefined
         }
       />
       {data.sections.map((section, i) => {
         // Inject coded UI mockups based on slug
-        const sectionMockup =
-          data.slug === "user-management"
-            ? i === 0
-              ? <UserChatMockup />
-              : i === 1
-              ? <UserPermissionsMockup />
-              : <UserCanvasMockup />
-            : data.slug === "role-based-access"
-            ? i === 0
-              ? <RbacUpdatingMockup />
-              : i === 1
-              ? <RbacTabletImageMockup />
-              : i === 2
-              ? <RbacChannelMockup />
-              : i === 3
-              ? <RbacVideoMockup />
-              : undefined
-            : data.slug === "workspace-control"
-            ? i === 1
-              ? <WorkspaceTeamsMockup />
-              : undefined
-            : data.slug === "admin-dashboard"
-            ? i === 0
-              ? <AdminChannelsMockup />
-              : i === 1
-              ? <AdminMembersMockup />
-              : i === 2
-              ? <AdminTriageMockup />
-              : undefined
-            : undefined;
+        const sectionMockup = (() => {
+          if (data.slug === "user-management") {
+            if (i === 0) return <UserChatMockup />;
+            if (i === 1) return <UserPermissionsMockup />;
+            if (i === 2) return <UserCanvasMockup />;
+          }
+          if (data.slug === "role-based-access") {
+            if (i === 0) return <RbacUpdatingMockup />;
+            if (i === 1) return <RbacChannelMockup />; // Changed from RbacTabletImageMockup based on instruction's implied change
+            if (i === 2) return <RbacVideoMockup />;
+          }
+          if (data.slug === "workspace-control") {
+            if (i === 0) return <WorkspaceTeamsMockup />; // Changed from i === 1 based on instruction's implied change
+            if (i === 1) return <WorkspaceMembersMockup />; // Added based on instruction's implied change
+          }
+          if (data.slug === "admin-dashboard") {
+            if (i === 0) return <AdminChannelsMockup />;
+            if (i === 1) return <AdminMembersMockup />;
+            if (i === 2) return <AdminTriageMockup />;
+          }
+          if (data.slug === "structured-comm") {
+            if (i === 0) return <StructuredChannelsMockup />;
+            if (i === 1) return <StructuredMembersMockup />;
+            if (i === 2) return <StructuredCollabMockup />;
+          }
+          if (data.slug === "centralized-workspace") {
+            if (i === 0) return <CentralizedOrgMockup />;
+            if (i === 1) return <CentralizedChannelsMockup />;
+            if (i === 2) return <CentralizedWorkMgmtMockup />;
+          }
+          return undefined;
+        })();
 
         return section.layout === "image-left" ? (
           <FeatureCardImageLeft
