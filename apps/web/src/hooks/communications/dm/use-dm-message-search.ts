@@ -1,6 +1,6 @@
 import { useDebouncedValue } from "@tanstack/react-pacer";
 import { useQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { queryUtils } from "@/utils/orpc";
 
 interface UseDmMessageSearchOptions {
@@ -55,7 +55,7 @@ export function useDmMessageSearch({
     })
   );
 
-  const results = useMemo(() => data?.messages ?? [], [data]);
+  const results = data?.messages ?? [];
   const hasMore = data?.nextCursor != null;
   const total = data?.total ?? 0;
 
