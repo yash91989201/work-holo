@@ -8,7 +8,6 @@ import {
 import { eq, useLiveQuery } from "@tanstack/react-db";
 import type { MessageWithSenderType } from "@work-holo/api/lib/types";
 import { useMemo } from "react";
-import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -97,7 +96,7 @@ const { highlightMessage } = useChannelMessageHighlight();
     };
   }, [replyRows]);
 
-const handleReplyPreviewClick = () => {
+  const handleReplyPreviewClick = () => {
     const targetElement = document.querySelector(
       `[data-message-id="${replyToMessageId}"]`
     );
