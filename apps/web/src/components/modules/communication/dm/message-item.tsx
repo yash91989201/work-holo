@@ -22,7 +22,7 @@ import {
   useDmMessageHighlight,
   useDmMessageThreadSidebar,
   useDmReplyState,
-useDmThreadReplyState,
+  useDmThreadReplyState,
   useMaximizedDmMessageComposerActions,
 } from "@/stores/dm-store";
 import {
@@ -132,7 +132,7 @@ export function DmMessageItem({
   const { messageId, openMessageThread, closeMessageThread } =
     useDmMessageThreadSidebar();
 
-const { setReplyingToMessage } = useDmReplyState();
+  const { setReplyingToMessage } = useDmReplyState();
   const { highlightMessage } = useDmMessageHighlight();
   const { setReplyingToMessage: setThreadReplyingToMessage } =
     useDmThreadReplyState();
@@ -209,11 +209,10 @@ const handleReplyPreviewClick = () => {
     if (isThreadMessage) {
       setThreadReplyingToMessage(message);
       focusThreadComposer();
-      return;
+    } else {
+      setReplyingToMessage(message);
+      focusMainComposer();
     }
-
-    setReplyingToMessage(message);
-    focusMainComposer();
   };
 
   return (
@@ -317,7 +316,7 @@ const handleReplyPreviewClick = () => {
               isPinned={message.isPinned}
               onDelete={handleDelete}
               onEdit={handleEditDialog}
-onInlineReply={handleInlineReply}
+              onInlineReply={handleInlineReply}
               onPin={handlePin}
               onReact={handleReact}
               onReply={toggleMessageThread}

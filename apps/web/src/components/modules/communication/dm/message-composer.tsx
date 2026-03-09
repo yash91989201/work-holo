@@ -72,7 +72,7 @@ export function DmMessageComposer({
   >("editor");
   const { openMaximizedMessageComposer } =
     useMaximizedDmMessageComposerActions();
-const mainReplyState = useDmReplyState();
+  const mainReplyState = useDmReplyState();
   const threadReplyState = useDmThreadReplyState();
   const { setMainComposerFocus, setThreadComposerFocus } = useDmComposerFocus();
   const { replyingToMessage, clearReplyingToMessage } = parentMessageId
@@ -412,7 +412,7 @@ replyToMessageId,
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [replyingToMessage, clearReplyingToMessage]);
 
-const getReplyPreviewContent = () => {
+  const getReplyPreviewContent = () => {
     if (!replyingToMessage?.content) return "📎 Attachment";
     const plainText = stripHtmlToText(replyingToMessage.content);
     return truncateText(plainText, REPLY_PREVIEW_TRUNCATE_LENGTH);
@@ -443,7 +443,7 @@ const getReplyPreviewContent = () => {
               </div>
             )}
 
-{replyingToMessage && !parentMessageId && (
+            {replyingToMessage && !parentMessageId && (
               <div className="mb-2 flex items-start gap-3 rounded-lg bg-primary/25 px-4 py-3">
                 <div className="mt-0.5 shrink-0 text-primary">
                   <IconArrowBackUp className="h-4 w-4" />
@@ -473,7 +473,7 @@ const getReplyPreviewContent = () => {
                     {getReplyPreviewContent()}
                   </p>
                 </div>
-<button
+                <button
                   className="shrink-0 rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
                   onClick={clearReplyingToMessage}
                   type="button"

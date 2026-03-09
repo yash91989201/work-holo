@@ -90,7 +90,7 @@ export function DmMessageActions({
           </Tooltip>
 
           <DropdownMenuContent align="end" className="w-48">
-{canInlineReply && onInlineReply && (
+            {canInlineReply && onInlineReply && (
               <DropdownMenuItem onClick={onInlineReply}>
                 <IconArrowForwardUp className="mr-2 h-4 w-4" />
                 Reply
