@@ -1,30 +1,15 @@
-import { IconLoader2, IconSearch, IconX } from "@tabler/icons-react";
+import { IconLoader2, IconSearch } from "@tabler/icons-react";
 import { useParams } from "@tanstack/react-router";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupInput,
-} from "@/components/ui/input-group";
-import {
-  Item,
-  ItemContent,
-  ItemDescription,
-  ItemGroup,
-  ItemHeader,
-  ItemMedia,
-  ItemTitle,
-} from "@/components/ui/item";
+import { Input } from "@/components/ui/input";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { Spinner } from "@/components/ui/spinner";
 import { useMessageSearch } from "@/hooks/communications/use-message-search";
 import { useVirtualMessages } from "@/hooks/communications/use-messages";
 import {
@@ -66,42 +51,22 @@ export function SearchSidebar() {
   };
 
   return (
-    <Sheet
-      modal={false}
-      onOpenChange={(open) => !open && closeSearchSidebar()}
-      open={isOpen}
-    >
+    <Sheet onOpenChange={(open) => !open && closeSearchSidebar()} open={isOpen}>
       <SheetContent className="flex w-full flex-col gap-0 p-0 sm:max-w-md">
         <SheetHeader className="border-b p-4 text-left">
           <SheetTitle className="font-semibold text-lg">
             Search Messages
           </SheetTitle>
-          <InputGroup className="mt-4">
-            <InputGroupAddon align="inline-start">
-              {isLoading ? (
-                <Spinner className="h-4 w-4 text-muted-foreground" />
-              ) : (
-                <IconSearch className="h-4 w-4 text-muted-foreground" />
-              )}
-            </InputGroupAddon>
-            <InputGroupInput
+          <div className="relative mt-4">
+            <IconSearch className="absolute top-2.5 left-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
               autoFocus
+              className="pl-9"
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search in channel..."
               value={query}
             />
-            {query && (
-              <InputGroupAddon align="inline-end">
-                <InputGroupButton
-                  onClick={() => setQuery("")}
-                  size="icon-xs"
-                  variant="ghost"
-                >
-                  <IconX className="h-4 w-4" />
-                </InputGroupButton>
-              </InputGroupAddon>
-            )}
-          </InputGroup>
+          </div>
         </SheetHeader>
 
         <div className="flex-1 overflow-y-auto p-4">
@@ -125,46 +90,37 @@ export function SearchSidebar() {
               </div>
             )}
 
-            <ItemGroup>
-              {results.map((result) => (
-                <Item
-                  asChild
-                  className="cursor-pointer"
-                  key={result.id}
-                  onClick={() => handleResultClick(result)}
-                  variant="outline"
-                >
-                  <button type="button">
-                    <ItemMedia>
-                      <Avatar className="size-8">
-                        <AvatarImage src={result.sender.image || undefined} />
-                        <AvatarFallback>
-                          {result.sender.name.charAt(0).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                    </ItemMedia>
-                    <ItemContent>
-                      <ItemHeader>
-                        <ItemTitle>{result.sender.name}</ItemTitle>
-                        <span className="text-muted-foreground text-xs">
-                          {new Intl.DateTimeFormat("en-US", {
-                            hour: "numeric",
-                            minute: "numeric",
-                          }).format(new Date(result.createdAt))}
-                        </span>
-                      </ItemHeader>
-                      <ItemDescription
-                        className="[&>mark]:bg-yellow-200 [&>mark]:text-yellow-900 [&>mark]:dark:bg-yellow-900 [&>mark]:dark:text-yellow-200"
-                        // biome-ignore lint/security/noDangerouslySetInnerHtml: Highlights contain safe <mark> tags from backend
-                        dangerouslySetInnerHTML={{
-                          __html: result.highlights[0] || result.content || "",
-                        }}
-                      />
-                    </ItemContent>
-                  </button>
-                </Item>
-              ))}
-            </ItemGroup>
+            {results.map((result) => (
+              <button
+                className="flex flex-col gap-2 rounded-lg border bg-card p-3 text-left text-sm transition-colors hover:bg-accent"
+                key={result.id}
+                onClick={() => handleResultClick(result)}
+                type="button"
+              >
+                <div className="flex items-center gap-2">
+                  <Avatar className="h-6 w-6">
+                    <AvatarImage src={result.sender.image || undefined} />
+                    <AvatarFallback>
+                      {result.sender.name.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="font-medium">{result.sender.name}</span>
+                  <span className="text-muted-foreground text-xs">
+                    {new Intl.DateTimeFormat("en-US", {
+                      hour: "numeric",
+                      minute: "numeric",
+                    }).format(new Date(result.createdAt))}
+                  </span>
+                </div>
+                <div
+                  className="line-clamp-3 text-muted-foreground [&>mark]:bg-yellow-200 [&>mark]:text-yellow-900 [&>mark]:dark:bg-yellow-900 [&>mark]:dark:text-yellow-200"
+                  // biome-ignore lint/security/noDangerouslySetInnerHtml: Highlights contain safe <mark> tags from backend
+                  dangerouslySetInnerHTML={{
+                    __html: result.highlights[0] || result.content || "",
+                  }}
+                />
+              </button>
+            ))}
 
             {hasMore && (
               <Button
