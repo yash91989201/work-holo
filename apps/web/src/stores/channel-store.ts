@@ -65,6 +65,7 @@ interface HighlightedMessageState {
 interface ChannelState {
   clearHighlightedMessage: () => void;
   clearReplyingToMessage: () => void;
+  clearThreadReplyingToMessage: () => void;
   closeInfoSidebar: () => void;
   closeMaximizedMessageComposer: () => void;
   closeMentionsSidebar: () => void;
@@ -92,6 +93,8 @@ interface ChannelState {
   pinnedMessages: PinnedMessagesState;
   replyingToMessage: ReplyingToMessageState;
   setReplyingToMessage: (message: MessageWithSender) => void;
+  setThreadReplyingToMessage: (message: MessageWithSender) => void;
+  threadReplyingToMessage: ReplyingToMessageState;
 }
 
 const defaultMaximizedComposerState: MaximizedMessageComposerState = {
@@ -120,6 +123,9 @@ const useChannelStore = create<ChannelState>((set) => ({
     isOpen: false,
   },
   replyingToMessage: {
+    message: null,
+  },
+  threadReplyingToMessage: {
     message: null,
   },
 
@@ -167,6 +173,14 @@ const useChannelStore = create<ChannelState>((set) => ({
   setReplyingToMessage: (message) =>
     set({
       replyingToMessage: { message },
+    }),
+  clearThreadReplyingToMessage: () =>
+    set({
+      threadReplyingToMessage: { message: null },
+    }),
+  setThreadReplyingToMessage: (message) =>
+    set({
+      threadReplyingToMessage: { message },
     }),
 }));
 
@@ -356,6 +370,24 @@ export function useChannelReplyState() {
   );
   const clearReplyingToMessage = useChannelStore(
     (state) => state.clearReplyingToMessage
+  );
+
+  return {
+    replyingToMessage,
+    setReplyingToMessage,
+    clearReplyingToMessage,
+  };
+}
+
+export function useChannelThreadReplyState() {
+  const replyingToMessage = useChannelStore(
+    (state) => state.threadReplyingToMessage.message
+  );
+  const setReplyingToMessage = useChannelStore(
+    (state) => state.setThreadReplyingToMessage
+  );
+  const clearReplyingToMessage = useChannelStore(
+    (state) => state.clearThreadReplyingToMessage
   );
 
   return {

@@ -25,6 +25,7 @@ import {
 
 interface DmMessageActionsProps {
   canEdit: boolean;
+  canInlineReply?: boolean;
   canPin: boolean;
   canReply: boolean;
   isOwnMessage: boolean;
@@ -41,6 +42,7 @@ const REACTIONS = ["👍", "❤️", "😂", "😮", "😢", "🎉"];
 
 export function DmMessageActions({
   canEdit,
+  canInlineReply,
   canPin,
   canReply,
   isOwnMessage,
@@ -88,7 +90,7 @@ export function DmMessageActions({
           </Tooltip>
 
           <DropdownMenuContent align="end" className="w-48">
-            {canReply && onInlineReply && (
+            {canInlineReply && onInlineReply && (
               <DropdownMenuItem onClick={onInlineReply}>
                 <IconArrowForwardUp className="mr-2 h-4 w-4" />
                 Reply

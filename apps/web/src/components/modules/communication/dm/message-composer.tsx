@@ -1,4 +1,4 @@
-import { IconX } from "@tabler/icons-react";
+import { IconArrowBackUp, IconX } from "@tabler/icons-react";
 import { eq, useLiveQuery } from "@tanstack/react-db";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -11,8 +11,10 @@ import type { DmMessageWithSender } from "@/lib/communications/dm-message";
 import { cn } from "@/lib/utils";
 import {
   useDmReplyState,
+  useDmThreadReplyState,
   useMaximizedDmMessageComposerActions,
 } from "@/stores/dm-store";
+import { stripHtmlToText, truncateText } from "@/utils/message-utils";
 import { orpcClient } from "@/utils/orpc";
 import { uploadToStorage } from "@/utils/upload-helper";
 import { DmAttachmentPreviewList } from "./attachment-preview-list";
@@ -66,7 +68,11 @@ export function DmMessageComposer({
   >("editor");
   const { openMaximizedMessageComposer } =
     useMaximizedDmMessageComposerActions();
-  const { replyingToMessage, clearReplyingToMessage } = useDmReplyState();
+  const mainReplyState = useDmReplyState();
+  const threadReplyState = useDmThreadReplyState();
+  const { replyingToMessage, clearReplyingToMessage } = parentMessageId
+    ? threadReplyState
+    : mainReplyState;
 
   const {
     isRecording,
@@ -387,10 +393,8 @@ export function DmMessageComposer({
   const replyMessage = replyingToMessage as DmMessageWithSender | null;
   const getReplyPreviewContent = () => {
     if (!replyMessage?.content) return "📎 Attachment";
-    if (replyMessage.content.length > 100) {
-      return `${replyMessage.content.slice(0, 100)}…`;
-    }
-    return replyMessage.content;
+    const plainText = stripHtmlToText(replyMessage.content);
+    return truncateText(plainText, 80);
   };
 
   return (
@@ -418,22 +422,41 @@ export function DmMessageComposer({
               </div>
             )}
 
-            {replyMessage && !parentMessageId && (
-              <div className="mb-1 flex items-center gap-2 rounded-sm border-primary border-l-2 bg-muted/50 px-3 py-2">
+            {replyMessage && (
+              <div className="mb-2 flex items-start gap-3 rounded-lg bg-primary/25 px-4 py-3">
+                <div className="mt-0.5 shrink-0 text-primary">
+                  <IconArrowBackUp className="h-4 w-4" />
+                </div>
                 <div className="min-w-0 flex-1">
-                  <p className="font-medium text-primary text-xs">
-                    Replying to {replyMessage.sender?.name ?? "Unknown"}
-                  </p>
-                  <p className="truncate text-muted-foreground text-xs">
+                  <div className="flex items-center gap-2">
+                    {replyMessage.sender?.image ? (
+                      <img
+                        alt={replyMessage.sender.name}
+                        className="h-5 w-5 rounded-full object-cover"
+                        height={20}
+                        src={replyMessage.sender.image}
+                        width={20}
+                      />
+                    ) : (
+                      <div className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 font-medium text-[10px] text-primary">
+                        {replyMessage.sender?.name?.slice(0, 2).toUpperCase() ||
+                          "??"}
+                      </div>
+                    )}
+                    <span className="font-semibold text-foreground text-sm">
+                      {replyMessage.sender?.name ?? "Unknown"}
+                    </span>
+                  </div>
+                  <p className="mt-1 truncate text-muted-foreground text-sm">
                     {getReplyPreviewContent()}
                   </p>
                 </div>
                 <button
-                  className="shrink-0 rounded-sm p-0.5 text-muted-foreground hover:bg-muted hover:text-foreground"
+                  className="shrink-0 rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
                   onClick={clearReplyingToMessage}
                   type="button"
                 >
-                  <IconX size={14} />
+                  <IconX className="h-4 w-4" />
                 </button>
               </div>
             )}
