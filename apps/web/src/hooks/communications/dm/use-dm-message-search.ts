@@ -1,3 +1,4 @@
+import { useDebouncedValue } from "@tanstack/react-pacer";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { queryUtils } from "@/utils/orpc";
@@ -39,8 +40,8 @@ export function useDmMessageSearch({
 }: UseDmMessageSearchOptions): UseDmMessageSearchResult {
   const [cursor, setCursor] = useState<string | null>(null);
 
-  // Debounce the query
-  const debouncedQuery = useDebounce(query, 300);
+  // Debounce the query using TanStack Pacer
+  const [debouncedQuery] = useDebouncedValue(query, { wait: 300 });
 
   const { data, isLoading } = useQuery(
     queryUtils.communication.dm.searchMessages.queryOptions({
@@ -71,21 +72,4 @@ export function useDmMessageSearch({
     loadMore,
     total,
   };
-}
-
-// Simple debounce hook
-function useDebounce<T>(value: T, delay: number): T {
-  const [debouncedValue, setDebouncedValue] = useState(value);
-
-  useMemo(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
-
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [value, delay]);
-
-  return debouncedValue;
 }
