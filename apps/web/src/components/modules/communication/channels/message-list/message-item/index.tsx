@@ -143,7 +143,7 @@ const handleReplyPreviewClick = () => {
         "flex h-auto max-w-full items-center justify-start gap-2 rounded-md border-primary/60 border-t-0 border-r-0 border-b-0 border-l-2 bg-muted/60 px-3 py-1.5 text-left transition-colors hover:bg-muted",
         isOwnMessage && "ml-auto"
       )}
-onClick={handleReplyPreviewClick}
+      onClick={handleReplyPreviewClick}
       variant="ghost"
     >
       <div className="min-w-0 flex-1">
