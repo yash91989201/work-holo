@@ -4,7 +4,6 @@ import {
   IconPinFilled,
 } from "@tabler/icons-react";
 import { eq, useLiveQuery } from "@tanstack/react-db";
-import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -186,23 +185,18 @@ export function DmMessageItem({
 const handleReplyPreviewClick = () => {
     if (!message.replyToMessageId) return;
 
-    const targetElement = document.querySelector(
-      `[data-message-id="${message.replyToMessageId}"]`
-    );
+    highlightMessage(message.replyToMessageId);
+  };
 
-    if (!targetElement) {
-      toast.error("Message not found in view");
+  const handleInlineReply = () => {
+    if (isThreadMessage) {
+      setThreadReplyingToMessage(message);
+      focusThreadComposer();
       return;
     }
 
-    // Scroll to message with smooth behavior, centered on screen
-    (targetElement as HTMLElement).scrollIntoView({
-      behavior: "smooth",
-      block: "center",
-    });
-
-    // Highlight the message
-    highlightMessage(message.replyToMessageId);
+    setReplyingToMessage(message);
+    focusMainComposer();
   };
 
   const handleInlineReply = () => {

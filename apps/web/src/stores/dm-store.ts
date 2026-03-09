@@ -120,6 +120,10 @@ const useDmStore = create<DmState>((set, get) => ({
     thread: null,
   },
   searchSidebar: { isOpen: false },
+  composerFocus: {
+    main: null,
+    thread: null,
+  },
   highlightedMessage: {
     messageId: null,
     triggeredAt: null,
