@@ -104,6 +104,7 @@ import type {
   MarkDmReadInput,
   MuteDmConversationInput,
   SearchDmMessagesInput,
+  SearchDmMessagesOutput,
   SendDmMessageInput,
   ToggleDmPinInput,
   ToggleDmReactionInput,
@@ -555,6 +556,7 @@ export type SavePushSubscriptionInputType = z.infer<
 >;
 export type SearchAttachmentsInputType = z.infer<typeof SearchAttachmentsInput>;
 export type SearchDmMessagesInputType = z.infer<typeof SearchDmMessagesInput>;
+export type SearchDmMessagesOutputType = z.infer<typeof SearchDmMessagesOutput>;
 export type SearchMessageOutputType = z.infer<typeof SearchMessageOutput>;
 export type SearchMessagesInputType = z.infer<typeof SearchMessagesInput>;
 export type SearchMessagesListOutputType = z.infer<
