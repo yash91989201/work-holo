@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import {
   InputGroup,
   InputGroupAddon,
+  InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group";
 import {
@@ -97,6 +98,17 @@ export function DmSearchSidebar() {
               placeholder="Search in conversation..."
               value={query}
             />
+            {query && (
+              <InputGroupAddon align="inline-end">
+                <InputGroupButton
+                  onClick={() => setQuery("")}
+                  size="icon-xs"
+                  variant="ghost"
+                >
+                  <IconX className="h-4 w-4" />
+                </InputGroupButton>
+              </InputGroupAddon>
+            )}
           </InputGroup>
         </SheetHeader>
 

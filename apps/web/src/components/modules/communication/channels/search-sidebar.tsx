@@ -1,4 +1,4 @@
-import { IconLoader2, IconSearch } from "@tabler/icons-react";
+import { IconLoader2, IconSearch, IconX } from "@tabler/icons-react";
 import { useParams } from "@tanstack/react-router";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import {
   InputGroup,
   InputGroupAddon,
+  InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group";
 import {
@@ -89,6 +90,17 @@ export function SearchSidebar() {
               placeholder="Search in channel..."
               value={query}
             />
+            {query && (
+              <InputGroupAddon align="inline-end">
+                <InputGroupButton
+                  onClick={() => setQuery("")}
+                  size="icon-xs"
+                  variant="ghost"
+                >
+                  <IconX className="h-4 w-4" />
+                </InputGroupButton>
+              </InputGroupAddon>
+            )}
           </InputGroup>
         </SheetHeader>
 
