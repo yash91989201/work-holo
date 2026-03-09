@@ -122,9 +122,13 @@ export class NotificationService implements NotificationServiceInterface {
         return `${actorName} reacted in #${channelName}`;
       case "channel_mention":
         return `${actorName} mentioned you in #${channelName}`;
+      case "channel_direct_reply":
+        return `${actorName} replied to your message in #${channelName}`;
       case "dm_message":
         return `New message from ${actorName}`;
       case "dm_reply":
+        return `${actorName} replied to your message`;
+      case "dm_direct_reply":
         return `${actorName} replied to your message`;
       case "dm_reaction":
         return `${actorName} reacted to your message`;
