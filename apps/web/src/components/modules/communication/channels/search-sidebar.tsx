@@ -9,11 +9,21 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemHeader,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item";
+import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { Spinner } from "@/components/ui/spinner";
 import { useMessageSearch } from "@/hooks/communications/use-message-search";
 import { useVirtualMessages } from "@/hooks/communications/use-messages";
 import {
@@ -67,7 +77,11 @@ export function SearchSidebar() {
           </SheetTitle>
           <InputGroup className="mt-4">
             <InputGroupAddon align="inline-start">
-              <IconSearch className="h-4 w-4 text-muted-foreground" />
+              {isLoading ? (
+                <Spinner className="h-4 w-4 text-muted-foreground" />
+              ) : (
+                <IconSearch className="h-4 w-4 text-muted-foreground" />
+              )}
             </InputGroupAddon>
             <InputGroupInput
               autoFocus
@@ -99,37 +113,46 @@ export function SearchSidebar() {
               </div>
             )}
 
-            {results.map((result) => (
-              <button
-                className="flex flex-col gap-2 rounded-lg border bg-card p-3 text-left text-sm transition-colors hover:bg-accent"
-                key={result.id}
-                onClick={() => handleResultClick(result)}
-                type="button"
-              >
-                <div className="flex items-center gap-2">
-                  <Avatar className="h-6 w-6">
-                    <AvatarImage src={result.sender.image || undefined} />
-                    <AvatarFallback>
-                      {result.sender.name.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="font-medium">{result.sender.name}</span>
-                  <span className="text-muted-foreground text-xs">
-                    {new Intl.DateTimeFormat("en-US", {
-                      hour: "numeric",
-                      minute: "numeric",
-                    }).format(new Date(result.createdAt))}
-                  </span>
-                </div>
-                <div
-                  className="line-clamp-3 text-muted-foreground [&>mark]:bg-yellow-200 [&>mark]:text-yellow-900 [&>mark]:dark:bg-yellow-900 [&>mark]:dark:text-yellow-200"
-                  // biome-ignore lint/security/noDangerouslySetInnerHtml: Highlights contain safe <mark> tags from backend
-                  dangerouslySetInnerHTML={{
-                    __html: result.highlights[0] || result.content || "",
-                  }}
-                />
-              </button>
-            ))}
+            <ItemGroup>
+              {results.map((result) => (
+                <Item
+                  asChild
+                  className="cursor-pointer"
+                  key={result.id}
+                  onClick={() => handleResultClick(result)}
+                  variant="outline"
+                >
+                  <button type="button">
+                    <ItemMedia>
+                      <Avatar className="size-8">
+                        <AvatarImage src={result.sender.image || undefined} />
+                        <AvatarFallback>
+                          {result.sender.name.charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                    </ItemMedia>
+                    <ItemContent>
+                      <ItemHeader>
+                        <ItemTitle>{result.sender.name}</ItemTitle>
+                        <span className="text-muted-foreground text-xs">
+                          {new Intl.DateTimeFormat("en-US", {
+                            hour: "numeric",
+                            minute: "numeric",
+                          }).format(new Date(result.createdAt))}
+                        </span>
+                      </ItemHeader>
+                      <ItemDescription
+                        className="[&>mark]:bg-yellow-200 [&>mark]:text-yellow-900 [&>mark]:dark:bg-yellow-900 [&>mark]:dark:text-yellow-200"
+                        // biome-ignore lint/security/noDangerouslySetInnerHtml: Highlights contain safe <mark> tags from backend
+                        dangerouslySetInnerHTML={{
+                          __html: result.highlights[0] || result.content || "",
+                        }}
+                      />
+                    </ItemContent>
+                  </button>
+                </Item>
+              ))}
+            </ItemGroup>
 
             {hasMore && (
               <Button

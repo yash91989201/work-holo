@@ -9,6 +9,15 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
+import {
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemHeader,
+  ItemMedia,
+  ItemTitle,
+} from "@/components/ui/item";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Sheet,
@@ -16,6 +25,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { Spinner } from "@/components/ui/spinner";
 import { useDmMessageSearch } from "@/hooks/communications/dm/use-dm-message-search";
 import { useVirtualDmMessages } from "@/hooks/communications/dm/use-dm-messages";
 import {
@@ -76,7 +86,11 @@ export function DmSearchSidebar() {
           </div>
           <InputGroup className="mt-2">
             <InputGroupAddon align="inline-start">
-              <IconSearch className="h-4 w-4 text-muted-foreground" />
+              {isLoading ? (
+                <Spinner className="h-4 w-4 text-muted-foreground" />
+              ) : (
+                <IconSearch className="h-4 w-4 text-muted-foreground" />
+              )}
             </InputGroupAddon>
             <InputGroupInput
               onChange={(e) => setQuery(e.target.value)}
@@ -115,44 +129,49 @@ export function DmSearchSidebar() {
                   <div className="px-2 py-1 font-medium text-muted-foreground text-xs">
                     {total} result{total === 1 ? "" : "s"}
                   </div>
-                  {results.map((result) => (
-                    <button
-                      className="flex flex-col gap-1 rounded-md p-3 text-left transition-colors hover:bg-muted/50"
-                      key={result.id}
-                      onClick={() => handleResultClick(result)}
-                      type="button"
-                    >
-                      <div className="flex items-center gap-2">
-                        <Avatar className="h-5 w-5">
-                          <AvatarImage src={result.sender.image || undefined} />
-                          <AvatarFallback className="text-[10px]">
-                            {result.sender.name.slice(0, 2).toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
-                        <span className="font-medium text-sm">
-                          {result.sender.name}
-                        </span>
-                        <span className="ml-auto text-muted-foreground text-xs">
-                          {format(new Date(result.createdAt), "MMM d, h:mm a")}
-                        </span>
-                      </div>
-                      <div className="pl-7">
-                        {result.highlights.length > 0 ? (
-                          <div
-                            className="line-clamp-2 text-muted-foreground text-sm [&>mark]:rounded-sm [&>mark]:bg-primary/20 [&>mark]:px-0.5 [&>mark]:text-foreground"
-                            // biome-ignore lint/security/noDangerouslySetInnerHtml: Highlights are sanitized by the backend
-                            dangerouslySetInnerHTML={{
-                              __html: result.highlights[0],
-                            }}
-                          />
-                        ) : (
-                          <div className="line-clamp-2 text-muted-foreground text-sm">
-                            {result.content}
-                          </div>
-                        )}
-                      </div>
-                    </button>
-                  ))}
+                  <ItemGroup>
+                    {results.map((result) => (
+                      <Item
+                        asChild
+                        className="cursor-pointer"
+                        key={result.id}
+                        onClick={() => handleResultClick(result)}
+                        variant="outline"
+                      >
+                        <button type="button">
+                          <ItemMedia>
+                            <Avatar className="size-8">
+                              <AvatarImage
+                                src={result.sender.image || undefined}
+                              />
+                              <AvatarFallback>
+                                {result.sender.name.charAt(0).toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                          </ItemMedia>
+                          <ItemContent>
+                            <ItemHeader>
+                              <ItemTitle>{result.sender.name}</ItemTitle>
+                              <span className="text-muted-foreground text-xs">
+                                {format(
+                                  new Date(result.createdAt),
+                                  "MMM d, h:mm a"
+                                )}
+                              </span>
+                            </ItemHeader>
+                            <ItemDescription
+                              className="[&>mark]:rounded-sm [&>mark]:bg-primary/20 [&>mark]:px-0.5 [&>mark]:text-foreground"
+                              // biome-ignore lint/security/noDangerouslySetInnerHtml: Highlights are sanitized by the backend
+                              dangerouslySetInnerHTML={{
+                                __html:
+                                  result.highlights[0] || result.content || "",
+                              }}
+                            />
+                          </ItemContent>
+                        </button>
+                      </Item>
+                    ))}
+                  </ItemGroup>
                   {hasMore && (
                     <Button
                       className="mt-2 w-full"
