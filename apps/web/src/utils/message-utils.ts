@@ -41,3 +41,18 @@ export function groupMessagesByDate(messages: MessageType[]) {
 export function isOwnMessage(message: MessageType, userId: string): boolean {
   return message.senderId === userId;
 }
+
+export function stripHtmlToText(html: string | null | undefined): string {
+  if (!html) return "";
+
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
+
+  const text = tmp.textContent || tmp.innerText || "";
+  return text.replace(/\s+/g, " ").trim();
+}
+
+export function truncateText(text: string, maxLength: number): string {
+  if (text.length <= maxLength) return text;
+  return `${text.slice(0, maxLength)}…`;
+}
