@@ -6,6 +6,7 @@ import { MentionsSidebar } from "@/components/modules/communication/channels/men
 import { MessageListSkeleton } from "@/components/modules/communication/channels/message-list/message-list-skeleton";
 import { MessageThreadSidebar } from "@/components/modules/communication/channels/message-thread-sidebar";
 import { PinnedMessagesSidebar } from "@/components/modules/communication/channels/pinned-messages-sidebar";
+import { SearchSidebar } from "@/components/modules/communication/channels/search-sidebar";
 
 export const Route = createFileRoute(
   "/(authenticated)/org/$slug/workspace/communication/channels/$channelId"
@@ -57,6 +58,7 @@ function RouteComponent() {
         <MentionsSidebar />
         <PinnedMessagesSidebar />
         <ChannelInfoSidebar />
+        <SearchSidebar />
       </div>
     </section>
   );
