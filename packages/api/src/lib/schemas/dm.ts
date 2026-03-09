@@ -76,6 +76,30 @@ export const MarkDmReadInput = z.object({
 export const SearchDmMessagesInput = z.object({
   conversationId: z.cuid2(),
   query: z.string().min(1).max(200),
+  cursor: z.string().optional(),
+  limit: z.number().min(1).max(50).default(20),
+});
+
+export const SearchDmMessagesOutput = z.object({
+  messages: z.array(
+    z.object({
+      id: z.string(),
+      conversationId: z.string(),
+      senderId: z.string(),
+      content: z.string().nullable(),
+      type: z.string(),
+      parentMessageId: z.string().nullable(),
+      createdAt: z.date(),
+      sender: z.object({
+        name: z.string(),
+        email: z.string(),
+        image: z.string().nullable(),
+      }),
+      highlights: z.array(z.string()),
+    })
+  ),
+  nextCursor: z.string().nullable(),
+  total: z.number(),
 });
 
 export const MuteDmConversationInput = z.object({
