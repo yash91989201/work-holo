@@ -65,6 +65,23 @@ services:
       timeout: 10s
       retries: 5
 
+  opensearch:
+    image: opensearchproject/opensearch:latest
+    ports:
+      - "9200:9200" # REST API port
+      - "9600:9600" # Performance analyzer port
+    environment:
+      discovery.type: single-node
+      DISABLE_SECURITY_PLUGIN: "true"
+      DISABLE_INSTALL_DEMO_CONFIG: "true"
+    volumes:
+      - opensearch_data:/usr/share/opensearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   rustfs:
     image: "rustfs/rustfs:latest"
     restart: unless-stopped
@@ -148,3 +165,4 @@ volumes:
   dragonfly_data:
   rabbitmq_data:
   postgres_data:
+  opensearch_data:

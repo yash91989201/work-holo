@@ -3,6 +3,7 @@ import amqp, { type Channel, type ChannelModel } from "amqplib";
 export const QUEUES = {
   READ_RECEIPTS: "read_receipts",
   NOTIFICATIONS: "notifications",
+  SEARCH_INDEXING: "search_indexing",
 } as const;
 
 export interface ReadReceiptQueueMessage {
@@ -24,7 +25,28 @@ export interface NotificationQueueMessage {
   targetUserId: string;
 }
 
-export type QueueMessage = ReadReceiptQueueMessage | NotificationQueueMessage;
+export interface SearchIndexQueueMessage {
+  action: "upsert" | "delete";
+  contentHtml?: string;
+  createdAt?: string;
+  hasAttachments?: boolean;
+  isPinned?: boolean;
+  mentionedUserIds?: string[];
+  messageId: string;
+  messageType?: string;
+  organizationId: string;
+  parentMessageId?: string | null;
+  scopeId?: string;
+  scopeType: "channel" | "dm";
+  senderId?: string;
+  senderName?: string;
+  updatedAt?: string;
+}
+
+export type QueueMessage =
+  | ReadReceiptQueueMessage
+  | NotificationQueueMessage
+  | SearchIndexQueueMessage;
 
 export interface QueueConfig {
   url: string;
@@ -52,6 +74,14 @@ export class Queue {
     });
 
     await Queue.channel.assertQueue(QUEUES.NOTIFICATIONS, {
+      durable: true,
+      arguments: {
+        "x-message-ttl": 3_600_000,
+        "x-max-length": 50_000,
+      },
+    });
+
+    await Queue.channel.assertQueue(QUEUES.SEARCH_INDEXING, {
       durable: true,
       arguments: {
         "x-message-ttl": 3_600_000,
