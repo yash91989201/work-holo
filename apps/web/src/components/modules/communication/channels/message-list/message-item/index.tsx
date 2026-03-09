@@ -21,6 +21,7 @@ import { useAuthedSession } from "@/hooks/use-authed-session";
 import type { MessageWithSender } from "@/lib/communications/message";
 import { cn, formatMessageTimestamp } from "@/lib/utils";
 import {
+  useChannelComposerFocus,
   useChannelMessageHighlight,
   useChannelReplyState,
   useChannelThreadReplyState,
@@ -163,6 +164,7 @@ export function MessageItem({
   const { setReplyingToMessage } = useChannelReplyState();
   const { setReplyingToMessage: setThreadReplyingToMessage } =
     useChannelThreadReplyState();
+  const { focusMainComposer, focusThreadComposer } = useChannelComposerFocus();
 
   const isMessageThreadActive = messageId === message.id;
 
@@ -223,8 +225,10 @@ export function MessageItem({
   const handleInlineReply = () => {
     if (isThreadMessage) {
       setThreadReplyingToMessage(message as unknown as MessageWithSender);
+      focusThreadComposer();
     } else {
       setReplyingToMessage(message as unknown as MessageWithSender);
+      focusMainComposer();
     }
   };
 

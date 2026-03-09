@@ -1,8 +1,6 @@
 import { IconArrowBackUp, IconX } from "@tabler/icons-react";
-import { eq, useLiveQuery } from "@tanstack/react-db";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { dmConversationsCollection } from "@/db/collections";
 import { useDmMessageMutations } from "@/hooks/communications/dm/use-dm-message-mutations";
 import { useDmTyping } from "@/hooks/communications/dm/use-dm-typing";
 import { useAudioRecorder } from "@/hooks/use-audio-recorder";
@@ -10,6 +8,7 @@ import { useAuthedSession } from "@/hooks/use-authed-session";
 import type { DmMessageWithSender } from "@/lib/communications/dm-message";
 import { cn } from "@/lib/utils";
 import {
+  useDmComposerFocus,
   useDmReplyState,
   useDmThreadReplyState,
   useMaximizedDmMessageComposerActions,
@@ -59,6 +58,7 @@ export function DmMessageComposer({
   const { user } = useAuthedSession();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const composerFocusHandlerRef = useRef<(() => void) | null>(null);
 
   const [text, setText] = useState(initialContent);
   const [isEditorMaximized, setIsEditorMaximized] = useState(false);
@@ -70,9 +70,25 @@ export function DmMessageComposer({
     useMaximizedDmMessageComposerActions();
   const mainReplyState = useDmReplyState();
   const threadReplyState = useDmThreadReplyState();
+  const { setMainComposerFocus, setThreadComposerFocus } = useDmComposerFocus();
   const { replyingToMessage, clearReplyingToMessage } = parentMessageId
     ? threadReplyState
     : mainReplyState;
+
+  const handleFocusHandlerChange = useCallback(
+    (handler: (() => void) | null) => {
+      composerFocusHandlerRef.current = handler;
+    },
+    []
+  );
+
+  const focusComposer = useCallback(() => {
+    setComposerView("editor");
+
+    requestAnimationFrame(() => {
+      composerFocusHandlerRef.current?.();
+    });
+  }, []);
 
   const {
     isRecording,
@@ -86,20 +102,6 @@ export function DmMessageComposer({
 
   const { createMessage } = useDmMessageMutations();
   const { typingUsers, broadcastTyping } = useDmTyping(conversationId);
-
-  const { data: conversationParticipants = [] } = useLiveQuery(
-    (q) =>
-      q
-        .from({ conversation: dmConversationsCollection })
-        .where(({ conversation }) => eq(conversation.id, conversationId))
-        .select(({ conversation }) => ({
-          participantOneId: conversation.participantOneId,
-          participantTwoId: conversation.participantTwoId,
-        }))
-        .limit(1)
-        .orderBy(({ conversation }) => conversation.createdAt, "desc"),
-    [conversationId]
-  );
 
   const handleTypingBroadcast = useCallback(
     (content: string) => {
@@ -279,6 +281,21 @@ export function DmMessageComposer({
       setComposerView("editor");
     }
   }, [composerView, isRecording, audioUrl]);
+
+  useEffect(() => {
+    if (parentMessageId) {
+      setThreadComposerFocus(focusComposer);
+      return () => setThreadComposerFocus(null);
+    }
+
+    setMainComposerFocus(focusComposer);
+    return () => setMainComposerFocus(null);
+  }, [
+    focusComposer,
+    parentMessageId,
+    setMainComposerFocus,
+    setThreadComposerFocus,
+  ]);
 
   const handleFileUpload = useCallback((files?: FileList) => {
     const filesToAdd = files || fileInputRef.current?.files;
@@ -496,6 +513,7 @@ export function DmMessageComposer({
               onComposerViewChange={setComposerView}
               onEmojiSelect={handleEmojiSelect}
               onFileUpload={() => fileInputRef.current?.click()}
+              onFocusHandlerChange={handleFocusHandlerChange}
               onMaximize={handleMaximize}
               onSubmit={handleSubmit}
               onVoiceRecord={handleVoiceRecord}

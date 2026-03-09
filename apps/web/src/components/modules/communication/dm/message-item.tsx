@@ -4,7 +4,6 @@ import {
   IconPinFilled,
 } from "@tabler/icons-react";
 import { eq, useLiveQuery } from "@tanstack/react-db";
-import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -18,6 +17,7 @@ import { useAuthedSession } from "@/hooks/use-authed-session";
 import type { DmMessageWithSender } from "@/lib/communications/dm-message";
 import { cn, formatMessageTimestamp } from "@/lib/utils";
 import {
+  useDmComposerFocus,
   useDmMessageThreadSidebar,
   useDmReplyState,
   useDmThreadReplyState,
@@ -29,7 +29,6 @@ import { DmMessageContent } from "./message-content";
 import { DmMessageReactions } from "./message-reactions";
 
 interface DmMessageItemProps {
-  conversationId: string;
   isHighlighted?: boolean;
   isThreadMessage?: boolean;
   message: DmMessageWithSender;
@@ -37,7 +36,6 @@ interface DmMessageItemProps {
 
 export function DmMessageItem({
   message,
-  conversationId,
   isThreadMessage = false,
   isHighlighted = false,
 }: DmMessageItemProps) {
@@ -60,6 +58,7 @@ export function DmMessageItem({
   const { setReplyingToMessage, highlightMessage } = useDmReplyState();
   const { setReplyingToMessage: setThreadReplyingToMessage } =
     useDmThreadReplyState();
+  const { focusMainComposer, focusThreadComposer } = useDmComposerFocus();
 
   const isMessageThreadActive = messageId === message.id;
 
@@ -109,23 +108,18 @@ export function DmMessageItem({
   const handleReplyPreviewClick = () => {
     if (!message.replyToMessageId) return;
 
-    const targetElement = document.querySelector(
-      `[data-message-id="${message.replyToMessageId}"]`
-    );
+    highlightMessage(message.replyToMessageId);
+  };
 
-    if (!targetElement) {
-      toast.error("Message not found in view");
+  const handleInlineReply = () => {
+    if (isThreadMessage) {
+      setThreadReplyingToMessage(message);
+      focusThreadComposer();
       return;
     }
 
-    // Scroll to message with smooth behavior, centered on screen
-    (targetElement as HTMLElement).scrollIntoView({
-      behavior: "smooth",
-      block: "center",
-    });
-
-    // Highlight the message
-    highlightMessage(message.replyToMessageId);
+    setReplyingToMessage(message);
+    focusMainComposer();
   };
 
   const { data: repliedToMessages = [] } = useLiveQuery(
@@ -286,11 +280,7 @@ export function DmMessageItem({
               isPinned={message.isPinned}
               onDelete={handleDelete}
               onEdit={handleEditDialog}
-              onInlineReply={() =>
-                isThreadMessage
-                  ? setThreadReplyingToMessage(message)
-                  : setReplyingToMessage(message)
-              }
+              onInlineReply={handleInlineReply}
               onPin={handlePin}
               onReact={handleReact}
               onReply={toggleMessageThread}

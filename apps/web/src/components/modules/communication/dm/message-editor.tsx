@@ -47,6 +47,8 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
+type FocusHandler = (() => void) | null;
+
 interface DmMessageEditorProps {
   attachmentPreview?: React.ReactNode;
   audioPreview?: React.ReactNode;
@@ -62,6 +64,7 @@ interface DmMessageEditorProps {
   onComposerViewChange: (view: "editor" | "attachments" | "audio") => void;
   onEmojiSelect: (emoji: { emoji: string; label: string }) => void;
   onFileUpload: () => void;
+  onFocusHandlerChange?: (handler: FocusHandler) => void;
   onMaximize: () => void;
   onSubmit: () => void;
   onVoiceRecord: () => void;
@@ -83,6 +86,7 @@ export function DmMessageEditor({
   onComposerViewChange,
   onEmojiSelect,
   onFileUpload,
+  onFocusHandlerChange,
   onMaximize,
   onSubmit,
   onVoiceRecord,
@@ -103,7 +107,22 @@ export function DmMessageEditor({
 
     textarea.style.height = "auto";
     textarea.style.height = `${Math.min(textarea.scrollHeight, 200)}px`;
-  }, [content]);
+  });
+
+  useEffect(() => {
+    if (!onFocusHandlerChange) return;
+
+    onFocusHandlerChange(() => {
+      const textarea = textareaRef.current;
+      if (!textarea || disabled) return;
+
+      textarea.focus();
+      const end = textarea.value.length;
+      textarea.setSelectionRange(end, end);
+    });
+
+    return () => onFocusHandlerChange(null);
+  }, [disabled, onFocusHandlerChange]);
 
   const handleChange = (newContent: string) => {
     onChange(newContent);
