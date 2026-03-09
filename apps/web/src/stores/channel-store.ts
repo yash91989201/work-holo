@@ -52,6 +52,10 @@ interface MentionsSidebarState {
   isOpen: boolean;
 }
 
+interface SearchSidebarState {
+  isOpen: boolean;
+}
+
 interface HighlightedMessageState {
   messageId: string | null;
   triggeredAt: number | null;
@@ -64,6 +68,7 @@ interface ChannelState {
   closeMentionsSidebar: () => void;
   closeMessageThread: () => void;
   closePinnedMessages: () => void;
+  closeSearchSidebar: () => void;
   highlightedMessage: HighlightedMessageState;
 
   highlightMessage: (messageId: string) => void;
@@ -83,7 +88,9 @@ interface ChannelState {
   openMessageThread: (messageId: string) => void;
 
   openPinnedMessages: () => void;
+  openSearchSidebar: () => void;
   pinnedMessages: PinnedMessagesState;
+  searchSidebar: SearchSidebarState;
 }
 
 const defaultMaximizedComposerState: MaximizedMessageComposerState = {
@@ -98,6 +105,9 @@ const useChannelStore = create<ChannelState>((set) => ({
   infoSidebar: { isOpen: false },
   maximizedMessageComposer: { ...defaultMaximizedComposerState },
   pinnedMessages: {
+    isOpen: false,
+  },
+  searchSidebar: {
     isOpen: false,
   },
   mentionsSidebar: {
@@ -136,6 +146,8 @@ const useChannelStore = create<ChannelState>((set) => ({
     set({ messageThread: { messageId: null, isOpen: false } }),
   openPinnedMessages: () => set({ pinnedMessages: { isOpen: true } }),
   closePinnedMessages: () => set({ pinnedMessages: { isOpen: false } }),
+  openSearchSidebar: () => set({ searchSidebar: { isOpen: true } }),
+  closeSearchSidebar: () => set({ searchSidebar: { isOpen: false } }),
   openMentionsSidebar: () => set({ mentionsSidebar: { isOpen: true } }),
   closeMentionsSidebar: () => set({ mentionsSidebar: { isOpen: false } }),
   highlightMessage: (messageId) =>
@@ -239,6 +251,25 @@ export function useMentionsSidebar() {
     openMentionsSidebar,
     closeMentionsSidebar,
     toggleMentionsSidebar,
+  };
+}
+
+export function useSearchSidebar() {
+  const isOpen = useChannelStore((state) => state.searchSidebar.isOpen);
+
+  const openSearchSidebar = useChannelStore((state) => state.openSearchSidebar);
+
+  const closeSearchSidebar = useChannelStore(
+    (state) => state.closeSearchSidebar
+  );
+
+  const toggleSearchSidebar = isOpen ? closeSearchSidebar : openSearchSidebar;
+
+  return {
+    isOpen,
+    openSearchSidebar,
+    closeSearchSidebar,
+    toggleSearchSidebar,
   };
 }
 

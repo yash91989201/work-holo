@@ -1,6 +1,7 @@
 import {
   IconInfoCircleFilled,
   IconPinFilled,
+  IconSearch,
   IconX,
 } from "@tabler/icons-react";
 import { useNavigate, useParams } from "@tanstack/react-router";
@@ -17,6 +18,7 @@ import { cn } from "@/lib/utils";
 import {
   useDmInfoSidebar,
   useDmPinnedMessagesSidebar,
+  useDmSearchSidebar,
 } from "@/stores/dm-store";
 
 export function DmConversationHeader() {
@@ -31,6 +33,7 @@ export function DmConversationHeader() {
   const { isOpen: isPinsOpen, togglePinnedMessages } =
     useDmPinnedMessagesSidebar();
   const { isOpen: isInfoOpen, toggleInfoSidebar } = useDmInfoSidebar();
+  const { isOpen: isSearchOpen, toggleSearchSidebar } = useDmSearchSidebar();
 
   const conversation = conversations.find((c) => c.id === conversationId);
   const otherParticipant = conversation?.otherParticipant;
@@ -79,6 +82,21 @@ export function DmConversationHeader() {
 
         {/* Actions */}
         <div className="ml-auto flex items-center gap-1">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={toggleSearchSidebar}
+                size="icon-sm"
+                variant={isSearchOpen ? "secondary" : "ghost"}
+              >
+                <IconSearch />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {isSearchOpen ? "Close search" : "Search messages"}
+            </TooltipContent>
+          </Tooltip>
+
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
