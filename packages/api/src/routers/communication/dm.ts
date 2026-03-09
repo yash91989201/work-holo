@@ -11,7 +11,11 @@ import {
   member as memberTable,
   user as userTable,
 } from "@work-holo/db/schema/index";
-import { PusherClient } from "@work-holo/infrastructure";
+import {
+  PusherClient,
+  Queue,
+  type SearchIndexQueueMessage,
+} from "@work-holo/infrastructure";
 import { and, count, desc, eq, ilike, or, sql } from "drizzle-orm";
 import { z } from "zod";
 import { generateTxId } from "../../lib/electric-proxy";
@@ -458,6 +462,31 @@ export const dmRouter = {
         };
       });
 
+      // Publish to search indexing queue
+      try {
+        const searchPayload: SearchIndexQueueMessage = {
+          action: "upsert",
+          messageId: result.message.id,
+          organizationId: orgId,
+          scopeType: "dm",
+          scopeId: input.conversationId,
+          contentHtml: result.message.content || undefined,
+          senderId: userId,
+          senderName: session.user.name || undefined,
+          messageType: result.message.type || undefined,
+          createdAt: result.message.createdAt.toISOString(),
+          updatedAt: result.message.updatedAt?.toISOString() || undefined,
+          parentMessageId: result.message.parentMessageId || undefined,
+          hasAttachments:
+            input.attachments && input.attachments.length > 0
+              ? true
+              : undefined,
+        };
+        Queue.publish("SEARCH_INDEXING", searchPayload);
+      } catch (error) {
+        console.error("Failed to publish to search indexing queue:", error);
+      }
+
       await emitDmEvent(input.conversationId, DM_EVENTS.NEW_MESSAGE, {
         conversationId: input.conversationId,
         message: result.message,
@@ -667,6 +696,24 @@ export const dmRouter = {
         return { txid, message: updated };
       });
 
+      // Publish to search indexing queue
+      try {
+        const searchPayload: SearchIndexQueueMessage = {
+          action: "upsert",
+          messageId: result.message.id,
+          organizationId: orgId,
+          scopeType: "dm",
+          scopeId: result.message.conversationId,
+          contentHtml: result.message.content || undefined,
+          senderId: result.message.senderId || undefined,
+          updatedAt: result.message.updatedAt?.toISOString() || undefined,
+          parentMessageId: result.message.parentMessageId || undefined,
+        };
+        Queue.publish("SEARCH_INDEXING", searchPayload);
+      } catch (error) {
+        console.error("Failed to publish to search indexing queue:", error);
+      }
+
       await emitDmEvent(result.message.conversationId, DM_EVENTS.EDIT_MESSAGE, {
         conversationId: result.message.conversationId,
         message: result.message,
@@ -726,6 +773,19 @@ export const dmRouter = {
 
         return { txid, message: deleted };
       });
+
+      // Publish to search indexing queue for deleted message
+      try {
+        const deletePayload: SearchIndexQueueMessage = {
+          action: "delete",
+          messageId: input.messageId,
+          organizationId: orgId,
+          scopeType: "dm",
+        };
+        Queue.publish("SEARCH_INDEXING", deletePayload);
+      } catch (error) {
+        console.error("Failed to publish to search indexing queue:", error);
+      }
 
       await emitDmEvent(
         result.message.conversationId,
