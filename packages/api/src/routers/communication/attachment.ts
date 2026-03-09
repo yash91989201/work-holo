@@ -8,6 +8,7 @@ import {
   user as userTable,
 } from "@work-holo/db/schema/index";
 import { and, count, eq, ilike, or, type SQL, sql, sum } from "drizzle-orm";
+import { alias } from "drizzle-orm/pg-core";
 import { orgMemberProcedure } from "../../index";
 import {
   AttachmentsListOutput,
@@ -23,12 +24,16 @@ export const attachmentRouter = {
     .output(AttachmentsListOutput)
     .handler(
       async ({ input, context: { db, orgId, orgMembership, session } }) => {
-        const isAdmin = orgMembership.role === "admin";
+        const isAdmin =
+          orgMembership.role === "admin" || orgMembership.role === "owner";
         const searchPattern = `%${input.query}%`;
 
         const channelConditions: SQL<unknown>[] = [
           eq(channelTable.organizationId, orgId),
-          ilike(attachmentTable.originalName, searchPattern),
+          or(
+            ilike(attachmentTable.fileName, searchPattern),
+            ilike(attachmentTable.originalName, searchPattern)
+          ) as SQL<unknown>,
         ];
 
         if (input.type) {
@@ -43,7 +48,10 @@ export const attachmentRouter = {
 
         const dmConditions: SQL<unknown>[] = [
           eq(dmConversationTable.organizationId, orgId),
-          ilike(dmAttachmentTable.originalName, searchPattern),
+          or(
+            ilike(dmAttachmentTable.fileName, searchPattern),
+            ilike(dmAttachmentTable.originalName, searchPattern)
+          ) as SQL<unknown>,
         ];
 
         if (input.type) {
@@ -99,6 +107,9 @@ export const attachmentRouter = {
                 )
                 .where(and(...channelConditions));
 
+        const participantOneUser = alias(userTable, "participantOneUser");
+        const participantTwoUser = alias(userTable, "participantTwoUser");
+
         const dmAttachments =
           input.source === "channel"
             ? []
@@ -119,7 +130,14 @@ export const attachmentRouter = {
                   isPublic: sql<boolean>`false`,
                   source: sql<"dm">`'dm'`,
                   sourceContextId: dmConversationTable.id,
-                  sourceContextName: sql<string>`'Direct Message'`,
+                  sourceContextName: sql<string>`coalesce(
+                     CASE
+                       WHEN ${dmConversationTable.participantOneId} = ${session.user.id}
+                         THEN ${participantTwoUser.name}
+                       ELSE ${participantOneUser.name}
+                     END,
+                     'Direct Message'
+                   )`,
                   createdAt: dmAttachmentTable.createdAt,
                 })
                 .from(dmAttachmentTable)
@@ -130,6 +148,20 @@ export const attachmentRouter = {
                 .innerJoin(
                   dmConversationTable,
                   eq(dmMessageTable.conversationId, dmConversationTable.id)
+                )
+                .innerJoin(
+                  participantOneUser,
+                  eq(
+                    dmConversationTable.participantOneId,
+                    participantOneUser.id
+                  )
+                )
+                .innerJoin(
+                  participantTwoUser,
+                  eq(
+                    dmConversationTable.participantTwoId,
+                    participantTwoUser.id
+                  )
                 )
                 .innerJoin(
                   userTable,
@@ -178,7 +210,8 @@ export const attachmentRouter = {
     .output(AttachmentsListOutput)
     .handler(
       async ({ input, context: { db, orgId, orgMembership, session } }) => {
-        const isAdmin = orgMembership.role === "admin";
+        const isAdmin =
+          orgMembership.role === "admin" || orgMembership.role === "owner";
 
         const channelConditions: SQL<unknown>[] = [
           eq(channelTable.organizationId, orgId),
@@ -251,6 +284,9 @@ export const attachmentRouter = {
                 )
                 .where(and(...channelConditions));
 
+        const participantOneUser = alias(userTable, "participantOneUser");
+        const participantTwoUser = alias(userTable, "participantTwoUser");
+
         const dmAttachments =
           input.source === "channel"
             ? []
@@ -271,7 +307,14 @@ export const attachmentRouter = {
                   isPublic: sql<boolean>`false`,
                   source: sql<"dm">`'dm'`,
                   sourceContextId: dmConversationTable.id,
-                  sourceContextName: sql<string>`'Direct Message'`,
+                  sourceContextName: sql<string>`coalesce(
+                     CASE
+                       WHEN ${dmConversationTable.participantOneId} = ${session.user.id}
+                         THEN ${participantTwoUser.name}
+                       ELSE ${participantOneUser.name}
+                     END,
+                     'Direct Message'
+                   )`,
                   createdAt: dmAttachmentTable.createdAt,
                 })
                 .from(dmAttachmentTable)
@@ -282,6 +325,20 @@ export const attachmentRouter = {
                 .innerJoin(
                   dmConversationTable,
                   eq(dmMessageTable.conversationId, dmConversationTable.id)
+                )
+                .innerJoin(
+                  participantOneUser,
+                  eq(
+                    dmConversationTable.participantOneId,
+                    participantOneUser.id
+                  )
+                )
+                .innerJoin(
+                  participantTwoUser,
+                  eq(
+                    dmConversationTable.participantTwoId,
+                    participantTwoUser.id
+                  )
                 )
                 .innerJoin(
                   userTable,
@@ -329,7 +386,8 @@ export const attachmentRouter = {
     .input(GetStorageStatsInput)
     .output(StorageStatsOutput)
     .handler(async ({ context: { db, orgId, orgMembership, session } }) => {
-      const isAdmin = orgMembership.role === "admin";
+      const isAdmin =
+        orgMembership.role === "admin" || orgMembership.role === "owner";
 
       const channelConditions: SQL<unknown>[] = [
         eq(channelTable.organizationId, orgId),
