@@ -12,11 +12,12 @@ import {
   user as userTable,
 } from "@work-holo/db/schema/index";
 import {
+  OpenSearchClient,
   PusherClient,
   Queue,
   type SearchIndexQueueMessage,
 } from "@work-holo/infrastructure";
-import { and, count, desc, eq, ilike, or, sql } from "drizzle-orm";
+import { and, count, desc, eq, inArray, or, sql } from "drizzle-orm";
 import { z } from "zod";
 import { generateTxId } from "../../lib/electric-proxy";
 import {
@@ -30,6 +31,7 @@ import {
   MarkDmReadInput,
   MuteDmConversationInput,
   SearchDmMessagesInput,
+  SearchDmMessagesOutput,
   SendDmMessageInput,
   ToggleDmPinInput,
   ToggleDmReactionInput,
@@ -1084,8 +1086,10 @@ export const dmRouter = {
 
   searchMessages: dmProcedure
     .input(SearchDmMessagesInput)
+    .output(SearchDmMessagesOutput)
     .handler(async ({ input, context: { db, orgId, session } }) => {
       const userId = session.user.id;
+
       const conversation = await db.query.dmConversationTable.findFirst({
         where: and(
           eq(dmConversationTable.id, input.conversationId),
@@ -1103,40 +1107,118 @@ export const dmRouter = {
         });
       }
 
-      const messages = await db
-        .select({
-          id: dmMessageTable.id,
-          conversationId: dmMessageTable.conversationId,
-          senderId: dmMessageTable.senderId,
-          content: dmMessageTable.content,
-          type: dmMessageTable.type,
-          parentMessageId: dmMessageTable.parentMessageId,
-          threadCount: dmMessageTable.threadCount,
-          isEdited: dmMessageTable.isEdited,
-          editedAt: dmMessageTable.editedAt,
-          isDeleted: dmMessageTable.isDeleted,
-          deletedAt: dmMessageTable.deletedAt,
-          isPinned: dmMessageTable.isPinned,
-          pinnedAt: dmMessageTable.pinnedAt,
-          pinnedBy: dmMessageTable.pinnedBy,
-          createdAt: dmMessageTable.createdAt,
-          updatedAt: dmMessageTable.updatedAt,
-          senderUserId: userTable.id,
-          senderName: userTable.name,
-          senderImage: userTable.image,
-        })
-        .from(dmMessageTable)
-        .innerJoin(userTable, eq(dmMessageTable.senderId, userTable.id))
-        .where(
-          and(
-            eq(dmMessageTable.conversationId, input.conversationId),
-            eq(dmMessageTable.isDeleted, false),
-            ilike(dmMessageTable.content, `%${input.query}%`)
-          )
-        )
-        .orderBy(desc(dmMessageTable.createdAt));
+      const client = OpenSearchClient.getClient();
+      const limit = input.limit ?? 20;
 
-      return { messages };
+      const filters: Record<string, unknown>[] = [
+        { term: { scopeType: "dm" } },
+        { term: { scopeId: input.conversationId } },
+        { term: { organizationId: orgId } },
+      ];
+
+      type SearchHit = {
+        _source: {
+          createdAt: string;
+          messageId: string;
+          contentPlain?: string;
+          messageType: string;
+          parentMessageId?: string;
+          scopeId: string;
+          senderId: string;
+        };
+        highlight?: {
+          contentPlain?: string[];
+        };
+        sort?: unknown[];
+      };
+
+      const response = await client.search({
+        index: "message_search",
+        body: {
+          query: {
+            bool: {
+              must: [{ match: { contentPlain: input.query } }],
+              filter: filters,
+            },
+          },
+          highlight: {
+            pre_tags: ["<mark>"],
+            post_tags: ["</mark>"],
+            fields: {
+              contentPlain: {
+                fragment_size: 150,
+                number_of_fragments: 3,
+              },
+            },
+          },
+          sort: [
+            { _score: "desc" },
+            { createdAt: "desc" },
+            { messageId: "asc" },
+          ],
+          size: limit,
+          ...(input.cursor
+            ? {
+                search_after: JSON.parse(
+                  Buffer.from(input.cursor, "base64").toString("utf8")
+                ),
+              }
+            : {}),
+        },
+      });
+
+      const hits = response.body.hits.hits as SearchHit[];
+      const totalHits = response.body.hits.total;
+      const total = typeof totalHits === "number" ? totalHits : totalHits.value;
+
+      const senderIds = Array.from(
+        new Set(hits.map((hit) => hit._source.senderId))
+      );
+
+      const senders =
+        senderIds.length > 0
+          ? await db
+              .select({
+                id: userTable.id,
+                name: userTable.name,
+                email: userTable.email,
+                image: userTable.image,
+              })
+              .from(userTable)
+              .where(inArray(userTable.id, senderIds))
+          : [];
+
+      const senderMap = new Map(senders.map((sender) => [sender.id, sender]));
+
+      const messages = hits.map((hit) => {
+        const source = hit._source;
+        const sender = senderMap.get(source.senderId);
+
+        return {
+          id: source.messageId,
+          conversationId: source.scopeId,
+          senderId: source.senderId,
+          content: source.contentPlain ?? null,
+          type: source.messageType,
+          parentMessageId: source.parentMessageId ?? null,
+          createdAt: new Date(source.createdAt),
+          sender: sender ?? { name: "Unknown", email: "", image: null },
+          highlights:
+            (hit.highlight?.contentPlain as string[] | undefined) ?? [],
+        };
+      });
+
+      let nextCursor: string | null = null;
+      if (hits.length > 0 && hits.length === limit) {
+        const lastHit = hits.at(-1);
+        if (lastHit?.sort) {
+          nextCursor = Buffer.from(JSON.stringify(lastHit.sort)).toString(
+            "base64"
+          );
+        }
+      }
+
+      return { messages, nextCursor, total };
     }),
 
   getThreadMessages: dmProcedure
