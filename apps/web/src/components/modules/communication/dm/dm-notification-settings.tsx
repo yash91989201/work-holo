@@ -1,5 +1,6 @@
 import {
   IconBell,
+  IconBellOff,
   IconMail,
   IconPlayerPlay,
   IconUpload,
@@ -16,8 +17,11 @@ import {
   ItemActions,
   ItemContent,
   ItemDescription,
+  ItemGroup,
+  ItemSeparator,
   ItemTitle,
 } from "@/components/ui/item";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -25,15 +29,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { useNotificationPermission } from "@/hooks/use-notification-permission";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
 import { queryUtils } from "@/utils/orpc";
@@ -292,94 +289,50 @@ export function DmNotificationSettings({
     (soundPref?.preference?.soundType === "custom" &&
       soundPref?.preference?.customSoundUrl);
 
-  const renderEventRow = (event: (typeof DM_EVENT_DEFINITIONS)[number]) => {
-    const soundState = getPreferenceState(event.id, "sound");
-    const pushState = getPreferenceState(event.id, "push");
-    const emailState = getPreferenceState(event.id, "email");
-
-    return (
-      <TableRow key={event.id}>
-        <TableCell>
-          <div className="min-w-0">
-            <div className="truncate font-medium text-sm">{event.label}</div>
-            <div className="truncate text-muted-foreground text-xs">
-              {event.description}
-            </div>
-          </div>
-        </TableCell>
-        <TableCell className="text-center">
-          <div className="flex items-center justify-center gap-1">
-            <Switch
-              checked={soundState.enabled}
-              onCheckedChange={(checked) =>
-                handlePreferenceToggle(event.id, "sound", checked)
-              }
-            />
-            {!soundState.isOverride && (
-              <span className="text-muted-foreground text-xs">(Default)</span>
-            )}
-          </div>
-        </TableCell>
-        <TableCell className="text-center">
-          <div className="flex items-center justify-center gap-1">
-            <Switch
-              checked={pushState.enabled}
-              disabled={!isDesktopReady}
-              onCheckedChange={(checked) =>
-                handlePreferenceToggle(event.id, "push", checked)
-              }
-            />
-            {!pushState.isOverride && (
-              <span className="text-muted-foreground text-xs">(Default)</span>
-            )}
-          </div>
-        </TableCell>
-        <TableCell className="text-center">
-          <div className="flex items-center justify-center gap-1">
-            <Switch
-              checked={emailState.enabled}
-              onCheckedChange={(checked) =>
-                handlePreferenceToggle(event.id, "email", checked)
-              }
-            />
-            {!emailState.isOverride && (
-              <span className="text-muted-foreground text-xs">(Default)</span>
-            )}
-          </div>
-        </TableCell>
-      </TableRow>
-    );
-  };
-
   return (
-    <div className="space-y-6">
-      <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
-        <Item>
-          <ItemContent>
-            <ItemTitle>Mute Conversation</ItemTitle>
-            <ItemDescription>
-              Stop receiving all notifications for this conversation
-            </ItemDescription>
-          </ItemContent>
-          <ItemActions>
-            <Switch checked={isMuted} onCheckedChange={handleMuteToggle} />
-          </ItemActions>
-        </Item>
+    <div className="space-y-4 p-3">
+      <div className="space-y-1.5">
+        <p className="px-1 font-medium text-muted-foreground text-xs uppercase tracking-wider">
+          Conversation
+        </p>
+        <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
+          <Item size="sm">
+            <ItemContent>
+              <ItemTitle>
+                {isMuted ? (
+                  <IconBellOff className="size-3.5 text-muted-foreground" />
+                ) : (
+                  <IconBell className="size-3.5 text-muted-foreground" />
+                )}
+                Mute Conversation
+              </ItemTitle>
+              <ItemDescription>Silence all notifications</ItemDescription>
+            </ItemContent>
+            <ItemActions>
+              <Switch checked={isMuted} onCheckedChange={handleMuteToggle} />
+            </ItemActions>
+          </Item>
+        </div>
       </div>
 
       {!isMuted && (
         <>
-          <div className="space-y-3">
-            <h3 className="font-medium text-sm">Sound Settings</h3>
+          <div className="space-y-1.5">
+            <p className="px-1 font-medium text-muted-foreground text-xs uppercase tracking-wider">
+              Sound
+            </p>
             <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
-              <Item>
+              <Item size="sm">
                 <ItemContent>
-                  <ItemTitle>Notification Sound</ItemTitle>
+                  <ItemTitle>
+                    <IconVolume className="size-3.5 text-muted-foreground" />
+                    Notification Sound
+                  </ItemTitle>
                   <ItemDescription>
-                    Override the default sound for this conversation
+                    Sound played for this conversation
                   </ItemDescription>
                 </ItemContent>
-                <ItemActions className="flex items-center gap-2">
+                <ItemActions>
                   {canPlaySound && (
                     <Button
                       onClick={handlePlaySound}
@@ -394,8 +347,8 @@ export function DmNotificationSettings({
                     onValueChange={handleSoundChange}
                     value={currentSoundValue}
                   >
-                    <SelectTrigger className="w-[200px]">
-                      <SelectValue placeholder="Select a sound" />
+                    <SelectTrigger className="w-36">
+                      <SelectValue placeholder="Select sound" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="default">Default (Global)</SelectItem>
@@ -405,9 +358,9 @@ export function DmNotificationSettings({
                         </SelectItem>
                       ))}
                       <SelectItem value="custom">
-                        <div className="flex items-center gap-2">
-                          <IconUpload className="size-4" />
-                          <span>Upload Custom...</span>
+                        <div className="flex items-center gap-1.5">
+                          <IconUpload className="size-3.5" />
+                          <span>Upload Custom…</span>
                         </div>
                       </SelectItem>
                     </SelectContent>
@@ -417,37 +370,93 @@ export function DmNotificationSettings({
             </div>
           </div>
 
-          <div className="space-y-3">
-            <h3 className="font-medium text-sm">Event Overrides</h3>
-            <div className="overflow-hidden rounded-xl border bg-card text-card-foreground shadow-sm">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[40%]">Event</TableHead>
-                    <TableHead className="w-[20%] text-center">
-                      <div className="flex items-center justify-center gap-1">
-                        <IconVolume className="size-3.5" />
-                        <span>Sound</span>
-                      </div>
-                    </TableHead>
-                    <TableHead className="w-[20%] text-center">
-                      <div className="flex items-center justify-center gap-1">
-                        <IconBell className="size-3.5" />
-                        <span>Push</span>
-                      </div>
-                    </TableHead>
-                    <TableHead className="w-[20%] text-center">
-                      <div className="flex items-center justify-center gap-1">
-                        <IconMail className="size-3.5" />
-                        <span>Email</span>
-                      </div>
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {DM_EVENT_DEFINITIONS.map((event) => renderEventRow(event))}
-                </TableBody>
-              </Table>
+          <div className="space-y-1.5">
+            <p className="px-1 font-medium text-muted-foreground text-xs uppercase tracking-wider">
+              Event Overrides
+            </p>
+            <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
+              <ItemGroup className="gap-0">
+                {DM_EVENT_DEFINITIONS.map((event, index) => {
+                  const soundState = getPreferenceState(event.id, "sound");
+                  const pushState = getPreferenceState(event.id, "push");
+                  const emailState = getPreferenceState(event.id, "email");
+
+                  return (
+                    <div key={event.id}>
+                      {index > 0 && <ItemSeparator />}
+                      <Item size="sm">
+                        <ItemContent>
+                          <ItemTitle>{event.label}</ItemTitle>
+                          <ItemDescription>{event.description}</ItemDescription>
+                        </ItemContent>
+                        <ItemActions className="gap-3">
+                          <div className="flex flex-col items-center gap-1">
+                            <Switch
+                              checked={soundState.enabled}
+                              onCheckedChange={(checked) =>
+                                handlePreferenceToggle(
+                                  event.id,
+                                  "sound",
+                                  checked
+                                )
+                              }
+                            />
+                            <Label className="flex cursor-default items-center gap-0.5 text-[10px] text-muted-foreground">
+                              <IconVolume className="size-2.5" />
+                              {soundState.isOverride ? (
+                                <span className="text-foreground">on</span>
+                              ) : (
+                                "dflt"
+                              )}
+                            </Label>
+                          </div>
+                          <div className="flex flex-col items-center gap-1">
+                            <Switch
+                              checked={pushState.enabled}
+                              disabled={!isDesktopReady}
+                              onCheckedChange={(checked) =>
+                                handlePreferenceToggle(
+                                  event.id,
+                                  "push",
+                                  checked
+                                )
+                              }
+                            />
+                            <Label className="flex cursor-default items-center gap-0.5 text-[10px] text-muted-foreground">
+                              <IconBell className="size-2.5" />
+                              {pushState.isOverride ? (
+                                <span className="text-foreground">on</span>
+                              ) : (
+                                "dflt"
+                              )}
+                            </Label>
+                          </div>
+                          <div className="flex flex-col items-center gap-1">
+                            <Switch
+                              checked={emailState.enabled}
+                              onCheckedChange={(checked) =>
+                                handlePreferenceToggle(
+                                  event.id,
+                                  "email",
+                                  checked
+                                )
+                              }
+                            />
+                            <Label className="flex cursor-default items-center gap-0.5 text-[10px] text-muted-foreground">
+                              <IconMail className="size-2.5" />
+                              {emailState.isOverride ? (
+                                <span className="text-foreground">on</span>
+                              ) : (
+                                "dflt"
+                              )}
+                            </Label>
+                          </div>
+                        </ItemActions>
+                      </Item>
+                    </div>
+                  );
+                })}
+              </ItemGroup>
             </div>
           </div>
         </>
@@ -463,3 +472,81 @@ export function DmNotificationSettings({
     </div>
   );
 }
+
+const DmNotificationSettingsSkeleton = () => {
+  return (
+    <div className="space-y-4 p-3">
+      <div className="space-y-1.5">
+        <p className="px-1 font-medium text-muted-foreground text-xs uppercase tracking-wider">
+          Conversation
+        </p>
+        <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
+          <Item size="sm">
+            <ItemContent>
+              <ItemTitle>
+                <IconBell className="size-3.5 text-muted-foreground" />
+                Mute Conversation
+              </ItemTitle>
+              <ItemDescription>Silence all notifications</ItemDescription>
+            </ItemContent>
+            <ItemActions>
+              <Skeleton className="h-5 w-9 rounded-full" />
+            </ItemActions>
+          </Item>
+        </div>
+      </div>
+
+      <div className="space-y-1.5">
+        <p className="px-1 font-medium text-muted-foreground text-xs uppercase tracking-wider">
+          Sound
+        </p>
+        <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
+          <Item size="sm">
+            <ItemContent>
+              <ItemTitle>
+                <IconVolume className="size-3.5 text-muted-foreground" />
+                Notification Sound
+              </ItemTitle>
+              <ItemDescription>Sound played for this channel</ItemDescription>
+            </ItemContent>
+            <ItemActions>
+              <Skeleton className="h-9 w-9 rounded-md" />
+              <Skeleton className="h-9 w-36 rounded-md" />
+            </ItemActions>
+          </Item>
+        </div>
+      </div>
+
+      <div className="space-y-1.5">
+        <p className="px-1 font-medium text-muted-foreground text-xs uppercase tracking-wider">
+          Event Overrides
+        </p>
+        <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
+          <ItemGroup className="gap-0">
+            {DM_EVENT_DEFINITIONS.map((event, i) => (
+              <div key={event.id}>
+                {i > 0 && <ItemSeparator />}
+                <Item size="sm">
+                  <ItemContent>
+                    <ItemTitle>{event.label}</ItemTitle>
+                    <ItemDescription>{event.description}</ItemDescription>
+                  </ItemContent>
+                  <ItemActions className="gap-3">
+                    {[0, 1, 2].map((j) => (
+                      <div className="flex flex-col items-center gap-1" key={j}>
+                        <Skeleton className="h-5 w-9 rounded-full" />
+                        <Skeleton className="h-3 w-6 rounded" />
+                      </div>
+                    ))}
+                  </ItemActions>
+                </Item>
+              </div>
+            ))}
+          </ItemGroup>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+DmNotificationSettings.Fallback = DmNotificationSettingsSkeleton;
