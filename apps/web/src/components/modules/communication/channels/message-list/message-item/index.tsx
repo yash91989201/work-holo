@@ -3,6 +3,7 @@ import {
   IconMessageReply,
   IconPencil,
   IconPinFilled,
+  IconTrash,
 } from "@tabler/icons-react";
 import { eq, useLiveQuery } from "@tanstack/react-db";
 import type { MessageWithSenderType } from "@work-holo/api/lib/types";
@@ -112,15 +113,15 @@ function ReplyPreview({
 
   if (!replyData || replyData.isDeleted) {
     return (
-      <button
+      <div
         className={cn(
-          "flex items-center gap-2 rounded-md border-muted-foreground/40 border-l-2 bg-muted/60 px-3 py-1.5 text-left text-muted-foreground text-xs italic",
+          "flex items-center gap-2 rounded-md border-muted-foreground/40 border-l-2 bg-muted/60 px-3 py-1.5 text-muted-foreground text-xs",
           isOwnMessage && "ml-auto"
         )}
-        type="button"
       >
-        Original message was deleted
-      </button>
+        <IconTrash className="size-3 shrink-0" />
+        <span className="italic">Original message was deleted</span>
+      </div>
     );
   }
 
@@ -133,23 +134,23 @@ function ReplyPreview({
   };
 
   return (
-    <button
+    <Button
       className={cn(
-        "flex max-w-full cursor-pointer items-center gap-2 rounded-md border-primary/60 border-l-2 bg-muted/60 px-3 py-1.5 text-left transition-colors hover:bg-muted",
+        "flex h-auto max-w-full items-center justify-start gap-2 rounded-md border-primary/60 border-t-0 border-r-0 border-b-0 border-l-2 bg-muted/60 px-3 py-1.5 text-left transition-colors hover:bg-muted",
         isOwnMessage && "ml-auto"
       )}
       onClick={handleReplyPreviewClick}
-      type="button"
+      variant="ghost"
     >
       <div className="min-w-0 flex-1">
-        <span className="font-medium text-foreground text-xs">
+        <span className="block font-medium text-foreground text-xs">
           {replyData.senderName}
         </span>
         <p className="truncate text-muted-foreground text-xs">
           {getDisplayContent()}
         </p>
       </div>
-    </button>
+    </Button>
   );
 }
 

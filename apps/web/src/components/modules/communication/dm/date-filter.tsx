@@ -22,7 +22,7 @@ export function DmDateFilter({
   selectedDate,
 }: DmDateFilterProps) {
   return (
-    <div className="absolute top-4 right-4 z-10">
+    <div className="absolute inset-x-0 top-4 z-30 flex justify-center">
       <Popover>
         <PopoverTrigger asChild>
           <Button
