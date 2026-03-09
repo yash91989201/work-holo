@@ -59,6 +59,7 @@ interface ReplyingToMessageState {
 interface DmState {
   clearHighlightedMessage: () => void;
   clearReplyingToMessage: () => void;
+  clearThreadReplyingToMessage: () => void;
   closeInfoSidebar: () => void;
   closeMaximizedMessageComposer: () => void;
   closeMessageThread: () => void;
@@ -80,6 +81,8 @@ interface DmState {
   replyingToMessage: ReplyingToMessageState;
   searchSidebar: SearchSidebarState;
   setReplyingToMessage: (message: DmMessageType) => void;
+  setThreadReplyingToMessage: (message: DmMessageType) => void;
+  threadReplyingToMessage: ReplyingToMessageState;
 }
 
 interface OpenMaximizedMessageComposerConfig {
@@ -107,6 +110,9 @@ const useDmStore = create<DmState>((set) => ({
     triggeredAt: null,
   },
   replyingToMessage: {
+    message: null,
+  },
+  threadReplyingToMessage: {
     message: null,
   },
   messageThread: {
@@ -158,6 +164,14 @@ const useDmStore = create<DmState>((set) => ({
   clearReplyingToMessage: () =>
     set({
       replyingToMessage: { message: null },
+    }),
+  setThreadReplyingToMessage: (message) =>
+    set({
+      threadReplyingToMessage: { message },
+    }),
+  clearThreadReplyingToMessage: () =>
+    set({
+      threadReplyingToMessage: { message: null },
     }),
 }));
 
@@ -277,6 +291,24 @@ export function useDmReplyState() {
     setReplyingToMessage,
     clearReplyingToMessage,
     highlightMessage,
+  };
+}
+
+export function useDmThreadReplyState() {
+  const replyingToMessage = useDmStore(
+    (state) => state.threadReplyingToMessage.message
+  );
+  const setReplyingToMessage = useDmStore(
+    (state) => state.setThreadReplyingToMessage
+  );
+  const clearReplyingToMessage = useDmStore(
+    (state) => state.clearThreadReplyingToMessage
+  );
+
+  return {
+    replyingToMessage,
+    setReplyingToMessage,
+    clearReplyingToMessage,
   };
 }
 

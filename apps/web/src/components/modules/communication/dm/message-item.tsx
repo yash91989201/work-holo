@@ -20,8 +20,10 @@ import { cn, formatMessageTimestamp } from "@/lib/utils";
 import {
   useDmMessageThreadSidebar,
   useDmReplyState,
+  useDmThreadReplyState,
   useMaximizedDmMessageComposerActions,
 } from "@/stores/dm-store";
+import { stripHtmlToText, truncateText } from "@/utils/message-utils";
 import { DmMessageActions } from "./message-actions";
 import { DmMessageContent } from "./message-content";
 import { DmMessageReactions } from "./message-reactions";
@@ -56,6 +58,8 @@ export function DmMessageItem({
     useDmMessageThreadSidebar();
 
   const { setReplyingToMessage, highlightMessage } = useDmReplyState();
+  const { setReplyingToMessage: setThreadReplyingToMessage } =
+    useDmThreadReplyState();
 
   const isMessageThreadActive = messageId === message.id;
 
@@ -159,9 +163,8 @@ export function DmMessageItem({
   const getReplyPreviewText = () => {
     if (!repliedToMessage) return null;
     if (repliedToMessage.content && repliedToMessage.content.length > 0) {
-      return repliedToMessage.content.length > 80
-        ? `${repliedToMessage.content.slice(0, 80)}…`
-        : repliedToMessage.content;
+      const plainText = stripHtmlToText(repliedToMessage.content);
+      return truncateText(plainText, 80);
     }
     if (hasReplyAttachments) return "📎 Attachment";
     return null;
@@ -276,13 +279,18 @@ export function DmMessageItem({
           >
             <DmMessageActions
               canEdit={user.id === message.senderId && message.type === "text"}
+              canInlineReply={true}
               canPin={!isThreadMessage}
               canReply={!isThreadMessage}
               isOwnMessage={isOwnMessage}
               isPinned={message.isPinned}
               onDelete={handleDelete}
               onEdit={handleEditDialog}
-              onInlineReply={() => setReplyingToMessage(message)}
+              onInlineReply={() =>
+                isThreadMessage
+                  ? setThreadReplyingToMessage(message)
+                  : setReplyingToMessage(message)
+              }
               onPin={handlePin}
               onReact={handleReact}
               onReply={toggleMessageThread}

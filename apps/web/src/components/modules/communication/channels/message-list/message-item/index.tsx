@@ -23,10 +23,12 @@ import { cn, formatMessageTimestamp } from "@/lib/utils";
 import {
   useChannelMessageHighlight,
   useChannelReplyState,
+  useChannelThreadReplyState,
   useMaximizedMessageComposerActions,
   useMentionsSidebar,
   useMessageThreadSidebar,
 } from "@/stores/channel-store";
+import { stripHtmlToText, truncateText } from "@/utils/message-utils";
 import { MessageActions } from "./message-actions";
 import { MessageContent } from "./message-content";
 import { MessageReactions } from "./message-reactions";
@@ -124,9 +126,8 @@ function ReplyPreview({
 
   const getDisplayContent = () => {
     if (replyData.content) {
-      return replyData.content.length > 80
-        ? `${replyData.content.slice(0, 80)}…`
-        : replyData.content;
+      const plainText = stripHtmlToText(replyData.content);
+      return truncateText(plainText, 80);
     }
     return replyData.hasAttachment ? "📎 Attachment" : "";
   };
@@ -174,6 +175,8 @@ export function MessageItem({
     useMessageThreadSidebar();
 
   const { setReplyingToMessage } = useChannelReplyState();
+  const { setReplyingToMessage: setThreadReplyingToMessage } =
+    useChannelThreadReplyState();
 
   const isMessageThreadActive = messageId === message.id;
 
@@ -232,7 +235,11 @@ export function MessageItem({
   };
 
   const handleInlineReply = () => {
-    setReplyingToMessage(message as unknown as MessageWithSender);
+    if (isThreadMessage) {
+      setThreadReplyingToMessage(message as unknown as MessageWithSender);
+    } else {
+      setReplyingToMessage(message as unknown as MessageWithSender);
+    }
   };
 
   return (
@@ -330,6 +337,7 @@ export function MessageItem({
           >
             <MessageActions
               canEdit={user.id === message.senderId && message.type === "text"}
+              canInlineReply={true}
               canPin={!isThreadMessage}
               canReply={!isThreadMessage}
               isOwnMessage={isOwnMessage}

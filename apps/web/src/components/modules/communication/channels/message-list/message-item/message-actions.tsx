@@ -36,6 +36,7 @@ const QUICK_REACTIONS = ["👍", "😂", "🎉", "👀"] as const;
 
 interface MessageActionsProps {
   canEdit: boolean;
+  canInlineReply?: boolean;
   canPin: boolean;
   canReply: boolean;
   className?: string;
@@ -52,6 +53,7 @@ interface MessageActionsProps {
 export function MessageActions({
   isOwnMessage,
   canEdit,
+  canInlineReply,
   canPin,
   isPinned,
   canReply,
@@ -109,7 +111,7 @@ export function MessageActions({
           </Button>
         ))}
 
-        {canReply && onInlineReply && (
+        {canInlineReply && onInlineReply && (
           <Button
             aria-label="Reply inline"
             onClick={onInlineReply}
