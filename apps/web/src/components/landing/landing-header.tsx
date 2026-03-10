@@ -15,6 +15,7 @@ const navItems: NavItem[] = [
   { label: "Solutions", href: "/", hasDropdown: true },
   { label: "BPO Services", href: "/", hasDropdown: true },
   { label: "Pricing", href: "/pricing" },
+  { label: "Resources", href: "/", hasDropdown: true },
 ];
 
 interface BpoCategory {
@@ -242,12 +243,36 @@ const solutionsCategories = [
   },
 ];
 
+const resourcesCategories = [
+  {
+    title: "RESOURCES",
+    items: [
+      { label: "Help Centre", href: "/resources/help-centre" },
+      { label: "What's new", href: "/resources/whats-new" },
+      { label: "Resources library", href: "/resources/library" },
+      { label: "Workholo blog", href: "/resources/blog" },
+      { label: "Customer stories", href: "/resources/customer-stories" },
+    ],
+  },
+  {
+    title: "COMPANY",
+    items: [
+      { label: "About us", href: "/company/about" },
+      { label: "News", href: "/company/news" },
+      { label: "Brand centre", href: "/company/brand" },
+      { label: "Careers", href: "/company/careers" },
+      { label: "Workholo shop", href: "/company/shop" },
+    ],
+  },
+];
+
 export function LandingHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileBpoOpen, setMobileBpoOpen] = useState(false);
   const [mobileFeaturesOpen, setMobileFeaturesOpen] = useState(false);
   const [mobileSolutionsOpen, setMobileSolutionsOpen] = useState(false);
+  const [mobileResourcesOpen, setMobileResourcesOpen] = useState(false);
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const openDropdown = useCallback((label: string) => {
@@ -683,6 +708,86 @@ export function LandingHeader() {
           </div>
         </div>
 
+        {/* Resources Mega Dropdown (desktop) */}
+        <div
+          className={cn(
+            "absolute right-0 left-0 z-40 origin-top px-4 transition-all duration-200 sm:px-6 lg:px-8",
+            activeDropdown === "Resources"
+              ? "pointer-events-auto scale-y-100 opacity-100"
+              : "pointer-events-none scale-y-95 opacity-0"
+          )}
+          onMouseEnter={cancelClose}
+          onMouseLeave={scheduleClose}
+        >
+          <div className="mx-auto max-w-7xl">
+            <div className="mt-1 rounded-2xl border border-border/60 bg-background p-8 pb-6 shadow-xl">
+              <div className="grid grid-cols-3 gap-x-8">
+                {resourcesCategories.map((category) => (
+                  <div key={category.title}>
+                    <h4 className="mb-4 font-bold text-foreground/80 text-xs uppercase tracking-wider">
+                      {category.title}
+                    </h4>
+                    <ul className="space-y-4">
+                      {category.items.map((item) => (
+                        <li key={item.href}>
+                          <Link
+                            className="group block"
+                            onClick={() => setActiveDropdown(null)}
+                            to={item.href as any}
+                          >
+                            <div className="font-semibold text-foreground text-sm transition-colors group-hover:text-[#6366f1]">
+                              {item.label}
+                            </div>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+
+                {/* Column 3: CTA Card */}
+                <div className="flex flex-col">
+                  <div className="flex flex-1 flex-col justify-between rounded-xl bg-muted/40 p-6">
+                    <div>
+                      <div className="mb-4 flex aspect-[2/1] w-full items-center justify-center overflow-hidden rounded-lg border border-border/50 bg-background shadow-sm">
+                        <div className="flex flex-col items-center gap-2">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#7C5CFF]/20">
+                            <svg
+                              className="text-[#7C5CFF]"
+                              fill="none"
+                              height="20"
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              viewBox="0 0 24 24"
+                              width="20"
+                            >
+                              <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            </svg>
+                          </div>
+                          <div className="h-2 w-24 rounded-full bg-muted-foreground/20" />
+                        </div>
+                      </div>
+                      <p className="text-foreground/80 text-sm leading-relaxed">
+                        Explore our comprehensive documentation and guides to
+                        get the most out of WorkHolo.
+                      </p>
+                    </div>
+                    <Link
+                      className="mt-4 inline-flex items-center gap-1 font-semibold text-[#7C5CFF] text-sm transition-colors hover:text-[#6B4CE6]"
+                      onClick={() => setActiveDropdown(null)}
+                      to={"/resources/help-centre" as any}
+                    >
+                      Visit Help Centre <span aria-hidden="true">→</span>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Mobile menu */}
         <div
           className={cn(
@@ -890,6 +995,65 @@ export function LandingHeader() {
                           See all templates →
                         </Link>
                       </div>
+                    </div>
+                  </div>
+                </div>
+              ) : item.label === "Resources" ? (
+                <div key={item.label}>
+                  <button
+                    className="flex w-full items-center justify-between rounded-md px-4 py-2.5 text-base text-foreground/70 transition-colors hover:bg-muted hover:text-foreground"
+                    onClick={() => setMobileResourcesOpen(!mobileResourcesOpen)}
+                    type="button"
+                  >
+                    {item.label}
+                    <svg
+                      className={cn(
+                        "transition-transform duration-200",
+                        mobileResourcesOpen && "rotate-180"
+                      )}
+                      fill="none"
+                      height="16"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                      width="16"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="m6 9 6 6 6-6" />
+                    </svg>
+                  </button>
+                  <div
+                    className={cn(
+                      "overflow-hidden transition-all duration-200",
+                      mobileResourcesOpen ? "max-h-[800px]" : "max-h-0"
+                    )}
+                  >
+                    <div className="space-y-4 px-4 py-3">
+                      {resourcesCategories.map((category) => (
+                        <div key={category.title}>
+                          <h4 className="mb-2 font-semibold text-foreground/80 text-xs uppercase tracking-wider">
+                            {category.title}
+                          </h4>
+                          <ul className="space-y-1.5">
+                            {category.items.map((subItem) => (
+                              <li key={subItem.href}>
+                                <Link
+                                  className="block rounded-md py-1.5 text-foreground/60 text-sm transition-colors hover:text-[#6366f1]"
+                                  onClick={() => {
+                                    setMobileMenuOpen(false);
+                                    setMobileResourcesOpen(false);
+                                  }}
+                                  to={subItem.href as any}
+                                >
+                                  {subItem.label}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>

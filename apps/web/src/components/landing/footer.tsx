@@ -20,16 +20,16 @@ const footerLinks = {
   Solutions: [
     { label: "Customer service", href: "/solutions/customer-service" },
     { label: "Sales", href: "/solutions/sales" },
-    { label: "Project management", href: "/" },
-    { label: "Marketing", href: "/" },
-    { label: "Security", href: "/" },
+    { label: "Project management", href: "/solutions/hr" },
+    { label: "Marketing", href: "/solutions/retail" },
+    { label: "Financial services", href: "/solutions/financial-services" },
   ],
   Company: [
-    { label: "About us", href: "/about" },
-    { label: "News", href: "/" },
-    { label: "Brand centre", href: "/" },
-    { label: "Careers", href: "/" },
-    { label: "Workholo shop", href: "/" },
+    { label: "About us", href: "/company/about" },
+    { label: "News", href: "/company/news" },
+    { label: "Brand centre", href: "/company/brand" },
+    { label: "Careers", href: "/company/careers" },
+    { label: "Workholo shop", href: "/company/shop" },
   ],
 };
 
