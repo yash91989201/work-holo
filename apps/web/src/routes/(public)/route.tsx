@@ -1,8 +1,4 @@
-import {
-  createFileRoute,
-  Outlet,
-  useRouterState,
-} from "@tanstack/react-router";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { LandingHeader } from "@/components/landing/landing-header";
 
 export const Route = createFileRoute("/(public)")({
@@ -12,12 +8,8 @@ export const Route = createFileRoute("/(public)")({
 import { Footer } from "@/components/landing/footer";
 
 function RouteComponent() {
-  const isFetching = useRouterState({
-    select: (s) => s.isLoading,
-  });
-
   return (
-    <div className="flex flex-col min-h-svh bg-background">
+    <div className="flex min-h-svh flex-col bg-background">
       <LandingHeader />
       <main className="flex-1">
         <Outlet />

@@ -9,16 +9,32 @@ import { cn } from "@/lib/utils";
  */
 
 interface MockupContainerProps {
-  children: ReactNode;
   bgColor: string;
+  children: ReactNode;
   className?: string;
   innerClassName?: string;
 }
 
-function MockupContainer({ children, bgColor, className, innerClassName }: MockupContainerProps) {
+function MockupContainer({
+  children,
+  bgColor,
+  className,
+  innerClassName,
+}: MockupContainerProps) {
   return (
-    <div className={cn("w-full aspect-square rounded-3xl flex items-center justify-center p-6 sm:p-10 lg:p-14", bgColor, className)}>
-      <div className={cn("w-full h-full rounded-2xl bg-white shadow-2xl border border-gray-100/50 overflow-hidden flex flex-col", innerClassName)}>
+    <div
+      className={cn(
+        "flex aspect-square w-full items-center justify-center rounded-3xl p-6 sm:p-10 lg:p-14",
+        bgColor,
+        className
+      )}
+    >
+      <div
+        className={cn(
+          "flex h-full w-full flex-col overflow-hidden rounded-2xl border border-gray-100/50 bg-white shadow-2xl",
+          innerClassName
+        )}
+      >
         {children}
       </div>
     </div>
@@ -31,31 +47,40 @@ function MockupContainer({ children, bgColor, className, innerClassName }: Mocku
  */
 export function AdminHeroMockup() {
   return (
-    <div className="relative w-full aspect-video rounded-3xl overflow-hidden shadow-2xl border-8 border-[#D8C6E0] group cursor-pointer bg-gradient-to-br from-[#f8f6f9] to-[#ece9f0]">
+    <div className="group relative aspect-video w-full cursor-pointer overflow-hidden rounded-3xl border-8 border-[#D8C6E0] bg-gradient-to-br from-[#f8f6f9] to-[#ece9f0] shadow-2xl">
       {/* Coded UI placeholder instead of Unsplash */}
-      <div className="absolute inset-0 p-6 flex flex-col gap-4">
+      <div className="absolute inset-0 flex flex-col gap-4 p-6">
         <div className="flex items-center gap-3">
           <div className="size-10 rounded-full bg-purple-100" />
-          <div className="space-y-1.5 flex-1">
-            <div className="h-2.5 w-32 bg-gray-200 rounded" />
-            <div className="h-2 w-20 bg-gray-100 rounded" />
+          <div className="flex-1 space-y-1.5">
+            <div className="h-2.5 w-32 rounded bg-gray-200" />
+            <div className="h-2 w-20 rounded bg-gray-100" />
           </div>
         </div>
         <div className="grid grid-cols-3 gap-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="aspect-square rounded-xl bg-purple-50/50 border border-purple-100/50" />
+            <div
+              className="aspect-square rounded-xl border border-purple-100/50 bg-purple-50/50"
+              key={i}
+            />
           ))}
         </div>
-        <div className="flex-1 rounded-xl bg-white/60 border border-gray-100 p-4 space-y-3">
-          <div className="h-3 w-1/2 bg-gray-200 rounded" />
-          <div className="h-3 w-3/4 bg-gray-100 rounded" />
-          <div className="h-3 w-2/3 bg-gray-100 rounded" />
+        <div className="flex-1 space-y-3 rounded-xl border border-gray-100 bg-white/60 p-4">
+          <div className="h-3 w-1/2 rounded bg-gray-200" />
+          <div className="h-3 w-3/4 rounded bg-gray-100" />
+          <div className="h-3 w-2/3 rounded bg-gray-100" />
         </div>
       </div>
       {/* Play Button Overlay */}
       <div className="absolute inset-0 flex items-center justify-center bg-black/5 transition-colors group-hover:bg-black/10">
-        <div className="size-20 rounded-full bg-white shadow-2xl flex items-center justify-center transition-transform group-hover:scale-110">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" className="text-purple-600 ml-1">
+        <div className="flex size-20 items-center justify-center rounded-full bg-white shadow-2xl transition-transform group-hover:scale-110">
+          <svg
+            className="ml-1 text-purple-600"
+            fill="currentColor"
+            height="32"
+            viewBox="0 0 24 24"
+            width="32"
+          >
             <path d="m7 4 12 8-12 8V4z" />
           </svg>
         </div>
@@ -77,20 +102,29 @@ export function AdminChannelsMockup() {
 
   return (
     <MockupContainer bgColor="bg-[#f0f9ff]">
-      <div className="bg-gray-50 border-b border-gray-100 px-4 py-3 flex items-center gap-2">
+      <div className="flex items-center gap-2 border-gray-100 border-b bg-gray-50 px-4 py-3">
         <div className="size-2 rounded-full bg-red-400" />
         <div className="size-2 rounded-full bg-amber-400" />
         <div className="size-2 rounded-full bg-green-400" />
-        <span className="ml-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Workspace Channels</span>
+        <span className="ml-2 font-bold text-[10px] text-gray-400 uppercase tracking-widest">
+          Workspace Channels
+        </span>
       </div>
-      <div className="flex-1 p-4 space-y-4">
+      <div className="flex-1 space-y-4 p-4">
         {channels.map((chan) => (
-          <div key={chan.name} className="flex items-center justify-between p-2.5 rounded-xl border border-gray-50 bg-gray-50/30">
+          <div
+            className="flex items-center justify-between rounded-xl border border-gray-50 bg-gray-50/30 p-2.5"
+            key={chan.name}
+          >
             <div className="flex items-center gap-3">
               <div className={cn("size-2 rounded-full", chan.color)} />
-              <span className="text-[11px] font-semibold text-gray-700">#{chan.name}</span>
+              <span className="font-semibold text-[11px] text-gray-700">
+                #{chan.name}
+              </span>
             </div>
-            <span className="text-[9px] font-bold text-gray-400">{chan.members} Members</span>
+            <span className="font-bold text-[9px] text-gray-400">
+              {chan.members} Members
+            </span>
           </div>
         ))}
       </div>
@@ -111,26 +145,35 @@ export function AdminMembersMockup() {
 
   return (
     <MockupContainer bgColor="bg-[#f0fdf4]">
-      <div className="bg-gray-50 border-b border-gray-100 px-4 py-3 flex items-center justify-between">
-        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Team Members</span>
-        <div className="size-6 rounded-lg bg-green-100 flex items-center justify-center">
-          <div className="size-3 rounded shadow-sm bg-green-500" />
+      <div className="flex items-center justify-between border-gray-100 border-b bg-gray-50 px-4 py-3">
+        <span className="font-bold text-[10px] text-gray-400 uppercase tracking-widest">
+          Team Members
+        </span>
+        <div className="flex size-6 items-center justify-center rounded-lg bg-green-100">
+          <div className="size-3 rounded bg-green-500 shadow-sm" />
         </div>
       </div>
-      <div className="flex-1 p-4 space-y-3">
+      <div className="flex-1 space-y-3 p-4">
         {members.map((m) => (
-          <div key={m.name} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 transition-colors">
+          <div
+            className="flex items-center justify-between rounded-lg p-2 transition-colors hover:bg-gray-50"
+            key={m.name}
+          >
             <div className="flex items-center gap-3">
-              <div className="size-8 rounded-full bg-gray-100 border border-gray-200" />
+              <div className="size-8 rounded-full border border-gray-200 bg-gray-100" />
               <div className="space-y-0.5">
-                <p className="text-[11px] font-bold text-gray-800">{m.name}</p>
+                <p className="font-bold text-[11px] text-gray-800">{m.name}</p>
                 <p className="text-[9px] text-gray-400">{m.role}</p>
               </div>
             </div>
-            <div className={cn(
-              "px-2 py-0.5 rounded-full text-[8px] font-bold uppercase tracking-wider",
-              m.status === "Active" ? "bg-green-100 text-green-600" : "bg-gray-100 text-gray-400"
-            )}>
+            <div
+              className={cn(
+                "rounded-full px-2 py-0.5 font-bold text-[8px] uppercase tracking-wider",
+                m.status === "Active"
+                  ? "bg-green-100 text-green-600"
+                  : "bg-gray-100 text-gray-400"
+              )}
+            >
               {m.status}
             </div>
           </div>
@@ -145,27 +188,61 @@ export function AdminMembersMockup() {
  */
 export function AdminTriageMockup() {
   const requests = [
-    { id: "T-1284", tag: "Bug", label: "Praise", color: "bg-red-400", emoji: "❤️" },
-    { id: "T-1285", tag: "Feature", label: "Pain point", color: "bg-purple-400", emoji: "💔" },
-    { id: "T-1286", tag: "Task", label: "Praise", color: "bg-blue-400", emoji: "❤️" },
+    {
+      id: "T-1284",
+      tag: "Bug",
+      label: "Praise",
+      color: "bg-red-400",
+      emoji: "❤️",
+    },
+    {
+      id: "T-1285",
+      tag: "Feature",
+      label: "Pain point",
+      color: "bg-purple-400",
+      emoji: "💔",
+    },
+    {
+      id: "T-1286",
+      tag: "Task",
+      label: "Praise",
+      color: "bg-blue-400",
+      emoji: "❤️",
+    },
   ];
 
   return (
     <MockupContainer bgColor="bg-[#fffbeb]">
-      <div className="bg-amber-50/50 border-b border-amber-100 px-4 py-3">
-        <span className="text-[10px] font-bold text-amber-600 uppercase tracking-widest leading-none">Triage Queue</span>
+      <div className="border-amber-100 border-b bg-amber-50/50 px-4 py-3">
+        <span className="font-bold text-[10px] text-amber-600 uppercase leading-none tracking-widest">
+          Triage Queue
+        </span>
       </div>
-      <div className="flex-1 p-4 space-y-4">
+      <div className="flex-1 space-y-4 p-4">
         {requests.map((r) => (
-          <div key={r.id} className="p-3 rounded-xl border border-amber-100/30 bg-white shadow-sm space-y-2">
+          <div
+            className="space-y-2 rounded-xl border border-amber-100/30 bg-white p-3 shadow-sm"
+            key={r.id}
+          >
             <div className="flex items-center justify-between">
-              <span className="text-[9px] font-mono text-gray-400">ID: {r.id}</span>
-              <span className={cn("px-1.5 py-0.5 rounded text-[8px] font-bold text-white uppercase", r.color)}>{r.tag}</span>
+              <span className="font-mono text-[9px] text-gray-400">
+                ID: {r.id}
+              </span>
+              <span
+                className={cn(
+                  "rounded px-1.5 py-0.5 font-bold text-[8px] text-white uppercase",
+                  r.color
+                )}
+              >
+                {r.tag}
+              </span>
             </div>
-            <div className="h-2 w-3/4 bg-gray-100 rounded" />
+            <div className="h-2 w-3/4 rounded bg-gray-100" />
             <div className="flex items-center gap-1.5">
               <span className="text-xs">{r.emoji}</span>
-              <span className="text-[10px] font-medium text-gray-600">{r.label}</span>
+              <span className="font-medium text-[10px] text-gray-600">
+                {r.label}
+              </span>
             </div>
           </div>
         ))}
@@ -179,22 +256,22 @@ export function AdminTriageMockup() {
  */
 export function AdminCreateChannelMockup() {
   return (
-    <div className="w-full h-full bg-gradient-to-br from-[#f8f6f9] to-[#ece9f0] p-6 flex flex-col gap-4">
-      <div className="h-8 w-1/3 bg-white rounded-lg shadow-sm" />
-      <div className="grid grid-cols-2 gap-3 flex-1">
-        <div className="rounded-xl bg-white shadow-sm p-3 space-y-2">
-           <div className="size-6 rounded-full bg-purple-100" />
-           <div className="h-2 w-full bg-gray-100 rounded" />
-           <div className="h-2 w-2/3 bg-gray-100 rounded" />
+    <div className="flex h-full w-full flex-col gap-4 bg-gradient-to-br from-[#f8f6f9] to-[#ece9f0] p-6">
+      <div className="h-8 w-1/3 rounded-lg bg-white shadow-sm" />
+      <div className="grid flex-1 grid-cols-2 gap-3">
+        <div className="space-y-2 rounded-xl bg-white p-3 shadow-sm">
+          <div className="size-6 rounded-full bg-purple-100" />
+          <div className="h-2 w-full rounded bg-gray-100" />
+          <div className="h-2 w-2/3 rounded bg-gray-100" />
         </div>
-        <div className="rounded-xl bg-white shadow-sm p-3 space-y-2">
-           <div className="size-6 rounded-full bg-blue-100" />
-           <div className="h-2 w-full bg-gray-100 rounded" />
-           <div className="h-2 w-2/3 bg-gray-100 rounded" />
+        <div className="space-y-2 rounded-xl bg-white p-3 shadow-sm">
+          <div className="size-6 rounded-full bg-blue-100" />
+          <div className="h-2 w-full rounded bg-gray-100" />
+          <div className="h-2 w-2/3 rounded bg-gray-100" />
         </div>
-        <div className="col-span-2 rounded-xl bg-purple-600 shadow-lg p-3 flex items-center justify-between">
-           <div className="h-2 w-1/3 bg-white/40 rounded" />
-           <div className="size-4 rounded-full bg-white transition-transform hover:scale-110" />
+        <div className="col-span-2 flex items-center justify-between rounded-xl bg-purple-600 p-3 shadow-lg">
+          <div className="h-2 w-1/3 rounded bg-white/40" />
+          <div className="size-4 rounded-full bg-white transition-transform hover:scale-110" />
         </div>
       </div>
     </div>
@@ -206,14 +283,17 @@ export function AdminCreateChannelMockup() {
  */
 export function AdminAddMembersTemplateMockup() {
   return (
-    <div className="w-full h-full bg-[#f0fdf4] p-6 flex flex-col gap-3">
-      {[1, 2, 3, 4].map(i => (
-        <div key={i} className="flex items-center justify-between bg-white rounded-xl p-3 shadow-sm">
-           <div className="flex items-center gap-3">
-             <div className="size-7 rounded-full bg-green-100" />
-             <div className="h-2 w-24 bg-gray-100 rounded" />
-           </div>
-           <div className="size-4 rounded border-2 border-green-200" />
+    <div className="flex h-full w-full flex-col gap-3 bg-[#f0fdf4] p-6">
+      {[1, 2, 3, 4].map((i) => (
+        <div
+          className="flex items-center justify-between rounded-xl bg-white p-3 shadow-sm"
+          key={i}
+        >
+          <div className="flex items-center gap-3">
+            <div className="size-7 rounded-full bg-green-100" />
+            <div className="h-2 w-24 rounded bg-gray-100" />
+          </div>
+          <div className="size-4 rounded border-2 border-green-200" />
         </div>
       ))}
     </div>
@@ -225,13 +305,13 @@ export function AdminAddMembersTemplateMockup() {
  */
 export function AdminRemoveMembersTemplateMockup() {
   return (
-    <div className="w-full h-full bg-[#fffbeb] p-6 flex flex-col gap-3">
-       <div className="flex-1 rounded-2xl border-4 border-dashed border-amber-200 flex flex-col items-center justify-center p-6 text-center">
-          <div className="size-12 rounded-full bg-amber-100 flex items-center justify-center mb-3">
-            <div className="size-6 border-2 border-amber-400 rounded-sm" />
-          </div>
-          <div className="h-2 w-32 bg-amber-200/50 rounded" />
-       </div>
+    <div className="flex h-full w-full flex-col gap-3 bg-[#fffbeb] p-6">
+      <div className="flex flex-1 flex-col items-center justify-center rounded-2xl border-4 border-amber-200 border-dashed p-6 text-center">
+        <div className="mb-3 flex size-12 items-center justify-center rounded-full bg-amber-100">
+          <div className="size-6 rounded-sm border-2 border-amber-400" />
+        </div>
+        <div className="h-2 w-32 rounded bg-amber-200/50" />
+      </div>
     </div>
   );
 }

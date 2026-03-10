@@ -1,22 +1,20 @@
-import type { ReactNode } from "react";
-
 export interface BpoPageData {
-  /** Page slug for routing */
-  slug: string;
-  /** Main heading, e.g. "Customer Retention" */
-  title: string;
-  /** Subtitle below the heading */
-  subtitle: string;
-  /** Hero image path */
-  heroImage: string;
-  /** Overview paragraph(s) */
-  overview: string;
-  /** 4 key capabilities with icon labels */
-  keyCapabilities: string[];
   /** 4 business benefits */
   businessBenefits: string[];
+  /** Hero image path */
+  heroImage: string;
+  /** 4 key capabilities with icon labels */
+  keyCapabilities: string[];
+  /** Overview paragraph(s) */
+  overview: string;
   /** 3 proven result stats */
   provenResults: { value: string; label: string }[];
+  /** Page slug for routing */
+  slug: string;
+  /** Subtitle below the heading */
+  subtitle: string;
+  /** Main heading, e.g. "Customer Retention" */
+  title: string;
   /** Why Choose Workholo items (3) */
   whyChoose: { title: string; description: string }[];
 }
@@ -75,8 +73,7 @@ export const bpoPages: BpoPageData[] = [
   {
     slug: "outbound-sales",
     title: "Outbound Sales",
-    subtitle:
-      "Targeted outreach campaigns designed to convert prospects.",
+    subtitle: "Targeted outreach campaigns designed to convert prospects.",
     heroImage: "/bpo/outbound-sales.webp",
     overview:
       "Accelerate your revenue growth with our expert outbound sales teams. We handle the entire sales cycle, from cold calling and email outreach to appointment setting and closing deals, acting as a seamless extension of your internal team.",
@@ -102,8 +99,7 @@ export const bpoPages: BpoPageData[] = [
   {
     slug: "lead-generation",
     title: "Lead Generation",
-    subtitle:
-      "Build a robust pipeline of qualified opportunities.",
+    subtitle: "Build a robust pipeline of qualified opportunities.",
     heroImage: "/bpo/lead-generation.webp",
     overview:
       "Fuel your sales engine with high-quality, pre-qualified leads. Our lead generation specialists use advanced targeting and multi-channel strategies to identify and engage decision-makers who are ready to buy.",
@@ -131,8 +127,7 @@ export const bpoPages: BpoPageData[] = [
   {
     slug: "customer-service",
     title: "Customer Service",
-    subtitle:
-      "Round-the-clock support delivering exceptional experiences.",
+    subtitle: "Round-the-clock support delivering exceptional experiences.",
     heroImage: "/bpo/customer-service.webp",
     overview:
       "Provide your customers with 24/7, omnichannel support. Our highly trained agents deliver empathetic, efficient, and personalized assistance across phone, email, live chat, and social media, ensuring every interaction strengthens your brand.",
@@ -158,8 +153,7 @@ export const bpoPages: BpoPageData[] = [
   {
     slug: "technical-support",
     title: "Technical Support",
-    subtitle:
-      "Expert troubleshooting and issue resolution.",
+    subtitle: "Expert troubleshooting and issue resolution.",
     heroImage: "/bpo/technical-support.webp",
     overview:
       "Keep your users up and running with our tiered technical support services. From basic troubleshooting (Tier 1) to complex issue resolution (Tier 3), our tech-savvy agents provide fast and accurate solutions for software, hardware, and IT services.",
@@ -185,8 +179,7 @@ export const bpoPages: BpoPageData[] = [
   {
     slug: "payment-processing",
     title: "Payment Processing",
-    subtitle:
-      "Secure and efficient handling of transactions.",
+    subtitle: "Secure and efficient handling of transactions.",
     heroImage: "/bpo/payment-processing.webp",
     overview:
       "Ensure smooth and secure financial transactions with our payment processing support. We handle billing inquiries, process refunds, manage subscriptions, and assist customers with payment-related issues, all while maintaining strict PCI compliance.",
@@ -214,8 +207,7 @@ export const bpoPages: BpoPageData[] = [
   {
     slug: "accounting-and-collections",
     title: "Accounting and Collections",
-    subtitle:
-      "Professional financial management and debt recovery.",
+    subtitle: "Professional financial management and debt recovery.",
     heroImage: "/bpo/accounting-collections.webp",
     overview:
       "Improve your cash flow and maintain positive customer relationships with our professional accounting and collections services. We handle accounts receivable, accounts payable, and respectful debt recovery with a focus on compliance and brand protection.",
@@ -241,8 +233,7 @@ export const bpoPages: BpoPageData[] = [
   {
     slug: "inbound-sales",
     title: "Inbound Sales",
-    subtitle:
-      "Converting incoming inquiries into revenue.",
+    subtitle: "Converting incoming inquiries into revenue.",
     heroImage: "/bpo/inbound-sales.webp",
     overview:
       "Maximize the ROI of your marketing efforts by turning inbound calls, chats, and emails into sales. Our consultative sales agents are trained to cross-sell, up-sell, and guide prospects through the buying journey to close deals efficiently.",
@@ -268,8 +259,7 @@ export const bpoPages: BpoPageData[] = [
   {
     slug: "facility-and-procurement",
     title: "Facility and Procurement",
-    subtitle:
-      "Streamlined management of assets and vendors.",
+    subtitle: "Streamlined management of assets and vendors.",
     heroImage: "/bpo/facility-procurement.webp",
     overview:
       "Optimize your operational efficiency with our facility and procurement support. We assist with vendor management, purchase order processing, inventory tracking, and facility maintenance coordination, allowing you to focus on your core business.",
@@ -295,8 +285,7 @@ export const bpoPages: BpoPageData[] = [
   {
     slug: "direct-response-marketing",
     title: "Direct Response Marketing",
-    subtitle:
-      "Handling high-volume responses with precision.",
+    subtitle: "Handling high-volume responses with precision.",
     heroImage: "/bpo/direct-response-marketing.webp",
     overview:
       "Ensure no lead is left behind during your marketing campaigns. Our scalable teams are equipped to handle high volumes of calls, emails, and messages generated by TV, radio, digital, and print direct response campaigns.",
@@ -322,8 +311,7 @@ export const bpoPages: BpoPageData[] = [
   {
     slug: "back-office-processing",
     title: "Back Office Processing",
-    subtitle:
-      "Efficient administrative and operational support.",
+    subtitle: "Efficient administrative and operational support.",
     heroImage: "/bpo/back-office-processing.webp",
     overview:
       "Streamline your operations and reduce overhead with our comprehensive back-office processing services. We handle data entry, document management, transcription, and other administrative tasks with high accuracy and quick turnaround times.",
@@ -349,8 +337,7 @@ export const bpoPages: BpoPageData[] = [
   {
     slug: "claims-processing",
     title: "Claims Processing",
-    subtitle:
-      "Accurate and timely handling of claims.",
+    subtitle: "Accurate and timely handling of claims.",
     heroImage: "/bpo/claims-processing.webp",
     overview:
       "Accelerate your claims processing cycle with our specialized back-office teams. We handle insurance, warranty, and rebate claims efficiently, ensuring accuracy, compliance, and a smooth experience for your customers.",

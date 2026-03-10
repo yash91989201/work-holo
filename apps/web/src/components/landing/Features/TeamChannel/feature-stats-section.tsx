@@ -1,18 +1,18 @@
 import { Card, CardContent } from "@/components/ui/card";
 
 interface FeatureStat {
+  description: string;
   /** Raw SVG path `d` attribute(s) rendered with inline `<svg>` */
   iconPaths: string[];
-  title: string;
-  description: string;
-  linkText?: string;
   linkHref?: string;
+  linkText?: string;
+  title: string;
 }
 
 interface FeatureStatsSectionProps {
   headline: string;
-  subtitle: string;
   stats: [FeatureStat, FeatureStat, FeatureStat];
+  subtitle: string;
 }
 
 /**
@@ -31,10 +31,10 @@ export function FeatureStatsSection({
       <div className="container mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
         {/* Heading */}
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-balance font-bold text-3xl tracking-tight text-foreground sm:text-4xl">
+          <h2 className="text-balance font-bold text-3xl text-foreground tracking-tight sm:text-4xl">
             {headline}
           </h2>
-          <p className="mt-4 text-base leading-7 text-muted-foreground sm:text-lg">
+          <p className="mt-4 text-base text-muted-foreground leading-7 sm:text-lg">
             {subtitle}
           </p>
         </div>
@@ -43,39 +43,39 @@ export function FeatureStatsSection({
         <div className="mt-12 grid gap-6 sm:grid-cols-3">
           {stats.map((stat) => (
             <Card
-              key={stat.title}
               className="flex flex-col items-start gap-4 border border-border/60 p-6 shadow-sm transition-shadow hover:shadow-md"
+              key={stat.title}
             >
               <CardContent className="p-0">
                 {/* Icon */}
                 <div className="mb-4 flex size-11 items-center justify-center rounded-xl bg-[#7C5CFF]/10">
                   <svg
-                    width="22"
-                    height="22"
-                    viewBox="0 0 24 24"
+                    aria-hidden="true"
                     fill="none"
+                    height="22"
                     stroke="#7C5CFF"
-                    strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    aria-hidden="true"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                    width="22"
                   >
                     {stat.iconPaths.map((d, i) => (
                       // biome-ignore lint/suspicious/noArrayIndexKey: static icon paths
-                      <path key={i} d={d} />
+                      <path d={d} key={i} />
                     ))}
                   </svg>
                 </div>
-                <h3 className="font-semibold text-lg text-foreground">
+                <h3 className="font-semibold text-foreground text-lg">
                   {stat.title}
                 </h3>
-                <p className="mt-1.5 text-sm leading-6 text-muted-foreground">
+                <p className="mt-1.5 text-muted-foreground text-sm leading-6">
                   {stat.description}
                 </p>
                 {stat.linkText && stat.linkHref && (
                   <a
+                    className="mt-4 font-semibold text-[#7C5CFF] text-sm transition-colors hover:text-[#7C5CFF]/80"
                     href={stat.linkHref}
-                    className="mt-4 text-sm font-semibold text-[#7C5CFF] hover:text-[#7C5CFF]/80 transition-colors"
                   >
                     {stat.linkText}
                   </a>

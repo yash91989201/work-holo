@@ -1,17 +1,17 @@
-import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 interface MessagingFeatureSectionProps {
-  heading: string;
+  className?: string;
   description: string;
-  /** Optional "See the Marketplace >" link */
-  linkText?: string;
-  linkHref?: string;
-  /** Pass a ReactNode for the visual side — can be an image, mockup, or custom block */
-  visual: ReactNode;
+  heading: string;
   /** "image-left" means the visual is on the LEFT side */
   layout?: "image-left" | "content-left";
-  className?: string;
+  linkHref?: string;
+  /** Optional "See the Marketplace >" link */
+  linkText?: string;
+  /** Pass a ReactNode for the visual side — can be an image, mockup, or custom block */
+  visual: ReactNode;
 }
 
 /**
@@ -33,7 +33,9 @@ export function MessagingFeatureSection({
   const isImageLeft = layout === "image-left";
 
   return (
-    <section className={cn("w-full bg-white py-16 sm:py-24 lg:py-32", className)}>
+    <section
+      className={cn("w-full bg-white py-16 sm:py-24 lg:py-32", className)}
+    >
       <div className="mx-auto w-full max-w-[1800px] px-6 sm:px-12 lg:px-20">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-24 xl:gap-32">
           {/* Visual or Text Left */}
@@ -42,28 +44,28 @@ export function MessagingFeatureSection({
               visual
             ) : (
               <div className="max-w-xl lg:max-w-none">
-                <h2 className="font-bold text-3xl leading-[1.2] tracking-tight text-[#1d1c1d] sm:text-4xl">
+                <h2 className="font-bold text-3xl text-[#1d1c1d] leading-[1.2] tracking-tight sm:text-4xl">
                   {heading}
                 </h2>
-                <p className="mt-4 text-base leading-7 text-[#616061] sm:text-lg">
+                <p className="mt-4 text-[#616061] text-base leading-7 sm:text-lg">
                   {description}
                 </p>
                 {linkText && linkHref && (
                   <a
+                    className="mt-5 inline-flex items-center gap-1 font-medium text-[#1264a3] text-base hover:underline"
                     href={linkHref}
-                    className="mt-5 inline-flex items-center gap-1 text-base font-medium text-[#1264a3] hover:underline"
                   >
                     {linkText}
                     <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
+                      aria-hidden="true"
                       fill="none"
+                      height="14"
                       stroke="currentColor"
-                      strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      aria-hidden="true"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                      width="14"
                     >
                       <path d="m9 18 6-6-6-6" />
                     </svg>
@@ -77,28 +79,28 @@ export function MessagingFeatureSection({
           <div className="w-full">
             {isImageLeft ? (
               <div className="max-w-xl lg:max-w-none">
-                <h2 className="font-bold text-3xl leading-[1.2] tracking-tight text-[#1d1c1d] sm:text-4xl">
+                <h2 className="font-bold text-3xl text-[#1d1c1d] leading-[1.2] tracking-tight sm:text-4xl">
                   {heading}
                 </h2>
-                <p className="mt-4 text-base leading-7 text-[#616061] sm:text-lg">
+                <p className="mt-4 text-[#616061] text-base leading-7 sm:text-lg">
                   {description}
                 </p>
                 {linkText && linkHref && (
                   <a
+                    className="mt-5 inline-flex items-center gap-1 font-medium text-[#1264a3] text-base hover:underline"
                     href={linkHref}
-                    className="mt-5 inline-flex items-center gap-1 text-base font-medium text-[#1264a3] hover:underline"
                   >
                     {linkText}
                     <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
+                      aria-hidden="true"
                       fill="none"
+                      height="14"
                       stroke="currentColor"
-                      strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      aria-hidden="true"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                      width="14"
                     >
                       <path d="m9 18 6-6-6-6" />
                     </svg>

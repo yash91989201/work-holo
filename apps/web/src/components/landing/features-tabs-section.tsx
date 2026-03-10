@@ -1,25 +1,20 @@
 import { useState } from "react";
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-} from "@/components/ui/tabs";
-import { SectionWrapper } from "./section-wrapper";
-import { SectionHeader } from "./section-header";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FeatureItem } from "./feature-item";
+import { SectionHeader } from "./section-header";
+import { SectionWrapper } from "./section-wrapper";
 
 interface TabData {
-  value: string;
-  label: string;
-  heading: string;
-  subtitle: string;
   features: Array<{
     title: string;
     description: string;
     linkText?: string;
     linkHref?: string;
   }>;
+  heading: string;
+  label: string;
+  subtitle: string;
+  value: string;
 }
 
 const tabsData: TabData[] = [
@@ -151,21 +146,21 @@ export function FeaturesTabsSection() {
   return (
     <SectionWrapper>
       <Tabs
-        value={activeTab}
-        onValueChange={handleTabChange}
         className="w-full"
+        onValueChange={handleTabChange}
+        value={activeTab}
       >
         <div className="flex justify-center">
           <TabsList
-            className="mb-10 gap-1 bg-[#F2EFFF] px-1.5 py-2 border border-1"
+            className="mb-10 gap-1 border border-1 bg-[#F2EFFF] px-1.5 py-2"
             style={{ height: "52px" }}
           >
             {tabsData.map((tab) => (
               <TabsTrigger
+                className="rounded-full border border-transparent px-7 text-base data-[state=active]:border-[#D8D5E8]"
                 key={tab.value}
-                value={tab.value}
-                className="px-7 text-base rounded-full border border-transparent data-[state=active]:border-[#D8D5E8]"
                 style={{ height: "38px" }}
+                value={tab.value}
               >
                 {tab.label}
               </TabsTrigger>
@@ -175,24 +170,24 @@ export function FeaturesTabsSection() {
 
         {tabsData.map((tab) => (
           <TabsContent key={tab.value} value={tab.value}>
-            <SectionHeader title={tab.heading} subtitle={tab.subtitle} />
+            <SectionHeader subtitle={tab.subtitle} title={tab.heading} />
 
             <div className="mt-14 grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
               {/* Feature list */}
               <div className="space-y-1">
                 {tab.features.map((feature, i) => (
                   <button
-                    key={feature.title}
-                    type="button"
                     className="w-full text-left"
+                    key={feature.title}
                     onClick={() => handleFeatureClick(tab.value, i)}
+                    type="button"
                   >
                     <FeatureItem
-                      title={feature.title}
-                      description={feature.description}
-                      linkText={feature.linkText}
-                      linkHref={feature.linkHref}
                       active={activeFeatureIndex[tab.value] === i}
+                      description={feature.description}
+                      linkHref={feature.linkHref}
+                      linkText={feature.linkText}
+                      title={feature.title}
                     />
                   </button>
                 ))}
@@ -204,22 +199,22 @@ export function FeaturesTabsSection() {
                   <div className="flex h-full items-center justify-center">
                     <div className="text-center text-muted-foreground">
                       <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="56"
-                        height="56"
-                        viewBox="0 0 24 24"
+                        className="mx-auto mb-3"
                         fill="none"
+                        height="56"
                         stroke="currentColor"
                         strokeWidth="1.5"
-                        className="mx-auto mb-3"
+                        viewBox="0 0 24 24"
+                        width="56"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
                         <rect
-                          x="3"
-                          y="3"
-                          width="18"
                           height="18"
                           rx="2"
                           ry="2"
+                          width="18"
+                          x="3"
+                          y="3"
                         />
                         <circle cx="8.5" cy="8.5" r="1.5" />
                         <polyline points="21 15 16 10 5 21" />

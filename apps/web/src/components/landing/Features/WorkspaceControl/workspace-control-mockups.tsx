@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -14,7 +13,7 @@ import { cn } from "@/lib/utils";
  */
 export function WorkspaceHeroMockup() {
   return (
-    <div className="relative w-full h-[550px] flex items-center justify-center scale-75 md:scale-90 lg:scale-[1.05]">
+    <div className="relative flex h-[550px] w-full scale-75 items-center justify-center md:scale-90 lg:scale-[1.05]">
       <style>
         {`
           @keyframes float-hero {
@@ -32,105 +31,158 @@ export function WorkspaceHeroMockup() {
       </style>
 
       {/* Main Container */}
-      <div className="relative w-[800px] h-[600px]">
-        
+      <div className="relative h-[600px] w-[800px]">
         {/* Connecting Lines SVG */}
         <svg
-          className="absolute inset-0 size-full pointer-events-none z-10"
-          viewBox="0 0 800 600"
+          className="pointer-events-none absolute inset-0 z-10 size-full"
           fill="none"
+          viewBox="0 0 800 600"
           xmlns="http://www.w3.org/2000/svg"
         >
           {/* Teal Pill Line */}
-          <path d="M 330 180 C 400 180 450 210 480 250" stroke="#CBD5E1" strokeWidth="1.5" strokeLinecap="round" className="animate-float-hero-slow" />
+          <path
+            className="animate-float-hero-slow"
+            d="M 330 180 C 400 180 450 210 480 250"
+            stroke="#CBD5E1"
+            strokeLinecap="round"
+            strokeWidth="1.5"
+          />
           {/* Organization Card Line */}
-          <path d="M 390 290 C 450 290 500 310 520 340" stroke="#CBD5E1" strokeWidth="1.5" strokeLinecap="round" className="animate-float-hero" />
+          <path
+            className="animate-float-hero"
+            d="M 390 290 C 450 290 500 310 520 340"
+            stroke="#CBD5E1"
+            strokeLinecap="round"
+            strokeWidth="1.5"
+          />
           {/* Red Pill Line */}
-          <path d="M 400 440 C 500 440 550 480 600 520" stroke="#CBD5E1" strokeWidth="1.5" strokeLinecap="round" className="animate-float-hero-delayed" />
+          <path
+            className="animate-float-hero-delayed"
+            d="M 400 440 C 500 440 550 480 600 520"
+            stroke="#CBD5E1"
+            strokeLinecap="round"
+            strokeWidth="1.5"
+          />
           {/* Shared Resources Line */}
-          <path d="M 380 520 C 480 520 530 550 580 570" stroke="#CBD5E1" strokeWidth="1.5" strokeLinecap="round" className="animate-float-hero-slow" />
+          <path
+            className="animate-float-hero-slow"
+            d="M 380 520 C 480 520 530 550 580 570"
+            stroke="#CBD5E1"
+            strokeLinecap="round"
+            strokeWidth="1.5"
+          />
         </svg>
 
         {/* Top circular image - Mountains (Large) */}
-        <div className="absolute top-[100px] right-[40px] size-[380px] rounded-full overflow-hidden border-8 border-white shadow-2xl z-20 animate-float-hero">
+        <div className="absolute top-[100px] right-[40px] z-20 size-[380px] animate-float-hero overflow-hidden rounded-full border-8 border-white shadow-2xl">
           <img
-            src="https://images.unsplash.com/photo-1589182373726-e4f658ab50f0?w=1000&q=80"
             alt="Organization environment"
             className="size-full object-cover"
+            src="https://images.unsplash.com/photo-1589182373726-e4f658ab50f0?w=1000&q=80"
           />
         </div>
 
         {/* Bottom circular image - Flowers (Smaller) */}
-        <div className="absolute bottom-[20px] right-[30px] size-[240px] rounded-full overflow-hidden border-8 border-white shadow-2xl z-30 animate-float-hero-delayed">
+        <div className="absolute right-[30px] bottom-[20px] z-30 size-[240px] animate-float-hero-delayed overflow-hidden rounded-full border-8 border-white shadow-2xl">
           <img
-            src="https://images.unsplash.com/photo-1526047932273-341f2a7631f9?w=800&q=80"
             alt="Team flowers"
             className="size-full object-cover"
+            src="https://images.unsplash.com/photo-1526047932273-341f2a7631f9?w=800&q=80"
           />
         </div>
 
         {/* Floating elements positioned OUTSIDE (to the left of circles) */}
-        
+
         {/* Teal Pill */}
         <div className="absolute top-[160px] left-[130px] z-50 animate-float-hero-slow">
-           <div className="bg-[#4ebcd5] text-white px-5 py-2.5 rounded-full text-[12px] font-bold shadow-xl whitespace-nowrap">
-             Organize your organization efficiently
-           </div>
+          <div className="whitespace-nowrap rounded-full bg-[#4ebcd5] px-5 py-2.5 font-bold text-[12px] text-white shadow-xl">
+            Organize your organization efficiently
+          </div>
         </div>
 
         {/* Organization created Card */}
         <div className="absolute top-[260px] left-[170px] z-50 animate-float-hero">
-           <div className="bg-white/95 backdrop-blur-md p-4 rounded-xl shadow-2xl flex items-center gap-4 border border-white/20 min-w-[240px]">
-             <div className="size-9 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500 shrink-0 shadow-sm">
-               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                 <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-               </svg>
-             </div>
-             <div>
-               <p className="text-[13px] font-bold text-gray-900 leading-none mb-1.5">Organization created</p>
-               <p className="text-[11px] text-gray-500 font-medium">Workspace ready</p>
-             </div>
-           </div>
+          <div className="flex min-w-[240px] items-center gap-4 rounded-xl border border-white/20 bg-white/95 p-4 shadow-2xl backdrop-blur-md">
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-500 shadow-sm">
+              <svg
+                fill="none"
+                height="20"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                viewBox="0 0 24 24"
+                width="20"
+              >
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+              </svg>
+            </div>
+            <div>
+              <p className="mb-1.5 font-bold text-[13px] text-gray-900 leading-none">
+                Organization created
+              </p>
+              <p className="font-medium text-[11px] text-gray-500">
+                Workspace ready
+              </p>
+            </div>
+          </div>
 
-           {/* Channels Pill (attached to card) */}
-           <div className="mt-4 ml-10">
-              <div className="bg-white/95 backdrop-blur-md px-4 py-2 rounded-full shadow-lg flex items-center gap-2 border border-white/20 self-start">
-                <div className="flex -space-x-2">
-                  {[1, 2, 3].map((i) => (
-                    <div key={i} className="size-5 rounded-full border-2 border-white bg-gray-200 overflow-hidden shadow-sm">
-                      <img src={`https://i.pravatar.cc/100?u=${i + 18}`} alt="user" className="size-full object-cover" />
-                    </div>
-                  ))}
-                </div>
-                <span className="text-[11px] font-bold text-gray-700">5 channels</span>
+          {/* Channels Pill (attached to card) */}
+          <div className="mt-4 ml-10">
+            <div className="flex items-center gap-2 self-start rounded-full border border-white/20 bg-white/95 px-4 py-2 shadow-lg backdrop-blur-md">
+              <div className="flex -space-x-2">
+                {[1, 2, 3].map((i) => (
+                  <div
+                    className="size-5 overflow-hidden rounded-full border-2 border-white bg-gray-200 shadow-sm"
+                    key={i}
+                  >
+                    <img
+                      alt="user"
+                      className="size-full object-cover"
+                      src={`https://i.pravatar.cc/100?u=${i + 18}`}
+                    />
+                  </div>
+                ))}
               </div>
-           </div>
+              <span className="font-bold text-[11px] text-gray-700">
+                5 channels
+              </span>
+            </div>
+          </div>
         </div>
 
         {/* Red Pill */}
         <div className="absolute bottom-[140px] left-[200px] z-50 animate-float-hero-delayed">
-          <div className="bg-[#cc2a5d] text-white px-5 py-2.5 rounded-full text-[12px] font-bold shadow-xl whitespace-nowrap">
+          <div className="whitespace-nowrap rounded-full bg-[#cc2a5d] px-5 py-2.5 font-bold text-[12px] text-white shadow-xl">
             Collaboration across teams
           </div>
         </div>
 
         {/* Structured teams Card */}
         <div className="absolute bottom-[40px] left-[150px] z-50 animate-float-hero-slow">
-          <div className="bg-white/80 backdrop-blur-md p-4 rounded-xl shadow-2xl flex items-center gap-4 border border-white/20 min-w-[260px]">
-             <div className="size-9 rounded-lg bg-orange-50 flex items-center justify-center text-orange-500 shrink-0 shadow-sm">
-               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                 <circle cx="12" cy="12" r="10" />
-                 <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                 <path d="M2 12h20" />
-               </svg>
-             </div>
-             <div>
-               <p className="text-[13px] font-bold text-gray-900 leading-tight mb-1.5">Structured teams and shared resources</p>
-               <p className="text-[11px] text-gray-500 font-medium">Enterprise ready</p>
-             </div>
-           </div>
+          <div className="flex min-w-[260px] items-center gap-4 rounded-xl border border-white/20 bg-white/80 p-4 shadow-2xl backdrop-blur-md">
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-orange-50 text-orange-500 shadow-sm">
+              <svg
+                fill="none"
+                height="20"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                viewBox="0 0 24 24"
+                width="20"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                <path d="M2 12h20" />
+              </svg>
+            </div>
+            <div>
+              <p className="mb-1.5 font-bold text-[13px] text-gray-900 leading-tight">
+                Structured teams and shared resources
+              </p>
+              <p className="font-medium text-[11px] text-gray-500">
+                Enterprise ready
+              </p>
+            </div>
+          </div>
         </div>
-
       </div>
     </div>
   );
@@ -142,54 +194,66 @@ export function WorkspaceHeroMockup() {
  */
 export function WorkspaceTeamsMockup() {
   return (
-    <div className="w-full overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl flex h-[350px]">
+    <div className="flex h-[350px] w-full overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl">
       {/* Sidebar */}
-      <div className="w-48 bg-gray-900 flex flex-col p-4 shrink-0">
-        <div className="flex items-center gap-2 mb-8">
+      <div className="flex w-48 shrink-0 flex-col bg-gray-900 p-4">
+        <div className="mb-8 flex items-center gap-2">
           <div className="size-6 rounded bg-blue-500" />
           <div className="h-2 w-20 rounded bg-gray-700" />
         </div>
-        
+
         <div className="space-y-4">
-          <div className="h-1.5 w-12 rounded bg-gray-600 mb-2" />
+          <div className="mb-2 h-1.5 w-12 rounded bg-gray-600" />
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="flex items-center gap-2">
+            <div className="flex items-center gap-2" key={i}>
               <span className="text-gray-500 text-xs">#</span>
-              <div className={cn("h-1.5 rounded bg-gray-700", i === 2 ? "w-24 bg-gray-500" : "w-16")} />
+              <div
+                className={cn(
+                  "h-1.5 rounded bg-gray-700",
+                  i === 2 ? "w-24 bg-gray-500" : "w-16"
+                )}
+              />
             </div>
           ))}
         </div>
-        
+
         <div className="mt-auto">
-          <div className="h-8 w-full rounded border border-gray-700 border-dashed flex items-center justify-center">
+          <div className="flex h-8 w-full items-center justify-center rounded border border-gray-700 border-dashed">
             <div className="size-3 rounded-full bg-gray-700" />
           </div>
         </div>
       </div>
-      
+
       {/* Main Content / Members Panel */}
-      <div className="flex-1 p-6 flex flex-col bg-gray-50">
-        <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-1 flex-col bg-gray-50 p-6">
+        <div className="mb-6 flex items-center justify-between">
           <div className="h-4 w-32 rounded bg-gray-300" />
           <div className="h-8 w-24 rounded bg-gray-900" />
         </div>
-        
+
         <div className="grid grid-cols-2 gap-4">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="bg-white p-3 rounded-lg border border-gray-200 flex items-center gap-3">
-              <div className="size-8 rounded-full bg-gray-100 overflow-hidden">
-                <img src={`https://i.pravatar.cc/100?u=${i + 20}`} alt="user" className="size-full object-cover" />
+            <div
+              className="flex items-center gap-3 rounded-lg border border-gray-200 bg-white p-3"
+              key={i}
+            >
+              <div className="size-8 overflow-hidden rounded-full bg-gray-100">
+                <img
+                  alt="user"
+                  className="size-full object-cover"
+                  src={`https://i.pravatar.cc/100?u=${i + 20}`}
+                />
               </div>
               <div className="flex-1">
-                <div className="h-2 w-16 rounded bg-gray-300 mb-1" />
+                <div className="mb-1 h-2 w-16 rounded bg-gray-300" />
                 <div className="h-1.5 w-10 rounded bg-gray-100" />
               </div>
             </div>
           ))}
         </div>
-        
-        <div className="mt-auto h-12 w-full rounded-lg border border-gray-200 bg-white shadow-sm flex items-center px-4">
-          <div className="size-6 rounded bg-gray-100 mr-3" />
+
+        <div className="mt-auto flex h-12 w-full items-center rounded-lg border border-gray-200 bg-white px-4 shadow-sm">
+          <div className="mr-3 size-6 rounded bg-gray-100" />
           <div className="h-2 w-48 rounded bg-gray-200" />
         </div>
       </div>
@@ -210,24 +274,33 @@ export function WorkspaceMembersMockup() {
   ];
 
   return (
-    <div className="w-full aspect-video rounded-3xl bg-[#f8fafc] border border-gray-200 shadow-xl p-6 flex flex-col gap-4">
-      <div className="flex items-center justify-between pb-4 border-b border-gray-100">
-        <div className="h-4 w-32 bg-gray-200 rounded" />
-        <div className="size-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-xs">+</div>
+    <div className="flex aspect-video w-full flex-col gap-4 rounded-3xl border border-gray-200 bg-[#f8fafc] p-6 shadow-xl">
+      <div className="flex items-center justify-between border-gray-100 border-b pb-4">
+        <div className="h-4 w-32 rounded bg-gray-200" />
+        <div className="flex size-8 items-center justify-center rounded-full bg-blue-500 font-bold text-white text-xs">
+          +
+        </div>
       </div>
       <div className="space-y-3">
         {members.map((m) => (
-          <div key={m.name} className="flex items-center justify-between bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
+          <div
+            className="flex items-center justify-between rounded-xl border border-gray-100 bg-white p-3 shadow-sm"
+            key={m.name}
+          >
             <div className="flex items-center gap-3">
-              <div className="size-10 rounded-full overflow-hidden bg-gray-100">
-                <img src={`https://i.pravatar.cc/100?u=${m.avatar}`} alt={m.name} className="size-full object-cover" />
+              <div className="size-10 overflow-hidden rounded-full bg-gray-100">
+                <img
+                  alt={m.name}
+                  className="size-full object-cover"
+                  src={`https://i.pravatar.cc/100?u=${m.avatar}`}
+                />
               </div>
               <div>
-                <p className="text-sm font-bold text-gray-900">{m.name}</p>
-                <p className="text-xs text-gray-500 font-medium">{m.role}</p>
+                <p className="font-bold text-gray-900 text-sm">{m.name}</p>
+                <p className="font-medium text-gray-500 text-xs">{m.role}</p>
               </div>
             </div>
-            <div className="px-2.5 py-1 rounded-full bg-blue-50 text-[10px] font-bold text-blue-600 uppercase tracking-wider">
+            <div className="rounded-full bg-blue-50 px-2.5 py-1 font-bold text-[10px] text-blue-600 uppercase tracking-wider">
               {m.role}
             </div>
           </div>

@@ -6,15 +6,15 @@ export function RealTimeQuote() {
   return (
     <section className="w-full bg-white py-16 sm:py-24 lg:py-32">
       <div className="mx-auto max-w-4xl px-6 text-center sm:px-12">
-        <h2 className="mb-8 font-bold text-2xl italic tracking-tight text-[#1d1c1d] sm:text-3xl">
+        <h2 className="mb-8 font-bold text-2xl text-[#1d1c1d] italic tracking-tight sm:text-3xl">
           {quote.logoText}
         </h2>
-        <p className="text-2xl font-light italic leading-relaxed text-[#1d1c1d] sm:text-3xl lg:text-4xl">
+        <p className="font-light text-2xl text-[#1d1c1d] italic leading-relaxed sm:text-3xl lg:text-4xl">
           {quote.text}
         </p>
         <div className="mt-8 flex flex-col items-center justify-center">
           <p className="font-bold text-[#1d1c1d]">{quote.author}</p>
-          <p className="text-sm text-[#616061]">{quote.title}</p>
+          <p className="text-[#616061] text-sm">{quote.title}</p>
         </div>
       </div>
     </section>

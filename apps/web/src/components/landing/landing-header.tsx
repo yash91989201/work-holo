@@ -220,11 +220,34 @@ const featuresCategories = [
   },
 ];
 
+const solutionsCategories = [
+  {
+    title: "BY DEPARTMENT",
+    items: [
+      { label: "Customer service", href: "/solutions/customer-service" },
+      { label: "Sales", href: "/solutions/sales" },
+      { label: "Human Resources", href: "/solutions/hr" },
+    ],
+  },
+  {
+    title: "BY INDUSTRY",
+    items: [
+      { label: "Manufacturing", href: "/solutions/manufacturing" },
+      { label: "Technology", href: "/solutions/technology" },
+      { label: "Small business", href: "/solutions/small-business" },
+      { label: "Financial services", href: "/solutions/financial-services" },
+      { label: "Retail", href: "/solutions/retail" },
+      { label: "Health and life sciences", href: "/solutions/health" },
+    ],
+  },
+];
+
 export function LandingHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileBpoOpen, setMobileBpoOpen] = useState(false);
   const [mobileFeaturesOpen, setMobileFeaturesOpen] = useState(false);
+  const [mobileSolutionsOpen, setMobileSolutionsOpen] = useState(false);
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const openDropdown = useCallback((label: string) => {
@@ -586,6 +609,80 @@ export function LandingHeader() {
           </div>
         </div>
 
+        {/* Solutions Mega Dropdown (desktop) */}
+        <div
+          className={cn(
+            "absolute right-0 left-0 z-40 origin-top px-4 transition-all duration-200 sm:px-6 lg:px-8",
+            activeDropdown === "Solutions"
+              ? "pointer-events-auto scale-y-100 opacity-100"
+              : "pointer-events-none scale-y-95 opacity-0"
+          )}
+          onMouseEnter={cancelClose}
+          onMouseLeave={scheduleClose}
+        >
+          <div className="mx-auto max-w-7xl">
+            <div className="mt-1 rounded-2xl border border-border/60 bg-background p-8 pb-6 shadow-xl">
+              <div className="grid grid-cols-3 gap-x-8">
+                {/* Column 1 & 2: Categories */}
+                {solutionsCategories.map((category) => (
+                  <div key={category.title}>
+                    <h4 className="mb-4 font-bold text-foreground/80 text-xs uppercase tracking-wider">
+                      {category.title}
+                    </h4>
+                    <ul className="space-y-4">
+                      {category.items.map((item) => (
+                        <li key={item.href}>
+                          <Link
+                            className="group block"
+                            onClick={() => setActiveDropdown(null)}
+                            to={item.href as any}
+                          >
+                            <div className="font-semibold text-foreground text-sm transition-colors group-hover:text-[#6366f1]">
+                              {item.label}
+                            </div>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+
+                {/* Column 3: Template Gallery */}
+                <div className="flex flex-col">
+                  <h4 className="mb-4 font-bold text-foreground/80 text-xs uppercase tracking-wider">
+                    TEMPLATE GALLERY
+                  </h4>
+                  <div className="flex flex-1 flex-col justify-between rounded-xl bg-muted/40 p-6">
+                    <div>
+                      <div className="mb-4 flex aspect-[2/1] w-full items-center justify-center overflow-hidden rounded-lg border border-border/50 bg-background shadow-sm">
+                        <div className="flex flex-col items-center gap-2">
+                          <div className="flex gap-2">
+                            <div className="h-8 w-8 rounded bg-[#7C5CFF]/20" />
+                            <div className="h-8 w-8 rounded bg-[#7C5CFF]/40" />
+                            <div className="h-8 w-8 rounded bg-[#7C5CFF]/60" />
+                          </div>
+                          <div className="h-2 w-24 rounded-full bg-muted-foreground/20" />
+                        </div>
+                      </div>
+                      <p className="text-foreground/80 text-sm leading-relaxed">
+                        Start work faster with pre-made templates for every
+                        task.
+                      </p>
+                    </div>
+                    <Link
+                      className="mt-4 inline-flex items-center gap-1 font-semibold text-[#7C5CFF] text-sm transition-colors hover:text-[#6B4CE6]"
+                      onClick={() => setActiveDropdown(null)}
+                      to={"/templates" as any}
+                    >
+                      See all templates <span aria-hidden="true">→</span>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Mobile menu */}
         <div
           className={cn(
@@ -719,6 +816,80 @@ export function LandingHeader() {
                           </ul>
                         </div>
                       ))}
+                    </div>
+                  </div>
+                </div>
+              ) : item.label === "Solutions" ? (
+                <div key={item.label}>
+                  <button
+                    className="flex w-full items-center justify-between rounded-md px-4 py-2.5 text-base text-foreground/70 transition-colors hover:bg-muted hover:text-foreground"
+                    onClick={() => setMobileSolutionsOpen(!mobileSolutionsOpen)}
+                    type="button"
+                  >
+                    {item.label}
+                    <svg
+                      className={cn(
+                        "transition-transform duration-200",
+                        mobileSolutionsOpen && "rotate-180"
+                      )}
+                      fill="none"
+                      height="16"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                      width="16"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="m6 9 6 6 6-6" />
+                    </svg>
+                  </button>
+                  <div
+                    className={cn(
+                      "overflow-hidden transition-all duration-200",
+                      mobileSolutionsOpen ? "max-h-[800px]" : "max-h-0"
+                    )}
+                  >
+                    <div className="space-y-4 px-4 py-3">
+                      {solutionsCategories.map((category) => (
+                        <div key={category.title}>
+                          <h4 className="mb-2 font-semibold text-foreground/80 text-xs uppercase tracking-wider">
+                            {category.title}
+                          </h4>
+                          <ul className="space-y-1.5">
+                            {category.items.map((subItem) => (
+                              <li key={subItem.href}>
+                                <Link
+                                  className="block rounded-md py-1.5 text-foreground/60 text-sm transition-colors hover:text-[#6366f1]"
+                                  onClick={() => {
+                                    setMobileMenuOpen(false);
+                                    setMobileSolutionsOpen(false);
+                                  }}
+                                  to={subItem.href as any}
+                                >
+                                  {subItem.label}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                      <div>
+                        <h4 className="mb-2 font-semibold text-foreground/80 text-xs uppercase tracking-wider">
+                          TEMPLATE GALLERY
+                        </h4>
+                        <Link
+                          className="block rounded-md py-1.5 text-[#7C5CFF] text-sm transition-colors hover:text-[#6B4CE6]"
+                          onClick={() => {
+                            setMobileMenuOpen(false);
+                            setMobileSolutionsOpen(false);
+                          }}
+                          to={"/templates" as any}
+                        >
+                          See all templates →
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -9,7 +9,6 @@ interface FeatureCardContentLeftProps {
   /** Small footnote / citation text */
   citation?: string;
   className?: string;
-  /** Optional override for the main inner container class */
   containerClass?: string;
   description: string;
   heading: string;

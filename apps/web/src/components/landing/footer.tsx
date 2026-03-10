@@ -18,8 +18,8 @@ const footerLinks = {
     { label: "Lists", href: "/features/lists" },
   ],
   Solutions: [
-    { label: "Customer service", href: "/" },
-    { label: "Sales", href: "/" },
+    { label: "Customer service", href: "/solutions/customer-service" },
+    { label: "Sales", href: "/solutions/sales" },
     { label: "Project management", href: "/" },
     { label: "Marketing", href: "/" },
     { label: "Security", href: "/" },

@@ -15,16 +15,29 @@ import { Route as publicIndexRouteImport } from './routes/(public)/index'
 import { Route as publicStatusRouteImport } from './routes/(public)/status'
 import { Route as publicPricingRouteImport } from './routes/(public)/pricing'
 import { Route as publicPaidVsFreeRouteImport } from './routes/(public)/paid-vs-free'
-import { Route as publicHomePageRouteImport } from './routes/(public)/home-page'
 import { Route as publicChangelogRouteImport } from './routes/(public)/changelog'
 import { Route as publicAboutRouteImport } from './routes/(public)/about'
 import { Route as authSignupRouteImport } from './routes/(auth)/signup'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as authenticatedSettingsRouteRouteImport } from './routes/(authenticated)/settings/route'
+import { Route as publicSolutionsTechnologyRouteImport } from './routes/(public)/solutions/technology'
+import { Route as publicSolutionsSmallBusinessRouteImport } from './routes/(public)/solutions/small-business'
+import { Route as publicSolutionsSalesRouteImport } from './routes/(public)/solutions/sales'
+import { Route as publicSolutionsRetailRouteImport } from './routes/(public)/solutions/retail'
+import { Route as publicSolutionsManufacturingRouteImport } from './routes/(public)/solutions/manufacturing'
+import { Route as publicSolutionsHrRouteImport } from './routes/(public)/solutions/hr'
+import { Route as publicSolutionsHealthRouteImport } from './routes/(public)/solutions/health'
+import { Route as publicSolutionsFinancialServicesRouteImport } from './routes/(public)/solutions/financial-services'
+import { Route as publicSolutionsCustomerServiceRouteImport } from './routes/(public)/solutions/customer-service'
 import { Route as publicProductDemoRouteImport } from './routes/(public)/product/demo'
 import { Route as publicFeaturesListsRouteImport } from './routes/(public)/features/lists'
 import { Route as publicFeaturesCanvasRouteImport } from './routes/(public)/features/canvas'
 import { Route as publicFeaturesSlugRouteImport } from './routes/(public)/features/$slug'
+import { Route as publicCompanyShopRouteImport } from './routes/(public)/company/shop'
+import { Route as publicCompanyNewsRouteImport } from './routes/(public)/company/news'
+import { Route as publicCompanyCareersRouteImport } from './routes/(public)/company/careers'
+import { Route as publicCompanyBrandRouteImport } from './routes/(public)/company/brand'
+import { Route as publicCompanyAboutRouteImport } from './routes/(public)/company/about'
 import { Route as publicBpoSlugRouteImport } from './routes/(public)/bpo/$slug'
 import { Route as authenticatedOrgNewRouteImport } from './routes/(authenticated)/org/new'
 import { Route as authAcceptInvitationIdRouteImport } from './routes/(auth)/accept-invitation.$id'
@@ -85,11 +98,6 @@ const publicPaidVsFreeRoute = publicPaidVsFreeRouteImport.update({
   path: '/paid-vs-free',
   getParentRoute: () => publicRouteRoute,
 } as any)
-const publicHomePageRoute = publicHomePageRouteImport.update({
-  id: '/home-page',
-  path: '/home-page',
-  getParentRoute: () => publicRouteRoute,
-} as any)
 const publicChangelogRoute = publicChangelogRouteImport.update({
   id: '/changelog',
   path: '/changelog',
@@ -116,6 +124,56 @@ const authenticatedSettingsRouteRoute =
     path: '/settings',
     getParentRoute: () => authenticatedRouteRoute,
   } as any)
+const publicSolutionsTechnologyRoute =
+  publicSolutionsTechnologyRouteImport.update({
+    id: '/solutions/technology',
+    path: '/solutions/technology',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicSolutionsSmallBusinessRoute =
+  publicSolutionsSmallBusinessRouteImport.update({
+    id: '/solutions/small-business',
+    path: '/solutions/small-business',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicSolutionsSalesRoute = publicSolutionsSalesRouteImport.update({
+  id: '/solutions/sales',
+  path: '/solutions/sales',
+  getParentRoute: () => publicRouteRoute,
+} as any)
+const publicSolutionsRetailRoute = publicSolutionsRetailRouteImport.update({
+  id: '/solutions/retail',
+  path: '/solutions/retail',
+  getParentRoute: () => publicRouteRoute,
+} as any)
+const publicSolutionsManufacturingRoute =
+  publicSolutionsManufacturingRouteImport.update({
+    id: '/solutions/manufacturing',
+    path: '/solutions/manufacturing',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicSolutionsHrRoute = publicSolutionsHrRouteImport.update({
+  id: '/solutions/hr',
+  path: '/solutions/hr',
+  getParentRoute: () => publicRouteRoute,
+} as any)
+const publicSolutionsHealthRoute = publicSolutionsHealthRouteImport.update({
+  id: '/solutions/health',
+  path: '/solutions/health',
+  getParentRoute: () => publicRouteRoute,
+} as any)
+const publicSolutionsFinancialServicesRoute =
+  publicSolutionsFinancialServicesRouteImport.update({
+    id: '/solutions/financial-services',
+    path: '/solutions/financial-services',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicSolutionsCustomerServiceRoute =
+  publicSolutionsCustomerServiceRouteImport.update({
+    id: '/solutions/customer-service',
+    path: '/solutions/customer-service',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
 const publicProductDemoRoute = publicProductDemoRouteImport.update({
   id: '/product/demo',
   path: '/product/demo',
@@ -134,6 +192,31 @@ const publicFeaturesCanvasRoute = publicFeaturesCanvasRouteImport.update({
 const publicFeaturesSlugRoute = publicFeaturesSlugRouteImport.update({
   id: '/features/$slug',
   path: '/features/$slug',
+  getParentRoute: () => publicRouteRoute,
+} as any)
+const publicCompanyShopRoute = publicCompanyShopRouteImport.update({
+  id: '/company/shop',
+  path: '/company/shop',
+  getParentRoute: () => publicRouteRoute,
+} as any)
+const publicCompanyNewsRoute = publicCompanyNewsRouteImport.update({
+  id: '/company/news',
+  path: '/company/news',
+  getParentRoute: () => publicRouteRoute,
+} as any)
+const publicCompanyCareersRoute = publicCompanyCareersRouteImport.update({
+  id: '/company/careers',
+  path: '/company/careers',
+  getParentRoute: () => publicRouteRoute,
+} as any)
+const publicCompanyBrandRoute = publicCompanyBrandRouteImport.update({
+  id: '/company/brand',
+  path: '/company/brand',
+  getParentRoute: () => publicRouteRoute,
+} as any)
+const publicCompanyAboutRoute = publicCompanyAboutRouteImport.update({
+  id: '/company/about',
+  path: '/company/about',
   getParentRoute: () => publicRouteRoute,
 } as any)
 const publicBpoSlugRoute = publicBpoSlugRouteImport.update({
@@ -336,7 +419,6 @@ export interface FileRoutesByFullPath {
   '/signup': typeof authSignupRoute
   '/about': typeof publicAboutRoute
   '/changelog': typeof publicChangelogRoute
-  '/home-page': typeof publicHomePageRoute
   '/paid-vs-free': typeof publicPaidVsFreeRoute
   '/pricing': typeof publicPricingRoute
   '/status': typeof publicStatusRoute
@@ -345,10 +427,24 @@ export interface FileRoutesByFullPath {
   '/accept-invitation/$id': typeof authAcceptInvitationIdRoute
   '/org/new': typeof authenticatedOrgNewRoute
   '/bpo/$slug': typeof publicBpoSlugRoute
+  '/company/about': typeof publicCompanyAboutRoute
+  '/company/brand': typeof publicCompanyBrandRoute
+  '/company/careers': typeof publicCompanyCareersRoute
+  '/company/news': typeof publicCompanyNewsRoute
+  '/company/shop': typeof publicCompanyShopRoute
   '/features/$slug': typeof publicFeaturesSlugRoute
   '/features/canvas': typeof publicFeaturesCanvasRoute
   '/features/lists': typeof publicFeaturesListsRoute
   '/product/demo': typeof publicProductDemoRoute
+  '/solutions/customer-service': typeof publicSolutionsCustomerServiceRoute
+  '/solutions/financial-services': typeof publicSolutionsFinancialServicesRoute
+  '/solutions/health': typeof publicSolutionsHealthRoute
+  '/solutions/hr': typeof publicSolutionsHrRoute
+  '/solutions/manufacturing': typeof publicSolutionsManufacturingRoute
+  '/solutions/retail': typeof publicSolutionsRetailRoute
+  '/solutions/sales': typeof publicSolutionsSalesRoute
+  '/solutions/small-business': typeof publicSolutionsSmallBusinessRoute
+  '/solutions/technology': typeof publicSolutionsTechnologyRoute
   '/org/$slug/console': typeof authenticatedOrgSlugConsoleRouteRouteWithChildren
   '/org/$slug/manage': typeof authenticatedOrgSlugManageRouteRouteWithChildren
   '/org/$slug/workspace': typeof authenticatedOrgSlugWorkspaceRouteRouteWithChildren
@@ -383,7 +479,6 @@ export interface FileRoutesByTo {
   '/signup': typeof authSignupRoute
   '/about': typeof publicAboutRoute
   '/changelog': typeof publicChangelogRoute
-  '/home-page': typeof publicHomePageRoute
   '/paid-vs-free': typeof publicPaidVsFreeRoute
   '/pricing': typeof publicPricingRoute
   '/status': typeof publicStatusRoute
@@ -392,10 +487,24 @@ export interface FileRoutesByTo {
   '/accept-invitation/$id': typeof authAcceptInvitationIdRoute
   '/org/new': typeof authenticatedOrgNewRoute
   '/bpo/$slug': typeof publicBpoSlugRoute
+  '/company/about': typeof publicCompanyAboutRoute
+  '/company/brand': typeof publicCompanyBrandRoute
+  '/company/careers': typeof publicCompanyCareersRoute
+  '/company/news': typeof publicCompanyNewsRoute
+  '/company/shop': typeof publicCompanyShopRoute
   '/features/$slug': typeof publicFeaturesSlugRoute
   '/features/canvas': typeof publicFeaturesCanvasRoute
   '/features/lists': typeof publicFeaturesListsRoute
   '/product/demo': typeof publicProductDemoRoute
+  '/solutions/customer-service': typeof publicSolutionsCustomerServiceRoute
+  '/solutions/financial-services': typeof publicSolutionsFinancialServicesRoute
+  '/solutions/health': typeof publicSolutionsHealthRoute
+  '/solutions/hr': typeof publicSolutionsHrRoute
+  '/solutions/manufacturing': typeof publicSolutionsManufacturingRoute
+  '/solutions/retail': typeof publicSolutionsRetailRoute
+  '/solutions/sales': typeof publicSolutionsSalesRoute
+  '/solutions/small-business': typeof publicSolutionsSmallBusinessRoute
+  '/solutions/technology': typeof publicSolutionsTechnologyRoute
   '/settings/account/notifications': typeof authenticatedSettingsAccountNotificationsRoute
   '/settings/account/preferences': typeof authenticatedSettingsAccountPreferencesRoute
   '/settings/account/profile': typeof authenticatedSettingsAccountProfileRoute
@@ -428,7 +537,6 @@ export interface FileRoutesById {
   '/(auth)/signup': typeof authSignupRoute
   '/(public)/about': typeof publicAboutRoute
   '/(public)/changelog': typeof publicChangelogRoute
-  '/(public)/home-page': typeof publicHomePageRoute
   '/(public)/paid-vs-free': typeof publicPaidVsFreeRoute
   '/(public)/pricing': typeof publicPricingRoute
   '/(public)/status': typeof publicStatusRoute
@@ -437,10 +545,24 @@ export interface FileRoutesById {
   '/(auth)/accept-invitation/$id': typeof authAcceptInvitationIdRoute
   '/(authenticated)/org/new': typeof authenticatedOrgNewRoute
   '/(public)/bpo/$slug': typeof publicBpoSlugRoute
+  '/(public)/company/about': typeof publicCompanyAboutRoute
+  '/(public)/company/brand': typeof publicCompanyBrandRoute
+  '/(public)/company/careers': typeof publicCompanyCareersRoute
+  '/(public)/company/news': typeof publicCompanyNewsRoute
+  '/(public)/company/shop': typeof publicCompanyShopRoute
   '/(public)/features/$slug': typeof publicFeaturesSlugRoute
   '/(public)/features/canvas': typeof publicFeaturesCanvasRoute
   '/(public)/features/lists': typeof publicFeaturesListsRoute
   '/(public)/product/demo': typeof publicProductDemoRoute
+  '/(public)/solutions/customer-service': typeof publicSolutionsCustomerServiceRoute
+  '/(public)/solutions/financial-services': typeof publicSolutionsFinancialServicesRoute
+  '/(public)/solutions/health': typeof publicSolutionsHealthRoute
+  '/(public)/solutions/hr': typeof publicSolutionsHrRoute
+  '/(public)/solutions/manufacturing': typeof publicSolutionsManufacturingRoute
+  '/(public)/solutions/retail': typeof publicSolutionsRetailRoute
+  '/(public)/solutions/sales': typeof publicSolutionsSalesRoute
+  '/(public)/solutions/small-business': typeof publicSolutionsSmallBusinessRoute
+  '/(public)/solutions/technology': typeof publicSolutionsTechnologyRoute
   '/(authenticated)/org/$slug/console': typeof authenticatedOrgSlugConsoleRouteRouteWithChildren
   '/(authenticated)/org/$slug/manage': typeof authenticatedOrgSlugManageRouteRouteWithChildren
   '/(authenticated)/org/$slug/workspace': typeof authenticatedOrgSlugWorkspaceRouteRouteWithChildren
@@ -477,7 +599,6 @@ export interface FileRouteTypes {
     | '/signup'
     | '/about'
     | '/changelog'
-    | '/home-page'
     | '/paid-vs-free'
     | '/pricing'
     | '/status'
@@ -486,10 +607,24 @@ export interface FileRouteTypes {
     | '/accept-invitation/$id'
     | '/org/new'
     | '/bpo/$slug'
+    | '/company/about'
+    | '/company/brand'
+    | '/company/careers'
+    | '/company/news'
+    | '/company/shop'
     | '/features/$slug'
     | '/features/canvas'
     | '/features/lists'
     | '/product/demo'
+    | '/solutions/customer-service'
+    | '/solutions/financial-services'
+    | '/solutions/health'
+    | '/solutions/hr'
+    | '/solutions/manufacturing'
+    | '/solutions/retail'
+    | '/solutions/sales'
+    | '/solutions/small-business'
+    | '/solutions/technology'
     | '/org/$slug/console'
     | '/org/$slug/manage'
     | '/org/$slug/workspace'
@@ -524,7 +659,6 @@ export interface FileRouteTypes {
     | '/signup'
     | '/about'
     | '/changelog'
-    | '/home-page'
     | '/paid-vs-free'
     | '/pricing'
     | '/status'
@@ -533,10 +667,24 @@ export interface FileRouteTypes {
     | '/accept-invitation/$id'
     | '/org/new'
     | '/bpo/$slug'
+    | '/company/about'
+    | '/company/brand'
+    | '/company/careers'
+    | '/company/news'
+    | '/company/shop'
     | '/features/$slug'
     | '/features/canvas'
     | '/features/lists'
     | '/product/demo'
+    | '/solutions/customer-service'
+    | '/solutions/financial-services'
+    | '/solutions/health'
+    | '/solutions/hr'
+    | '/solutions/manufacturing'
+    | '/solutions/retail'
+    | '/solutions/sales'
+    | '/solutions/small-business'
+    | '/solutions/technology'
     | '/settings/account/notifications'
     | '/settings/account/preferences'
     | '/settings/account/profile'
@@ -568,7 +716,6 @@ export interface FileRouteTypes {
     | '/(auth)/signup'
     | '/(public)/about'
     | '/(public)/changelog'
-    | '/(public)/home-page'
     | '/(public)/paid-vs-free'
     | '/(public)/pricing'
     | '/(public)/status'
@@ -577,10 +724,24 @@ export interface FileRouteTypes {
     | '/(auth)/accept-invitation/$id'
     | '/(authenticated)/org/new'
     | '/(public)/bpo/$slug'
+    | '/(public)/company/about'
+    | '/(public)/company/brand'
+    | '/(public)/company/careers'
+    | '/(public)/company/news'
+    | '/(public)/company/shop'
     | '/(public)/features/$slug'
     | '/(public)/features/canvas'
     | '/(public)/features/lists'
     | '/(public)/product/demo'
+    | '/(public)/solutions/customer-service'
+    | '/(public)/solutions/financial-services'
+    | '/(public)/solutions/health'
+    | '/(public)/solutions/hr'
+    | '/(public)/solutions/manufacturing'
+    | '/(public)/solutions/retail'
+    | '/(public)/solutions/sales'
+    | '/(public)/solutions/small-business'
+    | '/(public)/solutions/technology'
     | '/(authenticated)/org/$slug/console'
     | '/(authenticated)/org/$slug/manage'
     | '/(authenticated)/org/$slug/workspace'
@@ -662,13 +823,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof publicPaidVsFreeRouteImport
       parentRoute: typeof publicRouteRoute
     }
-    '/(public)/home-page': {
-      id: '/(public)/home-page'
-      path: '/home-page'
-      fullPath: '/home-page'
-      preLoaderRoute: typeof publicHomePageRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
     '/(public)/changelog': {
       id: '/(public)/changelog'
       path: '/changelog'
@@ -704,6 +858,69 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authenticatedSettingsRouteRouteImport
       parentRoute: typeof authenticatedRouteRoute
     }
+    '/(public)/solutions/technology': {
+      id: '/(public)/solutions/technology'
+      path: '/solutions/technology'
+      fullPath: '/solutions/technology'
+      preLoaderRoute: typeof publicSolutionsTechnologyRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/solutions/small-business': {
+      id: '/(public)/solutions/small-business'
+      path: '/solutions/small-business'
+      fullPath: '/solutions/small-business'
+      preLoaderRoute: typeof publicSolutionsSmallBusinessRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/solutions/sales': {
+      id: '/(public)/solutions/sales'
+      path: '/solutions/sales'
+      fullPath: '/solutions/sales'
+      preLoaderRoute: typeof publicSolutionsSalesRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/solutions/retail': {
+      id: '/(public)/solutions/retail'
+      path: '/solutions/retail'
+      fullPath: '/solutions/retail'
+      preLoaderRoute: typeof publicSolutionsRetailRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/solutions/manufacturing': {
+      id: '/(public)/solutions/manufacturing'
+      path: '/solutions/manufacturing'
+      fullPath: '/solutions/manufacturing'
+      preLoaderRoute: typeof publicSolutionsManufacturingRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/solutions/hr': {
+      id: '/(public)/solutions/hr'
+      path: '/solutions/hr'
+      fullPath: '/solutions/hr'
+      preLoaderRoute: typeof publicSolutionsHrRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/solutions/health': {
+      id: '/(public)/solutions/health'
+      path: '/solutions/health'
+      fullPath: '/solutions/health'
+      preLoaderRoute: typeof publicSolutionsHealthRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/solutions/financial-services': {
+      id: '/(public)/solutions/financial-services'
+      path: '/solutions/financial-services'
+      fullPath: '/solutions/financial-services'
+      preLoaderRoute: typeof publicSolutionsFinancialServicesRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/solutions/customer-service': {
+      id: '/(public)/solutions/customer-service'
+      path: '/solutions/customer-service'
+      fullPath: '/solutions/customer-service'
+      preLoaderRoute: typeof publicSolutionsCustomerServiceRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
     '/(public)/product/demo': {
       id: '/(public)/product/demo'
       path: '/product/demo'
@@ -730,6 +947,41 @@ declare module '@tanstack/react-router' {
       path: '/features/$slug'
       fullPath: '/features/$slug'
       preLoaderRoute: typeof publicFeaturesSlugRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/company/shop': {
+      id: '/(public)/company/shop'
+      path: '/company/shop'
+      fullPath: '/company/shop'
+      preLoaderRoute: typeof publicCompanyShopRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/company/news': {
+      id: '/(public)/company/news'
+      path: '/company/news'
+      fullPath: '/company/news'
+      preLoaderRoute: typeof publicCompanyNewsRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/company/careers': {
+      id: '/(public)/company/careers'
+      path: '/company/careers'
+      fullPath: '/company/careers'
+      preLoaderRoute: typeof publicCompanyCareersRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/company/brand': {
+      id: '/(public)/company/brand'
+      path: '/company/brand'
+      fullPath: '/company/brand'
+      preLoaderRoute: typeof publicCompanyBrandRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/company/about': {
+      id: '/(public)/company/about'
+      path: '/company/about'
+      fullPath: '/company/about'
+      preLoaderRoute: typeof publicCompanyAboutRouteImport
       parentRoute: typeof publicRouteRoute
     }
     '/(public)/bpo/$slug': {
@@ -1146,31 +1398,57 @@ const authenticatedRouteRouteWithChildren =
 interface publicRouteRouteChildren {
   publicAboutRoute: typeof publicAboutRoute
   publicChangelogRoute: typeof publicChangelogRoute
-  publicHomePageRoute: typeof publicHomePageRoute
   publicPaidVsFreeRoute: typeof publicPaidVsFreeRoute
   publicPricingRoute: typeof publicPricingRoute
   publicStatusRoute: typeof publicStatusRoute
   publicIndexRoute: typeof publicIndexRoute
   publicBpoSlugRoute: typeof publicBpoSlugRoute
+  publicCompanyAboutRoute: typeof publicCompanyAboutRoute
+  publicCompanyBrandRoute: typeof publicCompanyBrandRoute
+  publicCompanyCareersRoute: typeof publicCompanyCareersRoute
+  publicCompanyNewsRoute: typeof publicCompanyNewsRoute
+  publicCompanyShopRoute: typeof publicCompanyShopRoute
   publicFeaturesSlugRoute: typeof publicFeaturesSlugRoute
   publicFeaturesCanvasRoute: typeof publicFeaturesCanvasRoute
   publicFeaturesListsRoute: typeof publicFeaturesListsRoute
   publicProductDemoRoute: typeof publicProductDemoRoute
+  publicSolutionsCustomerServiceRoute: typeof publicSolutionsCustomerServiceRoute
+  publicSolutionsFinancialServicesRoute: typeof publicSolutionsFinancialServicesRoute
+  publicSolutionsHealthRoute: typeof publicSolutionsHealthRoute
+  publicSolutionsHrRoute: typeof publicSolutionsHrRoute
+  publicSolutionsManufacturingRoute: typeof publicSolutionsManufacturingRoute
+  publicSolutionsRetailRoute: typeof publicSolutionsRetailRoute
+  publicSolutionsSalesRoute: typeof publicSolutionsSalesRoute
+  publicSolutionsSmallBusinessRoute: typeof publicSolutionsSmallBusinessRoute
+  publicSolutionsTechnologyRoute: typeof publicSolutionsTechnologyRoute
 }
 
 const publicRouteRouteChildren: publicRouteRouteChildren = {
   publicAboutRoute: publicAboutRoute,
   publicChangelogRoute: publicChangelogRoute,
-  publicHomePageRoute: publicHomePageRoute,
   publicPaidVsFreeRoute: publicPaidVsFreeRoute,
   publicPricingRoute: publicPricingRoute,
   publicStatusRoute: publicStatusRoute,
   publicIndexRoute: publicIndexRoute,
   publicBpoSlugRoute: publicBpoSlugRoute,
+  publicCompanyAboutRoute: publicCompanyAboutRoute,
+  publicCompanyBrandRoute: publicCompanyBrandRoute,
+  publicCompanyCareersRoute: publicCompanyCareersRoute,
+  publicCompanyNewsRoute: publicCompanyNewsRoute,
+  publicCompanyShopRoute: publicCompanyShopRoute,
   publicFeaturesSlugRoute: publicFeaturesSlugRoute,
   publicFeaturesCanvasRoute: publicFeaturesCanvasRoute,
   publicFeaturesListsRoute: publicFeaturesListsRoute,
   publicProductDemoRoute: publicProductDemoRoute,
+  publicSolutionsCustomerServiceRoute: publicSolutionsCustomerServiceRoute,
+  publicSolutionsFinancialServicesRoute: publicSolutionsFinancialServicesRoute,
+  publicSolutionsHealthRoute: publicSolutionsHealthRoute,
+  publicSolutionsHrRoute: publicSolutionsHrRoute,
+  publicSolutionsManufacturingRoute: publicSolutionsManufacturingRoute,
+  publicSolutionsRetailRoute: publicSolutionsRetailRoute,
+  publicSolutionsSalesRoute: publicSolutionsSalesRoute,
+  publicSolutionsSmallBusinessRoute: publicSolutionsSmallBusinessRoute,
+  publicSolutionsTechnologyRoute: publicSolutionsTechnologyRoute,
 }
 
 const publicRouteRouteWithChildren = publicRouteRoute._addFileChildren(

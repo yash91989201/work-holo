@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { FeaturePageTemplate } from "@/components/landing/Features/TeamChannel/feature-page-template";
-import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/(public)/product/demo")({
   component: DemoPage,
@@ -124,30 +123,33 @@ const demoData = {
   faq: [
     {
       question: "How do I register for the full version?",
-      answer: "You can register by clicking the 'Get Started' button at the top of the page. Follow the simple onboarding steps to set up your workspace instantly.",
+      answer:
+        "You can register by clicking the 'Get Started' button at the top of the page. Follow the simple onboarding steps to set up your workspace instantly.",
     },
     {
       question: "Can I invite my team to the demo?",
-      answer: "The interactive demo is a guided experience, but you can share the link with your team so they can explore the features too. Once you register for a full workspace, you can invite unlimited team members.",
+      answer:
+        "The interactive demo is a guided experience, but you can share the link with your team so they can explore the features too. Once you register for a full workspace, you can invite unlimited team members.",
     },
     {
       question: "What data is included in the overview dashboards?",
-      answer: "The dashboards include metrics on user engagement, message volume, channel activity, and response times. Administrators get a comprehensive view of workspace health and communication flow.",
+      answer:
+        "The dashboards include metrics on user engagement, message volume, channel activity, and response times. Administrators get a comprehensive view of workspace health and communication flow.",
     },
     {
       question: "How secure is the direct messaging system?",
-      answer: "All direct messages are secured with enterprise-grade encryption both in transit and at rest. We comply with industry standards to ensure your private conversations stay private.",
+      answer:
+        "All direct messages are secured with enterprise-grade encryption both in transit and at rest. We comply with industry standards to ensure your private conversations stay private.",
     },
     {
       question: "Are there different channel types available?",
-      answer: "Yes, you can create public channels open to anyone in the workspace, private channels for sensitive discussions, and shared channels to collaborate with external partners.",
+      answer:
+        "Yes, you can create public channels open to anyone in the workspace, private channels for sensitive discussions, and shared channels to collaborate with external partners.",
     },
   ],
   ctaHeading: "Ready to transform your team communication?",
 };
 
 function DemoPage() {
-  return (
-    <FeaturePageTemplate data={demoData as any} />
-  );
+  return <FeaturePageTemplate data={demoData as any} />;
 }

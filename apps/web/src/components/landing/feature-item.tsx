@@ -1,14 +1,14 @@
-import { cn } from "@/lib/utils";
 import { Link } from "@tanstack/react-router";
+import { cn } from "@/lib/utils";
 
 interface FeatureItemProps {
-  title: string;
-  description?: string;
-  linkText?: string;
-  linkHref?: string;
   /** Whether this item is the "active/expanded" one */
   active?: boolean;
   className?: string;
+  description?: string;
+  linkHref?: string;
+  linkText?: string;
+  title: string;
 }
 
 export function FeatureItem({
@@ -38,7 +38,7 @@ export function FeatureItem({
         {title}
       </h3>
       {active && description && (
-        <p className="mt-2.5 text-lg text-muted-foreground text-[#7C5CFF] leading-relaxed">
+        <p className="mt-2.5 text-[#7C5CFF] text-lg text-muted-foreground leading-relaxed">
           {description}
         </p>
       )}
@@ -55,8 +55,8 @@ export function FeatureItem({
 }
 
 interface FeatureListItemProps {
-  title: string;
   subtitle?: string;
+  title: string;
 }
 
 /**
@@ -65,7 +65,7 @@ interface FeatureListItemProps {
  */
 export function FeatureListItem({ title, subtitle }: FeatureListItemProps) {
   return (
-    <div className="border-b border-border/50 py-5 last:border-b-0">
+    <div className="border-border/50 border-b py-5 last:border-b-0">
       <p className="text-base">
         <span className="font-semibold">{title}:</span>{" "}
         {subtitle && <span className="text-muted-foreground">{subtitle}</span>}
