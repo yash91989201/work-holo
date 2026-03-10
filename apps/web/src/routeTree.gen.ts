@@ -12,13 +12,18 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as publicRouteRouteImport } from './routes/(public)/route'
 import { Route as authenticatedRouteRouteImport } from './routes/(authenticated)/route'
 import { Route as publicIndexRouteImport } from './routes/(public)/index'
+import { Route as publicStatusRouteImport } from './routes/(public)/status'
 import { Route as publicPricingRouteImport } from './routes/(public)/pricing'
+import { Route as publicPaidVsFreeRouteImport } from './routes/(public)/paid-vs-free'
 import { Route as publicHomePageRouteImport } from './routes/(public)/home-page'
+import { Route as publicChangelogRouteImport } from './routes/(public)/changelog'
 import { Route as publicAboutRouteImport } from './routes/(public)/about'
 import { Route as authSignupRouteImport } from './routes/(auth)/signup'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as authenticatedSettingsRouteRouteImport } from './routes/(authenticated)/settings/route'
 import { Route as publicProductDemoRouteImport } from './routes/(public)/product/demo'
+import { Route as publicFeaturesListsRouteImport } from './routes/(public)/features/lists'
+import { Route as publicFeaturesCanvasRouteImport } from './routes/(public)/features/canvas'
 import { Route as publicFeaturesSlugRouteImport } from './routes/(public)/features/$slug'
 import { Route as publicBpoSlugRouteImport } from './routes/(public)/bpo/$slug'
 import { Route as authenticatedOrgNewRouteImport } from './routes/(authenticated)/org/new'
@@ -65,14 +70,29 @@ const publicIndexRoute = publicIndexRouteImport.update({
   path: '/',
   getParentRoute: () => publicRouteRoute,
 } as any)
+const publicStatusRoute = publicStatusRouteImport.update({
+  id: '/status',
+  path: '/status',
+  getParentRoute: () => publicRouteRoute,
+} as any)
 const publicPricingRoute = publicPricingRouteImport.update({
   id: '/pricing',
   path: '/pricing',
   getParentRoute: () => publicRouteRoute,
 } as any)
+const publicPaidVsFreeRoute = publicPaidVsFreeRouteImport.update({
+  id: '/paid-vs-free',
+  path: '/paid-vs-free',
+  getParentRoute: () => publicRouteRoute,
+} as any)
 const publicHomePageRoute = publicHomePageRouteImport.update({
   id: '/home-page',
   path: '/home-page',
+  getParentRoute: () => publicRouteRoute,
+} as any)
+const publicChangelogRoute = publicChangelogRouteImport.update({
+  id: '/changelog',
+  path: '/changelog',
   getParentRoute: () => publicRouteRoute,
 } as any)
 const publicAboutRoute = publicAboutRouteImport.update({
@@ -99,6 +119,16 @@ const authenticatedSettingsRouteRoute =
 const publicProductDemoRoute = publicProductDemoRouteImport.update({
   id: '/product/demo',
   path: '/product/demo',
+  getParentRoute: () => publicRouteRoute,
+} as any)
+const publicFeaturesListsRoute = publicFeaturesListsRouteImport.update({
+  id: '/features/lists',
+  path: '/features/lists',
+  getParentRoute: () => publicRouteRoute,
+} as any)
+const publicFeaturesCanvasRoute = publicFeaturesCanvasRouteImport.update({
+  id: '/features/canvas',
+  path: '/features/canvas',
   getParentRoute: () => publicRouteRoute,
 } as any)
 const publicFeaturesSlugRoute = publicFeaturesSlugRouteImport.update({
@@ -305,14 +335,19 @@ export interface FileRoutesByFullPath {
   '/login': typeof authLoginRoute
   '/signup': typeof authSignupRoute
   '/about': typeof publicAboutRoute
+  '/changelog': typeof publicChangelogRoute
   '/home-page': typeof publicHomePageRoute
+  '/paid-vs-free': typeof publicPaidVsFreeRoute
   '/pricing': typeof publicPricingRoute
+  '/status': typeof publicStatusRoute
   '/': typeof publicIndexRoute
   '/org/$slug': typeof authenticatedOrgSlugRouteRouteWithChildren
   '/accept-invitation/$id': typeof authAcceptInvitationIdRoute
   '/org/new': typeof authenticatedOrgNewRoute
   '/bpo/$slug': typeof publicBpoSlugRoute
   '/features/$slug': typeof publicFeaturesSlugRoute
+  '/features/canvas': typeof publicFeaturesCanvasRoute
+  '/features/lists': typeof publicFeaturesListsRoute
   '/product/demo': typeof publicProductDemoRoute
   '/org/$slug/console': typeof authenticatedOrgSlugConsoleRouteRouteWithChildren
   '/org/$slug/manage': typeof authenticatedOrgSlugManageRouteRouteWithChildren
@@ -347,14 +382,19 @@ export interface FileRoutesByTo {
   '/login': typeof authLoginRoute
   '/signup': typeof authSignupRoute
   '/about': typeof publicAboutRoute
+  '/changelog': typeof publicChangelogRoute
   '/home-page': typeof publicHomePageRoute
+  '/paid-vs-free': typeof publicPaidVsFreeRoute
   '/pricing': typeof publicPricingRoute
+  '/status': typeof publicStatusRoute
   '/': typeof publicIndexRoute
   '/org/$slug': typeof authenticatedOrgSlugRouteRouteWithChildren
   '/accept-invitation/$id': typeof authAcceptInvitationIdRoute
   '/org/new': typeof authenticatedOrgNewRoute
   '/bpo/$slug': typeof publicBpoSlugRoute
   '/features/$slug': typeof publicFeaturesSlugRoute
+  '/features/canvas': typeof publicFeaturesCanvasRoute
+  '/features/lists': typeof publicFeaturesListsRoute
   '/product/demo': typeof publicProductDemoRoute
   '/settings/account/notifications': typeof authenticatedSettingsAccountNotificationsRoute
   '/settings/account/preferences': typeof authenticatedSettingsAccountPreferencesRoute
@@ -387,14 +427,19 @@ export interface FileRoutesById {
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/signup': typeof authSignupRoute
   '/(public)/about': typeof publicAboutRoute
+  '/(public)/changelog': typeof publicChangelogRoute
   '/(public)/home-page': typeof publicHomePageRoute
+  '/(public)/paid-vs-free': typeof publicPaidVsFreeRoute
   '/(public)/pricing': typeof publicPricingRoute
+  '/(public)/status': typeof publicStatusRoute
   '/(public)/': typeof publicIndexRoute
   '/(authenticated)/org/$slug': typeof authenticatedOrgSlugRouteRouteWithChildren
   '/(auth)/accept-invitation/$id': typeof authAcceptInvitationIdRoute
   '/(authenticated)/org/new': typeof authenticatedOrgNewRoute
   '/(public)/bpo/$slug': typeof publicBpoSlugRoute
   '/(public)/features/$slug': typeof publicFeaturesSlugRoute
+  '/(public)/features/canvas': typeof publicFeaturesCanvasRoute
+  '/(public)/features/lists': typeof publicFeaturesListsRoute
   '/(public)/product/demo': typeof publicProductDemoRoute
   '/(authenticated)/org/$slug/console': typeof authenticatedOrgSlugConsoleRouteRouteWithChildren
   '/(authenticated)/org/$slug/manage': typeof authenticatedOrgSlugManageRouteRouteWithChildren
@@ -431,14 +476,19 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/about'
+    | '/changelog'
     | '/home-page'
+    | '/paid-vs-free'
     | '/pricing'
+    | '/status'
     | '/'
     | '/org/$slug'
     | '/accept-invitation/$id'
     | '/org/new'
     | '/bpo/$slug'
     | '/features/$slug'
+    | '/features/canvas'
+    | '/features/lists'
     | '/product/demo'
     | '/org/$slug/console'
     | '/org/$slug/manage'
@@ -473,14 +523,19 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/about'
+    | '/changelog'
     | '/home-page'
+    | '/paid-vs-free'
     | '/pricing'
+    | '/status'
     | '/'
     | '/org/$slug'
     | '/accept-invitation/$id'
     | '/org/new'
     | '/bpo/$slug'
     | '/features/$slug'
+    | '/features/canvas'
+    | '/features/lists'
     | '/product/demo'
     | '/settings/account/notifications'
     | '/settings/account/preferences'
@@ -512,14 +567,19 @@ export interface FileRouteTypes {
     | '/(auth)/login'
     | '/(auth)/signup'
     | '/(public)/about'
+    | '/(public)/changelog'
     | '/(public)/home-page'
+    | '/(public)/paid-vs-free'
     | '/(public)/pricing'
+    | '/(public)/status'
     | '/(public)/'
     | '/(authenticated)/org/$slug'
     | '/(auth)/accept-invitation/$id'
     | '/(authenticated)/org/new'
     | '/(public)/bpo/$slug'
     | '/(public)/features/$slug'
+    | '/(public)/features/canvas'
+    | '/(public)/features/lists'
     | '/(public)/product/demo'
     | '/(authenticated)/org/$slug/console'
     | '/(authenticated)/org/$slug/manage'
@@ -581,6 +641,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof publicIndexRouteImport
       parentRoute: typeof publicRouteRoute
     }
+    '/(public)/status': {
+      id: '/(public)/status'
+      path: '/status'
+      fullPath: '/status'
+      preLoaderRoute: typeof publicStatusRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
     '/(public)/pricing': {
       id: '/(public)/pricing'
       path: '/pricing'
@@ -588,11 +655,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof publicPricingRouteImport
       parentRoute: typeof publicRouteRoute
     }
+    '/(public)/paid-vs-free': {
+      id: '/(public)/paid-vs-free'
+      path: '/paid-vs-free'
+      fullPath: '/paid-vs-free'
+      preLoaderRoute: typeof publicPaidVsFreeRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
     '/(public)/home-page': {
       id: '/(public)/home-page'
       path: '/home-page'
       fullPath: '/home-page'
       preLoaderRoute: typeof publicHomePageRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/changelog': {
+      id: '/(public)/changelog'
+      path: '/changelog'
+      fullPath: '/changelog'
+      preLoaderRoute: typeof publicChangelogRouteImport
       parentRoute: typeof publicRouteRoute
     }
     '/(public)/about': {
@@ -628,6 +709,20 @@ declare module '@tanstack/react-router' {
       path: '/product/demo'
       fullPath: '/product/demo'
       preLoaderRoute: typeof publicProductDemoRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/features/lists': {
+      id: '/(public)/features/lists'
+      path: '/features/lists'
+      fullPath: '/features/lists'
+      preLoaderRoute: typeof publicFeaturesListsRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/features/canvas': {
+      id: '/(public)/features/canvas'
+      path: '/features/canvas'
+      fullPath: '/features/canvas'
+      preLoaderRoute: typeof publicFeaturesCanvasRouteImport
       parentRoute: typeof publicRouteRoute
     }
     '/(public)/features/$slug': {
@@ -1050,21 +1145,31 @@ const authenticatedRouteRouteWithChildren =
 
 interface publicRouteRouteChildren {
   publicAboutRoute: typeof publicAboutRoute
+  publicChangelogRoute: typeof publicChangelogRoute
   publicHomePageRoute: typeof publicHomePageRoute
+  publicPaidVsFreeRoute: typeof publicPaidVsFreeRoute
   publicPricingRoute: typeof publicPricingRoute
+  publicStatusRoute: typeof publicStatusRoute
   publicIndexRoute: typeof publicIndexRoute
   publicBpoSlugRoute: typeof publicBpoSlugRoute
   publicFeaturesSlugRoute: typeof publicFeaturesSlugRoute
+  publicFeaturesCanvasRoute: typeof publicFeaturesCanvasRoute
+  publicFeaturesListsRoute: typeof publicFeaturesListsRoute
   publicProductDemoRoute: typeof publicProductDemoRoute
 }
 
 const publicRouteRouteChildren: publicRouteRouteChildren = {
   publicAboutRoute: publicAboutRoute,
+  publicChangelogRoute: publicChangelogRoute,
   publicHomePageRoute: publicHomePageRoute,
+  publicPaidVsFreeRoute: publicPaidVsFreeRoute,
   publicPricingRoute: publicPricingRoute,
+  publicStatusRoute: publicStatusRoute,
   publicIndexRoute: publicIndexRoute,
   publicBpoSlugRoute: publicBpoSlugRoute,
   publicFeaturesSlugRoute: publicFeaturesSlugRoute,
+  publicFeaturesCanvasRoute: publicFeaturesCanvasRoute,
+  publicFeaturesListsRoute: publicFeaturesListsRoute,
   publicProductDemoRoute: publicProductDemoRoute,
 }
 

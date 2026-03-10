@@ -14,8 +14,6 @@ const navItems: NavItem[] = [
   { label: "Features", href: "/", hasDropdown: true },
   { label: "Solutions", href: "/", hasDropdown: true },
   { label: "BPO Services", href: "/", hasDropdown: true },
-  { label: "Enterprise", href: "/" },
-  { label: "Resources", href: "/", hasDropdown: true },
   { label: "Pricing", href: "/pricing" },
 ];
 

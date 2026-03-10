@@ -6,16 +6,16 @@ const footerLinks = {
   Product: [
     { label: "Watch demo", href: "/product/demo" },
     { label: "Pricing", href: "/pricing" },
-    { label: "Paid vs Free", href: "/" },
-    { label: "Change log", href: "/" },
-    { label: "Status", href: "/" },
+    { label: "Paid vs Free", href: "/paid-vs-free" },
+    { label: "Change log", href: "/changelog" },
+    { label: "Status", href: "/status" },
   ],
   Features: [
-    { label: "Channels", href: "/" },
-    { label: "Workholo Connect", href: "/" },
-    { label: "Messaging", href: "/" },
-    { label: "Canvas", href: "/" },
-    { label: "Lists", href: "/" },
+    { label: "Channels", href: "/features/team-channels" },
+    { label: "Workholo Connect", href: "/features/role-based-access" },
+    { label: "Messaging", href: "/features/direct-messaging" },
+    { label: "Canvas", href: "/features/canvas" },
+    { label: "Lists", href: "/features/lists" },
   ],
   Solutions: [
     { label: "Customer service", href: "/" },
@@ -34,7 +34,7 @@ const footerLinks = {
 };
 
 const bottomLinks = [
-  { label: "Status", href: "/" },
+  { label: "Status", href: "/status" },
   { label: "Privacy", href: "/" },
   { label: "Terms", href: "/" },
   { label: "Your privacy choices", href: "/" },
