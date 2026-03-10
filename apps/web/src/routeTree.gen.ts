@@ -12,10 +12,13 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as publicRouteRouteImport } from './routes/(public)/route'
 import { Route as authenticatedRouteRouteImport } from './routes/(authenticated)/route'
 import { Route as publicIndexRouteImport } from './routes/(public)/index'
+import { Route as publicPricingRouteImport } from './routes/(public)/pricing'
 import { Route as publicHomePageRouteImport } from './routes/(public)/home-page'
+import { Route as publicAboutRouteImport } from './routes/(public)/about'
 import { Route as authSignupRouteImport } from './routes/(auth)/signup'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as authenticatedSettingsRouteRouteImport } from './routes/(authenticated)/settings/route'
+import { Route as publicProductDemoRouteImport } from './routes/(public)/product/demo'
 import { Route as publicFeaturesSlugRouteImport } from './routes/(public)/features/$slug'
 import { Route as publicBpoSlugRouteImport } from './routes/(public)/bpo/$slug'
 import { Route as authenticatedOrgNewRouteImport } from './routes/(authenticated)/org/new'
@@ -62,9 +65,19 @@ const publicIndexRoute = publicIndexRouteImport.update({
   path: '/',
   getParentRoute: () => publicRouteRoute,
 } as any)
+const publicPricingRoute = publicPricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => publicRouteRoute,
+} as any)
 const publicHomePageRoute = publicHomePageRouteImport.update({
   id: '/home-page',
   path: '/home-page',
+  getParentRoute: () => publicRouteRoute,
+} as any)
+const publicAboutRoute = publicAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => publicRouteRoute,
 } as any)
 const authSignupRoute = authSignupRouteImport.update({
@@ -83,6 +96,11 @@ const authenticatedSettingsRouteRoute =
     path: '/settings',
     getParentRoute: () => authenticatedRouteRoute,
   } as any)
+const publicProductDemoRoute = publicProductDemoRouteImport.update({
+  id: '/product/demo',
+  path: '/product/demo',
+  getParentRoute: () => publicRouteRoute,
+} as any)
 const publicFeaturesSlugRoute = publicFeaturesSlugRouteImport.update({
   id: '/features/$slug',
   path: '/features/$slug',
@@ -286,13 +304,16 @@ export interface FileRoutesByFullPath {
   '/settings': typeof authenticatedSettingsRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/signup': typeof authSignupRoute
+  '/about': typeof publicAboutRoute
   '/home-page': typeof publicHomePageRoute
+  '/pricing': typeof publicPricingRoute
   '/': typeof publicIndexRoute
   '/org/$slug': typeof authenticatedOrgSlugRouteRouteWithChildren
   '/accept-invitation/$id': typeof authAcceptInvitationIdRoute
   '/org/new': typeof authenticatedOrgNewRoute
   '/bpo/$slug': typeof publicBpoSlugRoute
   '/features/$slug': typeof publicFeaturesSlugRoute
+  '/product/demo': typeof publicProductDemoRoute
   '/org/$slug/console': typeof authenticatedOrgSlugConsoleRouteRouteWithChildren
   '/org/$slug/manage': typeof authenticatedOrgSlugManageRouteRouteWithChildren
   '/org/$slug/workspace': typeof authenticatedOrgSlugWorkspaceRouteRouteWithChildren
@@ -325,13 +346,16 @@ export interface FileRoutesByTo {
   '/settings': typeof authenticatedSettingsRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/signup': typeof authSignupRoute
+  '/about': typeof publicAboutRoute
   '/home-page': typeof publicHomePageRoute
+  '/pricing': typeof publicPricingRoute
   '/': typeof publicIndexRoute
   '/org/$slug': typeof authenticatedOrgSlugRouteRouteWithChildren
   '/accept-invitation/$id': typeof authAcceptInvitationIdRoute
   '/org/new': typeof authenticatedOrgNewRoute
   '/bpo/$slug': typeof publicBpoSlugRoute
   '/features/$slug': typeof publicFeaturesSlugRoute
+  '/product/demo': typeof publicProductDemoRoute
   '/settings/account/notifications': typeof authenticatedSettingsAccountNotificationsRoute
   '/settings/account/preferences': typeof authenticatedSettingsAccountPreferencesRoute
   '/settings/account/profile': typeof authenticatedSettingsAccountProfileRoute
@@ -362,13 +386,16 @@ export interface FileRoutesById {
   '/(authenticated)/settings': typeof authenticatedSettingsRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/signup': typeof authSignupRoute
+  '/(public)/about': typeof publicAboutRoute
   '/(public)/home-page': typeof publicHomePageRoute
+  '/(public)/pricing': typeof publicPricingRoute
   '/(public)/': typeof publicIndexRoute
   '/(authenticated)/org/$slug': typeof authenticatedOrgSlugRouteRouteWithChildren
   '/(auth)/accept-invitation/$id': typeof authAcceptInvitationIdRoute
   '/(authenticated)/org/new': typeof authenticatedOrgNewRoute
   '/(public)/bpo/$slug': typeof publicBpoSlugRoute
   '/(public)/features/$slug': typeof publicFeaturesSlugRoute
+  '/(public)/product/demo': typeof publicProductDemoRoute
   '/(authenticated)/org/$slug/console': typeof authenticatedOrgSlugConsoleRouteRouteWithChildren
   '/(authenticated)/org/$slug/manage': typeof authenticatedOrgSlugManageRouteRouteWithChildren
   '/(authenticated)/org/$slug/workspace': typeof authenticatedOrgSlugWorkspaceRouteRouteWithChildren
@@ -403,13 +430,16 @@ export interface FileRouteTypes {
     | '/settings'
     | '/login'
     | '/signup'
+    | '/about'
     | '/home-page'
+    | '/pricing'
     | '/'
     | '/org/$slug'
     | '/accept-invitation/$id'
     | '/org/new'
     | '/bpo/$slug'
     | '/features/$slug'
+    | '/product/demo'
     | '/org/$slug/console'
     | '/org/$slug/manage'
     | '/org/$slug/workspace'
@@ -442,13 +472,16 @@ export interface FileRouteTypes {
     | '/settings'
     | '/login'
     | '/signup'
+    | '/about'
     | '/home-page'
+    | '/pricing'
     | '/'
     | '/org/$slug'
     | '/accept-invitation/$id'
     | '/org/new'
     | '/bpo/$slug'
     | '/features/$slug'
+    | '/product/demo'
     | '/settings/account/notifications'
     | '/settings/account/preferences'
     | '/settings/account/profile'
@@ -478,13 +511,16 @@ export interface FileRouteTypes {
     | '/(authenticated)/settings'
     | '/(auth)/login'
     | '/(auth)/signup'
+    | '/(public)/about'
     | '/(public)/home-page'
+    | '/(public)/pricing'
     | '/(public)/'
     | '/(authenticated)/org/$slug'
     | '/(auth)/accept-invitation/$id'
     | '/(authenticated)/org/new'
     | '/(public)/bpo/$slug'
     | '/(public)/features/$slug'
+    | '/(public)/product/demo'
     | '/(authenticated)/org/$slug/console'
     | '/(authenticated)/org/$slug/manage'
     | '/(authenticated)/org/$slug/workspace'
@@ -545,11 +581,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof publicIndexRouteImport
       parentRoute: typeof publicRouteRoute
     }
+    '/(public)/pricing': {
+      id: '/(public)/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof publicPricingRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
     '/(public)/home-page': {
       id: '/(public)/home-page'
       path: '/home-page'
       fullPath: '/home-page'
       preLoaderRoute: typeof publicHomePageRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/about': {
+      id: '/(public)/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof publicAboutRouteImport
       parentRoute: typeof publicRouteRoute
     }
     '/(auth)/signup': {
@@ -572,6 +622,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/settings'
       preLoaderRoute: typeof authenticatedSettingsRouteRouteImport
       parentRoute: typeof authenticatedRouteRoute
+    }
+    '/(public)/product/demo': {
+      id: '/(public)/product/demo'
+      path: '/product/demo'
+      fullPath: '/product/demo'
+      preLoaderRoute: typeof publicProductDemoRouteImport
+      parentRoute: typeof publicRouteRoute
     }
     '/(public)/features/$slug': {
       id: '/(public)/features/$slug'
@@ -992,17 +1049,23 @@ const authenticatedRouteRouteWithChildren =
   authenticatedRouteRoute._addFileChildren(authenticatedRouteRouteChildren)
 
 interface publicRouteRouteChildren {
+  publicAboutRoute: typeof publicAboutRoute
   publicHomePageRoute: typeof publicHomePageRoute
+  publicPricingRoute: typeof publicPricingRoute
   publicIndexRoute: typeof publicIndexRoute
   publicBpoSlugRoute: typeof publicBpoSlugRoute
   publicFeaturesSlugRoute: typeof publicFeaturesSlugRoute
+  publicProductDemoRoute: typeof publicProductDemoRoute
 }
 
 const publicRouteRouteChildren: publicRouteRouteChildren = {
+  publicAboutRoute: publicAboutRoute,
   publicHomePageRoute: publicHomePageRoute,
+  publicPricingRoute: publicPricingRoute,
   publicIndexRoute: publicIndexRoute,
   publicBpoSlugRoute: publicBpoSlugRoute,
   publicFeaturesSlugRoute: publicFeaturesSlugRoute,
+  publicProductDemoRoute: publicProductDemoRoute,
 }
 
 const publicRouteRouteWithChildren = publicRouteRoute._addFileChildren(

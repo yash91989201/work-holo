@@ -16,7 +16,7 @@ const navItems: NavItem[] = [
   { label: "BPO Services", href: "/", hasDropdown: true },
   { label: "Enterprise", href: "/" },
   { label: "Resources", href: "/", hasDropdown: true },
-  { label: "Pricing", href: "/" },
+  { label: "Pricing", href: "/pricing" },
 ];
 
 interface BpoCategory {
@@ -442,8 +442,8 @@ export function LandingHeader() {
                             <li key={item.href}>
                               <Link
                                 className="group block"
-                                to={item.href as any}
                                 onClick={() => setActiveDropdown(null)}
+                                to={item.href as any}
                               >
                                 <div className="font-semibold text-foreground text-sm transition-colors group-hover:text-[#6366f1]">
                                   {item.label}
@@ -473,8 +473,8 @@ export function LandingHeader() {
                             <li key={item.href}>
                               <Link
                                 className="group block"
-                                to={item.href as any}
                                 onClick={() => setActiveDropdown(null)}
+                                to={item.href as any}
                               >
                                 <div className="font-semibold text-foreground text-sm transition-colors group-hover:text-[#6366f1]">
                                   {item.label}
@@ -503,8 +503,8 @@ export function LandingHeader() {
                           <li key={item.href}>
                             <Link
                               className="group block"
-                              to={item.href as any}
                               onClick={() => setActiveDropdown(null)}
+                              to={item.href as any}
                             >
                               <div className="font-semibold text-foreground text-sm transition-colors group-hover:text-[#6366f1]">
                                 {item.label}
@@ -528,8 +528,8 @@ export function LandingHeader() {
                     </div>
                     <Link
                       className="group mb-4 block"
-                      to={"/marketplace" as any}
                       onClick={() => setActiveDropdown(null)}
+                      to={"/marketplace" as any}
                     >
                       <div className="relative mb-4 flex aspect-[16/10] w-full items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-blue-900 via-[#10245e] to-[#040e29] shadow-sm transition-transform group-hover:scale-[1.02]">
                         <div className="absolute inset-0 bg-blue-500/20 mix-blend-overlay" />
@@ -551,15 +551,15 @@ export function LandingHeader() {
                   <div className="space-y-4 pb-1">
                     <Link
                       className="block font-semibold text-foreground/80 text-sm transition-colors hover:text-[#6366f1]"
-                      to={"/what-is-workholo" as any}
                       onClick={() => setActiveDropdown(null)}
+                      to={"/what-is-workholo" as any}
                     >
                       What is Workholo?
                     </Link>
                     <Link
                       className="block font-semibold text-foreground/80 text-sm transition-colors hover:text-[#6366f1]"
-                      to={"/workholo-vs-email" as any}
                       onClick={() => setActiveDropdown(null)}
+                      to={"/workholo-vs-email" as any}
                     >
                       Workholo vs email
                     </Link>
@@ -571,15 +571,15 @@ export function LandingHeader() {
               <div className="mt-6 flex items-center gap-6 border-border/60 border-t pt-4">
                 <Link
                   className="font-semibold text-[#6366f1] text-sm transition-colors hover:text-[#4f52c1]"
-                  to={"/demo" as any}
                   onClick={() => setActiveDropdown(null)}
+                  to={"/demo" as any}
                 >
                   Watch demo
                 </Link>
                 <Link
                   className="font-semibold text-[#6366f1] text-sm transition-colors hover:text-[#4f52c1]"
-                  to={"/download" as any}
                   onClick={() => setActiveDropdown(null)}
+                  to={"/download" as any}
                 >
                   Download Workholo
                 </Link>
@@ -642,11 +642,11 @@ export function LandingHeader() {
                               <li key={subItem.href}>
                                 <Link
                                   className="block rounded-md py-1.5 text-foreground/60 text-sm transition-colors hover:text-[#6366f1]"
-                                  to={subItem.href as any}
                                   onClick={() => {
                                     setMobileMenuOpen(false);
                                     setMobileFeaturesOpen(false);
                                   }}
+                                  to={subItem.href as any}
                                 >
                                   {subItem.label}
                                 </Link>

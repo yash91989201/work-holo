@@ -1,56 +1,53 @@
-import { FeatureHero } from "./feature-hero";
-import { FeatureCardImageLeft } from "./feature-card-image-left";
-import { FeatureCardContentLeft } from "./feature-card-content-left";
-import { FeatureStatsSection } from "./feature-stats-section";
-import { FeatureFaqSection } from "./feature-faq-section";
-import { FeatureCtaSection } from "./feature-cta-section";
-import { FeatureResourceCardsSection } from "./feature-resource-cards-section";
-import { InteractiveTemplateList } from "../UserManagement/interactive-template-list";
 import {
-  UserChatMockup,
-  UserPermissionsMockup,
-  UserCanvasMockup,
-  FeedbackTrackerMockup,
-  StarterKitMockup,
-  RoleManagerMockup,
-  AdminDashboardMockup,
-} from "../UserManagement/user-management-mockups";
+  AdminAddMembersTemplateMockup,
+  AdminChannelsMockup,
+  AdminCreateChannelMockup,
+  AdminHeroMockup,
+  AdminMembersMockup,
+  AdminRemoveMembersTemplateMockup,
+  AdminTriageMockup,
+} from "../AdminDashboard/admin-dashboard-mockups";
 import {
+  CentralizedChannelsMockup,
+  CentralizedOrgMockup,
+  CentralizedWorkMgmtMockup,
+  CentralizedWorkspaceHeroMockup,
+} from "../CentralizedWorkspace/centralized-workspace-mockups";
+import {
+  RbacChannelMockup,
   RbacHeroMockup,
   RbacUpdatingMockup,
-  RbacChannelMockup,
-  RbacTabletImageMockup,
   RbacVideoMockup,
 } from "../RoleBasedAccess/rbac-mockups";
 import {
-  WorkspaceHeroMockup,
-  WorkspaceTeamsMockup,
-  WorkspaceMembersMockup,
-} from "../WorkspaceControl/workspace-control-mockups";
-import {
-  AdminHeroMockup,
-  AdminChannelsMockup,
-  AdminMembersMockup,
-  AdminTriageMockup,
-  AdminCreateChannelMockup,
-  AdminAddMembersTemplateMockup,
-  AdminRemoveMembersTemplateMockup,
-} from "../AdminDashboard/admin-dashboard-mockups";
-import {
-  StructuredCommHeroMockup,
   StructuredChannelsMockup,
-  StructuredMembersMockup,
   StructuredCollabMockup,
+  StructuredCommHeroMockup,
+  StructuredMembersMockup,
 } from "../StructuredComm/structured-comm-mockups";
+import { InteractiveTemplateList } from "../UserManagement/interactive-template-list";
 import {
-  CentralizedWorkspaceHeroMockup,
-  CentralizedOrgMockup,
-  CentralizedChannelsMockup,
-  CentralizedWorkMgmtMockup,
-} from "../CentralizedWorkspace/centralized-workspace-mockups";
-import { LandingHeader } from "@/components/landing/landing-header";
-import { Footer } from "@/components/landing/footer";
+  AdminDashboardMockup,
+  FeedbackTrackerMockup,
+  RoleManagerMockup,
+  StarterKitMockup,
+  UserCanvasMockup,
+  UserChatMockup,
+  UserPermissionsMockup,
+} from "../UserManagement/user-management-mockups";
+import {
+  WorkspaceHeroMockup,
+  WorkspaceMembersMockup,
+  WorkspaceTeamsMockup,
+} from "../WorkspaceControl/workspace-control-mockups";
+import { FeatureCardContentLeft } from "./feature-card-content-left";
+import { FeatureCardImageLeft } from "./feature-card-image-left";
+import { FeatureCtaSection } from "./feature-cta-section";
+import { FeatureFaqSection } from "./feature-faq-section";
+import { FeatureHero } from "./feature-hero";
 import type { FeaturePageData } from "./feature-page-data";
+import { FeatureResourceCardsSection } from "./feature-resource-cards-section";
+import { FeatureStatsSection } from "./feature-stats-section";
 
 interface FeaturePageTemplateProps {
   data: FeaturePageData;
@@ -60,19 +57,15 @@ export function FeaturePageTemplate({ data }: FeaturePageTemplateProps) {
   return (
     <div className="w-full">
       <FeatureHero
+        bgClass={data.heroBgClass}
         category={data.category}
-        headingBefore={data.headingBefore}
-        headingHighlight={data.headingHighlight}
-        subtitle={data.subtitle}
         ctaPrimary={data.ctaPrimary}
         ctaSecondary={data.ctaSecondary}
-        layout={data.heroLayout}
-        imageSrc={data.heroImageSrc}
-        imageAlt={data.heroImageAlt}
         hasPlayButton={data.heroHasPlayButton}
-        bgClass={data.heroBgClass}
-        heroLinksTitle={data.heroLinksTitle}
+        headingBefore={data.headingBefore}
+        headingHighlight={data.headingHighlight}
         heroLinks={data.heroLinks}
+        heroLinksTitle={data.heroLinksTitle}
         heroMockup={
           data.slug === "role-based-access" ? (
             <RbacHeroMockup />
@@ -84,8 +77,14 @@ export function FeaturePageTemplate({ data }: FeaturePageTemplateProps) {
             <StructuredCommHeroMockup />
           ) : data.slug === "centralized-workspace" ? (
             <CentralizedWorkspaceHeroMockup />
+          ) : data.slug === "demo" ? (
+            <StructuredCommHeroMockup />
           ) : undefined
         }
+        imageAlt={data.heroImageAlt}
+        imageSrc={data.heroImageSrc}
+        layout={data.heroLayout}
+        subtitle={data.subtitle}
       />
       {data.sections.map((section, i) => {
         // Inject coded UI mockups based on slug
@@ -119,63 +118,75 @@ export function FeaturePageTemplate({ data }: FeaturePageTemplateProps) {
             if (i === 1) return <CentralizedChannelsMockup />;
             if (i === 2) return <CentralizedWorkMgmtMockup />;
           }
+          if (data.slug === "demo") {
+            if (i === 0) return <CentralizedOrgMockup />;
+            if (i === 1) return <WorkspaceTeamsMockup />;
+            if (i === 2) return <StructuredChannelsMockup />;
+          }
           return undefined;
         })();
 
         return section.layout === "image-left" ? (
           <FeatureCardImageLeft
-            key={section.heading}
             badge={section.badge}
-            heading={section.heading}
-            description={section.description}
-            linkText={section.linkText}
-            linkHref={section.linkHref}
-            imageSrc={sectionMockup ? undefined : section.imageSrc}
-            imageAlt={section.imageAlt}
-            mockup={sectionMockup}
             bgVariant={section.bgVariant}
+            description={section.description}
+            heading={section.heading}
+            imageAlt={section.imageAlt}
+            imageSrc={sectionMockup ? undefined : section.imageSrc}
+            key={section.heading}
+            linkHref={section.linkHref}
+            linkText={section.linkText}
+            mockup={sectionMockup}
           />
-        ) : section.layout === "content-left" || section.layout === "image-right" ? (
+        ) : section.layout === "content-left" ||
+          section.layout === "image-right" ? (
           <FeatureCardContentLeft
-            key={section.heading}
             badge={section.badge}
-            heading={section.heading}
-            description={section.description}
-            linkText={section.linkText}
-            linkHref={section.linkHref}
-            imageSrc={sectionMockup ? undefined : section.imageSrc}
-            imageAlt={section.imageAlt}
-            mockup={sectionMockup}
             bgVariant={section.bgVariant}
-            stat={section.stat}
-            statLabel={section.statLabel}
             citation={section.citation}
+            description={section.description}
+            heading={section.heading}
+            imageAlt={section.imageAlt}
+            imageSrc={sectionMockup ? undefined : section.imageSrc}
+            key={section.heading}
+            linkHref={section.linkHref}
+            linkText={section.linkText}
+            mockup={sectionMockup}
             quote={section.quote}
             quoteAuthor={section.quoteAuthor}
             quoteRole={section.quoteRole}
             quoteTeam={section.quoteTeam}
+            stat={section.stat}
+            statLabel={section.statLabel}
           />
         ) : null;
       })}
       {data.statsHeadline && data.statsSubtitle && data.stats && (
         <FeatureStatsSection
           headline={data.statsHeadline}
+          stats={
+            data.stats as [
+              (typeof data.stats)[0],
+              (typeof data.stats)[0],
+              (typeof data.stats)[0],
+            ]
+          }
           subtitle={data.statsSubtitle}
-          stats={data.stats as [typeof data.stats[0], typeof data.stats[0], typeof data.stats[0]]}
         />
       )}
-      {data.resourceCardsHeadline && data.resourceCards && data.resourceCards.length > 0 && (
-        <FeatureResourceCardsSection
-          heading={data.resourceCardsHeadline}
-          cards={data.resourceCards}
-          bgClass={data.resourceCardsBgClass}
-        />
-      )}
+      {data.resourceCardsHeadline &&
+        data.resourceCards &&
+        data.resourceCards.length > 0 && (
+          <FeatureResourceCardsSection
+            bgClass={data.resourceCardsBgClass}
+            cards={data.resourceCards}
+            heading={data.resourceCardsHeadline}
+          />
+        )}
       {data.templatesSection && (
         <InteractiveTemplateList
           heading={data.templatesSection.heading}
-          subtitle={data.templatesSection.subtitle}
-          templates={data.templatesSection.items}
           mockupMap={
             data.slug === "user-management"
               ? {
@@ -185,20 +196,22 @@ export function FeaturePageTemplate({ data }: FeaturePageTemplateProps) {
                   "admin-dashboard": <AdminDashboardMockup />,
                 }
               : data.slug === "admin-dashboard"
-              ? {
-                  "create-channel": <AdminCreateChannelMockup />,
-                  "add-members": <AdminAddMembersTemplateMockup />,
-                  "remove-members": <AdminRemoveMembersTemplateMockup />,
-                }
-              : undefined
+                ? {
+                    "create-channel": <AdminCreateChannelMockup />,
+                    "add-members": <AdminAddMembersTemplateMockup />,
+                    "remove-members": <AdminRemoveMembersTemplateMockup />,
+                  }
+                : undefined
           }
+          subtitle={data.templatesSection.subtitle}
+          templates={data.templatesSection.items}
         />
       )}
       <FeatureFaqSection heading={data.faqHeadline} items={data.faq} />
       <FeatureCtaSection
-        heading={data.ctaHeading}
         ctaPrimary={data.ctaPrimary}
         ctaSecondary={data.ctaSecondary}
+        heading={data.ctaHeading}
       />
     </div>
   );
