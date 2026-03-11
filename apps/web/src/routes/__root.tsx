@@ -31,65 +31,6 @@ export interface RouterAppContext {
 }
 
 export const Route = createRootRouteWithContext<RouterAppContext>()({
-  beforeLoad: async () => {
-    const session = await authClient.getSession();
-
-    return {
-      session: session.data,
-    };
-  },
-  loader: async () => {
-    const { data } = await authClient.organization.getFullOrganization();
-
-    return {
-      orgLogo: data?.logo ?? undefined,
-      orgName: data?.name ?? undefined,
-    };
-  },
-  head: ({ loaderData }) => {
-    const orgName = loaderData?.orgName ?? "Work Holo";
-    const faviconLink =
-      loaderData?.orgLogo === undefined
-        ? {
-            rel: "icon",
-            href: "/favicon.ico",
-          }
-        : {
-            rel: "icon",
-            href: loaderData.orgLogo,
-          };
-
-    return {
-      meta: [
-        {
-          title: orgName,
-        },
-        {
-          name: "description",
-          content:
-            "Work Holo is a lightweight, white-label team collaboration platform with secure channels, user management, and real-time communication tools.",
-        },
-      ],
-      links: [
-        faviconLink,
-        {
-          rel: "preconnect",
-          href: "https://fonts.googleapis.com",
-        },
-        {
-          rel: "preconnect",
-          href: "https://fonts.gstatic.com",
-          crossOrigin: "anonymous",
-        },
-        {
-          rel: "stylesheet",
-          href: "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@300;400;600;700&family=Lato:wght@300;400;700&family=Poppins:wght@300;400;500;600;700&family=Nunito:wght@300;400;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Work+Sans:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap",
-        },
-      ],
-    };
-  },
-  pendingMs: 800,
-  pendingComponent: () => <FullScreenLoader />,
   component: RootComponent,
 });
 
