@@ -1,8 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  BpoPageTemplate,
-} from "@/components/landing/BPO/bpo-page-template";
 import { getBpoPageBySlug } from "@/components/landing/BPO/bpo-data";
+import { BpoPageTemplate } from "@/components/landing/BPO/bpo-page-template";
 
 export const Route = createFileRoute("/(public)/bpo/$slug")({
   component: BpoPage,

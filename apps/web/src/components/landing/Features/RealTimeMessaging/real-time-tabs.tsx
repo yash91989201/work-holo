@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { REAL_TIME_PAGE_DATA } from "./real-time-data";
 
@@ -9,38 +9,35 @@ export function RealTimeTabs() {
 
   return (
     <section className="w-full bg-white py-16 sm:py-24 xl:py-32">
-      <div className="mx-auto w-full max-w-[1800px] px-6 sm:px-12 lg:px-8 ">
-        
+      <div className="mx-auto w-full max-w-[1800px] px-6 sm:px-12 lg:px-8">
         {/* Header content */}
         <div className="mx-auto mb-16 max-w-3xl text-left lg:mb-20">
-          <h2 className="font-bold text-3xl leading-[1.15] tracking-tight text-[#1d1c1d] sm:text-4xl lg:text-5xl">
+          <h2 className="font-bold text-3xl text-[#1d1c1d] leading-[1.15] tracking-tight sm:text-4xl lg:text-5xl">
             {tabs.heading}
           </h2>
-          <p className="mt-5 text-lg text-[#616061]">
-            {tabs.subheading}
-          </p>
+          <p className="mt-5 text-[#616061] text-lg">{tabs.subheading}</p>
         </div>
 
-        <div className="grid gap-12 lg:grid-cols-12 lg:gap-8 border-1 border rounded-2xl p-4 shadow-lg">
+        <div className="grid gap-12 rounded-2xl border border-1 p-4 shadow-lg lg:grid-cols-12 lg:gap-8">
           {/* Tabs Menu (Left) */}
-          <div className="lg:col-span-4 flex flex-col space-y-2">
+          <div className="flex flex-col space-y-2 lg:col-span-4">
             {tabs.items.map((tab, idx) => {
               const isActive = activeIndex === idx;
               return (
                 <button
-                  key={tab.title}
-                  onClick={() => setActiveIndex(idx)}
                   className={cn(
                     "relative flex w-full flex-col items-start space-y-2 rounded-2xl p-6 text-left transition-all duration-200",
                     isActive
                       ? "bg-[#f2f8fa]"
                       : "bg-transparent hover:bg-gray-50"
                   )}
+                  key={tab.title}
+                  onClick={() => setActiveIndex(idx)}
                 >
-                  <h3 className="font-bold text-lg text-[#1d1c1d]">
+                  <h3 className="font-bold text-[#1d1c1d] text-lg">
                     {tab.title}
                   </h3>
-                  
+
                   {/* Expandable content for active tab */}
                   <div
                     className={cn(
@@ -49,25 +46,25 @@ export function RealTimeTabs() {
                     )}
                   >
                     <div className="min-h-0">
-                      <p className="mt-2 text-sm text-[#616061]">
+                      <p className="mt-2 text-[#616061] text-sm">
                         {tab.description}
                       </p>
                       <Link
-                        to={tab.linkHref as any}
-                        className="mt-4 group inline-flex items-center gap-1.5 text-sm font-bold text-[#1264a3] hover:underline"
-                        onClick={(e) => e.stopPropagation()} // prevent tab click
+                        className="group mt-4 inline-flex items-center gap-1.5 font-bold text-[#1264a3] text-sm hover:underline"
+                        onClick={(e) => e.stopPropagation()}
+                        to={tab.linkHref as any} // prevent tab click
                       >
                         {tab.linkText}
                         <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 24 24"
+                          className="transition-transform group-hover:translate-x-1"
                           fill="none"
+                          height="14"
                           stroke="currentColor"
-                          strokeWidth="2.5"
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                          className="transition-transform group-hover:translate-x-1"
+                          strokeWidth="2.5"
+                          viewBox="0 0 24 24"
+                          width="14"
                         >
                           <path d="m9 18 6-6-6-6" />
                         </svg>
@@ -84,13 +81,13 @@ export function RealTimeTabs() {
             <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl shadow-xl">
               {tabs.items.map((tab, idx) => (
                 <img
-                  key={tab.title}
-                  src={tab.imgSrc}
                   alt={tab.title}
                   className={cn(
                     "absolute inset-0 size-full object-cover transition-opacity duration-500",
-                    activeIndex === idx ? "opacity-100 z-10" : "opacity-0 z-0"
+                    activeIndex === idx ? "z-10 opacity-100" : "z-0 opacity-0"
                   )}
+                  key={tab.title}
+                  src={tab.imgSrc}
                 />
               ))}
             </div>

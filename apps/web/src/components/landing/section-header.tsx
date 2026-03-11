@@ -1,13 +1,13 @@
 import { cn } from "@/lib/utils";
 
 interface SectionHeaderProps {
-  title: string;
+  className?: string;
   /** Word(s) in the title to highlight in primary color */
   highlightWord?: string;
-  subtitle?: string;
   /** Use light text color (for dark/purple backgrounds) */
   light?: boolean;
-  className?: string;
+  subtitle?: string;
+  title: string;
 }
 
 export function SectionHeader({
@@ -26,7 +26,7 @@ export function SectionHeader({
 
     // Render a portion of text, applying highlight if highlightWord is present
     const renderPart = (text: string) => {
-      if (!highlightWord || !text.includes(highlightWord)) return text;
+      if (!(highlightWord && text.includes(highlightWord))) return text;
       const idx = text.indexOf(highlightWord);
       return (
         <>
@@ -46,8 +46,7 @@ export function SectionHeader({
 
     return (
       <>
-        {renderPart(beforeLast)}{" "}
-        <span className="block">{renderedLast}</span>
+        {renderPart(beforeLast)} <span className="block">{renderedLast}</span>
       </>
     );
   };

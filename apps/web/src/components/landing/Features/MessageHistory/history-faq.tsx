@@ -32,16 +32,16 @@ export function HistoryFaq() {
   return (
     <section className="w-full bg-white py-16 sm:py-20 lg:py-24">
       <div className="mx-auto max-w-3xl px-6 sm:px-8 lg:px-12">
-        <h2 className="mb-10 text-center font-bold text-3xl tracking-tight text-[#1d1c1d] sm:text-4xl">
+        <h2 className="mb-10 text-center font-bold text-3xl text-[#1d1c1d] tracking-tight sm:text-4xl">
           Frequently asked questions
         </h2>
-        <Accordion type="single" collapsible className="w-full">
+        <Accordion className="w-full" collapsible type="single">
           {FAQ_ITEMS.map((item, i) => (
             <AccordionItem key={item.question} value={`item-${i}`}>
-              <AccordionTrigger className="text-left text-base font-semibold text-[#1d1c1d] hover:text-[#611f69] sm:text-lg">
+              <AccordionTrigger className="text-left font-semibold text-[#1d1c1d] text-base hover:text-[#611f69] sm:text-lg">
                 {item.question}
               </AccordionTrigger>
-              <AccordionContent className="text-base leading-7 text-[#616061]">
+              <AccordionContent className="text-[#616061] text-base leading-7">
                 {item.answer}
               </AccordionContent>
             </AccordionItem>

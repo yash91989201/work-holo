@@ -1,7 +1,7 @@
-import { SectionWrapper } from "./section-wrapper";
-import { SectionHeader } from "./section-header";
-import { FeatureItem } from "./feature-item";
 import { useState } from "react";
+import { FeatureItem } from "./feature-item";
+import { SectionHeader } from "./section-header";
+import { SectionWrapper } from "./section-wrapper";
 
 const features = [
   {
@@ -29,8 +29,8 @@ export function WorkspaceVisibilitySection() {
   return (
     <SectionWrapper>
       <SectionHeader
-        title="Complete visibility and control over your workspace."
         subtitle="Equip your administrators with powerful tools to manage channels, monitor activity, and track productivity through detailed analytics."
+        title="Complete visibility and control over your workspace."
       />
 
       <div className="mt-14 grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
@@ -38,17 +38,17 @@ export function WorkspaceVisibilitySection() {
         <div className="space-y-1">
           {features.map((feature, i) => (
             <button
-              key={feature.title}
-              type="button"
               className="w-full text-left"
+              key={feature.title}
               onClick={() => setActiveIndex(i)}
+              type="button"
             >
               <FeatureItem
-                title={feature.title}
-                description={feature.description}
-                linkText={feature.linkText}
-                linkHref={feature.linkHref}
                 active={activeIndex === i}
+                description={feature.description}
+                linkHref={feature.linkHref}
+                linkText={feature.linkText}
+                title={feature.title}
               />
             </button>
           ))}
@@ -60,16 +60,16 @@ export function WorkspaceVisibilitySection() {
             <div className="flex h-full items-center justify-center">
               <div className="text-center text-muted-foreground">
                 <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="56"
-                  height="56"
-                  viewBox="0 0 24 24"
+                  className="mx-auto mb-3"
                   fill="none"
+                  height="56"
                   stroke="currentColor"
                   strokeWidth="1.5"
-                  className="mx-auto mb-3"
+                  viewBox="0 0 24 24"
+                  width="56"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
-                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                  <rect height="18" rx="2" ry="2" width="18" x="3" y="3" />
                   <circle cx="8.5" cy="8.5" r="1.5" />
                   <polyline points="21 15 16 10 5 21" />
                 </svg>

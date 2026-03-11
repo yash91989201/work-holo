@@ -1,8 +1,8 @@
 interface FeatureGridItem {
-  title: string;
   description: string;
   /** Raw SVG path `d` values */
   iconPaths: string[];
+  title: string;
 }
 
 const GRID_ITEMS: FeatureGridItem[] = [
@@ -47,10 +47,10 @@ export function MessagingFeaturesGrid() {
       <div className="mx-auto w-full max-w-[1600px] px-6 sm:px-12 lg:px-20">
         {/* Heading */}
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="font-bold text-3xl leading-[1.2] tracking-tight text-[#1d1c1d] sm:text-4xl">
+          <h2 className="font-bold text-3xl text-[#1d1c1d] leading-[1.2] tracking-tight sm:text-4xl">
             Chat securely with open or private communication
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-[#616061]">
+          <p className="mx-auto mt-4 max-w-2xl text-[#616061] text-base leading-7">
             Most chat in Workholo happens in channels — open, organised spaces
             for messages, files, tools and people — but you can always find a
             place to communicate with private channels and direct messages.
@@ -60,27 +60,27 @@ export function MessagingFeaturesGrid() {
         {/* Grid */}
         <div className="mt-14 grid gap-10 sm:grid-cols-3">
           {GRID_ITEMS.map((item) => (
-            <div key={item.title} className="text-left">
+            <div className="text-left" key={item.title}>
               <div className="mb-4 flex size-10 items-center justify-center">
                 <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
+                  aria-hidden="true"
                   fill="none"
+                  height="24"
                   stroke="#1d1c1d"
-                  strokeWidth="1.5"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  aria-hidden="true"
+                  strokeWidth="1.5"
+                  viewBox="0 0 24 24"
+                  width="24"
                 >
                   {item.iconPaths.map((d, i) => (
                     // biome-ignore lint/suspicious/noArrayIndexKey: static icon paths
-                    <path key={i} d={d} />
+                    <path d={d} key={i} />
                   ))}
                 </svg>
               </div>
-              <h3 className="font-bold text-lg text-[#1d1c1d]">{item.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-[#616061]">
+              <h3 className="font-bold text-[#1d1c1d] text-lg">{item.title}</h3>
+              <p className="mt-2 text-[#616061] text-sm leading-6">
                 {item.description}
               </p>
             </div>

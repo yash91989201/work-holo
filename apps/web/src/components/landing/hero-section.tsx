@@ -1,10 +1,10 @@
-import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
 import { SectionWrapper } from "./section-wrapper";
 
 export function HeroSection() {
   return (
-    <SectionWrapper className="relative overflow-hidden pb-10 pt-10 sm:pb-14 sm:pt-14 lg:pb-20 lg:pt-20">
+    <SectionWrapper className="relative overflow-hidden pt-10 pb-10 sm:pt-14 sm:pb-14 lg:pt-20 lg:pb-20">
       {/* CSS for floating animation */}
       <style>{`
         @keyframes float-slow {
@@ -28,18 +28,17 @@ export function HeroSection() {
         <h1 className="text-balance font-bold text-5xl tracking-tight sm:text-6xl lg:text-7xl lg:leading-[1.08]">
           WorkHolo is your team&apos;s
           <br />
-          central{" "}
-          <span className="text-[#7C5CFF]">workspace</span>.
+          central <span className="text-[#7C5CFF]">workspace</span>.
         </h1>
 
         {/* Wrapper for subtitle + CTA with floating elements positioned relative to this area */}
         <div className="relative">
           {/* JD Card — positioned at subtitle level, left side */}
-          <div className="pointer-events-none absolute -left-[140px] top-10 hidden lg:block xl:-left-[-40px]">
+          <div className="pointer-events-none absolute top-10 -left-[140px] hidden lg:block xl:-left-[-40px]">
             <div className="animate-float-slow">
-              <div className="h-18 w-42 rounded-xl bg-white shadow-xl ring-1 ring-border/10 dark:bg-card ">
+              <div className="h-18 w-42 rounded-xl bg-white shadow-xl ring-1 ring-border/10 dark:bg-card">
                 <div className="flex h-full items-center gap-2.5 px-3">
-                  <div className="flex size-8 items-center justify-center rounded-full bg-[#7C5CFF] text-xs font-bold text-white">
+                  <div className="flex size-8 items-center justify-center rounded-full bg-[#7C5CFF] font-bold text-white text-xs">
                     JD
                   </div>
                   <div className="space-y-1.5">
@@ -52,11 +51,11 @@ export function HeroSection() {
           </div>
 
           {/* PDF/Document Card — positioned at CTA/trusted-by level, right side */}
-          <div className="pointer-events-none absolute -right-[120px] top-[140px] hidden lg:block xl:-right-[-80px]">
+          <div className="pointer-events-none absolute top-[140px] -right-[120px] hidden lg:block xl:-right-[-80px]">
             <div className="animate-float-slow-right">
               <div className="h-24 w-20 rounded-2xl bg-white shadow-lg ring-1 ring-border/10 dark:bg-card">
                 <div className="flex h-full items-center justify-center p-3">
-                  <div className="h-full w-full rounded-xl bg-[#EEF2FF] dark:bg-muted/40 flex flex-col items-center justify-center gap-[6px] p-3">
+                  <div className="flex h-full w-full flex-col items-center justify-center gap-[6px] rounded-xl bg-[#EEF2FF] p-3 dark:bg-muted/40">
                     <div className="h-[5px] w-full rounded-full bg-[#B4C6FC] dark:bg-primary/30" />
                     <div className="h-[5px] w-4/5 rounded-full bg-[#B4C6FC] dark:bg-primary/30" />
                     <div className="h-[5px] w-full rounded-full bg-[#B4C6FC] dark:bg-primary/30" />
@@ -67,22 +66,24 @@ export function HeroSection() {
           </div>
 
           <p className="mx-auto mt-6 max-w-2xl text-pretty text-lg text-muted-foreground leading-8 sm:text-xl">
-            Experience real-time messaging, seamless file sharing, and intelligent
-            collaboration in one unified, cloud-based platform.
+            Experience real-time messaging, seamless file sharing, and
+            intelligent collaboration in one unified, cloud-based platform.
           </p>
           <div className="mt-9 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Button asChild size="lg" className="h-15 rounded-md px-8 text-md font-semibold bg-[#7C5CFF] text-white uppercase tracking-wide hover:bg-[#7C5CFF] hover:text-white">
+            <Button
+              asChild
+              className="h-15 rounded-md bg-[#7C5CFF] px-8 font-semibold text-md text-white uppercase tracking-wide hover:bg-[#7C5CFF] hover:text-white"
+              size="lg"
+            >
               <Link to="/">Get Started</Link>
             </Button>
             <Button
               asChild
-              variant="outline"
+              className="h-15 rounded-md border-[#7C5CFF] bg-white px-8 font-semibold text-[#7C5CFF] text-md uppercase tracking-wide hover:bg-white hover:text-[#7C5CFF] hover:text-white"
               size="lg"
-              className="h-15 rounded-md px-8 text-md font-semibold uppercase tracking-wide bg-white hover:bg-white border-[#7C5CFF] text-[#7C5CFF] hover:text-white hover:text-[#7C5CFF]"
+              variant="outline"
             >
-              <Link to="/">
-                Find Your Subscription →
-              </Link>
+              <Link to="/">Find Your Subscription →</Link>
             </Button>
           </div>
         </div>
@@ -90,15 +91,15 @@ export function HeroSection() {
 
       {/* Trusted By */}
       <div className="mt-14 text-center sm:mt-18">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground sm:text-sm">
+        <p className="font-semibold text-muted-foreground text-xs uppercase tracking-[0.2em] sm:text-sm">
           Trusted by top teams
         </p>
         <div className="mt-5 flex flex-wrap items-center justify-center gap-x-10 gap-y-4 sm:gap-x-14 lg:gap-x-16">
           {["GM", "OpenAI", "Target", "Paramount", "stripe", "IBM"].map(
             (company) => (
               <span
+                className="font-semibold text-base text-muted-foreground/50 sm:text-lg"
                 key={company}
-                className="text-base font-semibold text-muted-foreground/50 sm:text-lg"
               >
                 {company}
               </span>
@@ -115,17 +116,17 @@ export function HeroSection() {
               <div className="text-center">
                 <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-primary/15">
                   <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="26"
+                    className="text-primary"
+                    fill="currentColor"
                     height="26"
                     viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="text-primary"
+                    width="26"
+                    xmlns="http://www.w3.org/2000/svg"
                   >
                     <path d="M8 5v14l11-7z" />
                   </svg>
                 </div>
-                <p className="text-muted-foreground text-base font-medium">
+                <p className="font-medium text-base text-muted-foreground">
                   Product Demo Video
                 </p>
               </div>

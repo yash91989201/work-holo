@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { FeaturePageTemplate } from "@/components/landing/Features/TeamChannel/feature-page-template";
-import { getFeaturePageBySlug } from "@/components/landing/Features/TeamChannel/feature-page-data";
 import { MessagingPage } from "@/components/landing/Features/DIrectMessaging/messaging-page";
-import { RealTimePage } from "@/components/landing/Features/RealTimeMessaging/real-time-page";
 import { MessageHistoryPage } from "@/components/landing/Features/MessageHistory/history-page";
+import { RealTimePage } from "@/components/landing/Features/RealTimeMessaging/real-time-page";
+import { getFeaturePageBySlug } from "@/components/landing/Features/TeamChannel/feature-page-data";
+import { FeaturePageTemplate } from "@/components/landing/Features/TeamChannel/feature-page-template";
 
 export const Route = createFileRoute("/(public)/features/$slug")({
   component: FeaturePage,

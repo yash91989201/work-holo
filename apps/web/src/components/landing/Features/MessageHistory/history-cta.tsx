@@ -8,14 +8,14 @@ import { Button } from "@/components/ui/button";
  */
 export function HistoryCta() {
   return (
-    <section className="w-full border-t border-[#e5e7eb] bg-white py-10 sm:py-14">
+    <section className="w-full border-[#e5e7eb] border-t bg-white py-10 sm:py-14">
       <div className="mx-auto flex max-w-7xl items-center justify-center gap-6 px-6">
-        <Button className="h-11 rounded bg-[#611f69] px-6 text-xs font-bold uppercase tracking-[0.1em] text-white hover:bg-[#4a154b]">
+        <Button className="h-11 rounded bg-[#611f69] px-6 font-bold text-white text-xs uppercase tracking-[0.1em] hover:bg-[#4a154b]">
           Get Started
         </Button>
         <Button
+          className="h-11 px-1 font-bold text-[#611f69] text-xs uppercase tracking-[0.1em] hover:bg-transparent hover:text-[#4a154b]"
           variant="ghost"
-          className="h-11 px-1 text-xs font-bold uppercase tracking-[0.1em] text-[#611f69] hover:bg-transparent hover:text-[#4a154b]"
         >
           Talk to Sales
         </Button>

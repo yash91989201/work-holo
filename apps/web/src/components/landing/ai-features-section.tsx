@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { SectionWrapper } from "./section-wrapper";
-import { SectionHeader } from "./section-header";
 import { FeatureListItem } from "./feature-item";
+import { SectionHeader } from "./section-header";
+import { SectionWrapper } from "./section-wrapper";
 
 const aiFeatures = [
   { title: "AI Message Summaries", subtitle: "Catch up instantly" },
@@ -17,9 +17,11 @@ export function AiFeaturesSection() {
   return (
     <SectionWrapper variant="purple">
       <SectionHeader
-        title="Work smarter with AI-powered communication."
-        subtitle={"Elevate your team's productivity with intelligent features designed to save time and streamline workflows. From automated summaries to smart suggestions, AI is built\ninto the core of WorkHolo."}
         light
+        subtitle={
+          "Elevate your team's productivity with intelligent features designed to save time and streamline workflows. From automated summaries to smart suggestions, AI is built\ninto the core of WorkHolo."
+        }
+        title="Work smarter with AI-powered communication."
       />
 
       <div className="mt-14 grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
@@ -34,8 +36,8 @@ export function AiFeaturesSection() {
             {aiFeatures.map((feature) => (
               <FeatureListItem
                 key={feature.title}
-                title={feature.title}
                 subtitle={feature.subtitle}
+                title={feature.title}
               />
             ))}
           </CardContent>
@@ -47,16 +49,16 @@ export function AiFeaturesSection() {
             <div className="flex h-full items-center justify-center">
               <div className="text-center text-white/60">
                 <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="56"
-                  height="56"
-                  viewBox="0 0 24 24"
+                  className="mx-auto mb-3"
                   fill="none"
+                  height="56"
                   stroke="currentColor"
                   strokeWidth="1.5"
-                  className="mx-auto mb-3"
+                  viewBox="0 0 24 24"
+                  width="56"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
-                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                  <rect height="18" rx="2" ry="2" width="18" x="3" y="3" />
                   <circle cx="8.5" cy="8.5" r="1.5" />
                   <polyline points="21 15 16 10 5 21" />
                 </svg>
