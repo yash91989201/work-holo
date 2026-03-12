@@ -15,7 +15,9 @@ import { Route as publicIndexRouteImport } from './routes/(public)/index'
 import { Route as publicStatusRouteImport } from './routes/(public)/status'
 import { Route as publicPricingRouteImport } from './routes/(public)/pricing'
 import { Route as publicPaidVsFreeRouteImport } from './routes/(public)/paid-vs-free'
+import { Route as publicHomePageRouteImport } from './routes/(public)/home-page'
 import { Route as publicChangelogRouteImport } from './routes/(public)/changelog'
+import { Route as publicAboutRouteImport } from './routes/(public)/about'
 import { Route as authSignupRouteImport } from './routes/(auth)/signup'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as authenticatedSettingsRouteRouteImport } from './routes/(authenticated)/settings/route'
@@ -97,9 +99,19 @@ const publicPaidVsFreeRoute = publicPaidVsFreeRouteImport.update({
   path: '/paid-vs-free',
   getParentRoute: () => publicRouteRoute,
 } as any)
+const publicHomePageRoute = publicHomePageRouteImport.update({
+  id: '/home-page',
+  path: '/home-page',
+  getParentRoute: () => publicRouteRoute,
+} as any)
 const publicChangelogRoute = publicChangelogRouteImport.update({
   id: '/changelog',
   path: '/changelog',
+  getParentRoute: () => publicRouteRoute,
+} as any)
+const publicAboutRoute = publicAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => publicRouteRoute,
 } as any)
 const authSignupRoute = authSignupRouteImport.update({
@@ -411,7 +423,9 @@ export interface FileRoutesByFullPath {
   '/settings': typeof authenticatedSettingsRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/signup': typeof authSignupRoute
+  '/about': typeof publicAboutRoute
   '/changelog': typeof publicChangelogRoute
+  '/home-page': typeof publicHomePageRoute
   '/paid-vs-free': typeof publicPaidVsFreeRoute
   '/pricing': typeof publicPricingRoute
   '/status': typeof publicStatusRoute
@@ -470,7 +484,9 @@ export interface FileRoutesByTo {
   '/settings': typeof authenticatedSettingsRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/signup': typeof authSignupRoute
+  '/about': typeof publicAboutRoute
   '/changelog': typeof publicChangelogRoute
+  '/home-page': typeof publicHomePageRoute
   '/paid-vs-free': typeof publicPaidVsFreeRoute
   '/pricing': typeof publicPricingRoute
   '/status': typeof publicStatusRoute
@@ -527,7 +543,9 @@ export interface FileRoutesById {
   '/(authenticated)/settings': typeof authenticatedSettingsRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/signup': typeof authSignupRoute
+  '/(public)/about': typeof publicAboutRoute
   '/(public)/changelog': typeof publicChangelogRoute
+  '/(public)/home-page': typeof publicHomePageRoute
   '/(public)/paid-vs-free': typeof publicPaidVsFreeRoute
   '/(public)/pricing': typeof publicPricingRoute
   '/(public)/status': typeof publicStatusRoute
@@ -588,7 +606,9 @@ export interface FileRouteTypes {
     | '/settings'
     | '/login'
     | '/signup'
+    | '/about'
     | '/changelog'
+    | '/home-page'
     | '/paid-vs-free'
     | '/pricing'
     | '/status'
@@ -647,7 +667,9 @@ export interface FileRouteTypes {
     | '/settings'
     | '/login'
     | '/signup'
+    | '/about'
     | '/changelog'
+    | '/home-page'
     | '/paid-vs-free'
     | '/pricing'
     | '/status'
@@ -703,7 +725,9 @@ export interface FileRouteTypes {
     | '/(authenticated)/settings'
     | '/(auth)/login'
     | '/(auth)/signup'
+    | '/(public)/about'
     | '/(public)/changelog'
+    | '/(public)/home-page'
     | '/(public)/paid-vs-free'
     | '/(public)/pricing'
     | '/(public)/status'
@@ -811,11 +835,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof publicPaidVsFreeRouteImport
       parentRoute: typeof publicRouteRoute
     }
+    '/(public)/home-page': {
+      id: '/(public)/home-page'
+      path: '/home-page'
+      fullPath: '/home-page'
+      preLoaderRoute: typeof publicHomePageRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
     '/(public)/changelog': {
       id: '/(public)/changelog'
       path: '/changelog'
       fullPath: '/changelog'
       preLoaderRoute: typeof publicChangelogRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/about': {
+      id: '/(public)/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof publicAboutRouteImport
       parentRoute: typeof publicRouteRoute
     }
     '/(auth)/signup': {
@@ -1377,7 +1415,9 @@ const authenticatedRouteRouteWithChildren =
   authenticatedRouteRoute._addFileChildren(authenticatedRouteRouteChildren)
 
 interface publicRouteRouteChildren {
+  publicAboutRoute: typeof publicAboutRoute
   publicChangelogRoute: typeof publicChangelogRoute
+  publicHomePageRoute: typeof publicHomePageRoute
   publicPaidVsFreeRoute: typeof publicPaidVsFreeRoute
   publicPricingRoute: typeof publicPricingRoute
   publicStatusRoute: typeof publicStatusRoute
@@ -1404,7 +1444,9 @@ interface publicRouteRouteChildren {
 }
 
 const publicRouteRouteChildren: publicRouteRouteChildren = {
+  publicAboutRoute: publicAboutRoute,
   publicChangelogRoute: publicChangelogRoute,
+  publicHomePageRoute: publicHomePageRoute,
   publicPaidVsFreeRoute: publicPaidVsFreeRoute,
   publicPricingRoute: publicPricingRoute,
   publicStatusRoute: publicStatusRoute,

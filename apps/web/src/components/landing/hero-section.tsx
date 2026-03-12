@@ -111,24 +111,122 @@ export function HeroSection() {
       {/* Hero image / video area */}
       <div className="mt-12 sm:mt-16">
         <div className="mx-auto max-w-5xl overflow-hidden rounded-2xl shadow-2xl ring-1 ring-border/10">
-          <div className="aspect-video w-full bg-gradient-to-br from-primary/10 via-primary/5 to-muted/30">
-            <div className="flex h-full items-center justify-center">
-              <div className="text-center">
-                <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-primary/15">
-                  <svg
-                    className="text-primary"
-                    fill="currentColor"
-                    height="26"
-                    viewBox="0 0 24 24"
-                    width="26"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
+          <div className="aspect-video w-full overflow-hidden">
+            <div className="flex h-full w-full">
+              {/* Sidebar */}
+              <div className="flex h-full w-[22%] flex-col bg-[#1E1047]">
+                <div className="flex items-center gap-1 px-3 pt-3 sm:gap-1.5 sm:px-4 sm:pt-4">
+                  <div className="size-2 rounded-full bg-[#FF5F57] sm:size-3" />
+                  <div className="size-2 rounded-full bg-[#FFBD2E] sm:size-3" />
+                  <div className="size-2 rounded-full bg-[#28C840] sm:size-3" />
                 </div>
-                <p className="font-medium text-base text-muted-foreground">
-                  Product Demo Video
-                </p>
+                <div className="px-3 pt-2 sm:px-4 sm:pt-4">
+                  <p className="font-bold text-[7px] text-purple-300/60 uppercase tracking-widest sm:text-[10px]">
+                    Channels
+                  </p>
+                </div>
+                <div className="mt-1 space-y-px px-1.5 sm:mt-2 sm:space-y-0.5 sm:px-2">
+                  {[
+                    { name: "general", active: false },
+                    { name: "product-launch", active: true },
+                    { name: "marketing", active: false },
+                    { name: "hr-team", active: false },
+                    { name: "support", active: false },
+                  ].map((ch) => (
+                    <div
+                      className={`truncate rounded px-1.5 py-0.5 font-medium text-[7px] sm:px-2 sm:py-1 sm:text-[11px] ${ch.active ? "bg-[#7C5CFF] text-white" : "text-purple-200/60"}`}
+                      key={ch.name}
+                    >
+                      # {ch.name}
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-auto px-2 pb-3 sm:px-3 sm:pb-4">
+                  <div className="h-1 w-3/4 rounded-full bg-purple-500/40 sm:h-1.5" />
+                  <div className="mt-1 h-1 w-1/2 rounded-full bg-purple-500/30 sm:h-1.5" />
+                </div>
+              </div>
+
+              {/* Main chat area */}
+              <div className="flex flex-1 flex-col bg-white">
+                {/* Channel header */}
+                <div className="flex items-center justify-between border-zinc-100 border-b px-3 py-1.5 sm:px-5 sm:py-3">
+                  <span className="font-bold text-[9px] text-zinc-800 sm:text-sm">
+                    # project-launch
+                  </span>
+                  <div className="flex gap-1">
+                    <div className="size-3 rounded bg-zinc-100 sm:size-5" />
+                    <div className="size-3 rounded bg-zinc-100 sm:size-5" />
+                  </div>
+                </div>
+
+                {/* Messages */}
+                <div className="flex-1 space-y-2 overflow-hidden px-3 py-2 sm:space-y-5 sm:px-5 sm:py-4">
+                  {/* Message 1 — Madhu Sharma */}
+                  <div className="flex gap-1.5 sm:gap-3">
+                    <div className="flex size-5 shrink-0 items-center justify-center rounded-full bg-purple-100 font-bold text-[6px] text-purple-600 sm:size-9 sm:text-[11px]">
+                      MS
+                    </div>
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-baseline gap-1">
+                        <span className="font-semibold text-[8px] text-zinc-800 sm:text-sm">
+                          Madhu Sharma
+                        </span>
+                        <span className="text-[6px] text-zinc-400 sm:text-[10px]">
+                          10:42 AM
+                        </span>
+                      </div>
+                      <p className="text-[7px] text-zinc-700 sm:text-sm">
+                        Add a new user to the system here 👋 here! 👋
+                      </p>
+                      {/* Action card */}
+                      <div className="mt-1 inline-flex items-center gap-1 rounded-md border border-zinc-200 bg-white px-1.5 py-0.5 sm:mt-2 sm:gap-2 sm:rounded-lg sm:px-3 sm:py-2">
+                        <div className="flex size-3.5 shrink-0 items-center justify-center rounded bg-sky-100 sm:size-5">
+                          <svg
+                            className="size-2 text-sky-500 sm:size-3"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <p className="font-semibold text-[6px] text-zinc-800 sm:text-[11px]">
+                            Create new user
+                          </p>
+                          <p className="text-[5px] text-zinc-400 sm:text-[9px]">
+                            list
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Message 2 — Fathima Parveen */}
+                  <div className="flex gap-1.5 sm:gap-3">
+                    <div className="flex size-5 shrink-0 items-center justify-center rounded-full bg-pink-100 font-bold text-[6px] text-pink-600 sm:size-9 sm:text-[11px]">
+                      FP
+                    </div>
+                    <div>
+                      <div className="flex flex-wrap items-baseline gap-1">
+                        <span className="font-semibold text-[8px] text-zinc-800 sm:text-sm">
+                          Fathima Parveen
+                        </span>
+                        <span className="text-[6px] text-zinc-400 sm:text-[10px]">
+                          10:45 AM
+                        </span>
+                      </div>
+                      <p className="text-[7px] text-zinc-700 sm:text-sm">
+                        User successfully added!
+                      </p>
+                      {/* Reaction */}
+                      <div className="mt-0.5 inline-flex items-center gap-0.5 rounded-full border border-zinc-200 bg-zinc-50 px-1 py-0.5 text-[6px] sm:mt-1.5 sm:gap-1 sm:px-2 sm:text-[11px]">
+                        <span>👍</span>
+                        <span className="font-medium text-zinc-600">3</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
