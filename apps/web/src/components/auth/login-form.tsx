@@ -1,15 +1,13 @@
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import { formOptions } from "@tanstack/react-form";
-import { useNavigate } from "@tanstack/react-router";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { FieldGroup } from "@/components/ui/field";
 import { useAppForm } from "@/components/ui/form/hooks";
 import { InputGroupAddon, InputGroupButton } from "@/components/ui/input-group";
 import { Spinner } from "@/components/ui/spinner";
-import { authClient } from "@/lib/auth-client";
 import { LogInFormSchema } from "@/lib/schemas/auth";
 import type { LogInFormType } from "@/lib/types";
-import { getOrgRouteByRole } from "@/utils";
 
 const formOpts = formOptions({
   defaultValues: {
@@ -22,59 +20,13 @@ const formOpts = formOptions({
 });
 
 export function LogInForm() {
-  const navigate = useNavigate();
-
   const form = useAppForm({
     ...formOpts,
     validators: {
       onSubmit: LogInFormSchema,
     },
-    onSubmit: async ({ value }) => {
-      try {
-        const isEmail = value.identifier.includes("@");
-        const loginResult = isEmail
-          ? await authClient.signIn.email({
-              email: value.identifier,
-              password: value.password,
-            })
-          : await authClient.signIn.username({
-              username: value.identifier,
-              password: value.password,
-            });
-
-        if (loginResult?.error) {
-          throw new Error(loginResult.error.message);
-        }
-
-        const { data: orgs, error } = await authClient.organization.list();
-
-        if (error) {
-          throw new Error(error.message);
-        }
-
-        if (orgs && orgs.length > 0) {
-          const org = orgs[0];
-
-          await authClient.organization.setActive({
-            organizationId: org.id,
-            organizationSlug: org.slug,
-          });
-
-          const { data: memberData } =
-            await authClient.organization.getActiveMemberRole();
-          navigate(getOrgRouteByRole(memberData?.role ?? "member", org.slug));
-          return;
-        }
-
-        navigate({ to: "/org/new" });
-      } catch (err) {
-        form.setFieldMeta("identifier", (prev) => ({
-          ...prev,
-          errorMap: {
-            onSubmit: err instanceof Error ? err.message : "Login failed",
-          },
-        }));
-      }
+    onSubmit: () => {
+      toast.success("Workholo is launching soon... ");
     },
   });
 

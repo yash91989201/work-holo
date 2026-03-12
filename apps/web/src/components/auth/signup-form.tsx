@@ -1,14 +1,11 @@
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import { formOptions } from "@tanstack/react-form";
-import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { FieldGroup } from "@/components/ui/field";
 import { useAppForm } from "@/components/ui/form/hooks";
 import { InputGroupAddon, InputGroupButton } from "@/components/ui/input-group";
 import { Spinner } from "@/components/ui/spinner";
-import { authClient } from "@/lib/auth-client";
 import { SignUpFormSchema } from "@/lib/schemas/auth";
 import type { SignUpFormType } from "@/lib/types";
 
@@ -28,30 +25,13 @@ const formOpts = formOptions({
 });
 
 export function SignUpForm() {
-  const navigate = useNavigate();
-
-  const { mutateAsync: signup } = useMutation({
-    mutationKey: ["signup"],
-    mutationFn: async (values: SignUpFormType) =>
-      await authClient.signUp.email(values),
-  });
-
   const form = useAppForm({
     ...formOpts,
     validators: {
       onSubmitAsync: SignUpFormSchema,
     },
-    onSubmit: async ({ value }) => {
-      try {
-        const signupRes = await signup(value);
-        if (signupRes.error) {
-          throw new Error(signupRes.error.message);
-        }
-
-        navigate({ to: "/org/new" });
-      } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Signup failed");
-      }
+    onSubmit: () => {
+      toast.success("Workholo is launching soon... ");
     },
   });
 
