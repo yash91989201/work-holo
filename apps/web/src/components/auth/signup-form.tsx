@@ -12,7 +12,6 @@ import type { SignUpFormType } from "@/lib/types";
 const formOpts = formOptions({
   defaultValues: {
     name: "",
-    username: "",
     displayUsername: "",
     email: "",
     password: "",
@@ -47,28 +46,6 @@ export function SignUpForm() {
         <FieldGroup>
           <form.AppField name="name">
             {(field) => <field.Input label="Name" placeholder="Full name" />}
-          </form.AppField>
-
-          <form.AppField
-            name="username"
-            validators={{
-              onChangeAsyncDebounceMs: 500,
-              onChangeAsync: async ({ value }) => {
-                const result =
-                  await SignUpFormSchema.shape.username.safeParseAsync(value);
-
-                return result.success
-                  ? undefined
-                  : result.error.issues[0]?.message;
-              },
-            }}
-          >
-            {(field) => (
-              <field.InputGroup label="Username">
-                <field.InputGroupInput placeholder="Enter unique username" />
-                <field.InputGroupSpinner />
-              </field.InputGroup>
-            )}
           </form.AppField>
 
           <form.AppField name="displayUsername">

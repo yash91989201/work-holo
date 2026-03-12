@@ -15,34 +15,6 @@ export const LogInFormSchema = z.object({
 export const SignUpFormSchema = z
   .object({
     name: z.string().min(6, "Enter your full name."),
-    username: z
-      .string()
-      .min(1, "Username is required")
-      .min(4, "Minimum 4 characters")
-      .max(40, "Maximum 40 characters")
-      .regex(
-        /^[a-z0-9]+(-[a-z0-9]+)*$/,
-        "Only lowercase letters, numbers and - allowed"
-      )
-      .refine(
-        async (username) => {
-          if (username.length < 4) return true;
-
-          try {
-            const { data: result, error } =
-              await authClient.isUsernameAvailable({
-                username,
-              });
-
-            return !error && (result?.available ?? false);
-          } catch {
-            return false;
-          }
-        },
-        {
-          message: "Username already taken",
-        }
-      ),
     displayUsername: z.string().min(3, "Enter a display username"),
     email: z.email("Invalid email address").nonempty("Email is required"),
     password: z
