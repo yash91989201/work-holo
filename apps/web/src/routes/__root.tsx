@@ -19,10 +19,8 @@ import type { orpcClient, queryUtils } from "@/utils/orpc";
 import { link } from "@/utils/orpc";
 import "@/styles/index.css";
 import { env } from "@work-holo/env/web";
-import { FullScreenLoader } from "@/components/shared/full-screen-loader";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useVersionCheck } from "@/hooks/use-version-check";
-import { authClient } from "@/lib/auth-client";
 
 export interface RouterAppContext {
   orpcClient: typeof orpcClient;

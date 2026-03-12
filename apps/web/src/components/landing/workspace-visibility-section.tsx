@@ -54,26 +54,94 @@ export function WorkspaceVisibilitySection() {
           ))}
         </div>
 
-        {/* Placeholder image */}
+        {/* Admin Analytics mockup */}
         <div className="overflow-hidden rounded-xl">
-          <div className="aspect-[4/3] w-full rounded-xl bg-gradient-to-br from-muted to-muted/50">
-            <div className="flex h-full items-center justify-center">
-              <div className="text-center text-muted-foreground">
-                <svg
-                  className="mx-auto mb-3"
-                  fill="none"
-                  height="56"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  viewBox="0 0 24 24"
-                  width="56"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <rect height="18" rx="2" ry="2" width="18" x="3" y="3" />
-                  <circle cx="8.5" cy="8.5" r="1.5" />
-                  <polyline points="21 15 16 10 5 21" />
-                </svg>
-                <p className="text-base">Feature Preview</p>
+          <div className="aspect-[4/3] w-full overflow-hidden rounded-xl">
+            <div className="flex h-full flex-col bg-white">
+              {/* Header */}
+              <div className="flex items-center justify-between border-zinc-100 border-b px-3 py-2 sm:px-5 sm:py-3">
+                <span className="font-bold text-[10px] text-zinc-800 sm:text-sm">
+                  Admin Dashboard
+                </span>
+                <span className="text-[6px] text-zinc-400 sm:text-[10px]">
+                  Last 7 days
+                </span>
+              </div>
+              {/* Stats row */}
+              <div className="grid grid-cols-3 gap-2 border-zinc-50 border-b px-3 py-2 sm:px-5 sm:py-3">
+                {[
+                  { label: "Messages", value: "2.4k", trend: "+12%" },
+                  { label: "Active Users", value: "18", trend: "+3" },
+                  { label: "Channels", value: "8", trend: "Active" },
+                ].map((stat) => (
+                  <div className="text-center" key={stat.label}>
+                    <p className="font-bold text-[11px] text-zinc-800 sm:text-base">
+                      {stat.value}
+                    </p>
+                    <p className="text-[5px] text-zinc-400 sm:text-[9px]">
+                      {stat.label}
+                    </p>
+                    <p className="font-medium text-[5px] text-emerald-500 sm:text-[9px]">
+                      {stat.trend}
+                    </p>
+                  </div>
+                ))}
+              </div>
+              {/* Bar chart */}
+              <div className="px-3 py-2 sm:px-5 sm:py-3">
+                <p className="mb-1.5 font-semibold text-[5px] text-zinc-400 uppercase tracking-wider sm:text-[8px]">
+                  Activity this week
+                </p>
+                <div className="flex h-8 items-end gap-0.5 sm:h-14 sm:gap-1">
+                  {[40, 65, 45, 80, 55, 70, 90].map((h, i) => (
+                    <div
+                      className="flex-1 rounded-t-sm"
+                      key={`bar-${i}`}
+                      style={{
+                        height: `${h}%`,
+                        backgroundColor: i === 6 ? "#7C5CFF" : "#E9E4FF",
+                      }}
+                    />
+                  ))}
+                </div>
+                <div className="mt-0.5 flex justify-between">
+                  {["M", "T", "W", "T", "F", "S", "S"].map((d, i) => (
+                    <span
+                      className="flex-1 text-center text-[4px] text-zinc-400 sm:text-[8px]"
+                      key={`day-${i}`}
+                    >
+                      {d}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              {/* Channel activity */}
+              <div className="flex-1 overflow-hidden px-3 pb-2 sm:px-5 sm:pb-3">
+                <p className="mb-1 font-semibold text-[5px] text-zinc-400 uppercase tracking-wider sm:mb-1.5 sm:text-[8px]">
+                  Most Active Channels
+                </p>
+                <div className="space-y-1">
+                  {[
+                    { name: "#general", msgs: 47, pct: 80 },
+                    { name: "#project-launch", msgs: 31, pct: 55 },
+                    { name: "#hr-team", msgs: 18, pct: 32 },
+                  ].map((ch) => (
+                    <div className="flex items-center gap-1.5" key={ch.name}>
+                      <span className="w-14 shrink-0 truncate text-[5px] text-zinc-500 sm:w-24 sm:text-[9px]">
+                        {ch.name}
+                      </span>
+                      <div className="h-1 flex-1 rounded-full bg-zinc-100 sm:h-1.5">
+                        <div
+                          className="h-full rounded-full bg-[#7C5CFF]"
+                          style={{ width: `${ch.pct}%` }}
+                        />
+                      </div>
+                      <span className="w-4 text-right text-[5px] text-zinc-400 sm:text-[8px]">
+                        {ch.msgs}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
