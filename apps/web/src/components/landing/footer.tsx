@@ -39,6 +39,7 @@ const bottomLinks = [
   { label: "Terms", href: "/" },
   { label: "Your privacy choices", href: "/" },
   { label: "Cookie preferences", href: "/" },
+  { label: "About", href: "/about" },
   { label: "Contact us", href: "/" },
 ];
 
