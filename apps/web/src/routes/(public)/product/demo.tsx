@@ -24,8 +24,8 @@ const demoData = {
   headingHighlight: "in action",
   subtitle:
     "Explore our comprehensive communication suite. From seamless registration to advanced analytics, see how we transform team collaboration.",
-  ctaPrimary: "WATCH THE DEMO",
-  ctaSecondary: "EXPLORE DASHBOARDS",
+  ctaPrimary: "CONTACT US",
+  ctaSecondary: "SIGN IN",
   heroLayout: "user-management-hero",
   sections: [
     {
@@ -124,7 +124,7 @@ const demoData = {
     {
       question: "How do I register for the full version?",
       answer:
-        "You can register by clicking the 'Get Started' button at the top of the page. Follow the simple onboarding steps to set up your workspace instantly.",
+        "You can register by clicking the 'Contact Us' button at the top of the page. Follow the simple onboarding steps to set up your workspace instantly.",
     },
     {
       question: "Can I invite my team to the demo?",

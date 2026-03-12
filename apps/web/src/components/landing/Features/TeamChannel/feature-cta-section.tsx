@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 
 interface FeatureCtaSectionProps {
@@ -13,8 +14,8 @@ interface FeatureCtaSectionProps {
  */
 export function FeatureCtaSection({
   heading = "Build a better team with Workholo.",
-  ctaPrimary = "Get Started",
-  ctaSecondary = "Request a Demo",
+  ctaPrimary = "Contact Us",
+  ctaSecondary = "Sign In",
 }: FeatureCtaSectionProps) {
   return (
     <section className="relative w-full">
@@ -39,16 +40,18 @@ export function FeatureCtaSection({
           </h2>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Button
+              asChild
               className="h-12 rounded-md border-2 border-white bg-transparent px-8 font-semibold text-sm text-white uppercase tracking-wide hover:bg-white/10"
               size="lg"
             >
-              {ctaPrimary}
+              <Link to="/contact">{ctaPrimary}</Link>
             </Button>
             <Button
+              asChild
               className="h-12 rounded-md bg-white px-8 font-semibold text-[#7C5CFF] text-sm uppercase tracking-wide hover:bg-white/90"
               size="lg"
             >
-              {ctaSecondary}
+              <Link to="/login">{ctaSecondary}</Link>
             </Button>
           </div>
         </div>

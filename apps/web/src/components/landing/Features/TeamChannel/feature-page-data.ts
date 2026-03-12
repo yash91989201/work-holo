@@ -150,8 +150,8 @@ const featurePages: FeaturePageData[] = [
     headingHighlight: "custom channels.",
     subtitle:
       "Owners and admins can build a structured environment by creating dedicated channels for every team and project, ensuring everyone is in the right place for the right conversation.",
-    ctaPrimary: "Create Channel",
-    ctaSecondary: "Admin Dashboard",
+    ctaPrimary: "Contact Us",
+    ctaSecondary: "Sign In",
     sections: [
       {
         layout: "image-left",
@@ -283,8 +283,8 @@ const featurePages: FeaturePageData[] = [
     headingHighlight: "direct messaging.",
     subtitle:
       "Send 1-on-1 messages to any team member instantly. Share files, images, and have focused private conversations without the noise of public channels.",
-    ctaPrimary: "Start Messaging",
-    ctaSecondary: "Learn More",
+    ctaPrimary: "Contact Us",
+    ctaSecondary: "Sign In",
     sections: [
       {
         layout: "image-left",
@@ -376,8 +376,8 @@ const featurePages: FeaturePageData[] = [
     headingHighlight: "real-time messaging.",
     subtitle:
       "Instant team communication with zero lag. Messages are delivered in real-time with typing indicators, read receipts, and smart notifications.",
-    ctaPrimary: "Get Started",
-    ctaSecondary: "Watch Demo",
+    ctaPrimary: "Contact Us",
+    ctaSecondary: "Sign In",
     sections: [
       {
         layout: "image-left",
@@ -469,8 +469,8 @@ const featurePages: FeaturePageData[] = [
     headingHighlight: "message history.",
     subtitle:
       "Full searchable history of every conversation. New team members get instant context and nothing is ever lost.",
-    ctaPrimary: "Get Started",
-    ctaSecondary: "Learn More",
+    ctaPrimary: "Contact Us",
+    ctaSecondary: "Sign In",
     sections: [
       {
         layout: "image-left",
@@ -545,8 +545,8 @@ const featurePages: FeaturePageData[] = [
     headingHighlight: "@mentions.",
     subtitle:
       "Tag teammates directly in conversations to grab their attention instantly. Mentions cut through the noise and ensure critical messages are seen.",
-    ctaPrimary: "Get Started",
-    ctaSecondary: "Learn More",
+    ctaPrimary: "Contact Us",
+    ctaSecondary: "Sign In",
     sections: [
       {
         layout: "image-left",
@@ -622,8 +622,8 @@ const featurePages: FeaturePageData[] = [
     headingHighlight: "",
     subtitle:
       "Upload documents, images, or audio and keep everyone in the loop. Collaboration has never been this easy.",
-    ctaPrimary: "GET STARTED",
-    ctaSecondary: "TALK TO SALES",
+    ctaPrimary: "CONTACT US",
+    ctaSecondary: "SIGN IN",
     heroLayout: "image-right",
     heroImageSrc:
       "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80",
@@ -692,8 +692,8 @@ const featurePages: FeaturePageData[] = [
     headingHighlight: "",
     subtitle:
       "Preview images, videos, and documents directly without downloading. Stay organized and make collaboration effortless.",
-    ctaPrimary: "TRY NOW",
-    ctaSecondary: "LEARN MORE",
+    ctaPrimary: "CONTACT US",
+    ctaSecondary: "SIGN IN",
     heroLayout: "media-preview-badges",
     heroImageAlt: "Media preview options",
     heroBgClass: "bg-[#F3EBE1]",
@@ -966,8 +966,8 @@ const featurePages: FeaturePageData[] = [
     headingHighlight: "",
     subtitle:
       "User management allows administrators to control user accounts, permissions, and access levels from one centralized dashboard.",
-    ctaPrimary: "REQUEST A DEMO",
-    ctaSecondary: "GET STARTED",
+    ctaPrimary: "CONTACT US",
+    ctaSecondary: "SIGN IN",
     heroLayout: "user-management-hero",
     heroImageSrc:
       "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
@@ -1296,8 +1296,8 @@ const featurePages: FeaturePageData[] = [
     headingHighlight: "admin dashboard",
     subtitle:
       "Admins can create channels for teams, add members to collaborate, remove users when needed and monitor conversations to keep communication organized.",
-    ctaPrimary: "GET STARTED",
-    ctaSecondary: "TALK TO SALES",
+    ctaPrimary: "CONTACT US",
+    ctaSecondary: "SIGN IN",
     heroLayout: "user-management-hero", // Using this for central layout + buttons
     sections: [
       {
@@ -1433,8 +1433,8 @@ const featurePages: FeaturePageData[] = [
     headingHighlight: "Admin",
     subtitle:
       "Admin can create channels, assign members to specific channels, and structure teams effectively for better collaboration and organized work.",
-    ctaPrimary: "GET STARTED",
-    ctaSecondary: "TALK TO SALES",
+    ctaPrimary: "CONTACT US",
+    ctaSecondary: "SIGN IN",
     heroLayout: "user-management-hero",
     heroBgClass: "bg-[#F3EDE4]",
     sections: [
@@ -1561,8 +1561,8 @@ const featurePages: FeaturePageData[] = [
     headingHighlight: "Organization",
     subtitle:
       "The owner can create an organization and manage channels, structured teams, and members. Keep everything of your Dialer Team App organized in one place.",
-    ctaPrimary: "GET STARTED",
-    ctaSecondary: "TALK TO SALES",
+    ctaPrimary: "CONTACT US",
+    ctaSecondary: "SIGN IN",
     heroLayout: "user-management-hero",
     heroBgClass: "bg-[#F3EDE4]",
     sections: [
@@ -1689,8 +1689,8 @@ const featurePages: FeaturePageData[] = [
     headingHighlight: "mobile-responsive design.",
     subtitle:
       "Access your full workspace from any device. The responsive interface adapts perfectly to phones, tablets, and desktops.",
-    ctaPrimary: "Get Started",
-    ctaSecondary: "Learn More",
+    ctaPrimary: "Contact Us",
+    ctaSecondary: "Sign In",
     sections: [
       {
         layout: "image-left",
@@ -1982,8 +1982,8 @@ const featurePages: FeaturePageData[] = [
     headingHighlight: "comprehensive audit logs.",
     subtitle:
       "Monitor every action in your workspace with detailed audit logs for compliance, security, and operational visibility.",
-    ctaPrimary: "Get Started",
-    ctaSecondary: "Learn More",
+    ctaPrimary: "Contact Us",
+    ctaSecondary: "Sign In",
     sections: [
       {
         layout: "image-left",

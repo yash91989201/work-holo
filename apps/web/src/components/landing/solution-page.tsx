@@ -155,7 +155,7 @@ export function SolutionPage({
                   className="rounded-md bg-[#7C5CFF] px-7 font-semibold text-sm text-white uppercase tracking-wide hover:bg-[#6B4CE6]"
                   size="lg"
                 >
-                  <Link to="/">{heroCtas.primary}</Link>
+                  <Link to={heroCtas.primary.toUpperCase().includes("CONTACT") ? "/contact" : heroCtas.primary.toUpperCase().includes("GET STARTED") ? "/contact" : "/"}>{heroCtas.primary}</Link>
                 </Button>
                 {heroCtas.secondary && (
                   <Button
@@ -164,7 +164,7 @@ export function SolutionPage({
                     size="lg"
                     variant="outline"
                   >
-                    <Link to="/">{heroCtas.secondary}</Link>
+                    <Link to={heroCtas.secondary.toUpperCase().includes("SIGN IN") ? "/login" : "/"}>{heroCtas.secondary}</Link>
                   </Button>
                 )}
               </div>
@@ -333,7 +333,7 @@ export function SolutionPage({
                 className="rounded-md bg-white px-8 font-semibold text-[#7C5CFF] text-sm uppercase tracking-wide hover:bg-white/90"
                 size="lg"
               >
-                <Link to="/">{ctaPrimary}</Link>
+                <Link to={ctaPrimary.toUpperCase().includes("CONTACT") ? "/contact" : "/login"}>{ctaPrimary}</Link>
               </Button>
               {ctaSecondary && (
                 <Button
@@ -342,7 +342,7 @@ export function SolutionPage({
                   size="lg"
                   variant="outline"
                 >
-                  <Link to="/">{ctaSecondary}</Link>
+                  <Link to={ctaSecondary.toUpperCase().includes("SIGN IN") ? "/login" : "/contact"}>{ctaSecondary}</Link>
                 </Button>
               )}
             </div>

@@ -4,7 +4,7 @@ import { Separator } from "@/components/ui/separator";
 
 const footerLinks = {
   Product: [
-    { label: "Watch demo", href: "/product/demo" },
+    { label: "Contact Us", href: "/contact" },
     { label: "Pricing", href: "/pricing" },
     { label: "Paid vs Free", href: "/paid-vs-free" },
     { label: "Change log", href: "/changelog" },
@@ -40,7 +40,7 @@ const bottomLinks = [
   { label: "Your privacy choices", href: "/" },
   { label: "Cookie preferences", href: "/" },
   { label: "About", href: "/about" },
-  { label: "Contact us", href: "/" },
+  { label: "Contact us", href: "/contact" },
 ];
 
 export function Footer() {

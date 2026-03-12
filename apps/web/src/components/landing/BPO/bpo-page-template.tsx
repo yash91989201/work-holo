@@ -56,17 +56,19 @@ function HeroSection({ data }: { data: BpoPageData }) {
           {/* CTA buttons */}
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <Button
+              asChild
               className="h-16 rounded-md bg-[#7C5CFF] px-7 font-semibold text-md uppercase tracking-wide hover:bg-[#6a4de6]"
               size="lg"
             >
-              Request a Demo
+              <Link to="/contact">Contact Us</Link>
             </Button>
             <Button
+              asChild
               className="h-16 rounded-md px-7 font-semibold text-md uppercase tracking-wide"
               size="lg"
               variant="outline"
             >
-              Contact Sales
+              <Link to="/login">Sign In</Link>
             </Button>
           </div>
         </div>
@@ -208,9 +210,9 @@ function ContentSection({ data }: { data: BpoPageData }) {
             </p>
             <Link
               className="mt-2 inline-flex items-center gap-1.5 font-medium text-foreground text-md transition-colors hover:text-[#7C5CFF]"
-              to="/"
+              to="/contact"
             >
-              Talk to an Expert
+              Contact Us
               <svg
                 fill="none"
                 height="16"

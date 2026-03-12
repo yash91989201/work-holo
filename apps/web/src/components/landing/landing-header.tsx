@@ -15,7 +15,6 @@ const navItems: NavItem[] = [
   { label: "Solutions", href: "/", hasDropdown: true },
   { label: "BPO Services", href: "/", hasDropdown: true },
   { label: "Pricing", href: "/pricing" },
-  { label: "Resources", href: "/", hasDropdown: true },
 ];
 
 interface BpoCategory {
@@ -359,17 +358,19 @@ export function LandingHeader() {
           {/* Desktop CTA buttons */}
           <div className="hidden items-center gap-3 lg:flex">
             <Button
+              asChild
               className="rounded-md px-5 font-semibold text-sm uppercase tracking-wide"
               size="default"
               variant="outline"
             >
-              Request a Demo
+              <Link to="/login">Get Started</Link>
             </Button>
             <Button
-              className="rounded-md bg-[#7C5CFF] px-5 font-semibold text-sm uppercase tracking-wide"
+              asChild
+              className="rounded-md bg-[#7C5CFF] px-5 font-semibold text-sm uppercase tracking-wide hover:bg-[#7C5CFF]/90"
               size="default"
             >
-              Get Started
+              <Link to="/contact">Contact Us</Link>
             </Button>
           </div>
 
@@ -1085,13 +1086,17 @@ export function LandingHeader() {
             )}
             <div className="mt-2 flex flex-col gap-2.5 border-border border-t pt-4">
               <Button
+                asChild
                 className="w-full rounded-full font-semibold text-sm uppercase tracking-wide"
                 variant="outline"
               >
-                Request a Demo
+                <Link to="/login">Get Started</Link>
               </Button>
-              <Button className="w-full rounded-full font-semibold text-sm uppercase tracking-wide">
-                Get Started
+              <Button
+                asChild
+                className="w-full rounded-full bg-[#7C5CFF] font-semibold text-sm uppercase tracking-wide hover:bg-[#7C5CFF]/90"
+              >
+                <Link to="/contact">Contact Us</Link>
               </Button>
             </div>
           </div>

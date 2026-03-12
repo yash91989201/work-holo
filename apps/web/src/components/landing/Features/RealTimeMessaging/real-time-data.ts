@@ -147,7 +147,7 @@ export const REAL_TIME_PAGE_DATA = {
     heading: "Experience real-time messaging.",
     description:
       "Connect with your team instantly and get more done together with fast, reliable chat.",
-    primaryButtonText: "Get Started",
-    secondaryButtonText: "Talk to Sales",
+    primaryButtonText: "Contact Us",
+    secondaryButtonText: "Sign In",
   },
 };

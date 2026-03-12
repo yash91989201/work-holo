@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
+import { Link } from "@tanstack/react-router";
 import { UserChatMockup } from "../UserManagement/user-management-mockups";
 
 interface FeatureHeroProps {
@@ -123,17 +124,19 @@ export function FeatureHero({
 
                   <div className="flex items-center gap-4">
                     <Button
+                      asChild
                       className="h-12 rounded-sm bg-[#7C5CFF] px-8 font-bold text-white text-xs uppercase tracking-wider hover:bg-[#6a4de6]"
                       size="lg"
                     >
-                      {ctaPrimary}
+                      <Link to={ctaPrimary.toUpperCase().includes("CONTACT") ? "/contact" : "/contact"}>{ctaPrimary}</Link>
                     </Button>
                     <Button
+                      asChild
                       className="h-12 rounded-sm border-2 border-[#7C5CFF] bg-transparent px-8 font-bold text-[#7C5CFF] text-xs uppercase tracking-wider hover:bg-[#7C5CFF]/5"
                       size="lg"
                       variant="outline"
                     >
-                      {ctaSecondary}
+                      <Link to={ctaSecondary.toUpperCase().includes("SIGN IN") ? "/login" : "/login"}>{ctaSecondary}</Link>
                     </Button>
                   </div>
                 </div>
@@ -142,17 +145,19 @@ export function FeatureHero({
               {layout !== "user-management-hero" && (
                 <div className="mt-9 flex items-center gap-4">
                   <Button
+                    asChild
                     className="h-12 rounded-md bg-[#7C5CFF] px-8 font-semibold text-sm text-white uppercase tracking-wide hover:bg-[#6a4de6]"
                     size="lg"
                   >
-                    {ctaPrimary}
+                    <Link to={ctaPrimary.toUpperCase().includes("CONTACT") ? "/contact" : "/contact"}>{ctaPrimary}</Link>
                   </Button>
                   <Button
+                    asChild
                     className="h-12 rounded-md border-[#7C5CFF] px-8 font-semibold text-[#7C5CFF] text-sm uppercase tracking-wide hover:bg-[#7C5CFF]/5"
                     size="lg"
                     variant="outline"
                   >
-                    {ctaSecondary}
+                    <Link to={ctaSecondary.toUpperCase().includes("SIGN IN") ? "/login" : "/login"}>{ctaSecondary}</Link>
                   </Button>
                 </div>
               )}
@@ -411,17 +416,19 @@ export function FeatureHero({
         {/* CTA Buttons */}
         <div className="mt-9 flex flex-col items-center justify-center gap-4 sm:flex-row">
           <Button
+            asChild
             className="h-12 rounded-md bg-[#7C5CFF] px-8 font-semibold text-sm text-white uppercase tracking-wide hover:bg-[#6a4de6]"
             size="lg"
           >
-            {ctaPrimary}
+            <Link to={ctaPrimary.toUpperCase().includes("CONTACT") ? "/contact" : "/contact"}>{ctaPrimary}</Link>
           </Button>
           <Button
+            asChild
             className="h-12 rounded-md border-[#7C5CFF] px-8 font-semibold text-[#7C5CFF] text-sm uppercase tracking-wide hover:bg-[#7C5CFF]/5"
             size="lg"
             variant="outline"
           >
-            {ctaSecondary}
+            <Link to={ctaSecondary.toUpperCase().includes("SIGN IN") ? "/login" : "/login"}>{ctaSecondary}</Link>
           </Button>
         </div>
       </div>

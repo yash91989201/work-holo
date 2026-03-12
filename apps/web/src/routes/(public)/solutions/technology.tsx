@@ -179,8 +179,8 @@ function RouteComponent() {
   return (
     <SolutionPage
       ctaHeadline="Ready to scale your communications?"
-      ctaPrimary="GET STARTED"
-      ctaSecondary="BOOK A DEMO"
+      ctaPrimary="CONTACT US"
+      ctaSecondary="SIGN IN"
       eyebrow="INTELLIGENT CALLING"
       faqs={[
         {

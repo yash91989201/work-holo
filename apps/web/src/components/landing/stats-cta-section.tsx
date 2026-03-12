@@ -71,7 +71,6 @@ export function StatsCtaSection() {
                 }`}
                 key={company.name}
               >
-                {/* Placeholder image area */}
                 <div
                   className={`flex w-full items-end justify-center bg-gradient-to-br from-black/20 to-black/40 ${
                     company.tall
@@ -84,8 +83,6 @@ export function StatsCtaSection() {
                       {company.name}
                     </span>
                   </div>
-
-                  {/* Description overlay for the first card */}
                   {company.description && (
                     <div className="relative z-10 w-full p-4">
                       <p className="text-sm text-white leading-snug">
@@ -118,7 +115,6 @@ export function StatsCtaSection() {
             <h2 className="mx-auto max-w-3xl text-center font-bold text-3xl text-white tracking-tight sm:text-4xl lg:text-5xl lg:leading-[1.15]">
               Built for productivity and <span className="block">scale.</span>
             </h2>
-
             <div className="mt-16 flex flex-col items-center justify-center gap-10 sm:flex-row sm:gap-16 lg:gap-20">
               {stats.map((stat, i) => (
                 <div
@@ -156,14 +152,14 @@ export function StatsCtaSection() {
                 className="h-12 rounded-md border-2 border-white bg-transparent px-8 font-semibold text-sm text-white uppercase tracking-wide hover:bg-white/10"
                 size="lg"
               >
-                <Link to="/">GET STARTED</Link>
+                <Link to="/contact">CONTACT US</Link>
               </Button>
               <Button
                 asChild
                 className="h-12 rounded-md bg-white px-8 font-semibold text-[#7C5CFF] text-sm uppercase tracking-wide hover:bg-white/90"
                 size="lg"
               >
-                <Link to="/">REQUEST A DEMO</Link>
+                <Link to="/login">SIGN IN</Link>
               </Button>
             </div>
           </div>

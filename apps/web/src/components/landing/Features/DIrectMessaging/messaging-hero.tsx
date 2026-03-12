@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Link } from "@tanstack/react-router";
 
 /**
  * MessagingHero
@@ -23,7 +24,7 @@ export function MessagingHero() {
             </p>
             <div className="mt-10 flex items-center gap-4">
               <Button className="h-14 rounded bg-[#611f69] px-8 font-bold text-sm text-white uppercase tracking-[0.1em] hover:bg-[#4a154b]">
-                Get Started
+                <Link to="/contact">Contact Us</Link>
               </Button>
               <Button
                 className="h-14 px-4 font-bold text-[#611f69] text-sm uppercase tracking-[0.1em] hover:bg-transparent hover:text-[#4a154b]"

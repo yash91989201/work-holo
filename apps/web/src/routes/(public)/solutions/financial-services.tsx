@@ -191,7 +191,7 @@ function RouteComponent() {
   return (
     <SolutionPage
       ctaHeadline="Secure your financial communications today"
-      ctaPrimary="GET STARTED"
+      ctaPrimary="CONTACT US"
       eyebrow="FINANCIAL SECURITY & COMPLIANCE"
       faqs={[
         {
@@ -243,7 +243,7 @@ function RouteComponent() {
           visual: <FeatureVisual3 />,
         },
       ]}
-      heroCtas={{ primary: "GET STARTED", secondary: "TALK TO SALES" }}
+      heroCtas={{ primary: "CONTACT US", secondary: "SIGN IN" }}
       heroHeadline="Secure financial communication for your institution."
       heroSubhead="Protect your assets and maintain full compliance with our advanced call recording and verification systems."
       heroVisual={<HeroVisual />}

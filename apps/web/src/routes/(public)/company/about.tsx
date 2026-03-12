@@ -106,7 +106,7 @@ function AboutPage() {
                   className="rounded-md bg-[#7C5CFF] px-7 font-semibold text-sm text-white uppercase tracking-wide hover:bg-[#6B4CE6]"
                   size="lg"
                 >
-                  <Link to="/">GET STARTED</Link>
+                  <Link to="/contact">CONTACT US</Link>
                 </Button>
               </div>
             </div>
@@ -415,7 +415,7 @@ function AboutPage() {
               className="rounded-md bg-white px-8 font-semibold text-[#7C5CFF] text-sm uppercase tracking-wide hover:bg-white/90"
               size="lg"
             >
-              <Link to="/">START FREE TRIAL</Link>
+              <Link to="/contact">CONTACT US</Link>
             </Button>
             <Button
               asChild

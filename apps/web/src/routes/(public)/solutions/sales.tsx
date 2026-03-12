@@ -178,8 +178,7 @@ function FeatureVisual3() {
 function RouteComponent() {
   return (
     <SolutionPage
-      ctaHeadline="Close more deals with the world's most powerful dialer"
-      ctaPrimary="GET STARTED FOR FREE"
+      ctaPrimary="CONTACT US"
       ctaSecondary=""
       eyebrow="SALES ACCELERATION PLATFORM"
       faqs={[

@@ -263,8 +263,8 @@ function RouteComponent() {
       cardsHeadline="Retail Communication at a glance"
       cardsSubhead="Quickly resolve customer issues and manage store operations in one place. Reduce response times and boost retail efficiency with our specialized dialer tools."
       ctaHeadline="Enhance retail efficiency with our dialer"
-      ctaPrimary="START FREE TRIAL"
-      ctaSecondary="TALK TO RETAIL EXPERT"
+      ctaPrimary="CONTACT US"
+      ctaSecondary="SIGN IN"
       eyebrow="RETAIL SOLUTIONS"
       faqs={[
         {
@@ -317,7 +317,7 @@ function RouteComponent() {
           visual: <FeatureVisual3 />,
         },
       ]}
-      heroCtas={{ primary: "GET STARTED", secondary: "VIEW DEMO" }}
+      heroCtas={{ primary: "CONTACT US", secondary: "SIGN IN" }}
       heroHeadline="Streamline Your Retail Operations Instantly"
       heroSubhead="Manage customer orders, store inquiries, and delivery updates with ease. Enhance your customer experience with our integrated dialer."
       heroVisual={<HeroVisual />}

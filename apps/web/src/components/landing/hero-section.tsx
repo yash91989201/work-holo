@@ -72,10 +72,10 @@ export function HeroSection() {
           <div className="mt-9 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Button
               asChild
-              className="h-15 rounded-md bg-[#7C5CFF] px-8 font-semibold text-md text-white uppercase tracking-wide hover:bg-[#7C5CFF] hover:text-white"
+              className="h-15 rounded-md bg-[#7C5CFF] px-8 font-semibold text-md text-white uppercase tracking-wide hover:bg-[#7C5CFF]/90 hover:text-white"
               size="lg"
             >
-              <Link to="/">Get Started</Link>
+              <Link to="/contact">Contact Us</Link>
             </Button>
             <Button
               asChild

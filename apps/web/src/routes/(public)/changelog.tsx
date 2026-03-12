@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import {
   ChangelogContinuousInnovation,
   ChangelogHeroPillsMockup,
@@ -137,12 +137,12 @@ function ChangelogPage() {
               Stay Ahead with the Latest Updates
             </h2>
             <div className="mt-10 flex items-center justify-center gap-x-6">
-              <a
+              <Link
                 className="rounded-md bg-white px-8 py-3.5 font-bold text-[#7C5CFF] text-sm uppercase tracking-wider shadow-sm transition hover:bg-gray-100"
-                href="#"
+                to="/contact"
               >
-                GET STARTED
-              </a>
+                CONTACT US
+              </Link>
               <a
                 className="rounded-md bg-transparent px-8 py-3.5 font-bold text-sm text-white uppercase tracking-wider ring-1 ring-white/50 ring-inset transition hover:bg-white/10"
                 href="#"

@@ -235,7 +235,7 @@ function RouteComponent() {
           visual: <FeatureVisual3 />,
         },
       ]}
-      heroCtas={{ primary: "Get Started", secondary: "Talk to Sales" }}
+      heroCtas={{ primary: "CONTACT US", secondary: "SIGN IN" }}
       heroHeadline="Elevate patient care with seamless communication"
       heroSubhead="Streamline appointment confirmations, patient support, and reminder calls with our intelligent dialer platform."
       heroVisual={<HeroVisual />}

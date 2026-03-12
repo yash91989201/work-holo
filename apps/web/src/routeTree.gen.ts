@@ -16,6 +16,7 @@ import { Route as publicStatusRouteImport } from './routes/(public)/status'
 import { Route as publicPricingRouteImport } from './routes/(public)/pricing'
 import { Route as publicPaidVsFreeRouteImport } from './routes/(public)/paid-vs-free'
 import { Route as publicHomePageRouteImport } from './routes/(public)/home-page'
+import { Route as publicContactRouteImport } from './routes/(public)/contact'
 import { Route as publicChangelogRouteImport } from './routes/(public)/changelog'
 import { Route as publicAboutRouteImport } from './routes/(public)/about'
 import { Route as authSignupRouteImport } from './routes/(auth)/signup'
@@ -102,6 +103,11 @@ const publicPaidVsFreeRoute = publicPaidVsFreeRouteImport.update({
 const publicHomePageRoute = publicHomePageRouteImport.update({
   id: '/home-page',
   path: '/home-page',
+  getParentRoute: () => publicRouteRoute,
+} as any)
+const publicContactRoute = publicContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => publicRouteRoute,
 } as any)
 const publicChangelogRoute = publicChangelogRouteImport.update({
@@ -425,6 +431,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof authSignupRoute
   '/about': typeof publicAboutRoute
   '/changelog': typeof publicChangelogRoute
+  '/contact': typeof publicContactRoute
   '/home-page': typeof publicHomePageRoute
   '/paid-vs-free': typeof publicPaidVsFreeRoute
   '/pricing': typeof publicPricingRoute
@@ -486,6 +493,7 @@ export interface FileRoutesByTo {
   '/signup': typeof authSignupRoute
   '/about': typeof publicAboutRoute
   '/changelog': typeof publicChangelogRoute
+  '/contact': typeof publicContactRoute
   '/home-page': typeof publicHomePageRoute
   '/paid-vs-free': typeof publicPaidVsFreeRoute
   '/pricing': typeof publicPricingRoute
@@ -545,6 +553,7 @@ export interface FileRoutesById {
   '/(auth)/signup': typeof authSignupRoute
   '/(public)/about': typeof publicAboutRoute
   '/(public)/changelog': typeof publicChangelogRoute
+  '/(public)/contact': typeof publicContactRoute
   '/(public)/home-page': typeof publicHomePageRoute
   '/(public)/paid-vs-free': typeof publicPaidVsFreeRoute
   '/(public)/pricing': typeof publicPricingRoute
@@ -608,6 +617,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/about'
     | '/changelog'
+    | '/contact'
     | '/home-page'
     | '/paid-vs-free'
     | '/pricing'
@@ -669,6 +679,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/about'
     | '/changelog'
+    | '/contact'
     | '/home-page'
     | '/paid-vs-free'
     | '/pricing'
@@ -727,6 +738,7 @@ export interface FileRouteTypes {
     | '/(auth)/signup'
     | '/(public)/about'
     | '/(public)/changelog'
+    | '/(public)/contact'
     | '/(public)/home-page'
     | '/(public)/paid-vs-free'
     | '/(public)/pricing'
@@ -840,6 +852,13 @@ declare module '@tanstack/react-router' {
       path: '/home-page'
       fullPath: '/home-page'
       preLoaderRoute: typeof publicHomePageRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/contact': {
+      id: '/(public)/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof publicContactRouteImport
       parentRoute: typeof publicRouteRoute
     }
     '/(public)/changelog': {
@@ -1417,6 +1436,7 @@ const authenticatedRouteRouteWithChildren =
 interface publicRouteRouteChildren {
   publicAboutRoute: typeof publicAboutRoute
   publicChangelogRoute: typeof publicChangelogRoute
+  publicContactRoute: typeof publicContactRoute
   publicHomePageRoute: typeof publicHomePageRoute
   publicPaidVsFreeRoute: typeof publicPaidVsFreeRoute
   publicPricingRoute: typeof publicPricingRoute
@@ -1446,6 +1466,7 @@ interface publicRouteRouteChildren {
 const publicRouteRouteChildren: publicRouteRouteChildren = {
   publicAboutRoute: publicAboutRoute,
   publicChangelogRoute: publicChangelogRoute,
+  publicContactRoute: publicContactRoute,
   publicHomePageRoute: publicHomePageRoute,
   publicPaidVsFreeRoute: publicPaidVsFreeRoute,
   publicPricingRoute: publicPricingRoute,

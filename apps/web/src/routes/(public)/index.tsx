@@ -29,11 +29,11 @@ function HeroSection() {
         </p>
         <div className="mt-10 flex items-center justify-center gap-4">
           <Link
-            aria-label="Get started"
+            aria-label="Contact Us"
             className="inline-flex items-center rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground text-sm shadow hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            to="/"
+            to="/contact"
           >
-            Get started
+            Contact Us
           </Link>
           <a
             className="inline-flex items-center rounded-md border border-border px-4 py-2 font-medium text-sm hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -130,7 +130,7 @@ function CTASection() {
     <section aria-labelledby="cta-title" className="px-6 py-12 lg:px-8">
       <div className="mx-auto max-w-4xl rounded-lg border p-6 text-center">
         <h2 className="font-semibold text-2xl" id="cta-title">
-          Ready to get started?
+          Ready to Contact Us?
         </h2>
         <p className="mt-2 text-muted-foreground text-sm">
           Spin up a Docker container and be live in minutes. Add your brand and

@@ -228,7 +228,7 @@ function RouteComponent() {
       ]}
       featureSections={[
         {
-          headline: "Get started in minutes, not days.",
+          headline: "Connect in minutes, not days.",
           body: "We've removed the complexity of business communication. Pick a number, set your greeting, and start receiving calls instantly.",
           textSide: "left",
           gray: false,
@@ -249,7 +249,7 @@ function RouteComponent() {
           visual: <FeatureVisual3 />,
         },
       ]}
-      heroCtas={{ primary: "START FREE TRIAL", secondary: "VIEW PRICING" }}
+      heroCtas={{ primary: "CONTACT US", secondary: "SIGN IN" }}
       heroHeadline="Professional communication for small businesses."
       heroSubhead="BizConnect provides simple, powerful, and affordable communication tools designed specifically for growing teams. No complex setup, just results."
       heroVisual={<HeroVisual />}
