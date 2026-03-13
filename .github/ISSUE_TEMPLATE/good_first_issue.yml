@@ -1,0 +1,87 @@
+name: Good First Issue
+description: Suggest a task that is suitable for newcomers to the project
+title: "[Good First Issue]: "
+labels: ["good first issue"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to propose a well-scoped, beginner-friendly task to help newcomers get started contributing to work-holo.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Task Description
+      description: Describe the task clearly and concisely. What needs to be done?
+      placeholder: This task involves...
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Background / Context
+      description: Provide background information that will help a newcomer understand the task and where to start.
+      placeholder: |
+        The relevant code lives in...
+        This relates to...
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: What does "done" look like for this task?
+      placeholder: |
+        - [ ] ...
+        - [ ] ...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which part of the codebase does this task touch?
+      options:
+        - Frontend (Web)
+        - Backend (Server / API)
+        - Database / Schema
+        - Authentication
+        - Real-time / Sync
+        - Mobile (React Native / Expo)
+        - Desktop (Tauri)
+        - Documentation
+        - Testing
+        - Configuration / Tooling
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: effort
+    attributes:
+      label: Estimated Effort
+      description: How much time do you think this task will take for a newcomer?
+      options:
+        - Small (< 1 hour)
+        - Medium (1–4 hours)
+        - Large (half day or more)
+    validations:
+      required: true
+
+  - type: textarea
+    id: hints
+    attributes:
+      label: Hints / Resources
+      description: Any tips, relevant files, documentation links, or resources that will help a contributor get started.
+      placeholder: |
+        - Start by looking at `packages/api/src/routers/...`
+        - See also: https://...
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Add any other context here.
