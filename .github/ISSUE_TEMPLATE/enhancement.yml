@@ -1,0 +1,92 @@
+name: Enhancement
+description: Suggest an improvement to an existing feature in work-holo
+title: "[Enhancement]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to propose improvements or refinements to **existing** features in work-holo. For brand-new features, please use the [Feature Request](?template=feature_request.yml) template instead.
+
+  - type: textarea
+    id: current_behavior
+    attributes:
+      label: Current Behavior
+      description: Describe how the existing feature currently works.
+      placeholder: Currently, when I do X, the application does Y...
+    validations:
+      required: true
+
+  - type: textarea
+    id: desired_behavior
+    attributes:
+      label: Desired / Improved Behavior
+      description: Describe how you would like the feature to behave after the enhancement.
+      placeholder: Instead, it should do Z...
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: Why is this improvement valuable? What problem does it solve or what experience does it improve?
+      placeholder: This would improve the workflow by...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected Area
+      description: Which part of the application would this enhancement affect?
+      options:
+        - Authentication / Passkeys
+        - Channels / Messaging
+        - Direct Messages (DMs)
+        - Attendance
+        - Admin Dashboard
+        - User Settings
+        - Real-time / Sync
+        - File Storage / Uploads
+        - Navigation / Routing
+        - Keyboard Shortcuts
+        - Performance
+        - Accessibility
+        - Desktop App (Tauri)
+        - Mobile App (React Native / Expo)
+        - API / Backend
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How important is this enhancement to you?
+      options:
+        - Nice to have
+        - Important
+        - Critical for my workflow
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Have you considered any workarounds or alternative approaches?
+      placeholder: I also considered...
+
+  - type: textarea
+    id: mockups
+    attributes:
+      label: Screenshots / Mockups
+      description: If applicable, add screenshots, mockups, or links to similar implementations. You can drag and drop images here.
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Add any other context or information about the enhancement here.
