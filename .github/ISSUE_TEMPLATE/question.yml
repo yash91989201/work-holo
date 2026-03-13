@@ -1,0 +1,50 @@
+name: ❓ Question
+description: Ask a question about the project
+title: "[Question]: "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have a question? We're happy to help! Please provide as much detail as possible so we can give you a useful answer.
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: What would you like to know?
+      placeholder: Ask your question here...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Related Area
+      description: Which area of the project does your question relate to?
+      multiple: true
+      options:
+        - Setup / Installation
+        - Web App (apps/web)
+        - Server / API (apps/server)
+        - Native App (apps/native)
+        - Desktop App (Tauri)
+        - Database / Drizzle ORM
+        - Authentication (Better-Auth)
+        - Real-time (ElectricSQL / Pusher)
+        - Deployment
+        - General
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Add any context that might help us answer your question.
+      placeholder: |
+        - What are you trying to achieve?
+        - What have you already tried?
+        - Any relevant error messages or logs?
+    validations:
+      required: false

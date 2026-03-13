@@ -1,0 +1,59 @@
+name: 📚 Documentation
+description: Report missing, incorrect, or unclear documentation
+title: "[Docs]: "
+labels: ["documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Help us improve the documentation! Let us know what's missing, incorrect, or could be clearer.
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Documentation Issue Type
+      description: What kind of documentation issue is this?
+      options:
+        - Missing documentation
+        - Incorrect / outdated documentation
+        - Unclear or confusing documentation
+        - Typo or formatting issue
+        - New documentation request
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe the documentation issue or improvement.
+      placeholder: Describe what needs to be changed or added...
+    validations:
+      required: true
+
+  - type: textarea
+    id: location
+    attributes:
+      label: Location
+      description: Where is the documentation that needs updating? Provide a link or file path if possible.
+      placeholder: "e.g., README.md, apps/docs/..., or a URL"
+    validations:
+      required: false
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested Improvement
+      description: How would you improve the documentation?
+      placeholder: Describe the improvement or provide suggested text...
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Any other context about the documentation issue.
+      placeholder: Add any additional context here...
+    validations:
+      required: false
