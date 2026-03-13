@@ -6,6 +6,7 @@ export interface RedisConfig {
 
 let client: RedisClient | null = null;
 let connectPromise: Promise<RedisClient> | null = null;
+let lastConfig: RedisConfig | null = null;
 
 function createClient(url: string): RedisClient {
   const c = new RedisClient(url);
@@ -26,8 +27,10 @@ function createClient(url: string): RedisClient {
 // biome-ignore lint/complexity/noStaticOnlyClass: Singleton pattern with encapsulated state
 export class Redis {
   static async connect(config: RedisConfig): Promise<RedisClient> {
+    lastConfig = config;
+
     if (client?.connected) return client;
-    if (connectPromise) return connectPromise;
+    if (connectPromise) return await connectPromise;
 
     connectPromise = (async () => {
       const c = createClient(config.url);
@@ -43,7 +46,7 @@ export class Redis {
       }
     })();
 
-    return connectPromise;
+    return await connectPromise;
   }
 
   static async getClient(): Promise<RedisClient> {
@@ -52,7 +55,11 @@ export class Redis {
     }
 
     if (connectPromise) {
-      return connectPromise;
+      return await connectPromise;
+    }
+
+    if (lastConfig) {
+      return await Redis.connect(lastConfig);
     }
 
     throw new Error("Redis client not connected. Call Redis.connect() first.");
@@ -69,6 +76,7 @@ export class Redis {
   static reset(): void {
     client = null;
     connectPromise = null;
+    lastConfig = null;
   }
 
   static setClient(c: RedisClient): void {
