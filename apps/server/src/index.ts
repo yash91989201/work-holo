@@ -27,6 +27,8 @@ console.log("✅ OpenSearch connected");
 
 const isProduction = env.ENV === "production";
 
+const isProduction = env.ENV === "production";
+
 PusherClient.connect({
   appId: env.PUSHER_APP_ID,
   key: env.PUSHER_APP_KEY,
