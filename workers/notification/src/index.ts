@@ -291,14 +291,15 @@ async function startWorker() {
   console.log("===========================================\n");
 
   const worker = new QueueWorker();
+  const isProduction = env.ENV === "production";
 
   PusherClient.connect({
     appId: env.PUSHER_APP_ID,
     host: env.PUSHER_HOST,
     key: env.PUSHER_APP_KEY,
-    port: env.PUSHER_PORT,
+    port: isProduction ? undefined : env.PUSHER_PORT,
     secret: env.PUSHER_APP_SECRET,
-    useTLS: env.ENV === "production",
+    useTLS: isProduction,
   });
 
   console.log("Pusher client initialized");

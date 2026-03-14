@@ -25,13 +25,15 @@ await Redis.connect({ url: env.REDIS_URL });
 await OpenSearchClient.connect({ url: env.OPENSEARCH_URL });
 console.log("✅ OpenSearch connected");
 
+const isProduction = env.ENV === "production";
+
 PusherClient.connect({
   appId: env.PUSHER_APP_ID,
   key: env.PUSHER_APP_KEY,
   secret: env.PUSHER_APP_SECRET,
   host: env.PUSHER_HOST,
-  port: env.PUSHER_PORT,
-  useTLS: env.ENV === "production",
+  port: isProduction ? undefined : env.PUSHER_PORT,
+  useTLS: isProduction,
 });
 
 await Queue.connect({ url: env.RABBITMQ_URL });
