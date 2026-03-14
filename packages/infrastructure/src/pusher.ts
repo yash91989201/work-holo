@@ -6,7 +6,7 @@ export interface PusherConfig {
   key: string;
   port?: number;
   secret: string;
-  useTLS?: boolean;
+  useTLS: boolean;
 }
 
 let instance: Pusher | null = null;
@@ -19,8 +19,8 @@ export class PusherClient {
       key: config.key,
       secret: config.secret,
       host: config.host,
-      ...(config.port !== undefined ? { port: String(config.port) } : {}),
-      useTLS: config.useTLS ?? false,
+      port: config.port?.toString(),
+      useTLS: config.useTLS,
     });
     return instance;
   }
