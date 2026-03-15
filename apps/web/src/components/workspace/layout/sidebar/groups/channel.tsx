@@ -2,9 +2,12 @@ import {
   IconAlertCircleFilled,
   IconBroadcast,
   IconHash,
-  IconPlus,
+  IconSearch,
+  IconX,
 } from "@tabler/icons-react";
+import { useDebouncedValue } from "@tanstack/react-pacer";
 import { Link, useParams } from "@tanstack/react-router";
+import { useState } from "react";
 import { CreateChannelForm } from "@/components/modules/communication/channels/create-channel-form";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,6 +16,12 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import {
   SidebarGroup,
   SidebarGroupAction,
@@ -25,15 +34,55 @@ import {
   SidebarMenuSubItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { Spinner } from "@/components/ui/spinner";
 import { useChannelUnreadCounts } from "@/hooks/communications/use-channel-unread-counts";
 import { useUserChannels } from "@/hooks/communications/use-user-channels";
 import { Can } from "@/lib/permission";
 import { cn } from "@/lib/utils";
 
+const ChannelSearchInput = ({
+  query,
+  onQueryChange,
+  isPending,
+}: {
+  query: string;
+  onQueryChange: (val: string) => void;
+  isPending: boolean;
+}) => (
+  <InputGroup>
+    <InputGroupAddon align="inline-start">
+      {isPending ? <Spinner /> : <IconSearch className="size-3.5" />}
+    </InputGroupAddon>
+    <InputGroupInput
+      className="h-7 text-xs"
+      onChange={(e) => onQueryChange(e.target.value)}
+      placeholder="Search channels…"
+      value={query}
+    />
+    {query && (
+      <InputGroupAddon align="inline-end" className="py-0">
+        <InputGroupButton
+          aria-label="Clear search"
+          onClick={() => onQueryChange("")}
+          size="icon-xs"
+        >
+          <IconX className="size-3" />
+        </InputGroupButton>
+      </InputGroupAddon>
+    )}
+  </InputGroup>
+);
+
 const ChannelGroup = () => {
   const { state, isMobile } = useSidebar();
   const { channels } = useUserChannels();
   const { getUnreadCount } = useChannelUnreadCounts();
+
+  const [query, setQuery] = useState("");
+  const [searchVisible, setSearchVisible] = useState(false);
+  const [debouncedQuery] = useDebouncedValue(query, { wait: 300 });
+
+  const isPending = query !== debouncedQuery;
 
   const { slug } = useParams({
     from: "/(authenticated)/org/$slug",
@@ -45,6 +94,14 @@ const ChannelGroup = () => {
   });
 
   const isPopover = state === "collapsed" && !isMobile;
+
+  const filteredChannels = debouncedQuery.trim()
+    ? channels.filter((c) =>
+        c.name.toLowerCase().includes(debouncedQuery.toLowerCase())
+      )
+    : channels;
+
+  const showSearch = channels.length > 2;
 
   if (isPopover) {
     return (
@@ -68,27 +125,34 @@ const ChannelGroup = () => {
                 <div className="flex items-center justify-between gap-3 border-b p-3">
                   <span className="text-balance text-sm">Channels</span>
                   <Can permission={(p) => p.channel.create}>
-                    <CreateChannelForm
-                      trigger={
-                        <Button size="icon-sm" variant="ghost">
-                          <IconPlus />
-                        </Button>
-                      }
-                    />
+                    <CreateChannelForm />
                   </Can>
                 </div>
+                {showSearch && (
+                  <div className="p-3">
+                    <ChannelSearchInput
+                      isPending={isPending}
+                      onQueryChange={setQuery}
+                      query={query}
+                    />
+                  </div>
+                )}
                 <SidebarMenuSub
                   className={cn("mx-0 gap-1.5 border-none p-1.5")}
                 >
-                  {channels.length === 0 ? (
+                  {filteredChannels.length === 0 ? (
                     <SidebarMenuSubItem>
                       <SidebarMenuSubButton className="cursor-default text-muted-foreground [&>svg]:size-3">
                         <IconAlertCircleFilled />
-                        <span>No channels yet</span>
+                        <span>
+                          {debouncedQuery
+                            ? "No channels found"
+                            : "No channels yet"}
+                        </span>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                   ) : (
-                    channels.map((channel) => {
+                    filteredChannels.map((channel) => {
                       const unreadCount = getUnreadCount(channel.id);
                       return (
                         <SidebarMenuSubItem key={channel.id}>
@@ -133,25 +197,60 @@ const ChannelGroup = () => {
 
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Channels</SidebarGroupLabel>
-      <Can permission={(p) => p.channel.create}>
-        <SidebarGroupAction>
-          <CreateChannelForm />
-        </SidebarGroupAction>
-      </Can>
+      <div className="flex items-center">
+        <SidebarGroupLabel className="flex-1">Channels</SidebarGroupLabel>
+        <div className="flex items-center gap-0.75">
+          {showSearch && (
+            <Button
+              aria-label={searchVisible ? "Close search" : "Search channels"}
+              className="size-5 text-muted-foreground hover:text-foreground"
+              onClick={() => {
+                setSearchVisible((v) => {
+                  if (v) setQuery("");
+                  return !v;
+                });
+              }}
+              size="icon-sm"
+              variant="ghost"
+            >
+              {searchVisible ? (
+                <IconX className="size-3.5" />
+              ) : (
+                <IconSearch className="size-3.5" />
+              )}
+            </Button>
+          )}
+          <Can permission={(p) => p.channel.create}>
+            <SidebarGroupAction asChild className="static translate-y-0">
+              <CreateChannelForm />
+            </SidebarGroupAction>
+          </Can>
+        </div>
+      </div>
+      {searchVisible && (
+        <div className="px-2 pb-1.5">
+          <ChannelSearchInput
+            isPending={isPending}
+            onQueryChange={setQuery}
+            query={query}
+          />
+        </div>
+      )}
       <SidebarGroupContent className="space-y-1.5">
-        {channels.length === 0 ? (
+        {filteredChannels.length === 0 ? (
           <SidebarMenuItem>
             <SidebarMenuButton
               className="cursor-default text-muted-foreground"
               disabled
             >
               <IconAlertCircleFilled />
-              <span>No channels yet</span>
+              <span>
+                {debouncedQuery ? "No channels found" : "No channels yet"}
+              </span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         ) : (
-          channels.map((channel) => {
+          filteredChannels.map((channel) => {
             const unreadCount = getUnreadCount(channel.id);
             return (
               <SidebarMenuItem key={channel.id}>
