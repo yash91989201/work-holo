@@ -72,7 +72,7 @@ export const CreateChannelForm = ({ trigger }: CreateChannelFormProps) => {
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
       <DialogTrigger asChild>
         {trigger ?? (
-          <Button asChild size="icon" variant="ghost">
+          <Button size="icon" variant="link">
             <IconPlus />
           </Button>
         )}
