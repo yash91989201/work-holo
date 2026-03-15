@@ -152,12 +152,7 @@ export function DmUserPicker() {
 
   return (
     <>
-      <Button
-        className="absolute top-0.5 right-3"
-        onClick={() => setOpen(true)}
-        size="icon-sm"
-        variant="link"
-      >
+      <Button onClick={() => setOpen(true)} size="icon-sm" variant="link">
         <IconPlus />
       </Button>
 
