@@ -8,7 +8,7 @@ CREATE TYPE "public"."attachmentType" AS ENUM('image', 'document', 'video', 'aud
 CREATE TYPE "public"."channelType" AS ENUM('team', 'group');--> statement-breakpoint
 CREATE TYPE "public"."messageType" AS ENUM('text', 'attachment', 'audio');--> statement-breakpoint
 CREATE TYPE "public"."notificationStatus" AS ENUM('unread', 'read', 'dismissed');--> statement-breakpoint
-CREATE TYPE "public"."notificationType" AS ENUM('channel_message', 'channel_reply', 'channel_reaction', 'channel_mention', 'dm_message', 'dm_reply', 'dm_reaction');--> statement-breakpoint
+CREATE TYPE "public"."notificationType" AS ENUM('channel_message', 'channel_reply', 'channel_direct_reply', 'channel_reaction', 'channel_mention', 'dm_message', 'dm_reply', 'dm_direct_reply', 'dm_reaction');--> statement-breakpoint
 CREATE TABLE "attendance" (
 	"id" varchar(24) PRIMARY KEY NOT NULL,
 	"userId" text NOT NULL,
@@ -418,6 +418,7 @@ CREATE TABLE "message" (
 	"content" text,
 	"type" "messageType" DEFAULT 'text' NOT NULL,
 	"parentMessageId" varchar(24),
+	"replyToMessageId" varchar(24),
 	"threadCount" integer DEFAULT 0 NOT NULL,
 	"isEdited" boolean DEFAULT false NOT NULL,
 	"editedAt" timestamp with time zone,
@@ -493,6 +494,7 @@ CREATE TABLE "dmMessage" (
 	"content" text,
 	"type" "messageType" DEFAULT 'text' NOT NULL,
 	"parentMessageId" varchar(24),
+	"replyToMessageId" varchar(24),
 	"threadCount" integer DEFAULT 0 NOT NULL,
 	"isEdited" boolean DEFAULT false NOT NULL,
 	"editedAt" timestamp with time zone,
@@ -648,6 +650,7 @@ ALTER TABLE "message" ADD CONSTRAINT "message_senderId_user_id_fk" FOREIGN KEY (
 ALTER TABLE "message" ADD CONSTRAINT "message_receiverId_user_id_fk" FOREIGN KEY ("receiverId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "message" ADD CONSTRAINT "message_pinnedBy_user_id_fk" FOREIGN KEY ("pinnedBy") REFERENCES "public"."user"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "message" ADD CONSTRAINT "fk_message_parent" FOREIGN KEY ("parentMessageId") REFERENCES "public"."message"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "message" ADD CONSTRAINT "fk_message_reply_to" FOREIGN KEY ("replyToMessageId","channelId") REFERENCES "public"."message"("id","channelId") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "dmAttachment" ADD CONSTRAINT "dmAttachment_messageId_dmMessage_id_fk" FOREIGN KEY ("messageId") REFERENCES "public"."dmMessage"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "dmAttachment" ADD CONSTRAINT "dmAttachment_uploadedBy_user_id_fk" FOREIGN KEY ("uploadedBy") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "dmConversationMute" ADD CONSTRAINT "dmConversationMute_conversationId_dmConversation_id_fk" FOREIGN KEY ("conversationId") REFERENCES "public"."dmConversation"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -666,6 +669,7 @@ ALTER TABLE "dmMessage" ADD CONSTRAINT "dmMessage_conversationId_dmConversation_
 ALTER TABLE "dmMessage" ADD CONSTRAINT "dmMessage_senderId_user_id_fk" FOREIGN KEY ("senderId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "dmMessage" ADD CONSTRAINT "dmMessage_pinnedBy_user_id_fk" FOREIGN KEY ("pinnedBy") REFERENCES "public"."user"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "dmMessage" ADD CONSTRAINT "fk_dm_message_parent" FOREIGN KEY ("parentMessageId") REFERENCES "public"."dmMessage"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "dmMessage" ADD CONSTRAINT "fk_dm_message_reply_to" FOREIGN KEY ("replyToMessageId","conversationId") REFERENCES "public"."dmMessage"("id","conversationId") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "notificationPreference" ADD CONSTRAINT "notificationPreference_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "notificationPreference" ADD CONSTRAINT "notificationPreference_orgId_organization_id_fk" FOREIGN KEY ("orgId") REFERENCES "public"."organization"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "notificationSoundPreference" ADD CONSTRAINT "notificationSoundPreference_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -730,7 +734,9 @@ CREATE INDEX "idx_message_read_summary_message" ON "messageReadSummary" USING bt
 CREATE INDEX "idx_message_read_summary_last_read" ON "messageReadSummary" USING btree ("lastReadAt");--> statement-breakpoint
 CREATE INDEX "idx_message_read_message_user" ON "messageRead" USING btree ("messageId","userId");--> statement-breakpoint
 CREATE UNIQUE INDEX "unique_message_read_message_user" ON "messageRead" USING btree ("messageId","userId");--> statement-breakpoint
+CREATE UNIQUE INDEX "unique_message_id_channel" ON "message" USING btree ("id","channelId");--> statement-breakpoint
 CREATE INDEX "idx_message_parent_message_id" ON "message" USING btree ("parentMessageId");--> statement-breakpoint
+CREATE INDEX "idx_message_reply_to" ON "message" USING btree ("replyToMessageId");--> statement-breakpoint
 CREATE INDEX "idx_message_is_deleted" ON "message" USING btree ("isDeleted");--> statement-breakpoint
 CREATE INDEX "idx_message_channel_id" ON "message" USING btree ("channelId");--> statement-breakpoint
 CREATE INDEX "idx_message_channel_deleted" ON "message" USING btree ("channelId","isDeleted");--> statement-breakpoint
@@ -753,10 +759,12 @@ CREATE INDEX "idx_dm_message_reaction_user" ON "dmMessageReaction" USING btree (
 CREATE UNIQUE INDEX "unique_dm_message_read" ON "dmMessageRead" USING btree ("messageId","userId");--> statement-breakpoint
 CREATE INDEX "idx_dm_message_read_message" ON "dmMessageRead" USING btree ("messageId");--> statement-breakpoint
 CREATE INDEX "idx_dm_message_read_user" ON "dmMessageRead" USING btree ("userId");--> statement-breakpoint
+CREATE UNIQUE INDEX "unique_dm_message_id_conversation" ON "dmMessage" USING btree ("id","conversationId");--> statement-breakpoint
 CREATE INDEX "idx_dm_message_conversation" ON "dmMessage" USING btree ("conversationId");--> statement-breakpoint
 CREATE INDEX "idx_dm_message_conversation_created_id" ON "dmMessage" USING btree ("conversationId","createdAt","id");--> statement-breakpoint
 CREATE INDEX "idx_dm_message_sender" ON "dmMessage" USING btree ("senderId");--> statement-breakpoint
 CREATE INDEX "idx_dm_message_parent" ON "dmMessage" USING btree ("parentMessageId");--> statement-breakpoint
+CREATE INDEX "idx_dm_message_reply_to" ON "dmMessage" USING btree ("replyToMessageId");--> statement-breakpoint
 CREATE INDEX "idx_dm_message_is_deleted" ON "dmMessage" USING btree ("isDeleted");--> statement-breakpoint
 CREATE UNIQUE INDEX "unique_notification_preference" ON "notificationPreference" USING btree ("userId","orgId","eventType","deliveryChannel","entityType","entityId");--> statement-breakpoint
 CREATE INDEX "idx_notification_preference_user_org" ON "notificationPreference" USING btree ("userId","orgId");--> statement-breakpoint
