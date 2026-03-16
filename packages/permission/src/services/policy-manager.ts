@@ -20,6 +20,8 @@ import type {
   PolicyEffect,
 } from "../lib/types";
 
+type RedisClientProvider = () => Promise<RedisClient>;
+
 // Casbin model configuration (inlined to avoid bundling issues with external files)
 const MODEL_CONFIG = `[request_definition]
 r = sub, dom, obj, act
@@ -91,7 +93,7 @@ type PolicyOverrideRow = {
  */
 export class PolicyManager {
   private readonly db: typeof Db;
-  private readonly redis: RedisClient;
+  private readonly getRedisClient: RedisClientProvider;
 
   /**
    * Lazily initialized Casbin enforcer singleton promise.
@@ -117,9 +119,10 @@ export class PolicyManager {
   /**
    * Creates a policy manager with database and Redis dependencies.
    */
-  constructor(db: typeof Db, redis: RedisClient) {
+  constructor(db: typeof Db, redis: RedisClient | RedisClientProvider) {
     this.db = db;
-    this.redis = redis;
+    this.getRedisClient =
+      typeof redis === "function" ? redis : async () => redis;
   }
 
   /**
@@ -168,8 +171,9 @@ export class PolicyManager {
    * Returns the current org policy version from Redis or local cache.
    */
   async getPolicyVersion(orgId: string): Promise<number> {
+    const redis = await this.getRedisClient();
     const key = `${POLICY_VERSION_PREFIX}${orgId}`;
-    const raw = await this.redis.get(key);
+    const raw = await redis.get(key);
 
     if (raw) {
       const version = Number.parseInt(raw, 10);
@@ -184,8 +188,9 @@ export class PolicyManager {
    * Stores an org policy version in Redis and local cache.
    */
   async setPolicyVersion(orgId: string, version: number): Promise<void> {
+    const redis = await this.getRedisClient();
     const key = `${POLICY_VERSION_PREFIX}${orgId}`;
-    await this.redis.send("SET", [key, String(version)]);
+    await redis.send("SET", [key, String(version)]);
     this.localVersionCache.set(orgId, version);
   }
 
@@ -204,8 +209,9 @@ export class PolicyManager {
     orgId: string,
     ttlMs = 30_000
   ): Promise<boolean> {
+    const redis = await this.getRedisClient();
     const lockKey = `compilation_lock:${orgId}`;
-    const result = await this.redis.send("SET", [
+    const result = await redis.send("SET", [
       lockKey,
       "1",
       "NX",
@@ -219,8 +225,9 @@ export class PolicyManager {
    * Releases the distributed compilation lock for an organization.
    */
   private async releaseCompilationLock(orgId: string): Promise<void> {
+    const redis = await this.getRedisClient();
     const lockKey = `compilation_lock:${orgId}`;
-    await this.redis.send("DEL", [lockKey]);
+    await redis.send("DEL", [lockKey]);
   }
 
   /**
@@ -263,7 +270,12 @@ export class PolicyManager {
         } finally {
           try {
             await this.releaseCompilationLock(orgId);
-          } catch {}
+          } catch (releaseError) {
+            console.error(
+              "[permission-policy-manager] Failed to release compilation lock:",
+              releaseError
+            );
+          }
         }
       }
 
