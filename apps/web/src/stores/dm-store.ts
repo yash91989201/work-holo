@@ -1,9 +1,9 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import type { DmMessageType } from "@work-holo/db/lib/types";
 import { useMemo } from "react";
 import { create } from "zustand";
 import { useDmPresence } from "@/hooks/communications/dm/use-dm-presence";
 import { useAuthedSession } from "@/hooks/use-authed-session";
+import type { DmMessageWithSender } from "@/lib/communications/dm-message";
 import { queryUtils } from "@/utils/orpc";
 
 interface DmParticipant {
@@ -58,7 +58,7 @@ interface ComposerFocusState {
 }
 
 interface ReplyingToMessageState {
-  message: DmMessageType | null;
+  message: DmMessageWithSender | null;
 }
 
 interface DmState {
@@ -89,9 +89,9 @@ interface DmState {
   replyingToMessage: ReplyingToMessageState;
   searchSidebar: SearchSidebarState;
   setMainComposerFocus: (handler: (() => void) | null) => void;
-  setReplyingToMessage: (message: DmMessageType) => void;
+  setReplyingToMessage: (message: DmMessageWithSender) => void;
   setThreadComposerFocus: (handler: (() => void) | null) => void;
-  setThreadReplyingToMessage: (message: DmMessageType) => void;
+  setThreadReplyingToMessage: (message: DmMessageWithSender) => void;
   threadReplyingToMessage: ReplyingToMessageState;
 }
 
@@ -318,13 +318,11 @@ export function useDmReplyState() {
   const clearReplyingToMessage = useDmStore(
     (state) => state.clearReplyingToMessage
   );
-  const highlightMessage = useDmStore((state) => state.highlightMessage);
 
   return {
     replyingToMessage,
     setReplyingToMessage,
     clearReplyingToMessage,
-    highlightMessage,
   };
 }
 

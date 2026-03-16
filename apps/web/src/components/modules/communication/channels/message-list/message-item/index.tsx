@@ -13,12 +13,16 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   attachmentsCollection,
+  channelsCollection,
   messagesCollection,
   usersCollection,
 } from "@/db/collections";
 import { useMessageMutations } from "@/hooks/communications/use-message-mutations";
 import { useAuthedSession } from "@/hooks/use-authed-session";
-import type { MessageWithSender } from "@/lib/communications/message";
+import {
+  buildMessageWithAttachments,
+  type MessageWithSender,
+} from "@/lib/communications/message";
 import { cn, formatMessageTimestamp } from "@/lib/utils";
 import {
   useChannelComposerFocus,
@@ -223,11 +227,21 @@ export function MessageItem({
   };
 
   const handleInlineReply = () => {
+    const channel = channelsCollection.get(message.channelId);
+    if (!channel) {
+      return;
+    }
+
+    const normalizedMessage: MessageWithSender = {
+      ...buildMessageWithAttachments(message, message.sender, channel),
+      attachments: [...(message.attachments ?? [])],
+    };
+
     if (isThreadMessage) {
-      setThreadReplyingToMessage(message as unknown as MessageWithSender);
+      setThreadReplyingToMessage(normalizedMessage);
       focusThreadComposer();
     } else {
-      setReplyingToMessage(message as unknown as MessageWithSender);
+      setReplyingToMessage(normalizedMessage);
       focusMainComposer();
     }
   };

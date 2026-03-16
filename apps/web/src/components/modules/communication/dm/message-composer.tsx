@@ -5,7 +5,6 @@ import { useDmMessageMutations } from "@/hooks/communications/dm/use-dm-message-
 import { useDmTyping } from "@/hooks/communications/dm/use-dm-typing";
 import { useAudioRecorder } from "@/hooks/use-audio-recorder";
 import { useAuthedSession } from "@/hooks/use-authed-session";
-import type { DmMessageWithSender } from "@/lib/communications/dm-message";
 import { cn } from "@/lib/utils";
 import {
   useDmComposerFocus,
@@ -411,11 +410,9 @@ export function DmMessageComposer({
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [replyingToMessage, clearReplyingToMessage]);
 
-  // Store typed as DmMessageType but runtime value includes sender from DmMessageWithSender
-  const replyMessage = replyingToMessage as DmMessageWithSender | null;
   const getReplyPreviewContent = () => {
-    if (!replyMessage?.content) return "📎 Attachment";
-    const plainText = stripHtmlToText(replyMessage.content);
+    if (!replyingToMessage?.content) return "📎 Attachment";
+    const plainText = stripHtmlToText(replyingToMessage.content);
     return truncateText(plainText, REPLY_PREVIEW_TRUNCATE_LENGTH);
   };
 
@@ -444,29 +441,30 @@ export function DmMessageComposer({
               </div>
             )}
 
-            {replyMessage && (
+            {replyingToMessage && (
               <div className="mb-2 flex items-start gap-3 rounded-lg bg-primary/25 px-4 py-3">
                 <div className="mt-0.5 shrink-0 text-primary">
                   <IconArrowBackUp className="h-4 w-4" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    {replyMessage.sender?.image ? (
+                    {replyingToMessage.sender?.image ? (
                       <img
-                        alt={replyMessage.sender.name}
+                        alt={replyingToMessage.sender.name}
                         className="h-5 w-5 rounded-full object-cover"
                         height={20}
-                        src={replyMessage.sender.image}
+                        src={replyingToMessage.sender.image}
                         width={20}
                       />
                     ) : (
                       <div className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 font-medium text-[10px] text-primary">
-                        {replyMessage.sender?.name?.slice(0, 2).toUpperCase() ||
-                          "??"}
+                        {replyingToMessage.sender?.name
+                          ?.slice(0, 2)
+                          .toUpperCase() || "??"}
                       </div>
                     )}
                     <span className="font-semibold text-foreground text-sm">
-                      {replyMessage.sender?.name ?? "Unknown"}
+                      {replyingToMessage.sender?.name ?? "Unknown"}
                     </span>
                   </div>
                   <p className="mt-1 truncate text-muted-foreground text-sm">
