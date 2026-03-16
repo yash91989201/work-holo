@@ -95,7 +95,7 @@ export const dmMessageTable = pgTable(
       foreignColumns: [table.id, table.conversationId],
       name: "fk_dm_message_reply_to",
     }).onDelete("set null"),
-    uniqueIndex("unique_dm_message_id_conversation").on(
+    unique("unique_dm_message_id_conversation").on(
       table.id,
       table.conversationId
     ),

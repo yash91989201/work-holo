@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
   "id": "32ebff5e-a3c7-4fc6-95c3-c8cfce268b21",
-=======
-  "id": "f500cc76-c2f3-41c5-b2b3-f6309498ffa0",
->>>>>>> 59a8e88 (redo the migration due to some ordering issues on unique and fkeys)
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -4227,27 +4223,6 @@
         }
       },
       "indexes": {
-        "unique_message_id_channel": {
-          "name": "unique_message_id_channel",
-          "columns": [
-            {
-              "expression": "id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "channelId",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": true,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
         "idx_message_parent_message_id": {
           "name": "idx_message_parent_message_id",
           "columns": [
@@ -4421,10 +4396,6 @@
           "name": "fk_message_reply_to",
           "tableFrom": "message",
           "tableTo": "message",
-<<<<<<< HEAD
-          "columnsFrom": ["replyToMessageId", "channelId"],
-          "columnsTo": ["id", "channelId"],
-=======
           "columnsFrom": [
             "replyToMessageId",
             "channelId"
@@ -4433,7 +4404,6 @@
             "id",
             "channelId"
           ],
->>>>>>> 59a8e88 (redo the migration due to some ordering issues on unique and fkeys)
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -4443,7 +4413,10 @@
         "unique_message_id_channel": {
           "name": "unique_message_id_channel",
           "nullsNotDistinct": false,
-          "columns": ["id", "channelId"]
+          "columns": [
+            "id",
+            "channelId"
+          ]
         }
       },
       "policies": {},
@@ -5390,27 +5363,6 @@
         }
       },
       "indexes": {
-        "unique_dm_message_id_conversation": {
-          "name": "unique_dm_message_id_conversation",
-          "columns": [
-            {
-              "expression": "id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "conversationId",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": true,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
         "idx_dm_message_conversation": {
           "name": "idx_dm_message_conversation",
           "columns": [
@@ -5571,10 +5523,6 @@
           "name": "fk_dm_message_reply_to",
           "tableFrom": "dmMessage",
           "tableTo": "dmMessage",
-<<<<<<< HEAD
-          "columnsFrom": ["replyToMessageId", "conversationId"],
-          "columnsTo": ["id", "conversationId"],
-=======
           "columnsFrom": [
             "replyToMessageId",
             "conversationId"
@@ -5583,7 +5531,6 @@
             "id",
             "conversationId"
           ],
->>>>>>> 59a8e88 (redo the migration due to some ordering issues on unique and fkeys)
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -5593,7 +5540,10 @@
         "unique_dm_message_id_conversation": {
           "name": "unique_dm_message_id_conversation",
           "nullsNotDistinct": false,
-          "columns": ["id", "conversationId"]
+          "columns": [
+            "id",
+            "conversationId"
+          ]
         }
       },
       "policies": {},

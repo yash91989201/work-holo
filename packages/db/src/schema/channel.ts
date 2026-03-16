@@ -128,7 +128,7 @@ export const messageTable = pgTable(
       foreignColumns: [table.id, table.channelId],
       name: "fk_message_reply_to",
     }).onDelete("set null"),
-    uniqueIndex("unique_message_id_channel").on(table.id, table.channelId),
+    unique("unique_message_id_channel").on(table.id, table.channelId),
     index("idx_message_parent_message_id").on(table.parentMessageId),
     index("idx_message_reply_to").on(table.replyToMessageId),
     index("idx_message_is_deleted").on(table.isDeleted),
