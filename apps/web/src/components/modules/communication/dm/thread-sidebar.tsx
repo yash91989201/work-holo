@@ -173,7 +173,6 @@ export function DmThreadSidebar() {
                       ref={virtualizer.measureElement}
                     >
                       <DmMessageItem
-                        conversationId={conversationId}
                         isThreadMessage
                         message={threadMessages[virtualRow.index]}
                       />
