@@ -736,6 +736,7 @@ CREATE INDEX "idx_message_read_summary_message" ON "messageReadSummary" USING bt
 CREATE INDEX "idx_message_read_summary_last_read" ON "messageReadSummary" USING btree ("lastReadAt");--> statement-breakpoint
 CREATE INDEX "idx_message_read_message_user" ON "messageRead" USING btree ("messageId","userId");--> statement-breakpoint
 CREATE UNIQUE INDEX "unique_message_read_message_user" ON "messageRead" USING btree ("messageId","userId");--> statement-breakpoint
+CREATE UNIQUE INDEX "unique_message_id_channel" ON "message" USING btree ("id","channelId");--> statement-breakpoint
 CREATE INDEX "idx_message_parent_message_id" ON "message" USING btree ("parentMessageId");--> statement-breakpoint
 CREATE INDEX "idx_message_reply_to" ON "message" USING btree ("replyToMessageId");--> statement-breakpoint
 CREATE INDEX "idx_message_is_deleted" ON "message" USING btree ("isDeleted");--> statement-breakpoint
@@ -760,6 +761,7 @@ CREATE INDEX "idx_dm_message_reaction_user" ON "dmMessageReaction" USING btree (
 CREATE UNIQUE INDEX "unique_dm_message_read" ON "dmMessageRead" USING btree ("messageId","userId");--> statement-breakpoint
 CREATE INDEX "idx_dm_message_read_message" ON "dmMessageRead" USING btree ("messageId");--> statement-breakpoint
 CREATE INDEX "idx_dm_message_read_user" ON "dmMessageRead" USING btree ("userId");--> statement-breakpoint
+CREATE UNIQUE INDEX "unique_dm_message_id_conversation" ON "dmMessage" USING btree ("id","conversationId");--> statement-breakpoint
 CREATE INDEX "idx_dm_message_conversation" ON "dmMessage" USING btree ("conversationId");--> statement-breakpoint
 CREATE INDEX "idx_dm_message_conversation_created_id" ON "dmMessage" USING btree ("conversationId","createdAt","id");--> statement-breakpoint
 CREATE INDEX "idx_dm_message_sender" ON "dmMessage" USING btree ("senderId");--> statement-breakpoint
