@@ -1,5 +1,4 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import type { DmMessageType } from "@work-holo/db/lib/types";
 import { useMemo } from "react";
 import { create } from "zustand";
 import { useDmPresence } from "@/hooks/communications/dm/use-dm-presence";
@@ -323,13 +322,11 @@ export function useDmReplyState() {
   const clearReplyingToMessage = useDmStore(
     (state) => state.clearReplyingToMessage
   );
-  const highlightMessage = useDmStore((state) => state.highlightMessage);
 
   return {
     replyingToMessage,
     setReplyingToMessage,
     clearReplyingToMessage,
-    highlightMessage,
   };
 }
 
