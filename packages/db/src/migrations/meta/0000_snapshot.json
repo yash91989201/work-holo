@@ -1,5 +1,5 @@
 {
-  "id": "f500cc76-c2f3-41c5-b2b3-f6309498ffa0",
+  "id": "32ebff5e-a3c7-4fc6-95c3-c8cfce268b21",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -4223,27 +4223,6 @@
         }
       },
       "indexes": {
-        "unique_message_id_channel": {
-          "name": "unique_message_id_channel",
-          "columns": [
-            {
-              "expression": "id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "channelId",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": true,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
         "idx_message_parent_message_id": {
           "name": "idx_message_parent_message_id",
           "columns": [
@@ -4430,7 +4409,16 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "unique_message_id_channel": {
+          "name": "unique_message_id_channel",
+          "nullsNotDistinct": false,
+          "columns": [
+            "id",
+            "channelId"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -5375,27 +5363,6 @@
         }
       },
       "indexes": {
-        "unique_dm_message_id_conversation": {
-          "name": "unique_dm_message_id_conversation",
-          "columns": [
-            {
-              "expression": "id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "conversationId",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": true,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
         "idx_dm_message_conversation": {
           "name": "idx_dm_message_conversation",
           "columns": [
@@ -5569,7 +5536,16 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "unique_dm_message_id_conversation": {
+          "name": "unique_dm_message_id_conversation",
+          "nullsNotDistinct": false,
+          "columns": [
+            "id",
+            "conversationId"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
