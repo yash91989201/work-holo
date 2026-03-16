@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1772533383094,
-      "tag": "0000_spooky_wrecking_crew",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1773031360926,
-      "tag": "0001_lucky_vertigo",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1773631604028,
-      "tag": "0002_long_shard",
+      "when": 1773665926897,
+      "tag": "0000_milky_cassandra_nova",
       "breakpoints": true
     }
   ]
