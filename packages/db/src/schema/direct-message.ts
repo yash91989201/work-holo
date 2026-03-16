@@ -90,10 +90,14 @@ export const dmMessageTable = pgTable(
       name: "fk_dm_message_parent",
     }).onDelete("cascade"),
     foreignKey({
-      columns: [table.replyToMessageId],
-      foreignColumns: [table.id],
+      columns: [table.replyToMessageId, table.conversationId],
+      foreignColumns: [table.id, table.conversationId],
       name: "fk_dm_message_reply_to",
     }).onDelete("set null"),
+    uniqueIndex("unique_dm_message_id_conversation").on(
+      table.id,
+      table.conversationId
+    ),
     index("idx_dm_message_conversation").on(table.conversationId),
     index("idx_dm_message_conversation_created_id").on(
       table.conversationId,
