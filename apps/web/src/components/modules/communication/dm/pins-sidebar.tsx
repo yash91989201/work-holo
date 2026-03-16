@@ -123,10 +123,7 @@ export function DmPinsSidebar() {
                     key={virtualRow.key}
                     ref={virtualizer.measureElement}
                   >
-                    <DmMessageItem
-                      conversationId={conversationId}
-                      message={pinnedMessages[virtualRow.index]}
-                    />
+                    <DmMessageItem message={pinnedMessages[virtualRow.index]} />
                   </div>
                 ))}
               </div>

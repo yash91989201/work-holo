@@ -16,7 +16,11 @@ import {
   useChannelThreadReplyState,
   useMaximizedMessageComposerActions,
 } from "@/stores/channel-store";
-import { stripHtmlToText, truncateText } from "@/utils/message-utils";
+import {
+  REPLY_PREVIEW_TRUNCATE_LENGTH,
+  stripHtmlToText,
+  truncateText,
+} from "@/utils/message-utils";
 import { orpcClient } from "@/utils/orpc";
 import { uploadToStorage } from "@/utils/upload-helper";
 import { AttachmentPreviewList } from "./attachment-preview-list";
@@ -227,12 +231,12 @@ export function MessageComposer({
     const textToSend = hasText ? text.trim() : undefined;
     const attachmentsToUpload = [...attachments];
     const audioBlobToUpload = audioBlob;
+    const replyToMessageId = replyingToMessage?.id ?? undefined;
 
     setText("");
     setAttachments([]);
     cancelRecording();
     broadcastTyping(false, user.name);
-    clearReplyingToMessage();
 
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
@@ -350,13 +354,14 @@ export function MessageComposer({
         mentions:
           mentionUserIds.size > 0 ? Array.from(mentionUserIds) : undefined,
         parentMessageId,
-        replyToMessageId: replyingToMessage?.id ?? undefined,
+        replyToMessageId,
         type: messageType,
         attachments:
           uploadedAttachments.length > 0 ? uploadedAttachments : undefined,
       };
 
-      createMessage({ message: messageData });
+      await createMessage({ message: messageData });
+      clearReplyingToMessage();
 
       onSendSuccess?.();
     } catch (error) {
@@ -565,7 +570,7 @@ export function MessageComposer({
                       {replyingToMessage.content
                         ? truncateText(
                             stripHtmlToText(replyingToMessage.content),
-                            120
+                            REPLY_PREVIEW_TRUNCATE_LENGTH
                           )
                         : "📎 Attachment"}
                     </AlertDescription>
