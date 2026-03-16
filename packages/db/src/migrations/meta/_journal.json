@@ -15,6 +15,13 @@
       "when": 1773031360926,
       "tag": "0001_lucky_vertigo",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1773631604028,
+      "tag": "0002_long_shard",
+      "breakpoints": true
     }
   ]
 }
