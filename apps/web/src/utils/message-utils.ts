@@ -1,6 +1,8 @@
 import type { MessageType } from "@work-holo/db/lib/types";
 import { format, formatDistanceToNow } from "date-fns";
 
+export const REPLY_PREVIEW_TRUNCATE_LENGTH = 80;
+
 export function formatMessageDate(date: Date): string {
   const now = new Date();
   const diffInHours = (now.getTime() - date.getTime()) / (1000 * 60 * 60);
@@ -45,10 +47,9 @@ export function isOwnMessage(message: MessageType, userId: string): boolean {
 export function stripHtmlToText(html: string | null | undefined): string {
   if (!html) return "";
 
-  const tmp = document.createElement("div");
-  tmp.innerHTML = html;
-
-  const text = tmp.textContent || tmp.innerText || "";
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, "text/html");
+  const text = doc.body.textContent ?? "";
   return text.replace(/\s+/g, " ").trim();
 }
 

@@ -28,6 +28,8 @@ import {
 import { useDmMessageHighlight } from "@/stores/dm-store";
 import { useDmLastRead } from "./use-dm-last-read";
 
+const SCROLL_SETTLE_DELAY_MS = 120;
+
 export function useVirtualDmMessages() {
   const { conversationId } = useParams({
     from: "/(authenticated)/org/$slug/workspace/communication/dm/$conversationId",
@@ -230,7 +232,7 @@ export function useVirtualDmMessages() {
         align: "center",
         behavior: "auto",
       });
-    }, 120);
+    }, SCROLL_SETTLE_DELAY_MS);
 
     const resetAutoScrollTimeout = window.setTimeout(() => {
       isAutoScrollingRef.current = false;

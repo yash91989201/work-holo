@@ -13,7 +13,11 @@ import {
   useDmThreadReplyState,
   useMaximizedDmMessageComposerActions,
 } from "@/stores/dm-store";
-import { stripHtmlToText, truncateText } from "@/utils/message-utils";
+import {
+  REPLY_PREVIEW_TRUNCATE_LENGTH,
+  stripHtmlToText,
+  truncateText,
+} from "@/utils/message-utils";
 import { orpcClient } from "@/utils/orpc";
 import { uploadToStorage } from "@/utils/upload-helper";
 import { DmAttachmentPreviewList } from "./attachment-preview-list";
@@ -145,12 +149,12 @@ export function DmMessageComposer({
     const textToSend = hasText ? text.trim() : undefined;
     const attachmentsToUpload = [...attachments];
     const audioBlobToUpload = audioBlob;
+    const replyToMessageId = replyingToMessage?.id ?? undefined;
 
     setText("");
     setAttachments([]);
     cancelRecording();
     broadcastTyping(false, user.name);
-    clearReplyingToMessage();
 
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
@@ -233,13 +237,14 @@ export function DmMessageComposer({
         conversationId,
         content: textToSend,
         parentMessageId,
-        replyToMessageId: replyingToMessage?.id ?? undefined,
+        replyToMessageId,
         type: messageType,
         attachments:
           uploadedAttachments.length > 0 ? uploadedAttachments : undefined,
       };
 
-      createMessage({ message: messageData });
+      await createMessage({ message: messageData });
+      clearReplyingToMessage();
 
       onSendSuccess?.();
     } catch (error) {
@@ -411,7 +416,7 @@ export function DmMessageComposer({
   const getReplyPreviewContent = () => {
     if (!replyMessage?.content) return "📎 Attachment";
     const plainText = stripHtmlToText(replyMessage.content);
-    return truncateText(plainText, 80);
+    return truncateText(plainText, REPLY_PREVIEW_TRUNCATE_LENGTH);
   };
 
   return (
