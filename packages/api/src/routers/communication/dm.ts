@@ -386,6 +386,7 @@ export const dmRouter = {
             content: normalizedContent,
             type: input.type,
             parentMessageId: input.parentMessageId,
+            replyToMessageId: input.replyToMessageId,
           })
           .returning();
 
@@ -453,6 +454,7 @@ export const dmRouter = {
           message,
           notificationMessage,
           parentMessageId: input.parentMessageId,
+          replyToMessageId: input.replyToMessageId,
           recipientId,
           txid,
         };
@@ -482,23 +484,53 @@ export const dmRouter = {
                 targetUserId: result.recipientId,
                 type: "dm_reply",
               });
-              return;
             }
 
-            await context.notification.emit({
-              actorId: userId,
-              entityId: result.message.id,
-              entityType: "message",
-              metadata: {
-                conversationId: input.conversationId,
-                messagePreview: result.notificationMessage,
-                senderId: userId,
-                senderName,
-              },
-              orgId,
-              targetUserId: result.recipientId,
-              type: "dm_message",
-            });
+            if (result.replyToMessageId) {
+              const originalMessage =
+                await context.db.query.dmMessageTable.findFirst({
+                  where: and(
+                    eq(dmMessageTable.id, result.replyToMessageId),
+                    eq(dmMessageTable.conversationId, input.conversationId)
+                  ),
+                  columns: { senderId: true },
+                });
+
+              if (originalMessage && originalMessage.senderId !== userId) {
+                await context.notification.emit({
+                  actorId: userId,
+                  entityId: result.message.id,
+                  entityType: "message",
+                  metadata: {
+                    conversationId: input.conversationId,
+                    messagePreview: result.notificationMessage,
+                    replySenderId: userId,
+                    replySenderName: senderName,
+                    originalMessageId: result.replyToMessageId,
+                  },
+                  orgId,
+                  targetUserId: originalMessage.senderId,
+                  type: "dm_direct_reply",
+                });
+              }
+            }
+
+            if (!(result.parentMessageId || result.replyToMessageId)) {
+              await context.notification.emit({
+                actorId: userId,
+                entityId: result.message.id,
+                entityType: "message",
+                metadata: {
+                  conversationId: input.conversationId,
+                  messagePreview: result.notificationMessage,
+                  senderId: userId,
+                  senderName,
+                },
+                orgId,
+                targetUserId: result.recipientId,
+                type: "dm_message",
+              });
+            }
           } catch (error) {
             console.error("Error emitting DM message notification:", error);
           }

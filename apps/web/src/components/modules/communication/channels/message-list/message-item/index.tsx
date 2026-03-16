@@ -3,19 +3,37 @@ import {
   IconMessageReply,
   IconPencil,
   IconPinFilled,
+  IconTrash,
 } from "@tabler/icons-react";
+import { eq, useLiveQuery } from "@tanstack/react-db";
 import type { MessageWithSenderType } from "@work-holo/api/lib/types";
+import { useMemo } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  attachmentsCollection,
+  channelsCollection,
+  messagesCollection,
+  usersCollection,
+} from "@/db/collections";
 import { useMessageMutations } from "@/hooks/communications/use-message-mutations";
 import { useAuthedSession } from "@/hooks/use-authed-session";
+import {
+  buildMessageWithAttachments,
+  type MessageWithSender,
+} from "@/lib/communications/message";
 import { cn, formatMessageTimestamp } from "@/lib/utils";
 import {
+  useChannelComposerFocus,
+  useChannelMessageHighlight,
+  useChannelReplyState,
+  useChannelThreadReplyState,
   useMaximizedMessageComposerActions,
   useMentionsSidebar,
   useMessageThreadSidebar,
 } from "@/stores/channel-store";
+import { stripHtmlToText, truncateText } from "@/utils/message-utils";
 import { MessageActions } from "./message-actions";
 import { MessageContent } from "./message-content";
 import { MessageReactions } from "./message-reactions";
@@ -26,6 +44,104 @@ interface MessageItemProps {
   isPinnedMessage?: boolean;
   isThreadMessage?: boolean;
   message: MessageWithSenderType;
+}
+
+function ReplyPreview({
+  replyToMessageId,
+  isOwnMessage,
+}: {
+  replyToMessageId: string;
+  isOwnMessage: boolean;
+}) {
+  const { highlightMessage } = useChannelMessageHighlight();
+
+  const { data: replyRows } = useLiveQuery(
+    (q) =>
+      q
+        .from({ message: messagesCollection })
+        .innerJoin({ sender: usersCollection }, ({ message, sender }) =>
+          eq(message.senderId, sender.id)
+        )
+        .leftJoin(
+          { attachment: attachmentsCollection },
+          ({ message, attachment }) => eq(attachment.messageId, message.id)
+        )
+        .where(({ message }) => eq(message.id, replyToMessageId))
+        .select(({ message, sender, attachment }) => ({
+          id: message.id,
+          content: message.content,
+          senderName: sender.name,
+          isDeleted: message.isDeleted,
+          deletedAt: message.deletedAt,
+          attachmentId: attachment?.id ?? null,
+        })),
+    [replyToMessageId]
+  );
+
+  const replyData = useMemo(() => {
+    if (!replyRows || replyRows.length === 0) return null;
+
+    const first = replyRows[0];
+    if (!first) return null;
+
+    const hasAttachment = replyRows.some(
+      (r) => r.attachmentId !== null && r.attachmentId !== undefined
+    );
+
+    return {
+      id: first.id,
+      content: first.content,
+      senderName: first.senderName,
+      isDeleted: first.isDeleted || first.deletedAt !== null,
+      hasAttachment,
+    };
+  }, [replyRows]);
+
+  const handleReplyPreviewClick = () => {
+    highlightMessage(replyToMessageId);
+  };
+
+  if (!replyData || replyData.isDeleted) {
+    return (
+      <div
+        className={cn(
+          "flex items-center gap-2 rounded-md border-muted-foreground/40 border-l-2 bg-muted/60 px-3 py-1.5 text-muted-foreground text-xs",
+          isOwnMessage && "ml-auto"
+        )}
+      >
+        <IconTrash className="size-3 shrink-0" />
+        <span className="italic">Original message was deleted</span>
+      </div>
+    );
+  }
+
+  const getDisplayContent = () => {
+    if (replyData.content) {
+      const plainText = stripHtmlToText(replyData.content);
+      return truncateText(plainText, 80);
+    }
+    return replyData.hasAttachment ? "📎 Attachment" : "";
+  };
+
+  return (
+    <Button
+      className={cn(
+        "flex h-auto max-w-full items-center justify-start gap-2 rounded-md border-primary/60 border-t-0 border-r-0 border-b-0 border-l-2 bg-muted/60 px-3 py-1.5 text-left transition-colors hover:bg-muted",
+        isOwnMessage && "ml-auto"
+      )}
+      onClick={handleReplyPreviewClick}
+      variant="ghost"
+    >
+      <div className="min-w-0 flex-1">
+        <span className="block font-medium text-foreground text-xs">
+          {replyData.senderName}
+        </span>
+        <p className="truncate text-muted-foreground text-xs">
+          {getDisplayContent()}
+        </p>
+      </div>
+    </Button>
+  );
 }
 
 export function MessageItem({
@@ -48,6 +164,11 @@ export function MessageItem({
 
   const { messageId, openMessageThread, closeMessageThread } =
     useMessageThreadSidebar();
+
+  const { setReplyingToMessage } = useChannelReplyState();
+  const { setReplyingToMessage: setThreadReplyingToMessage } =
+    useChannelThreadReplyState();
+  const { focusMainComposer, focusThreadComposer } = useChannelComposerFocus();
 
   const isMessageThreadActive = messageId === message.id;
 
@@ -103,6 +224,26 @@ export function MessageItem({
     }
 
     openMessageThread(parentMessageId);
+  };
+
+  const handleInlineReply = () => {
+    const channel = channelsCollection.get(message.channelId);
+    if (!channel) {
+      return;
+    }
+
+    const normalizedMessage: MessageWithSender = {
+      ...buildMessageWithAttachments(message, message.sender, channel),
+      attachments: [...(message.attachments ?? [])],
+    };
+
+    if (isThreadMessage) {
+      setThreadReplyingToMessage(normalizedMessage);
+      focusThreadComposer();
+    } else {
+      setReplyingToMessage(normalizedMessage);
+      focusMainComposer();
+    }
   };
 
   return (
@@ -180,6 +321,14 @@ export function MessageItem({
         </div>
 
         <div className="relative w-full">
+          {message.replyToMessageId && (
+            <div className="mb-1">
+              <ReplyPreview
+                isOwnMessage={isOwnMessage}
+                replyToMessageId={message.replyToMessageId}
+              />
+            </div>
+          )}
           <MessageContent isOwnMessage={isOwnMessage} message={message} />
 
           <div
@@ -192,12 +341,14 @@ export function MessageItem({
           >
             <MessageActions
               canEdit={user.id === message.senderId && message.type === "text"}
+              canInlineReply={true}
               canPin={!isThreadMessage}
               canReply={!isThreadMessage}
               isOwnMessage={isOwnMessage}
               isPinned={message.isPinned}
               onDelete={handleDelete}
               onEdit={handleEditDialog}
+              onInlineReply={handleInlineReply}
               onPin={handlePin}
               onReact={handleReact}
               onReply={toggleMessageThread}

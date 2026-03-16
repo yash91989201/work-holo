@@ -81,6 +81,7 @@ const ChannelGroup = () => {
   const [query, setQuery] = useState("");
   const [searchVisible, setSearchVisible] = useState(false);
   const [debouncedQuery] = useDebouncedValue(query, { wait: 300 });
+  const normalizedQuery = debouncedQuery.trim().toLowerCase();
 
   const isPending = query !== debouncedQuery;
 
@@ -95,10 +96,8 @@ const ChannelGroup = () => {
 
   const isPopover = state === "collapsed" && !isMobile;
 
-  const filteredChannels = debouncedQuery.trim()
-    ? channels.filter((c) =>
-        c.name.toLowerCase().includes(debouncedQuery.toLowerCase())
-      )
+  const filteredChannels = normalizedQuery
+    ? channels.filter((c) => c.name.toLowerCase().includes(normalizedQuery))
     : channels;
 
   const showSearch = channels.length > 2;
@@ -145,7 +144,7 @@ const ChannelGroup = () => {
                       <SidebarMenuSubButton className="cursor-default text-muted-foreground [&>svg]:size-3">
                         <IconAlertCircleFilled />
                         <span>
-                          {debouncedQuery
+                          {normalizedQuery
                             ? "No channels found"
                             : "No channels yet"}
                         </span>
@@ -245,7 +244,7 @@ const ChannelGroup = () => {
             >
               <IconAlertCircleFilled />
               <span>
-                {debouncedQuery ? "No channels found" : "No channels yet"}
+                {normalizedQuery ? "No channels found" : "No channels yet"}
               </span>
             </SidebarMenuButton>
           </SidebarMenuItem>

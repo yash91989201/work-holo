@@ -22,6 +22,7 @@ interface SendDmMessageInput {
   content?: string;
   conversationId: string;
   parentMessageId?: string;
+  replyToMessageId?: string;
   type?: "text" | "attachment" | "audio";
 }
 
@@ -44,6 +45,7 @@ export function useDmMessageMutations() {
         content: message.content ?? null,
         type: message.type ?? "text",
         parentMessageId: message.parentMessageId ?? null,
+        replyToMessageId: message.replyToMessageId ?? null,
         isEdited: false,
         isDeleted: false,
         createdAt: now,
@@ -112,6 +114,7 @@ export function useDmMessageMutations() {
         content: message.content,
         type: message.type ?? "text",
         parentMessageId: message.parentMessageId,
+        replyToMessageId: message.replyToMessageId,
         attachments: message.attachments,
       });
 

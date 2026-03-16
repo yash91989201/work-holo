@@ -1,13 +1,26 @@
+import { IconArrowBackUp, IconX } from "@tabler/icons-react";
 import { useAsyncDebouncer } from "@tanstack/react-pacer";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import { useMessageMutations } from "@/hooks/communications/use-message-mutations";
 import { useTypingIndicator } from "@/hooks/communications/use-typing-indicator";
 import { useAudioRecorder } from "@/hooks/use-audio-recorder";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { CHANNEL_MENTION, CHANNEL_MENTION_ID } from "@/lib/mentions";
 import { cn } from "@/lib/utils";
-import { useMaximizedMessageComposerActions } from "@/stores/channel-store";
+import {
+  useChannelComposerFocus,
+  useChannelReplyState,
+  useChannelThreadReplyState,
+  useMaximizedMessageComposerActions,
+} from "@/stores/channel-store";
+import {
+  REPLY_PREVIEW_TRUNCATE_LENGTH,
+  stripHtmlToText,
+  truncateText,
+} from "@/utils/message-utils";
 import { orpcClient } from "@/utils/orpc";
 import { uploadToStorage } from "@/utils/upload-helper";
 import { AttachmentPreviewList } from "./attachment-preview-list";
@@ -62,12 +75,35 @@ export function MessageComposer({
   const { user } = useAuthedSession();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const composerFocusHandlerRef = useRef<(() => void) | null>(null);
 
   const [text, setText] = useState(initialContent);
   const [isEditorMaximized, setIsEditorMaximized] = useState(false);
   const [attachments, setAttachments] = useState<AttachmentPreview[]>([]);
   const [composerView, setComposerView] = useState<ComposerView>("editor");
   const { openMaximizedMessageComposer } = useMaximizedMessageComposerActions();
+  const mainReplyState = useChannelReplyState();
+  const threadReplyState = useChannelThreadReplyState();
+  const { setMainComposerFocus, setThreadComposerFocus } =
+    useChannelComposerFocus();
+  const { replyingToMessage, clearReplyingToMessage } = parentMessageId
+    ? threadReplyState
+    : mainReplyState;
+
+  const handleFocusHandlerChange = useCallback(
+    (handler: (() => void) | null) => {
+      composerFocusHandlerRef.current = handler;
+    },
+    []
+  );
+
+  const focusComposer = useCallback(() => {
+    setComposerView("editor");
+
+    requestAnimationFrame(() => {
+      composerFocusHandlerRef.current?.();
+    });
+  }, []);
 
   const {
     isRecording,
@@ -195,6 +231,7 @@ export function MessageComposer({
     const textToSend = hasText ? text.trim() : undefined;
     const attachmentsToUpload = [...attachments];
     const audioBlobToUpload = audioBlob;
+    const replyToMessageId = replyingToMessage?.id ?? undefined;
 
     setText("");
     setAttachments([]);
@@ -317,12 +354,14 @@ export function MessageComposer({
         mentions:
           mentionUserIds.size > 0 ? Array.from(mentionUserIds) : undefined,
         parentMessageId,
+        replyToMessageId,
         type: messageType,
         attachments:
           uploadedAttachments.length > 0 ? uploadedAttachments : undefined,
       };
 
-      createMessage({ message: messageData });
+      await createMessage({ message: messageData });
+      clearReplyingToMessage();
 
       onSendSuccess?.();
     } catch (error) {
@@ -340,6 +379,8 @@ export function MessageComposer({
     user.name,
     user.id,
     parentMessageId,
+    replyingToMessage?.id,
+    clearReplyingToMessage,
     onSendSuccess,
     cancelRecording,
   ]);
@@ -363,6 +404,21 @@ export function MessageComposer({
       setComposerView("editor");
     }
   }, [composerView, isRecording, audioUrl]);
+
+  useEffect(() => {
+    if (parentMessageId) {
+      setThreadComposerFocus(focusComposer);
+      return () => setThreadComposerFocus(null);
+    }
+
+    setMainComposerFocus(focusComposer);
+    return () => setMainComposerFocus(null);
+  }, [
+    focusComposer,
+    parentMessageId,
+    setMainComposerFocus,
+    setThreadComposerFocus,
+  ]);
 
   const handleFileUpload = useCallback((files?: FileList) => {
     const filesToAdd = files || fileInputRef.current?.files;
@@ -462,6 +518,19 @@ export function MessageComposer({
     setText(initialContent);
   }, [initialContent]);
 
+  useEffect(() => {
+    if (!replyingToMessage) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        clearReplyingToMessage();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [replyingToMessage, clearReplyingToMessage]);
+
   return (
     <>
       <input
@@ -485,6 +554,36 @@ export function MessageComposer({
               <div className="border-b px-4 py-2">
                 <TypingIndicator typingUsers={typingUsers} />
               </div>
+            )}
+
+            {replyingToMessage && (
+              <Alert className="mb-3 border-primary/30 bg-primary/5">
+                <div className="flex items-start gap-3">
+                  <div className="mt-0.5 shrink-0 text-primary">
+                    <IconArrowBackUp className="h-4 w-4" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <AlertTitle>
+                      Replying to {replyingToMessage.sender?.name ?? "Unknown"}
+                    </AlertTitle>
+                    <AlertDescription className="truncate text-sm">
+                      {replyingToMessage.content
+                        ? truncateText(
+                            stripHtmlToText(replyingToMessage.content),
+                            REPLY_PREVIEW_TRUNCATE_LENGTH
+                          )
+                        : "📎 Attachment"}
+                    </AlertDescription>
+                  </div>
+                  <Button
+                    onClick={clearReplyingToMessage}
+                    size="icon"
+                    variant="destructive"
+                  >
+                    <IconX className="h-4 w-4" />
+                  </Button>
+                </div>
+              </Alert>
             )}
 
             <MessageEditor
@@ -523,6 +622,7 @@ export function MessageComposer({
               onComposerViewChange={setComposerView}
               onEmojiSelect={handleEmojiSelect}
               onFileUpload={() => fileInputRef.current?.click()}
+              onFocusHandlerChange={handleFocusHandlerChange}
               onMaximize={handleMaximize}
               onSubmit={handleSubmit}
               onVoiceRecord={handleVoiceRecord}

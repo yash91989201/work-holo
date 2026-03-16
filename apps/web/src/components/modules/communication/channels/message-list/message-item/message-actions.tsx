@@ -1,5 +1,6 @@
 import {
   IconArrowBackUp,
+  IconArrowForwardUp,
   IconEdit,
   IconMoodPlus,
   IconPinFilled,
@@ -35,6 +36,7 @@ const QUICK_REACTIONS = ["👍", "😂", "🎉", "👀"] as const;
 
 interface MessageActionsProps {
   canEdit: boolean;
+  canInlineReply?: boolean;
   canPin: boolean;
   canReply: boolean;
   className?: string;
@@ -42,6 +44,7 @@ interface MessageActionsProps {
   isPinned: boolean;
   onDelete: () => void;
   onEdit: () => void;
+  onInlineReply?: () => void;
   onPin: () => void;
   onReact: (emoji: string) => void;
   onReply: () => void;
@@ -50,10 +53,12 @@ interface MessageActionsProps {
 export function MessageActions({
   isOwnMessage,
   canEdit,
+  canInlineReply,
   canPin,
   isPinned,
   canReply,
   onEdit,
+  onInlineReply,
   onReply,
   onDelete,
   onPin,
@@ -105,6 +110,18 @@ export function MessageActions({
             {emoji}
           </Button>
         ))}
+
+        {canInlineReply && onInlineReply && (
+          <Button
+            aria-label="Reply inline"
+            onClick={onInlineReply}
+            size="icon-sm"
+            title="Reply inline"
+            variant="ghost"
+          >
+            <IconArrowForwardUp className="h-3.5 w-3.5" />
+          </Button>
+        )}
 
         {canReply && (
           <Button

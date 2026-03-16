@@ -1,6 +1,7 @@
 import { IconPlus } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
-import { type ReactNode, Suspense, useState } from "react";
+import type { ReactNode } from "react";
+import { Suspense, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -72,7 +73,7 @@ export const CreateChannelForm = ({ trigger }: CreateChannelFormProps) => {
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
       <DialogTrigger asChild>
         {trigger ?? (
-          <Button size="icon" variant="link">
+          <Button aria-label="Create channel" size="icon" variant="link">
             <IconPlus />
           </Button>
         )}

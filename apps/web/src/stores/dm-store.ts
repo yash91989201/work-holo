@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { create } from "zustand";
 import { useDmPresence } from "@/hooks/communications/dm/use-dm-presence";
 import { useAuthedSession } from "@/hooks/use-authed-session";
+import type { DmMessageWithSender } from "@/lib/communications/dm-message";
 import { queryUtils } from "@/utils/orpc";
 
 interface DmParticipant {
@@ -47,12 +48,26 @@ interface HighlightedMessageState {
   triggeredAt: number | null;
 }
 
+interface ComposerFocusState {
+  main: (() => void) | null;
+  thread: (() => void) | null;
+}
+
+interface ReplyingToMessageState {
+  message: DmMessageWithSender | null;
+}
+
 interface DmState {
   clearHighlightedMessage: () => void;
+  clearReplyingToMessage: () => void;
+  clearThreadReplyingToMessage: () => void;
   closeInfoSidebar: () => void;
   closeMaximizedMessageComposer: () => void;
   closeMessageThread: () => void;
   closePinnedMessages: () => void;
+  composerFocus: ComposerFocusState;
+  focusMainComposer: () => void;
+  focusThreadComposer: () => void;
   highlightedMessage: HighlightedMessageState;
   highlightMessage: (messageId: string) => void;
   infoSidebar: InfoSidebarState;
@@ -65,6 +80,12 @@ interface DmState {
   openMessageThread: (messageId: string) => void;
   openPinnedMessages: () => void;
   pinnedMessages: PinnedMessagesState;
+  replyingToMessage: ReplyingToMessageState;
+  setMainComposerFocus: (handler: (() => void) | null) => void;
+  setReplyingToMessage: (message: DmMessageWithSender) => void;
+  setThreadComposerFocus: (handler: (() => void) | null) => void;
+  setThreadReplyingToMessage: (message: DmMessageWithSender) => void;
+  threadReplyingToMessage: ReplyingToMessageState;
 }
 
 interface OpenMaximizedMessageComposerConfig {
@@ -82,13 +103,23 @@ const defaultMaximizedComposerState: MaximizedMessageComposerState = {
   onComplete: undefined,
 };
 
-const useDmStore = create<DmState>((set) => ({
+const useDmStore = create<DmState>((set, get) => ({
   infoSidebar: { isOpen: false },
   maximizedMessageComposer: { ...defaultMaximizedComposerState },
   pinnedMessages: { isOpen: false },
+  composerFocus: {
+    main: null,
+    thread: null,
+  },
   highlightedMessage: {
     messageId: null,
     triggeredAt: null,
+  },
+  replyingToMessage: {
+    message: null,
+  },
+  threadReplyingToMessage: {
+    message: null,
   },
   messageThread: {
     messageId: null,
@@ -119,6 +150,26 @@ const useDmStore = create<DmState>((set) => ({
     set({ messageThread: { messageId: null, isOpen: false } }),
   openPinnedMessages: () => set({ pinnedMessages: { isOpen: true } }),
   closePinnedMessages: () => set({ pinnedMessages: { isOpen: false } }),
+  setMainComposerFocus: (handler) =>
+    set((state) => ({
+      composerFocus: {
+        ...state.composerFocus,
+        main: handler,
+      },
+    })),
+  setThreadComposerFocus: (handler) =>
+    set((state) => ({
+      composerFocus: {
+        ...state.composerFocus,
+        thread: handler,
+      },
+    })),
+  focusMainComposer: () => {
+    get().composerFocus.main?.();
+  },
+  focusThreadComposer: () => {
+    get().composerFocus.thread?.();
+  },
   highlightMessage: (messageId) =>
     set({
       highlightedMessage: {
@@ -129,6 +180,22 @@ const useDmStore = create<DmState>((set) => ({
   clearHighlightedMessage: () =>
     set({
       highlightedMessage: { messageId: null, triggeredAt: null },
+    }),
+  setReplyingToMessage: (message) =>
+    set({
+      replyingToMessage: { message },
+    }),
+  clearReplyingToMessage: () =>
+    set({
+      replyingToMessage: { message: null },
+    }),
+  setThreadReplyingToMessage: (message) =>
+    set({
+      threadReplyingToMessage: { message },
+    }),
+  clearThreadReplyingToMessage: () =>
+    set({
+      threadReplyingToMessage: { message: null },
     }),
 }));
 
@@ -212,6 +279,60 @@ export function useDmMessageHighlight() {
     highlightedAt,
     highlightMessage,
     clearHighlightedMessage,
+  };
+}
+
+export function useDmReplyState() {
+  const replyingToMessage = useDmStore(
+    (state) => state.replyingToMessage.message
+  );
+  const setReplyingToMessage = useDmStore(
+    (state) => state.setReplyingToMessage
+  );
+  const clearReplyingToMessage = useDmStore(
+    (state) => state.clearReplyingToMessage
+  );
+
+  return {
+    replyingToMessage,
+    setReplyingToMessage,
+    clearReplyingToMessage,
+  };
+}
+
+export function useDmThreadReplyState() {
+  const replyingToMessage = useDmStore(
+    (state) => state.threadReplyingToMessage.message
+  );
+  const setReplyingToMessage = useDmStore(
+    (state) => state.setThreadReplyingToMessage
+  );
+  const clearReplyingToMessage = useDmStore(
+    (state) => state.clearThreadReplyingToMessage
+  );
+
+  return {
+    replyingToMessage,
+    setReplyingToMessage,
+    clearReplyingToMessage,
+  };
+}
+
+export function useDmComposerFocus() {
+  const setMainComposerFocus = useDmStore(
+    (state) => state.setMainComposerFocus
+  );
+  const setThreadComposerFocus = useDmStore(
+    (state) => state.setThreadComposerFocus
+  );
+  const focusMainComposer = useDmStore((state) => state.focusMainComposer);
+  const focusThreadComposer = useDmStore((state) => state.focusThreadComposer);
+
+  return {
+    setMainComposerFocus,
+    setThreadComposerFocus,
+    focusMainComposer,
+    focusThreadComposer,
   };
 }
 

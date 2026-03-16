@@ -31,6 +31,7 @@ export function useMessageMutations() {
         content: message.content ?? null,
         type: message.type,
         parentMessageId: message.parentMessageId ?? null,
+        replyToMessageId: message.replyToMessageId ?? null,
         isEdited: false,
         isDeleted: false,
         createdAt: now,

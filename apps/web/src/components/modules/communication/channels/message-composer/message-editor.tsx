@@ -23,7 +23,7 @@ import {
 } from "@tabler/icons-react";
 import { EditorContent } from "@tiptap/react";
 import type { KeyboardEvent } from "react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
@@ -64,6 +64,8 @@ import "@/styles/tiptap.css";
 
 export type ComposerView = "editor" | "attachments" | "audio";
 
+type FocusHandler = (() => void) | null;
+
 interface MessageEditorProps {
   attachmentPreview?: React.ReactNode;
   audioPreview?: React.ReactNode;
@@ -89,6 +91,7 @@ interface MessageEditorProps {
   onCursorChange?: (position: number) => void;
   onEmojiSelect?: (emoji: { emoji: string; label: string }) => void;
   onFileUpload?: () => void;
+  onFocusHandlerChange?: (handler: FocusHandler) => void;
   onMaximize?: () => void;
   onMinimize?: () => void;
   onSubmit: () => void;
@@ -114,6 +117,7 @@ export function MessageEditor({
   isCreatingMessage = false,
   hasAttachments = false,
   hasAudio = false,
+  onFocusHandlerChange,
   onComposerViewChange,
   onEmojiSelect,
   onFileUpload,
@@ -170,6 +174,21 @@ export function MessageEditor({
     },
     [disabled, isInMaximizedComposer, isMaximized, onMaximize, onMinimize]
   );
+
+  useEffect(() => {
+    if (!onFocusHandlerChange) return;
+
+    if (!editor || disabled) {
+      onFocusHandlerChange(null);
+      return;
+    }
+
+    onFocusHandlerChange(() => {
+      editor.chain().focus("end").run();
+    });
+
+    return () => onFocusHandlerChange(null);
+  }, [disabled, editor, onFocusHandlerChange]);
 
   let voiceRecordTitle = "Start voice message";
 

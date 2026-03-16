@@ -26,6 +26,7 @@ export const SendDmMessageInput = z
     content: z.string().max(10_000).optional(),
     type: z.enum(["text", "attachment", "audio"]).default("text"),
     parentMessageId: z.cuid2().optional(),
+    replyToMessageId: z.cuid2().optional(),
     attachments: z
       .array(
         z.object({

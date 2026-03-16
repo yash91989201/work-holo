@@ -1,4 +1,5 @@
 import {
+  IconArrowForwardUp,
   IconDots,
   IconEdit,
   IconMessageReply,
@@ -24,12 +25,14 @@ import {
 
 interface DmMessageActionsProps {
   canEdit: boolean;
+  canInlineReply?: boolean;
   canPin: boolean;
   canReply: boolean;
   isOwnMessage: boolean;
   isPinned: boolean;
   onDelete: () => void;
   onEdit: () => void;
+  onInlineReply?: () => void;
   onPin: () => void;
   onReact: (emoji: string) => void;
   onReply: () => void;
@@ -39,6 +42,7 @@ const REACTIONS = ["👍", "❤️", "😂", "😮", "😢", "🎉"];
 
 export function DmMessageActions({
   canEdit,
+  canInlineReply,
   canPin,
   canReply,
   isOwnMessage,
@@ -48,6 +52,7 @@ export function DmMessageActions({
   onPin,
   onReact,
   onReply,
+  onInlineReply,
 }: DmMessageActionsProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -85,6 +90,13 @@ export function DmMessageActions({
           </Tooltip>
 
           <DropdownMenuContent align="end" className="w-48">
+            {canInlineReply && onInlineReply && (
+              <DropdownMenuItem onClick={onInlineReply}>
+                <IconArrowForwardUp className="mr-2 h-4 w-4" />
+                Reply
+              </DropdownMenuItem>
+            )}
+
             {canReply && (
               <DropdownMenuItem onClick={onReply}>
                 <IconMessageReply className="mr-2 h-4 w-4" />

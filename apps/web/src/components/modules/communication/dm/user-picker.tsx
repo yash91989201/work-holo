@@ -152,7 +152,12 @@ export function DmUserPicker() {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)} size="icon-sm" variant="link">
+      <Button
+        aria-label="New Direct Message"
+        onClick={() => setOpen(true)}
+        size="icon-sm"
+        variant="link"
+      >
         <IconPlus />
       </Button>
 

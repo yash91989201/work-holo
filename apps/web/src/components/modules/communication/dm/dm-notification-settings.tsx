@@ -309,7 +309,11 @@ export function DmNotificationSettings({
               <ItemDescription>Silence all notifications</ItemDescription>
             </ItemContent>
             <ItemActions>
-              <Switch checked={isMuted} onCheckedChange={handleMuteToggle} />
+              <Switch
+                aria-label="Mute conversation"
+                checked={isMuted}
+                onCheckedChange={handleMuteToggle}
+              />
             </ItemActions>
           </Item>
         </div>
@@ -392,6 +396,7 @@ export function DmNotificationSettings({
                         <ItemActions className="gap-3">
                           <div className="flex flex-col items-center gap-1">
                             <Switch
+                              aria-label={`${event.label} sound notifications`}
                               checked={soundState.enabled}
                               onCheckedChange={(checked) =>
                                 handlePreferenceToggle(
@@ -412,6 +417,7 @@ export function DmNotificationSettings({
                           </div>
                           <div className="flex flex-col items-center gap-1">
                             <Switch
+                              aria-label={`${event.label} push notifications`}
                               checked={pushState.enabled}
                               disabled={!isDesktopReady}
                               onCheckedChange={(checked) =>
@@ -433,6 +439,7 @@ export function DmNotificationSettings({
                           </div>
                           <div className="flex flex-col items-center gap-1">
                             <Switch
+                              aria-label={`${event.label} email notifications`}
                               checked={emailState.enabled}
                               onCheckedChange={(checked) =>
                                 handlePreferenceToggle(

@@ -3,31 +3,115 @@ import {
   IconPencil,
   IconPinFilled,
 } from "@tabler/icons-react";
+import { eq, useLiveQuery } from "@tanstack/react-db";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  dmAttachmentsCollection,
+  dmMessagesCollection,
+  usersCollection,
+} from "@/db/collections";
 import { useDmMessageMutations } from "@/hooks/communications/dm/use-dm-message-mutations";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import type { DmMessageWithSender } from "@/lib/communications/dm-message";
 import { cn, formatMessageTimestamp } from "@/lib/utils";
 import {
+  useDmComposerFocus,
+  useDmMessageHighlight,
   useDmMessageThreadSidebar,
+  useDmReplyState,
+  useDmThreadReplyState,
   useMaximizedDmMessageComposerActions,
 } from "@/stores/dm-store";
+import {
+  REPLY_PREVIEW_TRUNCATE_LENGTH,
+  stripHtmlToText,
+  truncateText,
+} from "@/utils/message-utils";
 import { DmMessageActions } from "./message-actions";
 import { DmMessageContent } from "./message-content";
 import { DmMessageReactions } from "./message-reactions";
 
 interface DmMessageItemProps {
-  conversationId: string;
   isHighlighted?: boolean;
   isThreadMessage?: boolean;
   message: DmMessageWithSender;
 }
 
+function DmReplyPreview({
+  onClick,
+  replyToMessageId,
+}: {
+  onClick: () => void;
+  replyToMessageId: string;
+}) {
+  const { data: repliedToMessages = [] } = useLiveQuery(
+    (q) =>
+      q
+        .from({ msg: dmMessagesCollection })
+        .innerJoin({ sender: usersCollection }, ({ msg, sender }) =>
+          eq(msg.senderId, sender.id)
+        )
+        .where(({ msg }) => eq(msg.id, replyToMessageId))
+        .select(({ msg, sender }) => ({
+          id: msg.id,
+          content: msg.content,
+          senderName: sender.name,
+          isDeleted: msg.isDeleted,
+          type: msg.type,
+        })),
+    [replyToMessageId]
+  );
+
+  const { data: repliedToAttachments = [] } = useLiveQuery(
+    (q) =>
+      q
+        .from({ attachment: dmAttachmentsCollection })
+        .where(({ attachment }) => eq(attachment.messageId, replyToMessageId))
+        .select(({ attachment }) => ({ id: attachment.id })),
+    [replyToMessageId]
+  );
+
+  const repliedToMessage = repliedToMessages[0] ?? null;
+  const hasReplyAttachments = repliedToAttachments.length > 0;
+
+  if (!repliedToMessage || repliedToMessage.isDeleted) {
+    return (
+      <div className="mb-1 rounded-md border-muted-foreground/30 border-l-[3px] bg-muted/40 px-3 py-1.5">
+        <p className="text-muted-foreground text-xs italic">
+          Original message was deleted
+        </p>
+      </div>
+    );
+  }
+
+  let previewText: string | null = null;
+  if (repliedToMessage.content) {
+    previewText = truncateText(
+      stripHtmlToText(repliedToMessage.content),
+      REPLY_PREVIEW_TRUNCATE_LENGTH
+    );
+  } else if (hasReplyAttachments) {
+    previewText = "📎 Attachment";
+  }
+
+  return (
+    <button
+      className="mb-1 w-full cursor-pointer rounded-md border-primary/60 border-l-[3px] bg-muted/60 px-3 py-1.5 text-left transition-colors hover:bg-muted"
+      onClick={onClick}
+      type="button"
+    >
+      <p className="font-medium text-primary/80 text-xs">
+        {repliedToMessage.senderName}
+      </p>
+      <p className="truncate text-muted-foreground text-xs">{previewText}</p>
+    </button>
+  );
+}
+
 export function DmMessageItem({
   message,
-  conversationId,
   isThreadMessage = false,
   isHighlighted = false,
 }: DmMessageItemProps) {
@@ -46,6 +130,12 @@ export function DmMessageItem({
 
   const { messageId, openMessageThread, closeMessageThread } =
     useDmMessageThreadSidebar();
+
+  const { setReplyingToMessage } = useDmReplyState();
+  const { highlightMessage } = useDmMessageHighlight();
+  const { setReplyingToMessage: setThreadReplyingToMessage } =
+    useDmThreadReplyState();
+  const { focusMainComposer, focusThreadComposer } = useDmComposerFocus();
 
   const isMessageThreadActive = messageId === message.id;
 
@@ -90,6 +180,23 @@ export function DmMessageItem({
   const handleReplyInThread = (parentMessageId?: string | null) => {
     if (!parentMessageId) return;
     openMessageThread(parentMessageId);
+  };
+
+  const handleReplyPreviewClick = () => {
+    if (!message.replyToMessageId) return;
+
+    highlightMessage(message.replyToMessageId);
+  };
+
+  const handleInlineReply = () => {
+    if (isThreadMessage) {
+      setThreadReplyingToMessage(message);
+      focusThreadComposer();
+      return;
+    }
+
+    setReplyingToMessage(message);
+    focusMainComposer();
   };
 
   return (
@@ -167,6 +274,13 @@ export function DmMessageItem({
         </div>
 
         <div className="relative w-full">
+          {message.replyToMessageId && (
+            <DmReplyPreview
+              onClick={handleReplyPreviewClick}
+              replyToMessageId={message.replyToMessageId}
+            />
+          )}
+
           <DmMessageContent isOwnMessage={isOwnMessage} message={message} />
 
           <div
@@ -179,12 +293,14 @@ export function DmMessageItem({
           >
             <DmMessageActions
               canEdit={user.id === message.senderId && message.type === "text"}
+              canInlineReply={true}
               canPin={!isThreadMessage}
               canReply={!isThreadMessage}
               isOwnMessage={isOwnMessage}
               isPinned={message.isPinned}
               onDelete={handleDelete}
               onEdit={handleEditDialog}
+              onInlineReply={handleInlineReply}
               onPin={handlePin}
               onReact={handleReact}
               onReply={toggleMessageThread}

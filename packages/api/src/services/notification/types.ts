@@ -5,22 +5,26 @@
 
 /**
  * Event type discriminator for notifications
- * Supports 7 notification event types:
+ * Supports 9 notification event types:
  * - channel_message: New message in a channel
  * - channel_reply: Reply to a thread in channel
+ * - channel_direct_reply: Inline reply to a specific message in a channel
  * - channel_reaction: Reaction added to a channel message
  * - channel_mention: User mentioned in a channel
  * - dm_message: Direct message sent
  * - dm_reply: Reply to a thread in DM
+ * - dm_direct_reply: Inline reply to a specific message in a DM
  * - dm_reaction: Reaction added to a DM message
  */
 export type NotificationEventType =
   | "channel_message"
   | "channel_reply"
+  | "channel_direct_reply"
   | "channel_reaction"
   | "channel_mention"
   | "dm_message"
   | "dm_reply"
+  | "dm_direct_reply"
   | "dm_reaction";
 
 /**
@@ -157,6 +161,39 @@ interface DMReactionEvent extends NotificationEventBase {
 }
 
 /**
+ * Channel direct reply event
+ * Triggered when someone replies inline to a specific message in a channel
+ * Metadata: { channelId, channelName, messagePreview, replySenderId, replySenderName, originalMessageId }
+ */
+interface ChannelDirectReplyEvent extends NotificationEventBase {
+  metadata: {
+    channelId: string;
+    channelName: string;
+    messagePreview: string;
+    replySenderId: string;
+    replySenderName: string;
+    originalMessageId: string;
+  };
+  type: "channel_direct_reply";
+}
+
+/**
+ * DM direct reply event
+ * Triggered when someone replies inline to a specific message in a DM conversation
+ * Metadata: { conversationId, messagePreview, replySenderId, replySenderName, originalMessageId }
+ */
+interface DMDirectReplyEvent extends NotificationEventBase {
+  metadata: {
+    conversationId: string;
+    messagePreview: string;
+    replySenderId: string;
+    replySenderName: string;
+    originalMessageId: string;
+  };
+  type: "dm_direct_reply";
+}
+
+/**
  * Discriminated union of all notification domain events
  * Type narrowing is based on the 'type' field
  *
@@ -179,10 +216,12 @@ interface DMReactionEvent extends NotificationEventBase {
 export type NotificationDomainEvent =
   | ChannelMessageEvent
   | ChannelReplyEvent
+  | ChannelDirectReplyEvent
   | ChannelReactionEvent
   | ChannelMentionEvent
   | DMMessageEvent
   | DMReplyEvent
+  | DMDirectReplyEvent
   | DMReactionEvent;
 
 /**

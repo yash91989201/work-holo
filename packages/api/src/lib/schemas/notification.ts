@@ -4,10 +4,12 @@ import { z } from "zod";
 export const NotificationTypeSchema = z.enum([
   "channel_message",
   "channel_reply",
+  "channel_direct_reply",
   "channel_reaction",
   "channel_mention",
   "dm_message",
   "dm_reply",
+  "dm_direct_reply",
   "dm_reaction",
 ]);
 
@@ -128,10 +130,12 @@ export const GetUnreadCountOutput = z.object({
 export const NotificationEventTypeEnumSchema = z.enum([
   "channel_message",
   "channel_reply",
+  "channel_direct_reply",
   "channel_reaction",
   "channel_mention",
   "dm_message",
   "dm_reply",
+  "dm_direct_reply",
   "dm_reaction",
 ]);
 

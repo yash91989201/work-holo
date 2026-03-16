@@ -1,13 +1,22 @@
-import { eq, useLiveQuery } from "@tanstack/react-db";
+import { IconArrowBackUp, IconX } from "@tabler/icons-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { dmConversationsCollection } from "@/db/collections";
 import { useDmMessageMutations } from "@/hooks/communications/dm/use-dm-message-mutations";
 import { useDmTyping } from "@/hooks/communications/dm/use-dm-typing";
 import { useAudioRecorder } from "@/hooks/use-audio-recorder";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { cn } from "@/lib/utils";
-import { useMaximizedDmMessageComposerActions } from "@/stores/dm-store";
+import {
+  useDmComposerFocus,
+  useDmReplyState,
+  useDmThreadReplyState,
+  useMaximizedDmMessageComposerActions,
+} from "@/stores/dm-store";
+import {
+  REPLY_PREVIEW_TRUNCATE_LENGTH,
+  stripHtmlToText,
+  truncateText,
+} from "@/utils/message-utils";
 import { orpcClient } from "@/utils/orpc";
 import { uploadToStorage } from "@/utils/upload-helper";
 import { DmAttachmentPreviewList } from "./attachment-preview-list";
@@ -52,6 +61,7 @@ export function DmMessageComposer({
   const { user } = useAuthedSession();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const composerFocusHandlerRef = useRef<(() => void) | null>(null);
 
   const [text, setText] = useState(initialContent);
   const [isEditorMaximized, setIsEditorMaximized] = useState(false);
@@ -61,6 +71,27 @@ export function DmMessageComposer({
   >("editor");
   const { openMaximizedMessageComposer } =
     useMaximizedDmMessageComposerActions();
+  const mainReplyState = useDmReplyState();
+  const threadReplyState = useDmThreadReplyState();
+  const { setMainComposerFocus, setThreadComposerFocus } = useDmComposerFocus();
+  const { replyingToMessage, clearReplyingToMessage } = parentMessageId
+    ? threadReplyState
+    : mainReplyState;
+
+  const handleFocusHandlerChange = useCallback(
+    (handler: (() => void) | null) => {
+      composerFocusHandlerRef.current = handler;
+    },
+    []
+  );
+
+  const focusComposer = useCallback(() => {
+    setComposerView("editor");
+
+    requestAnimationFrame(() => {
+      composerFocusHandlerRef.current?.();
+    });
+  }, []);
 
   const {
     isRecording,
@@ -74,20 +105,6 @@ export function DmMessageComposer({
 
   const { createMessage } = useDmMessageMutations();
   const { typingUsers, broadcastTyping } = useDmTyping(conversationId);
-
-  const { data: conversationParticipants = [] } = useLiveQuery(
-    (q) =>
-      q
-        .from({ conversation: dmConversationsCollection })
-        .where(({ conversation }) => eq(conversation.id, conversationId))
-        .select(({ conversation }) => ({
-          participantOneId: conversation.participantOneId,
-          participantTwoId: conversation.participantTwoId,
-        }))
-        .limit(1)
-        .orderBy(({ conversation }) => conversation.createdAt, "desc"),
-    [conversationId]
-  );
 
   const handleTypingBroadcast = useCallback(
     (content: string) => {
@@ -131,6 +148,7 @@ export function DmMessageComposer({
     const textToSend = hasText ? text.trim() : undefined;
     const attachmentsToUpload = [...attachments];
     const audioBlobToUpload = audioBlob;
+    const replyToMessageId = replyingToMessage?.id ?? undefined;
 
     setText("");
     setAttachments([]);
@@ -142,7 +160,6 @@ export function DmMessageComposer({
     }
 
     try {
-      // Determine message type
       let messageType: "text" | "attachment" | "audio" = "text";
       if (!textToSend && audioBlobToUpload) {
         messageType = "audio";
@@ -150,7 +167,6 @@ export function DmMessageComposer({
         messageType = "attachment";
       }
 
-      // Upload attachments and audio in parallel
       const uploadPromises: Promise<MessageAttachment>[] = [];
 
       if (attachmentsToUpload.length > 0) {
@@ -220,12 +236,14 @@ export function DmMessageComposer({
         conversationId,
         content: textToSend,
         parentMessageId,
+        replyToMessageId,
         type: messageType,
         attachments:
           uploadedAttachments.length > 0 ? uploadedAttachments : undefined,
       };
 
-      createMessage({ message: messageData });
+      await createMessage({ message: messageData });
+      clearReplyingToMessage();
 
       onSendSuccess?.();
     } catch (error) {
@@ -242,6 +260,8 @@ export function DmMessageComposer({
     broadcastTyping,
     user.name,
     parentMessageId,
+    replyingToMessage,
+    clearReplyingToMessage,
     onSendSuccess,
     cancelRecording,
   ]);
@@ -265,6 +285,21 @@ export function DmMessageComposer({
       setComposerView("editor");
     }
   }, [composerView, isRecording, audioUrl]);
+
+  useEffect(() => {
+    if (parentMessageId) {
+      setThreadComposerFocus(focusComposer);
+      return () => setThreadComposerFocus(null);
+    }
+
+    setMainComposerFocus(focusComposer);
+    return () => setMainComposerFocus(null);
+  }, [
+    focusComposer,
+    parentMessageId,
+    setMainComposerFocus,
+    setThreadComposerFocus,
+  ]);
 
   const handleFileUpload = useCallback((files?: FileList) => {
     const filesToAdd = files || fileInputRef.current?.files;
@@ -362,6 +397,25 @@ export function DmMessageComposer({
     setText(initialContent);
   }, [initialContent]);
 
+  useEffect(() => {
+    if (!replyingToMessage) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        clearReplyingToMessage();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [replyingToMessage, clearReplyingToMessage]);
+
+  const getReplyPreviewContent = () => {
+    if (!replyingToMessage?.content) return "📎 Attachment";
+    const plainText = stripHtmlToText(replyingToMessage.content);
+    return truncateText(plainText, REPLY_PREVIEW_TRUNCATE_LENGTH);
+  };
+
   return (
     <>
       <input
@@ -384,6 +438,46 @@ export function DmMessageComposer({
             {typingUsers.length > 0 && (
               <div className="border-b px-4 py-2">
                 <DmTypingIndicator typingUsers={typingUsers} />
+              </div>
+            )}
+
+            {replyingToMessage && (
+              <div className="mb-2 flex items-start gap-3 rounded-lg bg-primary/25 px-4 py-3">
+                <div className="mt-0.5 shrink-0 text-primary">
+                  <IconArrowBackUp className="h-4 w-4" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    {replyingToMessage.sender?.image ? (
+                      <img
+                        alt={replyingToMessage.sender.name}
+                        className="h-5 w-5 rounded-full object-cover"
+                        height={20}
+                        src={replyingToMessage.sender.image}
+                        width={20}
+                      />
+                    ) : (
+                      <div className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 font-medium text-[10px] text-primary">
+                        {replyingToMessage.sender?.name
+                          ?.slice(0, 2)
+                          .toUpperCase() || "??"}
+                      </div>
+                    )}
+                    <span className="font-semibold text-foreground text-sm">
+                      {replyingToMessage.sender?.name ?? "Unknown"}
+                    </span>
+                  </div>
+                  <p className="mt-1 truncate text-muted-foreground text-sm">
+                    {getReplyPreviewContent()}
+                  </p>
+                </div>
+                <button
+                  className="shrink-0 rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+                  onClick={clearReplyingToMessage}
+                  type="button"
+                >
+                  <IconX className="h-4 w-4" />
+                </button>
               </div>
             )}
 
@@ -422,6 +516,7 @@ export function DmMessageComposer({
               onComposerViewChange={setComposerView}
               onEmojiSelect={handleEmojiSelect}
               onFileUpload={() => fileInputRef.current?.click()}
+              onFocusHandlerChange={handleFocusHandlerChange}
               onMaximize={handleMaximize}
               onSubmit={handleSubmit}
               onVoiceRecord={handleVoiceRecord}
