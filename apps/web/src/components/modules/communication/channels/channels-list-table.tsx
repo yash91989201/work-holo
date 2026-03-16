@@ -9,6 +9,7 @@ import {
   IconHash,
   IconLayoutDashboardFilled,
   IconLockFilled,
+  IconPlus,
   IconSearch,
   IconUserMinus,
   IconUserPlus,
@@ -84,6 +85,7 @@ import {
 import { useListOrgMembers } from "@/hooks/use-list-org-members";
 import { queryClient, queryUtils } from "@/utils/orpc";
 import { ChannelMembersPopover } from "./channel-members-popover";
+import { CreateChannelForm } from "./create-channel-form";
 
 export const ChannelsListTable = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -298,6 +300,14 @@ export const ChannelsListTable = () => {
             />
           </InputGroup>
         </div>
+        <CreateChannelForm
+          trigger={
+            <Button>
+              <IconPlus className="mr-2 h-4 w-4" />
+              Create Channel
+            </Button>
+          }
+        />
       </div>
 
       <div className="rounded-md border-b">
