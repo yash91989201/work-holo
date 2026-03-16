@@ -155,7 +155,6 @@ export function DmMessageComposer({
     setAttachments([]);
     cancelRecording();
     broadcastTyping(false, user.name);
-    clearReplyingToMessage();
 
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
@@ -238,7 +237,7 @@ export function DmMessageComposer({
         conversationId,
         content: textToSend,
         parentMessageId,
-replyToMessageId,
+        replyToMessageId,
         type: messageType,
         attachments:
           uploadedAttachments.length > 0 ? uploadedAttachments : undefined,

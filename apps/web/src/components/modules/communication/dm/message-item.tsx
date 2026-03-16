@@ -209,6 +209,7 @@ const handleReplyPreviewClick = () => {
     }
   };
 
+
   return (
     <div
       className={cn(
@@ -283,7 +284,7 @@ const handleReplyPreviewClick = () => {
           )}
         </div>
 
-<div className="relative w-full">
+        <div className="relative w-full">
           {message.replyToMessageId && (
             <DmReplyPreview
               onClick={handleReplyPreviewClick}
