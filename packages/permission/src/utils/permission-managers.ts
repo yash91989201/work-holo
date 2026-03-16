@@ -60,7 +60,7 @@ export const PermissionManagers = {
    */
   initialize(config: {
     db: typeof DbClient;
-    redis: RedisClient;
+    redis: RedisClient | (() => Promise<RedisClient>);
     pusher?: Pusher;
   }): void {
     cacheManager = new CacheManager(config.redis);
