@@ -484,7 +484,6 @@ export const dmRouter = {
                 targetUserId: result.recipientId,
                 type: "dm_reply",
               });
-              return;
             }
 
             if (result.replyToMessageId) {
@@ -514,23 +513,24 @@ export const dmRouter = {
                   type: "dm_direct_reply",
                 });
               }
-              return;
             }
 
-            await context.notification.emit({
-              actorId: userId,
-              entityId: result.message.id,
-              entityType: "message",
-              metadata: {
-                conversationId: input.conversationId,
-                messagePreview: result.notificationMessage,
-                senderId: userId,
-                senderName,
-              },
-              orgId,
-              targetUserId: result.recipientId,
-              type: "dm_message",
-            });
+            if (!(result.parentMessageId || result.replyToMessageId)) {
+              await context.notification.emit({
+                actorId: userId,
+                entityId: result.message.id,
+                entityType: "message",
+                metadata: {
+                  conversationId: input.conversationId,
+                  messagePreview: result.notificationMessage,
+                  senderId: userId,
+                  senderName,
+                },
+                orgId,
+                targetUserId: result.recipientId,
+                type: "dm_message",
+              });
+            }
           } catch (error) {
             console.error("Error emitting DM message notification:", error);
           }
