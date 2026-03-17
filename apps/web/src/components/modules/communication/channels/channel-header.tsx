@@ -65,9 +65,17 @@ export function ChannelHeader() {
   const { isOpen, togglePinnedMessages } = usePinnedMessagesSidebar();
   const { isOpen: mentionsOpen, toggleMentionsSidebar } = useMentionsSidebar();
   const { highlightMessage } = useChannelMessageHighlight();
-  const { openMessageThread } = useMessageThreadSidebar();
+  const {
+    isOpen: isThreadSidebarOpen,
+    messageId: activeThreadId,
+    openMessageThread,
+  } = useMessageThreadSidebar();
 
   const [query, setQuery] = useState("");
+  const [pendingThreadHighlight, setPendingThreadHighlight] = useState<{
+    messageId: string;
+    parentMessageId: string;
+  } | null>(null);
 
   const { unreadMentionCount } = useChannelMentions();
 
@@ -113,17 +121,42 @@ export function ChannelHeader() {
     return () => window.removeEventListener("keydown", handleGlobalShortcut);
   }, []);
 
+  useEffect(() => {
+    if (!pendingThreadHighlight) {
+      return;
+    }
+
+    if (!isThreadSidebarOpen) {
+      return;
+    }
+
+    if (activeThreadId !== pendingThreadHighlight.parentMessageId) {
+      return;
+    }
+
+    highlightMessage(pendingThreadHighlight.messageId);
+    setPendingThreadHighlight(null);
+  }, [
+    activeThreadId,
+    highlightMessage,
+    isThreadSidebarOpen,
+    pendingThreadHighlight,
+  ]);
+
   const handleResultClick = (result: (typeof results)[0]) => {
     setQuery("");
 
-    setTimeout(() => {
-      if (result.parentMessageId) {
-        openMessageThread(result.parentMessageId);
-        setTimeout(() => highlightMessage(result.id), 100);
-      } else {
-        highlightMessage(result.id);
-      }
-    }, 300);
+    if (result.parentMessageId) {
+      setPendingThreadHighlight({
+        messageId: result.id,
+        parentMessageId: result.parentMessageId,
+      });
+      openMessageThread(result.parentMessageId);
+      return;
+    }
+
+    setPendingThreadHighlight(null);
+    highlightMessage(result.id);
   };
 
   return (
