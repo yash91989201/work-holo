@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { useVirtualMessageThread } from "@/hooks/communications/use-message-thread";
 import { cn } from "@/lib/utils";
 import {
+  useChannelMessageHighlight,
   useMaximizedMessageComposerActions,
   useMessageThreadSidebar,
 } from "@/stores/channel-store";
@@ -33,13 +34,18 @@ export function MessageThreadSidebar() {
     totalSize,
     message,
     threadMessages,
+    fetchNextPage,
     isLoading,
     isFetchingNextPage,
+    hasNextPage,
     showScrollButton,
     scrollToBottom,
   } = useVirtualMessageThread({
     messageId,
   });
+
+  const { highlightedMessageId, clearHighlightedMessage } =
+    useChannelMessageHighlight();
 
   const repliesCount = threadMessages.length;
 
@@ -49,6 +55,61 @@ export function MessageThreadSidebar() {
   }, [channelId, closeMessageThread]);
 
   const { openMaximizedMessageComposer } = useMaximizedMessageComposerActions();
+
+  useEffect(() => {
+    if (!(highlightedMessageId && isOpen && message)) {
+      return;
+    }
+
+    const targetIndex = threadMessages.findIndex(
+      (threadMessage) => threadMessage.id === highlightedMessageId
+    );
+
+    if (targetIndex === -1) {
+      if (hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+        return;
+      }
+
+      if (message.id !== highlightedMessageId) {
+        const timeoutId = window.setTimeout(() => {
+          clearHighlightedMessage();
+        }, 800);
+
+        return () => {
+          window.clearTimeout(timeoutId);
+        };
+      }
+
+      return;
+    }
+
+    const frameId = requestAnimationFrame(() => {
+      virtualizer.scrollToIndex(targetIndex, {
+        align: "center",
+        behavior: "auto",
+      });
+    });
+
+    const timeoutId = window.setTimeout(() => {
+      clearHighlightedMessage();
+    }, 1200);
+
+    return () => {
+      cancelAnimationFrame(frameId);
+      window.clearTimeout(timeoutId);
+    };
+  }, [
+    clearHighlightedMessage,
+    fetchNextPage,
+    hasNextPage,
+    highlightedMessageId,
+    isFetchingNextPage,
+    isOpen,
+    message,
+    threadMessages,
+    virtualizer,
+  ]);
 
   const handleMaximizedReply = useCallback(
     (content: string) => {
@@ -171,6 +232,10 @@ export function MessageThreadSidebar() {
                       ref={virtualizer.measureElement}
                     >
                       <MessageItem
+                        isHighlighted={
+                          highlightedMessageId ===
+                          threadMessages[virtualRow.index]?.id
+                        }
                         isThreadMessage
                         message={threadMessages[virtualRow.index]}
                       />

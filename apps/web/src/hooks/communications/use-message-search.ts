@@ -1,6 +1,6 @@
 import { useDebouncedValue } from "@tanstack/react-pacer";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { queryUtils } from "@/utils/orpc";
 
 interface UseMessageSearchOptions {
@@ -38,12 +38,47 @@ export function useMessageSearch({
   query,
   enabled = true,
 }: UseMessageSearchOptions): UseMessageSearchResult {
+  const previousRawSearchKeyRef = useRef<string>("");
   const [cursor, setCursor] = useState<string | null>(null);
+  const [aggregatedResults, setAggregatedResults] = useState<SearchResult[]>(
+    []
+  );
+  const [aggregatedTotal, setAggregatedTotal] = useState(0);
 
-  // Debounce the query using TanStack Pacer
-  const [debouncedQuery] = useDebouncedValue(query, { wait: 300 });
+  const trimmedQuery = query.trim();
+  const [debouncedQuery] = useDebouncedValue(trimmedQuery, { wait: 300 });
+  const isDebouncing =
+    enabled && trimmedQuery.length > 0 && trimmedQuery !== debouncedQuery;
+  const shouldSearch = enabled && debouncedQuery.length > 0;
 
-  const { data, isLoading } = useQuery(
+  useEffect(() => {
+    if (!enabled) {
+      return;
+    }
+
+    const rawSearchKey = `${channelId}:${query.trim()}`;
+
+    if (previousRawSearchKeyRef.current === rawSearchKey) {
+      return;
+    }
+
+    previousRawSearchKeyRef.current = rawSearchKey;
+
+    setCursor(null);
+    setAggregatedResults([]);
+    setAggregatedTotal(0);
+  }, [channelId, query, enabled]);
+
+  useEffect(() => {
+    if (!enabled) {
+      previousRawSearchKeyRef.current = "";
+      setCursor(null);
+      setAggregatedResults([]);
+      setAggregatedTotal(0);
+    }
+  }, [enabled]);
+
+  const { data } = useQuery(
     queryUtils.communication.message.search.queryOptions({
       input: {
         channelId,
@@ -51,16 +86,48 @@ export function useMessageSearch({
         limit: 20,
         ...(cursor ? { cursor } : {}),
       },
-      enabled: enabled && debouncedQuery.length > 0,
+      enabled: shouldSearch,
     })
   );
 
-  const results = data?.messages ?? [];
-  const hasMore = data?.nextCursor != null;
-  const total = data?.total ?? 0;
+  useEffect(() => {
+    if (!data || isDebouncing) {
+      return;
+    }
+
+    setAggregatedTotal(data.total ?? 0);
+    setAggregatedResults((previousResults) => {
+      const incomingResults = data.messages ?? [];
+
+      if (!cursor) {
+        return incomingResults;
+      }
+
+      const mergedResults = [...previousResults, ...incomingResults];
+      const seenMessageIds = new Set<string>();
+
+      return mergedResults.filter((message) => {
+        if (seenMessageIds.has(message.id)) {
+          return false;
+        }
+
+        seenMessageIds.add(message.id);
+        return true;
+      });
+    });
+  }, [data, cursor, isDebouncing]);
+
+  const isLoading = isDebouncing || (shouldSearch && !data);
+  const results = shouldSearch && !isDebouncing ? aggregatedResults : [];
+  const hasMore = shouldSearch && !isDebouncing && data?.nextCursor != null;
+  const total = shouldSearch && !isDebouncing ? aggregatedTotal : 0;
 
   const loadMore = () => {
-    if (data?.nextCursor) {
+    if (isLoading) {
+      return;
+    }
+
+    if (data?.nextCursor != null) {
       setCursor(data.nextCursor);
     }
   };
