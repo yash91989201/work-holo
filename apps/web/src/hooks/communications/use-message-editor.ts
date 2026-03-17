@@ -235,6 +235,7 @@ export function useMessageEditor({
   useEffect(() => {
     if (!editor) return;
 
+    console.log(editor.getText());
     const currentContent = editor.getHTML();
     if (content !== currentContent && content !== editor.getText()) {
       editor.commands.setContent(content || "");
