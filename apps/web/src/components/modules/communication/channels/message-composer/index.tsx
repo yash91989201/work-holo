@@ -360,7 +360,7 @@ export function MessageComposer({
           uploadedAttachments.length > 0 ? uploadedAttachments : undefined,
       };
 
-      await createMessage({ message: messageData });
+      createMessage({ message: messageData });
       clearReplyingToMessage();
 
       onSendSuccess?.();
