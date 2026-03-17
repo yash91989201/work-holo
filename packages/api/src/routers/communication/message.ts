@@ -130,10 +130,12 @@ export const messageRouter = {
         session: { user },
         permission,
       } = context;
+
       await permission.requireChannelAccess(
         input.channelId,
         permission.channel().message.create
       );
+
       const {
         txid,
         message,
