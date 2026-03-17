@@ -242,6 +242,22 @@ const useDmStore = create<DmState>((set, get) => ({
         message: null,
       },
     }),
+  setReplyingToMessage: (message) =>
+    set({
+      replyingToMessage: { message },
+    }),
+  clearReplyingToMessage: () =>
+    set({
+      replyingToMessage: { message: null },
+    }),
+  setThreadReplyingToMessage: (message) =>
+    set({
+      threadReplyingToMessage: { message },
+    }),
+  clearThreadReplyingToMessage: () =>
+    set({
+      threadReplyingToMessage: { message: null },
+    }),
 }));
 
 export function useDmConversation(conversationId: string) {

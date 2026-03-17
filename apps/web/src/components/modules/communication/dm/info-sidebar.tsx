@@ -31,7 +31,7 @@ export function DmInfoSidebar() {
   return (
     <Sheet onOpenChange={toggleInfoSidebar} open={isOpen}>
       <SheetContent
-        className="flex h-full min-w-md flex-col gap-0 border-border border-l bg-background p-0 sm:max-w-sm"
+        className="flex h-full w-full min-w-0 flex-col gap-0 border-border border-l bg-background p-0 sm:max-w-sm"
         side="right"
       >
         <SheetHeader className="flex flex-row items-center gap-3">
