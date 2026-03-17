@@ -80,7 +80,6 @@ interface ChannelState {
   focusMainComposer: () => void;
   focusThreadComposer: () => void;
   highlightedMessage: HighlightedMessageState;
-
   highlightMessage: (messageId: string) => void;
   infoSidebar: InfoSidebarState;
   maximizedMessageComposer: MaximizedMessageComposerState;

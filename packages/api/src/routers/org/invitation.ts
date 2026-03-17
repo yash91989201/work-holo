@@ -25,17 +25,19 @@ export const invitationRouter = {
     .output(ListInvitationsOutput)
     .handler(async ({ input, context: { db, orgId, permission } }) => {
       await permission.check(permission.org.invite.list());
-      const { page, perPage, search, filters, sorting } = input;
+      const { page, perPage, search, filters, sorting, role, status } = input;
       const offset = (page - 1) * perPage;
+      const roleFilter = filters?.role ?? role;
+      const statusFilter = filters?.status ?? status;
 
       const conditions = [eq(invitation.organizationId, orgId)];
 
-      if (filters?.role) {
-        conditions.push(eq(invitation.role, filters.role));
+      if (roleFilter) {
+        conditions.push(eq(invitation.role, roleFilter));
       }
 
-      if (filters?.status) {
-        conditions.push(eq(invitation.status, filters.status));
+      if (statusFilter) {
+        conditions.push(eq(invitation.status, statusFilter));
       }
 
       let searchCondition: SQL | undefined;

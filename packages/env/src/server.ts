@@ -32,6 +32,7 @@ export const env = createEnv({
       .enum(["true", "false"])
       .default("true")
       .transform((val) => val === "true"),
+    OPENSEARCH_URL: z.url().default("http://localhost:9200"),
   },
   runtimeEnv: process.env,
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,

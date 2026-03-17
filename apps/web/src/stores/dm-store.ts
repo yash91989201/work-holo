@@ -126,8 +126,18 @@ const useDmStore = create<DmState>((set, get) => ({
     isOpen: false,
   },
 
-  openInfoSidebar: () => set({ infoSidebar: { isOpen: true } }),
-  closeInfoSidebar: () => set({ infoSidebar: { isOpen: false } }),
+  openInfoSidebar: () =>
+    set({
+      infoSidebar: {
+        isOpen: true,
+      },
+    }),
+  closeInfoSidebar: () =>
+    set({
+      infoSidebar: {
+        isOpen: false,
+      },
+    }),
 
   openMaximizedMessageComposer: (config = {}) =>
     set({
@@ -142,14 +152,38 @@ const useDmStore = create<DmState>((set, get) => ({
     }),
 
   closeMaximizedMessageComposer: () =>
-    set({ maximizedMessageComposer: { ...defaultMaximizedComposerState } }),
+    set({
+      maximizedMessageComposer: {
+        ...defaultMaximizedComposerState,
+      },
+    }),
 
   openMessageThread: (messageId) =>
-    set({ messageThread: { messageId, isOpen: true } }),
+    set({
+      messageThread: {
+        messageId,
+        isOpen: true,
+      },
+    }),
   closeMessageThread: () =>
-    set({ messageThread: { messageId: null, isOpen: false } }),
-  openPinnedMessages: () => set({ pinnedMessages: { isOpen: true } }),
-  closePinnedMessages: () => set({ pinnedMessages: { isOpen: false } }),
+    set({
+      messageThread: {
+        messageId: null,
+        isOpen: false,
+      },
+    }),
+  openPinnedMessages: () =>
+    set({
+      pinnedMessages: {
+        isOpen: true,
+      },
+    }),
+  closePinnedMessages: () =>
+    set({
+      pinnedMessages: {
+        isOpen: false,
+      },
+    }),
   setMainComposerFocus: (handler) =>
     set((state) => ({
       composerFocus: {
@@ -179,7 +213,34 @@ const useDmStore = create<DmState>((set, get) => ({
     }),
   clearHighlightedMessage: () =>
     set({
-      highlightedMessage: { messageId: null, triggeredAt: null },
+      highlightedMessage: {
+        messageId: null,
+        triggeredAt: null,
+      },
+    }),
+  setReplyingToMessage: (message) =>
+    set({
+      replyingToMessage: {
+        message,
+      },
+    }),
+  clearReplyingToMessage: () =>
+    set({
+      replyingToMessage: {
+        message: null,
+      },
+    }),
+  setThreadReplyingToMessage: (message) =>
+    set({
+      threadReplyingToMessage: {
+        message,
+      },
+    }),
+  clearThreadReplyingToMessage: () =>
+    set({
+      threadReplyingToMessage: {
+        message: null,
+      },
     }),
   setReplyingToMessage: (message) =>
     set({

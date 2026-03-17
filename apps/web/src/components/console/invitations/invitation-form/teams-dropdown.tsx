@@ -1,6 +1,15 @@
+import { IconUsers } from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, useParams } from "@tanstack/react-router";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { withForm } from "@/components/ui/form/hooks";
 import { SelectItem } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -32,21 +41,29 @@ const TeamsDropdownBase = withForm({
 
     if (teams.length === 0) {
       return (
-        <div className="space-y-3">
-          <span className="font-medium text-sm">Team</span>
-          <div className="flex flex-col items-center justify-center gap-1 rounded-md border border-dashed p-4 text-muted-foreground text-sm">
-            <span>No teams yet</span>
-            <span className="text-xs">
+        <Empty className="border">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <IconUsers />
+            </EmptyMedia>
+            <EmptyTitle className="text-base">No teams yet</EmptyTitle>
+            <EmptyDescription>
               Create your first team to get started
-            </span>
-          </div>
-
-          <Button asChild className="h-11 w-full" variant="outline">
-            <Link params={{ slug }} to="/org/$slug/workspace/teams">
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Link
+              className={buttonVariants({
+                variant: "secondary",
+                className: "w-full",
+              })}
+              params={{ slug }}
+              to="/org/$slug/console/teams"
+            >
               Create Team
             </Link>
-          </Button>
-        </div>
+          </EmptyContent>
+        </Empty>
       );
     }
 

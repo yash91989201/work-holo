@@ -4396,14 +4396,8 @@
           "name": "fk_message_reply_to",
           "tableFrom": "message",
           "tableTo": "message",
-          "columnsFrom": [
-            "replyToMessageId",
-            "channelId"
-          ],
-          "columnsTo": [
-            "id",
-            "channelId"
-          ],
+          "columnsFrom": ["replyToMessageId", "channelId"],
+          "columnsTo": ["id", "channelId"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -4413,10 +4407,7 @@
         "unique_message_id_channel": {
           "name": "unique_message_id_channel",
           "nullsNotDistinct": false,
-          "columns": [
-            "id",
-            "channelId"
-          ]
+          "columns": ["id", "channelId"]
         }
       },
       "policies": {},
@@ -5523,14 +5514,8 @@
           "name": "fk_dm_message_reply_to",
           "tableFrom": "dmMessage",
           "tableTo": "dmMessage",
-          "columnsFrom": [
-            "replyToMessageId",
-            "conversationId"
-          ],
-          "columnsTo": [
-            "id",
-            "conversationId"
-          ],
+          "columnsFrom": ["replyToMessageId", "conversationId"],
+          "columnsTo": ["id", "conversationId"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -5540,10 +5525,7 @@
         "unique_dm_message_id_conversation": {
           "name": "unique_dm_message_id_conversation",
           "nullsNotDistinct": false,
-          "columns": [
-            "id",
-            "conversationId"
-          ]
+          "columns": ["id", "conversationId"]
         }
       },
       "policies": {},

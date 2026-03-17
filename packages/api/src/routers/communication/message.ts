@@ -11,18 +11,12 @@ import {
   notificationTable,
   user as userTable,
 } from "@work-holo/db/schema/index";
-import { Queue } from "@work-holo/infrastructure";
 import {
-  and,
-  count,
-  desc,
-  eq,
-  getTableColumns,
-  ilike,
-  inArray,
-  or,
-  sql,
-} from "drizzle-orm";
+  OpenSearchClient,
+  Queue,
+  type SearchIndexQueueMessage,
+} from "@work-holo/infrastructure";
+import { and, count, desc, eq, ilike, inArray, or, sql } from "drizzle-orm";
 import { orgMemberProcedure } from "../../index";
 import { generateTxId } from "../../lib/electric-proxy";
 import {
@@ -136,10 +130,12 @@ export const messageRouter = {
         session: { user },
         permission,
       } = context;
+
       await permission.requireChannelAccess(
         input.channelId,
         permission.channel().message.create
       );
+
       const {
         txid,
         message,
@@ -439,6 +435,36 @@ export const messageRouter = {
         });
       }
 
+      // Publish to search indexing queue
+      try {
+        const searchPayload: SearchIndexQueueMessage = {
+          action: "upsert",
+          messageId: message.id,
+          organizationId: orgId,
+          scopeType: "channel",
+          scopeId: input.channelId,
+          contentHtml: message.content || undefined,
+          senderId: user.id,
+          senderName: user.name || undefined,
+          messageType: message.type || undefined,
+          createdAt: message.createdAt.toISOString(),
+          updatedAt: message.updatedAt?.toISOString() || undefined,
+          parentMessageId: message.parentMessageId || undefined,
+          hasAttachments:
+            input.attachments && input.attachments.length > 0
+              ? true
+              : undefined,
+          isPinned: message.isPinned || undefined,
+          mentionedUserIds:
+            input.mentions && input.mentions.length > 0
+              ? input.mentions
+              : undefined,
+        };
+        Queue.publish("SEARCH_INDEXING", searchPayload);
+      } catch (error) {
+        console.error("Failed to publish to search indexing queue:", error);
+      }
+
       return { txid, message };
     }),
 
@@ -578,6 +604,30 @@ export const messageRouter = {
         });
       }
 
+      // Publish to search indexing queue
+      try {
+        const searchPayload: SearchIndexQueueMessage = {
+          action: "upsert",
+          messageId: message.id,
+          organizationId: orgId,
+          scopeType: "channel",
+          scopeId: message.channelId,
+          contentHtml: message.content || undefined,
+          senderId: message.senderId || undefined,
+          senderName: user.name || undefined,
+          messageType: message.type || undefined,
+          updatedAt: message.updatedAt?.toISOString() || undefined,
+          parentMessageId: message.parentMessageId || undefined,
+          mentionedUserIds:
+            input.mentions && input.mentions.length > 0
+              ? input.mentions
+              : undefined,
+        };
+        Queue.publish("SEARCH_INDEXING", searchPayload);
+      } catch (error) {
+        console.error("Failed to publish to search indexing queue:", error);
+      }
+
       return {
         txid,
         message: {
@@ -640,13 +690,13 @@ export const messageRouter = {
   delete: orgMemberProcedure
     .input(DeleteMessageInput)
     .output(DeleteMessageOutput)
-    .handler(async ({ input, context: { db, permission } }) => {
+    .handler(async ({ input, context: { db, permission, orgId } }) => {
       await permission.requireMessageAccess(
         input.messageId,
         permission.channel().message.delete
       );
 
-      const { txid } = await db.transaction(async (tx) => {
+      const { txid, childMessageIds } = await db.transaction(async (tx) => {
         const txid = await generateTxId(tx);
 
         const message = await tx.query.messageTable.findFirst({
@@ -689,6 +739,14 @@ export const messageRouter = {
           }
         }
 
+        // Get child message IDs before deleting
+        const childMessages = await tx
+          .select({ id: messageTable.id })
+          .from(messageTable)
+          .where(eq(messageTable.parentMessageId, input.messageId));
+
+        const childMessageIds = childMessages.map((msg) => msg.id);
+
         await tx
           .delete(messageTable)
           .where(eq(messageTable.id, input.messageId));
@@ -701,8 +759,31 @@ export const messageRouter = {
           .delete(messageTable)
           .where(eq(messageTable.parentMessageId, input.messageId));
 
-        return { txid };
+        return { txid, childMessageIds };
       });
+
+      // Publish to search indexing queue for deleted messages
+      try {
+        const deletePayload: SearchIndexQueueMessage = {
+          action: "delete",
+          messageId: input.messageId,
+          organizationId: orgId,
+          scopeType: "channel",
+        };
+        Queue.publish("SEARCH_INDEXING", deletePayload);
+
+        for (const childMessageId of childMessageIds) {
+          const childDeletePayload: SearchIndexQueueMessage = {
+            action: "delete",
+            messageId: childMessageId,
+            organizationId: orgId,
+            scopeType: "channel",
+          };
+          Queue.publish("SEARCH_INDEXING", childDeletePayload);
+        }
+      } catch (error) {
+        console.error("Failed to publish to search indexing queue:", error);
+      }
 
       return {
         txid,
@@ -761,50 +842,161 @@ export const messageRouter = {
       return { count: result?.count ?? 0 };
     }),
 
-  /**
-   * Searches messages by content within a channel using case-insensitive matching.
-   * Returns results with sender details, ordered by most recent first.
-   *
-   * @param input.channelId - The channel to search in
-   * @param input.query - Search text to match against message content
-   * @param input.limit - Maximum results to return
-   * @param input.offset - Pagination offset
-   * @returns Matching messages with sender info, total count, and hasMore flag
-   */
   search: orgMemberProcedure
     .input(SearchMessagesInput)
     .output(SearchMessageOutput)
-    .handler(async ({ input, context: { db, permission } }) => {
+    .handler(async ({ input, context: { db, permission, orgId } }) => {
       await permission.requireChannelAccess(
         input.channelId,
         "channel.message.list"
       );
-      const messages = await db
-        .select({
-          ...getTableColumns(messageTable),
-          sender: {
-            name: userTable.name,
-            email: userTable.email,
-            image: userTable.image,
+
+      const client = OpenSearchClient.getClient();
+
+      const filters: Record<string, unknown>[] = [
+        { term: { scopeType: "channel" } },
+        { term: { scopeId: input.channelId } },
+        { term: { organizationId: orgId } },
+      ];
+
+      type SearchHit = {
+        _source: {
+          createdAt: string;
+          messageId: string;
+          contentPlain?: string;
+          messageType: string;
+          parentMessageId?: string;
+          scopeId: string;
+          senderId: string;
+        };
+        highlight?: {
+          contentPlain?: string[];
+        };
+        sort?: unknown[];
+      };
+
+      if (input.senderId) {
+        filters.push({ term: { senderId: input.senderId } });
+      }
+
+      if (input.hasAttachments) {
+        filters.push({ term: { hasAttachments: true } });
+      }
+
+      if (input.fromDate || input.toDate) {
+        const createdAt: Record<string, string> = {};
+
+        if (input.fromDate) {
+          createdAt.gte = input.fromDate.toISOString();
+        }
+
+        if (input.toDate) {
+          createdAt.lte = input.toDate.toISOString();
+        }
+
+        filters.push({
+          range: {
+            createdAt,
           },
-        })
-        .from(messageTable)
-        .innerJoin(userTable, eq(messageTable.senderId, userTable.id))
-        .where(
-          and(
-            eq(messageTable.channelId, input.channelId),
-            eq(messageTable.isDeleted, false),
-            ilike(messageTable.content, `%${input.query}%`)
-          )
-        )
-        .orderBy(desc(messageTable.createdAt))
-        .limit(input.limit)
-        .offset(input.offset);
+        });
+      }
+
+      const response = await client.search({
+        index: "message_search",
+        body: {
+          query: {
+            bool: {
+              must: [{ match: { contentPlain: input.query } }],
+              filter: filters,
+            },
+          },
+          highlight: {
+            pre_tags: ["<mark>"],
+            post_tags: ["</mark>"],
+            fields: {
+              contentPlain: {
+                fragment_size: 150,
+                number_of_fragments: 3,
+              },
+            },
+          },
+          sort: [
+            { _score: "desc" },
+            { createdAt: "desc" },
+            { messageId: "asc" },
+          ],
+          size: input.limit,
+          ...(input.cursor
+            ? {
+                search_after: JSON.parse(
+                  Buffer.from(input.cursor, "base64").toString("utf8")
+                ),
+              }
+            : {}),
+        },
+      });
+
+      const hits = response.body.hits.hits as SearchHit[];
+      const totalHits = response.body.hits.total;
+      const total = typeof totalHits === "number" ? totalHits : totalHits.value;
+
+      const senderIds = Array.from(
+        new Set(hits.map((hit) => hit._source.senderId))
+      );
+
+      const senders =
+        senderIds.length > 0
+          ? await db
+              .select({
+                id: userTable.id,
+                name: userTable.name,
+                email: userTable.email,
+                image: userTable.image,
+              })
+              .from(userTable)
+              .where(inArray(userTable.id, senderIds))
+          : [];
+
+      const senderMap = new Map(senders.map((sender) => [sender.id, sender]));
+
+      const messages = hits.map((hit) => {
+        const source = hit._source;
+
+        const sender = senderMap.get(source.senderId);
+
+        return {
+          id: source.messageId,
+          channelId: source.scopeId,
+          senderId: source.senderId,
+          content: source.contentPlain ?? null,
+          type: source.messageType,
+          parentMessageId: source.parentMessageId ?? null,
+          createdAt: new Date(source.createdAt),
+          sender: sender ?? { name: "Unknown", email: "", image: null },
+          highlights:
+            (hit.highlight?.contentPlain as string[] | undefined) ?? [],
+        };
+      });
+
+      let nextCursor: string | null = null;
+      if (hits.length > 0 && hits.length === input.limit) {
+        const lastHit = hits.at(-1);
+        if (!lastHit?.sort) {
+          return {
+            messages,
+            nextCursor,
+            total,
+          };
+        }
+        nextCursor = Buffer.from(JSON.stringify(lastHit.sort)).toString(
+          "base64"
+        );
+      }
 
       return {
         messages,
-        total: messages.length,
-        hasMore: messages.length === input.limit,
+        nextCursor,
+        total,
       };
     }),
 

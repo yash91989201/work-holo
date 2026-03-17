@@ -3,6 +3,11 @@ import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { getPusherClient } from "@/lib/pusher";
+import {
+  REPLY_PREVIEW_TRUNCATE_LENGTH,
+  stripHtmlToText,
+  truncateText,
+} from "@/utils/message-utils";
 
 interface NotificationPayload {
   actorId: string;
@@ -49,6 +54,21 @@ function buildToastTitle(payload: NotificationPayload): string {
     return `${payload.actorName} in #${payload.channelName}`;
   }
   return payload.actorName;
+}
+
+function buildToastDescription(
+  messagePreview: string | null
+): string | undefined {
+  if (!messagePreview) {
+    return undefined;
+  }
+
+  const plainText = stripHtmlToText(messagePreview);
+  if (!plainText) {
+    return undefined;
+  }
+
+  return truncateText(plainText, REPLY_PREVIEW_TRUNCATE_LENGTH);
 }
 
 function mapNotificationEntityType(
@@ -121,7 +141,7 @@ export function useNotificationPusher(
       const actionUrl = buildActionUrl(orgSlug, data.entityType, data.entityId);
 
       toast(buildToastTitle(data), {
-        description: data.messagePreview ?? undefined,
+        description: buildToastDescription(data.messagePreview),
         action: actionUrl
           ? {
               label: "View",
