@@ -3,7 +3,6 @@ import { Suspense } from "react";
 import { DmConversationHeader } from "@/components/modules/communication/dm/dm-conversation-header";
 import { DmInfoSidebar } from "@/components/modules/communication/dm/info-sidebar";
 import { DmPinsSidebar } from "@/components/modules/communication/dm/pins-sidebar";
-import { DmSearchSidebar } from "@/components/modules/communication/dm/search-sidebar";
 import { DmThreadSidebar } from "@/components/modules/communication/dm/thread-sidebar";
 
 export const Route = createFileRoute(
@@ -42,7 +41,6 @@ function RouteComponent() {
         <DmThreadSidebar />
         <DmPinsSidebar />
         <DmInfoSidebar />
-        <DmSearchSidebar />
       </div>
     </section>
   );

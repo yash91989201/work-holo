@@ -43,10 +43,6 @@ interface PinnedMessagesState {
   isOpen: boolean;
 }
 
-interface SearchSidebarState {
-  isOpen: boolean;
-}
-
 interface HighlightedMessageState {
   messageId: string | null;
   triggeredAt: number | null;
@@ -69,7 +65,6 @@ interface DmState {
   closeMaximizedMessageComposer: () => void;
   closeMessageThread: () => void;
   closePinnedMessages: () => void;
-  closeSearchSidebar: () => void;
   composerFocus: ComposerFocusState;
   focusMainComposer: () => void;
   focusThreadComposer: () => void;
@@ -84,10 +79,8 @@ interface DmState {
   ) => void;
   openMessageThread: (messageId: string) => void;
   openPinnedMessages: () => void;
-  openSearchSidebar: () => void;
   pinnedMessages: PinnedMessagesState;
   replyingToMessage: ReplyingToMessageState;
-  searchSidebar: SearchSidebarState;
   setMainComposerFocus: (handler: (() => void) | null) => void;
   setReplyingToMessage: (message: DmMessageWithSender) => void;
   setThreadComposerFocus: (handler: (() => void) | null) => void;
@@ -117,9 +110,6 @@ const useDmStore = create<DmState>((set, get) => ({
   composerFocus: {
     main: null,
     thread: null,
-  },
-  searchSidebar: {
-    isOpen: false,
   },
   highlightedMessage: {
     messageId: null,
@@ -191,18 +181,6 @@ const useDmStore = create<DmState>((set, get) => ({
   closePinnedMessages: () =>
     set({
       pinnedMessages: {
-        isOpen: false,
-      },
-    }),
-  openSearchSidebar: () =>
-    set({
-      searchSidebar: {
-        isOpen: true,
-      },
-    }),
-  closeSearchSidebar: () =>
-    set({
-      searchSidebar: {
         isOpen: false,
       },
     }),
@@ -326,22 +304,6 @@ export function useDmPinnedMessagesSidebar() {
     openPinnedMessages,
     closePinnedMessages,
     togglePinnedMessages,
-  };
-}
-
-export function useDmSearchSidebar() {
-  const isOpen = useDmStore((state) => state.searchSidebar.isOpen);
-  const openSearchSidebar = useDmStore((state) => state.openSearchSidebar);
-  const closeSearchSidebar = useDmStore((state) => state.closeSearchSidebar);
-
-  const toggleSearchSidebar = () =>
-    isOpen ? closeSearchSidebar() : openSearchSidebar();
-
-  return {
-    isOpen,
-    openSearchSidebar,
-    closeSearchSidebar,
-    toggleSearchSidebar,
   };
 }
 
