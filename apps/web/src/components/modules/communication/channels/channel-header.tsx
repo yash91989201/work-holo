@@ -8,7 +8,7 @@ import {
 import { Link, useParams } from "@tanstack/react-router";
 import DOMPurify from "dompurify";
 import parse from "html-react-parser";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -72,6 +72,7 @@ export function ChannelHeader() {
   } = useMessageThreadSidebar();
 
   const [query, setQuery] = useState("");
+  const [activeOptionIndex, setActiveOptionIndex] = useState(-1);
   const [pendingThreadHighlight, setPendingThreadHighlight] = useState<{
     messageId: string;
     parentMessageId: string;
@@ -80,6 +81,8 @@ export function ChannelHeader() {
   const { unreadMentionCount } = useChannelMentions();
 
   const hasQuery = query.trim().length > 0;
+  const isSearchPopoverOpen = hasQuery;
+  const searchResultsListboxId = useId();
   const skeletonRowKeys = ["row-1", "row-2", "row-3"];
 
   const { results, isLoading, hasMore, loadMore } = useMessageSearch({
@@ -143,7 +146,62 @@ export function ChannelHeader() {
     pendingThreadHighlight,
   ]);
 
+  useEffect(() => {
+    if (!isSearchPopoverOpen || results.length === 0) {
+      setActiveOptionIndex(-1);
+      return;
+    }
+
+    setActiveOptionIndex((currentIndex) => {
+      if (currentIndex < 0) {
+        return 0;
+      }
+
+      if (currentIndex >= results.length) {
+        return results.length - 1;
+      }
+
+      return currentIndex;
+    });
+  }, [isSearchPopoverOpen, results.length]);
+
+  const activeOptionId =
+    activeOptionIndex >= 0 && activeOptionIndex < results.length
+      ? `${searchResultsListboxId}-option-${results[activeOptionIndex]?.id}`
+      : undefined;
+
+  const moveActiveOption = (direction: "next" | "prev") => {
+    if (results.length === 0) {
+      return;
+    }
+
+    setActiveOptionIndex((currentIndex) => {
+      if (direction === "next") {
+        if (currentIndex < 0 || currentIndex >= results.length - 1) {
+          return 0;
+        }
+
+        return currentIndex + 1;
+      }
+
+      if (currentIndex <= 0) {
+        return results.length - 1;
+      }
+
+      return currentIndex - 1;
+    });
+  };
+
+  const handleActiveOptionSelect = () => {
+    if (activeOptionIndex < 0 || activeOptionIndex >= results.length) {
+      return;
+    }
+
+    handleResultClick(results[activeOptionIndex]);
+  };
+
   const handleResultClick = (result: (typeof results)[0]) => {
+    setActiveOptionIndex(-1);
     setQuery("");
 
     if (result.parentMessageId) {
@@ -163,7 +221,7 @@ export function ChannelHeader() {
     <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b bg-background/95 backdrop-blur-sm transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height) supports-backdrop-filter:bg-background/60">
       <div className="flex w-full items-center gap-1 px-3 lg:gap-2">
         <div className="ml-auto flex items-center gap-2">
-          <Popover open={hasQuery}>
+          <Popover open={isSearchPopoverOpen}>
             <PopoverAnchor asChild>
               <div className="w-48 sm:w-64 md:w-80">
                 <InputGroup className="h-8 rounded-full bg-background">
@@ -173,6 +231,11 @@ export function ChannelHeader() {
                     </InputGroupText>
                   </InputGroupAddon>
                   <InputGroupInput
+                    aria-activedescendant={activeOptionId}
+                    aria-autocomplete="list"
+                    aria-controls={searchResultsListboxId}
+                    aria-expanded={isSearchPopoverOpen}
+                    aria-haspopup="listbox"
                     aria-label="Search messages"
                     onChange={(event) => {
                       setQuery(event.target.value);
@@ -189,6 +252,24 @@ export function ChannelHeader() {
                         return;
                       }
 
+                      if (isSearchPopoverOpen && event.key === "ArrowDown") {
+                        event.preventDefault();
+                        moveActiveOption("next");
+                        return;
+                      }
+
+                      if (isSearchPopoverOpen && event.key === "ArrowUp") {
+                        event.preventDefault();
+                        moveActiveOption("prev");
+                        return;
+                      }
+
+                      if (isSearchPopoverOpen && event.key === "Enter") {
+                        event.preventDefault();
+                        handleActiveOptionSelect();
+                        return;
+                      }
+
                       if (event.key === "Escape") {
                         setQuery("");
                         inputRef.current?.blur();
@@ -196,6 +277,7 @@ export function ChannelHeader() {
                     }}
                     placeholder="Search messages..."
                     ref={inputRef}
+                    role="combobox"
                     value={query}
                   />
                   <InputGroupAddon
@@ -220,8 +302,11 @@ export function ChannelHeader() {
 
             <PopoverContent
               align="end"
+              aria-label="Search results"
               className="w-[min(46rem,calc(100vw-1rem))] gap-0 overflow-hidden p-0"
+              id={searchResultsListboxId}
               onOpenAutoFocus={(event) => event.preventDefault()}
+              role="listbox"
               side="bottom"
               sideOffset={8}
             >
@@ -245,18 +330,29 @@ export function ChannelHeader() {
                     <>
                       <ScrollArea className="max-h-[min(70vh,34rem)]">
                         <div className="space-y-1 p-2">
-                          {results.map((result) => {
+                          {results.map((result, index) => {
                             const timestamp = formatMessageTimestamp(
                               result.createdAt
                             );
                             const previewHtml =
                               result.highlights[0] || result.content || "";
+                            const optionId = `${searchResultsListboxId}-option-${result.id}`;
+                            const isActive = index === activeOptionIndex;
 
                             return (
                               <button
-                                className="w-full rounded-xl border border-transparent p-3 text-left transition-colors hover:border-border hover:bg-muted/40"
+                                aria-selected={isActive}
+                                className={`w-full rounded-xl border p-3 text-left transition-colors ${
+                                  isActive
+                                    ? "border-border bg-muted/40"
+                                    : "border-transparent hover:border-border hover:bg-muted/40"
+                                }`}
+                                id={optionId}
                                 key={result.id}
                                 onClick={() => handleResultClick(result)}
+                                onFocus={() => setActiveOptionIndex(index)}
+                                onMouseEnter={() => setActiveOptionIndex(index)}
+                                role="option"
                                 type="button"
                               >
                                 <div className="flex items-start gap-3">
