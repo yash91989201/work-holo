@@ -1,7 +1,7 @@
 import {
   MESSAGE_SEARCH_INDEX,
+  OpenSearchClient,
   type MessageSearchDocument,
-  type OpenSearchClient,
 } from "@work-holo/infrastructure";
 
 const MENTION_SPAN_REGEX =
@@ -34,7 +34,11 @@ function decodeHtmlEntities(input: string): string {
     })
     .replace(HEX_ENTITY_REGEX, (_match, hex) => {
       const codePoint = Number.parseInt(hex, 16);
-      if (!Number.isFinite(codePoint)) {
+      if (
+        !Number.isInteger(codePoint) ||
+        codePoint < 0 ||
+        codePoint > 0x10FFFF
+      ) {
         return "";
       }
 
@@ -42,7 +46,11 @@ function decodeHtmlEntities(input: string): string {
     })
     .replace(DECIMAL_ENTITY_REGEX, (_match, decimal) => {
       const codePoint = Number.parseInt(decimal, 10);
-      if (!Number.isFinite(codePoint)) {
+      if (
+        !Number.isInteger(codePoint) ||
+        codePoint < 0 ||
+        codePoint > 0x10FFFF
+      ) {
         return "";
       }
 
@@ -144,14 +152,14 @@ export async function deleteMessage(
   } catch (error: unknown) {
     const statusCode =
       typeof error === "object" && error !== null && "statusCode" in error
-        ? Number(error.statusCode)
+        ? Number((error as any).statusCode)
         : typeof error === "object" &&
             error !== null &&
             "meta" in error &&
-            typeof error.meta === "object" &&
-            error.meta !== null &&
-            "statusCode" in error.meta
-          ? Number(error.meta.statusCode)
+            typeof (error as any).meta === "object" &&
+            (error as any).meta !== null &&
+            "statusCode" in (error as any).meta
+          ? Number((error as any).meta.statusCode)
           : undefined;
 
     if (statusCode === 404) {
