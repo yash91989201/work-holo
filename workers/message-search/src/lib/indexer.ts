@@ -1,8 +1,8 @@
-import {
-  MESSAGE_SEARCH_INDEX,
+import type {
+  MessageSearchDocument,
   OpenSearchClient,
-  type MessageSearchDocument,
 } from "@work-holo/infrastructure";
+import { MESSAGE_SEARCH_INDEX } from "@work-holo/infrastructure";
 
 const MENTION_SPAN_REGEX =
   /<span\b([^>]*\bdata-type\s*=\s*["']mention["'][^>]*)>([\s\S]*?)<\/span>/gi;
@@ -37,7 +37,7 @@ function decodeHtmlEntities(input: string): string {
       if (
         !Number.isInteger(codePoint) ||
         codePoint < 0 ||
-        codePoint > 0x10FFFF
+        codePoint > 0x10ffff
       ) {
         return "";
       }
@@ -49,7 +49,7 @@ function decodeHtmlEntities(input: string): string {
       if (
         !Number.isInteger(codePoint) ||
         codePoint < 0 ||
-        codePoint > 0x10FFFF
+        codePoint > 0x10ffff
       ) {
         return "";
       }
