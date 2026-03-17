@@ -48,16 +48,19 @@ const DmSearchInput = ({
   query,
   onQueryChange,
   isPending,
+  autoFocus,
 }: {
   query: string;
   onQueryChange: (val: string) => void;
   isPending: boolean;
+  autoFocus?: boolean;
 }) => (
   <InputGroup>
     <InputGroupAddon align="inline-start" className="py-0">
       {isPending ? <Spinner /> : <IconSearch className="size-3.5" />}
     </InputGroupAddon>
     <InputGroupInput
+      autoFocus={autoFocus}
       className="h-7 text-xs"
       onChange={(e) => onQueryChange(e.target.value)}
       placeholder="Search messages…"
@@ -281,6 +284,7 @@ const DmGroup = () => {
       {searchVisible && (
         <div className="px-2 pb-1.5">
           <DmSearchInput
+            autoFocus
             isPending={isPending}
             onQueryChange={setQuery}
             query={query}
