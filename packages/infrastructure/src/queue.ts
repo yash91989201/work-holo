@@ -84,7 +84,6 @@ export class Queue {
     await Queue.channel.assertQueue(QUEUES.SEARCH_INDEXING, {
       durable: true,
       arguments: {
-        "x-message-ttl": 3_600_000,
         "x-max-length": 50_000,
       },
     });
