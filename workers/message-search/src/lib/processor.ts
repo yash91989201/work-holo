@@ -23,6 +23,23 @@ function toIsoDateString(value: string | undefined): string {
 function buildSearchDocument(
   message: SearchIndexQueueMessage
 ): MessageSearchDocument {
+  // Validate required fields
+  if (
+    !message.messageId ||
+    !message.organizationId ||
+    !message.scopeType ||
+    !message.scopeId
+  ) {
+    throw new Error(
+      `[buildSearchDocument] Missing required fields: ${JSON.stringify({
+        messageId: message.messageId,
+        organizationId: message.organizationId,
+        scopeType: message.scopeType,
+        scopeId: message.scopeId,
+      })}`
+    );
+  }
+
   const contentHtml =
     typeof message.contentHtml === "string" ? message.contentHtml : "";
 

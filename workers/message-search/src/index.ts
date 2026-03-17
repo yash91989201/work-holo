@@ -6,10 +6,11 @@ import {
   Queue,
   type SearchIndexQueueMessage,
 } from "@work-holo/infrastructure";
-import type { Channel } from "amqplib";
+import type { Channel, ConsumeMessage } from "amqplib";
 import { handleSearchIndexMessage } from "./lib/processor";
 
 const PREFETCH_COUNT = env.PREFETCH_COUNT;
+const MAX_RETRIES = env.MAX_RETRIES;
 
 async function handleMessage(message: SearchIndexQueueMessage): Promise<void> {
   console.log(
@@ -43,7 +44,7 @@ class QueueWorker {
 
     await this.channel.consume(
       QUEUES.SEARCH_INDEXING,
-      async (msg) => {
+      async (msg: ConsumeMessage | null) => {
         if (!msg) return;
 
         try {
@@ -61,9 +62,37 @@ class QueueWorker {
             error
           );
 
-          if (this.channel) {
-            this.channel.nack(msg, false, true);
+          if (!this.channel) return;
+
+          const headers = msg.properties.headers || {};
+          const retryCount = (headers["x-retries"] as number) || 0;
+
+          if (retryCount >= MAX_RETRIES) {
+            console.error(
+              `[Message Search Worker] Message ${msg.properties.messageId} exceeded max retries (${MAX_RETRIES}). Discarding.`
+            );
+            this.channel.ack(msg);
+            return;
           }
+
+          // Republish with incremented retry count
+          const updatedHeaders = {
+            ...headers,
+            "x-retries": retryCount + 1,
+          };
+
+          this.channel.publish(
+            "",
+            QUEUES.SEARCH_INDEXING,
+            msg.content,
+            {
+              ...msg.properties,
+              headers: updatedHeaders,
+            }
+          );
+
+          // Ack the original message
+          this.channel.ack(msg);
         }
       },
       {
