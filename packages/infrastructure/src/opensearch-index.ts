@@ -35,7 +35,7 @@ export const messageSearchIndexSettings = {
         message_search_analyzer: {
           type: "custom",
           tokenizer: "standard",
-          filter: ["lowercase"],
+          filter: ["lowercase", "english_stop", "english_stemmer"],
         },
       },
       filter: {

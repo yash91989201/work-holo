@@ -22,7 +22,10 @@ function createClient(url: string): Client {
 export class OpenSearchClient {
   static async connect(config: OpenSearchConfig): Promise<void> {
     if (client) return;
-    if (connectPromise) return;
+    if (connectPromise) {
+      await connectPromise;
+      return;
+    }
 
     connectPromise = (async () => {
       const c = createClient(config.url);
