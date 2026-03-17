@@ -7,7 +7,7 @@ import {
 import { useNavigate, useParams } from "@tanstack/react-router";
 import DOMPurify from "dompurify";
 import parse from "html-react-parser";
-import { useEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -51,6 +51,8 @@ import {
   useDmPinnedMessagesSidebar,
 } from "@/stores/dm-store";
 
+const SKELETON_ROW_KEYS = ["row-1", "row-2", "row-3"];
+
 export function DmConversationHeader() {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -75,7 +77,6 @@ export function DmConversationHeader() {
   const otherParticipant = conversation?.otherParticipant;
   const isOnline = otherParticipant ? isUserOnline(otherParticipant.id) : false;
   const hasQuery = query.trim().length > 0;
-  const skeletonRowKeys = ["row-1", "row-2", "row-3"];
 
   const { results, isLoading, hasMore, loadMore } = useDmMessageSearch({
     conversationId,
@@ -137,6 +138,112 @@ export function DmConversationHeader() {
       params: { slug },
     });
   };
+
+  let popoverContent: ReactNode;
+
+  if (isLoading) {
+    popoverContent = (
+      <ScrollArea className="max-h-[min(70vh,34rem)]">
+        <div className="space-y-1 p-2">
+          {SKELETON_ROW_KEYS.map((skeletonRowKey) => (
+            <DmSearchMessageResultItemSkeleton key={skeletonRowKey} />
+          ))}
+        </div>
+      </ScrollArea>
+    );
+  } else if (results.length > 0) {
+    popoverContent = (
+      <>
+        <ScrollArea className="max-h-[min(70vh,34rem)]">
+          <div className="space-y-1 p-2">
+            {results.map((result) => {
+              const previewHtml = result.highlights[0] || result.content || "";
+
+              return (
+                <button
+                  className="w-full rounded-xl border border-transparent p-3 text-left transition-colors hover:border-border hover:bg-muted/40"
+                  key={result.id}
+                  onClick={() => handleResultClick(result)}
+                  type="button"
+                >
+                  <div className="flex items-start gap-3">
+                    <Avatar className="h-8 w-8 shrink-0">
+                      <AvatarImage src={result.sender.image || undefined} />
+                      <AvatarFallback className="bg-linear-to-br from-primary/20 to-primary/10 font-medium text-primary text-xs">
+                        {result.sender.name.slice(0, 2).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+
+                    <div className="min-w-0 flex-1 space-y-2">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="font-semibold text-foreground text-sm">
+                          {result.sender.name}
+                        </span>
+                        <span className="text-muted-foreground text-xs">
+                          {new Intl.DateTimeFormat("en-US", {
+                            month: "short",
+                            day: "numeric",
+                            hour: "numeric",
+                            minute: "numeric",
+                          }).format(new Date(result.createdAt))}
+                        </span>
+                        {result.parentMessageId ? (
+                          <Badge variant="secondary">Thread</Badge>
+                        ) : null}
+                      </div>
+
+                      {previewHtml ? (
+                        <div className="rounded-lg bg-muted/50 px-3 py-2">
+                          <div className="ProseMirror prose-sm dark:prose-invert max-h-28 overflow-hidden break-words text-sm leading-relaxed [&_mark]:rounded-sm [&_mark]:bg-primary/20 [&_mark]:px-0.5 [&_mark]:text-foreground">
+                            {parse(
+                              DOMPurify.sanitize(previewHtml, {
+                                ADD_ATTR: ["target", "rel"],
+                              })
+                            )}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="rounded-lg bg-muted/50 px-3 py-2 text-muted-foreground text-sm">
+                          No text content
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </ScrollArea>
+
+        {hasMore ? (
+          <div className="border-t p-2">
+            <Button
+              className="w-full"
+              disabled={isLoading}
+              onClick={loadMore}
+              variant="ghost"
+            >
+              Load more results
+            </Button>
+          </div>
+        ) : null}
+      </>
+    );
+  } else {
+    popoverContent = (
+      <div className="p-3">
+        <Empty className="border-muted/70 bg-muted/20 p-8">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <IconSearch className="h-5 w-5" />
+            </EmptyMedia>
+            <EmptyTitle className="text-base">No messages found</EmptyTitle>
+            <EmptyDescription>Try another keyword.</EmptyDescription>
+          </EmptyHeader>
+        </Empty>
+      </div>
+    );
+  }
 
   return (
     <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b bg-background/95 backdrop-blur-sm supports-backdrop-filter:bg-background/60">
@@ -236,126 +343,7 @@ export function DmConversationHeader() {
               side="bottom"
               sideOffset={8}
             >
-              {(() => {
-                if (isLoading) {
-                  return (
-                    <ScrollArea className="max-h-[min(70vh,34rem)]">
-                      <div className="space-y-1 p-2">
-                        {skeletonRowKeys.map((skeletonRowKey) => (
-                          <DmSearchMessageResultItemSkeleton
-                            key={skeletonRowKey}
-                          />
-                        ))}
-                      </div>
-                    </ScrollArea>
-                  );
-                }
-
-                if (results.length > 0) {
-                  return (
-                    <>
-                      <ScrollArea className="max-h-[min(70vh,34rem)]">
-                        <div className="space-y-1 p-2">
-                          {results.map((result) => {
-                            const previewHtml =
-                              result.highlights[0] || result.content || "";
-
-                            return (
-                              <button
-                                className="w-full rounded-xl border border-transparent p-3 text-left transition-colors hover:border-border hover:bg-muted/40"
-                                key={result.id}
-                                onClick={() => handleResultClick(result)}
-                                type="button"
-                              >
-                                <div className="flex items-start gap-3">
-                                  <Avatar className="h-8 w-8 shrink-0">
-                                    <AvatarImage
-                                      src={result.sender.image || undefined}
-                                    />
-                                    <AvatarFallback className="bg-linear-to-br from-primary/20 to-primary/10 font-medium text-primary text-xs">
-                                      {result.sender.name
-                                        .slice(0, 2)
-                                        .toUpperCase()}
-                                    </AvatarFallback>
-                                  </Avatar>
-
-                                  <div className="min-w-0 flex-1 space-y-2">
-                                    <div className="flex flex-wrap items-center gap-2">
-                                      <span className="font-semibold text-foreground text-sm">
-                                        {result.sender.name}
-                                      </span>
-                                      <span className="text-muted-foreground text-xs">
-                                        {new Intl.DateTimeFormat("en-US", {
-                                          month: "short",
-                                          day: "numeric",
-                                          hour: "numeric",
-                                          minute: "numeric",
-                                        }).format(new Date(result.createdAt))}
-                                      </span>
-                                      {result.parentMessageId ? (
-                                        <Badge variant="secondary">
-                                          Thread
-                                        </Badge>
-                                      ) : null}
-                                    </div>
-
-                                    {previewHtml ? (
-                                      <div className="rounded-lg bg-muted/50 px-3 py-2">
-                                        <div className="ProseMirror prose-sm dark:prose-invert max-h-28 overflow-hidden break-words text-sm leading-relaxed [&_mark]:rounded-sm [&_mark]:bg-primary/20 [&_mark]:px-0.5 [&_mark]:text-foreground">
-                                          {parse(
-                                            DOMPurify.sanitize(previewHtml, {
-                                              ADD_ATTR: ["target", "rel"],
-                                            })
-                                          )}
-                                        </div>
-                                      </div>
-                                    ) : (
-                                      <div className="rounded-lg bg-muted/50 px-3 py-2 text-muted-foreground text-sm">
-                                        No text content
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </ScrollArea>
-
-                      {hasMore ? (
-                        <div className="border-t p-2">
-                          <Button
-                            className="w-full"
-                            disabled={isLoading}
-                            onClick={loadMore}
-                            variant="ghost"
-                          >
-                            Load more results
-                          </Button>
-                        </div>
-                      ) : null}
-                    </>
-                  );
-                }
-
-                return (
-                  <div className="p-3">
-                    <Empty className="border-muted/70 bg-muted/20 p-8">
-                      <EmptyHeader>
-                        <EmptyMedia variant="icon">
-                          <IconSearch className="h-5 w-5" />
-                        </EmptyMedia>
-                        <EmptyTitle className="text-base">
-                          No messages found
-                        </EmptyTitle>
-                        <EmptyDescription>
-                          Try another keyword.
-                        </EmptyDescription>
-                      </EmptyHeader>
-                    </Empty>
-                  </div>
-                );
-              })()}
+              {popoverContent}
             </PopoverContent>
           </Popover>
 
