@@ -5,8 +5,9 @@ export const env = createEnv({
   server: {
     DATABASE_URL: z.url(),
     RABBITMQ_URL: z.string(),
-    OPENSEARCH_URL: z.string().default("http://localhost:9200"),
+    OPENSEARCH_URL: z.url().default("http://localhost:9200"),
     PREFETCH_COUNT: z.coerce.number().int().positive().default(10),
+    MAX_RETRIES: z.coerce.number().int().nonnegative().default(3),
     ENV: z
       .enum(["development", "staging", "testing", "production"])
       .default("development"),
