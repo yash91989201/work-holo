@@ -223,7 +223,20 @@ export function useVirtualMessages() {
       return item.id === highlightedMessageId;
     });
 
-    if (targetIndex === -1) return;
+    if (targetIndex === -1) {
+      if (hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+        return;
+      }
+
+      const timeoutId = window.setTimeout(() => {
+        clearHighlightedMessage();
+      }, 800);
+
+      return () => {
+        window.clearTimeout(timeoutId);
+      };
+    }
 
     isAutoScrollingRef.current = true;
     setShowScrollButton(false);
@@ -257,6 +270,9 @@ export function useVirtualMessages() {
       window.clearTimeout(resetAutoScrollTimeout);
     };
   }, [
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
     clearHighlightedMessage,
     highlightedAt,
     highlightedMessageId,

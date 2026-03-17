@@ -169,6 +169,7 @@ export function useVirtualMessageThread({ messageId }: { messageId: string }) {
     totalSize,
     message,
     threadMessages,
+    fetchNextPage,
     isLoading,
     isFetchingNextPage,
     hasNextPage,

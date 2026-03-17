@@ -53,16 +53,8 @@ interface MentionsSidebarState {
   isOpen: boolean;
 }
 
-interface SearchSidebarState {
-  isOpen: boolean;
-}
-
 interface ReplyingToMessageState {
   message: MessageWithSender | null;
-}
-
-interface SearchSidebarState {
-  isOpen: boolean;
 }
 
 interface HighlightedMessageState {
@@ -84,7 +76,6 @@ interface ChannelState {
   closeMentionsSidebar: () => void;
   closeMessageThread: () => void;
   closePinnedMessages: () => void;
-  closeSearchSidebar: () => void;
   composerFocus: ComposerFocusState;
   focusMainComposer: () => void;
   focusThreadComposer: () => void;
@@ -106,10 +97,8 @@ interface ChannelState {
   openMessageThread: (messageId: string) => void;
 
   openPinnedMessages: () => void;
-  openSearchSidebar: () => void;
   pinnedMessages: PinnedMessagesState;
   replyingToMessage: ReplyingToMessageState;
-  searchSidebar: SearchSidebarState;
   setMainComposerFocus: (handler: (() => void) | null) => void;
   setReplyingToMessage: (message: MessageWithSender) => void;
   setThreadComposerFocus: (handler: (() => void) | null) => void;
@@ -129,9 +118,6 @@ const useChannelStore = create<ChannelState>((set, get) => ({
   infoSidebar: { isOpen: false },
   maximizedMessageComposer: { ...defaultMaximizedComposerState },
   pinnedMessages: {
-    isOpen: false,
-  },
-  searchSidebar: {
     isOpen: false,
   },
   mentionsSidebar: {
@@ -180,8 +166,6 @@ const useChannelStore = create<ChannelState>((set, get) => ({
     set({ messageThread: { messageId: null, isOpen: false } }),
   openPinnedMessages: () => set({ pinnedMessages: { isOpen: true } }),
   closePinnedMessages: () => set({ pinnedMessages: { isOpen: false } }),
-  openSearchSidebar: () => set({ searchSidebar: { isOpen: true } }),
-  closeSearchSidebar: () => set({ searchSidebar: { isOpen: false } }),
   openMentionsSidebar: () => set({ mentionsSidebar: { isOpen: true } }),
   closeMentionsSidebar: () => set({ mentionsSidebar: { isOpen: false } }),
   setMainComposerFocus: (handler) =>
@@ -321,25 +305,6 @@ export function useMentionsSidebar() {
     openMentionsSidebar,
     closeMentionsSidebar,
     toggleMentionsSidebar,
-  };
-}
-
-export function useSearchSidebar() {
-  const isOpen = useChannelStore((state) => state.searchSidebar.isOpen);
-
-  const openSearchSidebar = useChannelStore((state) => state.openSearchSidebar);
-
-  const closeSearchSidebar = useChannelStore(
-    (state) => state.closeSearchSidebar
-  );
-
-  const toggleSearchSidebar = isOpen ? closeSearchSidebar : openSearchSidebar;
-
-  return {
-    isOpen,
-    openSearchSidebar,
-    closeSearchSidebar,
-    toggleSearchSidebar,
   };
 }
 
