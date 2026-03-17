@@ -11,6 +11,8 @@ export const ListInvitationsInput = z
     page: z.number().min(1).default(1),
     perPage: z.number().min(1).max(100).default(10),
     search: z.string().optional(),
+    role: z.string().optional(),
+    status: z.enum(["pending", "accepted", "rejected", "expired"]).optional(),
     filters: z
       .object({
         role: z.string().optional(),
