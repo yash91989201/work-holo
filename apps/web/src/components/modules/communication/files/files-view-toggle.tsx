@@ -1,0 +1,57 @@
+"use client";
+
+import { IconLayoutGrid, IconTable } from "@tabler/icons-react";
+import { useNavigate, useSearch } from "@tanstack/react-router";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { cn } from "@/lib/utils";
+
+type ViewType = "table" | "grid";
+
+export function FilesViewToggle() {
+  const navigate = useNavigate();
+  const search = useSearch({
+    from: "/(authenticated)/org/$slug/workspace/communication/files",
+  });
+
+  const currentView = (search.view as ViewType) || "table";
+
+  const handleViewChange = (value: string) => {
+    if (!value) return;
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        view: value as ViewType,
+      }),
+    });
+  };
+
+  return (
+    <ToggleGroup
+      className="justify-end"
+      onValueChange={handleViewChange}
+      type="single"
+      value={currentView}
+    >
+      <ToggleGroupItem
+        aria-label="Table view"
+        className={cn(
+          "data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+        )}
+        title="Table view"
+        value="table"
+      >
+        <IconTable className="h-4 w-4" />
+      </ToggleGroupItem>
+      <ToggleGroupItem
+        aria-label="Grid view"
+        className={cn(
+          "data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+        )}
+        title="Grid view"
+        value="grid"
+      >
+        <IconLayoutGrid className="h-4 w-4" />
+      </ToggleGroupItem>
+    </ToggleGroup>
+  );
+}
