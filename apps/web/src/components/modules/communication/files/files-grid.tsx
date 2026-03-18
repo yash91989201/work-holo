@@ -50,6 +50,10 @@ export const FilesGrid = () => {
 
   const pageIndex = (search.page ?? 1) - 1;
   const pageSize = search.perPage ?? 20;
+  const hasActiveFilters =
+    Boolean(search.search) ||
+    search.type !== "all" ||
+    Boolean(search.channelId);
 
   const {
     data: { files, total, pageCount },
@@ -90,8 +94,22 @@ export const FilesGrid = () => {
     });
   };
 
+  const resetFilters = () => {
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        search: undefined,
+        type: "all",
+        channelId: undefined,
+        sortBy: "createdAt",
+        sortOrder: "desc",
+        page: 1,
+      }),
+    });
+  };
+
   return (
-    <Card variant="neumorphic">
+    <Card data-testid="files-grid" variant="neumorphic">
       <CardContent className="p-4 sm:p-6">
         {files.length > 0 ? (
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
@@ -195,9 +213,26 @@ export const FilesGrid = () => {
             })}
           </div>
         ) : (
-          <div className="flex h-64 flex-col items-center justify-center gap-2">
+          <div className="flex h-64 flex-col items-center justify-center gap-2 text-center">
             <IconLayoutDashboardFilled className="h-8 w-8 text-muted-foreground/50" />
-            <p className="text-muted-foreground">No files found</p>
+            {hasActiveFilters ? (
+              <>
+                <p className="font-medium">No files match your filters</p>
+                <p className="max-w-sm text-muted-foreground text-sm">
+                  Try adjusting your search or selected filters to find files.
+                </p>
+                <Button onClick={resetFilters} size="sm" variant="outline">
+                  Reset
+                </Button>
+              </>
+            ) : (
+              <>
+                <p className="font-medium">No files yet</p>
+                <p className="max-w-sm text-muted-foreground text-sm">
+                  Files shared in your channels will appear here.
+                </p>
+              </>
+            )}
           </div>
         )}
       </CardContent>
@@ -234,7 +269,10 @@ export const FilesGrid = () => {
             Showing {files.length} of {total} files
           </div>
         </div>
-        <div className="flex items-center space-x-2">
+        <div
+          className="flex items-center space-x-2"
+          data-testid="files-pagination"
+        >
           <Button
             className="h-8 px-3"
             disabled={!canPreviousPage}

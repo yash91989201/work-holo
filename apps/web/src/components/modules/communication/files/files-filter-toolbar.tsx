@@ -116,6 +116,7 @@ export function FilesFilterToolbar() {
             <IconSearch />
           </InputGroupAddon>
           <InputGroupInput
+            data-testid="files-search-input"
             onChange={(e) => setSearchValue(e.target.value)}
             placeholder="Search files..."
             value={searchValue}
@@ -123,7 +124,7 @@ export function FilesFilterToolbar() {
         </InputGroup>
 
         <Select onValueChange={handleTypeChange} value={searchParams.type}>
-          <SelectTrigger className="w-[140px]">
+          <SelectTrigger className="w-[140px]" data-testid="files-type-filter">
             <SelectValue placeholder="Type" />
           </SelectTrigger>
           <SelectContent>
@@ -140,7 +141,10 @@ export function FilesFilterToolbar() {
           onValueChange={handleChannelChange}
           value={searchParams.channelId || "all"}
         >
-          <SelectTrigger className="w-[160px]">
+          <SelectTrigger
+            className="w-[160px]"
+            data-testid="files-channel-filter"
+          >
             <SelectValue placeholder="Channel" />
           </SelectTrigger>
           <SelectContent>
@@ -154,7 +158,7 @@ export function FilesFilterToolbar() {
         </Select>
 
         <Select onValueChange={handleSortChange} value={sortValue}>
-          <SelectTrigger className="w-[160px]">
+          <SelectTrigger className="w-[160px]" data-testid="files-sort-select">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent>

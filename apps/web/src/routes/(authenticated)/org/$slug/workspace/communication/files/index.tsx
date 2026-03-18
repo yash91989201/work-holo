@@ -1,5 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Suspense } from "react";
 import { z } from "zod";
+import { FilesFilterToolbar } from "@/components/modules/communication/files/files-filter-toolbar";
+import { FilesGrid } from "@/components/modules/communication/files/files-grid";
+import { FilesTable } from "@/components/modules/communication/files/files-table";
+import { FilesViewToggle } from "@/components/modules/communication/files/files-view-toggle";
 
 const FilesSearchSchema = z.object({
   page: z.number().int().positive().catch(1),
@@ -23,9 +28,29 @@ export const Route = createFileRoute(
 });
 
 function RouteComponent() {
+  const { view } = Route.useSearch();
+
   return (
-    <section className="p-6">
-      <h1>Files</h1>
+    <section className="space-y-6 p-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="font-bold text-2xl">Files</h1>
+          <p className="text-muted-foreground">
+            Browse all files shared in your channels
+          </p>
+        </div>
+        <div data-testid="files-view-toggle">
+          <FilesViewToggle />
+        </div>
+      </div>
+      <FilesFilterToolbar />
+      <Suspense
+        fallback={
+          view === "grid" ? <FilesGrid.Fallback /> : <FilesTable.Fallback />
+        }
+      >
+        {view === "grid" ? <FilesGrid /> : <FilesTable />}
+      </Suspense>
     </section>
   );
 }

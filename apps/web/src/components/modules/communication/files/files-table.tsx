@@ -16,7 +16,6 @@ import {
   type SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import type { ChannelFileOutput } from "@work-holo/api/lib/schemas/attachment";
 import { format } from "date-fns";
 import { useMemo, useState } from "react";
 
@@ -77,6 +76,24 @@ export const FilesTable = () => {
     pageIndex: (search.page ?? 1) - 1,
     pageSize: search.perPage ?? 20,
   };
+  const hasActiveFilters =
+    Boolean(search.search) ||
+    search.type !== "all" ||
+    Boolean(search.channelId);
+
+  const resetFilters = () => {
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        search: undefined,
+        type: "all",
+        channelId: undefined,
+        sortBy: "createdAt",
+        sortOrder: "desc",
+        page: 1,
+      }),
+    });
+  };
 
   const {
     data: { files, total, pageCount },
@@ -96,7 +113,9 @@ export const FilesTable = () => {
     })
   );
 
-  const columns = useMemo<ColumnDef<ChannelFileOutput>[]>(
+  type ChannelFile = (typeof files)[number];
+
+  const columns = useMemo<ColumnDef<ChannelFile>[]>(
     () => [
       {
         accessorKey: "originalName",
@@ -300,7 +319,7 @@ export const FilesTable = () => {
   });
 
   return (
-    <Card variant="neumorphic">
+    <Card data-testid="files-table" variant="neumorphic">
       <CardContent className="p-0">
         <div className="overflow-hidden">
           <Table>
@@ -351,7 +370,31 @@ export const FilesTable = () => {
                   >
                     <div className="flex flex-col items-center justify-center gap-2">
                       <IconLayoutDashboardFilled className="h-8 w-8 text-muted-foreground/50" />
-                      <p className="text-muted-foreground">No files found</p>
+                      {hasActiveFilters ? (
+                        <>
+                          <p className="font-medium">
+                            No files match your filters
+                          </p>
+                          <p className="max-w-sm text-muted-foreground text-sm">
+                            Try adjusting your search or selected filters to
+                            find files.
+                          </p>
+                          <Button
+                            onClick={resetFilters}
+                            size="sm"
+                            variant="outline"
+                          >
+                            Reset
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <p className="font-medium">No files yet</p>
+                          <p className="max-w-sm text-muted-foreground text-sm">
+                            Files shared in your channels will appear here.
+                          </p>
+                        </>
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>
@@ -393,7 +436,10 @@ export const FilesTable = () => {
             Showing {files.length} of {total} files
           </div>
         </div>
-        <div className="flex items-center space-x-2">
+        <div
+          className="flex items-center space-x-2"
+          data-testid="files-pagination"
+        >
           <Button
             className="h-8 px-3"
             disabled={!table.getCanPreviousPage()}
