@@ -45,14 +45,23 @@ export const FileActions = ({ file, trigger }: FileActionsProps) => {
   const { slug } = routeApi.useParams();
   const [previewOpen, setPreviewOpen] = useState(false);
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (!file.url) return;
-    const a = document.createElement("a");
-    a.href = file.url;
-    a.download = file.originalName;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    try {
+      const response = await fetch(file.url);
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = file.originalName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error("Failed to download file:", error);
+      toast.error("Failed to download file");
+    }
   };
 
   const handleCopyLink = () => {
