@@ -2,7 +2,6 @@ import {
   IconArrowAutofitHeightFilled,
   IconCircleChevronLeftFilled,
   IconCircleChevronRightFilled,
-  IconDots,
   IconHash,
   IconLayoutDashboardFilled,
 } from "@tabler/icons-react";
@@ -24,12 +23,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   Select,
   SelectContent,
   SelectItem,
@@ -46,7 +39,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { queryUtils } from "@/utils/orpc";
-
+import { FileActions } from "./file-actions";
 import {
   formatFileSize,
   getFileIcon,
@@ -252,22 +245,10 @@ export const FilesTable = () => {
       {
         id: "actions",
         header: () => <div className="text-right">Actions</div>,
-        cell: () => {
+        cell: ({ row }) => {
           return (
             <div className="text-right">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button className="h-8 w-8 p-0" variant="ghost">
-                    <span className="sr-only">Open menu</span>
-                    <IconDots className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem disabled>
-                    Actions coming soon
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <FileActions file={row.original} />
             </div>
           );
         },

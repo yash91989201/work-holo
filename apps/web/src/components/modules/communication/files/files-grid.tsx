@@ -15,12 +15,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   Select,
   SelectContent,
   SelectItem,
@@ -29,6 +23,7 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { queryUtils } from "@/utils/orpc";
+import { FileActions } from "./file-actions";
 
 import {
   formatFileSize,
@@ -123,8 +118,9 @@ export const FilesGrid = () => {
                   key={file.id}
                 >
                   <div className="absolute top-2 right-2 z-10 opacity-0 transition-opacity group-hover:opacity-100">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
+                    <FileActions
+                      file={file}
+                      trigger={
                         <Button
                           className="h-8 w-8 bg-background/80 p-0 backdrop-blur-sm hover:bg-background"
                           variant="ghost"
@@ -132,13 +128,8 @@ export const FilesGrid = () => {
                           <span className="sr-only">Open menu</span>
                           <IconDots className="h-4 w-4" />
                         </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem disabled>
-                          Actions coming soon
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                      }
+                    />
                   </div>
 
                   <div className="relative aspect-square w-full overflow-hidden bg-muted">
