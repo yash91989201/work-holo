@@ -1,0 +1,1 @@
+CREATE INDEX "idx_attachment_message_id" ON "attachment" USING btree ("messageId");
