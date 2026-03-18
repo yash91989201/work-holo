@@ -54,6 +54,8 @@ function getFileSizeLimit(bucket: BucketName): number {
       return FILE_SIZE_LIMITS.IMAGE;
     case BUCKETS.MESSAGE_AUDIO:
       return FILE_SIZE_LIMITS.AUDIO;
+    case BUCKETS.NOTIFICATION_SOUND:
+      return FILE_SIZE_LIMITS.NOTIFICATION_SOUND;
     default:
       return FILE_SIZE_LIMITS.DEFAULT;
   }

@@ -143,7 +143,6 @@ electricRouter.get("/shapes/accounts", requireAuth, (c) => {
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", "account");
-  // Users can only see their own accounts
   const filter = `"userId" = '${context.session?.user.id}'`;
   originUrl.searchParams.set("where", filter);
 
@@ -155,7 +154,6 @@ electricRouter.get("/shapes/sessions", requireAuth, (c) => {
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", "session");
-  // Users can only see their own sessions
   const filter = `"userId" = '${context.session?.user.id}'`;
   originUrl.searchParams.set("where", filter);
 
@@ -167,7 +165,6 @@ electricRouter.get("/shapes/invitations", requireOrgMember, (c) => {
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", "invitation");
-  // Users can see invitations related to their organization
   const filter = `"organizationId" = '${context.session?.session.activeOrganizationId}'`;
   originUrl.searchParams.set("where", filter);
 
@@ -179,7 +176,6 @@ electricRouter.get("/shapes/members", requireOrgMember, (c) => {
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", "member");
-  // Users can see all members in their organization
   const filter = `"organizationId" = '${context.session?.session.activeOrganizationId}'`;
   originUrl.searchParams.set("where", filter);
 
@@ -191,7 +187,6 @@ electricRouter.get("/shapes/organizations", requireAuth, (c) => {
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", "organization");
-  // Users can see organizations they belong to
   const filter = `id IN (SELECT "organizationId" FROM member WHERE "userId" = '${context.session?.user.id}')`;
   originUrl.searchParams.set("where", filter);
 
@@ -203,7 +198,6 @@ electricRouter.get("/shapes/teams", requireOrgMember, (c) => {
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", "team");
-  // Users can see teams in their organization
   const filter = `"organizationId" = '${context.session?.session.activeOrganizationId}'`;
   originUrl.searchParams.set("where", filter);
 
@@ -215,7 +209,6 @@ electricRouter.get("/shapes/team-members", requireOrgMember, (c) => {
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", '"teamMember"');
-  // Users can see team members for teams in their organization
   const filter = `teamId IN (SELECT id FROM team WHERE "organizationId" = '${context.session?.session.activeOrganizationId}')`;
   originUrl.searchParams.set("where", filter);
 
@@ -227,7 +220,6 @@ electricRouter.get("/shapes/verifications", requireAuth, (c) => {
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", "verification");
-  // Users can only see their own verifications
   const filter = `"userId" = '${context.session?.user.id}'`;
   originUrl.searchParams.set("where", filter);
 
@@ -242,7 +234,6 @@ electricRouter.get("/shapes/attendance", requireOrgMember, (c) => {
   const originUrl = prepareElectricUrl(c.req.url);
   originUrl.searchParams.set("table", "attendance");
 
-  // User's own attendance in active org only
   const filter = `"userId" = '${userId}' AND "organizationId" = '${orgId}'`;
   originUrl.searchParams.set("where", filter);
 
@@ -257,7 +248,6 @@ electricRouter.get("/shapes/channels", requireOrgMember, (c) => {
   const originUrl = prepareElectricUrl(c.req.url);
   originUrl.searchParams.set("table", "channel");
 
-  // Only channels user is member of in active org
   const filter = `"organizationId" = '${orgId}' AND id IN (SELECT "channelId" FROM "channelMember" WHERE "userId" = '${userId}')`;
   originUrl.searchParams.set("where", filter);
 
@@ -272,7 +262,6 @@ electricRouter.get("/shapes/channel-members", requireOrgMember, (c) => {
   const originUrl = prepareElectricUrl(c.req.url);
   originUrl.searchParams.set("table", '"channelMember"');
 
-  // Only members of channels user can see
   const filter = `"channelId" IN (SELECT id FROM channel WHERE "organizationId" = '${orgId}' AND id IN (SELECT "channelId" FROM "channelMember" WHERE "userId" = '${userId}'))`;
   originUrl.searchParams.set("where", filter);
 
@@ -284,7 +273,6 @@ electricRouter.get("/shapes/notifications", requireAuth, (c) => {
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", "notification");
-  // Users can only see their own notifications
   const filter = `"userId" = '${context.session?.user.id}'`;
   originUrl.searchParams.set("where", filter);
 
@@ -296,17 +284,8 @@ electricRouter.get("/shapes/message-read", requireAuth, (c) => {
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", '"messageRead"');
-  // Users can only see their own message read status
   const filter = `"userId" = '${context.session?.user.id}'`;
   originUrl.searchParams.set("where", filter);
-
-  return sendProxyResponse(originUrl);
-});
-
-electricRouter.get("/shapes/channel-join-requests", requireAuth, (c) => {
-  const originUrl = prepareElectricUrl(c.req.url);
-
-  originUrl.searchParams.set("table", '"channelJoinRequest"');
 
   return sendProxyResponse(originUrl);
 });
@@ -316,7 +295,6 @@ electricRouter.get("/shapes/channel-read", requireAuth, (c) => {
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", '"channelRead"');
-  // Users can only see their own channel read status
   const filter = `"userId" = '${context.session?.user.id}'`;
   originUrl.searchParams.set("where", filter);
 
@@ -327,8 +305,6 @@ electricRouter.get("/shapes/message-read-summary", requireAuth, (c) => {
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", '"messageReadSummary"');
-  // Note: No server-side filtering - client will only display summaries for messages they can see
-  // This avoids nested subqueries which Electric SQL doesn't support
 
   return sendProxyResponse(originUrl);
 });
@@ -340,8 +316,6 @@ electricRouter.get(
     const originUrl = prepareElectricUrl(c.req.url);
 
     originUrl.searchParams.set("table", '"channelReadProcessedWatermark"');
-    // Note: No server-side filtering - this is worker metadata, minimal security concern
-    // Client-side filtering will handle display based on accessible channels
 
     return sendProxyResponse(originUrl);
   }
@@ -352,7 +326,102 @@ electricRouter.get("/shapes/push-subscriptions", requireAuth, (c) => {
   const originUrl = prepareElectricUrl(c.req.url);
 
   originUrl.searchParams.set("table", '"pushSubscription"');
-  // Users can only see their own push subscriptions
+  const filter = `"userId" = '${context.session?.user.id}'`;
+  originUrl.searchParams.set("where", filter);
+
+  return sendProxyResponse(originUrl);
+});
+
+// ============================================================
+// Direct Message Shape Endpoints
+// ============================================================
+
+electricRouter.get("/shapes/dm-conversations", requireOrgMember, async (c) => {
+  const context = c.var.context;
+  const orgId = context.session?.session.activeOrganizationId;
+  const userId = context.session?.user.id;
+
+  const originUrl = prepareElectricUrl(c.req.url);
+  originUrl.searchParams.set("table", '"dmConversation"');
+
+  const filter = `("participantOneId" = '${userId}' OR "participantTwoId" = '${userId}') AND "organizationId" = '${orgId}'`;
+  originUrl.searchParams.set("where", filter);
+
+  return sendProxyResponse(originUrl);
+});
+
+electricRouter.get("/shapes/dm-messages", requireOrgMember, async (c) => {
+  const context = c.var.context;
+  const orgId = context.session?.session.activeOrganizationId;
+  const userId = context.session?.user.id;
+
+  const originUrl = prepareElectricUrl(c.req.url);
+  originUrl.searchParams.set("table", '"dmMessage"');
+
+  const filter = `"conversationId" IN (SELECT id FROM "dmConversation" WHERE ("participantOneId" = '${userId}' OR "participantTwoId" = '${userId}') AND "organizationId" = '${orgId}')`;
+  originUrl.searchParams.set("where", filter);
+
+  return sendProxyResponse(originUrl);
+});
+
+electricRouter.get("/shapes/dm-attachments", requireOrgMember, async (c) => {
+  const context = c.var.context;
+  const orgId = context.session?.session.activeOrganizationId;
+  const userId = context.session?.user.id;
+
+  const originUrl = prepareElectricUrl(c.req.url);
+  originUrl.searchParams.set("table", '"dmAttachment"');
+
+  const filter = `"messageId" IN (SELECT id FROM "dmMessage" WHERE "conversationId" IN (SELECT id FROM "dmConversation" WHERE ("participantOneId" = '${userId}' OR "participantTwoId" = '${userId}') AND "organizationId" = '${orgId}'))`;
+  originUrl.searchParams.set("where", filter);
+
+  return sendProxyResponse(originUrl);
+});
+
+electricRouter.get("/shapes/dm-reactions", requireOrgMember, async (c) => {
+  const context = c.var.context;
+  const orgId = context.session?.session.activeOrganizationId;
+  const userId = context.session?.user.id;
+
+  const originUrl = prepareElectricUrl(c.req.url);
+  originUrl.searchParams.set("table", '"dmMessageReaction"');
+
+  const filter = `"messageId" IN (SELECT id FROM "dmMessage" WHERE "conversationId" IN (SELECT id FROM "dmConversation" WHERE ("participantOneId" = '${userId}' OR "participantTwoId" = '${userId}') AND "organizationId" = '${orgId}'))`;
+  originUrl.searchParams.set("where", filter);
+
+  return sendProxyResponse(originUrl);
+});
+
+electricRouter.get("/shapes/dm-message-reads", requireOrgMember, async (c) => {
+  const context = c.var.context;
+  const orgId = context.session?.session.activeOrganizationId;
+  const userId = context.session?.user.id;
+
+  const originUrl = prepareElectricUrl(c.req.url);
+  originUrl.searchParams.set("table", '"dmMessageRead"');
+
+  const filter = `"userId" = '${userId}' AND "messageId" IN (SELECT id FROM "dmMessage" WHERE "conversationId" IN (SELECT id FROM "dmConversation" WHERE ("participantOneId" = '${userId}' OR "participantTwoId" = '${userId}') AND "organizationId" = '${orgId}'))`;
+  originUrl.searchParams.set("where", filter);
+
+  return sendProxyResponse(originUrl);
+});
+
+electricRouter.get("/shapes/dm-conversation-reads", requireAuth, (c) => {
+  const context = c.var.context;
+  const originUrl = prepareElectricUrl(c.req.url);
+
+  originUrl.searchParams.set("table", '"dmConversationRead"');
+  const filter = `"userId" = '${context.session?.user.id}'`;
+  originUrl.searchParams.set("where", filter);
+
+  return sendProxyResponse(originUrl);
+});
+
+electricRouter.get("/shapes/dm-conversation-mutes", requireAuth, (c) => {
+  const context = c.var.context;
+  const originUrl = prepareElectricUrl(c.req.url);
+
+  originUrl.searchParams.set("table", '"dmConversationMute"');
   const filter = `"userId" = '${context.session?.user.id}'`;
   originUrl.searchParams.set("where", filter);
 

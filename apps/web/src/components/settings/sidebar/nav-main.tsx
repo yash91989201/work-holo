@@ -1,5 +1,11 @@
+import {
+  IconBellRinging,
+  IconColorSwatch,
+  IconKey,
+  IconLock,
+  IconUserFilled,
+} from "@tabler/icons-react";
 import { Link, linkOptions } from "@tanstack/react-router";
-import { BellDot, Key, SwatchBook, User, UserLock } from "lucide-react";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -12,27 +18,27 @@ const items = linkOptions([
   {
     label: "Preferences",
     to: "/settings/account/preferences",
-    icon: SwatchBook,
+    icon: IconColorSwatch,
   },
   {
     label: "Profile",
     to: "/settings/account/profile",
-    icon: User,
+    icon: IconUserFilled,
   },
   {
     label: "Notifications",
     to: "/settings/account/notifications",
-    icon: BellDot,
+    icon: IconBellRinging,
   },
   {
     label: "Security & access",
     to: "/settings/account/security",
-    icon: UserLock,
+    icon: IconLock,
   },
   {
     label: "Sessions",
     to: "/settings/account/sessions",
-    icon: Key,
+    icon: IconKey,
   },
 ]);
 

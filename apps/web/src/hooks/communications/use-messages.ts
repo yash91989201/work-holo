@@ -24,8 +24,8 @@ import { useChannelMessageHighlight } from "@/stores/channel-store";
 import { useChannelLastRead } from "./use-channel-last-read";
 
 export function useVirtualMessages() {
-  const { id: channelId } = useParams({
-    from: "/(authenticated)/org/$slug/(modules)/communication/channels/$id",
+  const { channelId } = useParams({
+    from: "/(authenticated)/org/$slug/workspace/communication/channels/$channelId",
   });
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -223,7 +223,20 @@ export function useVirtualMessages() {
       return item.id === highlightedMessageId;
     });
 
-    if (targetIndex === -1) return;
+    if (targetIndex === -1) {
+      if (hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+        return;
+      }
+
+      const timeoutId = window.setTimeout(() => {
+        clearHighlightedMessage();
+      }, 800);
+
+      return () => {
+        window.clearTimeout(timeoutId);
+      };
+    }
 
     isAutoScrollingRef.current = true;
     setShowScrollButton(false);
@@ -231,9 +244,16 @@ export function useVirtualMessages() {
     const frameId = requestAnimationFrame(() => {
       virtualizer.scrollToIndex(targetIndex, {
         align: "center",
-        behavior: "smooth",
+        behavior: "auto",
       });
     });
+
+    const settleScrollTimeout = window.setTimeout(() => {
+      virtualizer.scrollToIndex(targetIndex, {
+        align: "center",
+        behavior: "auto",
+      });
+    }, 120);
 
     const resetAutoScrollTimeout = window.setTimeout(() => {
       isAutoScrollingRef.current = false;
@@ -245,10 +265,14 @@ export function useVirtualMessages() {
 
     return () => {
       cancelAnimationFrame(frameId);
+      window.clearTimeout(settleScrollTimeout);
       window.clearTimeout(timeoutId);
       window.clearTimeout(resetAutoScrollTimeout);
     };
   }, [
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
     clearHighlightedMessage,
     highlightedAt,
     highlightedMessageId,

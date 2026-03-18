@@ -4,26 +4,16 @@
     "tanstack": {
       "type": "local",
       "command": ["npx", "-y", "@tanstack/cli", "mcp"],
-      "enabled": true
+      "enabled": false
     },
     "context7": {
       "type": "local",
-      "command": ["npx", "-y", "@upstash/context7-mcp"],
-      "enabled": true
+      "command": ["npx", "-y", "@upstash/context7-mcp"]
     },
     "shadcn": {
       "type": "local",
       "command": ["npx", "shadcn@latest", "mcp"],
-      "enabled": true
-    },
-    "morph": {
-      "type": "local",
-      "command": ["npx", "-y", "@morphllm/morphmcp"],
-      "enabled": true,
-      "environment": {
-        "MORPH_API_KEY": "{env:MORPH_API_KEY}",
-        "ENABLED_TOOLS": "edit_file,warpgrep_codebase_search"
-      }
+      "enabled": false
     },
     "tavily": {
       "command": ["npx", "-y", "tavily-mcp"],

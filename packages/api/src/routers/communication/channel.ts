@@ -1,88 +1,87 @@
 import { ORPCError } from "@orpc/server";
 import { ChannelSchema } from "@work-holo/db/lib/schemas/db-tables";
 import {
-  channelJoinRequestTable,
   channelMemberTable,
+  channelReadTable,
   channelTable,
   member,
+  messageTable,
   notificationTable,
   teamMember,
   user as userTable,
 } from "@work-holo/db/schema/index";
-import { and, asc, count, desc, eq, inArray, like, not } from "drizzle-orm";
-import type { Context } from "../../context";
-import { orgAdminProcedure, orgMemberProcedure } from "../../index";
+import {
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  getTableColumns,
+  gt,
+  inArray,
+  like,
+  not,
+} from "drizzle-orm";
+import { orgMemberProcedure, protectedProcedure } from "../../index";
 import { generateTxId } from "../../lib/electric-proxy";
 import {
-  ChannelJoinRequestInput,
-  ChannelJoinRequestOutput,
   CreateChannelInput,
   CreateChannelOutput,
   DeleteChannelInput,
   DeletechannelOutput,
   GetChannelInput,
   GetChannelOutput,
-  IsChannelMemberInput,
-  IsChannelMemberOutput,
+  GetChannelUnreadCountsInput,
+  GetChannelUnreadCountsOutput,
   ListChannelMembersInput,
   ListChannelMembersOutput,
   ListChannelsInput,
   ListChannelsOutput,
-  ListJoinRequestInput,
-  ListJoinRequestOutput,
   ModifyChannelMembersInput,
   SuccessOutput,
   UpdateChannelInput,
 } from "../../lib/schemas/channel";
 
-/**
- * Verifies user is a member of the specified channel
- * @throws ORPCError if not a member or channel doesn't belong to org
- */
-async function verifyChannelMembership(
-  db: Context["db"],
-  channelId: string,
-  userId: string,
-  orgId: string
-) {
-  // First verify channel belongs to org
-  const channel = await db.query.channelTable.findFirst({
-    where: eq(channelTable.id, channelId),
-    columns: { organizationId: true },
+function getChannelOrderBy(sorting?: Array<{ id: string; desc: boolean }>) {
+  if (!sorting || sorting.length === 0) {
+    return [desc(channelTable.createdAt)];
+  }
+
+  return sorting.map((sort) => {
+    if (sort.id === "name") {
+      return sort.desc ? desc(channelTable.name) : asc(channelTable.name);
+    }
+    if (sort.id === "createdAt") {
+      return sort.desc
+        ? desc(channelTable.createdAt)
+        : asc(channelTable.createdAt);
+    }
+    if (sort.id === "type") {
+      return sort.desc ? desc(channelTable.type) : asc(channelTable.type);
+    }
+    return desc(channelTable.createdAt);
   });
-
-  if (!channel) {
-    throw new ORPCError("NOT_FOUND", {
-      message: "Channel not found",
-    });
-  }
-
-  if (channel.organizationId !== orgId) {
-    throw new ORPCError("FORBIDDEN", {
-      message: "Channel does not belong to your organization",
-    });
-  }
-
-  // Verify user is channel member
-  const membership = await db.query.channelMemberTable.findFirst({
-    where: and(
-      eq(channelMemberTable.channelId, channelId),
-      eq(channelMemberTable.userId, userId)
-    ),
-  });
-
-  if (!membership) {
-    throw new ORPCError("FORBIDDEN", {
-      message: "You are not a member of this channel",
-    });
-  }
 }
 
 export const channelRouter = {
+  /**
+   * Creates a new communication channel within the organization.
+   * Automatically adds org owners/admins as channel members. For team channels,
+   * also adds all team members.
+   *
+   * @param input.name - Channel name
+   * @param input.type - Channel type (e.g. "team", "general")
+   * @param input.teamId - Required when type is "team"
+   * @param input.memberIds - User IDs to add as members (non-team channels)
+   * @returns The created channel record and transaction ID
+   * @throws INTERNAL_SERVER_ERROR if channel creation fails
+   */
   create: orgMemberProcedure
     .input(CreateChannelInput)
     .output(CreateChannelOutput)
-    .handler(async ({ input, context: { db, orgId } }) => {
+    .handler(async ({ input, context: { db, orgId, permission } }) => {
+      await permission.check(permission.channel().create());
+
       try {
         const { txid, channel } = await db.transaction(async (tx) => {
           const txid = await generateTxId(tx);
@@ -169,15 +168,21 @@ export const channelRouter = {
       }
     }),
 
+  /**
+   * Updates channel properties such as name, description, or archive status.
+   * Requires channel access with update permission.
+   *
+   * @param input.channelId - The channel to update
+   * @returns The updated channel record
+   * @throws NOT_FOUND if the channel does not exist
+   */
   update: orgMemberProcedure
     .input(UpdateChannelInput)
     .output(ChannelSchema)
-    .handler(async ({ input, context: { db, session, orgId } }) => {
-      await verifyChannelMembership(
-        db,
+    .handler(async ({ input, context: { db, permission } }) => {
+      await permission.requireChannelAccess(
         input.channelId,
-        session.user.id,
-        orgId
+        permission.channel().update
       );
       const [updatedChannel] = await db
         .update(channelTable)
@@ -194,15 +199,21 @@ export const channelRouter = {
       return updatedChannel;
     }),
 
+  /**
+   * Retrieves a single channel by ID, including creator details.
+   * Requires channel access with view permission.
+   *
+   * @param input.channelId - The channel to retrieve
+   * @returns Channel record with creator user data
+   * @throws Error if the channel does not exist or user lacks access
+   */
   get: orgMemberProcedure
     .input(GetChannelInput)
     .output(GetChannelOutput)
-    .handler(async ({ context: { db, session, orgId }, input }) => {
-      await verifyChannelMembership(
-        db,
+    .handler(async ({ context: { db, permission }, input }) => {
+      await permission.requireChannelAccess(
         input.channelId,
-        session.user.id,
-        orgId
+        permission.channel().read
       );
       const channel = await db.query.channelTable.findFirst({
         where: eq(channelTable.id, input.channelId),
@@ -220,26 +231,27 @@ export const channelRouter = {
       return channel;
     }),
 
+  /**
+   * Lists channels the current user is a member of, with pagination, search,
+   * type/team filtering, archive toggle, and configurable sort order.
+   *
+   * @param input.page - Page number (1-based)
+   * @param input.limit - Results per page
+   * @param input.search - Optional channel name search
+   * @param input.filters.type - Optional channel type filter
+   * @param input.filters.teamId - Optional team ID filter
+   * @param input.filters.includeArchived - Whether to include archived channels
+   * @param input.sorting - Sort configuration (supports name, createdAt, type)
+   * @returns Paginated list of channels with creator details, total count, and page count
+   */
   list: orgMemberProcedure
     .input(ListChannelsInput)
     .output(ListChannelsOutput)
-    .handler(async ({ context: { db, session, orgId }, input }) => {
-      const userId = session.user.id;
+    .handler(async ({ context: { db, orgId }, input }) => {
       const { page, limit, search, filters, sorting } = input;
       const offset = (page - 1) * limit;
 
-      // Base conditions: org match + user is channel member
-      const conditions = [
-        eq(channelTable.organizationId, orgId),
-        // CRITICAL: Only show channels user is member of
-        inArray(
-          channelTable.id,
-          db
-            .select({ channelId: channelMemberTable.channelId })
-            .from(channelMemberTable)
-            .where(eq(channelMemberTable.userId, userId))
-        ),
-      ];
+      const conditions = [eq(channelTable.organizationId, orgId)];
 
       if (search) {
         conditions.push(like(channelTable.name, `%${search}%`));
@@ -260,21 +272,7 @@ export const channelRouter = {
       const whereClause =
         conditions.length > 1 ? and(...conditions) : conditions[0];
 
-      let orderBy = [desc(channelTable.createdAt)];
-
-      if (sorting && sorting.length > 0) {
-        orderBy = sorting.map((sort) => {
-          if (sort.id === "name")
-            return sort.desc ? desc(channelTable.name) : asc(channelTable.name);
-          if (sort.id === "createdAt")
-            return sort.desc
-              ? desc(channelTable.createdAt)
-              : asc(channelTable.createdAt);
-          if (sort.id === "type")
-            return sort.desc ? desc(channelTable.type) : asc(channelTable.type);
-          return desc(channelTable.createdAt);
-        });
-      }
+      const orderBy = getChannelOrderBy(sorting);
 
       const channels = await db.query.channelTable.findMany({
         where: whereClause,
@@ -300,15 +298,21 @@ export const channelRouter = {
       };
     }),
 
+  /**
+   * Lists members of a channel with their user details and role.
+   * Supports optional filtering by member role.
+   *
+   * @param input.channelId - The channel to list members for
+   * @param input.filter.role - Optional role filter
+   * @returns Array of channel members with id, name, email, image, role, and joinedAt
+   */
   listMembers: orgMemberProcedure
     .input(ListChannelMembersInput)
     .output(ListChannelMembersOutput)
-    .handler(async ({ input, context: { db, session, orgId } }) => {
-      await verifyChannelMembership(
-        db,
+    .handler(async ({ input, context: { db, permission } }) => {
+      await permission.requireChannelAccess(
         input.channelId,
-        session.user.id,
-        orgId
+        "channel.member.list"
       );
       const filter = input?.filter;
       const members = await db
@@ -331,37 +335,22 @@ export const channelRouter = {
 
       return members;
     }),
-  isMember: orgMemberProcedure
-    .input(IsChannelMemberInput)
-    .output(IsChannelMemberOutput)
-    .handler(async ({ input, context: { db, session, orgId } }) => {
-      // Verify channel belongs to org
-      const channel = await db.query.channelTable.findFirst({
-        where: eq(channelTable.id, input.channelId),
-        columns: { organizationId: true },
-      });
-      if (!channel || channel.organizationId !== orgId) {
-        throw new ORPCError("NOT_FOUND", { message: "Channel not found" });
-      }
-      const isMember = await db.query.channelMemberTable.findFirst({
-        where: and(
-          eq(channelMemberTable.channelId, input.channelId),
-          eq(channelMemberTable.userId, session.user.id)
-        ),
-      });
 
-      return typeof isMember !== "undefined";
-    }),
-
-  addMembers: orgAdminProcedure
+  /**
+   * Adds one or more members to a channel.
+   * Requires channel access with member.add permission.
+   *
+   * @param input.channelId - The channel to add members to
+   * @param input.memberIds - Array of user IDs to add
+   * @returns Success status and confirmation message
+   */
+  addMembers: orgMemberProcedure
     .input(ModifyChannelMembersInput)
     .output(SuccessOutput)
-    .handler(async ({ context: { db, session, orgId }, input }) => {
-      await verifyChannelMembership(
-        db,
+    .handler(async ({ context: { db, permission }, input }) => {
+      await permission.requireChannelAccess(
         input.channelId,
-        session.user.id,
-        orgId
+        "channel.member.add"
       );
       const channelMembers = input.memberIds.map((memberId) => ({
         channelId: input.channelId,
@@ -376,15 +365,21 @@ export const channelRouter = {
       };
     }),
 
-  removeMembers: orgAdminProcedure
+  /**
+   * Removes one or more members from a channel.
+   * Requires channel access with member.remove permission.
+   *
+   * @param input.channelId - The channel to remove members from
+   * @param input.memberIds - Array of user IDs to remove
+   * @returns Success status and confirmation message
+   */
+  removeMembers: orgMemberProcedure
     .input(ModifyChannelMembersInput)
     .output(SuccessOutput)
-    .handler(async ({ context: { db, session, orgId }, input }) => {
-      await verifyChannelMembership(
-        db,
+    .handler(async ({ context: { db, permission }, input }) => {
+      await permission.requireChannelAccess(
         input.channelId,
-        session.user.id,
-        orgId
+        "channel.member.remove"
       );
       await db
         .delete(channelMemberTable)
@@ -401,64 +396,21 @@ export const channelRouter = {
       };
     }),
 
-  joinRequest: orgMemberProcedure
-    .input(ChannelJoinRequestInput)
-    .output(ChannelJoinRequestOutput)
-    .handler(async ({ input, context: { db, session, orgId } }) => {
-      // Verify channel belongs to org
-      const channel = await db.query.channelTable.findFirst({
-        where: eq(channelTable.id, input.channelId),
-        columns: { organizationId: true },
-      });
-      if (!channel || channel.organizationId !== orgId) {
-        throw new ORPCError("NOT_FOUND", { message: "Channel not found" });
-      }
-      const [newRequest] = await db
-        .insert(channelJoinRequestTable)
-        .values({
-          channelId: input.channelId,
-          userId: session.user.id,
-          note: input.note,
-        })
-        .returning();
-
-      if (!newRequest) {
-        throw new ORPCError("INTERNAL_SERVER_ERROR", {
-          message: "Failed to create join request.",
-        });
-      }
-
-      return newRequest;
-    }),
-  listJoinRequests: orgAdminProcedure
-    .input(ListJoinRequestInput)
-    .output(ListJoinRequestOutput)
-    .handler(async ({ context: { db, session, orgId }, input }) => {
-      await verifyChannelMembership(
-        db,
-        input.channelId,
-        session.user.id,
-        orgId
-      );
-      const joinRequests = await db.query.channelJoinRequestTable.findMany({
-        where: eq(channelJoinRequestTable.channelId, input.channelId),
-        with: {
-          user: true,
-        },
-      });
-
-      return joinRequests;
-    }),
-
-  delete: orgAdminProcedure
+  /**
+   * Deletes a channel and its related notifications in a single transaction.
+   * Requires channel access with delete permission.
+   *
+   * @param input.channelId - The channel to delete
+   * @returns Transaction ID for the deletion
+   * @throws NOT_FOUND if the channel does not exist in the current org
+   */
+  delete: orgMemberProcedure
     .input(DeleteChannelInput)
     .output(DeletechannelOutput)
-    .handler(async ({ input, context: { db, session, orgId } }) => {
-      await verifyChannelMembership(
-        db,
+    .handler(async ({ input, context: { db, orgId, permission } }) => {
+      await permission.requireChannelAccess(
         input.channelId,
-        session.user.id,
-        orgId
+        permission.channel().delete
       );
 
       const { txid } = await db.transaction(async (tx) => {
@@ -489,5 +441,191 @@ export const channelRouter = {
       });
 
       return { txid };
+    }),
+
+  /**
+   * Lists all channels the current user belongs to in the active organization.
+   * Uses protectedProcedure since it only returns the user's own channels.
+   *
+   * @returns Object containing array of channel records
+   * @throws BAD_REQUEST if no active organization is set on the session
+   */
+  listOwn: protectedProcedure.handler(async ({ context: { db, session } }) => {
+    const organizationId = session.session.activeOrganizationId;
+
+    if (!organizationId) {
+      throw new ORPCError("BAD_REQUEST", {
+        message: "No active organization",
+      });
+    }
+
+    const userId = session.user.id;
+
+    const channels = await db
+      .select({ ...getTableColumns(channelTable) })
+      .from(channelTable)
+      .innerJoin(
+        channelMemberTable,
+        eq(channelMemberTable.channelId, channelTable.id)
+      )
+      .where(
+        and(
+          eq(channelMemberTable.userId, userId),
+          eq(channelTable.organizationId, organizationId)
+        )
+      );
+
+    return { channels };
+  }),
+
+  /**
+   * Returns recently used channels based on the user's latest sent messages.
+   * Retrieves the 5 most recent distinct channels the user has messaged in,
+   * with creator and member details.
+   *
+   * @returns Array of recent channel records, or empty array if no messages sent
+   */
+  getRecent: protectedProcedure.handler(
+    async ({ context: { db, session } }) => {
+      const recentMessages = await db.query.messageTable.findMany({
+        where: eq(messageTable.senderId, session.user.id),
+        orderBy: [desc(messageTable.createdAt)],
+        limit: 5,
+        columns: {
+          channelId: true,
+        },
+      });
+
+      if (recentMessages.length === 0) {
+        return [];
+      }
+
+      const recentChannelIds = recentMessages.map(
+        (message) => message.channelId
+      );
+
+      const recentChannels = await db.query.channelTable.findMany({
+        where: inArray(channelTable.id, recentChannelIds),
+        with: {
+          creator: true,
+          members: true,
+        },
+      });
+
+      return recentChannels;
+    }
+  ),
+
+  /**
+   * Computes unread message counts per channel for the current user.
+   * Considers only non-archived channels the user belongs to. Uses the
+   * channel read tracking record to determine which messages are unread.
+   *
+   * @returns Array of objects with channelId and unreadCount
+   * @throws BAD_REQUEST if no active organization is set on the session
+   */
+  getUnreadCounts: protectedProcedure
+    .input(GetChannelUnreadCountsInput)
+    .output(GetChannelUnreadCountsOutput)
+    .handler(async ({ context: { db, session } }) => {
+      const userId = session.user.id;
+      const organizationId = session.session.activeOrganizationId;
+
+      if (!organizationId) {
+        throw new ORPCError("BAD_REQUEST", {
+          message: "No active organization",
+        });
+      }
+
+      const userChannels = await db
+        .select({ channelId: channelMemberTable.channelId })
+        .from(channelMemberTable)
+        .innerJoin(
+          channelTable,
+          eq(channelMemberTable.channelId, channelTable.id)
+        )
+        .where(
+          and(
+            eq(channelMemberTable.userId, userId),
+            eq(channelTable.organizationId, organizationId),
+            eq(channelTable.isArchived, false)
+          )
+        );
+
+      const channelIds = userChannels.map((c) => c.channelId);
+
+      if (channelIds.length === 0) {
+        return [];
+      }
+
+      const channelReads = await db
+        .select({
+          channelId: channelReadTable.channelId,
+          lastReadMessageId: channelReadTable.lastReadMessageId,
+        })
+        .from(channelReadTable)
+        .where(
+          and(
+            eq(channelReadTable.userId, userId),
+            inArray(channelReadTable.channelId, channelIds)
+          )
+        );
+
+      const lastReadMap = new Map(
+        channelReads.map((cr) => [cr.channelId, cr.lastReadMessageId])
+      );
+
+      const unreadCounts = await Promise.all(
+        channelIds.map(async (channelId) => {
+          const lastReadMessageId = lastReadMap.get(channelId);
+
+          if (!lastReadMessageId) {
+            const result = await db
+              .select({ count: count() })
+              .from(messageTable)
+              .where(eq(messageTable.channelId, channelId));
+
+            return {
+              channelId,
+              unreadCount: Number(result[0]?.count || 0),
+            };
+          }
+
+          const lastReadMessage = await db
+            .select({ createdAt: messageTable.createdAt })
+            .from(messageTable)
+            .where(eq(messageTable.id, lastReadMessageId))
+            .limit(1);
+
+          if (!lastReadMessage[0]) {
+            const result = await db
+              .select({ count: count() })
+              .from(messageTable)
+              .where(eq(messageTable.channelId, channelId));
+
+            return {
+              channelId,
+              unreadCount: Number(result[0]?.count || 0),
+            };
+          }
+
+          const result = await db
+            .select({ count: count() })
+            .from(messageTable)
+            .where(
+              and(
+                eq(messageTable.channelId, channelId),
+                gt(messageTable.createdAt, lastReadMessage[0].createdAt)
+              )
+            );
+
+          return {
+            channelId,
+            unreadCount: Number(result[0]?.count || 0),
+          };
+        })
+      );
+
+      return unreadCounts;
     }),
 };

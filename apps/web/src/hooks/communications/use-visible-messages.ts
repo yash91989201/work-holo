@@ -4,17 +4,17 @@ import type { MessageListItem } from "@/lib/communications/message";
 
 interface UseVisibleMessagesOptions {
   /**
-   * The current virtual items from useVirtualizer
+   * Whether to enable tracking
    */
-  virtualItems: VirtualItem[];
+  enabled?: boolean;
   /**
    * All items in the list (including date separators)
    */
   items: MessageListItem[];
   /**
-   * Whether to enable tracking
+   * The current virtual items from useVirtualizer
    */
-  enabled?: boolean;
+  virtualItems: VirtualItem[];
 }
 
 /**

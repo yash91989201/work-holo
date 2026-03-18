@@ -26,6 +26,7 @@ export const CreateMessageInput = z
     content: z.string().max(10_000).optional(),
     type: MessageTypeSchema.default("text"),
     parentMessageId: z.string().optional(),
+    replyToMessageId: z.string().optional(),
     mentions: z.array(z.string()).optional(),
     attachments: z.array(AttachmentInput).optional(),
   })
@@ -117,7 +118,7 @@ export const MarkMessageAsReadInput = z.object({
 });
 
 // Get unread count input
-export const GetUnreadCountInput = z.object({
+export const GetMessageUnreadCountInput = z.object({
   channelId: z.string(),
 });
 
@@ -126,7 +127,11 @@ export const SearchMessagesInput = z.object({
   channelId: z.string(),
   query: z.string().min(1).max(100),
   limit: z.number().min(1).max(50).default(20),
-  offset: z.number().min(0).default(0),
+  cursor: z.string().optional(), // opaque cursor for search_after
+  fromDate: z.date().optional(),
+  toDate: z.date().optional(),
+  senderId: z.string().optional(),
+  hasAttachments: z.boolean().optional(),
 });
 
 // Get message input
@@ -213,16 +218,24 @@ export const ThreadMessageOutput = z.object({
 
 export const SearchMessageOutput = z.object({
   messages: z.array(
-    MessageSchema.extend({
+    z.object({
+      id: z.string(),
+      channelId: z.string(),
+      senderId: z.string(),
+      content: z.string().nullable(),
+      type: z.string(),
+      parentMessageId: z.string().nullable(),
+      createdAt: z.date(),
       sender: z.object({
         name: z.string(),
         email: z.string(),
-        image: z.string().optional().nullable(),
+        image: z.string().nullable(),
       }),
+      highlights: z.array(z.string()),
     })
   ),
+  nextCursor: z.string().nullable(),
   total: z.number(),
-  hasMore: z.boolean(),
 });
 
 // Messages list output

@@ -11,13 +11,15 @@
   },
   "scripts": {
     "db:push": "drizzle-kit push",
+    "dev": "drizzle-kit studio",
     "db:studio": "drizzle-kit studio",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate"
+    "db:migrate": "drizzle-kit migrate",
+    "db:seed-permissions": "bun run src/scripts/seed-permissions.ts"
   },
   "devDependencies": {
     "@work-holo/config": "workspace:*",
-    "drizzle-kit": "^0.31.8",
+    "drizzle-kit": "^0.31.9",
     "chokidar": "^5.0.0"
   },
   "peerDependencies": {
@@ -25,11 +27,11 @@
   },
   "dependencies": {
     "@t3-oss/env-core": "^0.13.10",
-    "dotenv": "^17.2.3",
+    "dotenv": "^17.3.1",
     "drizzle-cuid2": "^2.2.0",
     "drizzle-orm": "^0.45.1",
     "drizzle-zod": "^0.8.3",
-    "pg": "^8.17.2",
+    "pg": "^8.20.0",
     "zod": "^4.3.6"
   }
 }

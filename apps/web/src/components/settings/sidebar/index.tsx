@@ -1,7 +1,13 @@
-import { Link } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
+import { IconArrowLeft } from "@tabler/icons-react";
+import { Link, useCanGoBack, useRouter } from "@tanstack/react-router";
 import type * as React from "react";
 import { Suspense } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Sidebar,
   SidebarContent,
@@ -12,7 +18,9 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useActiveMemberRole } from "@/hooks/use-active-member-role";
 import { useActiveOrgSlug } from "@/hooks/use-active-org-slug";
+import { getOrgRouteByRole } from "@/utils";
 import { NavMain } from "./nav-main";
 
 export function SettingsSidebar({
@@ -22,8 +30,8 @@ export function SettingsSidebar({
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarMenu>
-          <Suspense fallback={<Skeleton className="h-9 w-full" />}>
-            <BackToOrgButton />
+          <Suspense fallback={<BackToOrgDropdown.Fallback />}>
+            <BackToOrgDropdown />
           </Suspense>
         </SidebarMenu>
       </SidebarHeader>
@@ -35,21 +43,57 @@ export function SettingsSidebar({
   );
 }
 
-function BackToOrgButton() {
+function BackToOrgDropdown() {
   const activeOrg = useActiveOrgSlug();
+  const role = useActiveMemberRole();
+  const router = useRouter();
+  const canGoBack = useCanGoBack();
 
-  if (activeOrg === null) {
+  if (activeOrg === null || !role) {
     return null;
   }
 
+  const orgRoute = getOrgRouteByRole(role, activeOrg);
+
+  const handleGoBack = () => {
+    router.history.back();
+  };
+
   return (
     <SidebarMenuItem>
-      <SidebarMenuButton asChild>
-        <Link params={{ slug: activeOrg }} to="/org/$slug">
-          <ArrowLeft />
-          <span>Back to Org</span>
-        </Link>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <SidebarMenuButton>
+            <IconArrowLeft />
+            <span>Back to Org</span>
+          </SidebarMenuButton>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" sideOffset={4}>
+          <DropdownMenuItem asChild>
+            <Link {...orgRoute}>
+              <span>Go to Organization</span>
+            </Link>
+          </DropdownMenuItem>
+          {canGoBack && (
+            <DropdownMenuItem onClick={handleGoBack}>
+              <span>Go Back</span>
+            </DropdownMenuItem>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </SidebarMenuItem>
+  );
+}
+
+function BackToOrgDropdownSkeleton() {
+  return (
+    <SidebarMenuItem>
+      <SidebarMenuButton disabled>
+        <IconArrowLeft />
+        <Skeleton className="h-4 w-24" />
       </SidebarMenuButton>
     </SidebarMenuItem>
   );
 }
+
+BackToOrgDropdown.Fallback = BackToOrgDropdownSkeleton;

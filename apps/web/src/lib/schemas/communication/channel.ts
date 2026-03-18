@@ -1,0 +1,38 @@
+import { z } from "zod";
+
+export const CreateChannelFormSchema = z
+  .object({
+    name: z.string().min(3).max(64),
+    description: z.string().min(4).max(128).optional(),
+    type: z.enum(["team", "group"]),
+    isPublic: z.boolean(),
+    memberIds: z.array(z.string()),
+    createdBy: z.string(),
+    teamId: z.string().optional(),
+  })
+  .refine(
+    (data) => {
+      if (data.type === "team") {
+        return typeof data.teamId === "string" && data.teamId.trim().length > 0;
+      }
+
+      return true;
+    },
+    {
+      message: "Team channels must include a teamId",
+      path: ["teamId"],
+    }
+  )
+  .refine(
+    (data) => {
+      if (data.type === "group") {
+        return data.memberIds.length >= 1;
+      }
+
+      return true;
+    },
+    {
+      message: "Group channels must include at least two members",
+      path: ["memberIds"],
+    }
+  );

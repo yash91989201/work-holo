@@ -3,7 +3,7 @@
 # ============================================
 # Dependencies stage
 # ============================================
-FROM oven/bun:1.3.6-slim AS deps
+FROM oven/bun:1.3.10-slim AS deps
 WORKDIR /app
 
 COPY package.json bun.lock bunfig.toml ./
@@ -12,6 +12,8 @@ COPY packages/env/package.json packages/env/
 COPY packages/db/package.json packages/db/
 COPY packages/auth/package.json packages/auth/
 COPY packages/api/package.json packages/api/
+COPY packages/permission/package.json packages/permission/
+COPY packages/infrastructure/package.json packages/infrastructure/
 COPY apps/web/package.json apps/web/
 
 RUN --mount=type=cache,target=/root/.bun/install/cache \
@@ -29,6 +31,7 @@ COPY packages/env/src/web.ts packages/env/src/
 COPY packages/db/tsconfig.json packages/db/
 COPY packages/auth/tsconfig.json packages/auth/
 COPY packages/api/tsconfig.json packages/api/
+COPY packages/permission/tsconfig.json packages/permission/
 
 COPY packages/db/drizzle.config.ts packages/db/
 
@@ -36,6 +39,8 @@ COPY packages/env/src/server.ts packages/env/src/
 COPY packages/db/src packages/db/src
 COPY packages/auth/src packages/auth/src
 COPY packages/api/src packages/api/src
+COPY packages/permission/src packages/permission/src
+COPY packages/infrastructure/src packages/infrastructure/src
 
 COPY apps/web apps/web
 

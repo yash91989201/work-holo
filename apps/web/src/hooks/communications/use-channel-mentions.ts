@@ -36,8 +36,8 @@ type MentionWithRelations = MessageWithSender & {
 export type MentionFilter = "all" | "unseen" | "seen";
 
 export function useChannelMentions() {
-  const { id: currentChannelId } = useParams({
-    from: "/(authenticated)/org/$slug/(modules)/communication/channels/$id",
+  const { channelId: currentChannelId } = useParams({
+    from: "/(authenticated)/org/$slug/workspace/communication/channels/$channelId",
   });
 
   const { user } = useAuthedSession();

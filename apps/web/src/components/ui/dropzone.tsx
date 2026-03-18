@@ -1,4 +1,4 @@
-import { UploadIcon } from "lucide-react";
+import { IconUpload } from "@tabler/icons-react";
 import type {
   ComponentPropsWithoutRef,
   MouseEventHandler,
@@ -172,7 +172,7 @@ export const DropzoneContent = ({
   return (
     <div className={cn("flex flex-col items-center justify-center", className)}>
       <div className="flex size-8 items-center justify-center rounded-md bg-muted text-muted-foreground">
-        <UploadIcon size={16} />
+        <IconUpload size={16} />
       </div>
       <p className="my-2 w-full truncate font-medium text-sm">
         {src.length > maxLabelItems
@@ -225,7 +225,7 @@ export const DropzoneEmptyState = ({
   return (
     <div className={cn("flex flex-col items-center justify-center", className)}>
       <div className="flex size-8 items-center justify-center rounded-md bg-muted text-muted-foreground">
-        <UploadIcon size={16} />
+        <IconUpload size={16} />
       </div>
       <p className="my-2 w-full truncate text-wrap font-medium text-sm">
         Upload {maxFiles === 1 ? "a file" : "files"}

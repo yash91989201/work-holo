@@ -2,14 +2,15 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { create } from "zustand";
 import { useChannelPresence } from "@/hooks/communications/use-channel-presence";
+import type { MessageWithSender } from "@/lib/communications/message";
 import { queryUtils } from "@/utils/orpc";
 
 interface ChannelMember {
-  id: string;
-  name: string;
   email: string;
+  id: string;
   image?: string | null | undefined;
   isOnline: boolean;
+  name: string;
 }
 
 interface InfoSidebarState {
@@ -25,23 +26,23 @@ type MaximizedComposerCompleteCallback = (
 ) => void;
 
 interface MaximizedMessageComposerState {
-  isOpen: boolean;
   content: string | null;
+  isOpen: boolean;
   messageId: string | null;
-  parentMessageId: string | null;
   onComplete?: MaximizedComposerCompleteCallback;
+  parentMessageId: string | null;
 }
 
 interface OpenMaximizedMessageComposerConfig {
-  messageId?: string | null;
   content?: string | null;
-  parentMessageId?: string | null;
+  messageId?: string | null;
   onComplete?: MaximizedComposerCompleteCallback;
+  parentMessageId?: string | null;
 }
 
 interface MessageThreadState {
-  messageId: string | null;
   isOpen: boolean;
+  messageId: string | null;
 }
 
 interface PinnedMessagesState {
@@ -52,38 +53,57 @@ interface MentionsSidebarState {
   isOpen: boolean;
 }
 
+interface ReplyingToMessageState {
+  message: MessageWithSender | null;
+}
+
 interface HighlightedMessageState {
   messageId: string | null;
   triggeredAt: number | null;
 }
 
+interface ComposerFocusState {
+  main: (() => void) | null;
+  thread: (() => void) | null;
+}
+
 interface ChannelState {
+  clearHighlightedMessage: () => void;
+  clearReplyingToMessage: () => void;
+  clearThreadReplyingToMessage: () => void;
+  closeInfoSidebar: () => void;
+  closeMaximizedMessageComposer: () => void;
+  closeMentionsSidebar: () => void;
+  closeMessageThread: () => void;
+  closePinnedMessages: () => void;
+  composerFocus: ComposerFocusState;
+  focusMainComposer: () => void;
+  focusThreadComposer: () => void;
+  highlightedMessage: HighlightedMessageState;
+  highlightMessage: (messageId: string) => void;
   infoSidebar: InfoSidebarState;
   maximizedMessageComposer: MaximizedMessageComposerState;
-  messageThread: MessageThreadState;
-  pinnedMessages: PinnedMessagesState;
   mentionsSidebar: MentionsSidebarState;
-  highlightedMessage: HighlightedMessageState;
+  messageThread: MessageThreadState;
 
   openInfoSidebar: () => void;
-  closeInfoSidebar: () => void;
 
   openMaximizedMessageComposer: (
     config?: OpenMaximizedMessageComposerConfig
   ) => void;
-  closeMaximizedMessageComposer: () => void;
-
-  openMessageThread: (messageId: string) => void;
-  closeMessageThread: () => void;
-
-  openPinnedMessages: () => void;
-  closePinnedMessages: () => void;
 
   openMentionsSidebar: () => void;
-  closeMentionsSidebar: () => void;
 
-  highlightMessage: (messageId: string) => void;
-  clearHighlightedMessage: () => void;
+  openMessageThread: (messageId: string) => void;
+
+  openPinnedMessages: () => void;
+  pinnedMessages: PinnedMessagesState;
+  replyingToMessage: ReplyingToMessageState;
+  setMainComposerFocus: (handler: (() => void) | null) => void;
+  setReplyingToMessage: (message: MessageWithSender) => void;
+  setThreadComposerFocus: (handler: (() => void) | null) => void;
+  setThreadReplyingToMessage: (message: MessageWithSender) => void;
+  threadReplyingToMessage: ReplyingToMessageState;
 }
 
 const defaultMaximizedComposerState: MaximizedMessageComposerState = {
@@ -94,7 +114,7 @@ const defaultMaximizedComposerState: MaximizedMessageComposerState = {
   onComplete: undefined,
 };
 
-const useChannelStore = create<ChannelState>((set) => ({
+const useChannelStore = create<ChannelState>((set, get) => ({
   infoSidebar: { isOpen: false },
   maximizedMessageComposer: { ...defaultMaximizedComposerState },
   pinnedMessages: {
@@ -103,6 +123,10 @@ const useChannelStore = create<ChannelState>((set) => ({
   mentionsSidebar: {
     isOpen: false,
   },
+  composerFocus: {
+    main: null,
+    thread: null,
+  },
   highlightedMessage: {
     messageId: null,
     triggeredAt: null,
@@ -110,6 +134,12 @@ const useChannelStore = create<ChannelState>((set) => ({
   messageThread: {
     messageId: null,
     isOpen: false,
+  },
+  replyingToMessage: {
+    message: null,
+  },
+  threadReplyingToMessage: {
+    message: null,
   },
 
   openInfoSidebar: () => set({ infoSidebar: { isOpen: true } }),
@@ -138,6 +168,26 @@ const useChannelStore = create<ChannelState>((set) => ({
   closePinnedMessages: () => set({ pinnedMessages: { isOpen: false } }),
   openMentionsSidebar: () => set({ mentionsSidebar: { isOpen: true } }),
   closeMentionsSidebar: () => set({ mentionsSidebar: { isOpen: false } }),
+  setMainComposerFocus: (handler) =>
+    set((state) => ({
+      composerFocus: {
+        ...state.composerFocus,
+        main: handler,
+      },
+    })),
+  setThreadComposerFocus: (handler) =>
+    set((state) => ({
+      composerFocus: {
+        ...state.composerFocus,
+        thread: handler,
+      },
+    })),
+  focusMainComposer: () => {
+    get().composerFocus.main?.();
+  },
+  focusThreadComposer: () => {
+    get().composerFocus.thread?.();
+  },
   highlightMessage: (messageId) =>
     set({
       highlightedMessage: {
@@ -148,6 +198,22 @@ const useChannelStore = create<ChannelState>((set) => ({
   clearHighlightedMessage: () =>
     set({
       highlightedMessage: { messageId: null, triggeredAt: null },
+    }),
+  clearReplyingToMessage: () =>
+    set({
+      replyingToMessage: { message: null },
+    }),
+  setReplyingToMessage: (message) =>
+    set({
+      replyingToMessage: { message },
+    }),
+  clearThreadReplyingToMessage: () =>
+    set({
+      threadReplyingToMessage: { message: null },
+    }),
+  setThreadReplyingToMessage: (message) =>
+    set({
+      threadReplyingToMessage: { message },
     }),
 }));
 
@@ -326,4 +392,60 @@ export function useMaximizedMessageComposerActions() {
   );
 
   return { openMaximizedMessageComposer };
+}
+
+export function useChannelReplyState() {
+  const replyingToMessage = useChannelStore(
+    (state) => state.replyingToMessage.message
+  );
+  const setReplyingToMessage = useChannelStore(
+    (state) => state.setReplyingToMessage
+  );
+  const clearReplyingToMessage = useChannelStore(
+    (state) => state.clearReplyingToMessage
+  );
+
+  return {
+    replyingToMessage,
+    setReplyingToMessage,
+    clearReplyingToMessage,
+  };
+}
+
+export function useChannelComposerFocus() {
+  const setMainComposerFocus = useChannelStore(
+    (state) => state.setMainComposerFocus
+  );
+  const setThreadComposerFocus = useChannelStore(
+    (state) => state.setThreadComposerFocus
+  );
+  const focusMainComposer = useChannelStore((state) => state.focusMainComposer);
+  const focusThreadComposer = useChannelStore(
+    (state) => state.focusThreadComposer
+  );
+
+  return {
+    setMainComposerFocus,
+    setThreadComposerFocus,
+    focusMainComposer,
+    focusThreadComposer,
+  };
+}
+
+export function useChannelThreadReplyState() {
+  const replyingToMessage = useChannelStore(
+    (state) => state.threadReplyingToMessage.message
+  );
+  const setReplyingToMessage = useChannelStore(
+    (state) => state.setThreadReplyingToMessage
+  );
+  const clearReplyingToMessage = useChannelStore(
+    (state) => state.clearThreadReplyingToMessage
+  );
+
+  return {
+    replyingToMessage,
+    setReplyingToMessage,
+    clearReplyingToMessage,
+  };
 }

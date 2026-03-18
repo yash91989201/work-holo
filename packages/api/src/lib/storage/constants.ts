@@ -5,6 +5,7 @@ export const BUCKETS = {
   MESSAGE_IMAGE: "message-image",
   USER_PROFILE: "user-profile",
   ORG_LOGO: "org-logo",
+  NOTIFICATION_SOUND: "notification-sound",
 } as const;
 
 // All bucket names as array for initialization
@@ -17,6 +18,7 @@ export const FILE_SIZE_LIMITS = {
   AUDIO: 50 * 1024 * 1024, // 50MB
   PROFILE: 5 * 1024 * 1024, // 5MB
   LOGO: 5 * 1024 * 1024, // 5MB
+  NOTIFICATION_SOUND: 5 * 1024 * 1024, // 5MB
 } as const;
 
 // Presigned URL expiry times in seconds
@@ -49,4 +51,14 @@ export const ALLOWED_MIME_TYPES: Record<string, string[]> = {
   ],
   [BUCKETS.ORG_LOGO]: ["image/jpeg", "image/png", "image/gif", "image/webp"],
   [BUCKETS.MESSAGE_ATTACHMENT]: [], // Empty array means all types allowed
+  [BUCKETS.NOTIFICATION_SOUND]: [
+    "audio/webm",
+    "audio/mp3",
+    "audio/mpeg",
+    "audio/wav",
+    "audio/ogg",
+    "audio/aac",
+    "audio/flac",
+    "audio/mp4",
+  ],
 };

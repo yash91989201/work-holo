@@ -1,4 +1,8 @@
-import { ArrowLeftRight, FileIcon, Trash2 } from "lucide-react";
+import {
+  IconArrowLeftRight,
+  IconFilesFilled,
+  IconTrash,
+} from "@tabler/icons-react";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -75,9 +79,9 @@ const SingleFilePreview = ({
   }, [file]);
 
   return (
-    <div className="group relative overflow-hidden rounded-xl border border-border/60 bg-gradient-to-br from-background to-muted/20 shadow-sm transition-all duration-200 hover:border-border/80 hover:shadow-md">
+    <div className="group relative overflow-hidden rounded-xl border border-border/60 bg-linear-to-br from-background to-muted/20 shadow-sm transition-all duration-200 hover:border-border/80 hover:shadow-md">
       <div className="flex items-center gap-4 p-4">
-        <div className="relative flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-muted/50 to-muted/30 shadow-inner ring-1 ring-border/20">
+        <div className="relative flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-linear-to-br from-muted/50 to-muted/30 shadow-inner ring-1 ring-border/20">
           {previewUrl ? (
             <img
               alt={file.name}
@@ -85,10 +89,10 @@ const SingleFilePreview = ({
               src={previewUrl}
             />
           ) : (
-            <FileIcon className="size-6 text-muted-foreground/70" />
+            <IconFilesFilled className="size-6 text-muted-foreground/70" />
           )}
           {previewUrl && (
-            <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/10 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
           )}
         </div>
 
@@ -117,7 +121,7 @@ const SingleFilePreview = ({
             type="button"
             variant="outline"
           >
-            <ArrowLeftRight className="size-4" />
+            <IconArrowLeftRight className="size-4" />
           </Button>
           <Button
             aria-label="Remove file"
@@ -132,12 +136,12 @@ const SingleFilePreview = ({
             type="button"
             variant="ghost"
           >
-            <Trash2 className="size-4" />
+            <IconTrash className="size-4" />
           </Button>
         </div>
       </div>
 
-      <div className="h-1 bg-gradient-to-r from-primary/20 via-primary/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+      <div className="h-1 bg-linear-to-r from-primary/20 via-primary/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
     </div>
   );
 };
@@ -164,9 +168,9 @@ const MultiFilePreview = ({
   }, [file]);
 
   return (
-    <div className="group relative overflow-hidden rounded-lg border border-border/50 bg-gradient-to-br from-background to-muted/10 shadow-sm transition-all duration-200 hover:border-border/70 hover:bg-muted/20 hover:shadow-md">
+    <div className="group relative overflow-hidden rounded-lg border border-border/50 bg-linear-to-br from-background to-muted/10 shadow-sm transition-all duration-200 hover:border-border/70 hover:bg-muted/20 hover:shadow-md">
       <div className="flex items-center gap-3 p-3">
-        <div className="relative flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-md bg-gradient-to-br from-muted/40 to-muted/20 shadow-inner ring-1 ring-border/10">
+        <div className="relative flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-md bg-linear-to-br from-muted/40 to-muted/20 shadow-inner ring-1 ring-border/10">
           {previewUrl ? (
             <img
               alt={file.name}
@@ -174,10 +178,10 @@ const MultiFilePreview = ({
               src={previewUrl}
             />
           ) : (
-            <FileIcon className="size-5 text-muted-foreground/60" />
+            <IconFilesFilled className="size-5 text-muted-foreground/60" />
           )}
           {previewUrl && (
-            <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/5 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
           )}
         </div>
 
@@ -210,7 +214,7 @@ const MultiFilePreview = ({
             type="button"
             variant="ghost"
           >
-            <ArrowLeftRight className="size-3.5" />
+            <IconArrowLeftRight className="size-3.5" />
           </Button>
           <Button
             aria-label="Remove file"
@@ -225,12 +229,12 @@ const MultiFilePreview = ({
             type="button"
             variant="ghost"
           >
-            <Trash2 className="size-3.5" />
+            <IconTrash className="size-3.5" />
           </Button>
         </div>
       </div>
 
-      <div className="h-0.5 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+      <div className="h-0.5 bg-linear-to-r from-primary/10 via-primary/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
     </div>
   );
 };

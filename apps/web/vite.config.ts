@@ -23,7 +23,11 @@ export default defineConfig({
         description: "Work Holo - PWA Application",
         theme_color: "#0c0c0c",
       },
-      pwaAssets: { disabled: false, config: true },
+      pwaAssets: {
+        disabled: false,
+        config: true,
+        includeHtmlHeadLinks: false,
+      },
       devOptions: {
         enabled: true,
         navigateFallback: undefined,
@@ -40,7 +44,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      "@": path.resolve(import.meta.dirname, "./src"),
     },
   },
   build: {
@@ -48,14 +52,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          // ---------------------------
-          // Core Framework
-          // ---------------------------
           react: ["react", "react-dom"],
-
-          // ---------------------------
-          // TanStack Ecosystem
-          // ---------------------------
           tanstack: [
             "@tanstack/react-query",
             "@tanstack/react-query-devtools",
@@ -65,68 +62,25 @@ export default defineConfig({
             "@tanstack/react-virtual",
             "@tanstack/react-form",
             "@tanstack/react-db",
+            "@tanstack/electric-db-collection",
           ],
-
-          // ---------------------------
-          // Radix UI (ALL COMPONENTS)
-          // ---------------------------
-          radix: [
-            "@radix-ui/react-accordion",
-            "@radix-ui/react-alert-dialog",
-            "@radix-ui/react-aspect-ratio",
-            "@radix-ui/react-avatar",
-            "@radix-ui/react-checkbox",
-            "@radix-ui/react-collapsible",
-            "@radix-ui/react-context-menu",
-            "@radix-ui/react-dialog",
-            "@radix-ui/react-dropdown-menu",
-            "@radix-ui/react-hover-card",
-            "@radix-ui/react-label",
-            "@radix-ui/react-menubar",
-            "@radix-ui/react-navigation-menu",
-            "@radix-ui/react-popover",
-            "@radix-ui/react-progress",
-            "@radix-ui/react-radio-group",
-            "@radix-ui/react-scroll-area",
-            "@radix-ui/react-select",
-            "@radix-ui/react-separator",
-            "@radix-ui/react-slider",
-            "@radix-ui/react-slot",
-            "@radix-ui/react-switch",
-            "@radix-ui/react-tabs",
-            "@radix-ui/react-toggle",
-            "@radix-ui/react-toggle-group",
-            "@radix-ui/react-tooltip",
-          ],
-
-          // ---------------------------
-          // ORPC
-          // ---------------------------
-          orpc: ["@orpc/client", "@orpc/server", "@orpc/tanstack-query"],
-
-          // ---------------------------
-          // Editor (TIPTAP)
-          // ---------------------------
           tiptap: [
             "@tiptap/react",
             "@tiptap/starter-kit",
             "@tiptap/suggestion",
             "@tiptap/extension-image",
             "@tiptap/extension-mention",
-            "@tiptap/extension-bubble-menu",
+            "@tiptap/extension-link",
             "@tiptap/extension-placeholder",
             "@tiptap/extension-underline",
           ],
-
-          // ---------------------------
-          // UI / Utility Libraries
-          // ---------------------------
           ui: [
+            "radix-ui",
             "class-variance-authority",
             "clsx",
             "tailwind-merge",
             "sonner",
-            "lucide-react",
+            "@tabler/icons-react",
             "vaul",
             "embla-carousel-react",
             "react-resizable-panels",
@@ -137,46 +91,18 @@ export default defineConfig({
             "tippy.js",
             "@uidotdev/usehooks",
           ],
-
-          // ---------------------------
-          // Forms & Validation
-          // ---------------------------
-          forms: ["zod"],
-
-          // ---------------------------
-          // Data Handling / Utils
-          // ---------------------------
           utils: [
+            "zod",
             "date-fns",
             "dompurify",
             "html-react-parser",
             "react-dropzone",
           ],
-
-          // ---------------------------
-          // Charts
-          // ---------------------------
           charts: ["recharts"],
-
-          // ---------------------------
-          // Auth
-          // ---------------------------
           auth: ["better-auth"],
-
-          // ---------------------------
-          // Electric SQL / Local-first DB
-          // ---------------------------
-          electric: ["@tanstack/electric-db-collection"],
-
-          // ---------------------------
-          // State Management
-          // ---------------------------
           state: ["zustand"],
-
-          // ---------------------------
-          // Other functional deps
-          // ---------------------------
           calendar: ["react-day-picker"],
+          orpc: ["@orpc/client", "@orpc/tanstack-query"],
         },
       },
     },

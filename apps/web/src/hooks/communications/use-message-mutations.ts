@@ -31,6 +31,7 @@ export function useMessageMutations() {
         content: message.content ?? null,
         type: message.type,
         parentMessageId: message.parentMessageId ?? null,
+        replyToMessageId: message.replyToMessageId ?? null,
         isEdited: false,
         isDeleted: false,
         createdAt: now,
@@ -356,7 +357,7 @@ export function useMessageMutations() {
       // Mark mention notifications as read optimistically
       notificationsCollection.forEach((notification) => {
         if (
-          notification.type === "mention" &&
+          notification.type === "channel_mention" &&
           notification.entityId &&
           messageIds.includes(notification.entityId) &&
           notification.userId === userId &&
@@ -443,11 +444,10 @@ export function useMessageMutations() {
       messageIds: string[];
       userId: string;
     }) => {
-      const { txid } =
-        await orpcClient.communication.message.markMessagesAsRead({
-          channelId,
-          messageIds,
-        });
+      const { txid } = await orpcClient.communication.message.markAsRead({
+        channelId,
+        messageIds,
+      });
 
       // Wait for Electric Shape sync
       await messageMentionsCollection.utils.awaitTxId(txid);

@@ -1,11 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Suspense } from "react";
-import {
-  CurrentSession,
-  CurrentSessionSkeleton,
-  OtherSessions,
-  OtherSessionsSkeleton,
-} from "@/components/settings/sessions";
+import { CurrentSession, OtherSessions } from "@/components/settings/sessions";
 
 export const Route = createFileRoute(
   "/(authenticated)/settings/account/sessions"
@@ -24,7 +19,7 @@ function RouteComponent() {
           <div className="space-y-3">
             <h3>Current session</h3>
             <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
-              <Suspense fallback={<CurrentSessionSkeleton />}>
+              <Suspense fallback={<CurrentSession.Fallback />}>
                 <CurrentSession />
               </Suspense>
             </div>
@@ -33,7 +28,7 @@ function RouteComponent() {
           <div className="space-y-3">
             <h3>Other sessions</h3>
             <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
-              <Suspense fallback={<OtherSessionsSkeleton />}>
+              <Suspense fallback={<OtherSessions.Fallback />}>
                 <OtherSessions />
               </Suspense>
             </div>

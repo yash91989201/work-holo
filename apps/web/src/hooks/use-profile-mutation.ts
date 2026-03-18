@@ -4,11 +4,11 @@ import { getAuthQueryKey } from "@/lib/auth/query-keys";
 import { authClient } from "@/lib/auth-client";
 
 interface UpdateProfileParams {
-  name?: string;
-  username?: string;
+  displayUsername?: string;
   email?: string;
   image?: string | undefined | null;
-  displayUsername?: string;
+  name?: string;
+  username?: string;
 }
 
 export function useProfileMutation() {

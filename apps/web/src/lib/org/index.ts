@@ -1,3 +1,9 @@
+import {
+  IconCrownFilled,
+  IconShieldFilled,
+  IconUserFilled,
+  type TablerIcon,
+} from "@tabler/icons-react";
 import { authClient } from "@/lib/auth-client";
 
 export const getActiveOrgSlug = async () => {
@@ -51,4 +57,15 @@ export const getRoleBadgeVariant = (role: string) => {
     return "outline";
   }
   return "outline";
+};
+
+export const getRoleIcon = (role: string): TablerIcon => {
+  switch (role) {
+    case "owner":
+      return IconCrownFilled;
+    case "admin":
+      return IconShieldFilled;
+    default:
+      return IconUserFilled;
+  }
 };

@@ -5,78 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1764866882450,
-      "tag": "0000_third_lightspeed",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1764886080316,
-      "tag": "0001_stormy_saracen",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1765157188289,
-      "tag": "0002_marvelous_skullbuster",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1765261903989,
-      "tag": "0003_dazzling_spectrum",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1765365790139,
-      "tag": "0004_ancient_mimic",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1765551255184,
-      "tag": "0005_flowery_thunderbolt",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1765600214199,
-      "tag": "0006_smart_warbound",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "7",
-      "when": 1765627211247,
-      "tag": "0007_pretty_annihilus",
-      "breakpoints": true
-    },
-    {
-      "idx": 8,
-      "version": "7",
-      "when": 1768235323843,
-      "tag": "0008_vengeful_gargoyle",
-      "breakpoints": true
-    },
-    {
-      "idx": 9,
-      "version": "7",
-      "when": 1769667062483,
-      "tag": "0009_round_meggan",
-      "breakpoints": true
-    },
-    {
-      "idx": 10,
-      "version": "7",
-      "when": 1769667275587,
-      "tag": "0010_parched_stark_industries",
+      "when": 1773666532749,
+      "tag": "0000_chemical_blazing_skull",
       "breakpoints": true
     }
   ]

@@ -1,4 +1,11 @@
-import { Camera, Check, Loader2, Pencil, Trash2, X } from "lucide-react";
+import {
+  IconCamera,
+  IconCheck,
+  IconLoader2,
+  IconPencil,
+  IconTrashFilled,
+  IconX,
+} from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -76,9 +83,9 @@ export function Profile() {
 // ============================================================================
 
 interface ProfileImageSectionProps {
+  imageUrl: string | null | undefined;
   userId: string;
   userName: string;
-  imageUrl: string | null | undefined;
 }
 
 function ProfileImageSection({
@@ -152,16 +159,16 @@ function ProfileImageSection({
               </Avatar>
               <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/50 opacity-0 transition-opacity hover:opacity-100">
                 {isUploadingImage ? (
-                  <Loader2 className="size-5 animate-spin text-white" />
+                  <IconLoader2 className="size-5 animate-spin text-white" />
                 ) : (
-                  <Camera className="size-5 text-white" />
+                  <IconCamera className="size-5 text-white" />
                 )}
               </div>
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={triggerFileInput}>
-              <Camera className="size-4" />
+              <IconCamera className="size-4" />
               Change avatar
             </DropdownMenuItem>
             {imageUrl && (
@@ -169,7 +176,7 @@ function ProfileImageSection({
                 onClick={handleRemoveImage}
                 variant="destructive"
               >
-                <Trash2 className="size-4" />
+                <IconTrashFilled className="size-4" />
                 Remove avatar
               </DropdownMenuItem>
             )}
@@ -238,7 +245,7 @@ function EmailUpdateDialog({
     <Dialog onOpenChange={onOpenChange} open={isOpen}>
       <DialogTrigger asChild>
         <Button size="sm" variant="ghost">
-          <Pencil className="size-4" />
+          <IconPencil className="size-4" />
         </Button>
       </DialogTrigger>
       <DialogContent>
@@ -341,7 +348,7 @@ function FullNameSection({ currentName }: FullNameSectionProps) {
               size="sm"
               variant="ghost"
             >
-              <Pencil className="size-4" />
+              <IconPencil className="size-4" />
             </Button>
           </div>
         )}
@@ -390,10 +397,10 @@ function InlineNameEditor({
         {error && <p className="mt-1 text-destructive text-xs">{error}</p>}
       </div>
       <Button onClick={handleSave} size="icon-sm" variant="ghost">
-        <Check className="size-4 text-green-600" />
+        <IconCheck className="size-4 text-green-600" />
       </Button>
       <Button onClick={onCancel} size="icon-sm" variant="ghost">
-        <X className="size-4 text-destructive" />
+        <IconX className="size-4 text-destructive" />
       </Button>
     </div>
   );
@@ -441,7 +448,7 @@ function DisplayUsernameSection({
               size="sm"
               variant="ghost"
             >
-              <Pencil className="size-4" />
+              <IconPencil className="size-4" />
             </Button>
           </div>
         )}
@@ -490,10 +497,10 @@ function InlineDisplayUsernameEditor({
         {error && <p className="mt-1 text-destructive text-xs">{error}</p>}
       </div>
       <Button onClick={handleSave} size="icon-sm" variant="ghost">
-        <Check className="size-4 text-green-600" />
+        <IconCheck className="size-4 text-green-600" />
       </Button>
       <Button onClick={onCancel} size="icon-sm" variant="ghost">
-        <X className="size-4 text-destructive" />
+        <IconX className="size-4 text-destructive" />
       </Button>
     </div>
   );
@@ -537,7 +544,7 @@ function UsernameSection({ currentUsername }: UsernameSectionProps) {
               size="sm"
               variant="ghost"
             >
-              <Pencil className="size-4" />
+              <IconPencil className="size-4" />
             </Button>
           </div>
         )}
@@ -670,7 +677,7 @@ function InlineUsernameEditor({
           />
           {isCheckingAvailability && (
             <div className="absolute top-1/2 right-3 -translate-y-1/2">
-              <Loader2 className="size-4 animate-spin text-muted-foreground" />
+              <IconLoader2 className="size-4 animate-spin text-muted-foreground" />
             </div>
           )}
         </div>
@@ -685,10 +692,10 @@ function InlineUsernameEditor({
         size="icon-sm"
         variant="ghost"
       >
-        <Check className="size-4 text-green-600" />
+        <IconCheck className="size-4 text-green-600" />
       </Button>
       <Button onClick={onCancel} size="icon-sm" variant="ghost">
-        <X className="size-4 text-destructive" />
+        <IconX className="size-4 text-destructive" />
       </Button>
     </div>
   );
@@ -798,3 +805,5 @@ function UsernameSectionSkeleton() {
     </Item>
   );
 }
+
+Profile.Fallback = ProfileSkeleton;

@@ -1,1 +1,0 @@
-ALTER TABLE "channelRead" ADD CONSTRAINT "channelRead_userId_channelId_pk" PRIMARY KEY("userId","channelId");

@@ -1,79 +1,85 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { Suspense } from "react";
-import { Sidebar } from "@/components/sidebar";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { usePresenceHeartbeat } from "@/hooks/use-presence";
+import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
+import { Suspense, useMemo } from "react";
+import { FullScreenLoader } from "@/components/shared/full-screen-loader";
+import { useNotifications } from "@/hooks/communications/use-notifications";
+import {
+  type NotificationContext,
+  useNotificationPusher,
+} from "@/hooks/notifications/use-notification-pusher";
+import { useTabNotification } from "@/hooks/notifications/use-tab-notification";
 import { authClient } from "@/lib/auth-client";
-import { queryUtils } from "@/utils/orpc";
+import { PermissionProvider } from "@/lib/permission";
+import { queryClient, queryUtils } from "@/utils/orpc";
 
 export const Route = createFileRoute("/(authenticated)/org/$slug")({
-  loader: async () => {
-    const activeOrganization =
-      await authClient.organization.getFullOrganization();
+  loader: async ({ params }) => {
+    const [activeOrganization, memberRole] = await Promise.all([
+      authClient.organization.getFullOrganization(),
+      authClient.organization.getActiveMemberRole(),
+      queryClient.prefetchQuery(
+        queryUtils.user.permission.get.queryOptions({})
+      ),
+    ]);
 
-    const { data, error } = await authClient.organization.getActiveMemberRole();
-
-    if (error !== null) {
+    if (memberRole.error !== null) {
       throw new Error("Failed to load member role");
     }
 
     return {
-      logoSrc: activeOrganization.data?.logo ?? undefined,
-      role: data.role,
+      orgName:
+        activeOrganization.data?.name ??
+        params.slug
+          .split("-")
+          .filter(Boolean)
+          .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+          .join(" "),
+      role: memberRole.data.role,
     };
   },
   head: ({ loaderData }) => ({
-    links: [
+    meta: [
       {
-        rel: "icon",
-        type: "image/png",
-        href: loaderData?.logoSrc,
+        title: loaderData?.orgName ?? "Work Holo",
       },
     ],
   }),
   component: RouteComponent,
 });
 
-function RouteComponent() {
-  return (
-    <>
-      <SidebarProvider
-        defaultOpen={false}
-        style={
-          {
-            "--sidebar-width": "calc(var(--spacing) * 72)",
-            "--header-height": "calc(var(--spacing) * 12)",
-          } as React.CSSProperties
-        }
-      >
-        <Sidebar variant="sidebar" />
-        <SidebarInset>
-          <Outlet />
-        </SidebarInset>
-      </SidebarProvider>
+const CHANNEL_PATH_RE = /\/channels\/([^/]+)/;
+const DM_PATH_RE = /\/dm\/([^/]+)/;
 
-      <Suspense fallback={null}>
-        <OrgPresenceHeartbeat />
-      </Suspense>
-    </>
-  );
+function useCurrentNotificationContext(
+  pathname: string
+): NotificationContext | undefined {
+  return useMemo(() => {
+    const channelMatch = pathname.match(CHANNEL_PATH_RE);
+    if (channelMatch?.[1]) {
+      return { entityType: "channel" as const, entityId: channelMatch[1] };
+    }
+    const dmMatch = pathname.match(DM_PATH_RE);
+    if (dmMatch?.[1]) {
+      return { entityType: "dm" as const, entityId: dmMatch[1] };
+    }
+    return undefined;
+  }, [pathname]);
 }
 
-function OrgPresenceHeartbeat() {
-  const { data: attendance } = useSuspenseQuery(
-    queryUtils.member.attendance.getStatus.queryOptions({})
+function RouteComponent() {
+  const { slug } = Route.useParams();
+  const loaderData = Route.useLoaderData();
+  const orgName = loaderData?.orgName ?? "Work Holo";
+  const { pathname } = useLocation();
+  const context = useCurrentNotificationContext(pathname);
+  const { unreadCount } = useNotifications();
+  const { notify } = useTabNotification({ unreadCount, defaultTitle: orgName });
+  useNotificationPusher(slug, context, notify);
+
+  return (
+    <Suspense fallback={<FullScreenLoader />}>
+      <PermissionProvider>
+        <Outlet />
+      </PermissionProvider>
+    </Suspense>
   );
-
-  const hasCheckedIn = Boolean(attendance?.checkInTime);
-  const hasCheckedOut = Boolean(attendance?.checkOutTime);
-  const isWorking = hasCheckedIn && !hasCheckedOut;
-
-  usePresenceHeartbeat({
-    enabled: isWorking,
-    punchedIn: isWorking,
-    onBreak: false,
-  });
-
-  return null;
 }
