@@ -159,3 +159,28 @@ export const DeleteAttachmentOutput = z.object({
   success: z.boolean(),
   deletedAttachment: AttachmentOutput,
 });
+
+export const ListChannelFilesInput = z.object({
+  channelId: z.string().optional(),
+  page: z.number().int().min(1).default(1),
+  perPage: z.number().int().min(1).max(100).default(20),
+  search: z.string().optional(),
+  type: AttachmentTypeSchema.optional(),
+  sortBy: z.enum(["name", "size", "createdAt", "type"]).default("createdAt"),
+  sortOrder: z.enum(["asc", "desc"]).default("desc"),
+});
+
+export const ChannelFileOutput = AttachmentOutput.extend({
+  url: z.string().nullable(),
+  thumbnailUrl: z.string().nullable(),
+  channelId: z.string(),
+  channelName: z.string(),
+  senderName: z.string().nullable(),
+  senderImage: z.string().nullable(),
+});
+
+export const ChannelFilesListOutput = z.object({
+  files: z.array(ChannelFileOutput),
+  total: z.number(),
+  pageCount: z.number(),
+});
