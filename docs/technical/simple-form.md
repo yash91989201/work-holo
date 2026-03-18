@@ -88,6 +88,7 @@ Wrap with `<form.AppForm>`:
 ## 📝 Available Form Field Components
 
 The custom form wrapper provides these field components:
+
 - `field.Input` - Text input
 - `field.Textarea` - Textarea
 - `field.Select` - Select dropdown
@@ -99,6 +100,7 @@ The custom form wrapper provides these field components:
 - `field.InputGroupSpinner` - Shows spinner when field is validating
 
 All field components accept:
+
 - `label` (required) - Field label
 - `description` (optional) - Help text below label
 - Plus all standard HTML input props
@@ -108,8 +110,6 @@ All field components accept:
 ## 📝 Boilerplate (Simple Form)
 
 ```tsx
-"use client";
-
 import { formOptions } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";

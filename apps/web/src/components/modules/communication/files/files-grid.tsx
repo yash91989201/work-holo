@@ -140,7 +140,7 @@ export const FilesGrid = () => {
                         className="h-full w-full"
                         effect="blur"
                         objectFit="cover"
-                        src={file.url || ""}
+                        src={file.thumbnailUrl || file.url || ""}
                       />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center">

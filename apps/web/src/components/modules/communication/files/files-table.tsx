@@ -462,7 +462,7 @@ const FilesTableSkeleton = () => (
             </TableRow>
           </TableHeader>
           <TableBody>
-            {Array.from({ length: 5 }).map((_, index) => (
+            {Array.from({ length: 10 }).map((_, index) => (
               <TableRow
                 className="border-border border-b"
                 key={index.toString()}

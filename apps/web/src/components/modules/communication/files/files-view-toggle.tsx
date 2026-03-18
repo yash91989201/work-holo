@@ -1,5 +1,3 @@
-"use client";
-
 import { IconLayoutGrid, IconTable } from "@tabler/icons-react";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -10,7 +8,7 @@ type ViewType = "table" | "grid";
 export function FilesViewToggle() {
   const navigate = useNavigate();
   const search = useSearch({
-    from: "/(authenticated)/org/$slug/workspace/communication/files",
+    from: "/(authenticated)/org/$slug/workspace/communication/files/",
   });
 
   const currentView = (search.view as ViewType) || "table";
@@ -18,6 +16,7 @@ export function FilesViewToggle() {
   const handleViewChange = (value: string) => {
     if (!value) return;
     navigate({
+      to: ".",
       search: (prev) => ({
         ...prev,
         view: value as ViewType,
