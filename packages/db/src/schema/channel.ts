@@ -169,30 +169,34 @@ export const messageMentionTable = pgTable(
   ]
 );
 
-export const attachmentTable = pgTable("attachment", {
-  id: cuid2().defaultRandom().primaryKey(),
-  messageId: cuid2()
-    .notNull()
-    .references(() => messageTable.id, { onDelete: "cascade" }),
-  fileName: text().notNull(),
-  originalName: text().notNull(),
-  fileSize: integer().notNull(),
-  mimeType: text().notNull(),
-  type: attachmentTypeEnum().notNull(),
-  url: text(),
-  thumbnailUrl: text(),
-  uploadedBy: text()
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
-  isPublic: boolean().default(false).notNull(),
-  createdAt: timestamp({ withTimezone: true })
-    .$defaultFn(() => new Date())
-    .notNull(),
-  updatedAt: timestamp({ withTimezone: true })
-    .$defaultFn(() => new Date())
-    .$onUpdate(() => new Date())
-    .notNull(),
-});
+export const attachmentTable = pgTable(
+  "attachment",
+  {
+    id: cuid2().defaultRandom().primaryKey(),
+    messageId: cuid2()
+      .notNull()
+      .references(() => messageTable.id, { onDelete: "cascade" }),
+    fileName: text().notNull(),
+    originalName: text().notNull(),
+    fileSize: integer().notNull(),
+    mimeType: text().notNull(),
+    type: attachmentTypeEnum().notNull(),
+    url: text(),
+    thumbnailUrl: text(),
+    uploadedBy: text()
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    isPublic: boolean().default(false).notNull(),
+    createdAt: timestamp({ withTimezone: true })
+      .$defaultFn(() => new Date())
+      .notNull(),
+    updatedAt: timestamp({ withTimezone: true })
+      .$defaultFn(() => new Date())
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [index("idx_attachment_message_id").on(table.messageId)]
+);
 
 export const messageReadTable = pgTable(
   "messageRead",
