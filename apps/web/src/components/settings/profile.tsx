@@ -1,7 +1,7 @@
 import {
+  IconAt,
   IconCamera,
   IconCheck,
-  IconLoader2,
   IconPencil,
   IconTrashFilled,
   IconX,
@@ -670,6 +670,13 @@ function InlineUsernameEditor({
     <div className="flex items-center gap-2">
       <div className="flex-1">
         <InputGroup>
+          <InputGroupAddon align="inline-start">
+            {isCheckingAvailability ? (
+              <Spinner className="size-4" />
+            ) : (
+              <IconAt className="size-4 text-muted-foreground" />
+            )}
+          </InputGroupAddon>
           <InputGroupInput
             autoFocus
             className={cn(
@@ -690,9 +697,6 @@ function InlineUsernameEditor({
             value={value}
           />
           <InputGroupAddon align="inline-end">
-            {isCheckingAvailability && (
-              <IconLoader2 className="size-4 animate-spin text-muted-foreground" />
-            )}
             <InputGroupButton
               disabled={isSaveDisabled}
               onClick={handleSave}

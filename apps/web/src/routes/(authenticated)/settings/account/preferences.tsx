@@ -9,14 +9,12 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   return (
-    <div className="container mx-auto max-w-2xl py-12">
-      <div className="space-y-6">
-        <h2 className="font-semibold text-2xl tracking-tight">Preferences</h2>
-        <div className="space-y-6">
-          <General />
-          <Interface />
-        </div>
+    <section className="container mx-auto max-w-3xl space-y-6 p-6">
+      <h2 className="font-semibold text-2xl tracking-tight">Preferences</h2>
+      <div className="space-y-12">
+        <General />
+        <Interface />
       </div>
-    </div>
+    </section>
   );
 }
