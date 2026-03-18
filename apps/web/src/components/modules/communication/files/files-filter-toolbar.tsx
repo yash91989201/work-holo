@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUserChannels } from "@/hooks/communications/use-user-channels";
+import { FilesViewToggle } from "./files-view-toggle";
 
 const routeApi = getRouteApi(
   "/(authenticated)/org/$slug/workspace/communication/files/"
@@ -116,7 +117,6 @@ export function FilesFilterToolbar() {
             <IconSearch />
           </InputGroupAddon>
           <InputGroupInput
-            data-testid="files-search-input"
             onChange={(e) => setSearchValue(e.target.value)}
             placeholder="Search files..."
             value={searchValue}
@@ -124,7 +124,7 @@ export function FilesFilterToolbar() {
         </InputGroup>
 
         <Select onValueChange={handleTypeChange} value={searchParams.type}>
-          <SelectTrigger className="w-[140px]" data-testid="files-type-filter">
+          <SelectTrigger className="w-[140px]">
             <SelectValue placeholder="Type" />
           </SelectTrigger>
           <SelectContent>
@@ -141,10 +141,7 @@ export function FilesFilterToolbar() {
           onValueChange={handleChannelChange}
           value={searchParams.channelId || "all"}
         >
-          <SelectTrigger
-            className="w-[160px]"
-            data-testid="files-channel-filter"
-          >
+          <SelectTrigger className="w-[160px]">
             <SelectValue placeholder="Channel" />
           </SelectTrigger>
           <SelectContent>
@@ -158,7 +155,7 @@ export function FilesFilterToolbar() {
         </Select>
 
         <Select onValueChange={handleSortChange} value={sortValue}>
-          <SelectTrigger className="w-[160px]" data-testid="files-sort-select">
+          <SelectTrigger className="w-[160px]">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent>
@@ -183,6 +180,10 @@ export function FilesFilterToolbar() {
           </Button>
         )}
       </div>
+
+      <div>
+        <FilesViewToggle />
+      </div>
     </div>
   );
 }
@@ -195,6 +196,10 @@ export function FilesFilterToolbarSkeleton() {
         <Skeleton className="h-9 w-[140px] rounded-4xl" />
         <Skeleton className="h-9 w-[160px] rounded-4xl" />
         <Skeleton className="h-9 w-[160px] rounded-4xl" />
+      </div>
+      <div className="flex items-center gap-1">
+        <Skeleton className="h-9 w-9 rounded-md" />
+        <Skeleton className="h-9 w-9 rounded-md" />
       </div>
     </div>
   );

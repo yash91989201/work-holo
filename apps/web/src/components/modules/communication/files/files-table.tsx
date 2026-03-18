@@ -300,7 +300,7 @@ export const FilesTable = () => {
   });
 
   return (
-    <Card data-testid="files-table" variant="neumorphic">
+    <Card variant="neumorphic">
       <CardContent className="p-0">
         <div className="overflow-hidden">
           <Table>
@@ -417,10 +417,7 @@ export const FilesTable = () => {
             Showing {files.length} of {total} files
           </div>
         </div>
-        <div
-          className="flex items-center space-x-2"
-          data-testid="files-pagination"
-        >
+        <div className="flex items-center space-x-2">
           <Button
             className="h-8 px-3"
             disabled={!table.getCanPreviousPage()}
@@ -462,6 +459,7 @@ const FilesTableSkeleton = () => (
             </TableRow>
           </TableHeader>
           <TableBody>
+            {/* biome-ignore lint/suspicious/noArrayIndexKey: static skeleton list */}
             {Array.from({ length: 10 }).map((_, index) => (
               <TableRow
                 className="border-border border-b"
