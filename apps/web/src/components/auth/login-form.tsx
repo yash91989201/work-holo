@@ -46,6 +46,13 @@ export function LogInForm() {
           throw new Error(loginResult.error.message);
         }
 
+        const userRole = loginResult?.data?.user?.role as string | undefined;
+        const adminRoles = ["admin", "super_admin", "support"];
+        if (userRole && adminRoles.includes(userRole)) {
+          navigate({ to: "/platform/dashboard" });
+          return;
+        }
+
         const { data: orgs, error } = await authClient.organization.list();
 
         if (error) {

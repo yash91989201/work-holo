@@ -86,3 +86,24 @@ export const orgMemberProcedure = orgProcedure.use(
     });
   }
 );
+
+export const adminProcedure = protectedProcedure.use(({ context, next }) => {
+  const role = context.session.user.role;
+  if (role !== "admin" && role !== "super_admin") {
+    throw new ORPCError("FORBIDDEN", {
+      message: "Only admins can access this endpoint",
+    });
+  }
+  return next({});
+});
+
+export const superAdminProcedure = protectedProcedure.use(
+  ({ context, next }) => {
+    if (context.session.user.role !== "super_admin") {
+      throw new ORPCError("FORBIDDEN", {
+        message: "Only super admins can access this endpoint",
+      });
+    }
+    return next({});
+  }
+);

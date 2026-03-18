@@ -44,5 +44,11 @@
       "bun x ultracite fix"
     ]
   },
+  "overrides": {
+    "better-auth": "1.5.5",
+    "@better-auth/core": "1.5.5",
+    "@better-auth/expo": "1.5.5",
+    "@better-auth/passkey": "1.5.5"
+  },
   "packageManager": "bun@1.3.10"
 }
