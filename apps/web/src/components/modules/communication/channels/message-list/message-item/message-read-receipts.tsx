@@ -223,9 +223,9 @@ function MessageReadersList({ messageId }: { messageId: string }) {
 function MessageReadersListSkeleton() {
   return (
     <ItemGroup>
-      // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton list
       {Array.from({ length: 5 }).map((_, index) => (
-        <Item key={index.toString()}>
+        // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton list
+        <Item key={index}>
           <ItemMedia>
             <Skeleton className="h-8 w-8 rounded-full" />
           </ItemMedia>
