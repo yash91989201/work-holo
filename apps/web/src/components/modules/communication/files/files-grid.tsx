@@ -28,14 +28,7 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogClose, DialogContent } from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -43,9 +36,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { queryUtils } from "@/utils/orpc";
-
 import {
   formatFileSize,
   getFileIcon,
@@ -115,12 +108,14 @@ const FileInfoDialog = ({
   onOpenChange: (open: boolean) => void;
 }) => {
   const FileIcon = getFileIcon(file.type);
+  const isImage = file.type === "image" && file.url;
+
   return (
     <Dialog onOpenChange={onOpenChange} open={open}>
-      <DialogContent className="max-w-lg gap-0 overflow-hidden p-0">
+      <DialogContent className="max-w-sm gap-0 overflow-hidden p-0">
         <DialogClose asChild>
           <Button
-            className="absolute top-3 right-3 z-10 h-8 w-8 rounded-full border border-border/50 bg-background/90 shadow-sm hover:bg-background"
+            className="absolute top-3 right-3 z-10"
             size="icon"
             variant="secondary"
           >
@@ -128,63 +123,82 @@ const FileInfoDialog = ({
             <span className="sr-only">Close</span>
           </Button>
         </DialogClose>
-        <div className="relative h-60 w-full overflow-hidden bg-muted">
-          {file.type === "image" && file.url ? (
+
+        <div className="relative h-44 w-full overflow-hidden bg-muted">
+          {isImage ? (
             <Image
               alt={file.originalName}
               className="h-full w-full"
               effect="blur"
               objectFit="cover"
-              src={file.thumbnailUrl || file.url}
+              src={file.thumbnailUrl || file.url || ""}
               wrapperClassName="h-full w-full"
             />
           ) : (
             <div className="flex h-full items-center justify-center">
-              <FileIcon className="h-16 w-16 text-muted-foreground/30" />
+              <FileIcon className="h-14 w-14 text-muted-foreground/20" />
             </div>
           )}
-          <div className="absolute inset-0 bg-linear-to-t from-background/60 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-background/70 via-transparent to-transparent" />
         </div>
 
-        <div className="space-y-5 p-5">
-          <DialogHeader className="space-y-2 text-left">
-            <div className="flex items-center gap-2">
-              <FileIcon className="h-5 w-5 text-muted-foreground" />
-              <DialogTitle className="font-semibold text-sm">
-                File Information
-              </DialogTitle>
+        <div className="flex items-start gap-3 px-4 pt-4 pb-3">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border/50 bg-muted">
+            <FileIcon className="h-4 w-4 text-muted-foreground" />
+          </div>
+          <div className="min-w-0 flex-1 pt-0.5">
+            <p
+              className="truncate font-semibold text-sm leading-tight"
+              title={file.originalName}
+            >
+              {file.originalName}
+            </p>
+            <div className="mt-1 flex items-center gap-1.5">
+              <Badge
+                className={`border-0 px-2 py-0 font-medium text-[10px] ${getFileTypeColor(file.type)}`}
+                variant="outline"
+              >
+                {getFileTypeLabel(file.type)}
+              </Badge>
+              <span className="text-[10px] text-muted-foreground/50">·</span>
+              <span className="truncate text-[11px] text-muted-foreground">
+                {file.mimeType}
+              </span>
             </div>
-            <DialogDescription className="text-muted-foreground text-xs leading-relaxed">
-              {getFileTypeLabel(file.type)}
-              <span className="mx-1.5 text-border">·</span>
-              {file.mimeType}
-            </DialogDescription>
-          </DialogHeader>
+          </div>
+        </div>
 
-          <div className="grid grid-cols-2 gap-x-4 gap-y-4">
-            <div className="col-span-2 space-y-3 rounded-xl border border-border/50 bg-muted/30 p-3">
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground text-xs">Size</span>
-                <span className="font-medium text-sm">
-                  {formatFileSize(file.fileSize)}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground text-xs">Uploaded</span>
-                <span className="font-medium text-sm">
-                  {format(new Date(file.createdAt), "MMM d, yyyy")}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground text-xs">Time</span>
-                <span className="font-medium text-sm">
-                  {format(new Date(file.createdAt), "h:mm a")}
-                </span>
-              </div>
+        <Separator className="mx-4 w-auto" />
+
+        <div className="px-4 py-3">
+          <p className="mb-2.5 font-medium text-[11px] text-muted-foreground uppercase tracking-wide">
+            Details
+          </p>
+          <div className="space-y-0.5">
+            <div className="flex items-center justify-between py-1">
+              <span className="text-muted-foreground text-xs">File size</span>
+              <span className="font-medium text-sm">
+                {formatFileSize(file.fileSize)}
+              </span>
             </div>
+            <div className="flex items-center justify-between py-1">
+              <span className="text-muted-foreground text-xs">Uploaded</span>
+              <span className="font-medium text-sm">
+                {format(new Date(file.createdAt), "MMM d, yyyy 'at' h:mm a")}
+              </span>
+            </div>
+          </div>
+        </div>
 
-            <div className="flex items-center gap-3">
-              <Avatar className="h-8 w-8 shrink-0">
+        <Separator className="mx-4 w-auto" />
+
+        <div className="px-4 py-3">
+          <p className="mb-2.5 font-medium text-[11px] text-muted-foreground uppercase tracking-wide">
+            Source
+          </p>
+          <div className="space-y-2.5">
+            <div className="flex items-center gap-2.5">
+              <Avatar className="h-7 w-7 shrink-0">
                 <AvatarImage src={file.senderImage ?? undefined} />
                 <AvatarFallback className="font-medium text-[10px]">
                   {getSenderInitials(file.senderName)}
@@ -198,9 +212,9 @@ const FileInfoDialog = ({
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-border/50 bg-muted">
-                <IconHash className="h-4 w-4 text-muted-foreground" />
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-muted">
+                <IconHash className="h-3.5 w-3.5 text-muted-foreground" />
               </div>
               <div className="min-w-0">
                 <p className="truncate font-medium text-sm">
