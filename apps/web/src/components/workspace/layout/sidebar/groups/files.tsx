@@ -15,7 +15,7 @@ export function FilesGroup() {
   });
   const location = useLocation();
 
-  const isActive = location.pathname.includes("/communication/files");
+  const isActive = location.pathname.includes("/communication/channels/files");
 
   return (
     <SidebarGroup>
@@ -29,12 +29,13 @@ export function FilesGroup() {
                 search={{
                   page: 1,
                   perPage: 20,
+                  onlyMine: false,
                   type: "all",
                   sortBy: "createdAt",
                   sortOrder: "desc",
                   view: "table",
                 }}
-                to="/org/$slug/workspace/communication/files"
+                to="/org/$slug/workspace/communication/channels/files"
               >
                 <IconPaperclip />
                 <span>Files</span>

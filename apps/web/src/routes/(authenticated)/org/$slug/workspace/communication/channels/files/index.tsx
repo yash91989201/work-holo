@@ -9,6 +9,7 @@ const FilesSearchSchema = z.object({
   page: z.number().int().positive().catch(1),
   perPage: z.number().int().positive().catch(20),
   search: z.string().optional().catch(undefined),
+  onlyMine: z.boolean().catch(false),
   type: z
     .enum(["all", "image", "document", "video", "audio", "archive"])
     .catch("all"),
@@ -19,7 +20,7 @@ const FilesSearchSchema = z.object({
 });
 
 export const Route = createFileRoute(
-  "/(authenticated)/org/$slug/workspace/communication/files/"
+  "/(authenticated)/org/$slug/workspace/communication/channels/files/"
 )({
   validateSearch: FilesSearchSchema,
   staticData: { crumb: "Files" },

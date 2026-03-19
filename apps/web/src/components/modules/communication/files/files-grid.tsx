@@ -8,13 +8,19 @@ import {
   IconInfoCircle,
   IconLayoutDashboardFilled,
   IconMessageCircle,
+  IconUpload,
   IconX,
 } from "@tabler/icons-react";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { getRouteApi, useSearch } from "@tanstack/react-router";
 import type { ChannelFileOutput } from "@work-holo/api/lib/schemas/attachment";
 import { format } from "date-fns";
-import { useState } from "react";
+import type { ChangeEvent } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 import type { z } from "zod";
 import { Image } from "@/components/shared/image";
@@ -38,16 +44,19 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAuthedSession } from "@/hooks/use-authed-session";
 import { queryUtils } from "@/utils/orpc";
 import {
   formatFileSize,
+  getAttachmentTypeFromMime,
   getFileIcon,
   getFileTypeColor,
   getFileTypeLabel,
+  MAX_FILE_SIZE,
 } from "./file-utils";
 
 const routeApi = getRouteApi(
-  "/(authenticated)/org/$slug/workspace/communication/files/"
+  "/(authenticated)/org/$slug/workspace/communication/channels/files/"
 );
 
 type FileItem = z.infer<typeof ChannelFileOutput>;
@@ -231,9 +240,41 @@ const FileInfoDialog = ({
 };
 
 const FileGridCard = ({ file }: { file: FileItem }) => {
+  const queryClient = useQueryClient();
+  const { user } = useAuthedSession();
   const navigate = routeApi.useNavigate();
+  const search = routeApi.useSearch();
   const { slug } = routeApi.useParams();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [infoOpen, setInfoOpen] = useState(false);
+  const [isUpdatingFile, setIsUpdatingFile] = useState(false);
+
+  const getUpdateUploadUrl = useMutation(
+    queryUtils.communication.attachment.getUpdateUploadUrl.mutationOptions()
+  );
+
+  const updateFile = useMutation(
+    queryUtils.communication.attachment.update.mutationOptions({
+      onSuccess: () => {
+        queryClient.refetchQueries({
+          queryKey: queryUtils.communication.attachment.list.queryKey({
+            input: {
+              page: search.page ?? 1,
+              perPage: search.perPage ?? 20,
+              search: search.search,
+              onlyMine: search.onlyMine,
+              type: search.type !== "all" ? search.type : undefined,
+              channelId: search.channelId,
+              sortBy:
+                (search.sortBy as "name" | "size" | "createdAt" | "type") ??
+                "createdAt",
+              sortOrder: search.sortOrder ?? "desc",
+            },
+          }),
+        });
+      },
+    })
+  );
 
   const handlePreviewOrOpen = () => {
     if (!file.url) return;
@@ -253,7 +294,8 @@ const FileGridCard = ({ file }: { file: FileItem }) => {
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(blobUrl);
-    } catch {
+    } catch (error) {
+      console.error("Failed to download file:", error);
       toast.error("Failed to download file");
     }
   };
@@ -273,6 +315,69 @@ const FileGridCard = ({ file }: { file: FileItem }) => {
 
   const isMedia =
     file.type === "image" || file.type === "video" || file.type === "audio";
+
+  const canUpdateFile = file.uploadedBy === user.id;
+
+  const handleUpdateClick = () => {
+    if (!canUpdateFile || isUpdatingFile) return;
+
+    fileInputRef.current?.click();
+  };
+
+  const handleUpdateFileChange = async (
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
+    const selectedFile = event.target.files?.[0];
+
+    if (!(selectedFile && canUpdateFile)) {
+      return;
+    }
+
+    if (selectedFile.size > MAX_FILE_SIZE) {
+      toast.error(`File size exceeds ${formatFileSize(MAX_FILE_SIZE)} limit`);
+      return;
+    }
+
+    setIsUpdatingFile(true);
+
+    try {
+      const contentType = selectedFile.type || "application/octet-stream";
+      const uploadData = await getUpdateUploadUrl.mutateAsync({
+        attachmentId: file.id,
+        contentType,
+        fileSize: selectedFile.size,
+      });
+
+      const uploadResponse = await fetch(uploadData.uploadUrl, {
+        method: "PUT",
+        body: selectedFile,
+        headers: {
+          "Content-Type": contentType,
+        },
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error(`Upload failed with status: ${uploadResponse.status}`);
+      }
+
+      await updateFile.mutateAsync({
+        attachmentId: file.id,
+        originalName: selectedFile.name,
+        fileSize: selectedFile.size,
+        mimeType: contentType,
+        type: getAttachmentTypeFromMime(contentType),
+      });
+
+      toast.success("File updated");
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Failed to update file"
+      );
+    } finally {
+      event.target.value = "";
+      setIsUpdatingFile(false);
+    }
+  };
 
   return (
     <>
@@ -304,6 +409,15 @@ const FileGridCard = ({ file }: { file: FileItem }) => {
             <IconCopy />
             Copy link
           </ContextMenuItem>
+          {canUpdateFile && (
+            <ContextMenuItem
+              disabled={isUpdatingFile}
+              onClick={handleUpdateClick}
+            >
+              <IconUpload />
+              {isUpdatingFile ? "Updating..." : "Update"}
+            </ContextMenuItem>
+          )}
           <ContextMenuItem onClick={handleJumpToMessage}>
             <IconMessageCircle />
             Jump to message
@@ -316,6 +430,13 @@ const FileGridCard = ({ file }: { file: FileItem }) => {
         </ContextMenuContent>
       </ContextMenu>
 
+      <input
+        className="hidden"
+        onChange={handleUpdateFileChange}
+        ref={fileInputRef}
+        type="file"
+      />
+
       <FileInfoDialog file={file} onOpenChange={setInfoOpen} open={infoOpen} />
     </>
   );
@@ -323,7 +444,7 @@ const FileGridCard = ({ file }: { file: FileItem }) => {
 
 export const FilesGrid = () => {
   const search = useSearch({
-    from: "/(authenticated)/org/$slug/workspace/communication/files/",
+    from: "/(authenticated)/org/$slug/workspace/communication/channels/files/",
   });
 
   const navigate = routeApi.useNavigate();
@@ -332,6 +453,7 @@ export const FilesGrid = () => {
   const pageSize = search.perPage ?? 20;
   const hasActiveFilters =
     Boolean(search.search) ||
+    Boolean(search.onlyMine) ||
     search.type !== "all" ||
     Boolean(search.channelId);
 
@@ -343,6 +465,7 @@ export const FilesGrid = () => {
         page: pageIndex + 1,
         perPage: pageSize,
         search: search.search,
+        onlyMine: search.onlyMine,
         type: search.type !== "all" ? search.type : undefined,
         channelId: search.channelId,
         sortBy:
@@ -379,6 +502,7 @@ export const FilesGrid = () => {
       search: (prev) => ({
         ...prev,
         search: undefined,
+        onlyMine: false,
         type: "all",
         channelId: undefined,
         sortBy: "createdAt",

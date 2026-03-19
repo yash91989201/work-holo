@@ -65,8 +65,34 @@ export const SearchAttachmentsInput = z.object({
 
 export const UpdateAttachmentInput = z.object({
   attachmentId: z.string().min(1),
-  originalName: z.string().min(1).max(255).optional(),
-  isPublic: z.boolean().optional(),
+  originalName: z.string().min(1).max(255),
+  fileSize: z
+    .number()
+    .min(1)
+    .max(100 * 1024 * 1024),
+  mimeType: z.string().min(1).max(255),
+  type: AttachmentTypeSchema,
+});
+
+export const GetUpdateAttachmentUploadUrlInput = z.object({
+  attachmentId: z.string().min(1),
+  contentType: z.string().min(1).max(255),
+  fileSize: z
+    .number()
+    .min(1)
+    .max(100 * 1024 * 1024),
+});
+
+export const GetUpdateAttachmentUploadUrlOutput = z.object({
+  uploadUrl: z.string(),
+  publicUrl: z.string(),
+  filePath: z.string(),
+  bucket: z.string(),
+  expiresAt: z.date(),
+});
+
+export const UpdateAttachmentOutput = z.object({
+  success: z.boolean(),
 });
 
 export const DeleteAttachmentInput = z.object({
@@ -165,6 +191,7 @@ export const ListChannelFilesInput = z.object({
   page: z.number().int().min(1).default(1),
   perPage: z.number().int().min(1).max(100).default(20),
   search: z.string().optional(),
+  onlyMine: z.boolean().optional().default(false),
   type: AttachmentTypeSchema.optional(),
   sortBy: z.enum(["name", "size", "createdAt", "type"]).default("createdAt"),
   sortOrder: z.enum(["asc", "desc"]).default("desc"),

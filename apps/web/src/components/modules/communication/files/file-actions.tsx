@@ -4,10 +4,13 @@ import {
   IconDownload,
   IconExternalLink,
   IconMessageCircle,
+  IconUpload,
 } from "@tabler/icons-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import type { ChannelFileOutput } from "@work-holo/api/lib/schemas/attachment";
-import { useState } from "react";
+import type { ChangeEvent } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 import type { z } from "zod";
 import { Image } from "@/components/shared/image";
@@ -26,8 +29,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAuthedSession } from "@/hooks/use-authed-session";
+import { queryUtils } from "@/utils/orpc";
 
-import { formatFileSize, getFileTypeLabel } from "./file-utils";
+import {
+  formatFileSize,
+  getAttachmentTypeFromMime,
+  getFileTypeLabel,
+  MAX_FILE_SIZE,
+} from "./file-utils";
 
 type FileType = z.infer<typeof ChannelFileOutput>;
 
@@ -36,13 +46,45 @@ interface FileActionsProps {
 }
 
 const routeApi = getRouteApi(
-  "/(authenticated)/org/$slug/workspace/communication/files/"
+  "/(authenticated)/org/$slug/workspace/communication/channels/files/"
 );
 
 export const FileActions = ({ file }: FileActionsProps) => {
+  const queryClient = useQueryClient();
+  const { user } = useAuthedSession();
   const navigate = routeApi.useNavigate();
+  const search = routeApi.useSearch();
   const { slug } = routeApi.useParams();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [isUpdatingFile, setIsUpdatingFile] = useState(false);
+
+  const getUpdateUploadUrl = useMutation(
+    queryUtils.communication.attachment.getUpdateUploadUrl.mutationOptions()
+  );
+
+  const updateFile = useMutation(
+    queryUtils.communication.attachment.update.mutationOptions({
+      onSuccess: () => {
+        queryClient.refetchQueries({
+          queryKey: queryUtils.communication.attachment.list.queryKey({
+            input: {
+              page: search.page ?? 1,
+              perPage: search.perPage ?? 20,
+              search: search.search,
+              onlyMine: search.onlyMine,
+              type: search.type !== "all" ? search.type : undefined,
+              channelId: search.channelId,
+              sortBy:
+                (search.sortBy as "name" | "size" | "createdAt" | "type") ??
+                "createdAt",
+              sortOrder: search.sortOrder ?? "desc",
+            },
+          }),
+        });
+      },
+    })
+  );
 
   const handleDownload = async () => {
     if (!file.url) return;
@@ -92,6 +134,71 @@ export const FileActions = ({ file }: FileActionsProps) => {
   const isMedia =
     file.type === "image" || file.type === "video" || file.type === "audio";
 
+  const canUpdateFile = file.uploadedBy === user.id;
+
+  const handleUpdateClick = () => {
+    if (!canUpdateFile || isUpdatingFile) {
+      return;
+    }
+
+    fileInputRef.current?.click();
+  };
+
+  const handleUpdateFileChange = async (
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
+    const selectedFile = event.target.files?.[0];
+
+    if (!(selectedFile && canUpdateFile)) {
+      return;
+    }
+
+    if (selectedFile.size > MAX_FILE_SIZE) {
+      toast.error(`File size exceeds ${formatFileSize(MAX_FILE_SIZE)} limit`);
+      return;
+    }
+
+    setIsUpdatingFile(true);
+
+    try {
+      const contentType = selectedFile.type || "application/octet-stream";
+      const uploadData = await getUpdateUploadUrl.mutateAsync({
+        attachmentId: file.id,
+        contentType,
+        fileSize: selectedFile.size,
+      });
+
+      const uploadResponse = await fetch(uploadData.uploadUrl, {
+        method: "PUT",
+        body: selectedFile,
+        headers: {
+          "Content-Type": contentType,
+        },
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error(`Upload failed with status: ${uploadResponse.status}`);
+      }
+
+      await updateFile.mutateAsync({
+        attachmentId: file.id,
+        originalName: selectedFile.name,
+        fileSize: selectedFile.size,
+        mimeType: contentType,
+        type: getAttachmentTypeFromMime(contentType),
+      });
+
+      toast.success("File updated");
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Failed to update file"
+      );
+    } finally {
+      event.target.value = "";
+      setIsUpdatingFile(false);
+    }
+  };
+
   return (
     <>
       <DropdownMenu>
@@ -114,6 +221,15 @@ export const FileActions = ({ file }: FileActionsProps) => {
             <IconCopy className="mr-2 h-4 w-4" />
             Copy link
           </DropdownMenuItem>
+          {canUpdateFile && (
+            <DropdownMenuItem
+              disabled={isUpdatingFile}
+              onClick={handleUpdateClick}
+            >
+              <IconUpload className="mr-2 h-4 w-4" />
+              {isUpdatingFile ? "Updating..." : "Update"}
+            </DropdownMenuItem>
+          )}
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={handleJumpToMessage}>
             <IconMessageCircle className="mr-2 h-4 w-4" />
@@ -121,6 +237,13 @@ export const FileActions = ({ file }: FileActionsProps) => {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      <input
+        className="hidden"
+        onChange={handleUpdateFileChange}
+        ref={fileInputRef}
+        type="file"
+      />
 
       <Dialog onOpenChange={setPreviewOpen} open={previewOpen}>
         <DialogContent className="max-w-3xl">

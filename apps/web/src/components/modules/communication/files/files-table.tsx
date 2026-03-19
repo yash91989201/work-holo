@@ -48,12 +48,12 @@ import {
 } from "./file-utils";
 
 const routeApi = getRouteApi(
-  "/(authenticated)/org/$slug/workspace/communication/files/"
+  "/(authenticated)/org/$slug/workspace/communication/channels/files/"
 );
 
 export const FilesTable = () => {
   const search = useSearch({
-    from: "/(authenticated)/org/$slug/workspace/communication/files/",
+    from: "/(authenticated)/org/$slug/workspace/communication/channels/files/",
   });
 
   const navigate = routeApi.useNavigate();
@@ -71,6 +71,7 @@ export const FilesTable = () => {
   };
   const hasActiveFilters =
     Boolean(search.search) ||
+    Boolean(search.onlyMine) ||
     search.type !== "all" ||
     Boolean(search.channelId);
 
@@ -79,6 +80,7 @@ export const FilesTable = () => {
       search: (prev) => ({
         ...prev,
         search: undefined,
+        onlyMine: false,
         type: "all",
         channelId: undefined,
         sortBy: "createdAt",
@@ -96,6 +98,7 @@ export const FilesTable = () => {
         page: pagination.pageIndex + 1,
         perPage: pagination.pageSize,
         search: search.search,
+        onlyMine: search.onlyMine,
         type: search.type !== "all" ? search.type : undefined,
         channelId: search.channelId,
         sortBy:

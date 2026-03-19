@@ -1,12 +1,14 @@
 import { IconSearch, IconX } from "@tabler/icons-react";
+import { useDebouncedValue } from "@tanstack/react-pacer";
+import { useIsFetching } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
-import { useDebounce } from "@uidotdev/usehooks";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
   InputGroup,
   InputGroupAddon,
+  InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group";
 import {
@@ -17,20 +19,38 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useUserChannels } from "@/hooks/communications/use-user-channels";
+import { Spinner } from "@/components/ui/spinner";
+import { queryUtils } from "@/utils/orpc";
 import { FilesViewToggle } from "./files-view-toggle";
 
 const routeApi = getRouteApi(
-  "/(authenticated)/org/$slug/workspace/communication/files/"
+  "/(authenticated)/org/$slug/workspace/communication/channels/files/"
 );
 
 export function FilesFilterToolbar() {
   const searchParams = routeApi.useSearch();
   const navigate = routeApi.useNavigate();
-  const { channels } = useUserChannels();
 
   const [searchValue, setSearchValue] = useState(searchParams.search || "");
-  const debouncedSearch = useDebounce(searchValue, 500);
+  const [debouncedSearch] = useDebouncedValue(searchValue, { wait: 500 });
+  const filesListQueryInput = {
+    page: searchParams.page ?? 1,
+    perPage: searchParams.perPage ?? 20,
+    search: searchParams.search,
+    onlyMine: searchParams.onlyMine,
+    type: searchParams.type !== "all" ? searchParams.type : undefined,
+    channelId: searchParams.channelId,
+    sortBy:
+      (searchParams.sortBy as "name" | "size" | "createdAt" | "type") ??
+      "createdAt",
+    sortOrder: searchParams.sortOrder ?? "desc",
+  };
+  const isFilesListFetching =
+    useIsFetching({
+      queryKey: queryUtils.communication.attachment.list.queryKey({
+        input: filesListQueryInput,
+      }),
+    }) > 0;
 
   useEffect(() => {
     if (debouncedSearch !== (searchParams.search || "")) {
@@ -60,16 +80,6 @@ export function FilesFilterToolbar() {
     });
   };
 
-  const handleChannelChange = (value: string) => {
-    navigate({
-      search: (prev) => ({
-        ...prev,
-        channelId: value === "all" ? undefined : value,
-        page: 1,
-      }),
-    });
-  };
-
   const handleSortChange = (value: string) => {
     const [sortBy, sortOrder] = value.split("-") as [
       "name" | "size" | "createdAt" | "type",
@@ -85,12 +95,23 @@ export function FilesFilterToolbar() {
     });
   };
 
+  const handleSenderChange = (value: string) => {
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        onlyMine: value === "mine",
+        page: 1,
+      }),
+    });
+  };
+
   const handleReset = () => {
     setSearchValue("");
     navigate({
       search: (prev) => ({
         ...prev,
         search: undefined,
+        onlyMine: false,
         type: "all",
         channelId: undefined,
         sortBy: "createdAt",
@@ -100,10 +121,22 @@ export function FilesFilterToolbar() {
     });
   };
 
+  const handleClearSearch = () => {
+    setSearchValue("");
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        search: undefined,
+        page: 1,
+      }),
+    });
+  };
+
   const sortValue = `${searchParams.sortBy}-${searchParams.sortOrder}`;
 
   const hasFilters =
     !!searchParams.search ||
+    searchParams.onlyMine ||
     searchParams.type !== "all" ||
     !!searchParams.channelId ||
     searchParams.sortBy !== "createdAt" ||
@@ -113,18 +146,33 @@ export function FilesFilterToolbar() {
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex flex-1 items-center gap-2">
         <InputGroup className="max-w-sm">
-          <InputGroupAddon>
-            <IconSearch />
+          <InputGroupAddon align="inline-start">
+            {isFilesListFetching ? (
+              <Spinner className="size-4" />
+            ) : (
+              <IconSearch />
+            )}
           </InputGroupAddon>
           <InputGroupInput
             onChange={(e) => setSearchValue(e.target.value)}
-            placeholder="Search files..."
+            placeholder="Search by file name, sender, or channel..."
             value={searchValue}
           />
+          <InputGroupAddon align="inline-end" className="py-0">
+            <InputGroupButton
+              aria-label="Clear search"
+              disabled={!searchValue}
+              onClick={handleClearSearch}
+              size="icon-xs"
+              variant="ghost"
+            >
+              <IconX className="size-3.5" />
+            </InputGroupButton>
+          </InputGroupAddon>
         </InputGroup>
 
         <Select onValueChange={handleTypeChange} value={searchParams.type}>
-          <SelectTrigger className="w-[140px]">
+          <SelectTrigger className="w-35">
             <SelectValue placeholder="Type" />
           </SelectTrigger>
           <SelectContent>
@@ -137,25 +185,8 @@ export function FilesFilterToolbar() {
           </SelectContent>
         </Select>
 
-        <Select
-          onValueChange={handleChannelChange}
-          value={searchParams.channelId || "all"}
-        >
-          <SelectTrigger className="w-[160px]">
-            <SelectValue placeholder="Channel" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Channels</SelectItem>
-            {channels.map((channel) => (
-              <SelectItem key={channel.id} value={channel.id}>
-                {channel.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
         <Select onValueChange={handleSortChange} value={sortValue}>
-          <SelectTrigger className="w-[160px]">
+          <SelectTrigger className="w-40">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent>
@@ -165,6 +196,19 @@ export function FilesFilterToolbar() {
             <SelectItem value="name-desc">Name Z-A</SelectItem>
             <SelectItem value="size-desc">Largest</SelectItem>
             <SelectItem value="size-asc">Smallest</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Select
+          onValueChange={handleSenderChange}
+          value={searchParams.onlyMine ? "mine" : "all"}
+        >
+          <SelectTrigger className="w-38">
+            <SelectValue placeholder="Sender" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Senders</SelectItem>
+            <SelectItem value="mine">Sent by me</SelectItem>
           </SelectContent>
         </Select>
 
@@ -193,9 +237,9 @@ export function FilesFilterToolbarSkeleton() {
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex flex-1 items-center gap-2">
         <Skeleton className="h-9 w-full max-w-sm rounded-4xl" />
-        <Skeleton className="h-9 w-[140px] rounded-4xl" />
-        <Skeleton className="h-9 w-[160px] rounded-4xl" />
-        <Skeleton className="h-9 w-[160px] rounded-4xl" />
+        <Skeleton className="h-9 w-35 rounded-4xl" />
+        <Skeleton className="h-9 w-40 rounded-4xl" />
+        <Skeleton className="h-9 w-38 rounded-4xl" />
       </div>
       <div className="flex items-center gap-1">
         <Skeleton className="h-9 w-9 rounded-md" />

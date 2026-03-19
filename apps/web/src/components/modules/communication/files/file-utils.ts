@@ -63,3 +63,22 @@ export function getFileTypeColor(type: AttachmentType): string {
   };
   return colors[type] || colors.other;
 }
+
+export const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
+
+export function getAttachmentTypeFromMime(
+  mimeType: string
+): "image" | "document" | "video" | "audio" | "archive" {
+  if (mimeType.startsWith("image/")) return "image";
+  if (mimeType.startsWith("video/")) return "video";
+  if (mimeType.startsWith("audio/")) return "audio";
+  if (
+    mimeType.includes("zip") ||
+    mimeType.includes("rar") ||
+    mimeType.includes("7z")
+  ) {
+    return "archive";
+  }
+
+  return "document";
+}
