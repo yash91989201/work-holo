@@ -1,7 +1,7 @@
 import { IconSearch, IconX } from "@tabler/icons-react";
 import { useDebouncedValue } from "@tanstack/react-pacer";
 import { useIsFetching } from "@tanstack/react-query";
-import { getRouteApi } from "@tanstack/react-router";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -23,13 +23,13 @@ import { Spinner } from "@/components/ui/spinner";
 import { queryUtils } from "@/utils/orpc";
 import { FilesViewToggle } from "./files-view-toggle";
 
-const routeApi = getRouteApi(
-  "/(authenticated)/org/$slug/workspace/communication/channels/files/"
-);
-
 export function FilesFilterToolbar() {
-  const searchParams = routeApi.useSearch();
-  const navigate = routeApi.useNavigate();
+  const searchParams = useSearch({
+    from: "/(authenticated)/org/$slug/workspace/communication/channels/files/",
+  });
+  const navigate = useNavigate({
+    from: "/org/$slug/workspace/communication/channels/files/",
+  });
 
   const [searchValue, setSearchValue] = useState(searchParams.search || "");
   const [debouncedSearch] = useDebouncedValue(searchValue, { wait: 500 });

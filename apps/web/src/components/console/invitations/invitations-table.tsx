@@ -19,7 +19,7 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
-import { getRouteApi } from "@tanstack/react-router";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 import {
   type ColumnDef,
   flexRender,
@@ -85,10 +85,6 @@ import { useAuthedSession } from "@/hooks/use-authed-session";
 import { authClient } from "@/lib/auth-client";
 import { getRoleBadgeVariant, getStatusBadgeVariant } from "@/lib/org";
 import { queryClient, queryUtils } from "@/utils/orpc";
-
-const routeApi = getRouteApi(
-  "/(authenticated)/org/$slug/console/members/invitations"
-);
 
 type InvitationRecord = z.infer<typeof InvitationSelectSchema>;
 
@@ -308,8 +304,12 @@ export const InvitationsTable = () => {
   const { session } = useAuthedSession();
   const orgId = session.activeOrganizationId ?? "";
 
-  const search = routeApi.useSearch();
-  const navigate = routeApi.useNavigate();
+  const search = useSearch({
+    from: "/(authenticated)/org/$slug/console/members/invitations",
+  });
+  const navigate = useNavigate({
+    from: "/org/$slug/console/members/invitations",
+  });
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [searchTerm, setSearchTerm] = useState(search.search ?? "");

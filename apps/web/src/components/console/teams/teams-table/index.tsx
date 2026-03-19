@@ -13,7 +13,7 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
-import { getRouteApi, useSearch } from "@tanstack/react-router";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 import {
   type ColumnDef,
   flexRender,
@@ -28,8 +28,6 @@ import type { TeamMemberType } from "@work-holo/db/lib/types";
 import { format } from "date-fns";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import type { DateRange } from "react-day-picker";
-
-const routeApi = getRouteApi("/(authenticated)/org/$slug/console/teams/");
 
 function getDateRangeDisplay(
   dateRange: DateRange | undefined
@@ -114,7 +112,9 @@ export const TeamsTable = () => {
     from: "/(authenticated)/org/$slug/console/teams/",
   });
 
-  const navigate = routeApi.useNavigate();
+  const navigate = useNavigate({
+    from: "/org/$slug/console/teams/",
+  });
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});

@@ -11,9 +11,7 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { getRouteApi, useSearch } from "@tanstack/react-router";
-
-const routeApi = getRouteApi("/(authenticated)/org/$slug/console/members/");
+import { useNavigate, useSearch } from "@tanstack/react-router";
 
 import {
   type ColumnDef,
@@ -285,7 +283,9 @@ export const MembersTable = () => {
     from: "/(authenticated)/org/$slug/console/members/",
   });
 
-  const navigate = routeApi.useNavigate();
+  const navigate = useNavigate({
+    from: "/org/$slug/console/members/",
+  });
 
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [sorting, setSorting] = useState<SortingState>([]);

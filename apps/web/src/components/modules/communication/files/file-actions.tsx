@@ -7,7 +7,7 @@ import {
   IconUpload,
 } from "@tabler/icons-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { getRouteApi } from "@tanstack/react-router";
+import { useNavigate, useParams, useSearch } from "@tanstack/react-router";
 import type { ChannelFileOutput } from "@work-holo/api/lib/schemas/attachment";
 import type { ChangeEvent } from "react";
 import { useRef, useState } from "react";
@@ -45,16 +45,18 @@ interface FileActionsProps {
   file: FileType;
 }
 
-const routeApi = getRouteApi(
-  "/(authenticated)/org/$slug/workspace/communication/channels/files/"
-);
-
 export const FileActions = ({ file }: FileActionsProps) => {
   const queryClient = useQueryClient();
   const { user } = useAuthedSession();
-  const navigate = routeApi.useNavigate();
-  const search = routeApi.useSearch();
-  const { slug } = routeApi.useParams();
+  const navigate = useNavigate({
+    from: "/org/$slug/workspace/communication/channels/files/",
+  });
+  const search = useSearch({
+    from: "/(authenticated)/org/$slug/workspace/communication/channels/files/",
+  });
+  const { slug } = useParams({
+    from: "/(authenticated)/org/$slug/workspace/communication/channels/files/",
+  });
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [isUpdatingFile, setIsUpdatingFile] = useState(false);

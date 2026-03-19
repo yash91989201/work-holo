@@ -16,7 +16,7 @@ import {
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query";
-import { getRouteApi, useSearch } from "@tanstack/react-router";
+import { useNavigate, useParams, useSearch } from "@tanstack/react-router";
 import type { ChannelFileOutput } from "@work-holo/api/lib/schemas/attachment";
 import { format } from "date-fns";
 import type { ChangeEvent } from "react";
@@ -54,10 +54,6 @@ import {
   getFileTypeLabel,
   MAX_FILE_SIZE,
 } from "./file-utils";
-
-const routeApi = getRouteApi(
-  "/(authenticated)/org/$slug/workspace/communication/channels/files/"
-);
 
 type FileItem = z.infer<typeof ChannelFileOutput>;
 
@@ -242,9 +238,15 @@ const FileInfoDialog = ({
 const FileGridCard = ({ file }: { file: FileItem }) => {
   const queryClient = useQueryClient();
   const { user } = useAuthedSession();
-  const navigate = routeApi.useNavigate();
-  const search = routeApi.useSearch();
-  const { slug } = routeApi.useParams();
+  const navigate = useNavigate({
+    from: "/org/$slug/workspace/communication/channels/files/",
+  });
+  const search = useSearch({
+    from: "/(authenticated)/org/$slug/workspace/communication/channels/files/",
+  });
+  const { slug } = useParams({
+    from: "/(authenticated)/org/$slug/workspace/communication/channels/files/",
+  });
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [infoOpen, setInfoOpen] = useState(false);
   const [isUpdatingFile, setIsUpdatingFile] = useState(false);
@@ -447,7 +449,9 @@ export const FilesGrid = () => {
     from: "/(authenticated)/org/$slug/workspace/communication/channels/files/",
   });
 
-  const navigate = routeApi.useNavigate();
+  const navigate = useNavigate({
+    from: "/org/$slug/workspace/communication/channels/files/",
+  });
 
   const pageIndex = (search.page ?? 1) - 1;
   const pageSize = search.perPage ?? 20;

@@ -6,7 +6,7 @@ import {
   IconLayoutDashboardFilled,
 } from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { getRouteApi, useSearch } from "@tanstack/react-router";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 import {
   type ColumnDef,
   flexRender,
@@ -47,16 +47,14 @@ import {
   getFileTypeLabel,
 } from "./file-utils";
 
-const routeApi = getRouteApi(
-  "/(authenticated)/org/$slug/workspace/communication/channels/files/"
-);
-
 export const FilesTable = () => {
   const search = useSearch({
     from: "/(authenticated)/org/$slug/workspace/communication/channels/files/",
   });
 
-  const navigate = routeApi.useNavigate();
+  const navigate = useNavigate({
+    from: "/org/$slug/workspace/communication/channels/files/",
+  });
 
   const [sorting, setSorting] = useState<SortingState>([
     {
