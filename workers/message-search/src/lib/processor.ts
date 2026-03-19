@@ -49,7 +49,7 @@ function buildSearchDocument(
     messageId: message.messageId,
     organizationId: message.organizationId,
     scopeType: message.scopeType,
-    scopeId: message.scopeId ?? "",
+    scopeId: message.scopeId,
     senderId: message.senderId ?? "",
     senderName: message.senderName ?? "",
     contentPlain: stripHtmlToPlainText(contentHtml),
