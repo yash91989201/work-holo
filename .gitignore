@@ -52,3 +52,5 @@ coverage
 tmp
 temp
 .agent
+
+node-compile-cache
