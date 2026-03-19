@@ -2,11 +2,12 @@ import {
   IconAt,
   IconCamera,
   IconCheck,
+  IconLoader2,
   IconPencil,
   IconTrashFilled,
   IconX,
 } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -389,6 +390,8 @@ function InlineNameEditor({
       <div className="flex-1">
         <InputGroup>
           <InputGroupInput
+            aria-describedby={error ? "name-error" : undefined}
+            aria-label="Edit full name"
             autoFocus
             className={cn(error && "border-destructive")}
             onChange={(e) => {
@@ -402,15 +405,27 @@ function InlineNameEditor({
             value={value}
           />
           <InputGroupAddon align="inline-end">
-            <InputGroupButton onClick={handleSave} size="icon-xs">
+            <InputGroupButton
+              aria-label="Save"
+              onClick={handleSave}
+              size="icon-xs"
+            >
               <IconCheck className="size-4 text-green-600" />
             </InputGroupButton>
-            <InputGroupButton onClick={onCancel} size="icon-xs">
+            <InputGroupButton
+              aria-label="Cancel"
+              onClick={onCancel}
+              size="icon-xs"
+            >
               <IconX className="size-4 text-destructive" />
             </InputGroupButton>
           </InputGroupAddon>
         </InputGroup>
-        {error && <p className="mt-1 text-destructive text-xs">{error}</p>}
+        {error && (
+          <p className="mt-1 text-destructive text-xs" id="name-error">
+            {error}
+          </p>
+        )}
       </div>
     </div>
   );
@@ -492,6 +507,8 @@ function InlineDisplayUsernameEditor({
       <div className="flex-1">
         <InputGroup>
           <InputGroupInput
+            aria-describedby={error ? "display-username-error" : undefined}
+            aria-label="Edit display username"
             autoFocus
             className={cn(error && "border-destructive")}
             onChange={(e) => {
@@ -506,15 +523,30 @@ function InlineDisplayUsernameEditor({
             value={value}
           />
           <InputGroupAddon align="inline-end">
-            <InputGroupButton onClick={handleSave} size="icon-xs">
+            <InputGroupButton
+              aria-label="Save"
+              onClick={handleSave}
+              size="icon-xs"
+            >
               <IconCheck className="size-4 text-green-600" />
             </InputGroupButton>
-            <InputGroupButton onClick={onCancel} size="icon-xs">
+            <InputGroupButton
+              aria-label="Cancel"
+              onClick={onCancel}
+              size="icon-xs"
+            >
               <IconX className="size-4 text-destructive" />
             </InputGroupButton>
           </InputGroupAddon>
         </InputGroup>
-        {error && <p className="mt-1 text-destructive text-xs">{error}</p>}
+        {error && (
+          <p
+            className="mt-1 text-destructive text-xs"
+            id="display-username-error"
+          >
+            {error}
+          </p>
+        )}
       </div>
     </div>
   );
@@ -581,6 +613,7 @@ function InlineUsernameEditor({
   const [isValidating, setIsValidating] = useState(false);
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
   const [isCheckingAvailability, setIsCheckingAvailability] = useState(false);
+  const requestIdRef = useRef(0);
 
   // Debounced availability check
   useEffect(() => {
@@ -602,12 +635,15 @@ function InlineUsernameEditor({
 
     // Debounce the availability check
     setIsCheckingAvailability(true);
+    const currentRequestId = ++requestIdRef.current;
     const timeoutId = setTimeout(async () => {
       try {
         const { data: response, error: checkError } =
           await authClient.isUsernameAvailable({
             username: value,
           });
+
+        if (currentRequestId !== requestIdRef.current) return;
 
         if (checkError) {
           setIsAvailable(false);
@@ -619,16 +655,18 @@ function InlineUsernameEditor({
           }
         }
       } catch {
+        if (currentRequestId !== requestIdRef.current) return;
         setIsAvailable(false);
         setError("Unable to verify username availability");
       } finally {
-        setIsCheckingAvailability(false);
+        if (currentRequestId === requestIdRef.current) {
+          setIsCheckingAvailability(false);
+        }
       }
     }, 300);
 
     return () => {
       clearTimeout(timeoutId);
-      setIsCheckingAvailability(false);
     };
   }, [value, currentUsername]);
 
@@ -678,6 +716,8 @@ function InlineUsernameEditor({
             )}
           </InputGroupAddon>
           <InputGroupInput
+            aria-describedby={error ? "username-error" : undefined}
+            aria-label="Edit username"
             autoFocus
             className={cn(
               error && isAvailable === false && "border-destructive",
@@ -698,18 +738,27 @@ function InlineUsernameEditor({
           />
           <InputGroupAddon align="inline-end">
             <InputGroupButton
+              aria-label="Save"
               disabled={isSaveDisabled}
               onClick={handleSave}
               size="icon-xs"
             >
               <IconCheck className="size-4 text-green-600" />
             </InputGroupButton>
-            <InputGroupButton onClick={onCancel} size="icon-xs">
+            <InputGroupButton
+              aria-label="Cancel"
+              onClick={onCancel}
+              size="icon-xs"
+            >
               <IconX className="size-4 text-destructive" />
             </InputGroupButton>
           </InputGroupAddon>
         </InputGroup>
-        {error && <p className="mt-1 text-destructive text-xs">{error}</p>}
+        {error && (
+          <p className="mt-1 text-destructive text-xs" id="username-error">
+            {error}
+          </p>
+        )}
         {isAvailable === true && !error && (
           <p className="mt-1 text-green-600 text-xs">Username is available</p>
         )}

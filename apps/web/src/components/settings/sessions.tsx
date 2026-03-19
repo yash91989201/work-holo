@@ -50,9 +50,8 @@ export function CurrentSession() {
 
       toast.success("Logged out successfully");
       navigate({ to: "/login" });
-    } catch (err) {
+    } catch {
       toast.error("An unexpected error occurred");
-      console.error("Error logging out:", err);
     }
   }
 
@@ -108,9 +107,8 @@ export function OtherSessions() {
       await queryClient.invalidateQueries({
         queryKey: getAuthQueryKey.session.list(),
       });
-    } catch (err) {
+    } catch {
       toast.error("An unexpected error occurred");
-      console.error("Error revoking session:", err);
     }
   }
 
@@ -127,9 +125,8 @@ export function OtherSessions() {
       await queryClient.invalidateQueries({
         queryKey: getAuthQueryKey.session.list(),
       });
-    } catch (err) {
+    } catch {
       toast.error("An unexpected error occurred");
-      console.error("Error revoking other sessions:", err);
     }
   }
 
@@ -140,53 +137,56 @@ export function OtherSessions() {
   return (
     <div className="space-y-3">
       <h3>Other sessions</h3>
-      <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
-        {otherSessions.length > 0 && (
-          <>
-            {otherSessions.map((session, index) => (
-              <div key={session.id}>
-                <Item>
-                  <ItemContent>
-                    <ItemTitle className="flex items-center gap-2">
-                      {new UAParser(session.userAgent || "").getResult().device
-                        .type === "mobile" ? (
-                        <IconDeviceMobile className="size-4" />
-                      ) : (
-                        <IconDeviceDesktop className="size-4" />
-                      )}
-                      {getBrowserInformation(session.userAgent)}
-                    </ItemTitle>
-                    <ItemDescription>
-                      Created: {formatDate(session.createdAt)} • Expires:{" "}
-                      {formatDate(session.expiresAt)}
-                    </ItemDescription>
-                  </ItemContent>
-                  <ItemActions>
-                    <Button
-                      onClick={() => revokeSession(session.token)}
-                      size="sm"
-                      variant="destructive"
-                    >
-                      <IconTrashFilled className="size-4" />
-                    </Button>
-                  </ItemActions>
-                </Item>
-                {index < otherSessions.length - 1 && <Separator />}
-              </div>
-            ))}
-            <Separator />
-            <div className="flex justify-end p-4">
-              <Button
-                onClick={revokeOtherSessions}
-                size="sm"
-                variant="destructive"
-              >
-                Revoke All
-              </Button>
+      {otherSessions.length > 0 ? (
+        <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
+          {otherSessions.map((session, index) => (
+            <div key={session.id}>
+              <Item>
+                <ItemContent>
+                  <ItemTitle className="flex items-center gap-2">
+                    {new UAParser(session.userAgent || "").getResult().device
+                      .type === "mobile" ? (
+                      <IconDeviceMobile className="size-4" />
+                    ) : (
+                      <IconDeviceDesktop className="size-4" />
+                    )}
+                    {getBrowserInformation(session.userAgent)}
+                  </ItemTitle>
+                  <ItemDescription>
+                    Created: {formatDate(session.createdAt)} • Expires:{" "}
+                    {formatDate(session.expiresAt)}
+                  </ItemDescription>
+                </ItemContent>
+                <ItemActions>
+                  <Button
+                    aria-label="Revoke session"
+                    onClick={() => revokeSession(session.token)}
+                    size="sm"
+                    variant="destructive"
+                  >
+                    <IconTrashFilled className="size-4" />
+                  </Button>
+                </ItemActions>
+              </Item>
+              {index < otherSessions.length - 1 && <Separator />}
             </div>
-          </>
-        )}
-      </div>
+          ))}
+          <Separator />
+          <div className="flex justify-end p-4">
+            <Button
+              onClick={revokeOtherSessions}
+              size="sm"
+              variant="destructive"
+            >
+              Revoke All
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <p className="text-muted-foreground text-sm">
+          No other active sessions.
+        </p>
+      )}
     </div>
   );
 }
