@@ -16,7 +16,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -62,6 +62,15 @@ export const FilesTable = () => {
       desc: search.sortOrder === "desc",
     },
   ]);
+
+  useEffect(() => {
+    setSorting([
+      {
+        id: search.sortBy ?? "createdAt",
+        desc: search.sortOrder === "desc",
+      },
+    ]);
+  }, [search.sortBy, search.sortOrder]);
 
   const pagination: PaginationState = {
     pageIndex: (search.page ?? 1) - 1,

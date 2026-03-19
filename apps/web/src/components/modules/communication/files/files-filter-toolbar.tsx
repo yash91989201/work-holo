@@ -53,6 +53,13 @@ export function FilesFilterToolbar() {
     }) > 0;
 
   useEffect(() => {
+    const urlSearch = searchParams.search || "";
+    if (urlSearch !== searchValue) {
+      setSearchValue(urlSearch);
+    }
+  }, [searchParams.search]);
+
+  useEffect(() => {
     if (debouncedSearch !== (searchParams.search || "")) {
       navigate({
         search: (prev) => ({

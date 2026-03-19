@@ -90,33 +90,47 @@ export const FileActions = ({ file }: FileActionsProps) => {
 
   const handleDownload = async () => {
     if (!file.url) return;
+    let blobUrl: string | undefined;
     try {
       const response = await fetch(file.url);
+      if (!response.ok) {
+        throw new Error(`Download failed with status ${response.status}`);
+      }
       const blob = await response.blob();
-      const blobUrl = URL.createObjectURL(blob);
+      blobUrl = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = blobUrl;
       link.download = file.originalName;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      URL.revokeObjectURL(blobUrl);
     } catch (error) {
       console.error("Failed to download file:", error);
-      toast.error("Failed to download file");
+      toast.error(
+        error instanceof Error ? error.message : "Failed to download file"
+      );
+    } finally {
+      if (blobUrl) {
+        URL.revokeObjectURL(blobUrl);
+      }
     }
   };
 
-  const handleCopyLink = () => {
+  const handleCopyLink = async () => {
     if (!file.url) return;
-    navigator.clipboard.writeText(file.url);
-    toast.success("Link copied");
+    try {
+      await navigator.clipboard.writeText(file.url);
+      toast.success("Link copied");
+    } catch {
+      toast.error("Failed to copy link");
+    }
   };
 
   const handleJumpToMessage = () => {
     navigate({
       to: "/org/$slug/workspace/communication/channels/$channelId",
       params: { slug, channelId: file.channelId },
+      hash: `message-${file.messageId}`,
     });
   };
 
@@ -129,7 +143,8 @@ export const FileActions = ({ file }: FileActionsProps) => {
     ) {
       setPreviewOpen(true);
     } else {
-      window.open(file.url, "_blank");
+      const newWindow = window.open(file.url, "_blank", "noopener,noreferrer");
+      if (newWindow) newWindow.opener = null;
     }
   };
 

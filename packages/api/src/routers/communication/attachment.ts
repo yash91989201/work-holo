@@ -145,7 +145,7 @@ export const attachmentRouter = {
           eq(channelMemberTable.channelId, messageTable.channelId)
         )
         .innerJoin(channelTable, eq(channelTable.id, messageTable.channelId))
-        .leftJoin(userTable, eq(userTable.id, messageTable.senderId))
+        .leftJoin(userTable, eq(userTable.id, attachmentTable.uploadedBy))
         .where(whereClause)
         .orderBy(orderBy)
         .offset(offset)
@@ -160,7 +160,7 @@ export const attachmentRouter = {
           eq(channelMemberTable.channelId, messageTable.channelId)
         )
         .innerJoin(channelTable, eq(channelTable.id, messageTable.channelId))
-        .leftJoin(userTable, eq(userTable.id, messageTable.senderId))
+        .leftJoin(userTable, eq(userTable.id, attachmentTable.uploadedBy))
         .where(whereClause);
 
       const total = Number(totalResult[0]?.count ?? 0);

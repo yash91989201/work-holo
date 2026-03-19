@@ -187,10 +187,10 @@ export const DeleteAttachmentOutput = z.object({
 });
 
 export const ListChannelFilesInput = z.object({
-  channelId: z.string().optional(),
+  channelId: z.string().trim().min(1).optional(),
   page: z.number().int().min(1).default(1),
   perPage: z.number().int().min(1).max(100).default(20),
-  search: z.string().optional(),
+  search: z.string().trim().min(1).max(256).optional(),
   onlyMine: z.boolean().optional().default(false),
   type: AttachmentTypeSchema.optional(),
   sortBy: z.enum(["name", "size", "createdAt", "type"]).default("createdAt"),
