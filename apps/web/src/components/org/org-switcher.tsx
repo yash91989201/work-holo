@@ -13,6 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useActiveOrganization } from "@/hooks/use-active-organization";
 import { useOrgSwitcher } from "@/hooks/use-org-switcher";
 import { authClient } from "@/lib/auth-client";
+import { Can } from "@/lib/permission";
 
 const OrgLogo = ({
   name,
@@ -132,15 +133,17 @@ export const OrgSwitcher = () => {
             ))
           )}
 
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className="gap-2 p-2"
-            disabled={isSwitching}
-            onClick={createOrganization}
-          >
-            <IconPlus className="size-4" />
-            New Organization
-          </DropdownMenuItem>
+          <Can permission={(p) => p.org.create}>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className="gap-2 p-2"
+              disabled={isSwitching}
+              onClick={createOrganization}
+            >
+              <IconPlus className="size-4" />
+              New Organization
+            </DropdownMenuItem>
+          </Can>
         </DropdownMenuContent>
       </DropdownMenu>
     </SidebarMenuItem>
