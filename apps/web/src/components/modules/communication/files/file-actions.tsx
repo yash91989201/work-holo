@@ -33,14 +33,13 @@ type FileType = z.infer<typeof ChannelFileOutput>;
 
 interface FileActionsProps {
   file: FileType;
-  trigger?: React.ReactNode;
 }
 
 const routeApi = getRouteApi(
   "/(authenticated)/org/$slug/workspace/communication/files/"
 );
 
-export const FileActions = ({ file, trigger }: FileActionsProps) => {
+export const FileActions = ({ file }: FileActionsProps) => {
   const navigate = routeApi.useNavigate();
   const { slug } = routeApi.useParams();
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -97,12 +96,10 @@ export const FileActions = ({ file, trigger }: FileActionsProps) => {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          {trigger || (
-            <Button className="h-8 w-8 p-0" variant="ghost">
-              <span className="sr-only">Open menu</span>
-              <IconDots className="h-4 w-4" />
-            </Button>
-          )}
+          <Button variant="secondary">
+            <span className="sr-only">Open menu</span>
+            <IconDots />
+          </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem disabled={!file.url} onClick={handlePreviewOrOpen}>
