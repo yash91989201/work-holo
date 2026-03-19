@@ -15,6 +15,7 @@ import {
   IconUserPlus,
   IconX,
 } from "@tabler/icons-react";
+import { useDebouncedValue } from "@tanstack/react-pacer";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import {
   type ColumnDef,
@@ -25,7 +26,6 @@ import {
   useReactTable,
   type VisibilityState,
 } from "@tanstack/react-table";
-import { useDebounce } from "@uidotdev/usehooks";
 import type { ListChannelsOutputType } from "@work-holo/api/lib/types";
 import { Suspense, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -95,7 +95,7 @@ export const ChannelsListTable = () => {
     pageSize: 10,
   });
   const [searchTerm, setSearchTerm] = useState("");
-  const debouncedSearch = useDebounce(searchTerm, 500);
+  const [debouncedSearch] = useDebouncedValue(searchTerm, { wait: 500 });
 
   const {
     data: { channels, total, pageCount },
@@ -436,7 +436,7 @@ export const ChannelsListTable = () => {
 export function AddMemberDialog({ channelId }: { channelId: string }) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const debouncedSearch = useDebounce(searchTerm, 300);
+  const [debouncedSearch] = useDebouncedValue(searchTerm, { wait: 300 });
   const { members } = useListOrgMembers();
 
   const { data: currentChannelMembers } = useSuspenseQuery(
@@ -609,7 +609,7 @@ export function AddMemberDialog({ channelId }: { channelId: string }) {
 export function RemoveMemberDialog({ channelId }: { channelId: string }) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const debouncedSearch = useDebounce(searchTerm, 300);
+  const [debouncedSearch] = useDebouncedValue(searchTerm, { wait: 300 });
   const { data: members } = useSuspenseQuery(
     queryUtils.communication.channel.listMembers.queryOptions({
       input: { channelId, filter: { role: "member" } },
