@@ -94,7 +94,7 @@ export const clockRouter = {
     .output(MemberPunchOutOutput)
     .handler(async ({ input, context }) => {
       const { db, session, orgId, permission } = context;
-      await permission.check(permission.attendance().record.update());
+      await permission.check(permission.attendance().record.create());
       const user = session.user;
       const now = new Date();
 
@@ -189,7 +189,7 @@ export const clockRouter = {
     .input(AddBreakDurationInput)
     .output(AddBreakDurationOutput)
     .handler(async ({ input, context: { db, session, permission } }) => {
-      await permission.check(permission.attendance().record.update());
+      await permission.check(permission.attendance().record.create());
       const user = session.user;
 
       const attendance = await db.query.attendanceTable.findFirst({
