@@ -10,11 +10,28 @@
  *   1. The request object exactly equals the policy object, OR
  *   2. The request object equals the policy object with exactly one
  *      additional `:segment` appended (the resource ID), OR
- *   3. The policy object has no `team:` prefix but the request object does
- *      (org-level cascade): strip the `team:<id>:` prefix from the request
- *      and retry matching. This lets org-level role grants apply to
- *      team-scoped resources.
+ *   3. The request object has a `team:<id>:` scope prefix while the policy
+ *      object is org-level (not team-scoped): strip the `team:<id>:` prefix
+ *      from the request and retry matching. This lets org-level role grants
+ *      apply to team-scoped resources.
  */
+
+const AUTH_RESOURCES = new Set(["org", "team", "channel", "attendance"]);
+
+function isTeamScopedPolicyObject(policyObj: string): boolean {
+  const segments = policyObj.split(":");
+  const scopeId = segments[1];
+  const scopedResource = segments[2];
+
+  return (
+    segments.length >= 3 &&
+    segments[0] === "team" &&
+    typeof scopeId === "string" &&
+    scopeId.length > 0 &&
+    typeof scopedResource === "string" &&
+    AUTH_RESOURCES.has(scopedResource)
+  );
+}
 
 /**
  * Matches colon-delimited permission object strings.
@@ -26,6 +43,7 @@
  * keyMatchColon("channel:member:ch_abc123", "channel:member")          // true  — policy + resourceId
  * keyMatchColon("team:t1:channel", "team:t1:channel")                  // true  — exact match
  * keyMatchColon("team:t1:channel:ch_abc", "team:t1:channel")           // true  — policy + resourceId
+ * keyMatchColon("team:t1:team:member", "team:member")                  // true  — org-level team cascade
  * keyMatchColon("team:t1:channel:member:ch_abc", "channel:member")     // true  — org-level cascade
  * keyMatchColon("team:t1:channel:ch_abc", "channel")                   // true  — org-level cascade
  * keyMatchColon("channel:a:b", "channel")                              // false — two extra segments
@@ -41,10 +59,12 @@ export function keyMatchColon(requestObj: string, policyObj: string): boolean {
     // Only allow exactly one additional segment (the resourceId).
     // If the remainder contains another `:`, it's a different structure.
     const remainder = requestObj.slice(prefix.length);
-    return remainder.length > 0 && !remainder.includes(":");
+    if (remainder.length > 0 && !remainder.includes(":")) {
+      return true;
+    }
   }
 
-  if (!policyObj.startsWith("team:") && requestObj.startsWith("team:")) {
+  if (requestObj.startsWith("team:") && !isTeamScopedPolicyObject(policyObj)) {
     const afterTeamPrefix = requestObj.slice("team:".length);
     const teamIdEnd = afterTeamPrefix.indexOf(":");
     if (teamIdEnd > 0) {
