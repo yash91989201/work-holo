@@ -1,17 +1,15 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
-
-type AdminRole = "admin" | "super_admin" | "support";
+import { validateAdminRole } from "@/utils";
 
 export const Route = createFileRoute("/(authenticated)/platform")({
   beforeLoad: ({ context }) => {
-    const role = context.session.user.role as string | null | undefined;
-    const allowedRoles: string[] = ["admin", "super_admin", "support"];
+    const { isAdmin, role } = validateAdminRole(context.session.user.role);
 
-    if (!(role && allowedRoles.includes(role))) {
+    if (!isAdmin) {
       throw redirect({ to: "/" });
     }
 
-    return { adminRole: role as AdminRole };
+    return { adminRole: role };
   },
   component: () => <Outlet />,
 });

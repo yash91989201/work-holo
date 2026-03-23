@@ -40,7 +40,7 @@ export const auth = betterAuth({
     expo(),
     admin({
       defaultRole: "user",
-      adminRole: ["admin", "super_admin"],
+      adminRole: ["admin", "super_admin", "support"],
     }),
     twoFactor(),
     username(),

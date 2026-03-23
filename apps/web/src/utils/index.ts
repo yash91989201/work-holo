@@ -1,4 +1,5 @@
 import { linkOptions } from "@tanstack/react-router";
+import { AdminRoleSchema } from "@work-holo/api/lib/schemas/auth";
 import { UAParser } from "ua-parser-js";
 import type { OrgRolesType } from "@/lib/types";
 
@@ -98,4 +99,11 @@ export function getAvatarColor(name: string): string {
   ];
   const index = name.charCodeAt(0) % colors.length;
   return colors[index];
+}
+
+export function validateAdminRole(role: string | null | undefined) {
+  const result = AdminRoleSchema.safeParse(role);
+  return result.success
+    ? { isAdmin: true, role: result.data }
+    : { isAdmin: false, role: null };
 }
