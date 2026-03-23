@@ -1,6 +1,12 @@
+import {
+  IconArrowLeft,
+  IconBuilding,
+  IconClock,
+  IconMail,
+  IconSearch,
+} from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Building2, Search } from "lucide-react";
 import { Suspense, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,7 +20,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { queryUtils } from "@/utils/orpc";
-import { IconClock, IconMail } from "@tabler/icons-react";
 
 export const Route = createFileRoute(
   "/(authenticated)/platform/dashboard/organizations/$orgId"
@@ -44,7 +49,7 @@ function OrganizationDetailPage() {
       <div className="flex items-center gap-3">
         <Link to="/platform/dashboard/organizations">
           <Button size="icon" variant="ghost">
-            <ArrowLeft className="size-4" />
+            <IconArrowLeft className="size-4" />
           </Button>
         </Link>
         <h1 className="font-semibold text-2xl">Organization Details</h1>
@@ -81,7 +86,7 @@ function OrgDetail({
       {/* Org Header */}
       <div className="flex items-center gap-4 rounded-lg border p-4">
         <div className="flex size-12 items-center justify-center rounded-lg bg-primary/10">
-          <Building2 className="size-6 text-primary" />
+          <IconBuilding className="size-6 text-primary" />
         </div>
         <div>
           <h2 className="font-semibold text-xl">{data.organization.name}</h2>
@@ -97,7 +102,7 @@ function OrgDetail({
       <div className="flex items-center justify-between">
         <h3 className="font-medium text-lg">Members</h3>
         <div className="relative w-64">
-          <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+          <IconSearch className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             className="pl-9"
             onChange={(e) => setSearch(e.target.value)}

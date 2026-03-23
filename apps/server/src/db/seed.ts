@@ -2,6 +2,7 @@ import "dotenv/config";
 import { scryptSync } from "node:crypto";
 import { db } from "@work-holo/db";
 import { account, user } from "@work-holo/db/schema/auth";
+import { sleep } from "bun";
 import { eq } from "drizzle-orm";
 
 const SUPER_ADMIN_EMAIL = "superadmin@workholo.com";
@@ -74,11 +75,11 @@ async function seed() {
 
 seed()
   .then(async () => {
-    await Bun.sleep(300);
+    await sleep(300);
     process.exit(0);
   })
   .catch(async (e) => {
     process.stderr.write(`[seed] Seed failed: ${e}\n`);
-    await Bun.sleep(300);
+    await sleep(300);
     process.exit(1);
   });

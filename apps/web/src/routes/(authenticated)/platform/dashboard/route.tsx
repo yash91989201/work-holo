@@ -1,3 +1,12 @@
+import {
+  IconBuilding,
+  IconCrown,
+  IconHeadphones,
+  IconLayoutDashboard,
+  IconLogout,
+  IconShieldCheck,
+  IconUsers,
+} from "@tabler/icons-react";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   createFileRoute,
@@ -6,15 +15,6 @@ import {
   useNavigate,
   useRouter,
 } from "@tanstack/react-router";
-import {
-  Building2,
-  Crown,
-  Headphones,
-  LayoutDashboard,
-  LogOut,
-  ShieldCheck,
-  Users,
-} from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
@@ -28,37 +28,37 @@ const navItems = [
   {
     to: "/platform/dashboard",
     label: "Overview",
-    icon: LayoutDashboard,
+    icon: IconLayoutDashboard,
     superAdminOnly: false,
   },
   {
     to: "/platform/dashboard/organizations",
     label: "Organizations",
-    icon: Building2,
+    icon: IconBuilding,
     superAdminOnly: false,
   },
   {
     to: "/platform/dashboard/owners",
     label: "Owners",
-    icon: Crown,
+    icon: IconCrown,
     superAdminOnly: false,
   },
   {
     to: "/platform/dashboard/users",
     label: "Users",
-    icon: Users,
+    icon: IconUsers,
     superAdminOnly: false,
   },
   {
     to: "/platform/dashboard/admins",
     label: "Admins",
-    icon: ShieldCheck,
+    icon: IconShieldCheck,
     superAdminOnly: true,
   },
   {
     to: "/platform/dashboard/support",
     label: "Support Agents",
-    icon: Headphones,
+    icon: IconHeadphones,
     superAdminOnly: true,
   },
 ] as const;
@@ -112,7 +112,7 @@ function AdminLayout() {
           onClick={logout}
           variant="ghost"
         >
-          <LogOut className="size-4" />
+          <IconLogout className="size-4" />
           Log out
         </Button>
       </aside>

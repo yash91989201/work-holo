@@ -1,6 +1,12 @@
+import {
+  IconArrowLeft,
+  IconBuilding,
+  IconCrown,
+  IconMail,
+  IconUsers,
+} from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Building2, Crown, Mail, Users } from "lucide-react";
 import { Suspense } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -21,7 +27,7 @@ function OwnerDetailPage() {
       <div className="flex items-center gap-3">
         <Link to="/platform/dashboard/owners">
           <Button size="icon" variant="ghost">
-            <ArrowLeft className="size-4" />
+            <IconArrowLeft className="size-4" />
           </Button>
         </Link>
         <h1 className="font-semibold text-2xl">Owner Details</h1>
@@ -45,12 +51,12 @@ function OwnerDetail({ ownerId }: { ownerId: string }) {
       {/* Owner Info */}
       <div className="flex items-center gap-4 rounded-lg border p-4">
         <div className="flex size-12 items-center justify-center rounded-lg bg-amber-500/10">
-          <Crown className="size-6 text-amber-500" />
+          <IconCrown className="size-6 text-amber-500" />
         </div>
         <div>
           <h2 className="font-semibold text-xl">{data.owner.name}</h2>
           <div className="flex items-center gap-2 text-muted-foreground text-sm">
-            <Mail className="size-3" />
+            <IconMail className="size-3" />
             {data.owner.email}
             {data.owner.banned && <Badge variant="destructive">Banned</Badge>}
           </div>
@@ -81,7 +87,7 @@ function OwnerDetail({ ownerId }: { ownerId: string }) {
                   <CardHeader className="pb-3">
                     <div className="flex items-center gap-3">
                       <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10">
-                        <Building2 className="size-5 text-primary" />
+                        <IconBuilding className="size-5 text-primary" />
                       </div>
                       <div className="min-w-0 flex-1">
                         <CardTitle className="truncate text-base">
@@ -95,7 +101,7 @@ function OwnerDetail({ ownerId }: { ownerId: string }) {
                   </CardHeader>
                   <CardContent>
                     <div className="flex items-center gap-2 text-muted-foreground text-sm">
-                      <Users className="size-4" />
+                      <IconUsers className="size-4" />
                       <span>
                         {org.memberCount} member
                         {org.memberCount !== 1 ? "s" : ""}

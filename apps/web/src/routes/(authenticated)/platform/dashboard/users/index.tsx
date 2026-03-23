@@ -1,6 +1,6 @@
+import { IconBuilding, IconDots, IconSearch } from "@tabler/icons-react";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { Building2, MoreHorizontal, Search } from "lucide-react";
 import { Suspense, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -55,7 +55,7 @@ function UsersPage() {
       <div className="flex items-center justify-between">
         <h1 className="font-semibold text-2xl">Users</h1>
         <div className="relative w-64">
-          <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+          <IconSearch className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             className="pl-9"
             onChange={(e) => setSearch(e.target.value)}
@@ -131,7 +131,7 @@ function UsersTable({
                           className="gap-1"
                           variant={orgRoleBadgeVariant(org.orgRole)}
                         >
-                          <Building2 className="size-3" />
+                          <IconBuilding className="size-3" />
                           {org.orgName}
                           <span className="text-[10px] opacity-70">
                             ({org.orgRole})
@@ -163,7 +163,7 @@ function UsersTable({
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button size="icon" variant="ghost">
-                      <MoreHorizontal className="size-4" />
+                      <IconDots className="size-4" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">

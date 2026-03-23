@@ -1,6 +1,6 @@
+import { IconDots } from "@tabler/icons-react";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { MoreHorizontal } from "lucide-react";
 import { Suspense } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -102,7 +102,7 @@ function SupportTable() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button size="icon" variant="ghost">
-                    <MoreHorizontal className="size-4" />
+                    <IconDots className="size-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">

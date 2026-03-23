@@ -1,6 +1,6 @@
+import { IconBuilding, IconSearch, IconUsers } from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Building2, Search, Users } from "lucide-react";
 import { Suspense, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,7 +21,7 @@ function OrganizationsPage() {
       <div className="flex items-center justify-between">
         <h1 className="font-semibold text-2xl">Organizations</h1>
         <div className="relative w-64">
-          <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+          <IconSearch className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             className="pl-9"
             onChange={(e) => setSearch(e.target.value)}
@@ -68,7 +68,7 @@ function OrganizationsGrid({ search }: { search: string }) {
             <CardHeader className="pb-3">
               <div className="flex items-center gap-3">
                 <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10">
-                  <Building2 className="size-5 text-primary" />
+                  <IconBuilding className="size-5 text-primary" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <CardTitle className="truncate text-base">
@@ -82,7 +82,7 @@ function OrganizationsGrid({ search }: { search: string }) {
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="flex items-center gap-2 text-muted-foreground text-sm">
-                <Users className="size-4" />
+                <IconUsers className="size-4" />
                 <span>
                   {org.memberCount} member{org.memberCount !== 1 ? "s" : ""}
                 </span>

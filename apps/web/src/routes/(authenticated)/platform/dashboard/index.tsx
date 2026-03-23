@@ -1,6 +1,12 @@
+import {
+  IconBan,
+  IconBuilding,
+  IconHeadphones,
+  IconShieldCheck,
+  IconUsers,
+} from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { Ban, Building2, Headphones, ShieldCheck, Users } from "lucide-react";
 import { Suspense } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { queryUtils } from "@/utils/orpc";
@@ -34,11 +40,15 @@ function StatsCards() {
   );
 
   const cards = [
-    { label: "Total Users", value: stats.totalUsers, icon: Users },
-    { label: "Organizations", value: stats.totalOrgs, icon: Building2 },
-    { label: "Admins", value: stats.adminUsers, icon: ShieldCheck },
-    { label: "Support Agents", value: stats.supportUsers, icon: Headphones },
-    { label: "Banned Users", value: stats.bannedUsers, icon: Ban },
+    { label: "Total Users", value: stats.totalUsers, icon: IconUsers },
+    { label: "Organizations", value: stats.totalOrgs, icon: IconBuilding },
+    { label: "Admins", value: stats.adminUsers, icon: IconShieldCheck },
+    {
+      label: "Support Agents",
+      value: stats.supportUsers,
+      icon: IconHeadphones,
+    },
+    { label: "Banned Users", value: stats.bannedUsers, icon: IconBan },
   ];
 
   return (

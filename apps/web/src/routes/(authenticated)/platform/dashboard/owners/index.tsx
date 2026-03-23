@@ -1,6 +1,6 @@
+import { IconBuilding, IconCrown, IconSearch } from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Building2, Crown, Search } from "lucide-react";
 import { Suspense, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -34,7 +34,7 @@ function OwnersPage() {
           </p>
         </div>
         <div className="relative w-64">
-          <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+          <IconSearch className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             className="pl-9"
             onChange={(e) => setSearch(e.target.value)}
@@ -83,7 +83,7 @@ function OwnersTable({ search }: { search: string }) {
           <TableRow key={owner.userId}>
             <TableCell className="font-medium">
               <div className="flex items-center gap-2">
-                <Crown className="size-4 text-amber-500" />
+                <IconCrown className="size-4 text-amber-500" />
                 {owner.userName}
               </div>
             </TableCell>
@@ -99,7 +99,7 @@ function OwnersTable({ search }: { search: string }) {
                     to="/platform/dashboard/organizations/$orgId"
                   >
                     <Badge className="cursor-pointer gap-1" variant="secondary">
-                      <Building2 className="size-3" />
+                      <IconBuilding className="size-3" />
                       {org.orgName}
                     </Badge>
                   </Link>
