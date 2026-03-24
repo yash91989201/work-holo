@@ -851,7 +851,7 @@ export const messageRouter = {
         "channel.message.list"
       );
 
-      const client = OpenSearchClient.getClient();
+      const client = await OpenSearchClient.ensureConnected();
 
       const filters: Record<string, unknown>[] = [
         { term: { scopeType: "channel" } },
