@@ -25,10 +25,12 @@ function buildSearchDocument(
 ): MessageSearchDocument {
   // Validate required fields
   if (
-    !message.messageId ||
-    !message.organizationId ||
-    !message.scopeType ||
-    !message.scopeId
+    !(
+      message.messageId &&
+      message.organizationId &&
+      message.scopeType &&
+      message.scopeId
+    )
   ) {
     throw new Error(
       `[buildSearchDocument] Missing required fields: ${JSON.stringify({

@@ -81,15 +81,10 @@ class QueueWorker {
             "x-retries": retryCount + 1,
           };
 
-          this.channel.publish(
-            "",
-            QUEUES.SEARCH_INDEXING,
-            msg.content,
-            {
-              ...msg.properties,
-              headers: updatedHeaders,
-            }
-          );
+          this.channel.publish("", QUEUES.SEARCH_INDEXING, msg.content, {
+            ...msg.properties,
+            headers: updatedHeaders,
+          });
 
           // Ack the original message
           this.channel.ack(msg);
@@ -130,7 +125,10 @@ async function startWorker() {
   const worker = new QueueWorker();
 
   try {
-    await OpenSearchClient.connect({ url: env.OPENSEARCH_URL });
+    await OpenSearchClient.connect(
+      { url: env.OPENSEARCH_URL },
+      { throwOnError: true }
+    );
     console.log("Connected to OpenSearch successfully");
 
     const searchClient = OpenSearchClient.getClient();

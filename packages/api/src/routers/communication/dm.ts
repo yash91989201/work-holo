@@ -1107,7 +1107,7 @@ export const dmRouter = {
         });
       }
 
-      const client = OpenSearchClient.getClient();
+      const client = await OpenSearchClient.ensureConnected();
       const limit = input.limit ?? 20;
 
       const filters: Record<string, unknown>[] = [

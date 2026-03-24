@@ -23,7 +23,6 @@ import { logger } from "hono/logger";
 
 await Redis.connect({ url: env.REDIS_URL });
 await OpenSearchClient.connect({ url: env.OPENSEARCH_URL });
-console.log("✅ OpenSearch connected");
 
 const isProduction = env.ENV === "production";
 

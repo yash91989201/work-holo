@@ -37,7 +37,7 @@ function decodeHtmlEntities(input: string): string {
       if (
         !Number.isInteger(codePoint) ||
         codePoint < 0 ||
-        codePoint > 0x10ffff
+        codePoint > 0x10_ff_ff
       ) {
         return "";
       }
@@ -49,7 +49,7 @@ function decodeHtmlEntities(input: string): string {
       if (
         !Number.isInteger(codePoint) ||
         codePoint < 0 ||
-        codePoint > 0x10ffff
+        codePoint > 0x10_ff_ff
       ) {
         return "";
       }
