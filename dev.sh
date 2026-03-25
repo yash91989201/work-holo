@@ -1,0 +1,568 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$SCRIPT_DIR"
+
+if [[ -n "${NO_COLOR:-}" ]]; then
+  COLOR_RESET=""
+  COLOR_RED=""
+  COLOR_GREEN=""
+  COLOR_YELLOW=""
+  COLOR_BLUE=""
+  COLOR_BOLD=""
+else
+  COLOR_RESET="\033[0m"
+  COLOR_RED="\033[31m"
+  COLOR_GREEN="\033[32m"
+  COLOR_YELLOW="\033[33m"
+  COLOR_BLUE="\033[34m"
+  COLOR_BOLD="\033[1m"
+fi
+
+DOCKER_COMPOSE_CMD=()
+START_WAS_INTERRUPTED="false"
+BUN_DEV_PID=""
+VAPID_PUBLIC_KEY=""
+VAPID_PRIVATE_KEY=""
+
+ENV_SERVER="apps/server/.env"
+ENV_WEB="apps/web/.env"
+ENV_NOTIFICATION="workers/notification/.env"
+ENV_SEARCH="workers/message-search/.env"
+ENV_READ_RECEIPT="workers/read-receipt/.env"
+
+CORE_SERVICES=(
+  postgres
+  electric
+  dragonfly
+  rabbitmq
+  opensearch
+  rustfs
+  soketi
+  imgproxy
+)
+
+DOCTOR_PORTS=(
+  5432
+  5003
+  6379
+  5672
+  9200
+  9000
+  6001
+  8080
+)
+
+log_info() { printf "%b[INFO]%b %s\n" "$COLOR_BLUE" "$COLOR_RESET" "$*"; }
+log_success() { printf "%b[OK]%b %s\n" "$COLOR_GREEN" "$COLOR_RESET" "$*"; }
+log_warn() { printf "%b[WARN]%b %s\n" "$COLOR_YELLOW" "$COLOR_RESET" "$*"; }
+log_error() { printf "%b[ERROR]%b %s\n" "$COLOR_RED" "$COLOR_RESET" "$*" >&2; }
+
+check_command() {
+  local cmd="$1"
+  command -v "$cmd" >/dev/null 2>&1 || {
+    log_error "Missing command: $cmd"
+    return 1
+  }
+}
+
+require_root() {
+  [[ -f "$ROOT_DIR/package.json" ]] || {
+    log_error "Run from repository root: $ROOT_DIR"
+    exit 1
+  }
+}
+
+detect_docker_compose() {
+  if command -v docker >/dev/null 2>&1 && docker compose version >/dev/null 2>&1; then
+    DOCKER_COMPOSE_CMD=(docker compose)
+    return 0
+  fi
+  if command -v docker-compose >/dev/null 2>&1; then
+    DOCKER_COMPOSE_CMD=(docker-compose)
+    return 0
+  fi
+  log_error "Neither 'docker compose' nor 'docker-compose' is available"
+  return 1
+}
+
+docker_compose() { "${DOCKER_COMPOSE_CMD[@]}" "$@"; }
+
+check_deps() {
+  check_command bun
+  check_command docker
+  check_command openssl
+  detect_docker_compose
+}
+
+generate_better_auth_secret() {
+  openssl rand -base64 24 | tr -d '/+=' | head -c 32
+}
+
+generate_vapid_keys() {
+  local out=""
+  if ! out="$(bunx web-push generate-vapid-keys --json 2>/dev/null)"; then
+    log_warn "web-push generate-vapid-keys unavailable; VAPID fields will be empty"
+    VAPID_PUBLIC_KEY=""
+    VAPID_PRIVATE_KEY=""
+    return 0
+  fi
+  if [[ -z "$out" ]]; then
+    log_warn "web-push output empty; VAPID fields will be empty"
+    VAPID_PUBLIC_KEY=""
+    VAPID_PRIVATE_KEY=""
+    return 0
+  fi
+  VAPID_PUBLIC_KEY="$(printf '%s' "$out" | bun -e 'const fs=require("node:fs");const s=fs.readFileSync(0,"utf8");try{const j=JSON.parse(s);process.stdout.write(j.publicKey??"")}catch{process.stdout.write("")}')"
+  VAPID_PRIVATE_KEY="$(printf '%s' "$out" | bun -e 'const fs=require("node:fs");const s=fs.readFileSync(0,"utf8");try{const j=JSON.parse(s);process.stdout.write(j.privateKey??"")}catch{process.stdout.write("")}')"
+  if [[ -z "$VAPID_PUBLIC_KEY" || -z "$VAPID_PRIVATE_KEY" ]]; then
+    log_warn "web-push keys parse failed; VAPID fields will be empty"
+    VAPID_PUBLIC_KEY=""
+    VAPID_PRIVATE_KEY=""
+  else
+    log_success "VAPID keys generated"
+  fi
+}
+
+ensure_parent_dir() { mkdir -p "$(dirname "$1")"; }
+
+write_if_missing() {
+  local target="$1"
+  if [[ -f "$target" ]]; then
+    log_warn "Skipping existing file: ${target#$ROOT_DIR/}"
+    return 0
+  fi
+  ensure_parent_dir "$target"
+  cat >"$target"
+  log_success "Created ${target#$ROOT_DIR/}"
+}
+
+create_env_server() {
+  local secret="$1"
+  write_if_missing "$ROOT_DIR/$ENV_SERVER" <<EOF
+BETTER_AUTH_SECRET=$secret
+BETTER_AUTH_URL=http://localhost:3000
+CORS_ORIGIN=http://localhost:3001
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
+REDIS_URL=redis://localhost:6379
+RABBITMQ_URL=amqp://admin:admin@localhost:5672
+ENV=development
+PORT=3000
+S3_ACCESS_KEY=GuzpNFteD5xLQ_aoBlUvyw
+S3_SECRET_KEY=zmvR18mhKg3hDlKfdtfp_g
+S3_ENDPOINT=http://127.0.0.1:9000
+WEB_URL=http://localhost:3001
+ELECTRIC_URL=http://localhost:5003
+ELECTRIC_SECRET=
+VAPID_PUBLIC_KEY=$VAPID_PUBLIC_KEY
+VAPID_PRIVATE_KEY=$VAPID_PRIVATE_KEY
+VAPID_SUBJECT=mailto:dev@localhost
+PUSHER_APP_ID=work-holo
+PUSHER_APP_KEY=work-holo-key
+PUSHER_APP_SECRET=work-holo-secret-must-be-32-chars
+PUSHER_HOST=localhost
+PUSHER_PORT=6001
+CASBIN_ENFORCE=false
+OPENSEARCH_URL=http://localhost:9200
+EOF
+}
+
+create_env_web() {
+  write_if_missing "$ROOT_DIR/$ENV_WEB" <<EOF
+VITE_ENV=development
+VITE_IMAGE_TRANSFORMATION_URL=http://localhost:8080
+VITE_SERVER_URL=http://localhost:3000
+VITE_WEB_URL=http://localhost:3001
+VAPID_PUBLIC_KEY=$VAPID_PUBLIC_KEY
+VAPID_PRIVATE_KEY=$VAPID_PRIVATE_KEY
+VAPID_SUBJECT=mailto:dev@localhost
+VITE_PUSHER_KEY=work-holo-key
+VITE_PUSHER_HOST=localhost
+VITE_PUSHER_PORT=6001
+EOF
+}
+
+create_env_notification() {
+  write_if_missing "$ROOT_DIR/$ENV_NOTIFICATION" <<EOF
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
+RABBITMQ_URL=amqp://admin:admin@localhost:5672
+PUSHER_APP_ID=work-holo
+PUSHER_APP_KEY=work-holo-key
+PUSHER_APP_SECRET=work-holo-secret-must-be-32-chars
+PUSHER_HOST=localhost
+PUSHER_PORT=6001
+VAPID_PUBLIC_KEY=$VAPID_PUBLIC_KEY
+VAPID_PRIVATE_KEY=$VAPID_PRIVATE_KEY
+VAPID_SUBJECT=mailto:dev@localhost
+SMTP_HOST=localhost
+SMTP_PORT=1025
+SMTP_USER=
+SMTP_PASS=
+SMTP_FROM=dev@work-holo.local
+ENV=development
+EOF
+}
+
+create_env_search() {
+  write_if_missing "$ROOT_DIR/$ENV_SEARCH" <<EOF
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
+RABBITMQ_URL=amqp://admin:admin@localhost:5672
+OPENSEARCH_URL=http://localhost:9200
+ENV=development
+EOF
+}
+
+create_env_read_receipt() {
+  write_if_missing "$ROOT_DIR/$ENV_READ_RECEIPT" <<EOF
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
+RABBITMQ_URL=amqp://admin:admin@localhost:5672
+ENV=development
+EOF
+}
+
+create_env_files() {
+  local secret
+  secret="$(generate_better_auth_secret)"
+  generate_vapid_keys
+  create_env_server "$secret"
+  create_env_web
+  create_env_notification
+  create_env_search
+  create_env_read_receipt
+}
+
+compose_up() { docker_compose up -d; }
+compose_down() { docker_compose down; }
+
+wait_for_service() {
+  local service="$1"
+  local timeout="$2"
+  local elapsed=0
+  local id=""
+  local state=""
+  while [[ "$elapsed" -lt "$timeout" ]]; do
+    id="$(docker_compose ps -q "$service" 2>/dev/null || true)"
+    if [[ -n "$id" ]]; then
+      state="$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "$id" 2>/dev/null || true)"
+      if [[ "$state" == "healthy" || "$state" == "running" ]]; then
+        log_success "Service ready: $service"
+        return 0
+      fi
+    fi
+    sleep 2
+    elapsed=$((elapsed + 2))
+  done
+  log_error "Service not ready after ${timeout}s: $service"
+  return 1
+}
+
+wait_healthy() {
+  local s=""
+  for s in "${CORE_SERVICES[@]}"; do
+    wait_for_service "$s" 180
+  done
+}
+
+migrate_database() {
+  (
+    cd "$ROOT_DIR/packages/db"
+    bunx drizzle-kit migrate
+  )
+}
+
+cmd_seed() {
+  bun run --cwd apps/seeder src/index.ts "$@"
+}
+
+cmd_init() {
+  require_root
+  log_info "Checking dependencies"
+  check_deps
+  log_info "Installing dependencies"
+  bun install
+  log_info "Creating .env files if missing"
+  create_env_files
+  log_info "Starting services"
+  compose_up
+  log_info "Waiting for healthy services"
+  wait_healthy
+  log_info "Running direct drizzle-kit migrate"
+  migrate_database
+  log_info "Running seed"
+  cmd_seed
+  read -r -p "Start development processes now? [y/N] " start_now
+  if [[ "$start_now" == "y" || "$start_now" == "Y" ]]; then
+    cmd_start
+  else
+    log_success "Init completed"
+  fi
+}
+
+handle_interrupt() {
+  START_WAS_INTERRUPTED="true"
+  if [[ -n "$BUN_DEV_PID" ]]; then
+    kill -INT "$BUN_DEV_PID" >/dev/null 2>&1 || true
+  fi
+  printf "\nDocker services will stop in 5s. Press 'n' to keep them running..."
+  local response=""
+  if read -r -t 5 -n 1 response; then
+    printf "\n"
+  else
+    printf "\n"
+  fi
+  if [[ "$response" == "n" || "$response" == "N" ]]; then
+    log_warn "Keeping services running"
+  else
+    cmd_stop
+  fi
+}
+
+cmd_start() {
+  require_root
+  check_deps
+  compose_up
+  wait_healthy
+  START_WAS_INTERRUPTED="false"
+  trap handle_interrupt INT
+  bun dev &
+  BUN_DEV_PID="$!"
+  set +e
+  wait "$BUN_DEV_PID"
+  local code=$?
+  set -e
+  trap - INT
+  BUN_DEV_PID=""
+  if [[ "$START_WAS_INTERRUPTED" == "true" ]]; then
+    return 0
+  fi
+  if [[ "$code" -ne 0 ]]; then
+    log_warn "bun dev exited with code $code"
+  fi
+}
+
+cmd_stop() {
+  require_root
+  check_deps
+  compose_down
+}
+
+cmd_reset_services() {
+  require_root
+  check_deps
+  log_warn "This will run down --volumes --remove-orphans"
+  read -r -p "Continue? [y/N] " answer
+  if [[ "$answer" != "y" && "$answer" != "Y" ]]; then
+    log_info "Cancelled"
+    return 0
+  fi
+  docker_compose down --volumes --remove-orphans
+  cmd_init
+}
+
+cmd_update_packages() {
+  require_root
+  check_deps
+  local parent=""
+  local child=""
+  for parent in apps packages workers; do
+    [[ -d "$ROOT_DIR/$parent" ]] || continue
+    for child in "$ROOT_DIR/$parent"/*; do
+      if [[ -d "$child" && -f "$child/package.json" ]]; then
+        log_info "Updating ${child#$ROOT_DIR/}"
+        (
+          cd "$child"
+          bun update --latest
+        )
+      fi
+    done
+  done
+  (
+    cd "$ROOT_DIR"
+    bun install
+  )
+  log_success "Package updates completed"
+}
+
+check_env_exists() {
+  local rel="$1"
+  if [[ -f "$ROOT_DIR/$rel" ]]; then
+    log_success "Found $rel"
+    return 0
+  fi
+  log_error "Missing $rel"
+  return 1
+}
+
+check_service_running() {
+  local service="$1"
+  local id=""
+  local state=""
+  id="$(docker_compose ps -q "$service" 2>/dev/null || true)"
+  if [[ -z "$id" ]]; then
+    log_error "Service not running: $service"
+    return 1
+  fi
+  state="$(docker inspect --format '{{.State.Status}}' "$id" 2>/dev/null || true)"
+  if [[ "$state" == "running" ]]; then
+    log_success "Service running: $service"
+    return 0
+  fi
+  log_error "Service status '$state': $service"
+  return 1
+}
+
+check_port() {
+  local port="$1"
+  if (echo >/dev/tcp/127.0.0.1/"$port") >/dev/null 2>&1; then
+    log_success "Port open: $port"
+    return 0
+  fi
+  log_error "Port closed: $port"
+  return 1
+}
+
+cmd_doctor() {
+  require_root
+  local failed=0
+  check_deps || failed=1
+  check_env_exists "$ENV_SERVER" || failed=1
+  check_env_exists "$ENV_WEB" || failed=1
+  check_env_exists "$ENV_NOTIFICATION" || failed=1
+  check_env_exists "$ENV_SEARCH" || failed=1
+  check_env_exists "$ENV_READ_RECEIPT" || failed=1
+  local s=""
+  for s in "${CORE_SERVICES[@]}"; do
+    check_service_running "$s" || failed=1
+  done
+  local p=""
+  for p in "${DOCTOR_PORTS[@]}"; do
+    check_port "$p" || failed=1
+  done
+  if [[ "$failed" -eq 0 ]]; then
+    log_success "Doctor passed"
+    return 0
+  fi
+  log_error "Doctor found issues"
+  return 1
+}
+
+cmd_logs() {
+  require_root
+  check_deps
+  local service="${1:-}"
+  if [[ -n "$service" ]]; then
+    docker_compose logs -f "$service"
+  else
+    docker_compose logs -f
+  fi
+}
+
+cmd_help() {
+  cat <<'EOF'
+work-holo development workflow manager
+
+Usage:
+  ./dev.sh <command> [options]
+  ./dev.sh --help
+  ./dev.sh -h
+
+Commands:
+  init
+  start
+  stop
+  reset-services
+  update-packages
+  doctor
+  logs [service]
+  seed [--only=X]
+
+Command behavior:
+  init
+    - check deps
+    - bun install
+    - create env files if missing
+    - docker compose up -d
+    - wait healthy
+    - direct drizzle-kit migrate
+    - seed
+    - prompt to start dev
+
+  start
+    - docker compose up -d
+    - wait healthy
+    - bun dev
+    - Ctrl+C prompt:
+      Docker services will stop in 5s. Press 'n' to keep them running...
+
+  stop
+    - docker compose down
+
+  reset-services
+    - confirm
+    - docker compose down --volumes --remove-orphans
+    - init
+
+  update-packages
+    - for each folder in apps/* packages/* workers/* with package.json
+      run bun update --latest
+    - bun install at root
+
+  doctor
+    - check deps
+    - check env files
+    - check services
+    - check ports: 5432,5003,6379,5672,9200,9000,6001,8080
+
+  logs [service]
+    - docker compose logs -f [service]
+
+  seed [--only=X]
+    - bun run --cwd apps/seeder src/index.ts "$@"
+
+Managed env files:
+  apps/server/.env
+  apps/web/.env
+  workers/notification/.env
+  workers/message-search/.env
+  workers/read-receipt/.env
+
+VAPID generation:
+  bunx web-push generate-vapid-keys --json
+  shared across server/web/notification env files
+  on failure, VAPID values remain empty
+
+Auth secret generation:
+  openssl rand -base64 24 | tr -d '/+=' | head -c 32
+
+Docker compose detection:
+  prefers docker compose (v2), fallback docker-compose (v1)
+
+Migration strategy:
+  direct drizzle-kit migrate
+
+EOF
+}
+
+main() {
+  local cmd="${1:-}"
+  shift || true
+  case "$cmd" in
+    ""|--help|-h) cmd_help ;;
+    init) cmd_init "$@" ;;
+    start) cmd_start "$@" ;;
+    stop) cmd_stop "$@" ;;
+    reset-services) cmd_reset_services "$@" ;;
+    update-packages) cmd_update_packages "$@" ;;
+    doctor) cmd_doctor "$@" ;;
+    logs) cmd_logs "$@" ;;
+    seed) cmd_seed "$@" ;;
+    *)
+      log_error "Unknown command: $cmd"
+      cmd_help
+      exit 1
+      ;;
+  esac
+}
+
+main "$@"
