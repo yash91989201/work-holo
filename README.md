@@ -57,7 +57,7 @@ This will:
 ./dev.sh start --dev-only
 
 # Stop all docker services
-./dev.sh stop
+./dev.sh stop-services
 
 # Check what's running
 ./dev.sh status
@@ -77,7 +77,7 @@ This will:
 | `start` | Start Docker services and dev server (see options below) |
 | `start --docker-only` | Start only Docker services |
 | `start --dev-only` | Start only dev server (with Turbo TUI), auto-starts services if needed |
-| `stop` | Stop all Docker services |
+| `stop-services` | Stop all Docker services |
 | `status` | Show status of services, ports, and environment files |
 | `reset-services` | **Destructive** - Remove all containers, volumes, and re-initialize |
 | `update-packages` | Update all packages in apps/*, packages/*, workers/* |

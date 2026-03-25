@@ -600,7 +600,7 @@ Usage:
 Commands:
   init
   start
-  stop
+  stop-services
   reset-services
   update-packages
   doctor
@@ -629,7 +629,7 @@ Command behavior:
     --dev-only: start only dev server (with TUI), auto-start services if needed
     Ctrl+C prompt: Docker services will stop in 5s. Press 'n' to keep them running...
 
-  stop
+  stop-services
     - docker compose down
 
   reset-services
@@ -685,7 +685,7 @@ main() {
     ""|--help|-h) cmd_help ;;
     init) cmd_init "$@" ;;
     start) cmd_start "$@" ;;
-    stop) cmd_stop "$@" ;;
+    stop-services) cmd_stop "$@" ;;
     reset-services) cmd_reset_services "$@" ;;
     update-packages) cmd_update_packages "$@" ;;
     doctor) cmd_doctor "$@" ;;
