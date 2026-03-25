@@ -32,6 +32,7 @@ This project includes a `dev.sh` script to manage the entire local development w
 ```
 
 This will:
+
 1. Check dependencies (bun, docker, openssl)
 2. Install npm packages
 3. Create environment files with auto-generated secrets
@@ -43,11 +44,23 @@ This will:
 ### Development Workflow
 
 ```bash
-# Start development (docker services + dev server)
+# Quick start - full setup (dependencies, env files, docker, migrations, seed)
+./dev.sh init
+
+# Start everything (docker services + dev server)
 ./dev.sh start
 
-# Stop all services
+# Start only docker services (useful for running dev server separately)
+./dev.sh start --docker-only
+
+# Start only dev server (auto-starts services if needed, includes Turbo TUI)
+./dev.sh start --dev-only
+
+# Stop all docker services
 ./dev.sh stop
+
+# Check what's running
+./dev.sh status
 
 # Check environment health
 ./dev.sh doctor
@@ -61,8 +74,11 @@ This will:
 | Command | Description |
 |---------|-------------|
 | `init` | Full project setup - dependencies, env files, docker, migrations, seed |
-| `start` | Start Docker services and run `bun dev` |
+| `start` | Start Docker services and dev server (see options below) |
+| `start --docker-only` | Start only Docker services |
+| `start --dev-only` | Start only dev server (with Turbo TUI), auto-starts services if needed |
 | `stop` | Stop all Docker services |
+| `status` | Show status of services, ports, and environment files |
 | `reset-services` | **Destructive** - Remove all containers, volumes, and re-initialize |
 | `update-packages` | Update all packages in apps/*, packages/*, workers/* |
 | `doctor` | Check dependencies, env files, services, and ports |
@@ -74,6 +90,7 @@ This will:
 If you prefer not to use `dev.sh`:
 
 1. Install dependencies:
+
    ```bash
    bun install
    ```
@@ -86,16 +103,19 @@ If you prefer not to use `dev.sh`:
    - `workers/read-receipt/.env`
 
 3. Start Docker services:
+
    ```bash
    docker compose up -d
    ```
 
 4. Apply database schema:
+
    ```bash
    bun db:push
    ```
 
 5. Run the development server:
+
    ```bash
    bun dev
    ```
