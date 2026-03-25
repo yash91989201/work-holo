@@ -23,30 +23,82 @@ This project was created with [Better-T-Stack](https://github.com/AmanVarshney01
 
 ## Getting Started
 
-First, install the dependencies:
+This project includes a `dev.sh` script to manage the entire local development workflow.
+
+### Quick Start
 
 ```bash
-bun install
+./dev.sh init
 ```
 
-## Database Setup
+This will:
+1. Check dependencies (bun, docker, openssl)
+2. Install npm packages
+3. Create environment files with auto-generated secrets
+4. Start Docker services (PostgreSQL, Redis, RabbitMQ, etc.)
+5. Run database migrations
+6. Seed the database
+7. Prompt to start the development server
 
-This project uses PostgreSQL with Drizzle ORM.
-
-1. Make sure you have a PostgreSQL database set up.
-2. Update your `apps/server/.env` file with your PostgreSQL connection details.
-
-3. Apply the schema to your database:
+### Development Workflow
 
 ```bash
-bun db:push
+# Start development (docker services + dev server)
+./dev.sh start
+
+# Stop all services
+./dev.sh stop
+
+# Check environment health
+./dev.sh doctor
+
+# View service logs
+./dev.sh logs postgres
 ```
 
-Then, run the development server:
+### Available Commands
 
-```bash
-bun dev
-```
+| Command | Description |
+|---------|-------------|
+| `init` | Full project setup - dependencies, env files, docker, migrations, seed |
+| `start` | Start Docker services and run `bun dev` |
+| `stop` | Stop all Docker services |
+| `reset-services` | **Destructive** - Remove all containers, volumes, and re-initialize |
+| `update-packages` | Update all packages in apps/*, packages/*, workers/* |
+| `doctor` | Check dependencies, env files, services, and ports |
+| `logs [service]` | View Docker logs for a specific service (or all if no service specified) |
+| `seed [--only=X]` | Run database seeds (optionally filter with --only) |
+
+### Manual Setup (Alternative)
+
+If you prefer not to use `dev.sh`:
+
+1. Install dependencies:
+   ```bash
+   bun install
+   ```
+
+2. Set up environment files in:
+   - `apps/server/.env`
+   - `apps/web/.env`
+   - `workers/notification/.env`
+   - `workers/message-search/.env`
+   - `workers/read-receipt/.env`
+
+3. Start Docker services:
+   ```bash
+   docker compose up -d
+   ```
+
+4. Apply database schema:
+   ```bash
+   bun db:push
+   ```
+
+5. Run the development server:
+   ```bash
+   bun dev
+   ```
 
 Open [http://localhost:3001](http://localhost:3001) in your browser to see the web application.
 Use the Expo Go app to run the mobile application.
