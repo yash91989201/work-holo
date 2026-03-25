@@ -80,7 +80,7 @@ This will:
 | `stop-services` | Stop all Docker services |
 | `status` | Show status of services, ports, and environment files |
 | `reset-services` | **Destructive** - Remove all containers, volumes, and re-initialize |
-| `update-packages` | Update all packages in apps/*, packages/*, workers/* |
+| `update-packages` | Update all packages, remove node_modules, and fresh install |
 | `doctor` | Check dependencies, env files, services, and ports |
 | `logs [service]` | View Docker logs for a specific service (or all if no service specified) |
 | `seed [--only=X]` | Run database seeds (optionally filter with --only) |
