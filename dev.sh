@@ -313,13 +313,16 @@ handle_interrupt() {
   if [[ -n "$BUN_DEV_PID" ]]; then
     kill -INT "$BUN_DEV_PID" >/dev/null 2>&1 || true
   fi
-  printf "\nDocker services will stop in 5s. Press 'n' to keep them running..."
+  printf "\n"
+  local i
   local response=""
-  if read -r -t 5 -n 1 response; then
-    printf "\n"
-  else
-    printf "\n"
-  fi
+  for ((i = 5; i > 0; i--)); do
+    printf "\r%bStopping docker services in %ds%b... Press 'n' to keep running" "$COLOR_YELLOW" "$i" "$COLOR_RESET"
+    if read -r -t 1 -n 1 response; then
+      break
+    fi
+  done
+  printf "\n"
   if [[ "$response" == "n" || "$response" == "N" ]]; then
     log_warn "Keeping services running"
   else
