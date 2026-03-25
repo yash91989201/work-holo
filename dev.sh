@@ -10,14 +10,12 @@ if [[ -n "${NO_COLOR:-}" ]]; then
   COLOR_GREEN=""
   COLOR_YELLOW=""
   COLOR_BLUE=""
-  COLOR_BOLD=""
 else
   COLOR_RESET="\033[0m"
   COLOR_RED="\033[31m"
   COLOR_GREEN="\033[32m"
   COLOR_YELLOW="\033[33m"
   COLOR_BLUE="\033[34m"
-  COLOR_BOLD="\033[1m"
 fi
 
 DOCKER_COMPOSE_CMD=()
@@ -130,12 +128,12 @@ ensure_parent_dir() { mkdir -p "$(dirname "$1")"; }
 write_if_missing() {
   local target="$1"
   if [[ -f "$target" ]]; then
-    log_warn "Skipping existing file: ${target#$ROOT_DIR/}"
+    log_warn "Skipping existing file: ${target#"$ROOT_DIR"/}"
     return 0
   fi
   ensure_parent_dir "$target"
   cat >"$target"
-  log_success "Created ${target#$ROOT_DIR/}"
+  log_success "Created ${target#"$ROOT_DIR"/}"
 }
 
 create_env_server() {
@@ -448,7 +446,7 @@ cmd_update_packages() {
     [[ -d "$ROOT_DIR/$parent" ]] || continue
     for child in "$ROOT_DIR/$parent"/*; do
       if [[ -d "$child" && -f "$child/package.json" ]]; then
-        log_info "Updating ${child#$ROOT_DIR/}"
+        log_info "Updating ${child#"$ROOT_DIR"/}"
         (
           cd "$child"
           bun update --latest
