@@ -1,10 +1,16 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { Suspense } from "react";
+import { z } from "zod";
 import { AdminsTable } from "@/components/platform/admins/admins-table";
+
+const AdminsSearchSchema = z.object({
+  search: z.string().optional(),
+});
 
 export const Route = createFileRoute(
   "/(authenticated)/platform/dashboard/admins/"
 )({
+  validateSearch: AdminsSearchSchema,
   beforeLoad: ({ context }) => {
     if (context.adminRole !== "super_admin") {
       throw redirect({ to: "/platform/dashboard" });
@@ -17,13 +23,6 @@ export const Route = createFileRoute(
 function RouteComponent() {
   return (
     <section className="space-y-6 p-6">
-      <div>
-        <h1 className="font-semibold text-2xl">Admins</h1>
-        <p className="mt-1 text-muted-foreground text-sm">
-          Promote users to admin from the Users page. Manage existing admins
-          here.
-        </p>
-      </div>
       <Suspense fallback={<AdminsTable.Fallback />}>
         <AdminsTable />
       </Suspense>

@@ -1,4 +1,4 @@
-import { IconDots } from "@tabler/icons-react";
+import { IconDots, IconUsers } from "@tabler/icons-react";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -42,6 +49,22 @@ export function SupportTable() {
   const unbanMutation = useMutation(
     queryUtils.admin.unbanUser.mutationOptions({ onSuccess: () => refetch() })
   );
+
+  if (agents.length === 0) {
+    return (
+      <Empty>
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <IconUsers />
+          </EmptyMedia>
+          <EmptyTitle>No support agents</EmptyTitle>
+          <EmptyDescription>
+            There are no support agents in the system yet.
+          </EmptyDescription>
+        </EmptyHeader>
+      </Empty>
+    );
+  }
 
   return (
     <Table>
