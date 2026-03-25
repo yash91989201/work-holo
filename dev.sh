@@ -248,6 +248,7 @@ wait_for_service() {
     if [[ -n "$id" ]]; then
       state="$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "$id" 2>/dev/null || true)"
       if [[ "$state" == "healthy" || "$state" == "running" ]]; then
+        printf "\r\033[K"
         log_success "Service ready: $service"
         return 0
       fi
@@ -329,6 +330,68 @@ handle_interrupt() {
 cmd_start() {
   require_root
   check_deps
+  
+  local docker_only="false"
+  local dev_only="false"
+  
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --docker-only)
+        docker_only="true"
+        shift
+        ;;
+      --dev-only)
+        dev_only="true"
+        shift
+        ;;
+      *)
+        log_error "Unknown option: $1"
+        cmd_help
+        exit 1
+        ;;
+    esac
+  done
+  
+  if [[ "$docker_only" == "true" && "$dev_only" == "true" ]]; then
+    log_error "Cannot use both --docker-only and --dev-only"
+    exit 1
+  fi
+  
+  if [[ "$docker_only" == "true" ]]; then
+    compose_up
+    wait_healthy
+    log_success "Docker services started"
+    return 0
+  fi
+  
+  if [[ "$dev_only" == "true" ]]; then
+    local running_count=0
+    local service=""
+    for service in "${CORE_SERVICES[@]}"; do
+      local id=""
+      id="$(docker_compose ps -q "$service" 2>/dev/null || true)"
+      if [[ -n "$id" ]]; then
+        local state=""
+        state="$(docker inspect --format '{{.State.Status}}' "$id" 2>/dev/null || true)"
+        if [[ "$state" == "running" ]]; then
+          running_count=$((running_count + 1))
+        fi
+      fi
+    done
+    
+    if [[ "$running_count" -eq 0 ]]; then
+      log_info "No Docker services running. Starting services first..."
+      compose_up
+      wait_healthy
+    elif [[ "$running_count" -lt "${#CORE_SERVICES[@]}" ]]; then
+      log_warn "Only $running_count/${#CORE_SERVICES[@]} services are running. Some features may not work."
+    fi
+    
+    log_info "Starting dev server (with TUI)"
+    bun dev
+    return $?
+  fi
+  
   compose_up
   wait_healthy
   START_WAS_INTERRUPTED="false"
@@ -557,12 +620,11 @@ Command behavior:
     - seed
     - prompt to start dev
 
-  start
-    - docker compose up -d
-    - wait healthy
-    - bun dev
-    - Ctrl+C prompt:
-      Docker services will stop in 5s. Press 'n' to keep them running...
+  start [--docker-only] [--dev-only]
+    Default: docker compose up -d, wait healthy, bun dev (no TUI)
+    --docker-only: start only docker services
+    --dev-only: start only dev server (with TUI), auto-start services if needed
+    Ctrl+C prompt: Docker services will stop in 5s. Press 'n' to keep them running...
 
   stop
     - docker compose down
