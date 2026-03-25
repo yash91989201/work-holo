@@ -452,6 +452,57 @@ cmd_doctor() {
   return 1
 }
 
+cmd_status() {
+  require_root
+  check_deps
+  log_info "Docker Services"
+  local service=""
+  local running=0
+  local total=0
+  for service in "${CORE_SERVICES[@]}"; do
+    total=$((total + 1))
+    local id=""
+    id="$(docker_compose ps -q "$service" 2>/dev/null || true)"
+    if [[ -n "$id" ]]; then
+      local state=""
+      state="$(docker inspect --format '{{.State.Status}}' "$id" 2>/dev/null || true)"
+      local health=""
+      health="$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}no health check{{end}}' "$id" 2>/dev/null || true)"
+      if [[ "$state" == "running" ]]; then
+        printf "  %b✓%b %-20s running (%s)\n" "$COLOR_GREEN" "$COLOR_RESET" "$service" "$health"
+        running=$((running + 1))
+      else
+        printf "  %b✗%b %-20s %s\n" "$COLOR_RED" "$COLOR_RESET" "$service" "$state"
+      fi
+    else
+      printf "  %b✗%b %-20s not running\n" "$COLOR_RED" "$COLOR_RESET" "$service"
+    fi
+  done
+  printf "\n"
+  log_info "Ports"
+  local port=""
+  for port in "${DOCTOR_PORTS[@]}"; do
+    if (echo >/dev/tcp/127.0.0.1/"$port") >/dev/null 2>&1; then
+      printf "  %b✓%b %d open\n" "$COLOR_GREEN" "$COLOR_RESET" "$port"
+    else
+      printf "  %b✗%b %d closed\n" "$COLOR_RED" "$COLOR_RESET" "$port"
+    fi
+  done
+  printf "\n"
+  log_info "Environment Files"
+  check_env_exists "$ENV_SERVER" || true
+  check_env_exists "$ENV_WEB" || true
+  check_env_exists "$ENV_NOTIFICATION" || true
+  check_env_exists "$ENV_SEARCH" || true
+  check_env_exists "$ENV_READ_RECEIPT" || true
+  printf "\n"
+  if [[ "$running" -eq "$total" ]]; then
+    log_success "All $total services running"
+  else
+    log_warn "$running/$total services running"
+  fi
+}
+
 cmd_logs() {
   require_root
   check_deps
@@ -479,10 +530,15 @@ Commands:
   reset-services
   update-packages
   doctor
+  status
   logs [service]
   seed [--only=X]
 
 Command behavior:
+  status
+    - show docker service status
+    - show port status
+    - show env file status
   init
     - check deps
     - bun install
@@ -560,6 +616,7 @@ main() {
     reset-services) cmd_reset_services "$@" ;;
     update-packages) cmd_update_packages "$@" ;;
     doctor) cmd_doctor "$@" ;;
+    status) cmd_status "$@" ;;
     logs) cmd_logs "$@" ;;
     seed) cmd_seed "$@" ;;
     *)
