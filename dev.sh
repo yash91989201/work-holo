@@ -325,7 +325,7 @@ cmd_start() {
   wait_healthy
   START_WAS_INTERRUPTED="false"
   trap handle_interrupt INT
-  bun dev &
+  TURBO_UI=0 bun dev &
   BUN_DEV_PID="$!"
   set +e
   wait "$BUN_DEV_PID"
