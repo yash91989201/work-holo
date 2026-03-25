@@ -454,6 +454,26 @@ cmd_update_packages() {
       fi
     done
   done
+  log_info "Cleaning up node_modules and lock files"
+  for parent in apps packages workers; do
+    [[ -d "$ROOT_DIR/$parent" ]] || continue
+    for child in "$ROOT_DIR/$parent"/*; do
+      if [[ -d "$child" && -f "$child/package.json" ]]; then
+        if [[ "$child" == *"packages/config"* ]]; then
+          log_info "Preserving ${child#"$ROOT_DIR"/}/node_modules"
+          continue
+        fi
+        if [[ -d "$child/node_modules" ]]; then
+          log_info "Removing ${child#"$ROOT_DIR"/}/node_modules"
+          rm -rf "$child/node_modules"
+        fi
+      fi
+    done
+  done
+  if [[ -f "$ROOT_DIR/bun.lock" ]]; then
+    log_info "Removing bun.lock"
+    rm -f "$ROOT_DIR/bun.lock"
+  fi
   (
     cd "$ROOT_DIR"
     bun install
