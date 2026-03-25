@@ -241,6 +241,8 @@ wait_for_service() {
   local elapsed=0
   local id=""
   local state=""
+  local dots=""
+  log_info "Waiting for $service"
   while [[ "$elapsed" -lt "$timeout" ]]; do
     id="$(docker_compose ps -q "$service" 2>/dev/null || true)"
     if [[ -n "$id" ]]; then
@@ -250,9 +252,15 @@ wait_for_service() {
         return 0
       fi
     fi
+    dots="${dots}."
+    if [[ "${#dots}" -gt 3 ]]; then
+      dots="."
+    fi
+    printf "\r  %b⏳%b %s%s" "$COLOR_YELLOW" "$COLOR_RESET" "$service" "$dots"
     sleep 2
     elapsed=$((elapsed + 2))
   done
+  printf "\n"
   log_error "Service not ready after ${timeout}s: $service"
   return 1
 }
