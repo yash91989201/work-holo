@@ -458,16 +458,12 @@ cmd_update_packages() {
   for parent in apps packages workers; do
     [[ -d "$ROOT_DIR/$parent" ]] || continue
     for child in "$ROOT_DIR/$parent"/*; do
-      if [[ -d "$child" && -f "$child/package.json" ]]; then
-        if [[ "$child" == *"packages/config"* ]]; then
-          log_info "Preserving ${child#"$ROOT_DIR"/}/node_modules"
-          continue
+        if [[ -d "$child" && -f "$child/package.json" ]]; then
+          if [[ -d "$child/node_modules" ]]; then
+            log_info "Removing ${child#"$ROOT_DIR"/}/node_modules"
+            rm -rf "$child/node_modules"
+          fi
         fi
-        if [[ -d "$child/node_modules" ]]; then
-          log_info "Removing ${child#"$ROOT_DIR"/}/node_modules"
-          rm -rf "$child/node_modules"
-        fi
-      fi
     done
   done
   if [[ -f "$ROOT_DIR/bun.lock" ]]; then
@@ -658,6 +654,8 @@ Command behavior:
   update-packages
     - for each folder in apps/* packages/* workers/* with package.json
       run bun update --latest
+    - remove all node_modules folders
+    - remove bun.lock
     - bun install at root
 
   doctor
