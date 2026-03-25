@@ -363,6 +363,11 @@ cmd_reset_services() {
 cmd_update_packages() {
   require_root
   check_deps
+  log_info "Updating root packages"
+  (
+    cd "$ROOT_DIR"
+    bun update --latest
+  )
   local parent=""
   local child=""
   for parent in apps packages workers; do
