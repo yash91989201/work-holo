@@ -145,7 +145,7 @@ function StatusCard({
       <div className="min-w-0">
         <div className="truncate text-muted-foreground text-xs">{label}</div>
         <div className="font-semibold text-sm">
-          {count} Day{count !== 1 ? "s" : ""}
+          {count} Day{count === 1 ? "" : "s"}
         </div>
       </div>
     </div>

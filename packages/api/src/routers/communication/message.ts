@@ -503,9 +503,9 @@ export const messageRouter = {
               content: input.content,
               isEdited: true,
               editedAt: new Date(),
-              ...(input.mentions !== undefined
-                ? { mentions: input.mentions }
-                : {}),
+              ...(input.mentions === undefined
+                ? {}
+                : { mentions: input.mentions }),
             })
             .where(eq(messageTable.id, input.messageId))
             .returning();

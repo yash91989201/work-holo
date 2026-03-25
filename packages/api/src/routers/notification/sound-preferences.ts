@@ -91,12 +91,12 @@ export const soundPreferencesRouter = {
         eq(notificationSoundPreferenceTable.scope, input.scope),
       ];
 
-      if (input.entityId != null) {
+      if (input.entityId == null) {
+        conditions.push(isNull(notificationSoundPreferenceTable.entityId));
+      } else {
         conditions.push(
           eq(notificationSoundPreferenceTable.entityId, input.entityId)
         );
-      } else {
-        conditions.push(isNull(notificationSoundPreferenceTable.entityId));
       }
 
       const preference =
@@ -223,12 +223,12 @@ export const soundPreferencesRouter = {
         eq(notificationSoundPreferenceTable.scope, input.scope),
       ];
 
-      if (input.entityId != null) {
+      if (input.entityId == null) {
+        conditions.push(isNull(notificationSoundPreferenceTable.entityId));
+      } else {
         conditions.push(
           eq(notificationSoundPreferenceTable.entityId, input.entityId)
         );
-      } else {
-        conditions.push(isNull(notificationSoundPreferenceTable.entityId));
       }
 
       await db

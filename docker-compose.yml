@@ -162,6 +162,18 @@ services:
       timeout: 10s
       retries: 3
 
+  seeder:
+    build:
+      context: .
+      dockerfile: apps/seeder/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres
+    profiles:
+      - seed
+
 volumes:
   dragonfly_data:
   rabbitmq_data:

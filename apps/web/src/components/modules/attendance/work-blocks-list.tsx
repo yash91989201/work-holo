@@ -74,12 +74,12 @@ const WorkBlockItem = ({
       );
   } else {
     iconComponent =
-      reason !== null ? (
+      reason === null ? (
+        <IconClockHour4Filled className="h-4 w-4" />
+      ) : (
         endReasonIcons[reason as string] || (
           <IconClockHour4Filled className="h-4 w-4" />
         )
-      ) : (
-        <IconClockHour4Filled className="h-4 w-4" />
       );
   }
 

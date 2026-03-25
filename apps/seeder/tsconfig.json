@@ -1,0 +1,10 @@
+{
+  "extends": "@work-holo/config/tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDirs": ["."],
+    "baseUrl": ".",
+    "strictNullChecks": true
+  },
+  "include": ["src"]
+}

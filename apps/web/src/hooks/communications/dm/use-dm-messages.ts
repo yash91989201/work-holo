@@ -90,12 +90,12 @@ export function useVirtualDmMessages() {
     );
 
     requestAnimationFrame(() => {
-      if (newMessagesSeparatorIndex !== -1) {
+      if (newMessagesSeparatorIndex === -1) {
+        virtualizer.scrollToOffset(el.scrollHeight, { align: "end" });
+      } else {
         virtualizer.scrollToIndex(newMessagesSeparatorIndex, {
           align: "start",
         });
-      } else {
-        virtualizer.scrollToOffset(el.scrollHeight, { align: "end" });
       }
     });
   }, [conversationId, isLoading, messages.length, items, virtualizer]);
