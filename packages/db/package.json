@@ -18,14 +18,14 @@
   },
   "devDependencies": {
     "@work-holo/config": "workspace:*",
-    "drizzle-kit": "^0.31.9",
+    "drizzle-kit": "^0.31.10",
     "chokidar": "^5.0.0"
   },
   "peerDependencies": {
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.2"
   },
   "dependencies": {
-    "@t3-oss/env-core": "^0.13.10",
+    "@t3-oss/env-core": "^0.13.11",
     "dotenv": "^17.3.1",
     "drizzle-cuid2": "^2.2.0",
     "drizzle-orm": "^0.45.1",

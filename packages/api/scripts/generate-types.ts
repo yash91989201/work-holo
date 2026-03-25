@@ -272,11 +272,11 @@ ${inferredTypes.sort().join("\n")}
     ? fs.readFileSync(outputFile, "utf-8")
     : "";
 
-  if (currentContent !== output) {
+  if (currentContent === output) {
+    console.log("✅ No changes detected");
+  } else {
     fs.writeFileSync(outputFile, output);
     console.log(`✅ Types written to ${outputFile}`);
-  } else {
-    console.log("✅ No changes detected");
   }
 }
 

@@ -35,6 +35,6 @@ export {
   useAppForm,
   useFieldContext,
   useFormContext,
-  withForm,
   withFieldGroup,
+  withForm,
 };

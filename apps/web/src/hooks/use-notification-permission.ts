@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 export function useNotificationPermission() {
   const [permission, setPermission] = useState<NotificationPermission>(
-    typeof Notification !== "undefined" ? Notification.permission : "default"
+    typeof Notification === "undefined" ? "default" : Notification.permission
   );
 
   useEffect(() => {
