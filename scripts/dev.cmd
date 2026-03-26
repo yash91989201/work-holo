@@ -379,18 +379,36 @@ bun run --cwd apps/seeder src/index.ts %*
 exit /b %ERRORLEVEL%
 
 :cmd_init
+set "SKIP_DEPS_INSTALL=false"
+
+:parse_init_args
+if "%~1"=="" goto :init_args_done
+if /I "%~1"=="--skip-deps-install" (
+  set "SKIP_DEPS_INSTALL=true"
+  shift
+  goto :parse_init_args
+)
+call :log_error "Unknown option: %~1"
+call :cmd_help
+exit /b 1
+
+:init_args_done
 call :require_root || exit /b 1
 call :log_info "Checking dependencies"
 call :check_deps || exit /b 1
 
-call :log_info "Installing dependencies"
-pushd "%ROOT_DIR%" >nul
-bun install
-if not %ERRORLEVEL%==0 (
+if /I "%SKIP_DEPS_INSTALL%"=="true" (
+  call :log_warn "Skipping dependency installation (--skip-deps-install)"
+) else (
+  call :log_info "Installing dependencies"
+  pushd "%ROOT_DIR%" >nul
+  bun install
+  if not %ERRORLEVEL%==0 (
+    popd >nul
+    exit /b 1
+  )
   popd >nul
-  exit /b 1
 )
-popd >nul
 
 call :log_info "Creating .env files if missing"
 call :create_env_files || exit /b 1
@@ -778,7 +796,7 @@ echo   scripts\dev.cmd --help
 echo   scripts\dev.cmd -h
 echo.
 echo Commands:
-echo   init
+echo   init [--skip-deps-install]
 echo   start
 echo   stop-services
 echo   reset-services
@@ -795,7 +813,7 @@ echo     - show port status
 echo     - show env file status
 echo   init
 echo     - check deps
-echo     - bun install
+echo     - bun install ^(unless --skip-deps-install^)
 echo     - create env files if missing
 echo     - docker compose up -d
 echo     - wait healthy
