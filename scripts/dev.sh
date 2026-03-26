@@ -283,11 +283,31 @@ cmd_seed() {
 }
 
 cmd_init() {
+  local skip_deps_install="false"
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --skip-deps-install)
+        skip_deps_install="true"
+        shift
+        ;;
+      *)
+        log_error "Unknown option: $1"
+        cmd_help
+        exit 1
+        ;;
+    esac
+  done
+
   require_root
   log_info "Checking dependencies"
   check_deps
-  log_info "Installing dependencies"
-  bun install
+  if [[ "$skip_deps_install" == "true" ]]; then
+    log_warn "Skipping dependency installation (--skip-deps-install)"
+  else
+    log_info "Installing dependencies"
+    bun install
+  fi
   log_info "Creating .env files if missing"
   create_env_files
   log_info "Starting services"
@@ -612,7 +632,7 @@ Usage:
   scripts/dev.sh -h
 
 Commands:
-  init
+  init [--skip-deps-install]
   start
   stop-services
   reset-services
@@ -629,7 +649,7 @@ Command behavior:
     - show env file status
   init
     - check deps
-    - bun install
+    - bun install (unless --skip-deps-install)
     - create env files if missing
     - docker compose up -d
     - wait healthy
