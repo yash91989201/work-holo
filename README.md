@@ -23,12 +23,13 @@ This project was created with [Better-T-Stack](https://github.com/AmanVarshney01
 
 ## Getting Started
 
-This project includes a `dev.sh` script to manage the entire local development workflow.
+This project includes a `scripts/dev.sh` script to manage the entire local development workflow.
+On Windows cmd shell, use `scripts\dev.cmd`.
 
 ### Quick Start
 
 ```bash
-./dev.sh init
+scripts/dev.sh init
 ```
 
 This will:
@@ -45,28 +46,28 @@ This will:
 
 ```bash
 # Quick start - full setup (dependencies, env files, docker, migrations, seed)
-./dev.sh init
+scripts/dev.sh init
 
 # Start everything (docker services + dev server)
-./dev.sh start
+scripts/dev.sh start
 
 # Start only docker services (useful for running dev server separately)
-./dev.sh start --docker-only
+scripts/dev.sh start --docker-only
 
 # Start only dev server (auto-starts services if needed, includes Turbo TUI)
-./dev.sh start --dev-only
+scripts/dev.sh start --dev-only
 
 # Stop all docker services
-./dev.sh stop-services
+scripts/dev.sh stop-services
 
 # Check what's running
-./dev.sh status
+scripts/dev.sh status
 
 # Check environment health
-./dev.sh doctor
+scripts/dev.sh doctor
 
 # View service logs
-./dev.sh logs postgres
+scripts/dev.sh logs postgres
 ```
 
 ### Available Commands
@@ -87,7 +88,7 @@ This will:
 
 ### Manual Setup (Alternative)
 
-If you prefer not to use `dev.sh`:
+If you prefer not to use `scripts/dev.sh`:
 
 1. Install dependencies:
 
