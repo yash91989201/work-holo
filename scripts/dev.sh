@@ -2,7 +2,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ROOT_DIR="$SCRIPT_DIR"
+ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 if [[ -n "${NO_COLOR:-}" ]]; then
   COLOR_RESET=""
@@ -607,9 +607,9 @@ cmd_help() {
 work-holo development workflow manager
 
 Usage:
-  ./dev.sh <command> [options]
-  ./dev.sh --help
-  ./dev.sh -h
+  scripts/dev.sh <command> [options]
+  scripts/dev.sh --help
+  scripts/dev.sh -h
 
 Commands:
   init

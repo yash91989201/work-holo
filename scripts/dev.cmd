@@ -1,0 +1,860 @@
+@echo off
+setlocal EnableExtensions EnableDelayedExpansion
+
+set "SCRIPT_DIR=%~dp0"
+for %%I in ("%SCRIPT_DIR%..") do set "ROOT_DIR=%%~fI"
+
+if defined NO_COLOR (
+  set "COLOR_RESET="
+  set "COLOR_RED="
+  set "COLOR_GREEN="
+  set "COLOR_YELLOW="
+  set "COLOR_BLUE="
+) else (
+  for /f %%A in ('echo prompt $E^| cmd') do set "ESC=%%A"
+  set "COLOR_RESET=!ESC![0m"
+  set "COLOR_RED=!ESC![31m"
+  set "COLOR_GREEN=!ESC![32m"
+  set "COLOR_YELLOW=!ESC![33m"
+  set "COLOR_BLUE=!ESC![34m"
+)
+
+set "START_WAS_INTERRUPTED=false"
+set "VAPID_PUBLIC_KEY="
+set "VAPID_PRIVATE_KEY="
+
+set "ENV_SERVER=apps\server\.env"
+set "ENV_WEB=apps\web\.env"
+set "ENV_NOTIFICATION=workers\notification\.env"
+set "ENV_SEARCH=workers\message-search\.env"
+set "ENV_READ_RECEIPT=workers\read-receipt\.env"
+
+set "CORE_SERVICES=postgres electric dragonfly rabbitmq opensearch rustfs soketi imgproxy"
+set "DOCTOR_PORTS=5432 5003 6379 5672 9200 9000 6001 8080"
+
+set "COMPOSE_IS_V2=0"
+
+set "CMD=%~1"
+if "%CMD%"=="" goto :cmd_help
+if /I "%CMD%"=="--help" goto :cmd_help
+if /I "%CMD%"=="-h" goto :cmd_help
+
+shift
+
+if /I "%CMD%"=="init" goto :cmd_init
+if /I "%CMD%"=="start" goto :cmd_start
+if /I "%CMD%"=="stop-services" goto :cmd_stop
+if /I "%CMD%"=="reset-services" goto :cmd_reset_services
+if /I "%CMD%"=="update-packages" goto :cmd_update_packages
+if /I "%CMD%"=="doctor" goto :cmd_doctor
+if /I "%CMD%"=="status" goto :cmd_status
+if /I "%CMD%"=="logs" goto :cmd_logs
+if /I "%CMD%"=="seed" goto :cmd_seed
+
+call :log_error "Unknown command: %CMD%"
+call :cmd_help
+exit /b 1
+
+:log_info
+echo %COLOR_BLUE%[INFO]%COLOR_RESET% %*
+exit /b 0
+
+:log_success
+echo %COLOR_GREEN%[OK]%COLOR_RESET% %*
+exit /b 0
+
+:log_warn
+echo %COLOR_YELLOW%[WARN]%COLOR_RESET% %*
+exit /b 0
+
+:log_error
+echo %COLOR_RED%[ERROR]%COLOR_RESET% %* 1>&2
+exit /b 0
+
+:require_root
+if exist "%ROOT_DIR%\package.json" exit /b 0
+call :log_error "Run from repository root: %ROOT_DIR%"
+exit /b 1
+
+:check_command
+where "%~1" >nul 2>nul
+if %ERRORLEVEL%==0 exit /b 0
+call :log_error "Missing command: %~1"
+exit /b 1
+
+:detect_docker_compose
+docker compose version >nul 2>nul
+if %ERRORLEVEL%==0 (
+  set "COMPOSE_IS_V2=1"
+  exit /b 0
+)
+
+docker-compose --version >nul 2>nul
+if %ERRORLEVEL%==0 (
+  set "COMPOSE_IS_V2=0"
+  exit /b 0
+)
+
+call :log_error "Neither 'docker compose' nor 'docker-compose' is available"
+exit /b 1
+
+:docker_compose
+if "%COMPOSE_IS_V2%"=="1" (
+  docker compose %*
+) else (
+  docker-compose %*
+)
+exit /b %ERRORLEVEL%
+
+:check_deps
+call :check_command bun || exit /b 1
+call :check_command docker || exit /b 1
+call :detect_docker_compose || exit /b 1
+exit /b 0
+
+:generate_better_auth_secret
+set "_SECRET="
+for /f "usebackq delims=" %%S in (`bun -e "process.stdout.write(require('crypto').randomBytes(24).toString('base64url').slice(0,32))"`) do (
+  set "_SECRET=%%S"
+)
+if not defined _SECRET (
+  call :log_error "Failed to generate BETTER_AUTH_SECRET"
+  exit /b 1
+)
+set "%~1=%_SECRET%"
+exit /b 0
+
+:generate_vapid_keys
+set "VAPID_PUBLIC_KEY="
+set "VAPID_PRIVATE_KEY="
+set "_VAPID_FILE=%TEMP%\work-holo-vapid-%RANDOM%%RANDOM%.json"
+
+bunx web-push generate-vapid-keys --json >"%_VAPID_FILE%" 2>nul
+if not %ERRORLEVEL%==0 (
+  call :log_warn "web-push generate-vapid-keys unavailable; VAPID fields will be empty"
+  if exist "%_VAPID_FILE%" del /f /q "%_VAPID_FILE%" >nul 2>nul
+  exit /b 0
+)
+
+for %%I in ("%_VAPID_FILE%") do if %%~zI EQU 0 (
+  call :log_warn "web-push output empty; VAPID fields will be empty"
+  del /f /q "%_VAPID_FILE%" >nul 2>nul
+  exit /b 0
+)
+
+for /f "usebackq delims=" %%P in (`type "%_VAPID_FILE%" ^| bun -e "const fs=require('node:fs');const s=fs.readFileSync(0,'utf8');try{const j=JSON.parse(s);process.stdout.write(j.publicKey??'')}catch{process.stdout.write('')}"`) do (
+  set "VAPID_PUBLIC_KEY=%%P"
+)
+
+for /f "usebackq delims=" %%P in (`type "%_VAPID_FILE%" ^| bun -e "const fs=require('node:fs');const s=fs.readFileSync(0,'utf8');try{const j=JSON.parse(s);process.stdout.write(j.privateKey??'')}catch{process.stdout.write('')}"`) do (
+  set "VAPID_PRIVATE_KEY=%%P"
+)
+
+del /f /q "%_VAPID_FILE%" >nul 2>nul
+
+if not defined VAPID_PUBLIC_KEY (
+  call :log_warn "web-push keys parse failed; VAPID fields will be empty"
+  set "VAPID_PUBLIC_KEY="
+  set "VAPID_PRIVATE_KEY="
+  exit /b 0
+)
+if not defined VAPID_PRIVATE_KEY (
+  call :log_warn "web-push keys parse failed; VAPID fields will be empty"
+  set "VAPID_PUBLIC_KEY="
+  set "VAPID_PRIVATE_KEY="
+  exit /b 0
+)
+
+call :log_success "VAPID keys generated"
+exit /b 0
+
+:write_env_server
+set "TARGET=%ROOT_DIR%\%ENV_SERVER%"
+if exist "%TARGET%" (
+  call :log_warn "Skipping existing file: %ENV_SERVER%"
+  exit /b 0
+)
+for %%I in ("%TARGET%") do if not exist "%%~dpI" mkdir "%%~dpI"
+(
+  echo BETTER_AUTH_SECRET=%~1
+  echo BETTER_AUTH_URL=http://localhost:3000
+  echo CORS_ORIGIN=http://localhost:3001
+  echo DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
+  echo REDIS_URL=redis://localhost:6379
+  echo RABBITMQ_URL=amqp://admin:admin@localhost:5672
+  echo ENV=development
+  echo PORT=3000
+  echo S3_ACCESS_KEY=GuzpNFteD5xLQ_aoBlUvyw
+  echo S3_SECRET_KEY=zmvR18mhKg3hDlKfdtfp_g
+  echo S3_ENDPOINT=http://127.0.0.1:9000
+  echo WEB_URL=http://localhost:3001
+  echo ELECTRIC_URL=http://localhost:5003
+  echo ELECTRIC_SECRET=
+  echo VAPID_PUBLIC_KEY=%VAPID_PUBLIC_KEY%
+  echo VAPID_PRIVATE_KEY=%VAPID_PRIVATE_KEY%
+  echo VAPID_SUBJECT=mailto:dev@localhost
+  echo PUSHER_APP_ID=work-holo
+  echo PUSHER_APP_KEY=work-holo-key
+  echo PUSHER_APP_SECRET=work-holo-secret-must-be-32-chars
+  echo PUSHER_HOST=localhost
+  echo PUSHER_PORT=6001
+  echo CASBIN_ENFORCE=false
+  echo OPENSEARCH_URL=http://localhost:9200
+) > "%TARGET%"
+call :log_success "Created %ENV_SERVER%"
+exit /b 0
+
+:write_env_web
+set "TARGET=%ROOT_DIR%\%ENV_WEB%"
+if exist "%TARGET%" (
+  call :log_warn "Skipping existing file: %ENV_WEB%"
+  exit /b 0
+)
+for %%I in ("%TARGET%") do if not exist "%%~dpI" mkdir "%%~dpI"
+(
+  echo VITE_ENV=development
+  echo VITE_IMAGE_TRANSFORMATION_URL=http://localhost:8080
+  echo VITE_SERVER_URL=http://localhost:3000
+  echo VITE_WEB_URL=http://localhost:3001
+  echo VAPID_PUBLIC_KEY=%VAPID_PUBLIC_KEY%
+  echo VAPID_PRIVATE_KEY=%VAPID_PRIVATE_KEY%
+  echo VAPID_SUBJECT=mailto:dev@localhost
+  echo VITE_PUSHER_KEY=work-holo-key
+  echo VITE_PUSHER_HOST=localhost
+  echo VITE_PUSHER_PORT=6001
+) > "%TARGET%"
+call :log_success "Created %ENV_WEB%"
+exit /b 0
+
+:write_env_notification
+set "TARGET=%ROOT_DIR%\%ENV_NOTIFICATION%"
+if exist "%TARGET%" (
+  call :log_warn "Skipping existing file: %ENV_NOTIFICATION%"
+  exit /b 0
+)
+for %%I in ("%TARGET%") do if not exist "%%~dpI" mkdir "%%~dpI"
+(
+  echo DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
+  echo RABBITMQ_URL=amqp://admin:admin@localhost:5672
+  echo PUSHER_APP_ID=work-holo
+  echo PUSHER_APP_KEY=work-holo-key
+  echo PUSHER_APP_SECRET=work-holo-secret-must-be-32-chars
+  echo PUSHER_HOST=localhost
+  echo PUSHER_PORT=6001
+  echo VAPID_PUBLIC_KEY=%VAPID_PUBLIC_KEY%
+  echo VAPID_PRIVATE_KEY=%VAPID_PRIVATE_KEY%
+  echo VAPID_SUBJECT=mailto:dev@localhost
+  echo SMTP_HOST=localhost
+  echo SMTP_PORT=1025
+  echo SMTP_USER=
+  echo SMTP_PASS=
+  echo SMTP_FROM=dev@work-holo.local
+  echo ENV=development
+) > "%TARGET%"
+call :log_success "Created %ENV_NOTIFICATION%"
+exit /b 0
+
+:write_env_search
+set "TARGET=%ROOT_DIR%\%ENV_SEARCH%"
+if exist "%TARGET%" (
+  call :log_warn "Skipping existing file: %ENV_SEARCH%"
+  exit /b 0
+)
+for %%I in ("%TARGET%") do if not exist "%%~dpI" mkdir "%%~dpI"
+(
+  echo DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
+  echo RABBITMQ_URL=amqp://admin:admin@localhost:5672
+  echo OPENSEARCH_URL=http://localhost:9200
+  echo ENV=development
+) > "%TARGET%"
+call :log_success "Created %ENV_SEARCH%"
+exit /b 0
+
+:write_env_read_receipt
+set "TARGET=%ROOT_DIR%\%ENV_READ_RECEIPT%"
+if exist "%TARGET%" (
+  call :log_warn "Skipping existing file: %ENV_READ_RECEIPT%"
+  exit /b 0
+)
+for %%I in ("%TARGET%") do if not exist "%%~dpI" mkdir "%%~dpI"
+(
+  echo DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
+  echo RABBITMQ_URL=amqp://admin:admin@localhost:5672
+  echo ENV=development
+) > "%TARGET%"
+call :log_success "Created %ENV_READ_RECEIPT%"
+exit /b 0
+
+:create_env_files
+call :generate_better_auth_secret SECRET || exit /b 1
+call :generate_vapid_keys
+call :write_env_server "%SECRET%" || exit /b 1
+call :write_env_web || exit /b 1
+call :write_env_notification || exit /b 1
+call :write_env_search || exit /b 1
+call :write_env_read_receipt || exit /b 1
+exit /b 0
+
+:compose_up
+call :docker_compose up -d
+exit /b %ERRORLEVEL%
+
+:compose_down
+call :docker_compose down
+exit /b %ERRORLEVEL%
+
+:get_service_id
+set "%~2="
+if "%COMPOSE_IS_V2%"=="1" (
+  for /f "usebackq delims=" %%I in (`docker compose ps -q %~1 2^>nul`) do (
+    if not defined _sid set "_sid=%%I"
+  )
+) else (
+  for /f "usebackq delims=" %%I in (`docker-compose ps -q %~1 2^>nul`) do (
+    if not defined _sid set "_sid=%%I"
+  )
+)
+if defined _sid set "%~2=%_sid%"
+set "_sid="
+exit /b 0
+
+:wait_for_service
+set "SERVICE=%~1"
+set /a TIMEOUT=%~2
+set /a ELAPSED=0
+
+call :log_info "Waiting for %SERVICE%"
+
+:wait_service_loop
+if %ELAPSED% GEQ %TIMEOUT% (
+  call :log_error "Service not ready after %TIMEOUT%s: %SERVICE%"
+  exit /b 1
+)
+
+set "SERVICE_ID="
+if "%COMPOSE_IS_V2%"=="1" (
+  for /f "usebackq delims=" %%I in (`docker compose ps -q %SERVICE% 2^>nul`) do (
+    if not defined SERVICE_ID set "SERVICE_ID=%%I"
+  )
+) else (
+  for /f "usebackq delims=" %%I in (`docker-compose ps -q %SERVICE% 2^>nul`) do (
+    if not defined SERVICE_ID set "SERVICE_ID=%%I"
+  )
+)
+
+if defined SERVICE_ID (
+  set "STATE="
+  for /f "usebackq delims=" %%S in (`docker inspect --format "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}" "%SERVICE_ID%" 2^>nul`) do (
+    set "STATE=%%S"
+  )
+  if /I "!STATE!"=="healthy" (
+    call :log_success "Service ready: %SERVICE%"
+    exit /b 0
+  )
+  if /I "!STATE!"=="running" (
+    call :log_success "Service ready: %SERVICE%"
+    exit /b 0
+  )
+)
+
+timeout /t 2 /nobreak >nul
+set /a ELAPSED+=2
+goto :wait_service_loop
+
+:wait_healthy
+for %%S in (%CORE_SERVICES%) do (
+  call :wait_for_service %%S 180 || exit /b 1
+)
+exit /b 0
+
+:migrate_database
+pushd "%ROOT_DIR%\packages\db" >nul
+bunx drizzle-kit migrate
+set "RC=%ERRORLEVEL%"
+popd >nul
+exit /b %RC%
+
+:cmd_seed
+bun run --cwd apps/seeder src/index.ts %*
+exit /b %ERRORLEVEL%
+
+:cmd_init
+call :require_root || exit /b 1
+call :log_info "Checking dependencies"
+call :check_deps || exit /b 1
+
+call :log_info "Installing dependencies"
+pushd "%ROOT_DIR%" >nul
+bun install
+if not %ERRORLEVEL%==0 (
+  popd >nul
+  exit /b 1
+)
+popd >nul
+
+call :log_info "Creating .env files if missing"
+call :create_env_files || exit /b 1
+
+call :log_info "Starting services"
+call :compose_up || exit /b 1
+
+call :log_info "Waiting for healthy services"
+call :wait_healthy || exit /b 1
+
+call :log_info "Running direct drizzle-kit migrate"
+call :migrate_database || exit /b 1
+
+call :log_info "Running seed"
+call :cmd_seed || exit /b 1
+
+set "START_NOW="
+set /p START_NOW="Start development processes now? [y/N] "
+if /I "%START_NOW%"=="y" (
+  call :cmd_start
+  exit /b %ERRORLEVEL%
+)
+call :log_success "Init completed"
+exit /b 0
+
+:cmd_start
+call :require_root || exit /b 1
+call :check_deps || exit /b 1
+
+set "DOCKER_ONLY=false"
+set "DEV_ONLY=false"
+
+:parse_start_args
+if "%~1"=="" goto :start_args_done
+if /I "%~1"=="--docker-only" (
+  set "DOCKER_ONLY=true"
+  shift
+  goto :parse_start_args
+)
+if /I "%~1"=="--dev-only" (
+  set "DEV_ONLY=true"
+  shift
+  goto :parse_start_args
+)
+call :log_error "Unknown option: %~1"
+call :cmd_help
+exit /b 1
+
+:start_args_done
+if "%DOCKER_ONLY%"=="true" if "%DEV_ONLY%"=="true" (
+  call :log_error "Cannot use both --docker-only and --dev-only"
+  exit /b 1
+)
+
+if "%DOCKER_ONLY%"=="true" (
+  call :compose_up || exit /b 1
+  call :wait_healthy || exit /b 1
+  call :log_success "Docker services started"
+  exit /b 0
+)
+
+if "%DEV_ONLY%"=="true" (
+  set /a RUNNING_COUNT=0
+  for %%S in (%CORE_SERVICES%) do (
+    set "SERVICE_ID="
+    if "%COMPOSE_IS_V2%"=="1" (
+      for /f "usebackq delims=" %%I in (`docker compose ps -q %%S 2^>nul`) do (
+        if not defined SERVICE_ID set "SERVICE_ID=%%I"
+      )
+    ) else (
+      for /f "usebackq delims=" %%I in (`docker-compose ps -q %%S 2^>nul`) do (
+        if not defined SERVICE_ID set "SERVICE_ID=%%I"
+      )
+    )
+    if defined SERVICE_ID (
+      set "STATE="
+      for /f "usebackq delims=" %%A in (`docker inspect --format "{{.State.Status}}" "!SERVICE_ID!" 2^>nul`) do (
+        set "STATE=%%A"
+      )
+      if /I "!STATE!"=="running" set /a RUNNING_COUNT+=1
+    )
+  )
+
+  if !RUNNING_COUNT! EQU 0 (
+    call :log_info "No Docker services running. Starting services first..."
+    call :compose_up || exit /b 1
+    call :wait_healthy || exit /b 1
+  ) else if !RUNNING_COUNT! LSS 8 (
+    call :log_warn "Only !RUNNING_COUNT!/8 services are running. Some features may not work."
+  )
+
+  call :log_info "Starting dev server (with TUI)"
+  pushd "%ROOT_DIR%" >nul
+  bun dev
+  set "RC=%ERRORLEVEL%"
+  popd >nul
+  exit /b %RC%
+)
+
+call :compose_up || exit /b 1
+call :wait_healthy || exit /b 1
+set "START_WAS_INTERRUPTED=false"
+pushd "%ROOT_DIR%" >nul
+set "TURBO_UI=0"
+bun dev
+set "RC=%ERRORLEVEL%"
+popd >nul
+if "%RC%"=="130" set "START_WAS_INTERRUPTED=true"
+if "%RC%"=="3221225786" set "START_WAS_INTERRUPTED=true"
+if /I "%START_WAS_INTERRUPTED%"=="true" (
+  call :handle_interrupt
+  exit /b 0
+)
+if not %RC%==0 call :log_warn "bun dev exited with code %RC%"
+exit /b %RC%
+
+:handle_interrupt
+echo.
+choice /C YN /N /T 5 /D Y /M "Stopping docker services in 5s... Press N to keep running"
+if %ERRORLEVEL%==2 (
+  call :log_warn "Keeping services running"
+  exit /b 0
+)
+call :cmd_stop
+exit /b %ERRORLEVEL%
+
+:cmd_stop
+call :require_root || exit /b 1
+call :check_deps || exit /b 1
+call :compose_down
+exit /b %ERRORLEVEL%
+
+:cmd_reset_services
+call :require_root || exit /b 1
+call :check_deps || exit /b 1
+call :log_warn "This will run down --volumes --remove-orphans"
+set "ANSWER="
+set /p ANSWER="Continue? [y/N] "
+if /I not "%ANSWER%"=="y" (
+  call :log_info "Cancelled"
+  exit /b 0
+)
+call :docker_compose down --volumes --remove-orphans || exit /b 1
+call :cmd_init
+exit /b %ERRORLEVEL%
+
+:cmd_update_packages
+call :require_root || exit /b 1
+call :check_deps || exit /b 1
+
+call :log_info "Updating root packages"
+pushd "%ROOT_DIR%" >nul
+bun update --latest
+if not %ERRORLEVEL%==0 (
+  popd >nul
+  exit /b 1
+)
+popd >nul
+
+for %%P in (apps packages workers) do (
+  if exist "%ROOT_DIR%\%%P" (
+    for /d %%D in ("%ROOT_DIR%\%%P\*") do (
+      if exist "%%~fD\package.json" (
+        call :log_info "Updating %%~fD"
+        pushd "%%~fD" >nul
+        bun update --latest
+        if not !ERRORLEVEL!==0 (
+          popd >nul
+          exit /b 1
+        )
+        popd >nul
+      )
+    )
+  )
+)
+
+call :log_info "Cleaning up node_modules and lock files"
+for %%P in (apps packages workers) do (
+  if exist "%ROOT_DIR%\%%P" (
+    for /d %%D in ("%ROOT_DIR%\%%P\*") do (
+      if exist "%%~fD\package.json" (
+        if exist "%%~fD\node_modules" (
+          call :log_info "Removing %%~fD\node_modules"
+          rmdir /s /q "%%~fD\node_modules"
+        )
+      )
+    )
+  )
+)
+
+if exist "%ROOT_DIR%\bun.lock" (
+  call :log_info "Removing bun.lock"
+  del /f /q "%ROOT_DIR%\bun.lock"
+)
+
+pushd "%ROOT_DIR%" >nul
+bun install
+set "RC=%ERRORLEVEL%"
+popd >nul
+if not %RC%==0 exit /b %RC%
+
+call :log_success "Package updates completed"
+exit /b 0
+
+:check_env_exists
+if exist "%ROOT_DIR%\%~1" (
+  call :log_success "Found %~1"
+  exit /b 0
+)
+call :log_error "Missing %~1"
+exit /b 1
+
+:check_service_running
+set "SERVICE=%~1"
+set "SERVICE_ID="
+
+if "%COMPOSE_IS_V2%"=="1" (
+  for /f "usebackq delims=" %%I in (`docker compose ps -q %SERVICE% 2^>nul`) do (
+    if not defined SERVICE_ID set "SERVICE_ID=%%I"
+  )
+) else (
+  for /f "usebackq delims=" %%I in (`docker-compose ps -q %SERVICE% 2^>nul`) do (
+    if not defined SERVICE_ID set "SERVICE_ID=%%I"
+  )
+)
+
+if not defined SERVICE_ID (
+  call :log_error "Service not running: %SERVICE%"
+  exit /b 1
+)
+
+set "STATE="
+for /f "usebackq delims=" %%A in (`docker inspect --format "{{.State.Status}}" "%SERVICE_ID%" 2^>nul`) do set "STATE=%%A"
+
+if /I "%STATE%"=="running" (
+  call :log_success "Service running: %SERVICE%"
+  exit /b 0
+)
+
+call :log_error "Service status '%STATE%': %SERVICE%"
+exit /b 1
+
+:check_port
+powershell -NoProfile -Command "try { $c = New-Object Net.Sockets.TcpClient('127.0.0.1', %~1); $c.Close(); exit 0 } catch { exit 1 }" >nul 2>nul
+if %ERRORLEVEL%==0 (
+  call :log_success "Port open: %~1"
+  exit /b 0
+)
+call :log_error "Port closed: %~1"
+exit /b 1
+
+:cmd_doctor
+call :require_root || exit /b 1
+set /a FAILED=0
+
+call :check_deps || set /a FAILED=1
+call :check_env_exists "%ENV_SERVER%" || set /a FAILED=1
+call :check_env_exists "%ENV_WEB%" || set /a FAILED=1
+call :check_env_exists "%ENV_NOTIFICATION%" || set /a FAILED=1
+call :check_env_exists "%ENV_SEARCH%" || set /a FAILED=1
+call :check_env_exists "%ENV_READ_RECEIPT%" || set /a FAILED=1
+
+for %%S in (%CORE_SERVICES%) do (
+  call :check_service_running %%S || set /a FAILED=1
+)
+
+for %%P in (%DOCTOR_PORTS%) do (
+  call :check_port %%P || set /a FAILED=1
+)
+
+if %FAILED% EQU 0 (
+  call :log_success "Doctor passed"
+  exit /b 0
+)
+call :log_error "Doctor found issues"
+exit /b 1
+
+:cmd_status
+call :require_root || exit /b 1
+call :check_deps || exit /b 1
+
+call :log_info "Docker Services"
+set /a RUNNING=0
+set /a TOTAL=0
+
+for %%S in (%CORE_SERVICES%) do (
+  set /a TOTAL+=1
+  set "SERVICE_ID="
+
+  if "%COMPOSE_IS_V2%"=="1" (
+    for /f "usebackq delims=" %%I in (`docker compose ps -q %%S 2^>nul`) do (
+      if not defined SERVICE_ID set "SERVICE_ID=%%I"
+    )
+  ) else (
+    for /f "usebackq delims=" %%I in (`docker-compose ps -q %%S 2^>nul`) do (
+      if not defined SERVICE_ID set "SERVICE_ID=%%I"
+    )
+  )
+
+  if defined SERVICE_ID (
+    set "STATE="
+    set "HEALTH="
+    for /f "usebackq delims=" %%A in (`docker inspect --format "{{.State.Status}}" "!SERVICE_ID!" 2^>nul`) do set "STATE=%%A"
+    for /f "usebackq delims=" %%A in (`docker inspect --format "{{if .State.Health}}{{.State.Health.Status}}{{else}}no health check{{end}}" "!SERVICE_ID!" 2^>nul`) do set "HEALTH=%%A"
+
+    if /I "!STATE!"=="running" (
+      echo   + %%S running ^(!HEALTH!^)
+      set /a RUNNING+=1
+    ) else (
+      echo   - %%S !STATE!
+    )
+  ) else (
+    echo   - %%S not running
+  )
+)
+
+echo.
+call :log_info "Ports"
+for %%P in (%DOCTOR_PORTS%) do (
+  powershell -NoProfile -Command "try { $c = New-Object Net.Sockets.TcpClient('127.0.0.1', %%P); $c.Close(); exit 0 } catch { exit 1 }" >nul 2>nul
+  if !ERRORLEVEL! EQU 0 (
+    echo   + %%P open
+  ) else (
+    echo   - %%P closed
+  )
+)
+
+echo.
+call :log_info "Environment Files"
+call :check_env_exists "%ENV_SERVER%" >nul 2>nul
+if %ERRORLEVEL%==0 (
+  echo   + %ENV_SERVER%
+) else (
+  echo   - %ENV_SERVER%
+)
+call :check_env_exists "%ENV_WEB%" >nul 2>nul
+if %ERRORLEVEL%==0 (
+  echo   + %ENV_WEB%
+) else (
+  echo   - %ENV_WEB%
+)
+call :check_env_exists "%ENV_NOTIFICATION%" >nul 2>nul
+if %ERRORLEVEL%==0 (
+  echo   + %ENV_NOTIFICATION%
+) else (
+  echo   - %ENV_NOTIFICATION%
+)
+call :check_env_exists "%ENV_SEARCH%" >nul 2>nul
+if %ERRORLEVEL%==0 (
+  echo   + %ENV_SEARCH%
+) else (
+  echo   - %ENV_SEARCH%
+)
+call :check_env_exists "%ENV_READ_RECEIPT%" >nul 2>nul
+if %ERRORLEVEL%==0 (
+  echo   + %ENV_READ_RECEIPT%
+) else (
+  echo   - %ENV_READ_RECEIPT%
+)
+
+echo.
+if %RUNNING% EQU %TOTAL% (
+  call :log_success "All %TOTAL% services running"
+) else (
+  call :log_warn "%RUNNING%/%TOTAL% services running"
+)
+exit /b 0
+
+:cmd_logs
+call :require_root || exit /b 1
+call :check_deps || exit /b 1
+if "%~1"=="" (
+  call :docker_compose logs -f
+) else (
+  call :docker_compose logs -f %~1
+)
+exit /b %ERRORLEVEL%
+
+:cmd_help
+echo work-holo development workflow manager
+echo.
+echo Usage:
+echo   scripts\dev.cmd ^<command^> [options]
+echo   scripts\dev.cmd --help
+echo   scripts\dev.cmd -h
+echo.
+echo Commands:
+echo   init
+echo   start
+echo   stop-services
+echo   reset-services
+echo   update-packages
+echo   doctor
+echo   status
+echo   logs [service]
+echo   seed [--only=X]
+echo.
+echo Command behavior:
+echo   status
+echo     - show docker service status
+echo     - show port status
+echo     - show env file status
+echo   init
+echo     - check deps
+echo     - bun install
+echo     - create env files if missing
+echo     - docker compose up -d
+echo     - wait healthy
+echo     - direct drizzle-kit migrate
+echo     - seed
+echo     - prompt to start dev
+echo.
+echo   start [--docker-only] [--dev-only]
+echo     Default: docker compose up -d, wait healthy, bun dev
+echo     --docker-only: start only docker services
+echo     --dev-only: start only dev server ^(with TUI^), auto-start services if needed
+echo     Ctrl+C prompt: docker services stop in 5s; press N to keep them running.
+echo.
+echo   stop-services
+echo     - docker compose down
+echo.
+echo   reset-services
+echo     - confirm
+echo     - docker compose down --volumes --remove-orphans
+echo     - init
+echo.
+echo   update-packages
+echo     - for each folder in apps/* packages/* workers/* with package.json
+echo       run bun update --latest
+echo     - remove all node_modules folders
+echo     - remove bun.lock
+echo     - bun install at root
+echo.
+echo   doctor
+echo     - check deps
+echo     - check env files
+echo     - check services
+echo     - check ports: 5432,5003,6379,5672,9200,9000,6001,8080
+echo.
+echo   logs [service]
+echo     - docker compose logs -f [service]
+echo.
+echo   seed [--only=X]
+echo     - bun run --cwd apps/seeder src/index.ts %%*
+echo.
+echo Managed env files:
+echo   apps/server/.env
+echo   apps/web/.env
+echo   workers/notification/.env
+echo   workers/message-search/.env
+echo   workers/read-receipt/.env
+echo.
+echo VAPID generation:
+echo   bunx web-push generate-vapid-keys --json
+echo   shared across server/web/notification env files
+echo   on failure, VAPID values remain empty
+echo.
+echo Auth secret generation:
+echo   bun -e "process.stdout.write(require('crypto').randomBytes(24).toString('base64url').slice(0,32))"
+echo.
+echo Docker compose detection:
+echo   prefers docker compose ^(v2^), fallback docker-compose ^(v1^)
+echo.
+echo Migration strategy:
+echo   direct drizzle-kit migrate
+echo.
+exit /b 0
