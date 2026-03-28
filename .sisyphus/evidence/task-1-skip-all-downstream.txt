@@ -1,0 +1,19 @@
+[34m[INFO][0m Running step: check-deps
+[34m[INFO][0m Running step: deps-install
+bun install v1.3.10 (30e609e0)
+
+$ husky
+
+Checked 1987 installs across 2199 packages (no changes) [453.60s]
+[34m[INFO][0m Running step: create-env
+[32m[OK][0m VAPID keys generated
+[33m[WARN][0m Skipping existing file: apps/server/.env
+[33m[WARN][0m Skipping existing file: apps/web/.env
+[33m[WARN][0m Skipping existing file: workers/notification/.env
+[33m[WARN][0m Skipping existing file: workers/message-search/.env
+[33m[WARN][0m Skipping existing file: workers/read-receipt/.env
+[33m[WARN][0m Skipping step: start-compose
+[33m[WARN][0m Skipping step: wait-healthy
+[33m[WARN][0m Skipping step: migrate
+[33m[WARN][0m Skipping step: seed
+EXIT:1

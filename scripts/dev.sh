@@ -283,12 +283,103 @@ cmd_seed() {
 }
 
 cmd_init() {
-  local skip_deps_install="false"
+  local -a INIT_STEPS=(check-deps deps-install create-env start-compose wait-healthy migrate seed)
+
+  declare -A STEP_DEPS=(
+    [start-compose]="check-deps"
+    [wait-healthy]="start-compose"
+    [migrate]="wait-healthy deps-install"
+    [seed]="migrate"
+  )
+
+  declare -A STEP_FN=(
+    [check-deps]="check_deps"
+    [deps-install]="bun install"
+    [create-env]="create_env_files"
+    [start-compose]="compose_up"
+    [wait-healthy]="wait_healthy"
+    [migrate]="migrate_database"
+    [seed]="cmd_seed"
+  )
+
+  local list_steps="false"
+  local -a skip_values=()
+  local -a SKIP_STEPS=()
+  declare -A SKIP_SET=()
+
+  trim_spaces() {
+    local value="$1"
+    value="${value#"${value%%[![:space:]]*}"}"
+    value="${value%"${value##*[![:space:]]}"}"
+    printf '%s' "$value"
+  }
+
+  in_init_steps() {
+    local step="$1"
+    local s=""
+    for s in "${INIT_STEPS[@]}"; do
+      if [[ "$s" == "$step" ]]; then
+        return 0
+      fi
+    done
+    return 1
+  }
+
+  is_skipped() {
+    local step="$1"
+    [[ -n "${SKIP_SET[$step]+x}" ]]
+  }
+
+  collect_downstream_steps() {
+    local root_step="$1"
+    local -a queue=("$root_step")
+    local q_index=0
+    declare -A visited=()
+
+    while [[ "$q_index" -lt "${#queue[@]}" ]]; do
+      local current="${queue[$q_index]}"
+      q_index=$((q_index + 1))
+      local candidate=""
+      for candidate in "${INIT_STEPS[@]}"; do
+        local deps="${STEP_DEPS[$candidate]:-}"
+        [[ -z "$deps" ]] && continue
+        local dep=""
+        for dep in $deps; do
+          if [[ "$dep" == "$current" && -z "${visited[$candidate]+x}" ]]; then
+            visited["$candidate"]=1
+            queue+=("$candidate")
+            break
+          fi
+        done
+      done
+    done
+
+    local ordered=()
+    local step=""
+    for step in "${INIT_STEPS[@]}"; do
+      if [[ -n "${visited[$step]+x}" ]]; then
+        ordered+=("$step")
+      fi
+    done
+    printf '%s\n' "${ordered[@]}"
+  }
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      --skip-deps-install)
-        skip_deps_install="true"
+      --skip-steps)
+        if [[ $# -lt 2 ]]; then
+          log_error "Missing value for --skip-steps"
+          exit 1
+        fi
+        skip_values+=("$2")
+        shift 2
+        ;;
+      --skip-steps=*)
+        skip_values+=("${1#--skip-steps=}")
+        shift
+        ;;
+      --list-steps)
+        list_steps="true"
         shift
         ;;
       *)
@@ -299,25 +390,107 @@ cmd_init() {
     esac
   done
 
-  require_root
-  log_info "Checking dependencies"
-  check_deps
-  if [[ "$skip_deps_install" == "true" ]]; then
-    log_warn "Skipping dependency installation (--skip-deps-install)"
-  else
-    log_info "Installing dependencies"
-    bun install
+  local raw_value=""
+  for raw_value in "${skip_values[@]}"; do
+    [[ -z "$raw_value" ]] && continue
+    local -a split_steps=()
+    IFS=',' read -r -a split_steps <<< "$raw_value"
+    local candidate=""
+    for candidate in "${split_steps[@]}"; do
+      candidate="$(trim_spaces "$candidate")"
+      [[ -z "$candidate" ]] && continue
+      if [[ -z "${SKIP_SET[$candidate]+x}" ]]; then
+        SKIP_SET["$candidate"]=1
+        SKIP_STEPS+=("$candidate")
+      fi
+    done
+  done
+
+  if [[ "$list_steps" == "true" ]]; then
+    printf 'Available init steps:\n'
+    local index=1
+    local step=""
+    for step in "${INIT_STEPS[@]}"; do
+      local deps="${STEP_DEPS[$step]:-}"
+      if [[ -z "$deps" ]]; then
+        printf '  %d. %-18s (no dependencies)\n' "$index" "$step"
+      else
+        local deps_display="${deps// /, }"
+        printf '  %d. %-18s (depends: %s)\n' "$index" "$step" "$deps_display"
+      fi
+      index=$((index + 1))
+    done
+    return 0
   fi
-  log_info "Creating .env files if missing"
-  create_env_files
-  log_info "Starting services"
-  compose_up
-  log_info "Waiting for healthy services"
-  wait_healthy
-  log_info "Running direct drizzle-kit migrate"
-  migrate_database
-  log_info "Running seed"
-  cmd_seed
+
+  local available_steps=""
+  local available_step=""
+  for available_step in "${INIT_STEPS[@]}"; do
+    if [[ -z "$available_steps" ]]; then
+      available_steps="$available_step"
+    else
+      available_steps="${available_steps}, $available_step"
+    fi
+  done
+  local skipped_step=""
+  for skipped_step in "${SKIP_STEPS[@]}"; do
+    if ! in_init_steps "$skipped_step"; then
+      log_error "Unknown step '$skipped_step'. Available steps: $available_steps"
+      exit 1
+    fi
+  done
+
+  local has_conflict="false"
+  for skipped_step in "${SKIP_STEPS[@]}"; do
+    local -a downstream=()
+    mapfile -t downstream < <(collect_downstream_steps "$skipped_step")
+    local -a orphaned=()
+    local downstream_step=""
+    for downstream_step in "${downstream[@]}"; do
+      [[ -z "$downstream_step" ]] && continue
+      if ! is_skipped "$downstream_step"; then
+        orphaned+=("$downstream_step")
+      fi
+    done
+
+    if [[ "${#orphaned[@]}" -gt 0 ]]; then
+      local orphaned_display=""
+      local orphaned_step=""
+      for orphaned_step in "${orphaned[@]}"; do
+        if [[ -z "$orphaned_display" ]]; then
+          orphaned_display="$orphaned_step"
+        else
+          orphaned_display="${orphaned_display}, $orphaned_step"
+        fi
+      done
+      log_error "Cannot skip '$skipped_step': the following steps depend on it (directly or transitively): $orphaned_display"
+      log_error "To skip '$skipped_step', also include in --skip-steps: $orphaned_display"
+      has_conflict="true"
+    fi
+  done
+
+  if [[ "$has_conflict" == "true" ]]; then
+    exit 1
+  fi
+
+  require_root
+  local step=""
+  for step in "${INIT_STEPS[@]}"; do
+    if is_skipped "$step"; then
+      log_warn "Skipping step: $step"
+      continue
+    fi
+    log_info "Running step: $step"
+    case "$step" in
+      check-deps) check_deps ;;
+      deps-install) bun install ;;
+      create-env) create_env_files ;;
+      start-compose) compose_up ;;
+      wait-healthy) wait_healthy ;;
+      migrate) migrate_database ;;
+      seed) cmd_seed ;;
+    esac
+  done
   read -r -p "Start development processes now? [y/N] " start_now
   if [[ "$start_now" == "y" || "$start_now" == "Y" ]]; then
     cmd_start
@@ -632,7 +805,7 @@ Usage:
   scripts/dev.sh -h
 
 Commands:
-  init [--skip-deps-install]
+  init [--skip-steps step1,step2] [--list-steps]
   start
   stop-services
   reset-services
@@ -648,14 +821,11 @@ Command behavior:
     - show port status
     - show env file status
   init
-    - check deps
-    - bun install (unless --skip-deps-install)
-    - create env files if missing
-    - docker compose up -d
-    - wait healthy
-    - direct drizzle-kit migrate
-    - seed
-    - prompt to start dev
+    - Runs a sequence of initialization steps
+    - Steps: check-deps, deps-install, create-env, start-compose, wait-healthy, migrate, seed
+    - Use --skip-steps to skip specific steps (comma-separated)
+    - Use --list-steps to see all steps and their dependencies
+    - Skipping a step that others depend on will error unless you also skip dependents
 
   start [--docker-only] [--dev-only]
     Default: docker compose up -d, wait healthy, bun dev (no TUI)

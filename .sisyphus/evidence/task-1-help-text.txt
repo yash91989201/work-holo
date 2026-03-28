@@ -1,0 +1,84 @@
+work-holo development workflow manager
+
+Usage:
+  scripts/dev.sh <command> [options]
+  scripts/dev.sh --help
+  scripts/dev.sh -h
+
+Commands:
+  init [--skip-steps step1,step2] [--list-steps]
+  start
+  stop-services
+  reset-services
+  update-packages
+  doctor
+  status
+  logs [service]
+  seed [--only=X]
+
+Command behavior:
+  status
+    - show docker service status
+    - show port status
+    - show env file status
+  init
+    - Runs a sequence of initialization steps
+    - Steps: check-deps, deps-install, create-env, start-compose, wait-healthy, migrate, seed
+    - Use --skip-steps to skip specific steps (comma-separated)
+    - Use --list-steps to see all steps and their dependencies
+    - Skipping a step that others depend on will error unless you also skip dependents
+
+  start [--docker-only] [--dev-only]
+    Default: docker compose up -d, wait healthy, bun dev (no TUI)
+    --docker-only: start only docker services
+    --dev-only: start only dev server (with TUI), auto-start services if needed
+    Ctrl+C prompt: Docker services will stop in 5s. Press 'n' to keep them running...
+
+  stop-services
+    - docker compose down
+
+  reset-services
+    - confirm
+    - docker compose down --volumes --remove-orphans
+    - init
+
+  update-packages
+    - for each folder in apps/* packages/* workers/* with package.json
+      run bun update --latest
+    - remove all node_modules folders
+    - remove bun.lock
+    - bun install at root
+
+  doctor
+    - check deps
+    - check env files
+    - check services
+    - check ports: 5432,5003,6379,5672,9200,9000,6001,8080
+
+  logs [service]
+    - docker compose logs -f [service]
+
+  seed [--only=X]
+    - bun run --cwd apps/seeder src/index.ts "$@"
+
+Managed env files:
+  apps/server/.env
+  apps/web/.env
+  workers/notification/.env
+  workers/message-search/.env
+  workers/read-receipt/.env
+
+VAPID generation:
+  bunx web-push generate-vapid-keys --json
+  shared across server/web/notification env files
+  on failure, VAPID values remain empty
+
+Auth secret generation:
+  openssl rand -base64 24 | tr -d '/+=' | head -c 32
+
+Docker compose detection:
+  prefers docker compose (v2), fallback docker-compose (v1)
+
+Migration strategy:
+  direct drizzle-kit migrate
+

@@ -1,0 +1,2 @@
+[31m[ERROR][0m Unknown step 'bogus'. Available steps: check-deps, deps-install, create-env, start-compose, wait-healthy, migrate, seed
+EXIT:1

@@ -1,0 +1,9 @@
+Available init steps:
+  1. check-deps         (no dependencies)
+  2. deps-install       (no dependencies)
+  3. create-env         (no dependencies)
+  4. start-compose      (depends: check-deps)
+  5. wait-healthy       (depends: start-compose)
+  6. migrate            (depends: wait-healthy, deps-install)
+  7. seed               (depends: migrate)
+EXIT:0

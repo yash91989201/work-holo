@@ -1,0 +1,3 @@
+[31m[ERROR][0m Cannot skip 'start-compose': the following steps depend on it (directly or transitively): wait-healthy, migrate, seed
+[31m[ERROR][0m To skip 'start-compose', also include in --skip-steps: wait-healthy, migrate, seed
+EXIT:1

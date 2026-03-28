@@ -1,0 +1,3 @@
+[31m[ERROR][0m Cannot skip 'deps-install': the following steps depend on it (directly or transitively): migrate,seed
+[31m[ERROR][0m To skip 'deps-install', also include in --skip-steps: migrate,seed
+EXIT:1
