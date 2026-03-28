@@ -2,9 +2,11 @@
   "extends": "@work-holo/config/tsconfig.base.json",
   "compilerOptions": {
     "outDir": "dist",
+    "rootDir": "..",
     "rootDirs": ["."],
     "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "strictNullChecks": true
   },
-  "include": ["src"]
+  "include": ["src", "../server/src/db/seed.ts"]
 }

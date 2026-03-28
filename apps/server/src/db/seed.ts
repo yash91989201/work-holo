@@ -1,27 +1,19 @@
 import "dotenv/config";
-import { scryptSync } from "node:crypto";
 import { db } from "@work-holo/db";
 import { account, user } from "@work-holo/db/schema/auth";
+import { hashPassword } from "better-auth/crypto";
 import { eq } from "drizzle-orm";
 
 const SUPER_ADMIN_EMAIL = "superadmin@workholo.com";
 const SUPER_ADMIN_NAME = "Super Admin";
 const SUPER_ADMIN_PASSWORD = "SuperAdm1n@Holo2026!";
+const EXIT_DELAY_MS = 300;
 
-function hashPassword(password: string): string {
-  const salt = Buffer.from(crypto.getRandomValues(new Uint8Array(16))).toString(
-    "hex"
-  );
-  const key = scryptSync(password.normalize("NFKC"), salt, 64, {
-    N: 16_384,
-    r: 16,
-    p: 1,
-    maxmem: 128 * 16_384 * 16 * 2,
-  });
-  return `${salt}:${key.toString("hex")}`;
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function seed() {
+export async function seed(): Promise<void> {
   process.stdout.write("[seed] Starting seed script...\n");
 
   const existing = await db
@@ -41,7 +33,7 @@ async function seed() {
     return;
   }
 
-  const hashedPassword = hashPassword(SUPER_ADMIN_PASSWORD);
+  const hashedPassword = await hashPassword(SUPER_ADMIN_PASSWORD);
   const userId = crypto.randomUUID();
   const now = new Date();
 
@@ -72,13 +64,15 @@ async function seed() {
   );
 }
 
-seed()
-  .then(async () => {
-    await Bun.sleep(300);
-    process.exit(0);
-  })
-  .catch(async (e) => {
-    process.stderr.write(`[seed] Seed failed: ${e}\n`);
-    await Bun.sleep(300);
-    process.exit(1);
-  });
+if (import.meta.main) {
+  seed()
+    .then(async () => {
+      await sleep(EXIT_DELAY_MS);
+      process.exit(0);
+    })
+    .catch(async (e) => {
+      process.stderr.write(`[seed] Seed failed: ${e}\n`);
+      await sleep(EXIT_DELAY_MS);
+      process.exit(1);
+    });
+}

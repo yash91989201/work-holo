@@ -7,6 +7,7 @@ RUN bun install \
   drizzle-orm@latest \
   postgres@latest \
   dotenv@latest \
+  better-auth@latest \
   @t3-oss/env-core@latest \
   zod@latest \
   drizzle-cuid2@latest \
@@ -31,6 +32,8 @@ COPY ./packages/permission/package.json ./packages/permission/package.json
 # @work-holo/api (seed entrypoint)
 COPY ./packages/api/src/seed.ts ./packages/api/src/seed.ts
 COPY ./packages/api/package.json ./packages/api/package.json
+
+COPY ./apps/server/src/db/seed.ts ./apps/server/src/db/seed.ts
 
 # seeder app
 COPY ./apps/seeder/src ./apps/seeder/src
