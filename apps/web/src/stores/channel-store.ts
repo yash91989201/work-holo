@@ -57,6 +57,10 @@ interface ReplyingToMessageState {
   message: MessageWithSender | null;
 }
 
+interface SearchSidebarState {
+  isOpen: boolean;
+}
+
 interface HighlightedMessageState {
   messageId: string | null;
   triggeredAt: number | null;
@@ -85,17 +89,12 @@ interface ChannelState {
   maximizedMessageComposer: MaximizedMessageComposerState;
   mentionsSidebar: MentionsSidebarState;
   messageThread: MessageThreadState;
-
   openInfoSidebar: () => void;
-
   openMaximizedMessageComposer: (
     config?: OpenMaximizedMessageComposerConfig
   ) => void;
-
   openMentionsSidebar: () => void;
-
   openMessageThread: (messageId: string) => void;
-
   openPinnedMessages: () => void;
   pinnedMessages: PinnedMessagesState;
   replyingToMessage: ReplyingToMessageState;

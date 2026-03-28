@@ -53,8 +53,7 @@ function ReplyPreview({
   replyToMessageId: string;
   isOwnMessage: boolean;
 }) {
-  const { highlightMessage } = useChannelMessageHighlight();
-
+const { highlightMessage } = useChannelMessageHighlight();
   const { data: replyRows } = useLiveQuery(
     (q) =>
       q
@@ -98,6 +97,20 @@ function ReplyPreview({
   }, [replyRows]);
 
   const handleReplyPreviewClick = () => {
+    const targetElement = document.querySelector(
+      `[data-message-id="${replyToMessageId}"]`
+    );
+
+    if (!targetElement) {
+      toast.error("Message not found in view");
+      return;
+    }
+
+    (targetElement as HTMLElement).scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
+
     highlightMessage(replyToMessageId);
   };
 

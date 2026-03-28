@@ -38,7 +38,10 @@ export const auth = betterAuth({
   },
   plugins: [
     expo(),
-    admin(),
+    admin({
+      defaultRole: "user",
+      adminRole: ["admin", "super_admin", "support"],
+    }),
     twoFactor(),
     username(),
     phoneNumber(),

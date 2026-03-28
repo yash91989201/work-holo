@@ -37,7 +37,7 @@ import {
   ToggleDmReactionInput,
   UnmuteDmConversationInput,
 } from "../../lib/schemas/dm";
-import { dmProcedure } from "../../procedures/dm-procedure";
+import { dmProcedure } from "../../index";
 
 async function verifyParticipant(
   db: typeof _dbType,

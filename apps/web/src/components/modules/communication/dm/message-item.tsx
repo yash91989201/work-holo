@@ -182,7 +182,7 @@ export function DmMessageItem({
     openMessageThread(parentMessageId);
   };
 
-  const handleReplyPreviewClick = () => {
+const handleReplyPreviewClick = () => {
     if (!message.replyToMessageId) return;
 
     highlightMessage(message.replyToMessageId);
@@ -198,6 +198,17 @@ export function DmMessageItem({
     setReplyingToMessage(message);
     focusMainComposer();
   };
+
+  const handleInlineReply = () => {
+    if (isThreadMessage) {
+      setThreadReplyingToMessage(message);
+      focusThreadComposer();
+    } else {
+      setReplyingToMessage(message);
+      focusMainComposer();
+    }
+  };
+
 
   return (
     <div

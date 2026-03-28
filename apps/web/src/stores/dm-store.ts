@@ -111,6 +111,7 @@ const useDmStore = create<DmState>((set, get) => ({
     main: null,
     thread: null,
   },
+  searchSidebar: { isOpen: false },
   highlightedMessage: {
     messageId: null,
     triggeredAt: null,

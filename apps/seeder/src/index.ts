@@ -1,10 +1,12 @@
 import "dotenv/config";
 import { seedSoundPresets } from "@work-holo/api/seed";
 import { seedPermissions } from "@work-holo/permission/seed";
+import { seed as seedSuperAdmin } from "../../server/src/db/seed";
 
 const SEEDERS = [
   { name: "permissions", fn: seedPermissions },
   { name: "sound-presets", fn: seedSoundPresets },
+  { name: "super-admin", fn: seedSuperAdmin },
 ] as const;
 
 const only = process.argv.find((a) => a.startsWith("--only="))?.split("=")[1];

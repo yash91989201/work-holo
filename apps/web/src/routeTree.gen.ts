@@ -15,9 +15,12 @@ import { Route as publicIndexRouteImport } from './routes/(public)/index'
 import { Route as authSignupRouteImport } from './routes/(auth)/signup'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as authenticatedSettingsRouteRouteImport } from './routes/(authenticated)/settings/route'
+import { Route as authenticatedPlatformRouteRouteImport } from './routes/(authenticated)/platform/route'
 import { Route as authenticatedOrgNewRouteImport } from './routes/(authenticated)/org/new'
 import { Route as authAcceptInvitationIdRouteImport } from './routes/(auth)/accept-invitation.$id'
+import { Route as authenticatedPlatformDashboardRouteRouteImport } from './routes/(authenticated)/platform/dashboard/route'
 import { Route as authenticatedOrgSlugRouteRouteImport } from './routes/(authenticated)/org/$slug/route'
+import { Route as authenticatedPlatformDashboardIndexRouteImport } from './routes/(authenticated)/platform/dashboard/index'
 import { Route as authenticatedSettingsAccountSessionsRouteImport } from './routes/(authenticated)/settings/account/sessions'
 import { Route as authenticatedSettingsAccountSecurityRouteImport } from './routes/(authenticated)/settings/account/security'
 import { Route as authenticatedSettingsAccountProfileRouteImport } from './routes/(authenticated)/settings/account/profile'
@@ -26,9 +29,16 @@ import { Route as authenticatedSettingsAccountNotificationsRouteImport } from '.
 import { Route as authenticatedOrgSlugWorkspaceRouteRouteImport } from './routes/(authenticated)/org/$slug/workspace/route'
 import { Route as authenticatedOrgSlugManageRouteRouteImport } from './routes/(authenticated)/org/$slug/manage/route'
 import { Route as authenticatedOrgSlugConsoleRouteRouteImport } from './routes/(authenticated)/org/$slug/console/route'
+import { Route as authenticatedPlatformDashboardUsersIndexRouteImport } from './routes/(authenticated)/platform/dashboard/users/index'
+import { Route as authenticatedPlatformDashboardSupportIndexRouteImport } from './routes/(authenticated)/platform/dashboard/support/index'
+import { Route as authenticatedPlatformDashboardOwnersIndexRouteImport } from './routes/(authenticated)/platform/dashboard/owners/index'
+import { Route as authenticatedPlatformDashboardOrganizationsIndexRouteImport } from './routes/(authenticated)/platform/dashboard/organizations/index'
+import { Route as authenticatedPlatformDashboardAdminsIndexRouteImport } from './routes/(authenticated)/platform/dashboard/admins/index'
 import { Route as authenticatedOrgSlugWorkspaceIndexRouteImport } from './routes/(authenticated)/org/$slug/workspace/index'
 import { Route as authenticatedOrgSlugManageIndexRouteImport } from './routes/(authenticated)/org/$slug/manage/index'
 import { Route as authenticatedOrgSlugConsoleIndexRouteImport } from './routes/(authenticated)/org/$slug/console/index'
+import { Route as authenticatedPlatformDashboardOwnersOwnerIdRouteImport } from './routes/(authenticated)/platform/dashboard/owners/$ownerId'
+import { Route as authenticatedPlatformDashboardOrganizationsOrgIdRouteImport } from './routes/(authenticated)/platform/dashboard/organizations/$orgId'
 import { Route as authenticatedOrgSlugConsoleModulesRouteRouteImport } from './routes/(authenticated)/org/$slug/console/modules/route'
 import { Route as authenticatedOrgSlugWorkspaceTeamsIndexRouteImport } from './routes/(authenticated)/org/$slug/workspace/teams/index'
 import { Route as authenticatedOrgSlugWorkspaceAttendanceIndexRouteImport } from './routes/(authenticated)/org/$slug/workspace/attendance/index'
@@ -75,6 +85,12 @@ const authenticatedSettingsRouteRoute =
     path: '/settings',
     getParentRoute: () => authenticatedRouteRoute,
   } as any)
+const authenticatedPlatformRouteRoute =
+  authenticatedPlatformRouteRouteImport.update({
+    id: '/platform',
+    path: '/platform',
+    getParentRoute: () => authenticatedRouteRoute,
+  } as any)
 const authenticatedOrgNewRoute = authenticatedOrgNewRouteImport.update({
   id: '/org/new',
   path: '/org/new',
@@ -85,11 +101,23 @@ const authAcceptInvitationIdRoute = authAcceptInvitationIdRouteImport.update({
   path: '/accept-invitation/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const authenticatedPlatformDashboardRouteRoute =
+  authenticatedPlatformDashboardRouteRouteImport.update({
+    id: '/dashboard',
+    path: '/dashboard',
+    getParentRoute: () => authenticatedPlatformRouteRoute,
+  } as any)
 const authenticatedOrgSlugRouteRoute =
   authenticatedOrgSlugRouteRouteImport.update({
     id: '/org/$slug',
     path: '/org/$slug',
     getParentRoute: () => authenticatedRouteRoute,
+  } as any)
+const authenticatedPlatformDashboardIndexRoute =
+  authenticatedPlatformDashboardIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authenticatedPlatformDashboardRouteRoute,
   } as any)
 const authenticatedSettingsAccountSessionsRoute =
   authenticatedSettingsAccountSessionsRouteImport.update({
@@ -139,6 +167,36 @@ const authenticatedOrgSlugConsoleRouteRoute =
     path: '/console',
     getParentRoute: () => authenticatedOrgSlugRouteRoute,
   } as any)
+const authenticatedPlatformDashboardUsersIndexRoute =
+  authenticatedPlatformDashboardUsersIndexRouteImport.update({
+    id: '/users/',
+    path: '/users/',
+    getParentRoute: () => authenticatedPlatformDashboardRouteRoute,
+  } as any)
+const authenticatedPlatformDashboardSupportIndexRoute =
+  authenticatedPlatformDashboardSupportIndexRouteImport.update({
+    id: '/support/',
+    path: '/support/',
+    getParentRoute: () => authenticatedPlatformDashboardRouteRoute,
+  } as any)
+const authenticatedPlatformDashboardOwnersIndexRoute =
+  authenticatedPlatformDashboardOwnersIndexRouteImport.update({
+    id: '/owners/',
+    path: '/owners/',
+    getParentRoute: () => authenticatedPlatformDashboardRouteRoute,
+  } as any)
+const authenticatedPlatformDashboardOrganizationsIndexRoute =
+  authenticatedPlatformDashboardOrganizationsIndexRouteImport.update({
+    id: '/organizations/',
+    path: '/organizations/',
+    getParentRoute: () => authenticatedPlatformDashboardRouteRoute,
+  } as any)
+const authenticatedPlatformDashboardAdminsIndexRoute =
+  authenticatedPlatformDashboardAdminsIndexRouteImport.update({
+    id: '/admins/',
+    path: '/admins/',
+    getParentRoute: () => authenticatedPlatformDashboardRouteRoute,
+  } as any)
 const authenticatedOrgSlugWorkspaceIndexRoute =
   authenticatedOrgSlugWorkspaceIndexRouteImport.update({
     id: '/',
@@ -156,6 +214,18 @@ const authenticatedOrgSlugConsoleIndexRoute =
     id: '/',
     path: '/',
     getParentRoute: () => authenticatedOrgSlugConsoleRouteRoute,
+  } as any)
+const authenticatedPlatformDashboardOwnersOwnerIdRoute =
+  authenticatedPlatformDashboardOwnersOwnerIdRouteImport.update({
+    id: '/owners/$ownerId',
+    path: '/owners/$ownerId',
+    getParentRoute: () => authenticatedPlatformDashboardRouteRoute,
+  } as any)
+const authenticatedPlatformDashboardOrganizationsOrgIdRoute =
+  authenticatedPlatformDashboardOrganizationsOrgIdRouteImport.update({
+    id: '/organizations/$orgId',
+    path: '/organizations/$orgId',
+    getParentRoute: () => authenticatedPlatformDashboardRouteRoute,
   } as any)
 const authenticatedOrgSlugConsoleModulesRouteRoute =
   authenticatedOrgSlugConsoleModulesRouteRouteImport.update({
@@ -265,11 +335,13 @@ const authenticatedOrgSlugWorkspaceCommunicationChannelsChannelIdIndexRoute =
   )
 
 export interface FileRoutesByFullPath {
+  '/platform': typeof authenticatedPlatformRouteRouteWithChildren
   '/settings': typeof authenticatedSettingsRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/signup': typeof authSignupRoute
   '/': typeof publicIndexRoute
   '/org/$slug': typeof authenticatedOrgSlugRouteRouteWithChildren
+  '/platform/dashboard': typeof authenticatedPlatformDashboardRouteRouteWithChildren
   '/accept-invitation/$id': typeof authAcceptInvitationIdRoute
   '/org/new': typeof authenticatedOrgNewRoute
   '/org/$slug/console': typeof authenticatedOrgSlugConsoleRouteRouteWithChildren
@@ -280,10 +352,18 @@ export interface FileRoutesByFullPath {
   '/settings/account/profile': typeof authenticatedSettingsAccountProfileRoute
   '/settings/account/security': typeof authenticatedSettingsAccountSecurityRoute
   '/settings/account/sessions': typeof authenticatedSettingsAccountSessionsRoute
+  '/platform/dashboard/': typeof authenticatedPlatformDashboardIndexRoute
   '/org/$slug/console/modules': typeof authenticatedOrgSlugConsoleModulesRouteRouteWithChildren
+  '/platform/dashboard/organizations/$orgId': typeof authenticatedPlatformDashboardOrganizationsOrgIdRoute
+  '/platform/dashboard/owners/$ownerId': typeof authenticatedPlatformDashboardOwnersOwnerIdRoute
   '/org/$slug/console/': typeof authenticatedOrgSlugConsoleIndexRoute
   '/org/$slug/manage/': typeof authenticatedOrgSlugManageIndexRoute
   '/org/$slug/workspace/': typeof authenticatedOrgSlugWorkspaceIndexRoute
+  '/platform/dashboard/admins/': typeof authenticatedPlatformDashboardAdminsIndexRoute
+  '/platform/dashboard/organizations/': typeof authenticatedPlatformDashboardOrganizationsIndexRoute
+  '/platform/dashboard/owners/': typeof authenticatedPlatformDashboardOwnersIndexRoute
+  '/platform/dashboard/support/': typeof authenticatedPlatformDashboardSupportIndexRoute
+  '/platform/dashboard/users/': typeof authenticatedPlatformDashboardUsersIndexRoute
   '/org/$slug/console/members/$memberId': typeof authenticatedOrgSlugConsoleMembersMemberIdRoute
   '/org/$slug/console/members/invitations': typeof authenticatedOrgSlugConsoleMembersInvitationsRoute
   '/org/$slug/workspace/attendance/analytics': typeof authenticatedOrgSlugWorkspaceAttendanceAnalyticsRoute
@@ -301,6 +381,7 @@ export interface FileRoutesByFullPath {
   '/org/$slug/workspace/communication/dm/$conversationId/': typeof authenticatedOrgSlugWorkspaceCommunicationDmConversationIdIndexRoute
 }
 export interface FileRoutesByTo {
+  '/platform': typeof authenticatedPlatformRouteRouteWithChildren
   '/settings': typeof authenticatedSettingsRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/signup': typeof authSignupRoute
@@ -313,10 +394,18 @@ export interface FileRoutesByTo {
   '/settings/account/profile': typeof authenticatedSettingsAccountProfileRoute
   '/settings/account/security': typeof authenticatedSettingsAccountSecurityRoute
   '/settings/account/sessions': typeof authenticatedSettingsAccountSessionsRoute
+  '/platform/dashboard': typeof authenticatedPlatformDashboardIndexRoute
   '/org/$slug/console/modules': typeof authenticatedOrgSlugConsoleModulesRouteRouteWithChildren
+  '/platform/dashboard/organizations/$orgId': typeof authenticatedPlatformDashboardOrganizationsOrgIdRoute
+  '/platform/dashboard/owners/$ownerId': typeof authenticatedPlatformDashboardOwnersOwnerIdRoute
   '/org/$slug/console': typeof authenticatedOrgSlugConsoleIndexRoute
   '/org/$slug/manage': typeof authenticatedOrgSlugManageIndexRoute
   '/org/$slug/workspace': typeof authenticatedOrgSlugWorkspaceIndexRoute
+  '/platform/dashboard/admins': typeof authenticatedPlatformDashboardAdminsIndexRoute
+  '/platform/dashboard/organizations': typeof authenticatedPlatformDashboardOrganizationsIndexRoute
+  '/platform/dashboard/owners': typeof authenticatedPlatformDashboardOwnersIndexRoute
+  '/platform/dashboard/support': typeof authenticatedPlatformDashboardSupportIndexRoute
+  '/platform/dashboard/users': typeof authenticatedPlatformDashboardUsersIndexRoute
   '/org/$slug/console/members/$memberId': typeof authenticatedOrgSlugConsoleMembersMemberIdRoute
   '/org/$slug/console/members/invitations': typeof authenticatedOrgSlugConsoleMembersInvitationsRoute
   '/org/$slug/workspace/attendance/analytics': typeof authenticatedOrgSlugWorkspaceAttendanceAnalyticsRoute
@@ -335,11 +424,13 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/(authenticated)': typeof authenticatedRouteRouteWithChildren
   '/(public)': typeof publicRouteRouteWithChildren
+  '/(authenticated)/platform': typeof authenticatedPlatformRouteRouteWithChildren
   '/(authenticated)/settings': typeof authenticatedSettingsRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/signup': typeof authSignupRoute
   '/(public)/': typeof publicIndexRoute
   '/(authenticated)/org/$slug': typeof authenticatedOrgSlugRouteRouteWithChildren
+  '/(authenticated)/platform/dashboard': typeof authenticatedPlatformDashboardRouteRouteWithChildren
   '/(auth)/accept-invitation/$id': typeof authAcceptInvitationIdRoute
   '/(authenticated)/org/new': typeof authenticatedOrgNewRoute
   '/(authenticated)/org/$slug/console': typeof authenticatedOrgSlugConsoleRouteRouteWithChildren
@@ -350,10 +441,18 @@ export interface FileRoutesById {
   '/(authenticated)/settings/account/profile': typeof authenticatedSettingsAccountProfileRoute
   '/(authenticated)/settings/account/security': typeof authenticatedSettingsAccountSecurityRoute
   '/(authenticated)/settings/account/sessions': typeof authenticatedSettingsAccountSessionsRoute
+  '/(authenticated)/platform/dashboard/': typeof authenticatedPlatformDashboardIndexRoute
   '/(authenticated)/org/$slug/console/modules': typeof authenticatedOrgSlugConsoleModulesRouteRouteWithChildren
+  '/(authenticated)/platform/dashboard/organizations/$orgId': typeof authenticatedPlatformDashboardOrganizationsOrgIdRoute
+  '/(authenticated)/platform/dashboard/owners/$ownerId': typeof authenticatedPlatformDashboardOwnersOwnerIdRoute
   '/(authenticated)/org/$slug/console/': typeof authenticatedOrgSlugConsoleIndexRoute
   '/(authenticated)/org/$slug/manage/': typeof authenticatedOrgSlugManageIndexRoute
   '/(authenticated)/org/$slug/workspace/': typeof authenticatedOrgSlugWorkspaceIndexRoute
+  '/(authenticated)/platform/dashboard/admins/': typeof authenticatedPlatformDashboardAdminsIndexRoute
+  '/(authenticated)/platform/dashboard/organizations/': typeof authenticatedPlatformDashboardOrganizationsIndexRoute
+  '/(authenticated)/platform/dashboard/owners/': typeof authenticatedPlatformDashboardOwnersIndexRoute
+  '/(authenticated)/platform/dashboard/support/': typeof authenticatedPlatformDashboardSupportIndexRoute
+  '/(authenticated)/platform/dashboard/users/': typeof authenticatedPlatformDashboardUsersIndexRoute
   '/(authenticated)/org/$slug/console/members/$memberId': typeof authenticatedOrgSlugConsoleMembersMemberIdRoute
   '/(authenticated)/org/$slug/console/members/invitations': typeof authenticatedOrgSlugConsoleMembersInvitationsRoute
   '/(authenticated)/org/$slug/workspace/attendance/analytics': typeof authenticatedOrgSlugWorkspaceAttendanceAnalyticsRoute
@@ -373,11 +472,13 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/platform'
     | '/settings'
     | '/login'
     | '/signup'
     | '/'
     | '/org/$slug'
+    | '/platform/dashboard'
     | '/accept-invitation/$id'
     | '/org/new'
     | '/org/$slug/console'
@@ -388,10 +489,18 @@ export interface FileRouteTypes {
     | '/settings/account/profile'
     | '/settings/account/security'
     | '/settings/account/sessions'
+    | '/platform/dashboard/'
     | '/org/$slug/console/modules'
+    | '/platform/dashboard/organizations/$orgId'
+    | '/platform/dashboard/owners/$ownerId'
     | '/org/$slug/console/'
     | '/org/$slug/manage/'
     | '/org/$slug/workspace/'
+    | '/platform/dashboard/admins/'
+    | '/platform/dashboard/organizations/'
+    | '/platform/dashboard/owners/'
+    | '/platform/dashboard/support/'
+    | '/platform/dashboard/users/'
     | '/org/$slug/console/members/$memberId'
     | '/org/$slug/console/members/invitations'
     | '/org/$slug/workspace/attendance/analytics'
@@ -409,6 +518,7 @@ export interface FileRouteTypes {
     | '/org/$slug/workspace/communication/dm/$conversationId/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/platform'
     | '/settings'
     | '/login'
     | '/signup'
@@ -421,10 +531,18 @@ export interface FileRouteTypes {
     | '/settings/account/profile'
     | '/settings/account/security'
     | '/settings/account/sessions'
+    | '/platform/dashboard'
     | '/org/$slug/console/modules'
+    | '/platform/dashboard/organizations/$orgId'
+    | '/platform/dashboard/owners/$ownerId'
     | '/org/$slug/console'
     | '/org/$slug/manage'
     | '/org/$slug/workspace'
+    | '/platform/dashboard/admins'
+    | '/platform/dashboard/organizations'
+    | '/platform/dashboard/owners'
+    | '/platform/dashboard/support'
+    | '/platform/dashboard/users'
     | '/org/$slug/console/members/$memberId'
     | '/org/$slug/console/members/invitations'
     | '/org/$slug/workspace/attendance/analytics'
@@ -442,11 +560,13 @@ export interface FileRouteTypes {
     | '__root__'
     | '/(authenticated)'
     | '/(public)'
+    | '/(authenticated)/platform'
     | '/(authenticated)/settings'
     | '/(auth)/login'
     | '/(auth)/signup'
     | '/(public)/'
     | '/(authenticated)/org/$slug'
+    | '/(authenticated)/platform/dashboard'
     | '/(auth)/accept-invitation/$id'
     | '/(authenticated)/org/new'
     | '/(authenticated)/org/$slug/console'
@@ -457,10 +577,18 @@ export interface FileRouteTypes {
     | '/(authenticated)/settings/account/profile'
     | '/(authenticated)/settings/account/security'
     | '/(authenticated)/settings/account/sessions'
+    | '/(authenticated)/platform/dashboard/'
     | '/(authenticated)/org/$slug/console/modules'
+    | '/(authenticated)/platform/dashboard/organizations/$orgId'
+    | '/(authenticated)/platform/dashboard/owners/$ownerId'
     | '/(authenticated)/org/$slug/console/'
     | '/(authenticated)/org/$slug/manage/'
     | '/(authenticated)/org/$slug/workspace/'
+    | '/(authenticated)/platform/dashboard/admins/'
+    | '/(authenticated)/platform/dashboard/organizations/'
+    | '/(authenticated)/platform/dashboard/owners/'
+    | '/(authenticated)/platform/dashboard/support/'
+    | '/(authenticated)/platform/dashboard/users/'
     | '/(authenticated)/org/$slug/console/members/$memberId'
     | '/(authenticated)/org/$slug/console/members/invitations'
     | '/(authenticated)/org/$slug/workspace/attendance/analytics'
@@ -530,6 +658,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authenticatedSettingsRouteRouteImport
       parentRoute: typeof authenticatedRouteRoute
     }
+    '/(authenticated)/platform': {
+      id: '/(authenticated)/platform'
+      path: '/platform'
+      fullPath: '/platform'
+      preLoaderRoute: typeof authenticatedPlatformRouteRouteImport
+      parentRoute: typeof authenticatedRouteRoute
+    }
     '/(authenticated)/org/new': {
       id: '/(authenticated)/org/new'
       path: '/org/new'
@@ -544,12 +679,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authAcceptInvitationIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(authenticated)/platform/dashboard': {
+      id: '/(authenticated)/platform/dashboard'
+      path: '/dashboard'
+      fullPath: '/platform/dashboard'
+      preLoaderRoute: typeof authenticatedPlatformDashboardRouteRouteImport
+      parentRoute: typeof authenticatedPlatformRouteRoute
+    }
     '/(authenticated)/org/$slug': {
       id: '/(authenticated)/org/$slug'
       path: '/org/$slug'
       fullPath: '/org/$slug'
       preLoaderRoute: typeof authenticatedOrgSlugRouteRouteImport
       parentRoute: typeof authenticatedRouteRoute
+    }
+    '/(authenticated)/platform/dashboard/': {
+      id: '/(authenticated)/platform/dashboard/'
+      path: '/'
+      fullPath: '/platform/dashboard/'
+      preLoaderRoute: typeof authenticatedPlatformDashboardIndexRouteImport
+      parentRoute: typeof authenticatedPlatformDashboardRouteRoute
     }
     '/(authenticated)/settings/account/sessions': {
       id: '/(authenticated)/settings/account/sessions'
@@ -607,6 +756,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authenticatedOrgSlugConsoleRouteRouteImport
       parentRoute: typeof authenticatedOrgSlugRouteRoute
     }
+    '/(authenticated)/platform/dashboard/users/': {
+      id: '/(authenticated)/platform/dashboard/users/'
+      path: '/users'
+      fullPath: '/platform/dashboard/users/'
+      preLoaderRoute: typeof authenticatedPlatformDashboardUsersIndexRouteImport
+      parentRoute: typeof authenticatedPlatformDashboardRouteRoute
+    }
+    '/(authenticated)/platform/dashboard/support/': {
+      id: '/(authenticated)/platform/dashboard/support/'
+      path: '/support'
+      fullPath: '/platform/dashboard/support/'
+      preLoaderRoute: typeof authenticatedPlatformDashboardSupportIndexRouteImport
+      parentRoute: typeof authenticatedPlatformDashboardRouteRoute
+    }
+    '/(authenticated)/platform/dashboard/owners/': {
+      id: '/(authenticated)/platform/dashboard/owners/'
+      path: '/owners'
+      fullPath: '/platform/dashboard/owners/'
+      preLoaderRoute: typeof authenticatedPlatformDashboardOwnersIndexRouteImport
+      parentRoute: typeof authenticatedPlatformDashboardRouteRoute
+    }
+    '/(authenticated)/platform/dashboard/organizations/': {
+      id: '/(authenticated)/platform/dashboard/organizations/'
+      path: '/organizations'
+      fullPath: '/platform/dashboard/organizations/'
+      preLoaderRoute: typeof authenticatedPlatformDashboardOrganizationsIndexRouteImport
+      parentRoute: typeof authenticatedPlatformDashboardRouteRoute
+    }
+    '/(authenticated)/platform/dashboard/admins/': {
+      id: '/(authenticated)/platform/dashboard/admins/'
+      path: '/admins'
+      fullPath: '/platform/dashboard/admins/'
+      preLoaderRoute: typeof authenticatedPlatformDashboardAdminsIndexRouteImport
+      parentRoute: typeof authenticatedPlatformDashboardRouteRoute
+    }
     '/(authenticated)/org/$slug/workspace/': {
       id: '/(authenticated)/org/$slug/workspace/'
       path: '/'
@@ -627,6 +811,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/org/$slug/console/'
       preLoaderRoute: typeof authenticatedOrgSlugConsoleIndexRouteImport
       parentRoute: typeof authenticatedOrgSlugConsoleRouteRoute
+    }
+    '/(authenticated)/platform/dashboard/owners/$ownerId': {
+      id: '/(authenticated)/platform/dashboard/owners/$ownerId'
+      path: '/owners/$ownerId'
+      fullPath: '/platform/dashboard/owners/$ownerId'
+      preLoaderRoute: typeof authenticatedPlatformDashboardOwnersOwnerIdRouteImport
+      parentRoute: typeof authenticatedPlatformDashboardRouteRoute
+    }
+    '/(authenticated)/platform/dashboard/organizations/$orgId': {
+      id: '/(authenticated)/platform/dashboard/organizations/$orgId'
+      path: '/organizations/$orgId'
+      fullPath: '/platform/dashboard/organizations/$orgId'
+      preLoaderRoute: typeof authenticatedPlatformDashboardOrganizationsOrgIdRouteImport
+      parentRoute: typeof authenticatedPlatformDashboardRouteRoute
     }
     '/(authenticated)/org/$slug/console/modules': {
       id: '/(authenticated)/org/$slug/console/modules'
@@ -742,6 +940,57 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface authenticatedPlatformDashboardRouteRouteChildren {
+  authenticatedPlatformDashboardIndexRoute: typeof authenticatedPlatformDashboardIndexRoute
+  authenticatedPlatformDashboardOrganizationsOrgIdRoute: typeof authenticatedPlatformDashboardOrganizationsOrgIdRoute
+  authenticatedPlatformDashboardOwnersOwnerIdRoute: typeof authenticatedPlatformDashboardOwnersOwnerIdRoute
+  authenticatedPlatformDashboardAdminsIndexRoute: typeof authenticatedPlatformDashboardAdminsIndexRoute
+  authenticatedPlatformDashboardOrganizationsIndexRoute: typeof authenticatedPlatformDashboardOrganizationsIndexRoute
+  authenticatedPlatformDashboardOwnersIndexRoute: typeof authenticatedPlatformDashboardOwnersIndexRoute
+  authenticatedPlatformDashboardSupportIndexRoute: typeof authenticatedPlatformDashboardSupportIndexRoute
+  authenticatedPlatformDashboardUsersIndexRoute: typeof authenticatedPlatformDashboardUsersIndexRoute
+}
+
+const authenticatedPlatformDashboardRouteRouteChildren: authenticatedPlatformDashboardRouteRouteChildren =
+  {
+    authenticatedPlatformDashboardIndexRoute:
+      authenticatedPlatformDashboardIndexRoute,
+    authenticatedPlatformDashboardOrganizationsOrgIdRoute:
+      authenticatedPlatformDashboardOrganizationsOrgIdRoute,
+    authenticatedPlatformDashboardOwnersOwnerIdRoute:
+      authenticatedPlatformDashboardOwnersOwnerIdRoute,
+    authenticatedPlatformDashboardAdminsIndexRoute:
+      authenticatedPlatformDashboardAdminsIndexRoute,
+    authenticatedPlatformDashboardOrganizationsIndexRoute:
+      authenticatedPlatformDashboardOrganizationsIndexRoute,
+    authenticatedPlatformDashboardOwnersIndexRoute:
+      authenticatedPlatformDashboardOwnersIndexRoute,
+    authenticatedPlatformDashboardSupportIndexRoute:
+      authenticatedPlatformDashboardSupportIndexRoute,
+    authenticatedPlatformDashboardUsersIndexRoute:
+      authenticatedPlatformDashboardUsersIndexRoute,
+  }
+
+const authenticatedPlatformDashboardRouteRouteWithChildren =
+  authenticatedPlatformDashboardRouteRoute._addFileChildren(
+    authenticatedPlatformDashboardRouteRouteChildren,
+  )
+
+interface authenticatedPlatformRouteRouteChildren {
+  authenticatedPlatformDashboardRouteRoute: typeof authenticatedPlatformDashboardRouteRouteWithChildren
+}
+
+const authenticatedPlatformRouteRouteChildren: authenticatedPlatformRouteRouteChildren =
+  {
+    authenticatedPlatformDashboardRouteRoute:
+      authenticatedPlatformDashboardRouteRouteWithChildren,
+  }
+
+const authenticatedPlatformRouteRouteWithChildren =
+  authenticatedPlatformRouteRoute._addFileChildren(
+    authenticatedPlatformRouteRouteChildren,
+  )
 
 interface authenticatedSettingsRouteRouteChildren {
   authenticatedSettingsAccountNotificationsRoute: typeof authenticatedSettingsAccountNotificationsRoute
@@ -920,12 +1169,14 @@ const authenticatedOrgSlugRouteRouteWithChildren =
   )
 
 interface authenticatedRouteRouteChildren {
+  authenticatedPlatformRouteRoute: typeof authenticatedPlatformRouteRouteWithChildren
   authenticatedSettingsRouteRoute: typeof authenticatedSettingsRouteRouteWithChildren
   authenticatedOrgSlugRouteRoute: typeof authenticatedOrgSlugRouteRouteWithChildren
   authenticatedOrgNewRoute: typeof authenticatedOrgNewRoute
 }
 
 const authenticatedRouteRouteChildren: authenticatedRouteRouteChildren = {
+  authenticatedPlatformRouteRoute: authenticatedPlatformRouteRouteWithChildren,
   authenticatedSettingsRouteRoute: authenticatedSettingsRouteRouteWithChildren,
   authenticatedOrgSlugRouteRoute: authenticatedOrgSlugRouteRouteWithChildren,
   authenticatedOrgNewRoute: authenticatedOrgNewRoute,

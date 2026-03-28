@@ -378,13 +378,259 @@ exit /b %RC%
 bun run --cwd apps/seeder src/index.ts %*
 exit /b %ERRORLEVEL%
 
+:step_to_var
+set "_STEP_KEY=%~1"
+set "_STEP_KEY=%_STEP_KEY:-=_%"
+set "%~2=%_STEP_KEY%"
+set "_STEP_KEY="
+exit /b 0
+
+:get_init_step_deps
+call :step_to_var "%~1" STEP_KEY
+call set "_STEP_DEPS_VALUE=%%STEP_DEPS_%STEP_KEY%%%"
+set "%~2=%_STEP_DEPS_VALUE%"
+set "_STEP_DEPS_VALUE="
+set "STEP_KEY="
+exit /b 0
+
+:is_valid_init_step
+if /I "%~1"=="check-deps" exit /b 0
+if /I "%~1"=="deps-install" exit /b 0
+if /I "%~1"=="create-env" exit /b 0
+if /I "%~1"=="start-compose" exit /b 0
+if /I "%~1"=="wait-healthy" exit /b 0
+if /I "%~1"=="migrate" exit /b 0
+if /I "%~1"=="seed" exit /b 0
+exit /b 1
+
+:mark_skip_step
+call :step_to_var "%~1" STEP_KEY
+call set "_SKIP_EXISTS=%%SKIP_SET_%STEP_KEY%%%"
+if not defined _SKIP_EXISTS (
+  set "SKIP_SET_%STEP_KEY%=1"
+  if defined SKIP_STEPS (
+    set "SKIP_STEPS=!SKIP_STEPS!, %~1"
+  ) else (
+    set "SKIP_STEPS=%~1"
+  )
+)
+set "_SKIP_EXISTS="
+set "STEP_KEY="
+exit /b 0
+
+:is_step_skipped
+call :step_to_var "%~1" STEP_KEY
+call set "_SKIP_MARK=%%SKIP_SET_%STEP_KEY%%%"
+set "STEP_KEY="
+if defined _SKIP_MARK (
+  set "_SKIP_MARK="
+  exit /b 0
+)
+set "_SKIP_MARK="
+exit /b 1
+
+:add_skip_steps_from_value
+set "RAW_SKIP=%~1"
+if not defined RAW_SKIP exit /b 0
+set "TOKENIZED_SKIP=%RAW_SKIP:,= %"
+for %%T in (!TOKENIZED_SKIP!) do (
+  set "CANDIDATE_STEP=%%~T"
+  if defined CANDIDATE_STEP (
+    call :is_valid_init_step "!CANDIDATE_STEP!"
+    if not !ERRORLEVEL! EQU 0 (
+      call :log_error "Unknown step '!CANDIDATE_STEP!'. Available steps: %INIT_STEP_LIST%"
+      exit /b 1
+    )
+    call :mark_skip_step "!CANDIDATE_STEP!"
+  )
+)
+set "RAW_SKIP="
+set "TOKENIZED_SKIP="
+set "CANDIDATE_STEP="
+exit /b 0
+
+:collect_downstream_steps
+set "ROOT_STEP=%~1"
+set "DOWNSTREAM_STEPS="
+
+for %%S in (%INIT_STEPS%) do (
+  call :step_to_var "%%S" STEP_KEY
+  set "AFFECTED_!STEP_KEY!="
+)
+
+call :step_to_var "%ROOT_STEP%" ROOT_KEY
+set "AFFECTED_%ROOT_KEY%=1"
+
+:collect_downstream_pass
+set "COLLECT_CHANGED=0"
+for %%S in (%INIT_STEPS%) do (
+  call :step_to_var "%%S" STEP_KEY
+  call set "CURRENT_AFFECTED=%%AFFECTED_!STEP_KEY!%%"
+  if not defined CURRENT_AFFECTED (
+    call :get_init_step_deps "%%S" STEP_DEPS_VALUE
+    if defined STEP_DEPS_VALUE (
+      for %%D in (!STEP_DEPS_VALUE!) do (
+        call :step_to_var "%%D" DEP_KEY
+        call set "DEP_AFFECTED=%%AFFECTED_!DEP_KEY!%%"
+        if defined DEP_AFFECTED (
+          set "AFFECTED_!STEP_KEY!=1"
+          set "COLLECT_CHANGED=1"
+        )
+      )
+    )
+  )
+)
+
+if "!COLLECT_CHANGED!"=="1" goto :collect_downstream_pass
+
+for %%S in (%INIT_STEPS%) do (
+  if /I not "%%S"=="%ROOT_STEP%" (
+    call :step_to_var "%%S" STEP_KEY
+    call set "CURRENT_AFFECTED=%%AFFECTED_!STEP_KEY!%%"
+    if defined CURRENT_AFFECTED (
+      call :is_step_skipped "%%S"
+      if not !ERRORLEVEL! EQU 0 (
+        if defined DOWNSTREAM_STEPS (
+          set "DOWNSTREAM_STEPS=!DOWNSTREAM_STEPS!, %%S"
+        ) else (
+          set "DOWNSTREAM_STEPS=%%S"
+        )
+      )
+    )
+  )
+)
+
+set "%~2=%DOWNSTREAM_STEPS%"
+set "ROOT_STEP="
+set "ROOT_KEY="
+set "STEP_KEY="
+set "STEP_DEPS_VALUE="
+set "DEP_KEY="
+set "DEP_AFFECTED="
+set "CURRENT_AFFECTED="
+set "COLLECT_CHANGED="
+set "DOWNSTREAM_STEPS="
+exit /b 0
+
+:validate_skip_dependencies
+set "HAS_CONFLICT=false"
+if not defined SKIP_STEPS exit /b 0
+
+for %%S in (%INIT_STEPS%) do (
+  call :is_step_skipped "%%S"
+  if !ERRORLEVEL! EQU 0 (
+    call :collect_downstream_steps "%%S" ORPHANED_STEPS
+    if defined ORPHANED_STEPS (
+      call :log_error "Cannot skip '%%S': the following steps depend on it (directly or transitively): !ORPHANED_STEPS!"
+      call :log_error "To skip '%%S', also include in --skip-steps: !ORPHANED_STEPS!"
+      set "HAS_CONFLICT=true"
+    )
+  )
+)
+
+if /I "%HAS_CONFLICT%"=="true" exit /b 1
+exit /b 0
+
+:init_list_steps
+echo Available init steps:
+set /a STEP_INDEX=0
+for %%S in (%INIT_STEPS%) do (
+  set /a STEP_INDEX+=1
+  call :get_init_step_deps "%%S" STEP_DEPS_VALUE
+  if defined STEP_DEPS_VALUE (
+    set "STEP_DEPS_DISPLAY=!STEP_DEPS_VALUE: =, !"
+    echo   !STEP_INDEX!. %%S ^(depends: !STEP_DEPS_DISPLAY!^)
+  ) else (
+    echo   !STEP_INDEX!. %%S ^(no dependencies^)
+  )
+)
+set "STEP_INDEX="
+set "STEP_DEPS_VALUE="
+set "STEP_DEPS_DISPLAY="
+exit /b 0
+
+:run_init_step
+if /I "%~1"=="check-deps" (
+  call :check_deps
+  exit /b %ERRORLEVEL%
+)
+if /I "%~1"=="deps-install" (
+  pushd "%ROOT_DIR%" >nul
+  bun install
+  set "RC=%ERRORLEVEL%"
+  popd >nul
+  exit /b %RC%
+)
+if /I "%~1"=="create-env" (
+  call :create_env_files
+  exit /b %ERRORLEVEL%
+)
+if /I "%~1"=="start-compose" (
+  call :compose_up
+  exit /b %ERRORLEVEL%
+)
+if /I "%~1"=="wait-healthy" (
+  call :wait_healthy
+  exit /b %ERRORLEVEL%
+)
+if /I "%~1"=="migrate" (
+  call :migrate_database
+  exit /b %ERRORLEVEL%
+)
+if /I "%~1"=="seed" (
+  call :cmd_seed
+  exit /b %ERRORLEVEL%
+)
+call :log_error "Unknown init step: %~1"
+exit /b 1
+
 :cmd_init
-set "SKIP_DEPS_INSTALL=false"
+set "INIT_STEPS=check-deps deps-install create-env start-compose wait-healthy migrate seed"
+set "INIT_STEP_LIST=check-deps, deps-install, create-env, start-compose, wait-healthy, migrate, seed"
+set "STEP_DEPS_check_deps="
+set "STEP_DEPS_deps_install="
+set "STEP_DEPS_create_env="
+set "STEP_DEPS_start_compose=check-deps"
+set "STEP_DEPS_wait_healthy=start-compose"
+set "STEP_DEPS_migrate=wait-healthy deps-install"
+set "STEP_DEPS_seed=migrate"
+
+set "SKIP_STEPS="
+for %%S in (%INIT_STEPS%) do (
+  call :step_to_var "%%S" STEP_KEY
+  set "SKIP_SET_!STEP_KEY!="
+)
+set "STEP_KEY="
+set "LIST_STEPS=false"
+for %%A in (%*) do (
+  if /I "%%~A"=="--list-steps" set "LIST_STEPS=true"
+)
 
 :parse_init_args
 if "%~1"=="" goto :init_args_done
-if /I "%~1"=="--skip-deps-install" (
-  set "SKIP_DEPS_INSTALL=true"
+if /I "%~1"=="--list-steps" (
+  set "LIST_STEPS=true"
+  shift
+  goto :parse_init_args
+)
+if /I "%~1"=="--skip-steps" (
+  if "%~2"=="" (
+    call :log_error "Missing value for --skip-steps"
+    exit /b 1
+  )
+  if /I not "%LIST_STEPS%"=="true" (
+    call :add_skip_steps_from_value "%~2" || exit /b 1
+  )
+  shift
+  shift
+  goto :parse_init_args
+)
+set "ARG=%~1"
+if /I "!ARG:~0,13!"=="--skip-steps=" (
+  if /I not "%LIST_STEPS%"=="true" (
+    set "SKIP_VALUE=!ARG:~13!"
+    call :add_skip_steps_from_value "!SKIP_VALUE!" || exit /b 1
+  )
   shift
   goto :parse_init_args
 )
@@ -393,37 +639,24 @@ call :cmd_help
 exit /b 1
 
 :init_args_done
-call :require_root || exit /b 1
-call :log_info "Checking dependencies"
-call :check_deps || exit /b 1
-
-if /I "%SKIP_DEPS_INSTALL%"=="true" (
-  call :log_warn "Skipping dependency installation (--skip-deps-install)"
-) else (
-  call :log_info "Installing dependencies"
-  pushd "%ROOT_DIR%" >nul
-  bun install
-  if not %ERRORLEVEL%==0 (
-    popd >nul
-    exit /b 1
-  )
-  popd >nul
+if /I "%LIST_STEPS%"=="true" (
+  call :init_list_steps
+  exit /b %ERRORLEVEL%
 )
 
-call :log_info "Creating .env files if missing"
-call :create_env_files || exit /b 1
+call :validate_skip_dependencies || exit /b 1
 
-call :log_info "Starting services"
-call :compose_up || exit /b 1
+call :require_root || exit /b 1
 
-call :log_info "Waiting for healthy services"
-call :wait_healthy || exit /b 1
-
-call :log_info "Running direct drizzle-kit migrate"
-call :migrate_database || exit /b 1
-
-call :log_info "Running seed"
-call :cmd_seed || exit /b 1
+for %%S in (%INIT_STEPS%) do (
+  call :is_step_skipped "%%S"
+  if !ERRORLEVEL! EQU 0 (
+    call :log_warn "Skipping step: %%S"
+  ) else (
+    call :log_info "Running step: %%S"
+    call :run_init_step "%%S" || exit /b 1
+  )
+)
 
 set "START_NOW="
 set /p START_NOW="Start development processes now? [y/N] "
@@ -796,7 +1029,7 @@ echo   scripts\dev.cmd --help
 echo   scripts\dev.cmd -h
 echo.
 echo Commands:
-echo   init [--skip-deps-install]
+echo   init [--skip-steps step1,step2] [--list-steps]
 echo   start
 echo   stop-services
 echo   reset-services
@@ -812,13 +1045,10 @@ echo     - show docker service status
 echo     - show port status
 echo     - show env file status
 echo   init
-echo     - check deps
-echo     - bun install ^(unless --skip-deps-install^)
-echo     - create env files if missing
-echo     - docker compose up -d
-echo     - wait healthy
-echo     - direct drizzle-kit migrate
-echo     - seed
+echo     - steps run in order: check-deps, deps-install, create-env, start-compose, wait-healthy, migrate, seed
+echo     - use --skip-steps to skip specific steps ^(comma-separated^)
+echo     - dependency validation prevents skipping required upstream steps
+echo     - use --list-steps to show available steps and dependencies
 echo     - prompt to start dev
 echo.
 echo   start [--docker-only] [--dev-only]

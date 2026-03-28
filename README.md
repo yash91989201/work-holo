@@ -25,7 +25,7 @@ This project was created with [Better-T-Stack](https://github.com/AmanVarshney01
 
 This project includes a `scripts/dev.sh` script to manage the entire local development workflow.
 On Windows cmd shell, use `scripts\dev.cmd`.
-Example (Windows): `scripts\dev.cmd init --skip-deps-install`
+Example (Windows): `scripts\dev.cmd init --skip-steps deps-install`
 
 ### Quick Start
 
@@ -36,13 +36,13 @@ scripts/dev.sh init
 To skip dependency installation during init:
 
 ```bash
-scripts/dev.sh init --skip-deps-install
+scripts/dev.sh init --skip-steps deps-install
 ```
 
 This will:
 
 1. Check dependencies (bun, docker, openssl)
-2. Install npm packages (unless `--skip-deps-install` is used)
+2. Install npm packages (unless `deps-install` is skipped via `--skip-steps`)
 3. Create environment files with auto-generated secrets
 4. Start Docker services (PostgreSQL, Redis, RabbitMQ, etc.)
 5. Run database migrations
@@ -56,7 +56,10 @@ This will:
 scripts/dev.sh init
 
 # Quick start without dependency installation
-scripts/dev.sh init --skip-deps-install
+scripts/dev.sh init --skip-steps deps-install
+
+# View all init steps and dependencies
+scripts/dev.sh init --list-steps
 
 # Start everything (docker services + dev server)
 scripts/dev.sh start
@@ -84,7 +87,7 @@ scripts/dev.sh logs postgres
 
 | Command | Description |
 |---------|-------------|
-| `init [--skip-deps-install]` | Full project setup - env files, docker, migrations, seed (installs dependencies unless skipped) |
+| `init [--skip-steps step1,step2] [--list-steps]` | Full project setup with step controls. `--skip-steps` skips named init steps (with dependency validation). `--list-steps` prints all steps and dependencies. |
 | `start` | Start Docker services and dev server (see options below) |
 | `start --docker-only` | Start only Docker services |
 | `start --dev-only` | Start only dev server (with Turbo TUI), auto-starts services if needed |
