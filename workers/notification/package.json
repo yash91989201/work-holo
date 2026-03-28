@@ -14,8 +14,8 @@
     "@work-holo/config": "workspace:*",
     "@work-holo/infrastructure": "workspace:*",
     "amqplib": "^0.10.9",
-    "drizzle-orm": "^0.45.1",
-    "nodemailer": "^8.0.3",
+    "drizzle-orm": "^0.45.2",
+    "nodemailer": "^8.0.4",
     "react": "^19.2.4",
     "web-push": "^3.6.7"
   },
