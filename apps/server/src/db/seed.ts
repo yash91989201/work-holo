@@ -2,10 +2,6 @@ import "dotenv/config";
 import { scryptSync } from "node:crypto";
 import { db } from "@work-holo/db";
 import { account, user } from "@work-holo/db/schema/auth";
-<<<<<<< HEAD
-import { sleep } from "bun";
-=======
->>>>>>> 9a25431 (fix: add missing newline at end of _journal.json file)
 import { eq } from "drizzle-orm";
 
 const SUPER_ADMIN_EMAIL = "superadmin@workholo.com";
@@ -78,19 +74,11 @@ async function seed() {
 
 seed()
   .then(async () => {
-<<<<<<< HEAD
-    await sleep(300);
-=======
     await Bun.sleep(300);
->>>>>>> 9a25431 (fix: add missing newline at end of _journal.json file)
     process.exit(0);
   })
   .catch(async (e) => {
     process.stderr.write(`[seed] Seed failed: ${e}\n`);
-<<<<<<< HEAD
-    await sleep(300);
-=======
     await Bun.sleep(300);
->>>>>>> 9a25431 (fix: add missing newline at end of _journal.json file)
     process.exit(1);
   });
