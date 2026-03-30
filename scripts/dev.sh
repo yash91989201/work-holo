@@ -24,6 +24,10 @@ BUN_DEV_PID=""
 VAPID_PUBLIC_KEY=""
 VAPID_PRIVATE_KEY=""
 
+DEV_S3_ACCESS_KEY="GuzpNFteD5xLQ_aoBlUvyw"
+DEV_S3_SECRET_KEY="zmvR18mhKg3hDlKfdtfp_g"
+DEV_S3_ENDPOINT="http://127.0.0.1:9000"
+
 ENV_SERVER="apps/server/.env"
 ENV_WEB="apps/web/.env"
 ENV_NOTIFICATION="workers/notification/.env"
@@ -125,20 +129,91 @@ generate_vapid_keys() {
 
 ensure_parent_dir() { mkdir -p "$(dirname "$1")"; }
 
-write_if_missing() {
+env_value_is_empty() {
+  local value="$1"
+  value="${value#"${value%%[![:space:]]*}"}"
+  value="${value%"${value##*[![:space:]]}"}"
+  [[ -z "$value" || "$value" == '""' || "$value" == "''" ]]
+}
+
+ensure_env_default() {
   local target="$1"
-  if [[ -f "$target" ]]; then
-    log_warn "Skipping existing file: ${target#"$ROOT_DIR"/}"
+  local key="$2"
+  local value="$3"
+  local tmp=""
+  local line=""
+  local found="false"
+  local changed="false"
+
+  tmp="$(mktemp)"
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    if [[ "$line" == "$key="* ]]; then
+      found="true"
+      local current_value="${line#"$key="}"
+      if env_value_is_empty "$current_value"; then
+        if env_value_is_empty "$value"; then
+          printf '%s\n' "$line" >>"$tmp"
+        else
+          printf '%s=%s\n' "$key" "$value" >>"$tmp"
+          changed="true"
+        fi
+      else
+        printf '%s\n' "$line" >>"$tmp"
+      fi
+      continue
+    fi
+    printf '%s\n' "$line" >>"$tmp"
+  done <"$target"
+
+  if [[ "$found" == "false" ]]; then
+    printf '%s=%s\n' "$key" "$value" >>"$tmp"
+    changed="true"
+  fi
+
+  if [[ "$changed" == "true" ]]; then
+    mv "$tmp" "$target"
+  else
+    rm -f "$tmp"
+  fi
+
+  [[ "$changed" == "true" ]]
+}
+
+write_env_defaults() {
+  local target="$1"
+  local rel_target="${target#"$ROOT_DIR"/}"
+  local -a env_lines=()
+
+  mapfile -t env_lines
+  ensure_parent_dir "$target"
+
+  if [[ ! -f "$target" ]]; then
+    printf '%s\n' "${env_lines[@]}" >"$target"
+    log_success "Created $rel_target"
     return 0
   fi
-  ensure_parent_dir "$target"
-  cat >"$target"
-  log_success "Created ${target#"$ROOT_DIR"/}"
+
+  local changed="false"
+  local env_line=""
+  for env_line in "${env_lines[@]}"; do
+    [[ -z "$env_line" || "$env_line" == \#* ]] && continue
+    local key="${env_line%%=*}"
+    local value="${env_line#*=}"
+    if ensure_env_default "$target" "$key" "$value"; then
+      changed="true"
+    fi
+  done
+
+  if [[ "$changed" == "true" ]]; then
+    log_success "Backfilled missing env values in $rel_target"
+  else
+    log_warn "Keeping existing file: $rel_target"
+  fi
 }
 
 create_env_server() {
   local secret="$1"
-  write_if_missing "$ROOT_DIR/$ENV_SERVER" <<EOF
+  write_env_defaults "$ROOT_DIR/$ENV_SERVER" <<EOF
 BETTER_AUTH_SECRET=$secret
 BETTER_AUTH_URL=http://localhost:3000
 CORS_ORIGIN=http://localhost:3001
@@ -147,9 +222,9 @@ REDIS_URL=redis://localhost:6379
 RABBITMQ_URL=amqp://admin:admin@localhost:5672
 ENV=development
 PORT=3000
-S3_ACCESS_KEY=GuzpNFteD5xLQ_aoBlUvyw
-S3_SECRET_KEY=zmvR18mhKg3hDlKfdtfp_g
-S3_ENDPOINT=http://127.0.0.1:9000
+S3_ACCESS_KEY=$DEV_S3_ACCESS_KEY
+S3_SECRET_KEY=$DEV_S3_SECRET_KEY
+S3_ENDPOINT=$DEV_S3_ENDPOINT
 WEB_URL=http://localhost:3001
 ELECTRIC_URL=http://localhost:5003
 ELECTRIC_SECRET=
@@ -167,7 +242,7 @@ EOF
 }
 
 create_env_web() {
-  write_if_missing "$ROOT_DIR/$ENV_WEB" <<EOF
+  write_env_defaults "$ROOT_DIR/$ENV_WEB" <<EOF
 VITE_ENV=development
 VITE_IMAGE_TRANSFORMATION_URL=http://localhost:8080
 VITE_SERVER_URL=http://localhost:3000
@@ -182,7 +257,7 @@ EOF
 }
 
 create_env_notification() {
-  write_if_missing "$ROOT_DIR/$ENV_NOTIFICATION" <<EOF
+  write_env_defaults "$ROOT_DIR/$ENV_NOTIFICATION" <<EOF
 DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
 RABBITMQ_URL=amqp://admin:admin@localhost:5672
 PUSHER_APP_ID=work-holo
@@ -195,15 +270,15 @@ VAPID_PRIVATE_KEY=$VAPID_PRIVATE_KEY
 VAPID_SUBJECT=mailto:dev@localhost
 SMTP_HOST=localhost
 SMTP_PORT=1025
-SMTP_USER=
-SMTP_PASS=
+SMTP_USER=dev-smtp-user
+SMTP_PASS=dev-smtp-pass
 SMTP_FROM=dev@work-holo.local
 ENV=development
 EOF
 }
 
 create_env_search() {
-  write_if_missing "$ROOT_DIR/$ENV_SEARCH" <<EOF
+  write_env_defaults "$ROOT_DIR/$ENV_SEARCH" <<EOF
 DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
 RABBITMQ_URL=amqp://admin:admin@localhost:5672
 OPENSEARCH_URL=http://localhost:9200
@@ -212,7 +287,7 @@ EOF
 }
 
 create_env_read_receipt() {
-  write_if_missing "$ROOT_DIR/$ENV_READ_RECEIPT" <<EOF
+  write_env_defaults "$ROOT_DIR/$ENV_READ_RECEIPT" <<EOF
 DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
 RABBITMQ_URL=amqp://admin:admin@localhost:5672
 ENV=development

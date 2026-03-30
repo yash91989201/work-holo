@@ -22,6 +22,11 @@ if defined NO_COLOR (
 set "START_WAS_INTERRUPTED=false"
 set "VAPID_PUBLIC_KEY="
 set "VAPID_PRIVATE_KEY="
+set "DEV_S3_ACCESS_KEY=GuzpNFteD5xLQ_aoBlUvyw"
+set "DEV_S3_SECRET_KEY=zmvR18mhKg3hDlKfdtfp_g"
+set "DEV_S3_ENDPOINT=http://127.0.0.1:9000"
+set "DEV_SMTP_USER=dev-smtp-user"
+set "DEV_SMTP_PASS=dev-smtp-pass"
 
 set "ENV_SERVER=apps\server\.env"
 set "ENV_WEB=apps\web\.env"
@@ -168,121 +173,273 @@ if not defined VAPID_PRIVATE_KEY (
 call :log_success "VAPID keys generated"
 exit /b 0
 
+:ensure_parent_dir
+for %%I in ("%~1") do if not exist "%%~dpI" mkdir "%%~dpI"
+exit /b 0
+
+:env_value_is_empty
+setlocal EnableDelayedExpansion
+set "VALUE=%~1"
+set "IS_EMPTY=0"
+if not defined VALUE set "IS_EMPTY=1"
+set "VALUE=!VALUE: =!"
+set "VALUE=!VALUE:"=!"
+set "VALUE=!VALUE:'=!"
+if not defined VALUE set "IS_EMPTY=1"
+endlocal & set "%~2=%IS_EMPTY%"
+exit /b 0
+
+:ensure_env_default
+setlocal EnableDelayedExpansion
+set "TARGET=%~1"
+set "ENV_KEY=%~2"
+set "ENV_VALUE=%~3"
+set "TMP_FILE=%TEMP%\work-holo-env-%RANDOM%%RANDOM%.tmp"
+set "FOUND=0"
+set "CHANGED=0"
+break > "!TMP_FILE!"
+
+for /f "usebackq delims=" %%L in ("!TARGET!") do (
+  set "LINE=%%L"
+  set "LINE_KEY="
+  set "LINE_VALUE="
+  for /f "tokens=1* delims==" %%A in ("!LINE!") do (
+    set "LINE_KEY=%%A"
+    set "LINE_VALUE=%%B"
+  )
+
+  if /I "!LINE_KEY!"=="!ENV_KEY!" (
+    set "FOUND=1"
+    call :env_value_is_empty "!LINE_VALUE!" CURRENT_EMPTY
+    if "!CURRENT_EMPTY!"=="1" (
+      call :env_value_is_empty "!ENV_VALUE!" DEFAULT_EMPTY
+      if "!DEFAULT_EMPTY!"=="1" (
+        >>"!TMP_FILE!" echo(!LINE!
+      ) else (
+        >>"!TMP_FILE!" echo(!ENV_KEY!=!ENV_VALUE!
+        set "CHANGED=1"
+      )
+    ) else (
+      >>"!TMP_FILE!" echo(!LINE!
+    )
+  ) else (
+    >>"!TMP_FILE!" echo(!LINE!
+  )
+)
+
+if "!FOUND!"=="0" (
+  >>"!TMP_FILE!" echo(!ENV_KEY!=!ENV_VALUE!
+  set "CHANGED=1"
+)
+
+if "!CHANGED!"=="1" (
+  move /y "!TMP_FILE!" "!TARGET!" >nul
+  endlocal & set "%~4=1"
+  exit /b 0
+) else (
+  del /f /q "!TMP_FILE!" >nul 2>nul
+)
+
+endlocal
+exit /b 0
+
 :write_env_server
 set "TARGET=%ROOT_DIR%\%ENV_SERVER%"
-if exist "%TARGET%" (
-  call :log_warn "Skipping existing file: %ENV_SERVER%"
+call :ensure_parent_dir "%TARGET%"
+if not exist "%TARGET%" (
+  (
+    echo BETTER_AUTH_SECRET=%~1
+    echo BETTER_AUTH_URL=http://localhost:3000
+    echo CORS_ORIGIN=http://localhost:3001
+    echo DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
+    echo REDIS_URL=redis://localhost:6379
+    echo RABBITMQ_URL=amqp://admin:admin@localhost:5672
+    echo ENV=development
+    echo PORT=3000
+    echo S3_ACCESS_KEY=%DEV_S3_ACCESS_KEY%
+    echo S3_SECRET_KEY=%DEV_S3_SECRET_KEY%
+    echo S3_ENDPOINT=%DEV_S3_ENDPOINT%
+    echo WEB_URL=http://localhost:3001
+    echo ELECTRIC_URL=http://localhost:5003
+    echo ELECTRIC_SECRET=
+    echo VAPID_PUBLIC_KEY=%VAPID_PUBLIC_KEY%
+    echo VAPID_PRIVATE_KEY=%VAPID_PRIVATE_KEY%
+    echo VAPID_SUBJECT=mailto:dev@localhost
+    echo PUSHER_APP_ID=work-holo
+    echo PUSHER_APP_KEY=work-holo-key
+    echo PUSHER_APP_SECRET=work-holo-secret-must-be-32-chars
+    echo PUSHER_HOST=localhost
+    echo PUSHER_PORT=6001
+    echo CASBIN_ENFORCE=false
+    echo OPENSEARCH_URL=http://localhost:9200
+  ) > "%TARGET%"
+  call :log_success "Created %ENV_SERVER%"
   exit /b 0
 )
-for %%I in ("%TARGET%") do if not exist "%%~dpI" mkdir "%%~dpI"
-(
-  echo BETTER_AUTH_SECRET=%~1
-  echo BETTER_AUTH_URL=http://localhost:3000
-  echo CORS_ORIGIN=http://localhost:3001
-  echo DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
-  echo REDIS_URL=redis://localhost:6379
-  echo RABBITMQ_URL=amqp://admin:admin@localhost:5672
-  echo ENV=development
-  echo PORT=3000
-  echo S3_ACCESS_KEY=GuzpNFteD5xLQ_aoBlUvyw
-  echo S3_SECRET_KEY=zmvR18mhKg3hDlKfdtfp_g
-  echo S3_ENDPOINT=http://127.0.0.1:9000
-  echo WEB_URL=http://localhost:3001
-  echo ELECTRIC_URL=http://localhost:5003
-  echo ELECTRIC_SECRET=
-  echo VAPID_PUBLIC_KEY=%VAPID_PUBLIC_KEY%
-  echo VAPID_PRIVATE_KEY=%VAPID_PRIVATE_KEY%
-  echo VAPID_SUBJECT=mailto:dev@localhost
-  echo PUSHER_APP_ID=work-holo
-  echo PUSHER_APP_KEY=work-holo-key
-  echo PUSHER_APP_SECRET=work-holo-secret-must-be-32-chars
-  echo PUSHER_HOST=localhost
-  echo PUSHER_PORT=6001
-  echo CASBIN_ENFORCE=false
-  echo OPENSEARCH_URL=http://localhost:9200
-) > "%TARGET%"
-call :log_success "Created %ENV_SERVER%"
+set "ENV_CHANGED=0"
+call :ensure_env_default "%TARGET%" "BETTER_AUTH_SECRET" "%~1" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "BETTER_AUTH_URL" "http://localhost:3000" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "CORS_ORIGIN" "http://localhost:3001" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "DATABASE_URL" "postgresql://postgres:postgres@localhost:5432/postgres" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "REDIS_URL" "redis://localhost:6379" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "RABBITMQ_URL" "amqp://admin:admin@localhost:5672" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "ENV" "development" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "PORT" "3000" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "S3_ACCESS_KEY" "%DEV_S3_ACCESS_KEY%" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "S3_SECRET_KEY" "%DEV_S3_SECRET_KEY%" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "S3_ENDPOINT" "%DEV_S3_ENDPOINT%" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "WEB_URL" "http://localhost:3001" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "ELECTRIC_URL" "http://localhost:5003" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "ELECTRIC_SECRET" "" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "VAPID_PUBLIC_KEY" "%VAPID_PUBLIC_KEY%" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "VAPID_PRIVATE_KEY" "%VAPID_PRIVATE_KEY%" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "VAPID_SUBJECT" "mailto:dev@localhost" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "PUSHER_APP_ID" "work-holo" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "PUSHER_APP_KEY" "work-holo-key" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "PUSHER_APP_SECRET" "work-holo-secret-must-be-32-chars" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "PUSHER_HOST" "localhost" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "PUSHER_PORT" "6001" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "CASBIN_ENFORCE" "false" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "OPENSEARCH_URL" "http://localhost:9200" ENV_CHANGED
+if "%ENV_CHANGED%"=="1" (
+  call :log_success "Backfilled missing env values in %ENV_SERVER%"
+) else (
+  call :log_warn "Keeping existing file: %ENV_SERVER%"
+)
 exit /b 0
 
 :write_env_web
 set "TARGET=%ROOT_DIR%\%ENV_WEB%"
-if exist "%TARGET%" (
-  call :log_warn "Skipping existing file: %ENV_WEB%"
+call :ensure_parent_dir "%TARGET%"
+if not exist "%TARGET%" (
+  (
+    echo VITE_ENV=development
+    echo VITE_IMAGE_TRANSFORMATION_URL=http://localhost:8080
+    echo VITE_SERVER_URL=http://localhost:3000
+    echo VITE_WEB_URL=http://localhost:3001
+    echo VAPID_PUBLIC_KEY=%VAPID_PUBLIC_KEY%
+    echo VAPID_PRIVATE_KEY=%VAPID_PRIVATE_KEY%
+    echo VAPID_SUBJECT=mailto:dev@localhost
+    echo VITE_PUSHER_KEY=work-holo-key
+    echo VITE_PUSHER_HOST=localhost
+    echo VITE_PUSHER_PORT=6001
+  ) > "%TARGET%"
+  call :log_success "Created %ENV_WEB%"
   exit /b 0
 )
-for %%I in ("%TARGET%") do if not exist "%%~dpI" mkdir "%%~dpI"
-(
-  echo VITE_ENV=development
-  echo VITE_IMAGE_TRANSFORMATION_URL=http://localhost:8080
-  echo VITE_SERVER_URL=http://localhost:3000
-  echo VITE_WEB_URL=http://localhost:3001
-  echo VAPID_PUBLIC_KEY=%VAPID_PUBLIC_KEY%
-  echo VAPID_PRIVATE_KEY=%VAPID_PRIVATE_KEY%
-  echo VAPID_SUBJECT=mailto:dev@localhost
-  echo VITE_PUSHER_KEY=work-holo-key
-  echo VITE_PUSHER_HOST=localhost
-  echo VITE_PUSHER_PORT=6001
-) > "%TARGET%"
-call :log_success "Created %ENV_WEB%"
+set "ENV_CHANGED=0"
+call :ensure_env_default "%TARGET%" "VITE_ENV" "development" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "VITE_IMAGE_TRANSFORMATION_URL" "http://localhost:8080" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "VITE_SERVER_URL" "http://localhost:3000" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "VITE_WEB_URL" "http://localhost:3001" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "VAPID_PUBLIC_KEY" "%VAPID_PUBLIC_KEY%" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "VAPID_PRIVATE_KEY" "%VAPID_PRIVATE_KEY%" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "VAPID_SUBJECT" "mailto:dev@localhost" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "VITE_PUSHER_KEY" "work-holo-key" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "VITE_PUSHER_HOST" "localhost" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "VITE_PUSHER_PORT" "6001" ENV_CHANGED
+if "%ENV_CHANGED%"=="1" (
+  call :log_success "Backfilled missing env values in %ENV_WEB%"
+) else (
+  call :log_warn "Keeping existing file: %ENV_WEB%"
+)
 exit /b 0
 
 :write_env_notification
 set "TARGET=%ROOT_DIR%\%ENV_NOTIFICATION%"
-if exist "%TARGET%" (
-  call :log_warn "Skipping existing file: %ENV_NOTIFICATION%"
+call :ensure_parent_dir "%TARGET%"
+if not exist "%TARGET%" (
+  (
+    echo DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
+    echo RABBITMQ_URL=amqp://admin:admin@localhost:5672
+    echo PUSHER_APP_ID=work-holo
+    echo PUSHER_APP_KEY=work-holo-key
+    echo PUSHER_APP_SECRET=work-holo-secret-must-be-32-chars
+    echo PUSHER_HOST=localhost
+    echo PUSHER_PORT=6001
+    echo VAPID_PUBLIC_KEY=%VAPID_PUBLIC_KEY%
+    echo VAPID_PRIVATE_KEY=%VAPID_PRIVATE_KEY%
+    echo VAPID_SUBJECT=mailto:dev@localhost
+    echo SMTP_HOST=localhost
+    echo SMTP_PORT=1025
+    echo SMTP_USER=%DEV_SMTP_USER%
+    echo SMTP_PASS=%DEV_SMTP_PASS%
+    echo SMTP_FROM=dev@work-holo.local
+    echo ENV=development
+  ) > "%TARGET%"
+  call :log_success "Created %ENV_NOTIFICATION%"
   exit /b 0
 )
-for %%I in ("%TARGET%") do if not exist "%%~dpI" mkdir "%%~dpI"
-(
-  echo DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
-  echo RABBITMQ_URL=amqp://admin:admin@localhost:5672
-  echo PUSHER_APP_ID=work-holo
-  echo PUSHER_APP_KEY=work-holo-key
-  echo PUSHER_APP_SECRET=work-holo-secret-must-be-32-chars
-  echo PUSHER_HOST=localhost
-  echo PUSHER_PORT=6001
-  echo VAPID_PUBLIC_KEY=%VAPID_PUBLIC_KEY%
-  echo VAPID_PRIVATE_KEY=%VAPID_PRIVATE_KEY%
-  echo VAPID_SUBJECT=mailto:dev@localhost
-  echo SMTP_HOST=localhost
-  echo SMTP_PORT=1025
-  echo SMTP_USER=
-  echo SMTP_PASS=
-  echo SMTP_FROM=dev@work-holo.local
-  echo ENV=development
-) > "%TARGET%"
-call :log_success "Created %ENV_NOTIFICATION%"
+set "ENV_CHANGED=0"
+call :ensure_env_default "%TARGET%" "DATABASE_URL" "postgresql://postgres:postgres@localhost:5432/postgres" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "RABBITMQ_URL" "amqp://admin:admin@localhost:5672" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "PUSHER_APP_ID" "work-holo" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "PUSHER_APP_KEY" "work-holo-key" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "PUSHER_APP_SECRET" "work-holo-secret-must-be-32-chars" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "PUSHER_HOST" "localhost" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "PUSHER_PORT" "6001" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "VAPID_PUBLIC_KEY" "%VAPID_PUBLIC_KEY%" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "VAPID_PRIVATE_KEY" "%VAPID_PRIVATE_KEY%" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "VAPID_SUBJECT" "mailto:dev@localhost" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "SMTP_HOST" "localhost" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "SMTP_PORT" "1025" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "SMTP_USER" "%DEV_SMTP_USER%" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "SMTP_PASS" "%DEV_SMTP_PASS%" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "SMTP_FROM" "dev@work-holo.local" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "ENV" "development" ENV_CHANGED
+if "%ENV_CHANGED%"=="1" (
+  call :log_success "Backfilled missing env values in %ENV_NOTIFICATION%"
+) else (
+  call :log_warn "Keeping existing file: %ENV_NOTIFICATION%"
+)
 exit /b 0
 
 :write_env_search
 set "TARGET=%ROOT_DIR%\%ENV_SEARCH%"
-if exist "%TARGET%" (
-  call :log_warn "Skipping existing file: %ENV_SEARCH%"
+call :ensure_parent_dir "%TARGET%"
+if not exist "%TARGET%" (
+  (
+    echo DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
+    echo RABBITMQ_URL=amqp://admin:admin@localhost:5672
+    echo OPENSEARCH_URL=http://localhost:9200
+    echo ENV=development
+  ) > "%TARGET%"
+  call :log_success "Created %ENV_SEARCH%"
   exit /b 0
 )
-for %%I in ("%TARGET%") do if not exist "%%~dpI" mkdir "%%~dpI"
-(
-  echo DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
-  echo RABBITMQ_URL=amqp://admin:admin@localhost:5672
-  echo OPENSEARCH_URL=http://localhost:9200
-  echo ENV=development
-) > "%TARGET%"
-call :log_success "Created %ENV_SEARCH%"
+set "ENV_CHANGED=0"
+call :ensure_env_default "%TARGET%" "DATABASE_URL" "postgresql://postgres:postgres@localhost:5432/postgres" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "RABBITMQ_URL" "amqp://admin:admin@localhost:5672" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "OPENSEARCH_URL" "http://localhost:9200" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "ENV" "development" ENV_CHANGED
+if "%ENV_CHANGED%"=="1" (
+  call :log_success "Backfilled missing env values in %ENV_SEARCH%"
+) else (
+  call :log_warn "Keeping existing file: %ENV_SEARCH%"
+)
 exit /b 0
 
 :write_env_read_receipt
 set "TARGET=%ROOT_DIR%\%ENV_READ_RECEIPT%"
-if exist "%TARGET%" (
-  call :log_warn "Skipping existing file: %ENV_READ_RECEIPT%"
+call :ensure_parent_dir "%TARGET%"
+if not exist "%TARGET%" (
+  (
+    echo DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
+    echo RABBITMQ_URL=amqp://admin:admin@localhost:5672
+    echo ENV=development
+  ) > "%TARGET%"
+  call :log_success "Created %ENV_READ_RECEIPT%"
   exit /b 0
 )
-for %%I in ("%TARGET%") do if not exist "%%~dpI" mkdir "%%~dpI"
-(
-  echo DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
-  echo RABBITMQ_URL=amqp://admin:admin@localhost:5672
-  echo ENV=development
-) > "%TARGET%"
-call :log_success "Created %ENV_READ_RECEIPT%"
+set "ENV_CHANGED=0"
+call :ensure_env_default "%TARGET%" "DATABASE_URL" "postgresql://postgres:postgres@localhost:5432/postgres" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "RABBITMQ_URL" "amqp://admin:admin@localhost:5672" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "ENV" "development" ENV_CHANGED
+if "%ENV_CHANGED%"=="1" (
+  call :log_success "Backfilled missing env values in %ENV_READ_RECEIPT%"
+) else (
+  call :log_warn "Keeping existing file: %ENV_READ_RECEIPT%"
+)
 exit /b 0
 
 :create_env_files
