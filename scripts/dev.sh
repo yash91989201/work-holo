@@ -292,16 +292,6 @@ cmd_init() {
     [seed]="migrate"
   )
 
-  declare -A STEP_FN=(
-    [check-deps]="check_deps"
-    [deps-install]="bun install"
-    [create-env]="create_env_files"
-    [start-compose]="compose_up"
-    [wait-healthy]="wait_healthy"
-    [migrate]="migrate_database"
-    [seed]="cmd_seed"
-  )
-
   local list_steps="false"
   local -a skip_values=()
   local -a SKIP_STEPS=()
@@ -366,27 +356,27 @@ cmd_init() {
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      --skip-steps)
-        if [[ $# -lt 2 ]]; then
-          log_error "Missing value for --skip-steps"
-          exit 1
-        fi
-        skip_values+=("$2")
-        shift 2
-        ;;
-      --skip-steps=*)
-        skip_values+=("${1#--skip-steps=}")
-        shift
-        ;;
-      --list-steps)
-        list_steps="true"
-        shift
-        ;;
-      *)
-        log_error "Unknown option: $1"
-        cmd_help
+    --skip-steps)
+      if [[ $# -lt 2 ]]; then
+        log_error "Missing value for --skip-steps"
         exit 1
-        ;;
+      fi
+      skip_values+=("$2")
+      shift 2
+      ;;
+    --skip-steps=*)
+      skip_values+=("${1#--skip-steps=}")
+      shift
+      ;;
+    --list-steps)
+      list_steps="true"
+      shift
+      ;;
+    *)
+      log_error "Unknown option: $1"
+      cmd_help
+      exit 1
+      ;;
     esac
   done
 
@@ -394,7 +384,7 @@ cmd_init() {
   for raw_value in "${skip_values[@]}"; do
     [[ -z "$raw_value" ]] && continue
     local -a split_steps=()
-    IFS=',' read -r -a split_steps <<< "$raw_value"
+    IFS=',' read -r -a split_steps <<<"$raw_value"
     local candidate=""
     for candidate in "${split_steps[@]}"; do
       candidate="$(trim_spaces "$candidate")"
@@ -482,13 +472,13 @@ cmd_init() {
     fi
     log_info "Running step: $step"
     case "$step" in
-      check-deps) check_deps ;;
-      deps-install) bun install ;;
-      create-env) create_env_files ;;
-      start-compose) compose_up ;;
-      wait-healthy) wait_healthy ;;
-      migrate) migrate_database ;;
-      seed) cmd_seed ;;
+    check-deps) check_deps ;;
+    deps-install) bun install ;;
+    create-env) create_env_files ;;
+    start-compose) compose_up ;;
+    wait-healthy) wait_healthy ;;
+    migrate) migrate_database ;;
+    seed) cmd_seed ;;
     esac
   done
   read -r -p "Start development processes now? [y/N] " start_now
@@ -524,40 +514,40 @@ handle_interrupt() {
 cmd_start() {
   require_root
   check_deps
-  
+
   local docker_only="false"
   local dev_only="false"
-  
+
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      --docker-only)
-        docker_only="true"
-        shift
-        ;;
-      --dev-only)
-        dev_only="true"
-        shift
-        ;;
-      *)
-        log_error "Unknown option: $1"
-        cmd_help
-        exit 1
-        ;;
+    --docker-only)
+      docker_only="true"
+      shift
+      ;;
+    --dev-only)
+      dev_only="true"
+      shift
+      ;;
+    *)
+      log_error "Unknown option: $1"
+      cmd_help
+      exit 1
+      ;;
     esac
   done
-  
+
   if [[ "$docker_only" == "true" && "$dev_only" == "true" ]]; then
     log_error "Cannot use both --docker-only and --dev-only"
     exit 1
   fi
-  
+
   if [[ "$docker_only" == "true" ]]; then
     compose_up
     wait_healthy
     log_success "Docker services started"
     return 0
   fi
-  
+
   if [[ "$dev_only" == "true" ]]; then
     local running_count=0
     local service=""
@@ -572,7 +562,7 @@ cmd_start() {
         fi
       fi
     done
-    
+
     if [[ "$running_count" -eq 0 ]]; then
       log_info "No Docker services running. Starting services first..."
       compose_up
@@ -580,12 +570,12 @@ cmd_start() {
     elif [[ "$running_count" -lt "${#CORE_SERVICES[@]}" ]]; then
       log_warn "Only $running_count/${#CORE_SERVICES[@]} services are running. Some features may not work."
     fi
-    
+
     log_info "Starting dev server (with TUI)"
     bun dev
     return $?
   fi
-  
+
   compose_up
   wait_healthy
   START_WAS_INTERRUPTED="false"
@@ -615,6 +605,38 @@ cmd_stop() {
 cmd_reset_services() {
   require_root
   check_deps
+
+  local -a init_args=()
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --skip-init-steps)
+        if [[ $# -lt 2 ]]; then
+          log_error "Missing value for --skip-init-steps"
+          exit 1
+        fi
+        if [[ -z "$2" ]]; then
+          log_error "Empty value for --skip-init-steps"
+          exit 1
+        fi
+        init_args+=("--skip-steps" "$2")
+        shift 2
+        ;;
+      --skip-init-steps=*)
+        if [[ -z "${1#--skip-init-steps=}" ]]; then
+          log_error "Empty value for --skip-init-steps"
+          exit 1
+        fi
+        init_args+=("--skip-steps=${1#--skip-init-steps=}")
+        shift
+        ;;
+    *)
+      log_error "Unknown option: $1"
+      cmd_help
+      exit 1
+      ;;
+    esac
+  done
+
   log_warn "This will run down --volumes --remove-orphans"
   read -r -p "Continue? [y/N] " answer
   if [[ "$answer" != "y" && "$answer" != "Y" ]]; then
@@ -622,7 +644,7 @@ cmd_reset_services() {
     return 0
   fi
   docker_compose down --volumes --remove-orphans
-  cmd_init
+  cmd_init "${init_args[@]}"
 }
 
 cmd_update_packages() {
@@ -651,12 +673,12 @@ cmd_update_packages() {
   for parent in apps packages workers; do
     [[ -d "$ROOT_DIR/$parent" ]] || continue
     for child in "$ROOT_DIR/$parent"/*; do
-        if [[ -d "$child" && -f "$child/package.json" ]]; then
-          if [[ -d "$child/node_modules" ]]; then
-            log_info "Removing ${child#"$ROOT_DIR"/}/node_modules"
-            rm -rf "$child/node_modules"
-          fi
+      if [[ -d "$child" && -f "$child/package.json" ]]; then
+        if [[ -d "$child/node_modules" ]]; then
+          log_info "Removing ${child#"$ROOT_DIR"/}/node_modules"
+          rm -rf "$child/node_modules"
         fi
+      fi
     done
   done
   if [[ -f "$ROOT_DIR/bun.lock" ]]; then
@@ -808,7 +830,7 @@ Commands:
   init [--skip-steps step1,step2] [--list-steps]
   start
   stop-services
-  reset-services
+  reset-services [--skip-init-steps step1,step2]
   update-packages
   doctor
   status
@@ -839,7 +861,8 @@ Command behavior:
   reset-services
     - confirm
     - docker compose down --volumes --remove-orphans
-    - init
+    - rerun init after teardown
+    - use --skip-init-steps to forward skip lists to init's --skip-steps
 
   update-packages
     - for each folder in apps/* packages/* workers/* with package.json
@@ -888,21 +911,21 @@ main() {
   local cmd="${1:-}"
   shift || true
   case "$cmd" in
-    ""|--help|-h) cmd_help ;;
-    init) cmd_init "$@" ;;
-    start) cmd_start "$@" ;;
-    stop-services) cmd_stop "$@" ;;
-    reset-services) cmd_reset_services "$@" ;;
-    update-packages) cmd_update_packages "$@" ;;
-    doctor) cmd_doctor "$@" ;;
-    status) cmd_status "$@" ;;
-    logs) cmd_logs "$@" ;;
-    seed) cmd_seed "$@" ;;
-    *)
-      log_error "Unknown command: $cmd"
-      cmd_help
-      exit 1
-      ;;
+  "" | --help | -h) cmd_help ;;
+  init) cmd_init "$@" ;;
+  start) cmd_start "$@" ;;
+  stop-services) cmd_stop "$@" ;;
+  reset-services) cmd_reset_services "$@" ;;
+  update-packages) cmd_update_packages "$@" ;;
+  doctor) cmd_doctor "$@" ;;
+  status) cmd_status "$@" ;;
+  logs) cmd_logs "$@" ;;
+  seed) cmd_seed "$@" ;;
+  *)
+    log_error "Unknown command: $cmd"
+    cmd_help
+    exit 1
+    ;;
   esac
 }
 

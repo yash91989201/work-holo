@@ -777,6 +777,42 @@ exit /b %ERRORLEVEL%
 :cmd_reset_services
 call :require_root || exit /b 1
 call :check_deps || exit /b 1
+
+set "RESET_INIT_ARGS="
+
+:parse_reset_services_args
+if "%~1"=="" goto :reset_services_args_done
+if /I "%~1"=="--skip-init-steps" (
+  if "%~2"=="" (
+    call :log_error "Missing value for --skip-init-steps"
+    exit /b 1
+  )
+  if "%~2"=="""" (
+    call :log_error "Empty value for --skip-init-steps"
+    exit /b 1
+  )
+  set "RESET_INIT_ARGS=!RESET_INIT_ARGS! --skip-steps ""%~2"""
+  shift
+  shift
+  goto :parse_reset_services_args
+)
+set "ARG=%~1"
+if /I "!ARG:~0,18!"=="--skip-init-steps=" (
+  set "SKIP_INIT_VALUE=!ARG:~18!"
+  if not defined SKIP_INIT_VALUE (
+    call :log_error "Empty value for --skip-init-steps"
+    exit /b 1
+  )
+  set "RESET_INIT_ARGS=!RESET_INIT_ARGS! --skip-steps ""!SKIP_INIT_VALUE!"""
+  set "SKIP_INIT_VALUE="
+  shift
+  goto :parse_reset_services_args
+)
+call :log_error "Unknown option: %~1"
+call :cmd_help
+exit /b 1
+
+:reset_services_args_done
 call :log_warn "This will run down --volumes --remove-orphans"
 set "ANSWER="
 set /p ANSWER="Continue? [y/N] "
@@ -785,7 +821,7 @@ if /I not "%ANSWER%"=="y" (
   exit /b 0
 )
 call :docker_compose down --volumes --remove-orphans || exit /b 1
-call :cmd_init
+call :cmd_init %RESET_INIT_ARGS%
 exit /b %ERRORLEVEL%
 
 :cmd_update_packages
@@ -1032,7 +1068,7 @@ echo Commands:
 echo   init [--skip-steps step1,step2] [--list-steps]
 echo   start
 echo   stop-services
-echo   reset-services
+echo   reset-services [--skip-init-steps step1,step2]
 echo   update-packages
 echo   doctor
 echo   status
@@ -1063,7 +1099,8 @@ echo.
 echo   reset-services
 echo     - confirm
 echo     - docker compose down --volumes --remove-orphans
-echo     - init
+echo     - rerun init after teardown
+echo     - use --skip-init-steps to forward skip lists to init's --skip-steps
 echo.
 echo   update-packages
 echo     - for each folder in apps/* packages/* workers/* with package.json

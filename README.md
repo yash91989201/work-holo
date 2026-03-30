@@ -26,6 +26,7 @@ This project was created with [Better-T-Stack](https://github.com/AmanVarshney01
 This project includes a `scripts/dev.sh` script to manage the entire local development workflow.
 On Windows cmd shell, use `scripts\dev.cmd`.
 Example (Windows): `scripts\dev.cmd init --skip-steps deps-install`
+Windows `reset-services` supports the same skip forwarding: `scripts\dev.cmd reset-services --skip-init-steps deps-install`
 
 ### Quick Start
 
@@ -73,6 +74,9 @@ scripts/dev.sh start --dev-only
 # Stop all docker services
 scripts/dev.sh stop-services
 
+# Reset this project's services and volumes, then re-run init while skipping dependency install
+scripts/dev.sh reset-services --skip-init-steps deps-install
+
 # Check what's running
 scripts/dev.sh status
 
@@ -93,7 +97,7 @@ scripts/dev.sh logs postgres
 | `start --dev-only` | Start only dev server (with Turbo TUI), auto-starts services if needed |
 | `stop-services` | Stop all Docker services |
 | `status` | Show status of services, ports, and environment files |
-| `reset-services` | **Destructive** - Remove all containers, volumes, and re-initialize |
+| `reset-services [--skip-init-steps step1,step2]` | **Destructive** - Remove all containers, volumes, and re-run `init`. `--skip-init-steps` forwards the same step names supported by `init --skip-steps`, including dependency validation. |
 | `update-packages` | Update all packages, remove node_modules, and fresh install |
 | `doctor` | Check dependencies, env files, services, and ports |
 | `logs [service]` | View Docker logs for a specific service (or all if no service specified) |
