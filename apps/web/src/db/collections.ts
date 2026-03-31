@@ -1,5 +1,5 @@
 import { electricCollectionOptions } from "@tanstack/electric-db-collection";
-import { createCollection } from "@tanstack/react-db";
+import { BasicIndex, createCollection } from "@tanstack/react-db";
 import {
   AccountSchema,
   AttachmentSchema,
@@ -40,6 +40,8 @@ export const messagesCollection = createCollection(
   electricCollectionOptions({
     getKey: (m) => m.id,
     schema: MessageSchema,
+    autoIndex: "eager",
+    defaultIndexType: BasicIndex,
     shapeOptions: {
       url: `${ELECTRIC_SHAPE_BASE_URL}/messages`,
       params: {
@@ -363,6 +365,8 @@ export const dmMessagesCollection = createCollection(
   electricCollectionOptions({
     getKey: (m) => m.id,
     schema: DmMessageSchema,
+    autoIndex: "eager",
+    defaultIndexType: BasicIndex,
     shapeOptions: {
       url: `${ELECTRIC_SHAPE_BASE_URL}/dm-messages`,
       params: {

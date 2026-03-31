@@ -29,7 +29,7 @@ services:
       retries: 5
 
   electric:
-    image: docker.io/electricsql/electric:1.2.11
+    image: docker.io/electricsql/electric:1.4.16
     environment:
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres
       # Not suitable for production. Only use insecure mode in development or if you've otherwise secured the Electric API.
@@ -74,6 +74,7 @@ services:
       discovery.type: single-node
       DISABLE_SECURITY_PLUGIN: "true"
       DISABLE_INSTALL_DEMO_CONFIG: "true"
+      OPENSEARCH_JAVA_OPTS: "-Xms512m -Xmx512m"
     volumes:
       - opensearch_data:/usr/share/opensearch/data
     healthcheck:
@@ -160,6 +161,18 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+
+  seeder:
+    build:
+      context: .
+      dockerfile: apps/seeder/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres
+    profiles:
+      - seed
 
 volumes:
   dragonfly_data:

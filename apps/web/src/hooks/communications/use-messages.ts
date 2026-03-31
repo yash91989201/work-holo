@@ -89,14 +89,14 @@ export function useVirtualMessages() {
     );
 
     requestAnimationFrame(() => {
-      if (newMessagesSeparatorIndex !== -1) {
+      if (newMessagesSeparatorIndex === -1) {
+        // No new messages, scroll to bottom
+        virtualizer.scrollToOffset(el.scrollHeight, { align: "end" });
+      } else {
         // Scroll to new messages separator
         virtualizer.scrollToIndex(newMessagesSeparatorIndex, {
           align: "start",
         });
-      } else {
-        // No new messages, scroll to bottom
-        virtualizer.scrollToOffset(el.scrollHeight, { align: "end" });
       }
     });
   }, [channelId, isLoading, messages.length, items, virtualizer]);

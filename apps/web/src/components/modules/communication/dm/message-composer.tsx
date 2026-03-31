@@ -441,7 +441,7 @@ export function DmMessageComposer({
               </div>
             )}
 
-            {replyingToMessage && (
+            {replyingToMessage && !parentMessageId && (
               <div className="mb-2 flex items-start gap-3 rounded-lg bg-primary/25 px-4 py-3">
                 <div className="mt-0.5 shrink-0 text-primary">
                   <IconArrowBackUp className="h-4 w-4" />

@@ -24,25 +24,33 @@
     "db:push": "turbo -F @work-holo/db db:push",
     "db:studio": "turbo -F @work-holo/db db:studio",
     "db:generate": "turbo -F @work-holo/db db:generate",
-    "db:migrate": "turbo -F @work-holo/db db:migrate"
+    "db:migrate": "turbo -F @work-holo/db db:migrate",
+    "seed": "turbo -F seeder seed"
   },
   "dependencies": {
     "dotenv": "^17.3.1",
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.6",
-    "@types/bun": "^1.3.10",
+    "@biomejs/biome": "2.4.9",
+    "@types/bun": "^1.3.11",
     "husky": "^9.1.7",
-    "lint-staged": "^16.3.2",
-    "oxlint": "^1.51.0",
-    "turbo": "^2.8.14",
-    "ultracite": "7.2.5"
+    "lint-staged": "^16.4.0",
+    "oxlint": "^1.57.0",
+    "turbo": "^2.8.21",
+    "ultracite": "7.3.2",
+    "web-push": "^3.6.7"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json,jsonc,css,scss,md,mdx}": [
       "bun x ultracite fix"
     ]
+  },
+  "overrides": {
+    "better-auth": "1.5.5",
+    "@better-auth/core": "1.5.5",
+    "@better-auth/expo": "1.5.5",
+    "@better-auth/passkey": "1.5.5"
   },
   "packageManager": "bun@1.3.10"
 }

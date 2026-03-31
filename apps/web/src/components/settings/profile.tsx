@@ -1,4 +1,5 @@
 import {
+  IconAt,
   IconCamera,
   IconCheck,
   IconLoader2,
@@ -6,7 +7,7 @@ import {
   IconTrashFilled,
   IconX,
 } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -27,7 +28,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { FieldGroup } from "@/components/ui/field";
 import { useAppForm } from "@/components/ui/form/hooks";
-import { Input } from "@/components/ui/input";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import {
   Item,
   ItemActions,
@@ -266,11 +272,12 @@ function EmailUpdateDialog({
             <FieldGroup>
               <form.AppField name="email">
                 {(field) => (
-                  <field.Input
+                  <field.InputGroup
                     description="Enter your new email address"
                     label="Email"
-                    type="email"
-                  />
+                  >
+                    <field.InputGroupInput type="email" />
+                  </field.InputGroup>
                 )}
               </form.AppField>
             </FieldGroup>
@@ -381,27 +388,45 @@ function InlineNameEditor({
   return (
     <div className="flex items-center gap-2">
       <div className="flex-1">
-        <Input
-          autoFocus
-          className={cn(error && "border-destructive")}
-          onChange={(e) => {
-            setValue(e.target.value);
-            setError(null);
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") handleSave();
-            if (e.key === "Escape") onCancel();
-          }}
-          value={value}
-        />
-        {error && <p className="mt-1 text-destructive text-xs">{error}</p>}
+        <InputGroup>
+          <InputGroupInput
+            aria-describedby={error ? "name-error" : undefined}
+            aria-label="Edit full name"
+            autoFocus
+            className={cn(error && "border-destructive")}
+            onChange={(e) => {
+              setValue(e.target.value);
+              setError(null);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSave();
+              if (e.key === "Escape") onCancel();
+            }}
+            value={value}
+          />
+          <InputGroupAddon align="inline-end">
+            <InputGroupButton
+              aria-label="Save"
+              onClick={handleSave}
+              size="icon-xs"
+            >
+              <IconCheck className="size-4 text-green-600" />
+            </InputGroupButton>
+            <InputGroupButton
+              aria-label="Cancel"
+              onClick={onCancel}
+              size="icon-xs"
+            >
+              <IconX className="size-4 text-destructive" />
+            </InputGroupButton>
+          </InputGroupAddon>
+        </InputGroup>
+        {error && (
+          <p className="mt-1 text-destructive text-xs" id="name-error">
+            {error}
+          </p>
+        )}
       </div>
-      <Button onClick={handleSave} size="icon-sm" variant="ghost">
-        <IconCheck className="size-4 text-green-600" />
-      </Button>
-      <Button onClick={onCancel} size="icon-sm" variant="ghost">
-        <IconX className="size-4 text-destructive" />
-      </Button>
     </div>
   );
 }
@@ -480,28 +505,49 @@ function InlineDisplayUsernameEditor({
   return (
     <div className="flex items-center gap-2">
       <div className="flex-1">
-        <Input
-          autoFocus
-          className={cn(error && "border-destructive")}
-          onChange={(e) => {
-            setValue(e.target.value);
-            setError(null);
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") handleSave();
-            if (e.key === "Escape") onCancel();
-          }}
-          placeholder="Display username"
-          value={value}
-        />
-        {error && <p className="mt-1 text-destructive text-xs">{error}</p>}
+        <InputGroup>
+          <InputGroupInput
+            aria-describedby={error ? "display-username-error" : undefined}
+            aria-label="Edit display username"
+            autoFocus
+            className={cn(error && "border-destructive")}
+            onChange={(e) => {
+              setValue(e.target.value);
+              setError(null);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleSave();
+              if (e.key === "Escape") onCancel();
+            }}
+            placeholder="Display username"
+            value={value}
+          />
+          <InputGroupAddon align="inline-end">
+            <InputGroupButton
+              aria-label="Save"
+              onClick={handleSave}
+              size="icon-xs"
+            >
+              <IconCheck className="size-4 text-green-600" />
+            </InputGroupButton>
+            <InputGroupButton
+              aria-label="Cancel"
+              onClick={onCancel}
+              size="icon-xs"
+            >
+              <IconX className="size-4 text-destructive" />
+            </InputGroupButton>
+          </InputGroupAddon>
+        </InputGroup>
+        {error && (
+          <p
+            className="mt-1 text-destructive text-xs"
+            id="display-username-error"
+          >
+            {error}
+          </p>
+        )}
       </div>
-      <Button onClick={handleSave} size="icon-sm" variant="ghost">
-        <IconCheck className="size-4 text-green-600" />
-      </Button>
-      <Button onClick={onCancel} size="icon-sm" variant="ghost">
-        <IconX className="size-4 text-destructive" />
-      </Button>
     </div>
   );
 }
@@ -567,6 +613,7 @@ function InlineUsernameEditor({
   const [isValidating, setIsValidating] = useState(false);
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
   const [isCheckingAvailability, setIsCheckingAvailability] = useState(false);
+  const requestIdRef = useRef(0);
 
   // Debounced availability check
   useEffect(() => {
@@ -588,12 +635,15 @@ function InlineUsernameEditor({
 
     // Debounce the availability check
     setIsCheckingAvailability(true);
+    const currentRequestId = ++requestIdRef.current;
     const timeoutId = setTimeout(async () => {
       try {
         const { data: response, error: checkError } =
           await authClient.isUsernameAvailable({
             username: value,
           });
+
+        if (currentRequestId !== requestIdRef.current) return;
 
         if (checkError) {
           setIsAvailable(false);
@@ -605,16 +655,18 @@ function InlineUsernameEditor({
           }
         }
       } catch {
+        if (currentRequestId !== requestIdRef.current) return;
         setIsAvailable(false);
         setError("Unable to verify username availability");
       } finally {
-        setIsCheckingAvailability(false);
+        if (currentRequestId === requestIdRef.current) {
+          setIsCheckingAvailability(false);
+        }
       }
     }, 300);
 
     return () => {
       clearTimeout(timeoutId);
-      setIsCheckingAvailability(false);
     };
   }, [value, currentUsername]);
 
@@ -655,8 +707,17 @@ function InlineUsernameEditor({
   return (
     <div className="flex items-center gap-2">
       <div className="flex-1">
-        <div className="relative">
-          <Input
+        <InputGroup>
+          <InputGroupAddon align="inline-start">
+            {isCheckingAvailability ? (
+              <Spinner className="size-4" />
+            ) : (
+              <IconAt className="size-4 text-muted-foreground" />
+            )}
+          </InputGroupAddon>
+          <InputGroupInput
+            aria-describedby={error ? "username-error" : undefined}
+            aria-label="Edit username"
             autoFocus
             className={cn(
               error && isAvailable === false && "border-destructive",
@@ -675,28 +736,33 @@ function InlineUsernameEditor({
             placeholder="username"
             value={value}
           />
-          {isCheckingAvailability && (
-            <div className="absolute top-1/2 right-3 -translate-y-1/2">
-              <IconLoader2 className="size-4 animate-spin text-muted-foreground" />
-            </div>
-          )}
-        </div>
-        {error && <p className="mt-1 text-destructive text-xs">{error}</p>}
+          <InputGroupAddon align="inline-end">
+            <InputGroupButton
+              aria-label="Save"
+              disabled={isSaveDisabled}
+              onClick={handleSave}
+              size="icon-xs"
+            >
+              <IconCheck className="size-4 text-green-600" />
+            </InputGroupButton>
+            <InputGroupButton
+              aria-label="Cancel"
+              onClick={onCancel}
+              size="icon-xs"
+            >
+              <IconX className="size-4 text-destructive" />
+            </InputGroupButton>
+          </InputGroupAddon>
+        </InputGroup>
+        {error && (
+          <p className="mt-1 text-destructive text-xs" id="username-error">
+            {error}
+          </p>
+        )}
         {isAvailable === true && !error && (
           <p className="mt-1 text-green-600 text-xs">Username is available</p>
         )}
       </div>
-      <Button
-        disabled={isSaveDisabled}
-        onClick={handleSave}
-        size="icon-sm"
-        variant="ghost"
-      >
-        <IconCheck className="size-4 text-green-600" />
-      </Button>
-      <Button onClick={onCancel} size="icon-sm" variant="ghost">
-        <IconX className="size-4 text-destructive" />
-      </Button>
     </div>
   );
 }

@@ -99,6 +99,6 @@ function FormInputGroupSpinner() {
 export {
   FormInputGroup,
   FormInputGroupInput,
-  FormInputGroupTextarea,
   FormInputGroupSpinner,
+  FormInputGroupTextarea,
 };

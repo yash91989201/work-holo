@@ -7,26 +7,28 @@
     "check-types": "tsc -b",
     "compile": "bun build --compile --target=bun --minify --sourcemap --bytecode ./src/index.ts --outfile server",
     "dev": "bun run --hot src/index.ts",
-    "start": "bun run dist/index.js"
+    "start": "bun run dist/index.js",
+    "db:seed": "bun run src/db/seed.ts"
   },
   "dependencies": {
-    "@orpc/openapi": "^1.13.6",
-    "@orpc/server": "^1.13.6",
-    "@orpc/zod": "^1.13.6",
+    "@orpc/openapi": "^1.13.13",
+    "@orpc/server": "^1.13.13",
+    "@orpc/zod": "^1.13.13",
     "@work-holo/api": "workspace:*",
     "@work-holo/auth": "workspace:*",
     "@work-holo/db": "workspace:*",
     "@work-holo/env": "workspace:*",
     "@work-holo/infrastructure": "workspace:*",
     "@work-holo/permission": "workspace:*",
-    "better-auth": "^1.5.4",
+    "better-auth": "^1.5.5",
     "dotenv": "^17.3.1",
-    "hono": "^4.12.5"
+    "hono": "^4.12.9",
+    "drizzle-orm": "^0.45.2"
   },
   "devDependencies": {
-    "typescript": "^5.9.3",
-    "@types/bun": "^1.3.10",
-    "tsdown": "^0.21.0",
+    "typescript": "^6.0.2",
+    "@types/bun": "^1.3.11",
+    "tsdown": "^0.21.6",
     "@work-holo/config": "workspace:*"
   }
 }

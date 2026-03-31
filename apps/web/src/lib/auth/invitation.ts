@@ -72,9 +72,9 @@ async function resolveAndActivateOrganization(organizationId: string | null) {
   }
 
   const organization =
-    (organizationId !== null
-      ? organizations?.find((item) => item.id === organizationId)
-      : undefined) ??
+    (organizationId === null
+      ? undefined
+      : organizations?.find((item) => item.id === organizationId)) ??
     organizations?.[0] ??
     null;
 

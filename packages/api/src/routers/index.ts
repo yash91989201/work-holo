@@ -1,5 +1,6 @@
 import type { RouterClient } from "@orpc/server";
 import { publicProcedure } from "../index";
+import { adminRouter } from "./admin";
 import { attendanceRouter } from "./attendance";
 import { communicationRouter } from "./communication";
 import { notificationRouter } from "./notification";
@@ -11,6 +12,7 @@ import { userRouter } from "./user";
 
 export const appRouter = {
   healthCheck: publicProcedure.handler(() => "OK"),
+  admin: adminRouter,
   attendance: attendanceRouter,
   communication: communicationRouter,
   notification: notificationRouter,

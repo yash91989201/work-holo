@@ -6,7 +6,21 @@
       "idx": 0,
       "version": "7",
       "when": 1773666532749,
-      "tag": "0000_chemical_blazing_skull",
+      "tag": "0000_final_init",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1773826693496,
+      "tag": "0001_massive_shadow_king",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1774950965163,
+      "tag": "0002_sad_rogue",
       "breakpoints": true
     }
   ]

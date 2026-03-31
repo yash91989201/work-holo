@@ -6,7 +6,6 @@ import {
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { UAParser } from "ua-parser-js";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Item,
@@ -16,6 +15,7 @@ import {
   ItemTitle,
 } from "@/components/ui/item";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useSession } from "@/hooks/use-session";
 import { useSessionList } from "@/hooks/use-session-list";
 import { getAuthQueryKey } from "@/lib/auth/query-keys";
@@ -50,9 +50,8 @@ export function CurrentSession() {
 
       toast.success("Logged out successfully");
       navigate({ to: "/login" });
-    } catch (err) {
+    } catch {
       toast.error("An unexpected error occurred");
-      console.error("Error logging out:", err);
     }
   }
 
@@ -61,29 +60,33 @@ export function CurrentSession() {
   }
 
   return (
-    <Item>
-      <ItemContent>
-        <ItemTitle className="flex items-center gap-2">
-          {new UAParser(currentSessionData.userAgent || "").getResult().device
-            .type === "mobile" ? (
-            <IconDeviceMobile className="size-4" />
-          ) : (
-            <IconDeviceDesktop className="size-4" />
-          )}
-          {getBrowserInformation(currentSessionData.userAgent)}
-          <Badge>Current</Badge>
-        </ItemTitle>
-        <ItemDescription>
-          Created: {formatDate(currentSessionData.createdAt)} • Expires:{" "}
-          {formatDate(currentSessionData.expiresAt)}
-        </ItemDescription>
-      </ItemContent>
-      <ItemActions>
-        <Button onClick={logout} size="sm" variant="destructive">
-          Logout
-        </Button>
-      </ItemActions>
-    </Item>
+    <div className="space-y-3">
+      <h3>Current session</h3>
+      <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
+        <Item>
+          <ItemContent>
+            <ItemTitle className="flex items-center gap-2">
+              {new UAParser(currentSessionData.userAgent || "").getResult()
+                .device.type === "mobile" ? (
+                <IconDeviceMobile className="size-4" />
+              ) : (
+                <IconDeviceDesktop className="size-4" />
+              )}
+              {getBrowserInformation(currentSessionData.userAgent)}
+            </ItemTitle>
+            <ItemDescription>
+              Created: {formatDate(currentSessionData.createdAt)} • Expires:{" "}
+              {formatDate(currentSessionData.expiresAt)}
+            </ItemDescription>
+          </ItemContent>
+          <ItemActions>
+            <Button onClick={logout} size="sm" variant="destructive">
+              Logout
+            </Button>
+          </ItemActions>
+        </Item>
+      </div>
+    </div>
   );
 }
 
@@ -104,9 +107,8 @@ export function OtherSessions() {
       await queryClient.invalidateQueries({
         queryKey: getAuthQueryKey.session.list(),
       });
-    } catch (err) {
+    } catch {
       toast.error("An unexpected error occurred");
-      console.error("Error revoking session:", err);
     }
   }
 
@@ -123,9 +125,8 @@ export function OtherSessions() {
       await queryClient.invalidateQueries({
         queryKey: getAuthQueryKey.session.list(),
       });
-    } catch (err) {
+    } catch {
       toast.error("An unexpected error occurred");
-      console.error("Error revoking other sessions:", err);
     }
   }
 
@@ -134,18 +135,44 @@ export function OtherSessions() {
     sessions?.filter((s) => s.token !== currentSessionToken) || [];
 
   return (
-    <>
-      <Item>
-        <ItemContent>
-          <ItemTitle>Other Sessions</ItemTitle>
-          <ItemDescription>
-            {otherSessions.length > 0
-              ? `${otherSessions.length} other session${otherSessions.length === 1 ? "" : "s"} active`
-              : "No other sessions"}
-          </ItemDescription>
-        </ItemContent>
-        <ItemActions>
-          {otherSessions.length > 0 && (
+    <div className="space-y-3">
+      <h3>Other sessions</h3>
+      {otherSessions.length > 0 ? (
+        <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
+          {otherSessions.map((session, index) => (
+            <div key={session.id}>
+              <Item>
+                <ItemContent>
+                  <ItemTitle className="flex items-center gap-2">
+                    {new UAParser(session.userAgent || "").getResult().device
+                      .type === "mobile" ? (
+                      <IconDeviceMobile className="size-4" />
+                    ) : (
+                      <IconDeviceDesktop className="size-4" />
+                    )}
+                    {getBrowserInformation(session.userAgent)}
+                  </ItemTitle>
+                  <ItemDescription>
+                    Created: {formatDate(session.createdAt)} • Expires:{" "}
+                    {formatDate(session.expiresAt)}
+                  </ItemDescription>
+                </ItemContent>
+                <ItemActions>
+                  <Button
+                    aria-label="Revoke session"
+                    onClick={() => revokeSession(session.token)}
+                    size="sm"
+                    variant="destructive"
+                  >
+                    <IconTrashFilled className="size-4" />
+                  </Button>
+                </ItemActions>
+              </Item>
+              {index < otherSessions.length - 1 && <Separator />}
+            </div>
+          ))}
+          <Separator />
+          <div className="flex justify-end p-4">
             <Button
               onClick={revokeOtherSessions}
               size="sm"
@@ -153,125 +180,69 @@ export function OtherSessions() {
             >
               Revoke All
             </Button>
-          )}
-        </ItemActions>
-      </Item>
-
-      {otherSessions.length > 0 && (
-        <>
-          <Separator />
-          {otherSessions.map((session) => (
-            <Item key={session.id}>
-              <ItemContent>
-                <ItemTitle className="flex items-center gap-2">
-                  {new UAParser(session.userAgent || "").getResult().device
-                    .type === "mobile" ? (
-                    <IconDeviceMobile className="size-4" />
-                  ) : (
-                    <IconDeviceDesktop className="size-4" />
-                  )}
-                  {getBrowserInformation(session.userAgent)}
-                </ItemTitle>
-                <ItemDescription>
-                  Created: {formatDate(session.createdAt)} • Expires:{" "}
-                  {formatDate(session.expiresAt)}
-                </ItemDescription>
-              </ItemContent>
-              <ItemActions>
-                <Button
-                  onClick={() => revokeSession(session.token)}
-                  size="sm"
-                  variant="destructive"
-                >
-                  <IconTrashFilled className="size-4" />
-                </Button>
-              </ItemActions>
-            </Item>
-          ))}
-        </>
+          </div>
+        </div>
+      ) : (
+        <p className="text-muted-foreground text-sm">
+          No other active sessions.
+        </p>
       )}
-    </>
-  );
-}
-
-export function ManageSessions() {
-  return (
-    <div className="space-y-3">
-      <h3>Manage sessions</h3>
-      <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
-        <CurrentSession />
-        <Separator />
-        <OtherSessions />
-      </div>
     </div>
   );
 }
 
 export function CurrentSessionSkeleton() {
   return (
-    <Item>
-      <ItemContent>
-        <ItemTitle className="flex items-center gap-2">
-          <div className="h-4 w-4 animate-pulse rounded bg-muted" />
-          <div className="h-4 w-48 animate-pulse rounded bg-muted" />
-          <div className="h-5 w-16 animate-pulse rounded bg-muted" />
-        </ItemTitle>
-        <ItemDescription>
-          <div className="h-3 w-64 animate-pulse rounded bg-muted" />
-        </ItemDescription>
-      </ItemContent>
-      <ItemActions>
-        <div className="h-8 w-20 animate-pulse rounded bg-muted" />
-      </ItemActions>
-    </Item>
+    <div className="space-y-3">
+      <h3>Current session</h3>
+      <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
+        <Item>
+          <ItemContent>
+            <ItemTitle className="flex items-center gap-2">
+              <Skeleton className="h-4 w-4" />
+              <Skeleton className="h-4 w-48" />
+            </ItemTitle>
+            <ItemDescription>
+              <Skeleton className="h-3 w-64" />
+            </ItemDescription>
+          </ItemContent>
+          <ItemActions>
+            <Skeleton className="h-8 w-20" />
+          </ItemActions>
+        </Item>
+      </div>
+    </div>
   );
 }
 
 export function OtherSessionsSkeleton() {
   return (
-    <>
-      <Item>
-        <ItemContent>
-          <ItemTitle>
-            <div className="h-4 w-36 animate-pulse rounded bg-muted" />
-          </ItemTitle>
-          <ItemDescription>
-            <div className="h-3 w-48 animate-pulse rounded bg-muted" />
-          </ItemDescription>
-        </ItemContent>
-        <ItemActions>
-          <div className="h-8 w-24 animate-pulse rounded bg-muted" />
-        </ItemActions>
-      </Item>
-      <Separator />
-      {Array.from({ length: 2 }).map((_, index) => (
-        <Item key={index.toString()}>
-          <ItemContent>
-            <ItemTitle className="flex items-center gap-2">
-              <div className="h-4 w-4 animate-pulse rounded bg-muted" />
-              <div className="h-4 w-40 animate-pulse rounded bg-muted" />
-            </ItemTitle>
-            <ItemDescription>
-              <div className="h-3 w-56 animate-pulse rounded bg-muted" />
-            </ItemDescription>
-          </ItemContent>
-          <ItemActions>
-            <div className="h-8 w-8 animate-pulse rounded bg-muted" />
-          </ItemActions>
-        </Item>
-      ))}
-    </>
-  );
-}
-
-export function ManageSessionsSkeleton() {
-  return (
     <div className="space-y-3">
-      <h3>Manage sessions</h3>
+      <h3>Other sessions</h3>
       <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
-        <CurrentSessionSkeleton />
-        <Separator />
-        <OtherSessionsSkeleton />
+        {/* biome-ignore lint/suspicious/noArrayIndexKey: static skeleton list */}
+        {Array.from({ length: 2 }).map((_, index) => (
+          <div key={index}>
+            <Item>
+              <ItemContent>
+                <ItemTitle className="flex items-center gap-2">
+                  <Skeleton className="h-4 w-4" />
+                  <Skeleton className="h-4 w-40" />
+                </ItemTitle>
+                <ItemDescription>
+                  <Skeleton className="h-3 w-56" />
+                </ItemDescription>
+              </ItemContent>
+              <ItemActions>
+                <Skeleton className="h-8 w-8" />
+              </ItemActions>
+            </Item>
+            <Separator />
+          </div>
+        ))}
+        <div className="flex justify-end p-4">
+          <Skeleton className="h-8 w-24" />
+        </div>
       </div>
     </div>
   );

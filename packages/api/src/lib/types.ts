@@ -61,6 +61,7 @@ import type {
   MemberPunchOutInput,
   MemberPunchOutOutput,
 } from "./schemas/attendance";
+import type { AdminRoleSchema } from "./schemas/auth";
 import type {
   ArchiveChannelInput,
   ChannelMemberOutput,
@@ -248,6 +249,7 @@ export type AddMemberInputType = z.infer<typeof AddMemberInput>;
 export type AddMemberOutputType = z.infer<typeof AddMemberOutput>;
 export type AddReactionInputType = z.infer<typeof AddReactionInput>;
 export type AddReactionOutputType = z.infer<typeof AddReactionOutput>;
+export type AdminRoleType = z.infer<typeof AdminRoleSchema>;
 export type ArchiveChannelInputType = z.infer<typeof ArchiveChannelInput>;
 export type AttachmentInputType = z.infer<typeof AttachmentInput>;
 export type AttachmentOutputType = z.infer<typeof AttachmentOutput>;

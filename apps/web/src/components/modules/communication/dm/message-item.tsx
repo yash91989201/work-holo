@@ -192,11 +192,10 @@ export function DmMessageItem({
     if (isThreadMessage) {
       setThreadReplyingToMessage(message);
       focusThreadComposer();
-      return;
+    } else {
+      setReplyingToMessage(message);
+      focusMainComposer();
     }
-
-    setReplyingToMessage(message);
-    focusMainComposer();
   };
 
   return (

@@ -503,9 +503,9 @@ export const messageRouter = {
               content: input.content,
               isEdited: true,
               editedAt: new Date(),
-              ...(input.mentions !== undefined
-                ? { mentions: input.mentions }
-                : {}),
+              ...(input.mentions === undefined
+                ? {}
+                : { mentions: input.mentions }),
             })
             .where(eq(messageTable.id, input.messageId))
             .returning();
@@ -851,7 +851,7 @@ export const messageRouter = {
         "channel.message.list"
       );
 
-      const client = OpenSearchClient.getClient();
+      const client = await OpenSearchClient.ensureConnected();
 
       const filters: Record<string, unknown>[] = [
         { term: { scopeType: "channel" } },

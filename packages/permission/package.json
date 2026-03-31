@@ -8,6 +8,9 @@
     "./client": {
       "default": "./src/client.ts"
     },
+    "./seed": {
+      "default": "./src/seed.ts"
+    },
     "./*": {
       "default": "./src/*.ts"
     }
@@ -18,17 +21,17 @@
   },
   "devDependencies": {
     "@work-holo/config": "workspace:*",
-    "pusher": "^5.3.2"
+    "pusher": "^5.3.3"
   },
   "peerDependencies": {
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.2"
   },
   "dependencies": {
-    "@orpc/server": "^1.13.6",
+    "@orpc/server": "^1.13.13",
     "@work-holo/db": "workspace:*",
     "@work-holo/env": "workspace:*",
     "casbin": "^5.49.0",
     "casbin-drizzle-adapter": "^1.1.2",
-    "drizzle-orm": "^0.45.1"
+    "drizzle-orm": "^0.45.2"
   }
 }

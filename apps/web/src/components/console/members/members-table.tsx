@@ -10,11 +10,9 @@ import {
   IconUserFilled,
   IconX,
 } from "@tabler/icons-react";
+import { useDebouncedCallback } from "@tanstack/react-pacer";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { getRouteApi, useSearch } from "@tanstack/react-router";
-
-const routeApi = getRouteApi("/(authenticated)/org/$slug/console/members/");
-
+import { useNavigate, useSearch } from "@tanstack/react-router";
 import {
   type ColumnDef,
   flexRender,
@@ -24,10 +22,9 @@ import {
   type SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { useDebounce } from "@uidotdev/usehooks";
 import type { MemberWithUserType } from "@work-holo/api/lib/types";
 import { format } from "date-fns";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import type { DateRange } from "react-day-picker";
 import { toast } from "sonner";
 import {
@@ -285,27 +282,32 @@ export const MembersTable = () => {
     from: "/(authenticated)/org/$slug/console/members/",
   });
 
-  const navigate = routeApi.useNavigate();
+  const navigate = useNavigate({
+    from: "/org/$slug/console/members/",
+  });
 
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [sorting, setSorting] = useState<SortingState>([]);
 
   const [searchTerm, setSearchTerm] = useState(search.search ?? "");
-  const debouncedSearch = useDebounce(searchTerm, 500);
 
-  const prevDebouncedSearch = useRef(debouncedSearch);
-  useEffect(() => {
-    if (prevDebouncedSearch.current !== debouncedSearch) {
-      prevDebouncedSearch.current = debouncedSearch;
+  const debouncedNavigate = useDebouncedCallback(
+    (value: string) => {
       navigate({
         search: (prev) => ({
           ...prev,
-          search: debouncedSearch || undefined,
+          search: value || undefined,
           page: 1,
         }),
       });
-    }
-  }, [debouncedSearch, navigate]);
+    },
+    { wait: 500 }
+  );
+
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    debouncedNavigate(value);
+  };
 
   const pagination: PaginationState = {
     pageIndex: (search.page ?? 1) - 1,
@@ -340,8 +342,8 @@ export const MembersTable = () => {
       input: {
         page: pagination.pageIndex + 1,
         perPage: pagination.pageSize,
-        search: debouncedSearch || undefined,
-        role: roleFilter !== "all" ? roleFilter : undefined,
+        search: search.search || undefined,
+        role: roleFilter === "all" ? undefined : roleFilter,
         startDate: dateRange?.from,
         endDate: dateRange?.to,
         sorting: sorting.map((s) => ({
@@ -552,7 +554,7 @@ export const MembersTable = () => {
               </InputGroupAddon>
               <InputGroupInput
                 className="bg-background"
-                onChange={(event) => setSearchTerm(event.target.value)}
+                onChange={(event) => handleSearchChange(event.target.value)}
                 placeholder="Filter members..."
                 value={searchTerm}
               />
