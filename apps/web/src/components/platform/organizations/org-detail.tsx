@@ -85,7 +85,7 @@ export function OrgDetail({
           <h2 className="font-semibold text-xl">{data.organization.name}</h2>
           <p className="text-muted-foreground text-sm">
             {data.organization.slug} &middot; {data.totalMembers} member
-            {data.totalMembers !== 1 ? "s" : ""} &middot; Created{" "}
+            {data.totalMembers === 1 ? "" : "s"} &middot; Created{" "}
             {new Date(data.organization.createdAt).toLocaleDateString()}
           </p>
         </div>

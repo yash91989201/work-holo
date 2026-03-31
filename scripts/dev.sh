@@ -227,7 +227,7 @@ S3_SECRET_KEY=$DEV_S3_SECRET_KEY
 S3_ENDPOINT=$DEV_S3_ENDPOINT
 WEB_URL=http://localhost:3001
 ELECTRIC_URL=http://localhost:5003
-ELECTRIC_SECRET=
+ELECTRIC_SECRET=dev-electric-secret
 VAPID_PUBLIC_KEY=$VAPID_PUBLIC_KEY
 VAPID_PRIVATE_KEY=$VAPID_PRIVATE_KEY
 VAPID_SUBJECT=mailto:dev@localhost
@@ -358,14 +358,19 @@ cmd_seed() {
   bun run --cwd apps/seeder src/index.ts "$@"
 }
 
+cmd_bootstrap_dev_workspace() {
+  bun run --cwd apps/seeder seed:dev-bootstrap
+}
+
 cmd_init() {
-  local -a INIT_STEPS=(check-deps deps-install create-env start-compose wait-healthy migrate seed)
+  local -a INIT_STEPS=(check-deps deps-install create-env start-compose wait-healthy migrate seed bootstrap-dev-workspace)
 
   declare -A STEP_DEPS=(
-    [start-compose]="check-deps"
-    [wait-healthy]="start-compose"
-    [migrate]="wait-healthy deps-install"
-    [seed]="migrate"
+     [start-compose]="check-deps"
+     [wait-healthy]="start-compose"
+     [migrate]="wait-healthy"
+     [seed]="migrate"
+     [bootstrap-dev-workspace]="seed"
   )
 
   local list_steps="false"
@@ -555,6 +560,7 @@ cmd_init() {
     wait-healthy) wait_healthy ;;
     migrate) migrate_database ;;
     seed) cmd_seed ;;
+    bootstrap-dev-workspace) cmd_bootstrap_dev_workspace ;;
     esac
   done
   read -r -p "Start development processes now? [y/N] " start_now
@@ -920,10 +926,12 @@ Command behavior:
     - show env file status
   init
     - Runs a sequence of initialization steps
-    - Steps: check-deps, deps-install, create-env, start-compose, wait-healthy, migrate, seed
+    - Steps: check-deps, deps-install, create-env, start-compose, wait-healthy, migrate, seed, bootstrap-dev-workspace
     - Use --skip-steps to skip specific steps (comma-separated)
     - Use --list-steps to see all steps and their dependencies
-    - Skipping a step that others depend on will error unless you also skip dependents
+    - Dependency validation only enforces init step ordering/runtime prerequisites
+    - deps-install can be skipped when dependencies were installed manually beforehand
+    - Skipping a step that later init steps still depend on will error unless you also skip dependents
 
   start [--docker-only] [--dev-only]
     Default: docker compose up -d, wait healthy, bun dev (no TUI)
@@ -938,7 +946,7 @@ Command behavior:
     - confirm
     - docker compose down --volumes --remove-orphans
     - rerun init after teardown
-    - use --skip-init-steps to forward skip lists to init's --skip-steps
+    - use --skip-init-steps to forward skip lists to the init --skip-steps
 
   update-packages
     - for each folder in apps/* packages/* workers/* with package.json
@@ -959,6 +967,12 @@ Command behavior:
   seed [--only=X]
     - bun run --cwd apps/seeder src/index.ts "$@"
 
+  bootstrap-dev-workspace init step:
+    - creates owner/admin/member dev users
+    - creates the default organization, teams, and channels
+    - enables org-wide direct messages for the bootstrap organization
+    - writes USER1..USER7 credentials into apps/server/.env
+
 Managed env files:
   apps/server/.env
   apps/web/.env
@@ -977,7 +991,7 @@ Auth secret generation:
 Docker compose detection:
   prefers docker compose (v2), fallback docker-compose (v1)
 
-Schema sync strategy:
+Migration strategy:
   bun db:migrate
 
 EOF

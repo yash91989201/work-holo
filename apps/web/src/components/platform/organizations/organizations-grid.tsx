@@ -135,7 +135,7 @@ export function OrganizationsGrid() {
                     <IconUsers className="size-4" />
                     <span>
                       {org.memberCount} member
-                      {org.memberCount !== 1 ? "s" : ""}
+                      {org.memberCount === 1 ? "" : "s"}
                     </span>
                   </div>
                   {org.owners.length > 0 && (

@@ -53,7 +53,7 @@ function ReplyPreview({
   replyToMessageId: string;
   isOwnMessage: boolean;
 }) {
-const { highlightMessage } = useChannelMessageHighlight();
+  const { highlightMessage } = useChannelMessageHighlight();
   const { data: replyRows } = useLiveQuery(
     (q) =>
       q

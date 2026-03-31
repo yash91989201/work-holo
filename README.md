@@ -25,8 +25,6 @@ This project was created with [Better-T-Stack](https://github.com/AmanVarshney01
 
 This project includes a `scripts/dev.sh` script to manage the entire local development workflow.
 On Windows cmd shell, use `scripts\dev.cmd`.
-Example (Windows): `scripts\dev.cmd init --skip-steps deps-install`
-Windows `reset-services` supports the same skip forwarding: `scripts\dev.cmd reset-services --skip-init-steps deps-install`
 
 ### Quick Start
 
@@ -46,14 +44,15 @@ This will:
 2. Install npm packages (unless `deps-install` is skipped via `--skip-steps`)
 3. Create environment files with auto-generated secrets
 4. Start Docker services (PostgreSQL, Redis, RabbitMQ, etc.)
-5. Sync the database schema
-6. Seed the database
-7. Prompt to start the development server
+5. Run database migrations
+6. Seed baseline data
+7. Bootstrap the default dev organization, users, teams, channels, and credentials
+8. Prompt to start the development server
 
 ### Development Workflow
 
 ```bash
-# Quick start - full setup (dependencies, env files, docker, schema sync, seed)
+# Quick start - full setup (dependencies, env files, docker, migrations, seed, dev workspace bootstrap)
 scripts/dev.sh init
 
 # Quick start without dependency installation
@@ -91,7 +90,7 @@ scripts/dev.sh logs postgres
 
 | Command | Description |
 |---------|-------------|
-| `init [--skip-steps step1,step2] [--list-steps]` | Full project setup with step controls. `--skip-steps` skips named init steps (with dependency validation). `--list-steps` prints all steps and dependencies. |
+| `init [--skip-steps step1,step2] [--list-steps]` | Full project setup with step controls. `--skip-steps` skips named init steps with dependency validation for the remaining init graph. `deps-install` can be skipped if dependencies were installed manually already. `--list-steps` prints all steps and dependencies. |
 | `start` | Start Docker services and dev server (see options below) |
 | `start --docker-only` | Start only Docker services |
 | `start --dev-only` | Start only dev server (with Turbo TUI), auto-starts services if needed |
@@ -102,6 +101,18 @@ scripts/dev.sh logs postgres
 | `doctor` | Check dependencies, env files, services, and ports |
 | `logs [service]` | View Docker logs for a specific service (or all if no service specified) |
 | `seed [--only=X]` | Run database seeds (optionally filter with --only) |
+
+After `init`, the workflow bootstraps a ready-to-use local workspace and writes the generated credentials to `apps/server/.env` as `USER1..USER7` entries:
+
+- `owner@gmail.com`
+- `admin1@gmail.com`
+- `admin2@gmail.com`
+- `member1@gmail.com`
+- `member2@gmail.com`
+- `member3@gmail.com`
+- `member4@gmail.com`
+
+The bootstrap step creates the default organization, the `IT`, `Sales`, `HR`, and `Accounts` teams, one team channel for each team, and a shared `general` channel so a clean database is immediately usable for development.
 
 ### Manual Setup (Alternative)
 
@@ -126,13 +137,25 @@ If you prefer not to use `scripts/dev.sh`:
    docker compose up -d
    ```
 
-4. Apply database schema:
+4. Run database migrations:
 
    ```bash
-   bun db:push
+   bun db:migrate
    ```
 
-5. Run the development server:
+5. Seed baseline data:
+
+   ```bash
+   bun run --cwd apps/seeder src/index.ts
+   ```
+
+6. Bootstrap the default dev workspace:
+
+   ```bash
+   bun run --cwd apps/seeder seed:dev-bootstrap
+   ```
+
+7. Run the development server:
 
    ```bash
    bun dev
@@ -165,7 +188,8 @@ work-holo/
 - `bun dev:server`: Start only the server
 - `bun check-types`: Check TypeScript types across all apps
 - `bun dev:native`: Start the React Native/Expo development server
-- `bun db:push`: Push schema changes to database
+- `bun db:migrate`: Run committed database migrations
+- `bun db:push`: Push schema changes directly to the database schema
 - `bun db:studio`: Open database studio UI
 - `cd apps/web && bun desktop:dev`: Start Tauri desktop app in development
 - `cd apps/web && bun desktop:build`: Build Tauri desktop app

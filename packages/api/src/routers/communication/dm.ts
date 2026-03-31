@@ -19,6 +19,7 @@ import {
 } from "@work-holo/infrastructure";
 import { and, count, desc, eq, inArray, or, sql } from "drizzle-orm";
 import { z } from "zod";
+import { dmProcedure } from "../../index";
 import { generateTxId } from "../../lib/electric-proxy";
 import {
   CreateDmConversationInput,
@@ -37,7 +38,6 @@ import {
   ToggleDmReactionInput,
   UnmuteDmConversationInput,
 } from "../../lib/schemas/dm";
-import { dmProcedure } from "../../index";
 
 async function verifyParticipant(
   db: typeof _dbType,

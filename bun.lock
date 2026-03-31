@@ -82,10 +82,12 @@
       "version": "0.0.0",
       "dependencies": {
         "@work-holo/api": "workspace:*",
+        "@work-holo/auth": "workspace:*",
         "@work-holo/db": "workspace:*",
         "@work-holo/env": "workspace:*",
         "@work-holo/permission": "workspace:*",
         "better-auth": "^1.5.5",
+        "drizzle-orm": "^0.45.2",
       },
       "devDependencies": {
         "@types/bun": "^1.3.11",

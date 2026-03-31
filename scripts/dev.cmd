@@ -114,12 +114,13 @@ exit /b %ERRORLEVEL%
 :check_deps
 call :check_command bun || exit /b 1
 call :check_command docker || exit /b 1
+call :check_command openssl || exit /b 1
 call :detect_docker_compose || exit /b 1
 exit /b 0
 
 :generate_better_auth_secret
 set "_SECRET="
-for /f "usebackq delims=" %%S in (`bun -e "process.stdout.write(require('crypto').randomBytes(24).toString('base64url').slice(0,32))"`) do (
+for /f "usebackq delims=" %%S in (`openssl rand -base64 24 ^| bun -e "const fs=require('node:fs');process.stdout.write(fs.readFileSync(0,'utf8').replace(/[\/+=]/g,'').slice(0,32))"`) do (
   set "_SECRET=%%S"
 )
 if not defined _SECRET (
@@ -261,7 +262,7 @@ if not exist "%TARGET%" (
     echo S3_ENDPOINT=%DEV_S3_ENDPOINT%
     echo WEB_URL=http://localhost:3001
     echo ELECTRIC_URL=http://localhost:5003
-    echo ELECTRIC_SECRET=
+    echo ELECTRIC_SECRET=dev-electric-secret
     echo VAPID_PUBLIC_KEY=%VAPID_PUBLIC_KEY%
     echo VAPID_PRIVATE_KEY=%VAPID_PRIVATE_KEY%
     echo VAPID_SUBJECT=mailto:dev@localhost
@@ -290,7 +291,7 @@ call :ensure_env_default "%TARGET%" "S3_SECRET_KEY" "%DEV_S3_SECRET_KEY%" ENV_CH
 call :ensure_env_default "%TARGET%" "S3_ENDPOINT" "%DEV_S3_ENDPOINT%" ENV_CHANGED
 call :ensure_env_default "%TARGET%" "WEB_URL" "http://localhost:3001" ENV_CHANGED
 call :ensure_env_default "%TARGET%" "ELECTRIC_URL" "http://localhost:5003" ENV_CHANGED
-call :ensure_env_default "%TARGET%" "ELECTRIC_SECRET" "" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "ELECTRIC_SECRET" "dev-electric-secret" ENV_CHANGED
 call :ensure_env_default "%TARGET%" "VAPID_PUBLIC_KEY" "%VAPID_PUBLIC_KEY%" ENV_CHANGED
 call :ensure_env_default "%TARGET%" "VAPID_PRIVATE_KEY" "%VAPID_PRIVATE_KEY%" ENV_CHANGED
 call :ensure_env_default "%TARGET%" "VAPID_SUBJECT" "mailto:dev@localhost" ENV_CHANGED
@@ -539,6 +540,10 @@ exit /b %RC%
 bun run --cwd apps/seeder src/index.ts %*
 exit /b %ERRORLEVEL%
 
+:cmd_bootstrap_dev_workspace
+bun run --cwd apps/seeder seed:dev-bootstrap
+exit /b %ERRORLEVEL%
+
 :step_to_var
 set "_STEP_KEY=%~1"
 set "_STEP_KEY=%_STEP_KEY:-=_%"
@@ -562,6 +567,7 @@ if /I "%~1"=="start-compose" exit /b 0
 if /I "%~1"=="wait-healthy" exit /b 0
 if /I "%~1"=="migrate" exit /b 0
 if /I "%~1"=="seed" exit /b 0
+if /I "%~1"=="bootstrap-dev-workspace" exit /b 0
 exit /b 1
 
 :mark_skip_step
@@ -742,19 +748,24 @@ if /I "%~1"=="seed" (
   call :cmd_seed
   exit /b %ERRORLEVEL%
 )
+if /I "%~1"=="bootstrap-dev-workspace" (
+  call :cmd_bootstrap_dev_workspace
+  exit /b %ERRORLEVEL%
+)
 call :log_error "Unknown init step: %~1"
 exit /b 1
 
 :cmd_init
-set "INIT_STEPS=check-deps deps-install create-env start-compose wait-healthy migrate seed"
-set "INIT_STEP_LIST=check-deps, deps-install, create-env, start-compose, wait-healthy, migrate, seed"
+set "INIT_STEPS=check-deps deps-install create-env start-compose wait-healthy migrate seed bootstrap-dev-workspace"
+set "INIT_STEP_LIST=check-deps, deps-install, create-env, start-compose, wait-healthy, migrate, seed, bootstrap-dev-workspace"
 set "STEP_DEPS_check_deps="
 set "STEP_DEPS_deps_install="
 set "STEP_DEPS_create_env="
 set "STEP_DEPS_start_compose=check-deps"
 set "STEP_DEPS_wait_healthy=start-compose"
-set "STEP_DEPS_migrate=wait-healthy deps-install"
+set "STEP_DEPS_migrate=wait-healthy"
 set "STEP_DEPS_seed=migrate"
+set "STEP_DEPS_bootstrap_dev_workspace=seed"
 
 set "SKIP_STEPS="
 for %%S in (%INIT_STEPS%) do (
@@ -1242,9 +1253,11 @@ echo     - show docker service status
 echo     - show port status
 echo     - show env file status
 echo   init
-echo     - steps run in order: check-deps, deps-install, create-env, start-compose, wait-healthy, migrate, seed
+echo     - steps run in order: check-deps, deps-install, create-env, start-compose, wait-healthy, migrate, seed, bootstrap-dev-workspace
 echo     - use --skip-steps to skip specific steps ^(comma-separated^)
-echo     - dependency validation prevents skipping required upstream steps
+echo     - dependency validation only enforces init step ordering/runtime prerequisites
+echo     - deps-install can be skipped when dependencies were installed manually beforehand
+echo     - skipping a step that later init steps still depend on will error unless you also skip dependents
 echo     - use --list-steps to show available steps and dependencies
 echo     - prompt to start dev
 echo.
@@ -1252,7 +1265,7 @@ echo   start [--docker-only] [--dev-only]
 echo     Default: docker compose up -d, wait healthy, bun dev
 echo     --docker-only: start only docker services
 echo     --dev-only: start only dev server ^(with TUI^), auto-start services if needed
-echo     Ctrl+C prompt: docker services stop in 5s; press N to keep them running.
+echo     Ctrl+C prompt: Docker services will stop in 5s. Press 'n' to keep them running...
 echo.
 echo   stop-services
 echo     - docker compose stop
@@ -1261,7 +1274,7 @@ echo   reset-services
 echo     - confirm
 echo     - docker compose down --volumes --remove-orphans
 echo     - rerun init after teardown
-echo     - use --skip-init-steps to forward skip lists to init's --skip-steps
+echo     - use --skip-init-steps to forward skip lists to the init --skip-steps
 echo.
 echo   update-packages
 echo     - for each folder in apps/* packages/* workers/* with package.json
@@ -1282,6 +1295,12 @@ echo.
 echo   seed [--only=X]
 echo     - bun run --cwd apps/seeder src/index.ts %%*
 echo.
+echo   bootstrap-dev-workspace init step
+echo     - creates owner/admin/member dev users
+echo     - creates the default organization, teams, and channels
+echo     - enables org-wide direct messages for the bootstrap organization
+echo     - writes USER1..USER7 credentials into apps/server/.env
+echo.
 echo Managed env files:
 echo   apps/server/.env
 echo   apps/web/.env
@@ -1295,12 +1314,12 @@ echo   shared across server/web/notification env files
 echo   on failure, VAPID values remain empty
 echo.
 echo Auth secret generation:
-echo   bun -e "process.stdout.write(require('crypto').randomBytes(24).toString('base64url').slice(0,32))"
+echo   openssl rand -base64 24 ^| tr -d '/+=' ^| head -c 32
 echo.
 echo Docker compose detection:
 echo   prefers docker compose ^(v2^), fallback docker-compose ^(v1^)
 echo.
-echo Schema sync strategy:
+echo Migration strategy:
 echo   bun db:migrate
 echo.
 exit /b 0
