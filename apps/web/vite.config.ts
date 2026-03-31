@@ -1,19 +1,86 @@
 import path from "node:path";
+import babel from "@rolldown/plugin-babel";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
-import react from "@vitejs/plugin-react";
+import react, { reactCompilerPreset } from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 import { viteVersionPlugin } from "./vite-version-plugin";
+
+const manualChunkGroups = {
+  react: ["react", "react-dom"],
+  tanstack: [
+    "@tanstack/react-query",
+    "@tanstack/react-query-devtools",
+    "@tanstack/react-router",
+    "@tanstack/react-router-devtools",
+    "@tanstack/react-table",
+    "@tanstack/react-virtual",
+    "@tanstack/react-form",
+    "@tanstack/react-db",
+    "@tanstack/electric-db-collection",
+  ],
+  tiptap: [
+    "@tiptap/react",
+    "@tiptap/starter-kit",
+    "@tiptap/suggestion",
+    "@tiptap/extension-image",
+    "@tiptap/extension-mention",
+    "@tiptap/extension-link",
+    "@tiptap/extension-placeholder",
+    "@tiptap/extension-underline",
+  ],
+  ui: [
+    "radix-ui",
+    "class-variance-authority",
+    "clsx",
+    "tailwind-merge",
+    "sonner",
+    "@tabler/icons-react",
+    "vaul",
+    "embla-carousel-react",
+    "react-resizable-panels",
+    "cmdk",
+    "next-themes",
+    "input-otp",
+    "frimousse",
+    "tippy.js",
+  ],
+  utils: [
+    "zod",
+    "date-fns",
+    "dompurify",
+    "html-react-parser",
+    "react-dropzone",
+  ],
+  charts: ["recharts"],
+  auth: ["better-auth"],
+  state: ["zustand"],
+  calendar: ["react-day-picker"],
+  orpc: ["@orpc/client", "@orpc/tanstack-query"],
+} as const satisfies Record<string, readonly string[]>;
+
+const manualChunks = (id: string): string | undefined => {
+  if (!id.includes("node_modules")) {
+    return undefined;
+  }
+
+  for (const [chunkName, packages] of Object.entries(manualChunkGroups)) {
+    if (packages.some((packageName) => id.includes(packageName))) {
+      return chunkName;
+    }
+  }
+
+  return undefined;
+};
 
 export default defineConfig({
   plugins: [
     tailwindcss(),
     tanstackRouter({}),
-    react({
-      babel: {
-        plugins: ["babel-plugin-react-compiler"],
-      },
+    react(),
+    babel({
+      presets: [reactCompilerPreset()],
     }),
     VitePWA({
       registerType: "autoUpdate",
@@ -51,58 +118,7 @@ export default defineConfig({
     chunkSizeWarningLimit: 600,
     rollupOptions: {
       output: {
-        manualChunks: {
-          react: ["react", "react-dom"],
-          tanstack: [
-            "@tanstack/react-query",
-            "@tanstack/react-query-devtools",
-            "@tanstack/react-router",
-            "@tanstack/react-router-devtools",
-            "@tanstack/react-table",
-            "@tanstack/react-virtual",
-            "@tanstack/react-form",
-            "@tanstack/react-db",
-            "@tanstack/electric-db-collection",
-          ],
-          tiptap: [
-            "@tiptap/react",
-            "@tiptap/starter-kit",
-            "@tiptap/suggestion",
-            "@tiptap/extension-image",
-            "@tiptap/extension-mention",
-            "@tiptap/extension-link",
-            "@tiptap/extension-placeholder",
-            "@tiptap/extension-underline",
-          ],
-          ui: [
-            "radix-ui",
-            "class-variance-authority",
-            "clsx",
-            "tailwind-merge",
-            "sonner",
-            "@tabler/icons-react",
-            "vaul",
-            "embla-carousel-react",
-            "react-resizable-panels",
-            "cmdk",
-            "next-themes",
-            "input-otp",
-            "frimousse",
-            "tippy.js",
-          ],
-          utils: [
-            "zod",
-            "date-fns",
-            "dompurify",
-            "html-react-parser",
-            "react-dropzone",
-          ],
-          charts: ["recharts"],
-          auth: ["better-auth"],
-          state: ["zustand"],
-          calendar: ["react-day-picker"],
-          orpc: ["@orpc/client", "@orpc/tanstack-query"],
-        },
+        manualChunks,
       },
     },
   },

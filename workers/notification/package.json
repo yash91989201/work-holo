@@ -13,7 +13,7 @@
     "@work-holo/env": "workspace:*",
     "@work-holo/config": "workspace:*",
     "@work-holo/infrastructure": "workspace:*",
-    "amqplib": "^0.10.9",
+    "amqplib": "^1.0.2",
     "drizzle-orm": "^0.45.2",
     "nodemailer": "^8.0.4",
     "react": "^19.2.4",
