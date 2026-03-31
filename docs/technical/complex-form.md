@@ -143,8 +143,6 @@ const { mutateAsync: createChannel } = useMutation(
 ## 📝 Boilerplate (Complex Form with Arrays)
 
 ```tsx
-"use client";
-
 import { IconX } from "@tabler/icons-react";
 import { z } from "zod";
 import { useMutation } from "@tanstack/react-query";

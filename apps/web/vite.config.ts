@@ -89,7 +89,6 @@ export default defineConfig({
             "input-otp",
             "frimousse",
             "tippy.js",
-            "@uidotdev/usehooks",
           ],
           utils: [
             "zod",

@@ -71,7 +71,6 @@
     "@tiptap/react": "^3.21.0",
     "@tiptap/starter-kit": "^3.21.0",
     "@tiptap/suggestion": "^3.21.0",
-    "@uidotdev/usehooks": "^2.4.1",
     "@work-holo/api": "workspace:*",
     "@work-holo/auth": "workspace:*",
     "@work-holo/db": "workspace:*",

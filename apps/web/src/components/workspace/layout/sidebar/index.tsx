@@ -10,6 +10,7 @@ import {
 import { AttendanceGroup } from "./groups/attendance";
 import { ChannelGroup } from "./groups/channel";
 import { DmGroup } from "./groups/dm";
+import { FilesGroup } from "./groups/files";
 import { OverviewGroup } from "./groups/overview";
 import { QuickActionGroup } from "./groups/quick-action";
 
@@ -32,6 +33,7 @@ export function Sidebar({
         <Suspense fallback={<ChannelGroup.Fallback />}>
           <ChannelGroup />
         </Suspense>
+        <FilesGroup />
         <Suspense fallback={<DmGroup.Fallback />}>
           <DmGroup />
         </Suspense>

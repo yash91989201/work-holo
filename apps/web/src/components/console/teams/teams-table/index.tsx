@@ -12,8 +12,9 @@ import {
   IconUsers,
   IconX,
 } from "@tabler/icons-react";
+import { useDebouncedCallback } from "@tanstack/react-pacer";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
-import { getRouteApi, useSearch } from "@tanstack/react-router";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 import {
   type ColumnDef,
   flexRender,
@@ -23,13 +24,10 @@ import {
   useReactTable,
   type VisibilityState,
 } from "@tanstack/react-table";
-import { useDebounce } from "@uidotdev/usehooks";
 import type { TeamMemberType } from "@work-holo/db/lib/types";
 import { format } from "date-fns";
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import type { DateRange } from "react-day-picker";
-
-const routeApi = getRouteApi("/(authenticated)/org/$slug/console/teams/");
 
 function getDateRangeDisplay(
   dateRange: DateRange | undefined
@@ -114,27 +112,32 @@ export const TeamsTable = () => {
     from: "/(authenticated)/org/$slug/console/teams/",
   });
 
-  const navigate = routeApi.useNavigate();
+  const navigate = useNavigate({
+    from: "/org/$slug/console/teams/",
+  });
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
   const [searchTerm, setSearchTerm] = useState(search.search ?? "");
-  const debouncedSearch = useDebounce(searchTerm, 500);
 
-  const prevDebouncedSearch = useRef(debouncedSearch);
-  useEffect(() => {
-    if (prevDebouncedSearch.current !== debouncedSearch) {
-      prevDebouncedSearch.current = debouncedSearch;
+  const debouncedNavigate = useDebouncedCallback(
+    (value: string) => {
       navigate({
         search: (prev) => ({
           ...prev,
-          search: debouncedSearch || undefined,
+          search: value || undefined,
           page: 1,
         }),
       });
-    }
-  }, [debouncedSearch, navigate]);
+    },
+    { wait: 500 }
+  );
+
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    debouncedNavigate(value);
+  };
 
   const pagination: PaginationState = {
     pageIndex: (search.page ?? 1) - 1,
@@ -158,7 +161,7 @@ export const TeamsTable = () => {
       input: {
         page: pagination.pageIndex + 1,
         limit: pagination.pageSize,
-        search: debouncedSearch || undefined,
+        search: search.search || undefined,
         filters: dateRange
           ? {
               dateRange: {
@@ -188,7 +191,7 @@ export const TeamsTable = () => {
           input: {
             page: pagination.pageIndex + 1,
             limit: pagination.pageSize,
-            search: debouncedSearch || undefined,
+            search: search.search || undefined,
             filters: dateRange
               ? {
                   dateRange: {
@@ -347,7 +350,7 @@ export const TeamsTable = () => {
     manualFiltering: true,
   });
 
-  if (teams.length === 0 && !debouncedSearch && !dateRange) {
+  if (teams.length === 0 && !search.search && !dateRange) {
     return (
       <div className="rounded-lg border bg-card py-12 text-center text-card-foreground shadow-sm">
         <IconBuilding className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
@@ -369,7 +372,7 @@ export const TeamsTable = () => {
               <IconSearch className="size-4" />
             </InputGroupAddon>
             <InputGroupInput
-              onChange={(event) => setSearchTerm(event.target.value)}
+              onChange={(event) => handleSearchChange(event.target.value)}
               placeholder="Search teams..."
               value={searchTerm}
             />

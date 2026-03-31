@@ -18,8 +18,9 @@ import {
   IconUserFilled,
   IconX,
 } from "@tabler/icons-react";
+import { useDebouncedCallback } from "@tanstack/react-pacer";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
-import { getRouteApi } from "@tanstack/react-router";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 import {
   type ColumnDef,
   flexRender,
@@ -28,11 +29,10 @@ import {
   type SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { useDebounce } from "@uidotdev/usehooks";
 import type { InvitationSelectSchema } from "@work-holo/api/lib/schemas/admin-invitation";
 import { env } from "@work-holo/env/web";
 import { format } from "date-fns";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { DateRange } from "react-day-picker";
 import { toast } from "sonner";
 import type { z } from "zod";
@@ -85,10 +85,6 @@ import { useAuthedSession } from "@/hooks/use-authed-session";
 import { authClient } from "@/lib/auth-client";
 import { getRoleBadgeVariant, getStatusBadgeVariant } from "@/lib/org";
 import { queryClient, queryUtils } from "@/utils/orpc";
-
-const routeApi = getRouteApi(
-  "/(authenticated)/org/$slug/console/members/invitations"
-);
 
 type InvitationRecord = z.infer<typeof InvitationSelectSchema>;
 
@@ -308,12 +304,33 @@ export const InvitationsTable = () => {
   const { session } = useAuthedSession();
   const orgId = session.activeOrganizationId ?? "";
 
-  const search = routeApi.useSearch();
-  const navigate = routeApi.useNavigate();
+  const search = useSearch({
+    from: "/(authenticated)/org/$slug/console/members/invitations",
+  });
+  const navigate = useNavigate({
+    from: "/org/$slug/console/members/invitations",
+  });
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [searchTerm, setSearchTerm] = useState(search.search ?? "");
-  const debouncedSearch = useDebounce(searchTerm, 500);
+
+  const debouncedNavigate = useDebouncedCallback(
+    (value: string) => {
+      navigate({
+        search: (prev) => ({
+          ...prev,
+          search: value || undefined,
+          page: 1,
+        }),
+      });
+    },
+    { wait: 500 }
+  );
+
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    debouncedNavigate(value);
+  };
 
   const pagination: PaginationState = {
     pageIndex: (search.page ?? 1) - 1,
@@ -333,18 +350,6 @@ export const InvitationsTable = () => {
     expiryDateRange = { from: new Date(search.expiryStartDate), to: undefined };
   }
 
-  useEffect(() => {
-    if (debouncedSearch !== (search.search ?? "")) {
-      navigate({
-        search: (prev) => ({
-          ...prev,
-          search: debouncedSearch || undefined,
-          page: 1,
-        }),
-      });
-    }
-  }, [debouncedSearch, navigate, search.search]);
-
   // Data Fetching
   const {
     data: { invitations, total, pageCount },
@@ -353,9 +358,9 @@ export const InvitationsTable = () => {
       input: {
         page: pagination.pageIndex + 1,
         perPage: pagination.pageSize,
-        search: debouncedSearch || undefined,
-        role: roleFilter === "all" ? undefined : roleFilter,
-        status: statusFilter === "all" ? undefined : statusFilter,
+        search: search.search || undefined,
+        role: roleFilter !== "all" ? roleFilter : undefined,
+        status: statusFilter !== "all" ? statusFilter : undefined,
         expiryStartDate: expiryDateRange?.from?.toISOString(),
         expiryEndDate: expiryDateRange?.to?.toISOString(),
         sorting: sorting.map((s) => ({
@@ -477,7 +482,7 @@ export const InvitationsTable = () => {
             </InputGroupAddon>
             <InputGroupInput
               className="bg-background"
-              onChange={(event) => setSearchTerm(event.target.value)}
+              onChange={(event) => handleSearchChange(event.target.value)}
               placeholder="Filter invitations..."
               value={searchTerm}
             />

@@ -13,6 +13,7 @@ const HTML_TAG_REGEX = /<[^>]+>/g;
 const NAMED_ENTITY_REGEX = /&(?:amp|lt|gt|quot|apos|nbsp);/gi;
 const DECIMAL_ENTITY_REGEX = /&#(\d+);/g;
 const HEX_ENTITY_REGEX = /&#x([0-9a-f]+);/gi;
+const MAX_UNICODE_CODE_POINT = 0x10_ff_ff;
 
 const NAMED_ENTITY_MAP: Record<string, string> = {
   amp: "&",
@@ -37,7 +38,7 @@ function decodeHtmlEntities(input: string): string {
       if (
         !Number.isInteger(codePoint) ||
         codePoint < 0 ||
-        codePoint > 0x10_ff_ff
+        codePoint > MAX_UNICODE_CODE_POINT
       ) {
         return "";
       }
@@ -49,7 +50,7 @@ function decodeHtmlEntities(input: string): string {
       if (
         !Number.isInteger(codePoint) ||
         codePoint < 0 ||
-        codePoint > 0x10_ff_ff
+        codePoint > MAX_UNICODE_CODE_POINT
       ) {
         return "";
       }
