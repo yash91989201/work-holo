@@ -138,6 +138,11 @@ export const messageTable = pgTable(
       table.parentMessageId,
       table.isDeleted
     ),
+    index("idx_message_channel_created_id").on(
+      table.channelId,
+      table.createdAt,
+      table.id
+    ),
   ]
 );
 
