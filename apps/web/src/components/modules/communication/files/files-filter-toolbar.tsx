@@ -38,7 +38,7 @@ export function FilesFilterToolbar() {
     perPage: searchParams.perPage ?? 20,
     search: searchParams.search,
     onlyMine: searchParams.onlyMine,
-    type: searchParams.type !== "all" ? searchParams.type : undefined,
+    type: searchParams.type === "all" ? undefined : searchParams.type,
     channelId: searchParams.channelId,
     sortBy:
       (searchParams.sortBy as "name" | "size" | "createdAt" | "type") ??

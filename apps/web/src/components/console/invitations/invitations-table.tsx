@@ -359,8 +359,8 @@ export const InvitationsTable = () => {
         page: pagination.pageIndex + 1,
         perPage: pagination.pageSize,
         search: search.search || undefined,
-        role: roleFilter !== "all" ? roleFilter : undefined,
-        status: statusFilter !== "all" ? statusFilter : undefined,
+        role: roleFilter === "all" ? undefined : roleFilter,
+        status: statusFilter === "all" ? undefined : statusFilter,
         expiryStartDate: expiryDateRange?.from?.toISOString(),
         expiryEndDate: expiryDateRange?.to?.toISOString(),
         sorting: sorting.map((s) => ({

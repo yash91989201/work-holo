@@ -343,7 +343,7 @@ export const MembersTable = () => {
         page: pagination.pageIndex + 1,
         perPage: pagination.pageSize,
         search: search.search || undefined,
-        role: roleFilter !== "all" ? roleFilter : undefined,
+        role: roleFilter === "all" ? undefined : roleFilter,
         startDate: dateRange?.from,
         endDate: dateRange?.to,
         sorting: sorting.map((s) => ({

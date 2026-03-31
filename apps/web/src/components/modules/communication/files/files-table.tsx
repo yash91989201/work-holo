@@ -106,7 +106,7 @@ export const FilesTable = () => {
         perPage: pagination.pageSize,
         search: search.search,
         onlyMine: search.onlyMine,
-        type: search.type !== "all" ? search.type : undefined,
+        type: search.type === "all" ? undefined : search.type,
         channelId: search.channelId,
         sortBy:
           (search.sortBy as "name" | "size" | "createdAt" | "type") ??

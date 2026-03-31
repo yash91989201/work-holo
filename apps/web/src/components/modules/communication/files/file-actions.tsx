@@ -75,7 +75,7 @@ export const FileActions = ({ file }: FileActionsProps) => {
               perPage: search.perPage ?? 20,
               search: search.search,
               onlyMine: search.onlyMine,
-              type: search.type !== "all" ? search.type : undefined,
+              type: search.type === "all" ? undefined : search.type,
               channelId: search.channelId,
               sortBy:
                 (search.sortBy as "name" | "size" | "createdAt" | "type") ??
