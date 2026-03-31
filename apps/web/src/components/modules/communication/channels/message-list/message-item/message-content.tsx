@@ -16,7 +16,10 @@ export function MessageContent({
   message,
   isOwnMessage = false,
 }: MessageContentProps) {
-  const hasContent = message.content && message.content.trim().length > 0;
+  const hasContent =
+    message.content &&
+    message.content.trim().length > 0 &&
+    message.content.replace(/<[^>]*>/g, "").trim().length > 0;
   const hasAttachments = message.attachments && message.attachments.length > 0;
 
   const parserOptions = {
