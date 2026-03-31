@@ -307,6 +307,7 @@ create_env_files() {
 
 compose_up() { docker_compose up -d; }
 compose_down() { docker_compose down; }
+compose_stop() { docker_compose stop; }
 
 wait_for_service() {
   local service="$1"
@@ -349,7 +350,7 @@ wait_healthy() {
 migrate_database() {
   (
     cd "$ROOT_DIR/packages/db"
-    bunx drizzle-kit migrate
+    bun run db:migrate
   )
 }
 
@@ -674,7 +675,7 @@ cmd_start() {
 cmd_stop() {
   require_root
   check_deps
-  compose_down
+  compose_stop
 }
 
 cmd_reset_services() {
@@ -684,26 +685,26 @@ cmd_reset_services() {
   local -a init_args=()
   while [[ $# -gt 0 ]]; do
     case "$1" in
-      --skip-init-steps)
-        if [[ $# -lt 2 ]]; then
-          log_error "Missing value for --skip-init-steps"
-          exit 1
-        fi
-        if [[ -z "$2" ]]; then
-          log_error "Empty value for --skip-init-steps"
-          exit 1
-        fi
-        init_args+=("--skip-steps" "$2")
-        shift 2
-        ;;
-      --skip-init-steps=*)
-        if [[ -z "${1#--skip-init-steps=}" ]]; then
-          log_error "Empty value for --skip-init-steps"
-          exit 1
-        fi
-        init_args+=("--skip-steps=${1#--skip-init-steps=}")
-        shift
-        ;;
+    --skip-init-steps)
+      if [[ $# -lt 2 ]]; then
+        log_error "Missing value for --skip-init-steps"
+        exit 1
+      fi
+      if [[ -z "$2" ]]; then
+        log_error "Empty value for --skip-init-steps"
+        exit 1
+      fi
+      init_args+=("--skip-steps" "$2")
+      shift 2
+      ;;
+    --skip-init-steps=*)
+      if [[ -z "${1#--skip-init-steps=}" ]]; then
+        log_error "Empty value for --skip-init-steps"
+        exit 1
+      fi
+      init_args+=("--skip-steps=${1#--skip-init-steps=}")
+      shift
+      ;;
     *)
       log_error "Unknown option: $1"
       cmd_help
@@ -931,7 +932,7 @@ Command behavior:
     Ctrl+C prompt: Docker services will stop in 5s. Press 'n' to keep them running...
 
   stop-services
-    - docker compose down
+    - docker compose stop
 
   reset-services
     - confirm
@@ -976,8 +977,8 @@ Auth secret generation:
 Docker compose detection:
   prefers docker compose (v2), fallback docker-compose (v1)
 
-Migration strategy:
-  direct drizzle-kit migrate
+Schema sync strategy:
+  bun db:migrate
 
 EOF
 }

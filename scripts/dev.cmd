@@ -460,6 +460,10 @@ exit /b %ERRORLEVEL%
 call :docker_compose down
 exit /b %ERRORLEVEL%
 
+:compose_stop
+call :docker_compose stop
+exit /b %ERRORLEVEL%
+
 :get_service_id
 set "%~2="
 if "%COMPOSE_IS_V2%"=="1" (
@@ -526,7 +530,7 @@ exit /b 0
 
 :migrate_database
 pushd "%ROOT_DIR%\packages\db" >nul
-bunx drizzle-kit migrate
+bun run db:migrate
 set "RC=%ERRORLEVEL%"
 popd >nul
 exit /b %RC%
@@ -928,7 +932,7 @@ exit /b %ERRORLEVEL%
 :cmd_stop
 call :require_root || exit /b 1
 call :check_deps || exit /b 1
-call :compose_down
+call :compose_stop
 exit /b %ERRORLEVEL%
 
 :cmd_reset_services
@@ -1251,7 +1255,7 @@ echo     --dev-only: start only dev server ^(with TUI^), auto-start services if 
 echo     Ctrl+C prompt: docker services stop in 5s; press N to keep them running.
 echo.
 echo   stop-services
-echo     - docker compose down
+echo     - docker compose stop
 echo.
 echo   reset-services
 echo     - confirm
@@ -1296,7 +1300,7 @@ echo.
 echo Docker compose detection:
 echo   prefers docker compose ^(v2^), fallback docker-compose ^(v1^)
 echo.
-echo Migration strategy:
-echo   direct drizzle-kit migrate
+echo Schema sync strategy:
+echo   bun db:migrate
 echo.
 exit /b 0

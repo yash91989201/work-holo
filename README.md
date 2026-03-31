@@ -46,14 +46,14 @@ This will:
 2. Install npm packages (unless `deps-install` is skipped via `--skip-steps`)
 3. Create environment files with auto-generated secrets
 4. Start Docker services (PostgreSQL, Redis, RabbitMQ, etc.)
-5. Run database migrations
+5. Sync the database schema
 6. Seed the database
 7. Prompt to start the development server
 
 ### Development Workflow
 
 ```bash
-# Quick start - full setup (dependencies, env files, docker, migrations, seed)
+# Quick start - full setup (dependencies, env files, docker, schema sync, seed)
 scripts/dev.sh init
 
 # Quick start without dependency installation
@@ -95,7 +95,7 @@ scripts/dev.sh logs postgres
 | `start` | Start Docker services and dev server (see options below) |
 | `start --docker-only` | Start only Docker services |
 | `start --dev-only` | Start only dev server (with Turbo TUI), auto-starts services if needed |
-| `stop-services` | Stop all Docker services |
+| `stop-services` | Stop all Docker services without removing the containers |
 | `status` | Show status of services, ports, and environment files |
 | `reset-services [--skip-init-steps step1,step2]` | **Destructive** - Remove all containers, volumes, and re-run `init`. `--skip-init-steps` forwards the same step names supported by `init --skip-steps`, including dependency validation. |
 | `update-packages` | Update all packages, remove node_modules, and fresh install |
