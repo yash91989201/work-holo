@@ -26,6 +26,8 @@ import {
   DeleteDmMessageInput,
   DmAttachmentInput,
   EditDmMessageInput,
+  GetAllDmMessageReadersInput,
+  GetAllDmMessageReadersOutput,
   GetDmConversationInput,
   GetDmConversationsInput,
   GetDmMessagesInput,
@@ -1330,5 +1332,61 @@ export const dmRouter = {
       });
 
       return { attachment };
+    }),
+
+  getAllReaders: dmProcedure
+    .input(GetAllDmMessageReadersInput)
+    .output(GetAllDmMessageReadersOutput)
+    .handler(async ({ input, context: { db, orgId, session } }) => {
+      const userId = session.user.id;
+
+      // Verify user is a participant of the conversation
+      const conversation = await db.query.dmConversationTable.findFirst({
+        where: and(
+          eq(dmConversationTable.id, input.conversationId),
+          eq(dmConversationTable.organizationId, orgId),
+          or(
+            eq(dmConversationTable.participantOneId, userId),
+            eq(dmConversationTable.participantTwoId, userId)
+          )
+        ),
+      });
+
+      if (!conversation) {
+        throw new ORPCError("FORBIDDEN", {
+          message: "You are not a participant of this conversation.",
+        });
+      }
+
+      // Verify message exists in the conversation
+      const message = await db.query.dmMessageTable.findFirst({
+        where: and(
+          eq(dmMessageTable.id, input.messageId),
+          eq(dmMessageTable.conversationId, input.conversationId),
+          eq(dmMessageTable.isDeleted, false)
+        ),
+      });
+
+      if (!message) {
+        throw new ORPCError("NOT_FOUND", {
+          message: "Message not found in this conversation.",
+        });
+      }
+
+      // Get all read receipts for this message
+      const readReceipts = await db
+        .select({
+          id: userTable.id,
+          name: userTable.name,
+          email: userTable.email,
+          image: userTable.image,
+          readAt: dmMessageReadTable.readAt,
+        })
+        .from(dmMessageReadTable)
+        .innerJoin(userTable, eq(dmMessageReadTable.userId, userTable.id))
+        .where(eq(dmMessageReadTable.messageId, input.messageId))
+        .orderBy(desc(dmMessageReadTable.readAt));
+
+      return { readers: readReceipts };
     }),
 };

@@ -32,6 +32,7 @@ import {
 import { DmMessageActions } from "./message-actions";
 import { DmMessageContent } from "./message-content";
 import { DmMessageReactions } from "./message-reactions";
+import { DmMessageReadReceipts } from "./message-read-receipts";
 
 interface DmMessageItemProps {
   isHighlighted?: boolean;
@@ -311,6 +312,13 @@ export function DmMessageItem({
           messageId={message.id}
           onAddReaction={handleReact}
           onRemoveReaction={handleReactionClick}
+        />
+
+        <DmMessageReadReceipts
+          conversationId={message.conversationId}
+          isOwnMessage={isOwnMessage}
+          messageId={message.id}
+          userId={user.id}
         />
 
         {!isThreadMessage && message.parentMessageId && (

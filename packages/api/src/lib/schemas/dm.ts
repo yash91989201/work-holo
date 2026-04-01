@@ -120,3 +120,21 @@ export const DmAttachmentInput = z.object({
   type: z.enum(["image", "document", "video", "audio", "archive"]),
   size: z.number().positive(),
 });
+
+export const GetAllDmMessageReadersInput = z.object({
+  messageId: z.cuid2(),
+  conversationId: z.cuid2(),
+});
+
+export const GetAllDmMessageReadersOutput = z.object({
+  readers: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      email: z.string(),
+      image: z.string().nullable(),
+      readAt: z.date(),
+    })
+  ),
+});
+
