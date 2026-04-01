@@ -438,7 +438,7 @@ function SidebarGroupContent({
 }: React.ComponentProps<"div">) {
   return (
     <div
-      className={cn("w-full text-sm", className)}
+      className={cn("w-full list-none text-sm", className)}
       data-sidebar="group-content"
       data-slot="sidebar-group-content"
       {...props}
@@ -449,10 +449,7 @@ function SidebarGroupContent({
 function SidebarMenu({ className, ...props }: React.ComponentProps<"ul">) {
   return (
     <ul
-      className={cn(
-        "flex w-full min-w-0 list-none flex-col gap-1.5",
-        className
-      )}
+      className={cn("flex w-full min-w-0 flex-col gap-1.5", className)}
       data-sidebar="menu"
       data-slot="sidebar-menu"
       {...props}
