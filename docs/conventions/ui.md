@@ -22,7 +22,7 @@ src/styles/index.css
 - Guidelines for design consistency are maintained in:  
 
 ```
-docs/design/consistency.md
+docs/conventions/ui.md
 ```
 
 - Whenever creating new UI components or updating existing ones, **reference this document** to ensure alignment with the project theme.

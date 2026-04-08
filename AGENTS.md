@@ -83,7 +83,7 @@ All API calls **must** use the `queryUtils` + TanStack Query pattern. Never call
 - Invalidating queries outside the mutation lifecycle.
 - Manually constructing query keys.
 
-📖 Reference: [`docs/technical/api-client-usage.md`](docs/technical/api-client-usage.md)
+📖 Reference: [`docs/guides/api-client-usage.md`](docs/guides/api-client-usage.md)
 
 ---
 
