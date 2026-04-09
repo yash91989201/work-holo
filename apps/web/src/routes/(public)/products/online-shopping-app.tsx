@@ -30,7 +30,7 @@ const Hero = () => {
     <section className="relative overflow-hidden bg-[#0b0034] p-5 pt-32 pb-20">
       <div className="absolute top-0 right-0 -z-10 hidden h-full w-1/2 origin-top-right translate-x-32 -skew-x-12 transform bg-light-blue lg:block" />
 
-      <div className="container mx-auto px-4 grid items-center gap-12 lg:grid-cols-2">
+      <div className="container mx-auto grid items-center gap-12 px-4 lg:grid-cols-2">
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           transition={{ duration: 0.8 }}
@@ -183,7 +183,7 @@ const KeyFeatures = () => {
 const OnDemandSection = () => {
   return (
     <section className="section-padding bg-light-blue p-5">
-      <div className="container mx-auto px-4 grid items-center gap-16 lg:grid-cols-2">
+      <div className="container mx-auto grid items-center gap-16 px-4 lg:grid-cols-2">
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           viewport={{ once: true }}
@@ -515,7 +515,7 @@ const FAQ = () => {
 
   return (
     <section className="section-padding bg-white p-5">
-      <div className="container mx-auto px-4 max-w-4xl">
+      <div className="container mx-auto max-w-4xl px-4">
         <h2 className="mb-12 text-center font-bold text-4xl text-gray-900">
           FAQ's
         </h2>
@@ -593,7 +593,7 @@ export default function OnlineShoppingApp() {
     <div className="min-h-screen bg-white">
       {/* Top Info Bar */}
       <div className="border-white/10 border-b bg-black py-2 text-[10px] text-white md:text-xs">
-        <div className="container mx-auto px-4 flex flex-wrap items-center justify-between gap-4">
+        <div className="container mx-auto flex flex-wrap items-center justify-between gap-4 px-4">
           <div className="flex items-center gap-4">
             <a
               className="flex items-center gap-1 transition-colors hover:text-primary"

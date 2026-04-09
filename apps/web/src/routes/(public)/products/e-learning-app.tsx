@@ -1,4 +1,8 @@
-import { EducationHero, EducationFeatures, EducationCTA } from "../../components/public/products/education";
+import {
+  EducationCTA,
+  EducationFeatures,
+  EducationHero,
+} from "../../components/public/products/education";
 
 export default function ELearningApp() {
   return (

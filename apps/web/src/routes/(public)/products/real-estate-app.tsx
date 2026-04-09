@@ -1,5 +1,9 @@
-import { BookingHero, BookingFeatures, BookingCta } from "@/components/public/products/booking";
-import { Search, Home, Bell, Calculator } from "@tabler/icons-react";
+import { Bell, Calculator, Home, Search } from "@tabler/icons-react";
+import {
+  BookingCta,
+  BookingFeatures,
+  BookingHero,
+} from "@/components/public/products/booking";
 
 export default function RealEstateApp() {
   const heroData = {
@@ -11,10 +15,26 @@ export default function RealEstateApp() {
   };
 
   const features = [
-    { icon: Search, title: "Property Search & Filters", description: "Advanced search and filtering options." },
-    { icon: Home, title: "Virtual Tours & Photos", description: "Immersive property viewing." },
-    { icon: Bell, title: "Price Alerts", description: "Get notified of price changes." },
-    { icon: Calculator, title: "Mortgage Calculator", description: "Calculate mortgage payments." },
+    {
+      icon: Search,
+      title: "Property Search & Filters",
+      description: "Advanced search and filtering options.",
+    },
+    {
+      icon: Home,
+      title: "Virtual Tours & Photos",
+      description: "Immersive property viewing.",
+    },
+    {
+      icon: Bell,
+      title: "Price Alerts",
+      description: "Get notified of price changes.",
+    },
+    {
+      icon: Calculator,
+      title: "Mortgage Calculator",
+      description: "Calculate mortgage payments.",
+    },
   ];
 
   const ctaData = {

@@ -1,5 +1,9 @@
-import { ProductHero, ProductFeatures, ProductCta } from "@/components/public/products/on-demand";
-import { Car, Clock, MapPin, Star, Shield, Users } from "@tabler/icons-react";
+import { Car, Clock, MapPin, Shield, Star, Users } from "@tabler/icons-react";
+import {
+  ProductCta,
+  ProductFeatures,
+  ProductHero,
+} from "@/components/public/products/on-demand";
 
 export default function CarWashApp() {
   const heroData = {
@@ -11,12 +15,36 @@ export default function CarWashApp() {
   };
 
   const features = [
-    { icon: Car, title: "Professional Service", description: "Expert car washing services." },
-    { icon: Clock, title: "On-Demand Booking", description: "Book services anytime." },
-    { icon: MapPin, title: "Mobile Service", description: "Service at your location." },
-    { icon: Star, title: "Quality Assurance", description: "High-quality cleaning." },
-    { icon: Shield, title: "Eco-Friendly", description: "Environmentally friendly products." },
-    { icon: Users, title: "Provider Network", description: "Network of service providers." },
+    {
+      icon: Car,
+      title: "Professional Service",
+      description: "Expert car washing services.",
+    },
+    {
+      icon: Clock,
+      title: "On-Demand Booking",
+      description: "Book services anytime.",
+    },
+    {
+      icon: MapPin,
+      title: "Mobile Service",
+      description: "Service at your location.",
+    },
+    {
+      icon: Star,
+      title: "Quality Assurance",
+      description: "High-quality cleaning.",
+    },
+    {
+      icon: Shield,
+      title: "Eco-Friendly",
+      description: "Environmentally friendly products.",
+    },
+    {
+      icon: Users,
+      title: "Provider Network",
+      description: "Network of service providers.",
+    },
   ];
 
   const ctaData = {

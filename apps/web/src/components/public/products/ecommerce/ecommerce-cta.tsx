@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 export default function EcommerceCta() {
   return (
     <section className="overflow-hidden bg-pink-400 py-20 text-white">
-      <div className="container mx-auto px-4 flex flex-col items-center justify-between gap-12 md:flex-row">
+      <div className="container mx-auto flex flex-col items-center justify-between gap-12 px-4 md:flex-row">
         <motion.h2
           className="text-center font-black text-4xl md:text-left md:text-5xl"
           initial={{ opacity: 0, x: -50 }}

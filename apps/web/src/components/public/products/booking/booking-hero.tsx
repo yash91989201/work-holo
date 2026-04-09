@@ -1,47 +1,53 @@
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 interface BookingHeroProps {
-  title: string;
+  ctaLink: string;
+  ctaText: string;
   description: string;
   image: string;
-  ctaText: string;
-  ctaLink: string;
+  title: string;
 }
 
-export function BookingHero({ title, description, image, ctaText, ctaLink }: BookingHeroProps) {
+export function BookingHero({
+  title,
+  description,
+  image,
+  ctaText,
+  ctaLink,
+}: BookingHeroProps) {
   return (
-    <section className="py-20 bg-background">
+    <section className="bg-background py-20">
       <div className="container mx-auto px-4">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
           className="text-center"
+          initial={{ opacity: 0, y: 20 }}
+          transition={{ duration: 0.6 }}
         >
-          <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6">
+          <h1 className="mb-6 font-bold text-4xl text-foreground md:text-6xl">
             {title}
           </h1>
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+          <p className="mx-auto mb-8 max-w-2xl text-muted-foreground text-xl">
             {description}
           </p>
-          <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
+          <Button asChild className="bg-primary hover:bg-primary/90" size="lg">
             <a href={ctaLink}>{ctaText}</a>
           </Button>
         </motion.div>
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
           className="mt-12"
+          initial={{ opacity: 0, scale: 0.9 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
         >
           <Image
-            src={image}
             alt={title}
-            width={800}
-            height={600}
             className="mx-auto rounded-lg shadow-lg"
+            height={600}
+            src={image}
+            width={800}
           />
         </motion.div>
       </div>

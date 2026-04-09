@@ -15,11 +15,10 @@ export const EducationCTA = () => {
             Ready to Transform Learning?
           </h2>
           <p className="mb-8 text-lg text-purple-100">
-            Get started with our eLearning solutions today and enhance educational experiences.
+            Get started with our eLearning solutions today and enhance
+            educational experiences.
           </p>
-          <button
-            className="rounded-lg bg-white px-10 py-4 font-bold text-lg text-[#7B2CBF] shadow-lg transition-transform hover:scale-105"
-          >
+          <button className="rounded-lg bg-white px-10 py-4 font-bold text-[#7B2CBF] text-lg shadow-lg transition-transform hover:scale-105">
             Get Started Now
           </button>
         </motion.div>
