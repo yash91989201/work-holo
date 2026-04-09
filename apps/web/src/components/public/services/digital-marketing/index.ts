@@ -1,1 +1,1 @@
-export { MarketingHero, MarketingFeatures, MarketingCta }
+export type { MarketingCta, MarketingFeatures, MarketingHero };

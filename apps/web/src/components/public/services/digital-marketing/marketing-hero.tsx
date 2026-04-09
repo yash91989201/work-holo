@@ -49,7 +49,7 @@ export const MarketingHero = () => (
         <button className="rounded-xl bg-yellow-500 px-8 py-4 font-bold text-[#05070A] text-lg shadow-xl shadow-yellow-500/20 transition-all hover:bg-yellow-600">
           Get Started
         </button>
-        <button className="rounded-xl border border-white px-8 py-4 font-bold text-white text-lg transition-all hover:bg-white/10">
+        <button className="rounded-xl border border-white px-8 py-4 font-bold text-lg text-white transition-all hover:bg-white/10">
           Learn More
         </button>
       </motion.div>
