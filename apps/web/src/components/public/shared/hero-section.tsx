@@ -1,4 +1,4 @@
-import { ArrowRight } from "@tabler/icons-react";
+import { IconArrowRight } from "@tabler/icons-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { SectionWrapper } from "./section-wrapper";
@@ -32,7 +32,7 @@ export const HeroSection = () => {
             className="bg-primary text-primary-foreground hover:bg-primary/90"
             size="lg"
           >
-            Get Started <ArrowRight className="ml-2 h-4 w-4" />
+            Get Started <IconArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </motion.div>
       </div>

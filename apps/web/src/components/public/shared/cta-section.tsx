@@ -1,4 +1,4 @@
-import { ArrowRight } from "@tabler/icons-react";
+import { IconArrowRight } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { SectionWrapper } from "./section-wrapper";
 
@@ -16,7 +16,7 @@ export const CTASection = () => {
           className="bg-primary text-primary-foreground hover:bg-primary/90"
           size="lg"
         >
-          Sign Up Now <ArrowRight className="ml-2 h-4 w-4" />
+          Sign Up Now <IconArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </div>
     </SectionWrapper>
