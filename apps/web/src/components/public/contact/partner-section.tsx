@@ -1,3 +1,4 @@
+import type { TablerIcon } from "@tabler/icons-react";
 import {
   IconBolt,
   IconHeartHandshake,
@@ -7,13 +8,10 @@ import {
   IconWorld,
 } from "@tabler/icons-react";
 import { motion } from "framer-motion";
-import type { ForwardRefExoticComponent, RefAttributes } from "react";
 
 interface PartnerCardProps {
   description: string;
-  icon: ForwardRefExoticComponent<
-    Omit<React.SVGProps<SVGSVGElement>, "ref"> & RefAttributes<SVGSVGElement>
-  >;
+  icon: TablerIcon;
   title: string;
 }
 

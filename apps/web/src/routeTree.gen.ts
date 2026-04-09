@@ -20,8 +20,13 @@ import { Route as publicAboutRouteRouteImport } from './routes/(public)/about/ro
 import { Route as authenticatedSettingsRouteRouteImport } from './routes/(authenticated)/settings/route'
 import { Route as authenticatedPlatformRouteRouteImport } from './routes/(authenticated)/platform/route'
 import { Route as publicServicesWebApplicationDevelopmentRouteImport } from './routes/(public)/services/web-application-development'
+import { Route as publicServicesSalesforceIntegrationRouteImport } from './routes/(public)/services/salesforce-integration'
+import { Route as publicServicesSalesforceImplementationRouteImport } from './routes/(public)/services/salesforce-implementation'
+import { Route as publicServicesSalesforceConsultingRouteImport } from './routes/(public)/services/salesforce-consulting'
+import { Route as publicServicesSalesCloudRouteImport } from './routes/(public)/services/sales-cloud'
 import { Route as publicServicesReactNativeAppDevelopmentRouteImport } from './routes/(public)/services/react-native-app-development'
 import { Route as publicServicesMobileAppDevelopmentRouteImport } from './routes/(public)/services/mobile-app-development'
+import { Route as publicServicesLightningMigrationDevelopmentRouteImport } from './routes/(public)/services/lightning-migration-development'
 import { Route as publicServicesIpadAppDevelopmentRouteImport } from './routes/(public)/services/ipad-app-development'
 import { Route as publicServicesIotDevelopmentRouteImport } from './routes/(public)/services/iot-development'
 import { Route as publicServicesIosAppDevelopmentRouteImport } from './routes/(public)/services/ios-app-development'
@@ -144,6 +149,30 @@ const publicServicesWebApplicationDevelopmentRoute =
     path: '/services/web-application-development',
     getParentRoute: () => publicRouteRoute,
   } as any)
+const publicServicesSalesforceIntegrationRoute =
+  publicServicesSalesforceIntegrationRouteImport.update({
+    id: '/services/salesforce-integration',
+    path: '/services/salesforce-integration',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicServicesSalesforceImplementationRoute =
+  publicServicesSalesforceImplementationRouteImport.update({
+    id: '/services/salesforce-implementation',
+    path: '/services/salesforce-implementation',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicServicesSalesforceConsultingRoute =
+  publicServicesSalesforceConsultingRouteImport.update({
+    id: '/services/salesforce-consulting',
+    path: '/services/salesforce-consulting',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicServicesSalesCloudRoute =
+  publicServicesSalesCloudRouteImport.update({
+    id: '/services/sales-cloud',
+    path: '/services/sales-cloud',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
 const publicServicesReactNativeAppDevelopmentRoute =
   publicServicesReactNativeAppDevelopmentRouteImport.update({
     id: '/services/react-native-app-development',
@@ -154,6 +183,12 @@ const publicServicesMobileAppDevelopmentRoute =
   publicServicesMobileAppDevelopmentRouteImport.update({
     id: '/services/mobile-app-development',
     path: '/services/mobile-app-development',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicServicesLightningMigrationDevelopmentRoute =
+  publicServicesLightningMigrationDevelopmentRouteImport.update({
+    id: '/services/lightning-migration-development',
+    path: '/services/lightning-migration-development',
     getParentRoute: () => publicRouteRoute,
   } as any)
 const publicServicesIpadAppDevelopmentRoute =
@@ -594,8 +629,13 @@ export interface FileRoutesByFullPath {
   '/services/ios-app-development': typeof publicServicesIosAppDevelopmentRoute
   '/services/iot-development': typeof publicServicesIotDevelopmentRoute
   '/services/ipad-app-development': typeof publicServicesIpadAppDevelopmentRoute
+  '/services/lightning-migration-development': typeof publicServicesLightningMigrationDevelopmentRoute
   '/services/mobile-app-development': typeof publicServicesMobileAppDevelopmentRoute
   '/services/react-native-app-development': typeof publicServicesReactNativeAppDevelopmentRoute
+  '/services/sales-cloud': typeof publicServicesSalesCloudRoute
+  '/services/salesforce-consulting': typeof publicServicesSalesforceConsultingRoute
+  '/services/salesforce-implementation': typeof publicServicesSalesforceImplementationRoute
+  '/services/salesforce-integration': typeof publicServicesSalesforceIntegrationRoute
   '/services/web-application-development': typeof publicServicesWebApplicationDevelopmentRoute
   '/org/$slug/console': typeof authenticatedOrgSlugConsoleRouteRouteWithChildren
   '/org/$slug/manage': typeof authenticatedOrgSlugManageRouteRouteWithChildren
@@ -671,8 +711,13 @@ export interface FileRoutesByTo {
   '/services/ios-app-development': typeof publicServicesIosAppDevelopmentRoute
   '/services/iot-development': typeof publicServicesIotDevelopmentRoute
   '/services/ipad-app-development': typeof publicServicesIpadAppDevelopmentRoute
+  '/services/lightning-migration-development': typeof publicServicesLightningMigrationDevelopmentRoute
   '/services/mobile-app-development': typeof publicServicesMobileAppDevelopmentRoute
   '/services/react-native-app-development': typeof publicServicesReactNativeAppDevelopmentRoute
+  '/services/sales-cloud': typeof publicServicesSalesCloudRoute
+  '/services/salesforce-consulting': typeof publicServicesSalesforceConsultingRoute
+  '/services/salesforce-implementation': typeof publicServicesSalesforceImplementationRoute
+  '/services/salesforce-integration': typeof publicServicesSalesforceIntegrationRoute
   '/services/web-application-development': typeof publicServicesWebApplicationDevelopmentRoute
   '/settings/account/notifications': typeof authenticatedSettingsAccountNotificationsRoute
   '/settings/account/preferences': typeof authenticatedSettingsAccountPreferencesRoute
@@ -747,8 +792,13 @@ export interface FileRoutesById {
   '/(public)/services/ios-app-development': typeof publicServicesIosAppDevelopmentRoute
   '/(public)/services/iot-development': typeof publicServicesIotDevelopmentRoute
   '/(public)/services/ipad-app-development': typeof publicServicesIpadAppDevelopmentRoute
+  '/(public)/services/lightning-migration-development': typeof publicServicesLightningMigrationDevelopmentRoute
   '/(public)/services/mobile-app-development': typeof publicServicesMobileAppDevelopmentRoute
   '/(public)/services/react-native-app-development': typeof publicServicesReactNativeAppDevelopmentRoute
+  '/(public)/services/sales-cloud': typeof publicServicesSalesCloudRoute
+  '/(public)/services/salesforce-consulting': typeof publicServicesSalesforceConsultingRoute
+  '/(public)/services/salesforce-implementation': typeof publicServicesSalesforceImplementationRoute
+  '/(public)/services/salesforce-integration': typeof publicServicesSalesforceIntegrationRoute
   '/(public)/services/web-application-development': typeof publicServicesWebApplicationDevelopmentRoute
   '/(authenticated)/org/$slug/console': typeof authenticatedOrgSlugConsoleRouteRouteWithChildren
   '/(authenticated)/org/$slug/manage': typeof authenticatedOrgSlugManageRouteRouteWithChildren
@@ -827,8 +877,13 @@ export interface FileRouteTypes {
     | '/services/ios-app-development'
     | '/services/iot-development'
     | '/services/ipad-app-development'
+    | '/services/lightning-migration-development'
     | '/services/mobile-app-development'
     | '/services/react-native-app-development'
+    | '/services/sales-cloud'
+    | '/services/salesforce-consulting'
+    | '/services/salesforce-implementation'
+    | '/services/salesforce-integration'
     | '/services/web-application-development'
     | '/org/$slug/console'
     | '/org/$slug/manage'
@@ -904,8 +959,13 @@ export interface FileRouteTypes {
     | '/services/ios-app-development'
     | '/services/iot-development'
     | '/services/ipad-app-development'
+    | '/services/lightning-migration-development'
     | '/services/mobile-app-development'
     | '/services/react-native-app-development'
+    | '/services/sales-cloud'
+    | '/services/salesforce-consulting'
+    | '/services/salesforce-implementation'
+    | '/services/salesforce-integration'
     | '/services/web-application-development'
     | '/settings/account/notifications'
     | '/settings/account/preferences'
@@ -979,8 +1039,13 @@ export interface FileRouteTypes {
     | '/(public)/services/ios-app-development'
     | '/(public)/services/iot-development'
     | '/(public)/services/ipad-app-development'
+    | '/(public)/services/lightning-migration-development'
     | '/(public)/services/mobile-app-development'
     | '/(public)/services/react-native-app-development'
+    | '/(public)/services/sales-cloud'
+    | '/(public)/services/salesforce-consulting'
+    | '/(public)/services/salesforce-implementation'
+    | '/(public)/services/salesforce-integration'
     | '/(public)/services/web-application-development'
     | '/(authenticated)/org/$slug/console'
     | '/(authenticated)/org/$slug/manage'
@@ -1107,6 +1172,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof publicServicesWebApplicationDevelopmentRouteImport
       parentRoute: typeof publicRouteRoute
     }
+    '/(public)/services/salesforce-integration': {
+      id: '/(public)/services/salesforce-integration'
+      path: '/services/salesforce-integration'
+      fullPath: '/services/salesforce-integration'
+      preLoaderRoute: typeof publicServicesSalesforceIntegrationRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/services/salesforce-implementation': {
+      id: '/(public)/services/salesforce-implementation'
+      path: '/services/salesforce-implementation'
+      fullPath: '/services/salesforce-implementation'
+      preLoaderRoute: typeof publicServicesSalesforceImplementationRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/services/salesforce-consulting': {
+      id: '/(public)/services/salesforce-consulting'
+      path: '/services/salesforce-consulting'
+      fullPath: '/services/salesforce-consulting'
+      preLoaderRoute: typeof publicServicesSalesforceConsultingRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/services/sales-cloud': {
+      id: '/(public)/services/sales-cloud'
+      path: '/services/sales-cloud'
+      fullPath: '/services/sales-cloud'
+      preLoaderRoute: typeof publicServicesSalesCloudRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
     '/(public)/services/react-native-app-development': {
       id: '/(public)/services/react-native-app-development'
       path: '/services/react-native-app-development'
@@ -1119,6 +1212,13 @@ declare module '@tanstack/react-router' {
       path: '/services/mobile-app-development'
       fullPath: '/services/mobile-app-development'
       preLoaderRoute: typeof publicServicesMobileAppDevelopmentRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/services/lightning-migration-development': {
+      id: '/(public)/services/lightning-migration-development'
+      path: '/services/lightning-migration-development'
+      fullPath: '/services/lightning-migration-development'
+      preLoaderRoute: typeof publicServicesLightningMigrationDevelopmentRouteImport
       parentRoute: typeof publicRouteRoute
     }
     '/(public)/services/ipad-app-development': {
@@ -1872,8 +1972,13 @@ interface publicRouteRouteChildren {
   publicServicesIosAppDevelopmentRoute: typeof publicServicesIosAppDevelopmentRoute
   publicServicesIotDevelopmentRoute: typeof publicServicesIotDevelopmentRoute
   publicServicesIpadAppDevelopmentRoute: typeof publicServicesIpadAppDevelopmentRoute
+  publicServicesLightningMigrationDevelopmentRoute: typeof publicServicesLightningMigrationDevelopmentRoute
   publicServicesMobileAppDevelopmentRoute: typeof publicServicesMobileAppDevelopmentRoute
   publicServicesReactNativeAppDevelopmentRoute: typeof publicServicesReactNativeAppDevelopmentRoute
+  publicServicesSalesCloudRoute: typeof publicServicesSalesCloudRoute
+  publicServicesSalesforceConsultingRoute: typeof publicServicesSalesforceConsultingRoute
+  publicServicesSalesforceImplementationRoute: typeof publicServicesSalesforceImplementationRoute
+  publicServicesSalesforceIntegrationRoute: typeof publicServicesSalesforceIntegrationRoute
   publicServicesWebApplicationDevelopmentRoute: typeof publicServicesWebApplicationDevelopmentRoute
 }
 
@@ -1912,10 +2017,19 @@ const publicRouteRouteChildren: publicRouteRouteChildren = {
   publicServicesIosAppDevelopmentRoute: publicServicesIosAppDevelopmentRoute,
   publicServicesIotDevelopmentRoute: publicServicesIotDevelopmentRoute,
   publicServicesIpadAppDevelopmentRoute: publicServicesIpadAppDevelopmentRoute,
+  publicServicesLightningMigrationDevelopmentRoute:
+    publicServicesLightningMigrationDevelopmentRoute,
   publicServicesMobileAppDevelopmentRoute:
     publicServicesMobileAppDevelopmentRoute,
   publicServicesReactNativeAppDevelopmentRoute:
     publicServicesReactNativeAppDevelopmentRoute,
+  publicServicesSalesCloudRoute: publicServicesSalesCloudRoute,
+  publicServicesSalesforceConsultingRoute:
+    publicServicesSalesforceConsultingRoute,
+  publicServicesSalesforceImplementationRoute:
+    publicServicesSalesforceImplementationRoute,
+  publicServicesSalesforceIntegrationRoute:
+    publicServicesSalesforceIntegrationRoute,
   publicServicesWebApplicationDevelopmentRoute:
     publicServicesWebApplicationDevelopmentRoute,
 }
