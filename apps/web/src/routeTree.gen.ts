@@ -16,8 +16,16 @@ import { Route as publicPortfolioRouteImport } from './routes/(public)/portfolio
 import { Route as publicContactRouteImport } from './routes/(public)/contact'
 import { Route as authSignupRouteImport } from './routes/(auth)/signup'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
+import { Route as publicAboutRouteRouteImport } from './routes/(public)/about/route'
 import { Route as authenticatedSettingsRouteRouteImport } from './routes/(authenticated)/settings/route'
 import { Route as authenticatedPlatformRouteRouteImport } from './routes/(authenticated)/platform/route'
+import { Route as publicAboutVisionMissionRouteImport } from './routes/(public)/about/vision-mission'
+import { Route as publicAboutOurJourneyRouteImport } from './routes/(public)/about/our-journey'
+import { Route as publicAboutNasscomMembershipRouteImport } from './routes/(public)/about/nasscom-membership'
+import { Route as publicAboutLifeAtWorkholoLabsRouteImport } from './routes/(public)/about/life-at-workholo-labs'
+import { Route as publicAboutLeadershipTeamRouteImport } from './routes/(public)/about/leadership-team'
+import { Route as publicAboutCompanyOverviewRouteImport } from './routes/(public)/about/company-overview'
+import { Route as publicAboutAwardsRecognitionRouteImport } from './routes/(public)/about/awards-recognition'
 import { Route as authenticatedOrgNewRouteImport } from './routes/(authenticated)/org/new'
 import { Route as authAcceptInvitationIdRouteImport } from './routes/(auth)/accept-invitation.$id'
 import { Route as authenticatedPlatformDashboardRouteRouteImport } from './routes/(authenticated)/platform/dashboard/route'
@@ -93,6 +101,11 @@ const authLoginRoute = authLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const publicAboutRouteRoute = publicAboutRouteRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => publicRouteRoute,
+} as any)
 const authenticatedSettingsRouteRoute =
   authenticatedSettingsRouteRouteImport.update({
     id: '/settings',
@@ -104,6 +117,47 @@ const authenticatedPlatformRouteRoute =
     id: '/platform',
     path: '/platform',
     getParentRoute: () => authenticatedRouteRoute,
+  } as any)
+const publicAboutVisionMissionRoute =
+  publicAboutVisionMissionRouteImport.update({
+    id: '/vision-mission',
+    path: '/vision-mission',
+    getParentRoute: () => publicAboutRouteRoute,
+  } as any)
+const publicAboutOurJourneyRoute = publicAboutOurJourneyRouteImport.update({
+  id: '/our-journey',
+  path: '/our-journey',
+  getParentRoute: () => publicAboutRouteRoute,
+} as any)
+const publicAboutNasscomMembershipRoute =
+  publicAboutNasscomMembershipRouteImport.update({
+    id: '/nasscom-membership',
+    path: '/nasscom-membership',
+    getParentRoute: () => publicAboutRouteRoute,
+  } as any)
+const publicAboutLifeAtWorkholoLabsRoute =
+  publicAboutLifeAtWorkholoLabsRouteImport.update({
+    id: '/life-at-workholo-labs',
+    path: '/life-at-workholo-labs',
+    getParentRoute: () => publicAboutRouteRoute,
+  } as any)
+const publicAboutLeadershipTeamRoute =
+  publicAboutLeadershipTeamRouteImport.update({
+    id: '/leadership-team',
+    path: '/leadership-team',
+    getParentRoute: () => publicAboutRouteRoute,
+  } as any)
+const publicAboutCompanyOverviewRoute =
+  publicAboutCompanyOverviewRouteImport.update({
+    id: '/company-overview',
+    path: '/company-overview',
+    getParentRoute: () => publicAboutRouteRoute,
+  } as any)
+const publicAboutAwardsRecognitionRoute =
+  publicAboutAwardsRecognitionRouteImport.update({
+    id: '/awards-recognition',
+    path: '/awards-recognition',
+    getParentRoute: () => publicAboutRouteRoute,
   } as any)
 const authenticatedOrgNewRoute = authenticatedOrgNewRouteImport.update({
   id: '/org/new',
@@ -365,6 +419,7 @@ const authenticatedOrgSlugWorkspaceCommunicationChannelsChannelIdIndexRoute =
 export interface FileRoutesByFullPath {
   '/platform': typeof authenticatedPlatformRouteRouteWithChildren
   '/settings': typeof authenticatedSettingsRouteRouteWithChildren
+  '/about': typeof publicAboutRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/signup': typeof authSignupRoute
   '/contact': typeof publicContactRoute
@@ -374,6 +429,13 @@ export interface FileRoutesByFullPath {
   '/platform/dashboard': typeof authenticatedPlatformDashboardRouteRouteWithChildren
   '/accept-invitation/$id': typeof authAcceptInvitationIdRoute
   '/org/new': typeof authenticatedOrgNewRoute
+  '/about/awards-recognition': typeof publicAboutAwardsRecognitionRoute
+  '/about/company-overview': typeof publicAboutCompanyOverviewRoute
+  '/about/leadership-team': typeof publicAboutLeadershipTeamRoute
+  '/about/life-at-workholo-labs': typeof publicAboutLifeAtWorkholoLabsRoute
+  '/about/nasscom-membership': typeof publicAboutNasscomMembershipRoute
+  '/about/our-journey': typeof publicAboutOurJourneyRoute
+  '/about/vision-mission': typeof publicAboutVisionMissionRoute
   '/org/$slug/console': typeof authenticatedOrgSlugConsoleRouteRouteWithChildren
   '/org/$slug/manage': typeof authenticatedOrgSlugManageRouteRouteWithChildren
   '/org/$slug/workspace': typeof authenticatedOrgSlugWorkspaceRouteRouteWithChildren
@@ -415,6 +477,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/platform': typeof authenticatedPlatformRouteRouteWithChildren
   '/settings': typeof authenticatedSettingsRouteRouteWithChildren
+  '/about': typeof publicAboutRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/signup': typeof authSignupRoute
   '/contact': typeof publicContactRoute
@@ -423,6 +486,13 @@ export interface FileRoutesByTo {
   '/org/$slug': typeof authenticatedOrgSlugRouteRouteWithChildren
   '/accept-invitation/$id': typeof authAcceptInvitationIdRoute
   '/org/new': typeof authenticatedOrgNewRoute
+  '/about/awards-recognition': typeof publicAboutAwardsRecognitionRoute
+  '/about/company-overview': typeof publicAboutCompanyOverviewRoute
+  '/about/leadership-team': typeof publicAboutLeadershipTeamRoute
+  '/about/life-at-workholo-labs': typeof publicAboutLifeAtWorkholoLabsRoute
+  '/about/nasscom-membership': typeof publicAboutNasscomMembershipRoute
+  '/about/our-journey': typeof publicAboutOurJourneyRoute
+  '/about/vision-mission': typeof publicAboutVisionMissionRoute
   '/settings/account/notifications': typeof authenticatedSettingsAccountNotificationsRoute
   '/settings/account/preferences': typeof authenticatedSettingsAccountPreferencesRoute
   '/settings/account/profile': typeof authenticatedSettingsAccountProfileRoute
@@ -462,6 +532,7 @@ export interface FileRoutesById {
   '/(public)': typeof publicRouteRouteWithChildren
   '/(authenticated)/platform': typeof authenticatedPlatformRouteRouteWithChildren
   '/(authenticated)/settings': typeof authenticatedSettingsRouteRouteWithChildren
+  '/(public)/about': typeof publicAboutRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/signup': typeof authSignupRoute
   '/(public)/contact': typeof publicContactRoute
@@ -471,6 +542,13 @@ export interface FileRoutesById {
   '/(authenticated)/platform/dashboard': typeof authenticatedPlatformDashboardRouteRouteWithChildren
   '/(auth)/accept-invitation/$id': typeof authAcceptInvitationIdRoute
   '/(authenticated)/org/new': typeof authenticatedOrgNewRoute
+  '/(public)/about/awards-recognition': typeof publicAboutAwardsRecognitionRoute
+  '/(public)/about/company-overview': typeof publicAboutCompanyOverviewRoute
+  '/(public)/about/leadership-team': typeof publicAboutLeadershipTeamRoute
+  '/(public)/about/life-at-workholo-labs': typeof publicAboutLifeAtWorkholoLabsRoute
+  '/(public)/about/nasscom-membership': typeof publicAboutNasscomMembershipRoute
+  '/(public)/about/our-journey': typeof publicAboutOurJourneyRoute
+  '/(public)/about/vision-mission': typeof publicAboutVisionMissionRoute
   '/(authenticated)/org/$slug/console': typeof authenticatedOrgSlugConsoleRouteRouteWithChildren
   '/(authenticated)/org/$slug/manage': typeof authenticatedOrgSlugManageRouteRouteWithChildren
   '/(authenticated)/org/$slug/workspace': typeof authenticatedOrgSlugWorkspaceRouteRouteWithChildren
@@ -514,6 +592,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/platform'
     | '/settings'
+    | '/about'
     | '/login'
     | '/signup'
     | '/contact'
@@ -523,6 +602,13 @@ export interface FileRouteTypes {
     | '/platform/dashboard'
     | '/accept-invitation/$id'
     | '/org/new'
+    | '/about/awards-recognition'
+    | '/about/company-overview'
+    | '/about/leadership-team'
+    | '/about/life-at-workholo-labs'
+    | '/about/nasscom-membership'
+    | '/about/our-journey'
+    | '/about/vision-mission'
     | '/org/$slug/console'
     | '/org/$slug/manage'
     | '/org/$slug/workspace'
@@ -564,6 +650,7 @@ export interface FileRouteTypes {
   to:
     | '/platform'
     | '/settings'
+    | '/about'
     | '/login'
     | '/signup'
     | '/contact'
@@ -572,6 +659,13 @@ export interface FileRouteTypes {
     | '/org/$slug'
     | '/accept-invitation/$id'
     | '/org/new'
+    | '/about/awards-recognition'
+    | '/about/company-overview'
+    | '/about/leadership-team'
+    | '/about/life-at-workholo-labs'
+    | '/about/nasscom-membership'
+    | '/about/our-journey'
+    | '/about/vision-mission'
     | '/settings/account/notifications'
     | '/settings/account/preferences'
     | '/settings/account/profile'
@@ -610,6 +704,7 @@ export interface FileRouteTypes {
     | '/(public)'
     | '/(authenticated)/platform'
     | '/(authenticated)/settings'
+    | '/(public)/about'
     | '/(auth)/login'
     | '/(auth)/signup'
     | '/(public)/contact'
@@ -619,6 +714,13 @@ export interface FileRouteTypes {
     | '/(authenticated)/platform/dashboard'
     | '/(auth)/accept-invitation/$id'
     | '/(authenticated)/org/new'
+    | '/(public)/about/awards-recognition'
+    | '/(public)/about/company-overview'
+    | '/(public)/about/leadership-team'
+    | '/(public)/about/life-at-workholo-labs'
+    | '/(public)/about/nasscom-membership'
+    | '/(public)/about/our-journey'
+    | '/(public)/about/vision-mission'
     | '/(authenticated)/org/$slug/console'
     | '/(authenticated)/org/$slug/manage'
     | '/(authenticated)/org/$slug/workspace'
@@ -717,6 +819,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(public)/about': {
+      id: '/(public)/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof publicAboutRouteRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
     '/(authenticated)/settings': {
       id: '/(authenticated)/settings'
       path: '/settings'
@@ -730,6 +839,55 @@ declare module '@tanstack/react-router' {
       fullPath: '/platform'
       preLoaderRoute: typeof authenticatedPlatformRouteRouteImport
       parentRoute: typeof authenticatedRouteRoute
+    }
+    '/(public)/about/vision-mission': {
+      id: '/(public)/about/vision-mission'
+      path: '/vision-mission'
+      fullPath: '/about/vision-mission'
+      preLoaderRoute: typeof publicAboutVisionMissionRouteImport
+      parentRoute: typeof publicAboutRouteRoute
+    }
+    '/(public)/about/our-journey': {
+      id: '/(public)/about/our-journey'
+      path: '/our-journey'
+      fullPath: '/about/our-journey'
+      preLoaderRoute: typeof publicAboutOurJourneyRouteImport
+      parentRoute: typeof publicAboutRouteRoute
+    }
+    '/(public)/about/nasscom-membership': {
+      id: '/(public)/about/nasscom-membership'
+      path: '/nasscom-membership'
+      fullPath: '/about/nasscom-membership'
+      preLoaderRoute: typeof publicAboutNasscomMembershipRouteImport
+      parentRoute: typeof publicAboutRouteRoute
+    }
+    '/(public)/about/life-at-workholo-labs': {
+      id: '/(public)/about/life-at-workholo-labs'
+      path: '/life-at-workholo-labs'
+      fullPath: '/about/life-at-workholo-labs'
+      preLoaderRoute: typeof publicAboutLifeAtWorkholoLabsRouteImport
+      parentRoute: typeof publicAboutRouteRoute
+    }
+    '/(public)/about/leadership-team': {
+      id: '/(public)/about/leadership-team'
+      path: '/leadership-team'
+      fullPath: '/about/leadership-team'
+      preLoaderRoute: typeof publicAboutLeadershipTeamRouteImport
+      parentRoute: typeof publicAboutRouteRoute
+    }
+    '/(public)/about/company-overview': {
+      id: '/(public)/about/company-overview'
+      path: '/company-overview'
+      fullPath: '/about/company-overview'
+      preLoaderRoute: typeof publicAboutCompanyOverviewRouteImport
+      parentRoute: typeof publicAboutRouteRoute
+    }
+    '/(public)/about/awards-recognition': {
+      id: '/(public)/about/awards-recognition'
+      path: '/awards-recognition'
+      fullPath: '/about/awards-recognition'
+      preLoaderRoute: typeof publicAboutAwardsRecognitionRouteImport
+      parentRoute: typeof publicAboutRouteRoute
     }
     '/(authenticated)/org/new': {
       id: '/(authenticated)/org/new'
@@ -1271,13 +1429,38 @@ const authenticatedRouteRouteChildren: authenticatedRouteRouteChildren = {
 const authenticatedRouteRouteWithChildren =
   authenticatedRouteRoute._addFileChildren(authenticatedRouteRouteChildren)
 
+interface publicAboutRouteRouteChildren {
+  publicAboutAwardsRecognitionRoute: typeof publicAboutAwardsRecognitionRoute
+  publicAboutCompanyOverviewRoute: typeof publicAboutCompanyOverviewRoute
+  publicAboutLeadershipTeamRoute: typeof publicAboutLeadershipTeamRoute
+  publicAboutLifeAtWorkholoLabsRoute: typeof publicAboutLifeAtWorkholoLabsRoute
+  publicAboutNasscomMembershipRoute: typeof publicAboutNasscomMembershipRoute
+  publicAboutOurJourneyRoute: typeof publicAboutOurJourneyRoute
+  publicAboutVisionMissionRoute: typeof publicAboutVisionMissionRoute
+}
+
+const publicAboutRouteRouteChildren: publicAboutRouteRouteChildren = {
+  publicAboutAwardsRecognitionRoute: publicAboutAwardsRecognitionRoute,
+  publicAboutCompanyOverviewRoute: publicAboutCompanyOverviewRoute,
+  publicAboutLeadershipTeamRoute: publicAboutLeadershipTeamRoute,
+  publicAboutLifeAtWorkholoLabsRoute: publicAboutLifeAtWorkholoLabsRoute,
+  publicAboutNasscomMembershipRoute: publicAboutNasscomMembershipRoute,
+  publicAboutOurJourneyRoute: publicAboutOurJourneyRoute,
+  publicAboutVisionMissionRoute: publicAboutVisionMissionRoute,
+}
+
+const publicAboutRouteRouteWithChildren =
+  publicAboutRouteRoute._addFileChildren(publicAboutRouteRouteChildren)
+
 interface publicRouteRouteChildren {
+  publicAboutRouteRoute: typeof publicAboutRouteRouteWithChildren
   publicContactRoute: typeof publicContactRoute
   publicPortfolioRoute: typeof publicPortfolioRoute
   publicIndexRoute: typeof publicIndexRoute
 }
 
 const publicRouteRouteChildren: publicRouteRouteChildren = {
+  publicAboutRouteRoute: publicAboutRouteRouteWithChildren,
   publicContactRoute: publicContactRoute,
   publicPortfolioRoute: publicPortfolioRoute,
   publicIndexRoute: publicIndexRoute,
