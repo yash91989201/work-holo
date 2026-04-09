@@ -3,6 +3,7 @@ import {
   Outlet,
   useRouterState,
 } from "@tanstack/react-router";
+import { Footer } from "@/components/public/footer";
 import { Header } from "@/components/public/header";
 import { FullScreenLoader } from "@/components/shared/full-screen-loader";
 
@@ -17,9 +18,10 @@ function RouteComponent() {
   });
 
   return (
-    <div className="grid h-svh grid-rows-[auto_1fr]">
+    <div className="grid h-svh grid-rows-[auto_1fr_auto]">
       <Header />
       {isFetching ? <FullScreenLoader /> : <Outlet />}
+      <Footer />
     </div>
   );
 }
