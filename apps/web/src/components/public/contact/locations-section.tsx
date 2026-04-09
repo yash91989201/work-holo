@@ -1,6 +1,6 @@
 import {
   IconArrowRight,
-  IconLightning,
+  IconBolt,
   IconMail,
   IconMapPin,
   IconPhone,
@@ -131,7 +131,7 @@ export function LocationsSection() {
 
             <div className="flex items-start gap-4">
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                <IconLightning size={24} />
+                <IconBolt size={24} />
               </div>
               <div>
                 <h4 className="mb-1 font-bold text-muted-foreground text-sm uppercase tracking-wider">

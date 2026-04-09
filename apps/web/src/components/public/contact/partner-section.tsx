@@ -1,8 +1,8 @@
 import {
-  IconHandshake,
-  IconLayers,
-  IconLightning,
+  IconBolt,
+  IconHeartHandshake,
   IconSearch,
+  IconStack,
   IconUsers,
   IconWorld,
 } from "@tabler/icons-react";
@@ -53,19 +53,19 @@ const partners = [
       "Offices across India and the USA serving enterprises in APAC, Middle East, Europe, and North America.",
   },
   {
-    icon: IconLayers,
+    icon: IconStack,
     title: "Solution Architecture Expertise",
     description:
       "From system design to cloud deployment — we architect solutions built for scale and performance.",
   },
   {
-    icon: IconHandshake,
+    icon: IconHeartHandshake,
     title: "Long-term Technology Partnerships",
     description:
       "We don't just deliver projects — we build lasting relationships that drive continuous innovation.",
   },
   {
-    icon: IconLightning,
+    icon: IconBolt,
     title: "Legacy Modernization",
     description:
       "Migrate and modernize legacy systems to cloud-native architectures with zero downtime.",
