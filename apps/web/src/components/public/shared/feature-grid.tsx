@@ -1,4 +1,4 @@
-import { CheckCircle } from "@tabler/icons-react";
+import { IconCircleCheck } from "@tabler/icons-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SectionWrapper } from "./section-wrapper";
 
@@ -20,7 +20,7 @@ export const FeatureGrid = () => {
             <Card className="bg-card" key={index}>
               <CardHeader>
                 <CardTitle className="flex items-center">
-                  <CheckCircle className="mr-2 h-5 w-5 text-primary" />
+                  <IconCircleCheck className="mr-2 h-5 w-5 text-primary" />
                   {feature.title}
                 </CardTitle>
               </CardHeader>

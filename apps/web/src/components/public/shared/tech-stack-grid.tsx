@@ -1,26 +1,30 @@
-import {
-  BrandGithub,
-  BrandNextjs,
-  BrandReact,
-  BrandTailwind,
-  BrandTypescript,
-  BrandVercel,
-} from "@tabler/icons-react";
 import { SectionWrapper } from "./section-wrapper";
 
 const techs = [
-  { name: "React", icon: <BrandReact className="h-12 w-12 text-primary" /> },
-  { name: "Next.js", icon: <BrandNextjs className="h-12 w-12 text-primary" /> },
+  {
+    name: "React",
+    icon: <IconBrandReact className="h-12 w-12 text-primary" />,
+  },
+  {
+    name: "Next.js",
+    icon: <IconBrandNextjs className="h-12 w-12 text-primary" />,
+  },
   {
     name: "TypeScript",
-    icon: <BrandTypescript className="h-12 w-12 text-primary" />,
+    icon: <IconBrandTypescript className="h-12 w-12 text-primary" />,
   },
   {
     name: "Tailwind",
-    icon: <BrandTailwind className="h-12 w-12 text-primary" />,
+    icon: <IconBrandTailwind className="h-12 w-12 text-primary" />,
   },
-  { name: "Vercel", icon: <BrandVercel className="h-12 w-12 text-primary" /> },
-  { name: "GitHub", icon: <BrandGithub className="h-12 w-12 text-primary" /> },
+  {
+    name: "Vercel",
+    icon: <IconBrandVercel className="h-12 w-12 text-primary" />,
+  },
+  {
+    name: "GitHub",
+    icon: <IconBrandGithub className="h-12 w-12 text-primary" />,
+  },
 ];
 
 export const TechStackGrid = () => {

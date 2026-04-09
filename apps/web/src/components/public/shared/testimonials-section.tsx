@@ -1,4 +1,3 @@
-import { Star } from "@tabler/icons-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { SectionWrapper } from "./section-wrapper";
 

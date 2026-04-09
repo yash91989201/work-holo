@@ -7,7 +7,7 @@ interface StatsCounterProps {
   suffix?: string;
 }
 
-const Counter = ({ end, suffix = "" }: StatsCounterProps) => {
+export const Counter = ({ end, suffix = "" }: StatsCounterProps) => {
   const [count, setCount] = useState(0);
   const ref = useRef(null);
   const isInView = useInView(ref);
@@ -32,24 +32,40 @@ const Counter = ({ end, suffix = "" }: StatsCounterProps) => {
   );
 };
 
-const stats = [
+export interface StatItem {
+  label: string;
+  suffix?: string;
+  value: number;
+}
+
+interface StatsCounterSectionProps {
+  className?: string;
+  items?: StatItem[];
+}
+
+const defaultStats = [
   { label: "Users", value: 10_000 },
   { label: "Projects", value: 5000 },
   { label: "Downloads", value: 100_000 },
   { label: "Stars", value: 2000 },
 ];
 
-export const StatsCounter = () => {
+export const StatsCounter = ({
+  items = defaultStats,
+  className = "bg-card py-20",
+}: StatsCounterSectionProps) => {
   return (
-    <SectionWrapper className="bg-card py-20">
+    <SectionWrapper className={className}>
       <div className="container mx-auto text-center">
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
-          {stats.map((stat, index) => (
+        <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
+          {items.map((stat, index) => (
             <div key={index}>
-              <div className="font-bold text-4xl text-primary">
-                <Counter end={stat.value} />
+              <div className="font-bold text-4xl text-primary md:text-5xl lg:text-7xl">
+                <Counter end={stat.value} suffix={stat.suffix} />
               </div>
-              <p className="text-muted-foreground">{stat.label}</p>
+              <p className="mt-2 font-bold text-foreground text-sm md:text-base lg:text-xl">
+                {stat.label}
+              </p>
             </div>
           ))}
         </div>
