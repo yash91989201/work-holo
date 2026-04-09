@@ -19,6 +19,19 @@ import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as publicAboutRouteRouteImport } from './routes/(public)/about/route'
 import { Route as authenticatedSettingsRouteRouteImport } from './routes/(authenticated)/settings/route'
 import { Route as authenticatedPlatformRouteRouteImport } from './routes/(authenticated)/platform/route'
+import { Route as publicServicesWebApplicationDevelopmentRouteImport } from './routes/(public)/services/web-application-development'
+import { Route as publicServicesReactNativeAppDevelopmentRouteImport } from './routes/(public)/services/react-native-app-development'
+import { Route as publicServicesMobileAppDevelopmentRouteImport } from './routes/(public)/services/mobile-app-development'
+import { Route as publicServicesIpadAppDevelopmentRouteImport } from './routes/(public)/services/ipad-app-development'
+import { Route as publicServicesIosAppDevelopmentRouteImport } from './routes/(public)/services/ios-app-development'
+import { Route as publicServicesFlutterAppDevelopmentRouteImport } from './routes/(public)/services/flutter-app-development'
+import { Route as publicServicesEnterpriseApplicationDevelopmentRouteImport } from './routes/(public)/services/enterprise-application-development'
+import { Route as publicServicesCustomSoftwareDevelopmentRouteImport } from './routes/(public)/services/custom-software-development'
+import { Route as publicServicesCustomCmsDevelopmentRouteImport } from './routes/(public)/services/custom-cms-development'
+import { Route as publicServicesCrossPlatformAppDevelopmentRouteImport } from './routes/(public)/services/cross-platform-app-development'
+import { Route as publicServicesAppMaintenanceSupportRouteImport } from './routes/(public)/services/app-maintenance-support'
+import { Route as publicServicesAndroidAppDevelopmentRouteImport } from './routes/(public)/services/android-app-development'
+import { Route as publicServices360PhotographyServicesRouteImport } from './routes/(public)/services/360-photography-services'
 import { Route as publicAboutVisionMissionRouteImport } from './routes/(public)/about/vision-mission'
 import { Route as publicAboutOurJourneyRouteImport } from './routes/(public)/about/our-journey'
 import { Route as publicAboutNasscomMembershipRouteImport } from './routes/(public)/about/nasscom-membership'
@@ -116,6 +129,84 @@ const authenticatedPlatformRouteRoute =
     id: '/platform',
     path: '/platform',
     getParentRoute: () => authenticatedRouteRoute,
+  } as any)
+const publicServicesWebApplicationDevelopmentRoute =
+  publicServicesWebApplicationDevelopmentRouteImport.update({
+    id: '/services/web-application-development',
+    path: '/services/web-application-development',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicServicesReactNativeAppDevelopmentRoute =
+  publicServicesReactNativeAppDevelopmentRouteImport.update({
+    id: '/services/react-native-app-development',
+    path: '/services/react-native-app-development',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicServicesMobileAppDevelopmentRoute =
+  publicServicesMobileAppDevelopmentRouteImport.update({
+    id: '/services/mobile-app-development',
+    path: '/services/mobile-app-development',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicServicesIpadAppDevelopmentRoute =
+  publicServicesIpadAppDevelopmentRouteImport.update({
+    id: '/services/ipad-app-development',
+    path: '/services/ipad-app-development',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicServicesIosAppDevelopmentRoute =
+  publicServicesIosAppDevelopmentRouteImport.update({
+    id: '/services/ios-app-development',
+    path: '/services/ios-app-development',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicServicesFlutterAppDevelopmentRoute =
+  publicServicesFlutterAppDevelopmentRouteImport.update({
+    id: '/services/flutter-app-development',
+    path: '/services/flutter-app-development',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicServicesEnterpriseApplicationDevelopmentRoute =
+  publicServicesEnterpriseApplicationDevelopmentRouteImport.update({
+    id: '/services/enterprise-application-development',
+    path: '/services/enterprise-application-development',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicServicesCustomSoftwareDevelopmentRoute =
+  publicServicesCustomSoftwareDevelopmentRouteImport.update({
+    id: '/services/custom-software-development',
+    path: '/services/custom-software-development',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicServicesCustomCmsDevelopmentRoute =
+  publicServicesCustomCmsDevelopmentRouteImport.update({
+    id: '/services/custom-cms-development',
+    path: '/services/custom-cms-development',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicServicesCrossPlatformAppDevelopmentRoute =
+  publicServicesCrossPlatformAppDevelopmentRouteImport.update({
+    id: '/services/cross-platform-app-development',
+    path: '/services/cross-platform-app-development',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicServicesAppMaintenanceSupportRoute =
+  publicServicesAppMaintenanceSupportRouteImport.update({
+    id: '/services/app-maintenance-support',
+    path: '/services/app-maintenance-support',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicServicesAndroidAppDevelopmentRoute =
+  publicServicesAndroidAppDevelopmentRouteImport.update({
+    id: '/services/android-app-development',
+    path: '/services/android-app-development',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicServices360PhotographyServicesRoute =
+  publicServices360PhotographyServicesRouteImport.update({
+    id: '/services/360-photography-services',
+    path: '/services/360-photography-services',
+    getParentRoute: () => publicRouteRoute,
   } as any)
 const publicAboutVisionMissionRoute =
   publicAboutVisionMissionRouteImport.update({
@@ -429,6 +520,19 @@ export interface FileRoutesByFullPath {
   '/about/nasscom-membership': typeof publicAboutNasscomMembershipRoute
   '/about/our-journey': typeof publicAboutOurJourneyRoute
   '/about/vision-mission': typeof publicAboutVisionMissionRoute
+  '/services/360-photography-services': typeof publicServices360PhotographyServicesRoute
+  '/services/android-app-development': typeof publicServicesAndroidAppDevelopmentRoute
+  '/services/app-maintenance-support': typeof publicServicesAppMaintenanceSupportRoute
+  '/services/cross-platform-app-development': typeof publicServicesCrossPlatformAppDevelopmentRoute
+  '/services/custom-cms-development': typeof publicServicesCustomCmsDevelopmentRoute
+  '/services/custom-software-development': typeof publicServicesCustomSoftwareDevelopmentRoute
+  '/services/enterprise-application-development': typeof publicServicesEnterpriseApplicationDevelopmentRoute
+  '/services/flutter-app-development': typeof publicServicesFlutterAppDevelopmentRoute
+  '/services/ios-app-development': typeof publicServicesIosAppDevelopmentRoute
+  '/services/ipad-app-development': typeof publicServicesIpadAppDevelopmentRoute
+  '/services/mobile-app-development': typeof publicServicesMobileAppDevelopmentRoute
+  '/services/react-native-app-development': typeof publicServicesReactNativeAppDevelopmentRoute
+  '/services/web-application-development': typeof publicServicesWebApplicationDevelopmentRoute
   '/org/$slug/console': typeof authenticatedOrgSlugConsoleRouteRouteWithChildren
   '/org/$slug/manage': typeof authenticatedOrgSlugManageRouteRouteWithChildren
   '/org/$slug/workspace': typeof authenticatedOrgSlugWorkspaceRouteRouteWithChildren
@@ -485,6 +589,19 @@ export interface FileRoutesByTo {
   '/about/nasscom-membership': typeof publicAboutNasscomMembershipRoute
   '/about/our-journey': typeof publicAboutOurJourneyRoute
   '/about/vision-mission': typeof publicAboutVisionMissionRoute
+  '/services/360-photography-services': typeof publicServices360PhotographyServicesRoute
+  '/services/android-app-development': typeof publicServicesAndroidAppDevelopmentRoute
+  '/services/app-maintenance-support': typeof publicServicesAppMaintenanceSupportRoute
+  '/services/cross-platform-app-development': typeof publicServicesCrossPlatformAppDevelopmentRoute
+  '/services/custom-cms-development': typeof publicServicesCustomCmsDevelopmentRoute
+  '/services/custom-software-development': typeof publicServicesCustomSoftwareDevelopmentRoute
+  '/services/enterprise-application-development': typeof publicServicesEnterpriseApplicationDevelopmentRoute
+  '/services/flutter-app-development': typeof publicServicesFlutterAppDevelopmentRoute
+  '/services/ios-app-development': typeof publicServicesIosAppDevelopmentRoute
+  '/services/ipad-app-development': typeof publicServicesIpadAppDevelopmentRoute
+  '/services/mobile-app-development': typeof publicServicesMobileAppDevelopmentRoute
+  '/services/react-native-app-development': typeof publicServicesReactNativeAppDevelopmentRoute
+  '/services/web-application-development': typeof publicServicesWebApplicationDevelopmentRoute
   '/settings/account/notifications': typeof authenticatedSettingsAccountNotificationsRoute
   '/settings/account/preferences': typeof authenticatedSettingsAccountPreferencesRoute
   '/settings/account/profile': typeof authenticatedSettingsAccountProfileRoute
@@ -540,6 +657,19 @@ export interface FileRoutesById {
   '/(public)/about/nasscom-membership': typeof publicAboutNasscomMembershipRoute
   '/(public)/about/our-journey': typeof publicAboutOurJourneyRoute
   '/(public)/about/vision-mission': typeof publicAboutVisionMissionRoute
+  '/(public)/services/360-photography-services': typeof publicServices360PhotographyServicesRoute
+  '/(public)/services/android-app-development': typeof publicServicesAndroidAppDevelopmentRoute
+  '/(public)/services/app-maintenance-support': typeof publicServicesAppMaintenanceSupportRoute
+  '/(public)/services/cross-platform-app-development': typeof publicServicesCrossPlatformAppDevelopmentRoute
+  '/(public)/services/custom-cms-development': typeof publicServicesCustomCmsDevelopmentRoute
+  '/(public)/services/custom-software-development': typeof publicServicesCustomSoftwareDevelopmentRoute
+  '/(public)/services/enterprise-application-development': typeof publicServicesEnterpriseApplicationDevelopmentRoute
+  '/(public)/services/flutter-app-development': typeof publicServicesFlutterAppDevelopmentRoute
+  '/(public)/services/ios-app-development': typeof publicServicesIosAppDevelopmentRoute
+  '/(public)/services/ipad-app-development': typeof publicServicesIpadAppDevelopmentRoute
+  '/(public)/services/mobile-app-development': typeof publicServicesMobileAppDevelopmentRoute
+  '/(public)/services/react-native-app-development': typeof publicServicesReactNativeAppDevelopmentRoute
+  '/(public)/services/web-application-development': typeof publicServicesWebApplicationDevelopmentRoute
   '/(authenticated)/org/$slug/console': typeof authenticatedOrgSlugConsoleRouteRouteWithChildren
   '/(authenticated)/org/$slug/manage': typeof authenticatedOrgSlugManageRouteRouteWithChildren
   '/(authenticated)/org/$slug/workspace': typeof authenticatedOrgSlugWorkspaceRouteRouteWithChildren
@@ -599,6 +729,19 @@ export interface FileRouteTypes {
     | '/about/nasscom-membership'
     | '/about/our-journey'
     | '/about/vision-mission'
+    | '/services/360-photography-services'
+    | '/services/android-app-development'
+    | '/services/app-maintenance-support'
+    | '/services/cross-platform-app-development'
+    | '/services/custom-cms-development'
+    | '/services/custom-software-development'
+    | '/services/enterprise-application-development'
+    | '/services/flutter-app-development'
+    | '/services/ios-app-development'
+    | '/services/ipad-app-development'
+    | '/services/mobile-app-development'
+    | '/services/react-native-app-development'
+    | '/services/web-application-development'
     | '/org/$slug/console'
     | '/org/$slug/manage'
     | '/org/$slug/workspace'
@@ -655,6 +798,19 @@ export interface FileRouteTypes {
     | '/about/nasscom-membership'
     | '/about/our-journey'
     | '/about/vision-mission'
+    | '/services/360-photography-services'
+    | '/services/android-app-development'
+    | '/services/app-maintenance-support'
+    | '/services/cross-platform-app-development'
+    | '/services/custom-cms-development'
+    | '/services/custom-software-development'
+    | '/services/enterprise-application-development'
+    | '/services/flutter-app-development'
+    | '/services/ios-app-development'
+    | '/services/ipad-app-development'
+    | '/services/mobile-app-development'
+    | '/services/react-native-app-development'
+    | '/services/web-application-development'
     | '/settings/account/notifications'
     | '/settings/account/preferences'
     | '/settings/account/profile'
@@ -709,6 +865,19 @@ export interface FileRouteTypes {
     | '/(public)/about/nasscom-membership'
     | '/(public)/about/our-journey'
     | '/(public)/about/vision-mission'
+    | '/(public)/services/360-photography-services'
+    | '/(public)/services/android-app-development'
+    | '/(public)/services/app-maintenance-support'
+    | '/(public)/services/cross-platform-app-development'
+    | '/(public)/services/custom-cms-development'
+    | '/(public)/services/custom-software-development'
+    | '/(public)/services/enterprise-application-development'
+    | '/(public)/services/flutter-app-development'
+    | '/(public)/services/ios-app-development'
+    | '/(public)/services/ipad-app-development'
+    | '/(public)/services/mobile-app-development'
+    | '/(public)/services/react-native-app-development'
+    | '/(public)/services/web-application-development'
     | '/(authenticated)/org/$slug/console'
     | '/(authenticated)/org/$slug/manage'
     | '/(authenticated)/org/$slug/workspace'
@@ -826,6 +995,97 @@ declare module '@tanstack/react-router' {
       fullPath: '/platform'
       preLoaderRoute: typeof authenticatedPlatformRouteRouteImport
       parentRoute: typeof authenticatedRouteRoute
+    }
+    '/(public)/services/web-application-development': {
+      id: '/(public)/services/web-application-development'
+      path: '/services/web-application-development'
+      fullPath: '/services/web-application-development'
+      preLoaderRoute: typeof publicServicesWebApplicationDevelopmentRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/services/react-native-app-development': {
+      id: '/(public)/services/react-native-app-development'
+      path: '/services/react-native-app-development'
+      fullPath: '/services/react-native-app-development'
+      preLoaderRoute: typeof publicServicesReactNativeAppDevelopmentRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/services/mobile-app-development': {
+      id: '/(public)/services/mobile-app-development'
+      path: '/services/mobile-app-development'
+      fullPath: '/services/mobile-app-development'
+      preLoaderRoute: typeof publicServicesMobileAppDevelopmentRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/services/ipad-app-development': {
+      id: '/(public)/services/ipad-app-development'
+      path: '/services/ipad-app-development'
+      fullPath: '/services/ipad-app-development'
+      preLoaderRoute: typeof publicServicesIpadAppDevelopmentRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/services/ios-app-development': {
+      id: '/(public)/services/ios-app-development'
+      path: '/services/ios-app-development'
+      fullPath: '/services/ios-app-development'
+      preLoaderRoute: typeof publicServicesIosAppDevelopmentRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/services/flutter-app-development': {
+      id: '/(public)/services/flutter-app-development'
+      path: '/services/flutter-app-development'
+      fullPath: '/services/flutter-app-development'
+      preLoaderRoute: typeof publicServicesFlutterAppDevelopmentRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/services/enterprise-application-development': {
+      id: '/(public)/services/enterprise-application-development'
+      path: '/services/enterprise-application-development'
+      fullPath: '/services/enterprise-application-development'
+      preLoaderRoute: typeof publicServicesEnterpriseApplicationDevelopmentRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/services/custom-software-development': {
+      id: '/(public)/services/custom-software-development'
+      path: '/services/custom-software-development'
+      fullPath: '/services/custom-software-development'
+      preLoaderRoute: typeof publicServicesCustomSoftwareDevelopmentRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/services/custom-cms-development': {
+      id: '/(public)/services/custom-cms-development'
+      path: '/services/custom-cms-development'
+      fullPath: '/services/custom-cms-development'
+      preLoaderRoute: typeof publicServicesCustomCmsDevelopmentRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/services/cross-platform-app-development': {
+      id: '/(public)/services/cross-platform-app-development'
+      path: '/services/cross-platform-app-development'
+      fullPath: '/services/cross-platform-app-development'
+      preLoaderRoute: typeof publicServicesCrossPlatformAppDevelopmentRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/services/app-maintenance-support': {
+      id: '/(public)/services/app-maintenance-support'
+      path: '/services/app-maintenance-support'
+      fullPath: '/services/app-maintenance-support'
+      preLoaderRoute: typeof publicServicesAppMaintenanceSupportRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/services/android-app-development': {
+      id: '/(public)/services/android-app-development'
+      path: '/services/android-app-development'
+      fullPath: '/services/android-app-development'
+      preLoaderRoute: typeof publicServicesAndroidAppDevelopmentRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/services/360-photography-services': {
+      id: '/(public)/services/360-photography-services'
+      path: '/services/360-photography-services'
+      fullPath: '/services/360-photography-services'
+      preLoaderRoute: typeof publicServices360PhotographyServicesRouteImport
+      parentRoute: typeof publicRouteRoute
     }
     '/(public)/about/vision-mission': {
       id: '/(public)/about/vision-mission'
@@ -1434,6 +1694,19 @@ interface publicRouteRouteChildren {
   publicContactRoute: typeof publicContactRoute
   publicPortfolioRoute: typeof publicPortfolioRoute
   publicIndexRoute: typeof publicIndexRoute
+  publicServices360PhotographyServicesRoute: typeof publicServices360PhotographyServicesRoute
+  publicServicesAndroidAppDevelopmentRoute: typeof publicServicesAndroidAppDevelopmentRoute
+  publicServicesAppMaintenanceSupportRoute: typeof publicServicesAppMaintenanceSupportRoute
+  publicServicesCrossPlatformAppDevelopmentRoute: typeof publicServicesCrossPlatformAppDevelopmentRoute
+  publicServicesCustomCmsDevelopmentRoute: typeof publicServicesCustomCmsDevelopmentRoute
+  publicServicesCustomSoftwareDevelopmentRoute: typeof publicServicesCustomSoftwareDevelopmentRoute
+  publicServicesEnterpriseApplicationDevelopmentRoute: typeof publicServicesEnterpriseApplicationDevelopmentRoute
+  publicServicesFlutterAppDevelopmentRoute: typeof publicServicesFlutterAppDevelopmentRoute
+  publicServicesIosAppDevelopmentRoute: typeof publicServicesIosAppDevelopmentRoute
+  publicServicesIpadAppDevelopmentRoute: typeof publicServicesIpadAppDevelopmentRoute
+  publicServicesMobileAppDevelopmentRoute: typeof publicServicesMobileAppDevelopmentRoute
+  publicServicesReactNativeAppDevelopmentRoute: typeof publicServicesReactNativeAppDevelopmentRoute
+  publicServicesWebApplicationDevelopmentRoute: typeof publicServicesWebApplicationDevelopmentRoute
 }
 
 const publicRouteRouteChildren: publicRouteRouteChildren = {
@@ -1441,6 +1714,30 @@ const publicRouteRouteChildren: publicRouteRouteChildren = {
   publicContactRoute: publicContactRoute,
   publicPortfolioRoute: publicPortfolioRoute,
   publicIndexRoute: publicIndexRoute,
+  publicServices360PhotographyServicesRoute:
+    publicServices360PhotographyServicesRoute,
+  publicServicesAndroidAppDevelopmentRoute:
+    publicServicesAndroidAppDevelopmentRoute,
+  publicServicesAppMaintenanceSupportRoute:
+    publicServicesAppMaintenanceSupportRoute,
+  publicServicesCrossPlatformAppDevelopmentRoute:
+    publicServicesCrossPlatformAppDevelopmentRoute,
+  publicServicesCustomCmsDevelopmentRoute:
+    publicServicesCustomCmsDevelopmentRoute,
+  publicServicesCustomSoftwareDevelopmentRoute:
+    publicServicesCustomSoftwareDevelopmentRoute,
+  publicServicesEnterpriseApplicationDevelopmentRoute:
+    publicServicesEnterpriseApplicationDevelopmentRoute,
+  publicServicesFlutterAppDevelopmentRoute:
+    publicServicesFlutterAppDevelopmentRoute,
+  publicServicesIosAppDevelopmentRoute: publicServicesIosAppDevelopmentRoute,
+  publicServicesIpadAppDevelopmentRoute: publicServicesIpadAppDevelopmentRoute,
+  publicServicesMobileAppDevelopmentRoute:
+    publicServicesMobileAppDevelopmentRoute,
+  publicServicesReactNativeAppDevelopmentRoute:
+    publicServicesReactNativeAppDevelopmentRoute,
+  publicServicesWebApplicationDevelopmentRoute:
+    publicServicesWebApplicationDevelopmentRoute,
 }
 
 const publicRouteRouteWithChildren = publicRouteRoute._addFileChildren(
