@@ -1,3 +1,9 @@
+import {
+  IconChartDonut,
+  IconChartPie,
+  IconLink,
+  IconRefresh,
+} from "@tabler/icons-react";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   SalesforceCta,
@@ -7,7 +13,7 @@ import {
 
 const features = [
   {
-    icon: IconChartBar,
+    icon: IconChartDonut,
     title: "Lightning Migration",
     desc: "Structured Classic to Lightning transition with gap analysis, component refactoring, data validation, user testing, and post-migration optimization.",
   },

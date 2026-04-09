@@ -1,3 +1,9 @@
+import {
+  IconChartDonut,
+  IconChartPie,
+  IconLink,
+  IconRefresh,
+} from "@tabler/icons-react";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   SalesforceCta,
@@ -7,7 +13,7 @@ import {
 
 const features = [
   {
-    icon: IconChartBar,
+    icon: IconChartDonut,
     title: "Salesforce Implementation",
     desc: "Business process analysis, CRM architecture design, custom object configuration, workflow automation, role-based access control, and data migration with validation.",
   },
