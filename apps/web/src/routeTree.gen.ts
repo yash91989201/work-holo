@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as publicRouteRouteImport } from './routes/(public)/route'
 import { Route as authenticatedRouteRouteImport } from './routes/(authenticated)/route'
 import { Route as publicIndexRouteImport } from './routes/(public)/index'
+import { Route as publicPortfolioRouteImport } from './routes/(public)/portfolio'
+import { Route as publicContactRouteImport } from './routes/(public)/contact'
 import { Route as authSignupRouteImport } from './routes/(auth)/signup'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as authenticatedSettingsRouteRouteImport } from './routes/(authenticated)/settings/route'
@@ -68,6 +70,16 @@ const authenticatedRouteRoute = authenticatedRouteRouteImport.update({
 const publicIndexRoute = publicIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => publicRouteRoute,
+} as any)
+const publicPortfolioRoute = publicPortfolioRouteImport.update({
+  id: '/portfolio',
+  path: '/portfolio',
+  getParentRoute: () => publicRouteRoute,
+} as any)
+const publicContactRoute = publicContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => publicRouteRoute,
 } as any)
 const authSignupRoute = authSignupRouteImport.update({
@@ -348,6 +360,8 @@ export interface FileRoutesByFullPath {
   '/settings': typeof authenticatedSettingsRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/signup': typeof authSignupRoute
+  '/contact': typeof publicContactRoute
+  '/portfolio': typeof publicPortfolioRoute
   '/': typeof publicIndexRoute
   '/org/$slug': typeof authenticatedOrgSlugRouteRouteWithChildren
   '/platform/dashboard': typeof authenticatedPlatformDashboardRouteRouteWithChildren
@@ -395,6 +409,8 @@ export interface FileRoutesByTo {
   '/settings': typeof authenticatedSettingsRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/signup': typeof authSignupRoute
+  '/contact': typeof publicContactRoute
+  '/portfolio': typeof publicPortfolioRoute
   '/': typeof publicIndexRoute
   '/org/$slug': typeof authenticatedOrgSlugRouteRouteWithChildren
   '/accept-invitation/$id': typeof authAcceptInvitationIdRoute
@@ -439,6 +455,8 @@ export interface FileRoutesById {
   '/(authenticated)/settings': typeof authenticatedSettingsRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/signup': typeof authSignupRoute
+  '/(public)/contact': typeof publicContactRoute
+  '/(public)/portfolio': typeof publicPortfolioRoute
   '/(public)/': typeof publicIndexRoute
   '/(authenticated)/org/$slug': typeof authenticatedOrgSlugRouteRouteWithChildren
   '/(authenticated)/platform/dashboard': typeof authenticatedPlatformDashboardRouteRouteWithChildren
@@ -488,6 +506,8 @@ export interface FileRouteTypes {
     | '/settings'
     | '/login'
     | '/signup'
+    | '/contact'
+    | '/portfolio'
     | '/'
     | '/org/$slug'
     | '/platform/dashboard'
@@ -535,6 +555,8 @@ export interface FileRouteTypes {
     | '/settings'
     | '/login'
     | '/signup'
+    | '/contact'
+    | '/portfolio'
     | '/'
     | '/org/$slug'
     | '/accept-invitation/$id'
@@ -578,6 +600,8 @@ export interface FileRouteTypes {
     | '/(authenticated)/settings'
     | '/(auth)/login'
     | '/(auth)/signup'
+    | '/(public)/contact'
+    | '/(public)/portfolio'
     | '/(public)/'
     | '/(authenticated)/org/$slug'
     | '/(authenticated)/platform/dashboard'
@@ -650,6 +674,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof publicIndexRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/portfolio': {
+      id: '/(public)/portfolio'
+      path: '/portfolio'
+      fullPath: '/portfolio'
+      preLoaderRoute: typeof publicPortfolioRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/contact': {
+      id: '/(public)/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof publicContactRouteImport
       parentRoute: typeof publicRouteRoute
     }
     '/(auth)/signup': {
@@ -1211,10 +1249,14 @@ const authenticatedRouteRouteWithChildren =
   authenticatedRouteRoute._addFileChildren(authenticatedRouteRouteChildren)
 
 interface publicRouteRouteChildren {
+  publicContactRoute: typeof publicContactRoute
+  publicPortfolioRoute: typeof publicPortfolioRoute
   publicIndexRoute: typeof publicIndexRoute
 }
 
 const publicRouteRouteChildren: publicRouteRouteChildren = {
+  publicContactRoute: publicContactRoute,
+  publicPortfolioRoute: publicPortfolioRoute,
   publicIndexRoute: publicIndexRoute,
 }
 
