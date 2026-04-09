@@ -23,12 +23,20 @@ import { Route as publicServicesWebApplicationDevelopmentRouteImport } from './r
 import { Route as publicServicesReactNativeAppDevelopmentRouteImport } from './routes/(public)/services/react-native-app-development'
 import { Route as publicServicesMobileAppDevelopmentRouteImport } from './routes/(public)/services/mobile-app-development'
 import { Route as publicServicesIpadAppDevelopmentRouteImport } from './routes/(public)/services/ipad-app-development'
+import { Route as publicServicesIotDevelopmentRouteImport } from './routes/(public)/services/iot-development'
 import { Route as publicServicesIosAppDevelopmentRouteImport } from './routes/(public)/services/ios-app-development'
 import { Route as publicServicesFlutterAppDevelopmentRouteImport } from './routes/(public)/services/flutter-app-development'
 import { Route as publicServicesEnterpriseApplicationDevelopmentRouteImport } from './routes/(public)/services/enterprise-application-development'
+import { Route as publicServicesDevopsServicesRouteImport } from './routes/(public)/services/devops-services'
+import { Route as publicServicesDevopsConsultingServicesRouteImport } from './routes/(public)/services/devops-consulting-services'
 import { Route as publicServicesCustomSoftwareDevelopmentRouteImport } from './routes/(public)/services/custom-software-development'
 import { Route as publicServicesCustomCmsDevelopmentRouteImport } from './routes/(public)/services/custom-cms-development'
 import { Route as publicServicesCrossPlatformAppDevelopmentRouteImport } from './routes/(public)/services/cross-platform-app-development'
+import { Route as publicServicesCloudServicesRouteImport } from './routes/(public)/services/cloud-services'
+import { Route as publicServicesCloudSecurityServicesRouteImport } from './routes/(public)/services/cloud-security-services'
+import { Route as publicServicesCloudMigrationServicesRouteImport } from './routes/(public)/services/cloud-migration-services'
+import { Route as publicServicesCloudManagedServicesRouteImport } from './routes/(public)/services/cloud-managed-services'
+import { Route as publicServicesAwsCloudServicesRouteImport } from './routes/(public)/services/aws-cloud-services'
 import { Route as publicServicesAppMaintenanceSupportRouteImport } from './routes/(public)/services/app-maintenance-support'
 import { Route as publicServicesAndroidAppDevelopmentRouteImport } from './routes/(public)/services/android-app-development'
 import { Route as publicServices360PhotographyServicesRouteImport } from './routes/(public)/services/360-photography-services'
@@ -155,6 +163,12 @@ const publicServicesIpadAppDevelopmentRoute =
     path: '/services/ipad-app-development',
     getParentRoute: () => publicRouteRoute,
   } as any)
+const publicServicesIotDevelopmentRoute =
+  publicServicesIotDevelopmentRouteImport.update({
+    id: '/services/iot-development',
+    path: '/services/iot-development',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
 const publicServicesIosAppDevelopmentRoute =
   publicServicesIosAppDevelopmentRouteImport.update({
     id: '/services/ios-app-development',
@@ -173,6 +187,18 @@ const publicServicesEnterpriseApplicationDevelopmentRoute =
     path: '/services/enterprise-application-development',
     getParentRoute: () => publicRouteRoute,
   } as any)
+const publicServicesDevopsServicesRoute =
+  publicServicesDevopsServicesRouteImport.update({
+    id: '/services/devops-services',
+    path: '/services/devops-services',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicServicesDevopsConsultingServicesRoute =
+  publicServicesDevopsConsultingServicesRouteImport.update({
+    id: '/services/devops-consulting-services',
+    path: '/services/devops-consulting-services',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
 const publicServicesCustomSoftwareDevelopmentRoute =
   publicServicesCustomSoftwareDevelopmentRouteImport.update({
     id: '/services/custom-software-development',
@@ -189,6 +215,36 @@ const publicServicesCrossPlatformAppDevelopmentRoute =
   publicServicesCrossPlatformAppDevelopmentRouteImport.update({
     id: '/services/cross-platform-app-development',
     path: '/services/cross-platform-app-development',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicServicesCloudServicesRoute =
+  publicServicesCloudServicesRouteImport.update({
+    id: '/services/cloud-services',
+    path: '/services/cloud-services',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicServicesCloudSecurityServicesRoute =
+  publicServicesCloudSecurityServicesRouteImport.update({
+    id: '/services/cloud-security-services',
+    path: '/services/cloud-security-services',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicServicesCloudMigrationServicesRoute =
+  publicServicesCloudMigrationServicesRouteImport.update({
+    id: '/services/cloud-migration-services',
+    path: '/services/cloud-migration-services',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicServicesCloudManagedServicesRoute =
+  publicServicesCloudManagedServicesRouteImport.update({
+    id: '/services/cloud-managed-services',
+    path: '/services/cloud-managed-services',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicServicesAwsCloudServicesRoute =
+  publicServicesAwsCloudServicesRouteImport.update({
+    id: '/services/aws-cloud-services',
+    path: '/services/aws-cloud-services',
     getParentRoute: () => publicRouteRoute,
   } as any)
 const publicServicesAppMaintenanceSupportRoute =
@@ -530,12 +586,20 @@ export interface FileRoutesByFullPath {
   '/services/360-photography-services': typeof publicServices360PhotographyServicesRoute
   '/services/android-app-development': typeof publicServicesAndroidAppDevelopmentRoute
   '/services/app-maintenance-support': typeof publicServicesAppMaintenanceSupportRoute
+  '/services/aws-cloud-services': typeof publicServicesAwsCloudServicesRoute
+  '/services/cloud-managed-services': typeof publicServicesCloudManagedServicesRoute
+  '/services/cloud-migration-services': typeof publicServicesCloudMigrationServicesRoute
+  '/services/cloud-security-services': typeof publicServicesCloudSecurityServicesRoute
+  '/services/cloud-services': typeof publicServicesCloudServicesRoute
   '/services/cross-platform-app-development': typeof publicServicesCrossPlatformAppDevelopmentRoute
   '/services/custom-cms-development': typeof publicServicesCustomCmsDevelopmentRoute
   '/services/custom-software-development': typeof publicServicesCustomSoftwareDevelopmentRoute
+  '/services/devops-consulting-services': typeof publicServicesDevopsConsultingServicesRoute
+  '/services/devops-services': typeof publicServicesDevopsServicesRoute
   '/services/enterprise-application-development': typeof publicServicesEnterpriseApplicationDevelopmentRoute
   '/services/flutter-app-development': typeof publicServicesFlutterAppDevelopmentRoute
   '/services/ios-app-development': typeof publicServicesIosAppDevelopmentRoute
+  '/services/iot-development': typeof publicServicesIotDevelopmentRoute
   '/services/ipad-app-development': typeof publicServicesIpadAppDevelopmentRoute
   '/services/mobile-app-development': typeof publicServicesMobileAppDevelopmentRoute
   '/services/react-native-app-development': typeof publicServicesReactNativeAppDevelopmentRoute
@@ -600,12 +664,20 @@ export interface FileRoutesByTo {
   '/services/360-photography-services': typeof publicServices360PhotographyServicesRoute
   '/services/android-app-development': typeof publicServicesAndroidAppDevelopmentRoute
   '/services/app-maintenance-support': typeof publicServicesAppMaintenanceSupportRoute
+  '/services/aws-cloud-services': typeof publicServicesAwsCloudServicesRoute
+  '/services/cloud-managed-services': typeof publicServicesCloudManagedServicesRoute
+  '/services/cloud-migration-services': typeof publicServicesCloudMigrationServicesRoute
+  '/services/cloud-security-services': typeof publicServicesCloudSecurityServicesRoute
+  '/services/cloud-services': typeof publicServicesCloudServicesRoute
   '/services/cross-platform-app-development': typeof publicServicesCrossPlatformAppDevelopmentRoute
   '/services/custom-cms-development': typeof publicServicesCustomCmsDevelopmentRoute
   '/services/custom-software-development': typeof publicServicesCustomSoftwareDevelopmentRoute
+  '/services/devops-consulting-services': typeof publicServicesDevopsConsultingServicesRoute
+  '/services/devops-services': typeof publicServicesDevopsServicesRoute
   '/services/enterprise-application-development': typeof publicServicesEnterpriseApplicationDevelopmentRoute
   '/services/flutter-app-development': typeof publicServicesFlutterAppDevelopmentRoute
   '/services/ios-app-development': typeof publicServicesIosAppDevelopmentRoute
+  '/services/iot-development': typeof publicServicesIotDevelopmentRoute
   '/services/ipad-app-development': typeof publicServicesIpadAppDevelopmentRoute
   '/services/mobile-app-development': typeof publicServicesMobileAppDevelopmentRoute
   '/services/react-native-app-development': typeof publicServicesReactNativeAppDevelopmentRoute
@@ -669,12 +741,20 @@ export interface FileRoutesById {
   '/(public)/services/360-photography-services': typeof publicServices360PhotographyServicesRoute
   '/(public)/services/android-app-development': typeof publicServicesAndroidAppDevelopmentRoute
   '/(public)/services/app-maintenance-support': typeof publicServicesAppMaintenanceSupportRoute
+  '/(public)/services/aws-cloud-services': typeof publicServicesAwsCloudServicesRoute
+  '/(public)/services/cloud-managed-services': typeof publicServicesCloudManagedServicesRoute
+  '/(public)/services/cloud-migration-services': typeof publicServicesCloudMigrationServicesRoute
+  '/(public)/services/cloud-security-services': typeof publicServicesCloudSecurityServicesRoute
+  '/(public)/services/cloud-services': typeof publicServicesCloudServicesRoute
   '/(public)/services/cross-platform-app-development': typeof publicServicesCrossPlatformAppDevelopmentRoute
   '/(public)/services/custom-cms-development': typeof publicServicesCustomCmsDevelopmentRoute
   '/(public)/services/custom-software-development': typeof publicServicesCustomSoftwareDevelopmentRoute
+  '/(public)/services/devops-consulting-services': typeof publicServicesDevopsConsultingServicesRoute
+  '/(public)/services/devops-services': typeof publicServicesDevopsServicesRoute
   '/(public)/services/enterprise-application-development': typeof publicServicesEnterpriseApplicationDevelopmentRoute
   '/(public)/services/flutter-app-development': typeof publicServicesFlutterAppDevelopmentRoute
   '/(public)/services/ios-app-development': typeof publicServicesIosAppDevelopmentRoute
+  '/(public)/services/iot-development': typeof publicServicesIotDevelopmentRoute
   '/(public)/services/ipad-app-development': typeof publicServicesIpadAppDevelopmentRoute
   '/(public)/services/mobile-app-development': typeof publicServicesMobileAppDevelopmentRoute
   '/(public)/services/react-native-app-development': typeof publicServicesReactNativeAppDevelopmentRoute
@@ -742,12 +822,20 @@ export interface FileRouteTypes {
     | '/services/360-photography-services'
     | '/services/android-app-development'
     | '/services/app-maintenance-support'
+    | '/services/aws-cloud-services'
+    | '/services/cloud-managed-services'
+    | '/services/cloud-migration-services'
+    | '/services/cloud-security-services'
+    | '/services/cloud-services'
     | '/services/cross-platform-app-development'
     | '/services/custom-cms-development'
     | '/services/custom-software-development'
+    | '/services/devops-consulting-services'
+    | '/services/devops-services'
     | '/services/enterprise-application-development'
     | '/services/flutter-app-development'
     | '/services/ios-app-development'
+    | '/services/iot-development'
     | '/services/ipad-app-development'
     | '/services/mobile-app-development'
     | '/services/react-native-app-development'
@@ -812,12 +900,20 @@ export interface FileRouteTypes {
     | '/services/360-photography-services'
     | '/services/android-app-development'
     | '/services/app-maintenance-support'
+    | '/services/aws-cloud-services'
+    | '/services/cloud-managed-services'
+    | '/services/cloud-migration-services'
+    | '/services/cloud-security-services'
+    | '/services/cloud-services'
     | '/services/cross-platform-app-development'
     | '/services/custom-cms-development'
     | '/services/custom-software-development'
+    | '/services/devops-consulting-services'
+    | '/services/devops-services'
     | '/services/enterprise-application-development'
     | '/services/flutter-app-development'
     | '/services/ios-app-development'
+    | '/services/iot-development'
     | '/services/ipad-app-development'
     | '/services/mobile-app-development'
     | '/services/react-native-app-development'
@@ -880,12 +976,20 @@ export interface FileRouteTypes {
     | '/(public)/services/360-photography-services'
     | '/(public)/services/android-app-development'
     | '/(public)/services/app-maintenance-support'
+    | '/(public)/services/aws-cloud-services'
+    | '/(public)/services/cloud-managed-services'
+    | '/(public)/services/cloud-migration-services'
+    | '/(public)/services/cloud-security-services'
+    | '/(public)/services/cloud-services'
     | '/(public)/services/cross-platform-app-development'
     | '/(public)/services/custom-cms-development'
     | '/(public)/services/custom-software-development'
+    | '/(public)/services/devops-consulting-services'
+    | '/(public)/services/devops-services'
     | '/(public)/services/enterprise-application-development'
     | '/(public)/services/flutter-app-development'
     | '/(public)/services/ios-app-development'
+    | '/(public)/services/iot-development'
     | '/(public)/services/ipad-app-development'
     | '/(public)/services/mobile-app-development'
     | '/(public)/services/react-native-app-development'
@@ -1037,6 +1141,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof publicServicesIpadAppDevelopmentRouteImport
       parentRoute: typeof publicRouteRoute
     }
+    '/(public)/services/iot-development': {
+      id: '/(public)/services/iot-development'
+      path: '/services/iot-development'
+      fullPath: '/services/iot-development'
+      preLoaderRoute: typeof publicServicesIotDevelopmentRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
     '/(public)/services/ios-app-development': {
       id: '/(public)/services/ios-app-development'
       path: '/services/ios-app-development'
@@ -1058,6 +1169,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof publicServicesEnterpriseApplicationDevelopmentRouteImport
       parentRoute: typeof publicRouteRoute
     }
+    '/(public)/services/devops-services': {
+      id: '/(public)/services/devops-services'
+      path: '/services/devops-services'
+      fullPath: '/services/devops-services'
+      preLoaderRoute: typeof publicServicesDevopsServicesRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/services/devops-consulting-services': {
+      id: '/(public)/services/devops-consulting-services'
+      path: '/services/devops-consulting-services'
+      fullPath: '/services/devops-consulting-services'
+      preLoaderRoute: typeof publicServicesDevopsConsultingServicesRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
     '/(public)/services/custom-software-development': {
       id: '/(public)/services/custom-software-development'
       path: '/services/custom-software-development'
@@ -1077,6 +1202,41 @@ declare module '@tanstack/react-router' {
       path: '/services/cross-platform-app-development'
       fullPath: '/services/cross-platform-app-development'
       preLoaderRoute: typeof publicServicesCrossPlatformAppDevelopmentRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/services/cloud-services': {
+      id: '/(public)/services/cloud-services'
+      path: '/services/cloud-services'
+      fullPath: '/services/cloud-services'
+      preLoaderRoute: typeof publicServicesCloudServicesRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/services/cloud-security-services': {
+      id: '/(public)/services/cloud-security-services'
+      path: '/services/cloud-security-services'
+      fullPath: '/services/cloud-security-services'
+      preLoaderRoute: typeof publicServicesCloudSecurityServicesRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/services/cloud-migration-services': {
+      id: '/(public)/services/cloud-migration-services'
+      path: '/services/cloud-migration-services'
+      fullPath: '/services/cloud-migration-services'
+      preLoaderRoute: typeof publicServicesCloudMigrationServicesRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/services/cloud-managed-services': {
+      id: '/(public)/services/cloud-managed-services'
+      path: '/services/cloud-managed-services'
+      fullPath: '/services/cloud-managed-services'
+      preLoaderRoute: typeof publicServicesCloudManagedServicesRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/services/aws-cloud-services': {
+      id: '/(public)/services/aws-cloud-services'
+      path: '/services/aws-cloud-services'
+      fullPath: '/services/aws-cloud-services'
+      preLoaderRoute: typeof publicServicesAwsCloudServicesRouteImport
       parentRoute: typeof publicRouteRoute
     }
     '/(public)/services/app-maintenance-support': {
@@ -1720,12 +1880,20 @@ interface publicRouteRouteChildren {
   publicServices360PhotographyServicesRoute: typeof publicServices360PhotographyServicesRoute
   publicServicesAndroidAppDevelopmentRoute: typeof publicServicesAndroidAppDevelopmentRoute
   publicServicesAppMaintenanceSupportRoute: typeof publicServicesAppMaintenanceSupportRoute
+  publicServicesAwsCloudServicesRoute: typeof publicServicesAwsCloudServicesRoute
+  publicServicesCloudManagedServicesRoute: typeof publicServicesCloudManagedServicesRoute
+  publicServicesCloudMigrationServicesRoute: typeof publicServicesCloudMigrationServicesRoute
+  publicServicesCloudSecurityServicesRoute: typeof publicServicesCloudSecurityServicesRoute
+  publicServicesCloudServicesRoute: typeof publicServicesCloudServicesRoute
   publicServicesCrossPlatformAppDevelopmentRoute: typeof publicServicesCrossPlatformAppDevelopmentRoute
   publicServicesCustomCmsDevelopmentRoute: typeof publicServicesCustomCmsDevelopmentRoute
   publicServicesCustomSoftwareDevelopmentRoute: typeof publicServicesCustomSoftwareDevelopmentRoute
+  publicServicesDevopsConsultingServicesRoute: typeof publicServicesDevopsConsultingServicesRoute
+  publicServicesDevopsServicesRoute: typeof publicServicesDevopsServicesRoute
   publicServicesEnterpriseApplicationDevelopmentRoute: typeof publicServicesEnterpriseApplicationDevelopmentRoute
   publicServicesFlutterAppDevelopmentRoute: typeof publicServicesFlutterAppDevelopmentRoute
   publicServicesIosAppDevelopmentRoute: typeof publicServicesIosAppDevelopmentRoute
+  publicServicesIotDevelopmentRoute: typeof publicServicesIotDevelopmentRoute
   publicServicesIpadAppDevelopmentRoute: typeof publicServicesIpadAppDevelopmentRoute
   publicServicesMobileAppDevelopmentRoute: typeof publicServicesMobileAppDevelopmentRoute
   publicServicesReactNativeAppDevelopmentRoute: typeof publicServicesReactNativeAppDevelopmentRoute
@@ -1743,17 +1911,29 @@ const publicRouteRouteChildren: publicRouteRouteChildren = {
     publicServicesAndroidAppDevelopmentRoute,
   publicServicesAppMaintenanceSupportRoute:
     publicServicesAppMaintenanceSupportRoute,
+  publicServicesAwsCloudServicesRoute: publicServicesAwsCloudServicesRoute,
+  publicServicesCloudManagedServicesRoute:
+    publicServicesCloudManagedServicesRoute,
+  publicServicesCloudMigrationServicesRoute:
+    publicServicesCloudMigrationServicesRoute,
+  publicServicesCloudSecurityServicesRoute:
+    publicServicesCloudSecurityServicesRoute,
+  publicServicesCloudServicesRoute: publicServicesCloudServicesRoute,
   publicServicesCrossPlatformAppDevelopmentRoute:
     publicServicesCrossPlatformAppDevelopmentRoute,
   publicServicesCustomCmsDevelopmentRoute:
     publicServicesCustomCmsDevelopmentRoute,
   publicServicesCustomSoftwareDevelopmentRoute:
     publicServicesCustomSoftwareDevelopmentRoute,
+  publicServicesDevopsConsultingServicesRoute:
+    publicServicesDevopsConsultingServicesRoute,
+  publicServicesDevopsServicesRoute: publicServicesDevopsServicesRoute,
   publicServicesEnterpriseApplicationDevelopmentRoute:
     publicServicesEnterpriseApplicationDevelopmentRoute,
   publicServicesFlutterAppDevelopmentRoute:
     publicServicesFlutterAppDevelopmentRoute,
   publicServicesIosAppDevelopmentRoute: publicServicesIosAppDevelopmentRoute,
+  publicServicesIotDevelopmentRoute: publicServicesIotDevelopmentRoute,
   publicServicesIpadAppDevelopmentRoute: publicServicesIpadAppDevelopmentRoute,
   publicServicesMobileAppDevelopmentRoute:
     publicServicesMobileAppDevelopmentRoute,
