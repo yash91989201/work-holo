@@ -10,7 +10,7 @@ export default function EcommerceHero() {
         <div className="absolute top-1/2 left-1/2 h-[800px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-pink-200" />
       </div>
 
-      <div className="container mx-auto px-4 relative grid items-center gap-12 lg:grid-cols-2">
+      <div className="container relative mx-auto grid items-center gap-12 px-4 lg:grid-cols-2">
         <motion.div
           className="max-w-xl"
           initial={{ opacity: 0, x: -50 }}

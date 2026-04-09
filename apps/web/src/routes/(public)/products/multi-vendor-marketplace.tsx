@@ -13,7 +13,6 @@ import {
   BarChart3,
   Briefcase,
   Minus,
-  Plus,
   Search,
   Settings,
   ShieldCheck,

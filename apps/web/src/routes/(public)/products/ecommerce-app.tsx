@@ -22,7 +22,7 @@ import { useState } from "react";
 
 const TopBar = () => (
   <div className="hidden border-white/10 border-b bg-black py-2 text-white md:block">
-    <div className="container mx-auto px-4 flex items-center justify-between font-medium text-xs">
+    <div className="container mx-auto flex items-center justify-between px-4 font-medium text-xs">
       <div className="flex items-center gap-6">
         <div className="flex items-center gap-2">
           <Mail className="h-3.5 w-3.5 text-[#007bff]" />
@@ -145,7 +145,7 @@ export default function EcommerceApp() {
           <div className="absolute top-1/2 left-1/2 h-[800px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-pink-200" />
         </div>
 
-        <div className="container mx-auto px-4 relative grid items-center gap-12 lg:grid-cols-2">
+        <div className="container relative mx-auto grid items-center gap-12 px-4 lg:grid-cols-2">
           <motion.div
             className="max-w-xl"
             initial={{ opacity: 0, x: -50 }}
@@ -319,7 +319,7 @@ export default function EcommerceApp() {
 
       {/* Banner Section */}
       <section className="overflow-hidden bg-pink-400 py-20 text-white">
-        <div className="container mx-auto px-4 flex flex-col items-center justify-between gap-12 md:flex-row">
+        <div className="container mx-auto flex flex-col items-center justify-between gap-12 px-4 md:flex-row">
           <motion.h2
             className="text-center font-black text-4xl md:text-left md:text-5xl"
             initial={{ opacity: 0, x: -50 }}
@@ -655,7 +655,7 @@ export default function EcommerceApp() {
 
       {/* FAQ Section */}
       <section className="bg-white py-24">
-        <div className="container mx-auto px-4 max-w-4xl">
+        <div className="container mx-auto max-w-4xl px-4">
           <SectionHeading title="FAQ's" />
           <div className="space-y-2">
             {[

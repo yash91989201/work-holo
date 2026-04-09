@@ -50,6 +50,15 @@ import { Route as publicServicesAwsCloudServicesRouteImport } from './routes/(pu
 import { Route as publicServicesAppMaintenanceSupportRouteImport } from './routes/(public)/services/app-maintenance-support'
 import { Route as publicServicesAndroidAppDevelopmentRouteImport } from './routes/(public)/services/android-app-development'
 import { Route as publicServices360PhotographyServicesRouteImport } from './routes/(public)/services/360-photography-services'
+import { Route as publicResourcesWebDevelopersRouteImport } from './routes/(public)/resources/web-developers'
+import { Route as publicResourcesUiUxDesignersRouteImport } from './routes/(public)/resources/ui-ux-designers'
+import { Route as publicResourcesReactNativeAppDevelopersRouteImport } from './routes/(public)/resources/react-native-app-developers'
+import { Route as publicResourcesMobileAppDesignersRouteImport } from './routes/(public)/resources/mobile-app-designers'
+import { Route as publicResourcesIpadAppDevelopersRouteImport } from './routes/(public)/resources/ipad-app-developers'
+import { Route as publicResourcesIosAppDevelopersRouteImport } from './routes/(public)/resources/ios-app-developers'
+import { Route as publicResourcesFlutterAppDevelopersRouteImport } from './routes/(public)/resources/flutter-app-developers'
+import { Route as publicResourcesCustomSoftwareDevelopersRouteImport } from './routes/(public)/resources/custom-software-developers'
+import { Route as publicResourcesAndroidAppDevelopersRouteImport } from './routes/(public)/resources/android-app-developers'
 import { Route as publicAboutVisionMissionRouteImport } from './routes/(public)/about/vision-mission'
 import { Route as publicAboutOurJourneyRouteImport } from './routes/(public)/about/our-journey'
 import { Route as publicAboutNasscomMembershipRouteImport } from './routes/(public)/about/nasscom-membership'
@@ -333,6 +342,60 @@ const publicServices360PhotographyServicesRoute =
   publicServices360PhotographyServicesRouteImport.update({
     id: '/services/360-photography-services',
     path: '/services/360-photography-services',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicResourcesWebDevelopersRoute =
+  publicResourcesWebDevelopersRouteImport.update({
+    id: '/resources/web-developers',
+    path: '/resources/web-developers',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicResourcesUiUxDesignersRoute =
+  publicResourcesUiUxDesignersRouteImport.update({
+    id: '/resources/ui-ux-designers',
+    path: '/resources/ui-ux-designers',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicResourcesReactNativeAppDevelopersRoute =
+  publicResourcesReactNativeAppDevelopersRouteImport.update({
+    id: '/resources/react-native-app-developers',
+    path: '/resources/react-native-app-developers',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicResourcesMobileAppDesignersRoute =
+  publicResourcesMobileAppDesignersRouteImport.update({
+    id: '/resources/mobile-app-designers',
+    path: '/resources/mobile-app-designers',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicResourcesIpadAppDevelopersRoute =
+  publicResourcesIpadAppDevelopersRouteImport.update({
+    id: '/resources/ipad-app-developers',
+    path: '/resources/ipad-app-developers',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicResourcesIosAppDevelopersRoute =
+  publicResourcesIosAppDevelopersRouteImport.update({
+    id: '/resources/ios-app-developers',
+    path: '/resources/ios-app-developers',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicResourcesFlutterAppDevelopersRoute =
+  publicResourcesFlutterAppDevelopersRouteImport.update({
+    id: '/resources/flutter-app-developers',
+    path: '/resources/flutter-app-developers',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicResourcesCustomSoftwareDevelopersRoute =
+  publicResourcesCustomSoftwareDevelopersRouteImport.update({
+    id: '/resources/custom-software-developers',
+    path: '/resources/custom-software-developers',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicResourcesAndroidAppDevelopersRoute =
+  publicResourcesAndroidAppDevelopersRouteImport.update({
+    id: '/resources/android-app-developers',
+    path: '/resources/android-app-developers',
     getParentRoute: () => publicRouteRoute,
   } as any)
 const publicAboutVisionMissionRoute =
@@ -653,6 +716,15 @@ export interface FileRoutesByFullPath {
   '/about/nasscom-membership': typeof publicAboutNasscomMembershipRoute
   '/about/our-journey': typeof publicAboutOurJourneyRoute
   '/about/vision-mission': typeof publicAboutVisionMissionRoute
+  '/resources/android-app-developers': typeof publicResourcesAndroidAppDevelopersRoute
+  '/resources/custom-software-developers': typeof publicResourcesCustomSoftwareDevelopersRoute
+  '/resources/flutter-app-developers': typeof publicResourcesFlutterAppDevelopersRoute
+  '/resources/ios-app-developers': typeof publicResourcesIosAppDevelopersRoute
+  '/resources/ipad-app-developers': typeof publicResourcesIpadAppDevelopersRoute
+  '/resources/mobile-app-designers': typeof publicResourcesMobileAppDesignersRoute
+  '/resources/react-native-app-developers': typeof publicResourcesReactNativeAppDevelopersRoute
+  '/resources/ui-ux-designers': typeof publicResourcesUiUxDesignersRoute
+  '/resources/web-developers': typeof publicResourcesWebDevelopersRoute
   '/services/360-photography-services': typeof publicServices360PhotographyServicesRoute
   '/services/android-app-development': typeof publicServicesAndroidAppDevelopmentRoute
   '/services/app-maintenance-support': typeof publicServicesAppMaintenanceSupportRoute
@@ -741,6 +813,15 @@ export interface FileRoutesByTo {
   '/about/nasscom-membership': typeof publicAboutNasscomMembershipRoute
   '/about/our-journey': typeof publicAboutOurJourneyRoute
   '/about/vision-mission': typeof publicAboutVisionMissionRoute
+  '/resources/android-app-developers': typeof publicResourcesAndroidAppDevelopersRoute
+  '/resources/custom-software-developers': typeof publicResourcesCustomSoftwareDevelopersRoute
+  '/resources/flutter-app-developers': typeof publicResourcesFlutterAppDevelopersRoute
+  '/resources/ios-app-developers': typeof publicResourcesIosAppDevelopersRoute
+  '/resources/ipad-app-developers': typeof publicResourcesIpadAppDevelopersRoute
+  '/resources/mobile-app-designers': typeof publicResourcesMobileAppDesignersRoute
+  '/resources/react-native-app-developers': typeof publicResourcesReactNativeAppDevelopersRoute
+  '/resources/ui-ux-designers': typeof publicResourcesUiUxDesignersRoute
+  '/resources/web-developers': typeof publicResourcesWebDevelopersRoute
   '/services/360-photography-services': typeof publicServices360PhotographyServicesRoute
   '/services/android-app-development': typeof publicServicesAndroidAppDevelopmentRoute
   '/services/app-maintenance-support': typeof publicServicesAppMaintenanceSupportRoute
@@ -828,6 +909,15 @@ export interface FileRoutesById {
   '/(public)/about/nasscom-membership': typeof publicAboutNasscomMembershipRoute
   '/(public)/about/our-journey': typeof publicAboutOurJourneyRoute
   '/(public)/about/vision-mission': typeof publicAboutVisionMissionRoute
+  '/(public)/resources/android-app-developers': typeof publicResourcesAndroidAppDevelopersRoute
+  '/(public)/resources/custom-software-developers': typeof publicResourcesCustomSoftwareDevelopersRoute
+  '/(public)/resources/flutter-app-developers': typeof publicResourcesFlutterAppDevelopersRoute
+  '/(public)/resources/ios-app-developers': typeof publicResourcesIosAppDevelopersRoute
+  '/(public)/resources/ipad-app-developers': typeof publicResourcesIpadAppDevelopersRoute
+  '/(public)/resources/mobile-app-designers': typeof publicResourcesMobileAppDesignersRoute
+  '/(public)/resources/react-native-app-developers': typeof publicResourcesReactNativeAppDevelopersRoute
+  '/(public)/resources/ui-ux-designers': typeof publicResourcesUiUxDesignersRoute
+  '/(public)/resources/web-developers': typeof publicResourcesWebDevelopersRoute
   '/(public)/services/360-photography-services': typeof publicServices360PhotographyServicesRoute
   '/(public)/services/android-app-development': typeof publicServicesAndroidAppDevelopmentRoute
   '/(public)/services/app-maintenance-support': typeof publicServicesAppMaintenanceSupportRoute
@@ -919,6 +1009,15 @@ export interface FileRouteTypes {
     | '/about/nasscom-membership'
     | '/about/our-journey'
     | '/about/vision-mission'
+    | '/resources/android-app-developers'
+    | '/resources/custom-software-developers'
+    | '/resources/flutter-app-developers'
+    | '/resources/ios-app-developers'
+    | '/resources/ipad-app-developers'
+    | '/resources/mobile-app-designers'
+    | '/resources/react-native-app-developers'
+    | '/resources/ui-ux-designers'
+    | '/resources/web-developers'
     | '/services/360-photography-services'
     | '/services/android-app-development'
     | '/services/app-maintenance-support'
@@ -1007,6 +1106,15 @@ export interface FileRouteTypes {
     | '/about/nasscom-membership'
     | '/about/our-journey'
     | '/about/vision-mission'
+    | '/resources/android-app-developers'
+    | '/resources/custom-software-developers'
+    | '/resources/flutter-app-developers'
+    | '/resources/ios-app-developers'
+    | '/resources/ipad-app-developers'
+    | '/resources/mobile-app-designers'
+    | '/resources/react-native-app-developers'
+    | '/resources/ui-ux-designers'
+    | '/resources/web-developers'
     | '/services/360-photography-services'
     | '/services/android-app-development'
     | '/services/app-maintenance-support'
@@ -1093,6 +1201,15 @@ export interface FileRouteTypes {
     | '/(public)/about/nasscom-membership'
     | '/(public)/about/our-journey'
     | '/(public)/about/vision-mission'
+    | '/(public)/resources/android-app-developers'
+    | '/(public)/resources/custom-software-developers'
+    | '/(public)/resources/flutter-app-developers'
+    | '/(public)/resources/ios-app-developers'
+    | '/(public)/resources/ipad-app-developers'
+    | '/(public)/resources/mobile-app-designers'
+    | '/(public)/resources/react-native-app-developers'
+    | '/(public)/resources/ui-ux-designers'
+    | '/(public)/resources/web-developers'
     | '/(public)/services/360-photography-services'
     | '/(public)/services/android-app-development'
     | '/(public)/services/app-maintenance-support'
@@ -1458,6 +1575,69 @@ declare module '@tanstack/react-router' {
       path: '/services/360-photography-services'
       fullPath: '/services/360-photography-services'
       preLoaderRoute: typeof publicServices360PhotographyServicesRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/resources/web-developers': {
+      id: '/(public)/resources/web-developers'
+      path: '/resources/web-developers'
+      fullPath: '/resources/web-developers'
+      preLoaderRoute: typeof publicResourcesWebDevelopersRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/resources/ui-ux-designers': {
+      id: '/(public)/resources/ui-ux-designers'
+      path: '/resources/ui-ux-designers'
+      fullPath: '/resources/ui-ux-designers'
+      preLoaderRoute: typeof publicResourcesUiUxDesignersRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/resources/react-native-app-developers': {
+      id: '/(public)/resources/react-native-app-developers'
+      path: '/resources/react-native-app-developers'
+      fullPath: '/resources/react-native-app-developers'
+      preLoaderRoute: typeof publicResourcesReactNativeAppDevelopersRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/resources/mobile-app-designers': {
+      id: '/(public)/resources/mobile-app-designers'
+      path: '/resources/mobile-app-designers'
+      fullPath: '/resources/mobile-app-designers'
+      preLoaderRoute: typeof publicResourcesMobileAppDesignersRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/resources/ipad-app-developers': {
+      id: '/(public)/resources/ipad-app-developers'
+      path: '/resources/ipad-app-developers'
+      fullPath: '/resources/ipad-app-developers'
+      preLoaderRoute: typeof publicResourcesIpadAppDevelopersRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/resources/ios-app-developers': {
+      id: '/(public)/resources/ios-app-developers'
+      path: '/resources/ios-app-developers'
+      fullPath: '/resources/ios-app-developers'
+      preLoaderRoute: typeof publicResourcesIosAppDevelopersRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/resources/flutter-app-developers': {
+      id: '/(public)/resources/flutter-app-developers'
+      path: '/resources/flutter-app-developers'
+      fullPath: '/resources/flutter-app-developers'
+      preLoaderRoute: typeof publicResourcesFlutterAppDevelopersRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/resources/custom-software-developers': {
+      id: '/(public)/resources/custom-software-developers'
+      path: '/resources/custom-software-developers'
+      fullPath: '/resources/custom-software-developers'
+      preLoaderRoute: typeof publicResourcesCustomSoftwareDevelopersRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/resources/android-app-developers': {
+      id: '/(public)/resources/android-app-developers'
+      path: '/resources/android-app-developers'
+      fullPath: '/resources/android-app-developers'
+      preLoaderRoute: typeof publicResourcesAndroidAppDevelopersRouteImport
       parentRoute: typeof publicRouteRoute
     }
     '/(public)/about/vision-mission': {
@@ -2077,6 +2257,15 @@ interface publicRouteRouteChildren {
   publicContactRoute: typeof publicContactRoute
   publicPortfolioRoute: typeof publicPortfolioRoute
   publicIndexRoute: typeof publicIndexRoute
+  publicResourcesAndroidAppDevelopersRoute: typeof publicResourcesAndroidAppDevelopersRoute
+  publicResourcesCustomSoftwareDevelopersRoute: typeof publicResourcesCustomSoftwareDevelopersRoute
+  publicResourcesFlutterAppDevelopersRoute: typeof publicResourcesFlutterAppDevelopersRoute
+  publicResourcesIosAppDevelopersRoute: typeof publicResourcesIosAppDevelopersRoute
+  publicResourcesIpadAppDevelopersRoute: typeof publicResourcesIpadAppDevelopersRoute
+  publicResourcesMobileAppDesignersRoute: typeof publicResourcesMobileAppDesignersRoute
+  publicResourcesReactNativeAppDevelopersRoute: typeof publicResourcesReactNativeAppDevelopersRoute
+  publicResourcesUiUxDesignersRoute: typeof publicResourcesUiUxDesignersRoute
+  publicResourcesWebDevelopersRoute: typeof publicResourcesWebDevelopersRoute
   publicServices360PhotographyServicesRoute: typeof publicServices360PhotographyServicesRoute
   publicServicesAndroidAppDevelopmentRoute: typeof publicServicesAndroidAppDevelopmentRoute
   publicServicesAppMaintenanceSupportRoute: typeof publicServicesAppMaintenanceSupportRoute
@@ -2115,6 +2304,20 @@ const publicRouteRouteChildren: publicRouteRouteChildren = {
   publicContactRoute: publicContactRoute,
   publicPortfolioRoute: publicPortfolioRoute,
   publicIndexRoute: publicIndexRoute,
+  publicResourcesAndroidAppDevelopersRoute:
+    publicResourcesAndroidAppDevelopersRoute,
+  publicResourcesCustomSoftwareDevelopersRoute:
+    publicResourcesCustomSoftwareDevelopersRoute,
+  publicResourcesFlutterAppDevelopersRoute:
+    publicResourcesFlutterAppDevelopersRoute,
+  publicResourcesIosAppDevelopersRoute: publicResourcesIosAppDevelopersRoute,
+  publicResourcesIpadAppDevelopersRoute: publicResourcesIpadAppDevelopersRoute,
+  publicResourcesMobileAppDesignersRoute:
+    publicResourcesMobileAppDesignersRoute,
+  publicResourcesReactNativeAppDevelopersRoute:
+    publicResourcesReactNativeAppDevelopersRoute,
+  publicResourcesUiUxDesignersRoute: publicResourcesUiUxDesignersRoute,
+  publicResourcesWebDevelopersRoute: publicResourcesWebDevelopersRoute,
   publicServices360PhotographyServicesRoute:
     publicServices360PhotographyServicesRoute,
   publicServicesAndroidAppDevelopmentRoute:
