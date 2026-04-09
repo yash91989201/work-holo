@@ -1,5 +1,5 @@
 import {
-  IconChartBar,
+  IconChartDonut,
   IconChartPie,
   IconLink,
   IconRefresh,
@@ -13,7 +13,7 @@ import {
 
 const features = [
   {
-    icon: IconChartBar,
+    icon: IconChartDonut,
     title: "ERP Integration",
     desc: "Automated order sync, real-time invoice tracking, inventory updates, financial reporting, and unified customer data across sales and finance.",
   },

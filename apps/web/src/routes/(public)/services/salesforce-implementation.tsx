@@ -1,5 +1,5 @@
 import {
-  IconChartBar,
+  IconChartDonut,
   IconChartPie,
   IconLink,
   IconRefresh,
@@ -13,7 +13,7 @@ import {
 
 const features = [
   {
-    icon: IconChartBar,
+    icon: IconChartDonut,
     title: "Business-First Architecture",
     desc: "We analyze sales funnels, service workflows, customer touchpoints, reporting requirements, and operational bottlenecks before any configuration.",
   },

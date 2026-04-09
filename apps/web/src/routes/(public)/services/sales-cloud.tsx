@@ -1,5 +1,5 @@
 import {
-  IconChartBar,
+  IconChartDonut,
   IconChartPie,
   IconLink,
   IconRefresh,
@@ -13,7 +13,7 @@ import {
 
 const features = [
   {
-    icon: IconChartBar,
+    icon: IconChartDonut,
     title: "Implementation & Setup",
     desc: "Lead & opportunity config, sales stage mapping, territory hierarchy, role-based visibility, and approval process automation.",
   },

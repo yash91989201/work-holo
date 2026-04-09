@@ -1,6 +1,6 @@
 import {
   IconBuildingFactory,
-  IconChartBar,
+  IconChartDonut,
   IconCloud,
   IconDeviceMobile,
   IconWifi,
@@ -36,7 +36,7 @@ const features = [
     title: "Analytics & Dashboards",
     description:
       "Intelligent dashboards with real-time monitoring, data visualization, alert systems, performance analytics, and predictive insights.",
-    icon: IconChartBar,
+    icon: IconChartDonut,
   },
   {
     title: "Industrial IoT (IIoT) Solutions",

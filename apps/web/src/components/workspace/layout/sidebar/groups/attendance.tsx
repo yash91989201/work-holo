@@ -1,4 +1,4 @@
-import { IconChartBar, IconLayoutDashboard } from "@tabler/icons-react";
+import { IconChartDonut, IconLayoutDashboard } from "@tabler/icons-react";
 import {
   Link,
   linkOptions,
@@ -31,7 +31,7 @@ export function AttendanceGroup() {
       params: { slug },
       to: "/org/$slug/workspace/attendance/analytics",
       label: "Analytics",
-      icon: IconChartBar,
+      icon: IconChartDonut,
     },
   ]);
 

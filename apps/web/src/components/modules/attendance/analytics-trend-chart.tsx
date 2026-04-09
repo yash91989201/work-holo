@@ -1,6 +1,6 @@
 import {
   IconAdjustmentsHorizontal,
-  IconChartBar,
+  IconChartDonut,
   IconDownload,
 } from "@tabler/icons-react";
 import type { AttendanceAnalyticsOutput } from "@work-holo/api/lib/schemas/attendance";
@@ -52,7 +52,7 @@ export function AttendanceTrendChart({ dailyTrends }: Props) {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex items-center gap-3">
           <div className="rounded-xl bg-violet-100 p-2.5 dark:bg-violet-900/30">
-            <IconChartBar className="h-5 w-5 text-violet-600 dark:text-violet-400" />
+            <IconChartDonut className="h-5 w-5 text-violet-600 dark:text-violet-400" />
           </div>
           <div>
             <h3 className="font-semibold text-lg">Productivity Trend</h3>
@@ -132,7 +132,7 @@ function EmptyState() {
   return (
     <div className="flex h-[220px] flex-col items-center justify-center gap-3 rounded-xl p-6 text-center sm:h-[280px]">
       <div className="rounded-2xl bg-violet-100/60 p-4 dark:bg-violet-900/20">
-        <IconChartBar className="h-8 w-8 text-violet-400" />
+        <IconChartDonut className="h-8 w-8 text-violet-400" />
       </div>
       <div>
         <p className="font-medium text-sm">No data available</p>
