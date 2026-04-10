@@ -1,23 +1,42 @@
 import { motion } from "framer-motion";
+import { Image } from "@/components/shared/image";
 
 const LOGOS = [
   {
     name: "slack",
-    url: "https://cdn.worldvectorlogo.com/logos/slack-new-logo.svg",
+    url: "/assets/brand-logos/slack.webp",
+    aspectRatio: 1,
+    wrapperClassName: "h-10 md:h-12 lg:h-14",
   },
   {
     name: "github",
-    url: "https://cdn.worldvectorlogo.com/logos/github-icon-1.svg",
+    url: "/assets/brand-logos/github.webp",
+    aspectRatio: 1600 / 594,
+    wrapperClassName: "h-10 md:h-12 lg:h-14",
   },
-  { name: "loom", url: "https://cdn.worldvectorlogo.com/logos/loom-4.svg" },
-  { name: "miro", url: "https://cdn.worldvectorlogo.com/logos/miro-2.svg" },
+  {
+    name: "loom",
+    url: "/assets/brand-logos/loom.webp",
+    aspectRatio: 1,
+    wrapperClassName: "h-10 md:h-12 lg:h-14",
+  },
+  {
+    name: "miro",
+    url: "/assets/brand-logos/miro.webp",
+    aspectRatio: 2400 / 1260,
+    wrapperClassName: "h-10 md:h-12 lg:h-14",
+  },
   {
     name: "framer",
-    url: "https://cdn.worldvectorlogo.com/logos/framer-icon.svg",
+    url: "/assets/brand-logos/framer.webp",
+    aspectRatio: 866 / 650,
+    wrapperClassName: "h-10 md:h-12 lg:h-14",
   },
   {
     name: "airbnb",
-    url: "https://cdn.worldvectorlogo.com/logos/airbnb-2-1.svg",
+    url: "/assets/brand-logos/airbnb.webp",
+    aspectRatio: 5000 / 1560,
+    wrapperClassName: "h-8 md:h-9 lg:h-10",
   },
 ];
 
@@ -33,14 +52,17 @@ export function LogoBar() {
           whileInView={{ opacity: 1, y: 0 }}
         >
           {LOGOS.map((logo) => (
-            <img
+            <Image
               alt={logo.name}
-              className="h-6 w-auto md:h-8 lg:h-10"
-              height={32}
+              aspectRatio={logo.aspectRatio}
+              className="h-full w-full"
+              effect="opacity"
               key={logo.name}
-              referrerPolicy="no-referrer"
+              objectFit="contain"
+              placeholder={false}
+              sizes="(min-width: 1024px) 224px, (min-width: 768px) 192px, 160px"
               src={logo.url}
-              width={100}
+              wrapperClassName={logo.wrapperClassName}
             />
           ))}
         </motion.div>
