@@ -1,23 +1,23 @@
-import { AnimatePresence, motion } from "framer-motion";
 import {
-  ArrowRight,
-  ArrowUp,
-  Briefcase,
-  Building2,
-  CheckCircle2,
-  ChevronDown,
-  ChevronUp,
-  Globe,
-  HeartPulse,
-  Mail,
-  MessageCircle,
-  Monitor,
-  Phone,
-  Rocket,
-  ShoppingCart,
-  Star,
-  Users,
-} from "lucide-react";
+  IconArrowRight,
+  IconArrowUp,
+  IconBriefcase,
+  IconBuilding,
+  IconChevronDown,
+  IconChevronUp,
+  IconCircleCheck,
+  IconDeviceDesktop,
+  IconGlobe,
+  IconHeartbeat,
+  IconMail,
+  IconMessageCircle,
+  IconPhone,
+  IconRocket,
+  IconShoppingCart,
+  IconStar,
+  IconUsers,
+} from "@tabler/icons-react";
+import { AnimatePresence, motion } from "framer-motion";
 import type React from "react";
 import { useEffect, useState } from "react";
 
@@ -71,27 +71,27 @@ const processSteps = [
 const industries = [
   {
     name: "SaaS & Technology",
-    icon: <Monitor className="h-8 w-8 text-blue-500" />,
+    icon: <IconDeviceDesktop className="h-8 w-8 text-blue-500" />,
   },
   {
     name: "eCommerce",
-    icon: <ShoppingCart className="h-8 w-8 text-blue-500" />,
+    icon: <IconShoppingCart className="h-8 w-8 text-blue-500" />,
   },
   {
     name: "Healthcare",
-    icon: <HeartPulse className="h-8 w-8 text-blue-500" />,
+    icon: <IconHeartbeat className="h-8 w-8 text-blue-500" />,
   },
   {
     name: "Financial Services",
-    icon: <Building2 className="h-8 w-8 text-blue-500" />,
+    icon: <IconBuilding className="h-8 w-8 text-blue-500" />,
   },
   {
     name: "Enterprise B2B",
-    icon: <Briefcase className="h-8 w-8 text-blue-500" />,
+    icon: <IconBriefcase className="h-8 w-8 text-blue-500" />,
   },
   {
     name: "Startup Growth",
-    icon: <Rocket className="h-8 w-8 text-blue-500" />,
+    icon: <IconRocket className="h-8 w-8 text-blue-500" />,
   },
 ];
 
@@ -214,9 +214,9 @@ const FAQItem: React.FC<{ question: string; answer: string }> = ({
       >
         <span>{question}</span>
         {isOpen ? (
-          <ChevronUp className="h-5 w-5" />
+          <IconChevronUp className="h-5 w-5" />
         ) : (
-          <ChevronDown className="h-5 w-5" />
+          <IconChevronDown className="h-5 w-5" />
         )}
       </button>
       <AnimatePresence>
@@ -253,19 +253,19 @@ export const PPC = () => {
             className="flex items-center gap-1 transition-colors hover:text-blue-400"
             href="mailto:contact@WorkHololabs.com"
           >
-            <Mail className="h-3 w-3" /> contact@WorkHololabs.com
+            <IconMail className="h-3 w-3" /> contact@WorkHololabs.com
           </a>
           <a
             className="flex items-center gap-1 transition-colors hover:text-blue-400"
             href="tel:+919390683154"
           >
-            <Phone className="h-3 w-3" /> +91 9390683154
+            <IconPhone className="h-3 w-3" /> +91 9390683154
           </a>
           <a
             className="flex items-center gap-1 transition-colors hover:text-blue-400"
             href="tel:+15512220070"
           >
-            <Phone className="h-3 w-3" /> +1 (551) 222-0070
+            <IconPhone className="h-3 w-3" /> +1 (551) 222-0070
           </a>
         </div>
         <div className="flex items-center gap-4">
@@ -443,7 +443,7 @@ export const PPC = () => {
                   className="flex items-center gap-3 font-medium text-slate-700"
                   key={item}
                 >
-                  <CheckCircle2 className="h-5 w-5 flex-shrink-0 text-yellow-500" />
+                  <IconCircleCheck className="h-5 w-5 flex-shrink-0 text-yellow-500" />
                   {item}
                 </li>
               ))}
@@ -510,7 +510,7 @@ export const PPC = () => {
                   </span>
                 </div>
                 {i < processSteps.length - 1 && (
-                  <ArrowRight className="h-4 w-4 text-blue-300 lg:hidden" />
+                  <IconArrowRight className="h-4 w-4 text-blue-300 lg:hidden" />
                 )}
               </motion.div>
             ))}
@@ -663,19 +663,19 @@ export const PPC = () => {
                 {[
                   {
                     title: "Global Projects",
-                    icon: <Globe className="h-5 w-5" />,
+                    icon: <IconGlobe className="h-5 w-5" />,
                   },
                   {
                     title: "Flexible Models",
-                    icon: <Users className="h-5 w-5" />,
+                    icon: <IconUsers className="h-5 w-5" />,
                   },
                   {
                     title: "Cutting-edge Tech",
-                    icon: <Rocket className="h-5 w-5" />,
+                    icon: <IconRocket className="h-5 w-5" />,
                   },
                   {
                     title: "Continuous Growth",
-                    icon: <Star className="h-5 w-5" />,
+                    icon: <IconStar className="h-5 w-5" />,
                   },
                 ].map((item) => (
                   <div
@@ -705,7 +705,7 @@ export const PPC = () => {
                     className="flex items-start gap-3 text-slate-600"
                     key={benefit}
                   >
-                    <CheckCircle2 className="mt-1 h-5 w-5 flex-shrink-0 text-green-500" />
+                    <IconCircleCheck className="mt-1 h-5 w-5 flex-shrink-0 text-green-500" />
                     <span>{benefit}</span>
                   </li>
                 ))}
@@ -804,7 +804,7 @@ export const PPC = () => {
             className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500 text-white shadow-2xl transition-transform hover:scale-110"
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           >
-            <ArrowUp className="h-6 w-6" />
+            <IconArrowUp className="h-6 w-6" />
           </button>
         )}
         <div className="group relative">
@@ -812,7 +812,7 @@ export const PPC = () => {
             Let's <span className="text-yellow-500">CHAT!</span> HE...
           </div>
           <button className="flex h-16 w-16 items-center justify-center rounded-full border-4 border-slate-100 bg-white shadow-2xl">
-            <MessageCircle className="h-8 w-8 text-slate-800" />
+            <IconMessageCircle className="h-8 w-8 text-slate-800" />
             <div className="absolute top-0 right-0 flex h-5 w-5 items-center justify-center rounded-full border-2 border-white bg-red-500 font-bold text-[10px] text-white">
               1
             </div>

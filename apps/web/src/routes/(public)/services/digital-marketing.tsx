@@ -7,24 +7,24 @@ import { useState } from "react";
  */
 
 import {
-  ArrowRight,
-  BarChart3,
-  Building2,
-  CheckCircle2,
-  ChevronDown,
-  ChevronRight,
-  CreditCard,
-  Globe,
-  Laptop,
-  Minus,
-  PieChart,
-  Plus,
-  Rocket,
-  Search,
-  ShoppingCart,
-  Stethoscope,
-  Target,
-} from "lucide-react";
+  IconArrowRight,
+  IconBuilding,
+  IconChartBar,
+  IconChartPie,
+  IconChevronDown,
+  IconChevronRight,
+  IconCircleCheck,
+  IconCreditCard,
+  IconDeviceLaptop,
+  IconGlobe,
+  IconMinus,
+  IconPlus,
+  IconRocket,
+  IconSearch,
+  IconShoppingCart,
+  IconStethoscope,
+  IconTarget,
+} from "@tabler/icons-react";
 
 // --- Components ---
 
@@ -36,9 +36,9 @@ const Hero = () => (
     <div className="relative z-10 mx-auto max-w-4xl">
       <div className="mb-6 flex items-center justify-center gap-2 text-[12px] uppercase tracking-widest opacity-60">
         <span>Home</span>
-        <ChevronRight size={12} />
+        <IconChevronRight size={12} />
         <span>Services</span>
-        <ChevronRight size={12} />
+        <IconChevronRight size={12} />
         <span className="text-yellow-500">Digital Marketing Solutions</span>
       </div>
       <motion.h1
@@ -119,19 +119,19 @@ const WhatAreSolutions = () => (
       <div className="grid grid-cols-2 gap-6">
         {[
           {
-            icon: <Search className="text-blue-500" />,
+            icon: <IconSearch className="text-blue-500" />,
             title: "Search Optimization",
           },
           {
-            icon: <Target className="text-[#7B2CBF]" />,
+            icon: <IconTarget className="text-[#7B2CBF]" />,
             title: "Paid Acquisition",
           },
           {
-            icon: <BarChart3 className="text-pink-500" />,
+            icon: <IconChartBar className="text-pink-500" />,
             title: "Conversion Funnels",
           },
           {
-            icon: <PieChart className="text-green-500" />,
+            icon: <IconChartPie className="text-green-500" />,
             title: "Analytics & Reporting",
           },
         ].map((item, idx) => (
@@ -201,7 +201,7 @@ const MarketingApproach = () => (
             "Measurable ROI tracking & attribution",
           ].map((item, idx) => (
             <li className="flex items-center gap-3 text-gray-700" key={idx}>
-              <CheckCircle2 className="text-yellow-500" size={20} />
+              <IconCircleCheck className="text-yellow-500" size={20} />
               <span>{item}</span>
             </li>
           ))}
@@ -304,7 +304,9 @@ const GrowthFramework = () => (
                 {step}
               </span>
             </div>
-            {idx < 5 && <ArrowRight className="mb-4 text-blue-500 lg:hidden" />}
+            {idx < 5 && (
+              <IconArrowRight className="mb-4 text-blue-500 lg:hidden" />
+            )}
           </motion.div>
         ))}
       </div>
@@ -352,27 +354,27 @@ const Industries = () => (
     <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-2 lg:grid-cols-3">
       {[
         {
-          icon: <Laptop className="text-blue-500" />,
+          icon: <IconDeviceLaptop className="text-blue-500" />,
           title: "Technology & SaaS",
         },
         {
-          icon: <ShoppingCart className="text-purple-500" />,
+          icon: <IconShoppingCart className="text-purple-500" />,
           title: "eCommerce & Retail",
         },
         {
-          icon: <Stethoscope className="text-red-500" />,
+          icon: <IconStethoscope className="text-red-500" />,
           title: "Healthcare Platforms",
         },
         {
-          icon: <CreditCard className="text-green-500" />,
+          icon: <IconCreditCard className="text-green-500" />,
           title: "Financial Services",
         },
         {
-          icon: <Building2 className="text-gray-700" />,
+          icon: <IconBuilding className="text-gray-700" />,
           title: "Enterprise Businesses",
         },
         {
-          icon: <Rocket className="text-orange-500" />,
+          icon: <IconRocket className="text-orange-500" />,
           title: "Startup Growth",
         },
       ].map((industry, idx) => (
@@ -499,7 +501,11 @@ const FAQ = () => {
               onClick={() => setOpenIdx(openIdx === idx ? null : idx)}
             >
               {faq.q}
-              {openIdx === idx ? <Minus size={20} /> : <Plus size={20} />}
+              {openIdx === idx ? (
+                <IconMinus size={20} />
+              ) : (
+                <IconPlus size={20} />
+              )}
             </button>
             <AnimatePresence>
               {openIdx === idx && (
@@ -543,7 +549,7 @@ const GlobalPresence = () => (
   <section className="border-white/10 border-t bg-[#05070A] px-4 py-24 text-white md:px-12">
     <div className="mx-auto max-w-7xl">
       <div className="mb-16 flex items-center gap-3 font-bold text-xl">
-        <Globe className="text-blue-500" />
+        <IconGlobe className="text-blue-500" />
         Global Presence
       </div>
       <div className="grid grid-cols-2 gap-12 md:grid-cols-3 lg:grid-cols-5">
@@ -627,7 +633,7 @@ export default function DigitalMarketing() {
           className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-600 text-white shadow-xl transition-colors hover:bg-blue-700"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         >
-          <ChevronDown className="rotate-180" />
+          <IconChevronDown className="rotate-180" />
         </button>
       </div>
     </div>

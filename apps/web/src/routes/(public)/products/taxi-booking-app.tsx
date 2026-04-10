@@ -1,11 +1,21 @@
-import { Bell, Shield, Star, Wallet } from "@tabler/icons-react";
+import {
+  IconBell,
+  IconShield,
+  IconStar,
+  IconWallet,
+} from "@tabler/icons-react";
+import { createFileRoute } from "@tanstack/react-router";
 import {
   BookingCta,
   BookingFeatures,
   BookingHero,
 } from "@/components/public/products/booking";
 
-export default function TaxiBookingApp() {
+export const Route = createFileRoute("/(public)/products/taxi-booking-app")({
+  component: RouteComponent,
+});
+
+export default function RouteComponent() {
   const heroData = {
     title: "Taxi Booking App",
     description:
@@ -17,22 +27,22 @@ export default function TaxiBookingApp() {
 
   const features = [
     {
-      icon: Bell,
+      icon: IconBell,
       title: "Real Time Updates",
       description: "Get live updates on your ride status and driver location.",
     },
     {
-      icon: Wallet,
+      icon: IconWallet,
       title: "Seamless Payments",
       description: "Secure and easy payment options with multiple methods.",
     },
     {
-      icon: Star,
+      icon: IconStar,
       title: "Reviewing & Rating",
       description: "Rate your experience and help improve our service.",
     },
     {
-      icon: Shield,
+      icon: IconShield,
       title: "SOS Alert",
       description: "Emergency assistance feature for safety.",
     },

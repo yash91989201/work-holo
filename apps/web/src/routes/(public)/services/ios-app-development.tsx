@@ -37,7 +37,7 @@ const features = [
       "Submission support, compliance review, rollout planning, and sustainable update pipelines after launch.",
     icon: IconChecklist,
   },
-] as const;
+];
 
 export const Route = createFileRoute("/(public)/services/ios-app-development")({
   component: IOSAppDevelopmentRoute,

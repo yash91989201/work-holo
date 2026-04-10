@@ -37,7 +37,7 @@ const features = [
       "Flutter and React Native builds that accelerate launch timelines while preserving a quality user experience.",
     icon: IconCloud,
   },
-] as const;
+];
 
 export const Route = createFileRoute(
   "/(public)/services/mobile-app-development"

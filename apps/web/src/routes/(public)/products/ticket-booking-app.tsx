@@ -1,11 +1,21 @@
-import { Calendar, CreditCard, MapPin, Search } from "@tabler/icons-react";
+import {
+  IconCalendar,
+  IconCreditCard,
+  IconMapPin,
+  IconSearch,
+} from "@tabler/icons-react";
+import { createFileRoute } from "@tanstack/react-router";
 import {
   BookingCta,
   BookingFeatures,
   BookingHero,
 } from "@/components/public/products/booking";
 
-export default function TicketBookingApp() {
+export const Route = createFileRoute("/(public)/products/ticket-booking-app")({
+  component: RouteComponent,
+});
+
+export default function RouteComponent() {
   const heroData = {
     title: "Ticket Booking App",
     description:
@@ -17,22 +27,22 @@ export default function TicketBookingApp() {
 
   const features = [
     {
-      icon: Calendar,
+      icon: IconCalendar,
       title: "Easy Registration",
       description: "Quick sign-up and account creation.",
     },
     {
-      icon: Search,
+      icon: IconSearch,
       title: "Smart Search",
       description: "Find events by location, date, and category.",
     },
     {
-      icon: MapPin,
+      icon: IconMapPin,
       title: "Seat Selection",
       description: "Interactive seat selection.",
     },
     {
-      icon: CreditCard,
+      icon: IconCreditCard,
       title: "Secure Payment",
       description: "Safe and secure transactions.",
     },

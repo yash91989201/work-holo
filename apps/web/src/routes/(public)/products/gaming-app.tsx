@@ -1,22 +1,21 @@
+import {
+  IconBolt,
+  IconDeviceGamepad2,
+  IconDeviceMobile,
+  IconGlobe,
+  IconMinus,
+  IconPlus,
+  IconTrophy,
+} from "@tabler/icons-react";
+import { createFileRoute } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
-import {
-  Gamepad2,
-  Globe,
-  Minus,
-  Plus,
-  Smartphone,
-  Trophy,
-  Zap,
-} from "lucide-react";
-
 // --- Components ---
+
+export const Route = createFileRoute("/(public)/products/gaming-app")({
+  component: RouteComponent,
+});
 
 const Hero = () => (
   <section className="relative flex min-h-[700px] items-center overflow-hidden bg-gradient-to-br from-[#7B2CBF] to-[#4D194D]">
@@ -136,14 +135,14 @@ const AgencySection = () => (
           </p>
           <div className="grid grid-cols-2 gap-6">
             <div className="rounded-2xl border border-gray-100 bg-gray-50 p-6">
-              <Smartphone className="mb-4 text-[#7B2CBF]" size={32} />
+              <IconDeviceMobile className="mb-4 text-[#7B2CBF]" size={32} />
               <h4 className="mb-2 font-bold">iOS Development</h4>
               <p className="text-gray-500 text-sm">
                 Optimized for iPhone and iPad with latest Swift features.
               </p>
             </div>
             <div className="rounded-2xl border border-gray-100 bg-gray-50 p-6">
-              <Globe className="mb-4 text-[#7B2CBF]" size={32} />
+              <IconGlobe className="mb-4 text-[#7B2CBF]" size={32} />
               <h4 className="mb-2 font-bold">Android Development</h4>
               <p className="text-gray-500 text-sm">
                 Broad compatibility across thousands of Android devices.
@@ -177,13 +176,16 @@ const OnDemandSection = () => (
         </p>
         <div className="space-y-4">
           {[
-            { icon: <Gamepad2 size={24} />, title: "Multiplayer Mode" },
-            { icon: <Smartphone size={24} />, title: "In-App Purchases" },
             {
-              icon: <Trophy size={24} />,
+              icon: <IconDeviceGamepad2 size={24} />,
+              title: "Multiplayer Mode",
+            },
+            { icon: <IconDeviceMobile size={24} />, title: "In-App Purchases" },
+            {
+              icon: <IconTrophy size={24} />,
               title: "Leader boards & Achievements",
             },
-            { icon: <Zap size={24} />, title: "Offline Play" },
+            { icon: <IconBolt size={24} />, title: "Offline Play" },
           ].map((item, i) => (
             <div
               className="flex items-center gap-4 rounded-xl border border-purple-100 bg-white p-4 shadow-sm"
@@ -269,7 +271,7 @@ const FeaturesSection = () => (
           >
             <div className="mb-6 aspect-video w-full overflow-hidden rounded-2xl bg-black">
               <div className="flex h-full w-full items-center justify-center text-white/20">
-                <Gamepad2 size={48} />
+                <IconDeviceGamepad2 size={48} />
               </div>
             </div>
             <h4 className="mb-3 font-extrabold text-xl transition-colors group-hover:text-white">
@@ -524,7 +526,11 @@ const FAQSection = () => {
                 <div
                   className={`rounded-full p-2 transition-all ${openIndex === i ? "bg-gray-900 text-white" : "bg-gray-200 text-gray-600"}`}
                 >
-                  {openIndex === i ? <Minus size={20} /> : <Plus size={20} />}
+                  {openIndex === i ? (
+                    <IconMinus size={20} />
+                  ) : (
+                    <IconPlus size={20} />
+                  )}
                 </div>
               </button>
               <AnimatePresence>
@@ -547,7 +553,7 @@ const FAQSection = () => {
   );
 };
 
-export default function GamingApp() {
+export default function RouteComponent() {
   return (
     <div className="font-sans selection:bg-blue-500 selection:text-white">
       <Hero />

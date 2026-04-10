@@ -1,31 +1,32 @@
+import {
+  IconBriefcase,
+  IconChartBar,
+  IconMinus,
+  IconSearch,
+  IconSettings,
+  IconShieldCheck,
+  IconShoppingBag,
+  IconStar,
+  IconUsers,
+} from "@tabler/icons-react";
+import { createFileRoute } from "@tanstack/react-router";
 import { type ClassValue, clsx } from "clsx";
 import { AnimatePresence, motion } from "framer-motion";
 import type React from "react";
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
-import {
-  BarChart3,
-  Briefcase,
-  Minus,
-  Search,
-  Settings,
-  ShieldCheck,
-  ShoppingBag,
-  Star,
-  Users,
-} from "lucide-react";
-
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
 // --- Components ---
+
+export const Route = createFileRoute(
+  "/(public)/products/multi-vendor-marketplace"
+)({
+  component: RouteComponent,
+});
 
 const Button = ({
   children,
@@ -95,7 +96,7 @@ const FAQItem = ({
           {question}
         </span>
         <div className="rounded-full bg-gray-100 p-2 transition-all group-hover:bg-[#7B2CBF] group-hover:text-white">
-          <Minus size={20} />
+          <IconMinus size={20} />
         </div>
       </button>
       <AnimatePresence>
@@ -116,14 +117,9 @@ const FAQItem = ({
 
 // --- Main App ---
 
-export default function MultiVendorMarketplace() {
+export default function RouteComponent() {
   return (
     <div className="min-h-screen bg-white selection:bg-[#7B2CBF] selection:text-white">
-      {/* Top Bar */}
-
-      {/* Navigation */}
-
-      {/* Hero Section */}
       <section className="relative overflow-hidden bg-[#F3E8FF] px-4 pt-20 pb-32 md:px-12">
         <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-2">
           <motion.div
@@ -293,32 +289,32 @@ export default function MultiVendorMarketplace() {
               {
                 title: "Vendor Management System",
                 desc: "Our multi-vendor platform streamlines vendor onboarding, product management, and sales tracking through a robust vendor dashboard.",
-                icon: <Users className="text-[#7B2CBF]" size={40} />,
+                icon: <IconUsers className="text-[#7B2CBF]" size={40} />,
               },
               {
                 title: "Customizable User Interfaces",
                 desc: "We provide custom eCommerce designs for websites and apps, delivering a seamless and intuitive user experience across all devices.",
-                icon: <Settings className="text-[#7B2CBF]" size={40} />,
+                icon: <IconSettings className="text-[#7B2CBF]" size={40} />,
               },
               {
                 title: "Advanced Search & Filter Options",
                 desc: "Enhance user engagement with customizable search and filtering options, making it easy for customers to find exactly what they need.",
-                icon: <Search className="text-[#7B2CBF]" size={40} />,
+                icon: <IconSearch className="text-[#7B2CBF]" size={40} />,
               },
               {
                 title: "Secure Payment Gateways",
                 desc: "Our multi-seller eCommerce app ensures secure, seamless transactions with multiple payment gateways and support for multi-currency payments.",
-                icon: <ShieldCheck className="text-[#7B2CBF]" size={40} />,
+                icon: <IconShieldCheck className="text-[#7B2CBF]" size={40} />,
               },
               {
                 title: "Ratings & Reviews",
                 desc: "Boost trust and credibility with our integrated ratings and reviews system, enabling customer feedback to guide vendors and inform future buyers.",
-                icon: <Star className="text-[#7B2CBF]" size={40} />,
+                icon: <IconStar className="text-[#7B2CBF]" size={40} />,
               },
               {
                 title: "Analytics & Reporting for eCommerce",
                 desc: "Boost trust and credibility with our integrated ratings and reviews system, enabling customer feedback to guide vendors and inform future buyers.",
-                icon: <BarChart3 className="text-[#7B2CBF]" size={40} />,
+                icon: <IconChartBar className="text-[#7B2CBF]" size={40} />,
               },
             ].map((feature, idx) => (
               <motion.div
@@ -351,17 +347,17 @@ export default function MultiVendorMarketplace() {
               {
                 title: "B2C (Business To Consumer)",
                 desc: "Our multi-vendor marketplace solutions are perfect for businesses selling directly to consumers. The platform supports a wide range of products and services, making it easy to scale as your customer base grows.",
-                icon: <ShoppingBag size={48} />,
+                icon: <IconShoppingBag size={48} />,
               },
               {
                 title: "B2B (Business To Business)",
                 desc: "We also specialize in developing B2B multi-vendor platforms that connect businesses with suppliers and manufacturers. This model is ideal for companies looking to streamline their procurement processes.",
-                icon: <Briefcase size={48} />,
+                icon: <IconBriefcase size={48} />,
               },
               {
                 title: "C2C (Consumer To Consumer)",
                 desc: "Our C2C marketplaces facilitate peer-to-peer transactions, providing a platform where individuals can buy and sell goods directly to each other. This model is popular for resale and second-hand marketplaces.",
-                icon: <Users size={48} />,
+                icon: <IconUsers size={48} />,
               },
             ].map((model, idx) => (
               <motion.div

@@ -1,20 +1,21 @@
-import { AnimatePresence, motion } from "framer-motion";
 import {
-  ChevronRight,
-  CreditCard,
-  Globe,
-  Heart,
-  Layout,
-  Mail,
-  MessageSquare,
-  Minus,
-  Phone,
-  Plus,
-  ShieldCheck,
-  Smartphone,
-  Users,
-  Zap,
-} from "lucide-react";
+  IconBolt,
+  IconChevronRight,
+  IconCreditCard,
+  IconDeviceMobile,
+  IconGlobe,
+  IconHeart,
+  IconLayout,
+  IconMail,
+  IconMessage2,
+  IconMinus,
+  IconPhone,
+  IconPlus,
+  IconShieldCheck,
+  IconUsers,
+} from "@tabler/icons-react";
+import { createFileRoute } from "@tanstack/react-router";
+import { AnimatePresence, motion } from "framer-motion";
 import type React from "react";
 import { useState } from "react";
 
@@ -25,15 +26,15 @@ const TopBar = () => (
     <div className="container mx-auto flex items-center justify-between px-4 font-medium text-xs">
       <div className="flex items-center gap-6">
         <div className="flex items-center gap-2">
-          <Mail className="h-3.5 w-3.5 text-[#007bff]" />
+          <IconMail className="h-3.5 w-3.5 text-[#007bff]" />
           <span>contact@WorkHololabs.com</span>
         </div>
         <div className="flex items-center gap-2">
-          <Phone className="h-3.5 w-3.5 text-[#007bff]" />
+          <IconPhone className="h-3.5 w-3.5 text-[#007bff]" />
           <span>+91 9390683154</span>
         </div>
         <div className="flex items-center gap-2">
-          <Phone className="h-3.5 w-3.5 text-[#007bff]" />
+          <IconPhone className="h-3.5 w-3.5 text-[#007bff]" />
           <span>+1 (551) 222-0070</span>
         </div>
       </div>
@@ -104,9 +105,9 @@ const AccordionItem: React.FC<AccordionItemProps> = ({ question, answer }) => {
       >
         <span className="font-bold text-[#1a1a1a]">{question}</span>
         {isOpen ? (
-          <Minus className="h-5 w-5 text-[#007bff]" />
+          <IconMinus className="h-5 w-5 text-[#007bff]" />
         ) : (
-          <Plus className="h-5 w-5 text-[#007bff]" />
+          <IconPlus className="h-5 w-5 text-[#007bff]" />
         )}
       </button>
       <AnimatePresence>
@@ -129,7 +130,11 @@ const AccordionItem: React.FC<AccordionItemProps> = ({ question, answer }) => {
 
 // --- Main App ---
 
-export default function EcommerceApp() {
+export const Route = createFileRoute("/(public)/products/ecommerce-app")({
+  component: RouteComponent,
+});
+
+export default function RouteComponent() {
   const [activeTab, setActiveTab] = useState("Customer Panel");
 
   return (
@@ -226,22 +231,22 @@ export default function EcommerceApp() {
               <div className="grid gap-6 sm:grid-cols-2">
                 {[
                   {
-                    icon: Layout,
+                    icon: IconLayout,
                     title: "User-Friendly Interface",
                     desc: "Intuitive and easy to navigate for all users.",
                   },
                   {
-                    icon: CreditCard,
+                    icon: IconCreditCard,
                     title: "Secure Payment Options",
                     desc: "Multiple secure payment gateways integrated.",
                   },
                   {
-                    icon: Heart,
+                    icon: IconHeart,
                     title: "Wishlists & Saved Items",
                     desc: "Allow users to save products for later.",
                   },
                   {
-                    icon: MessageSquare,
+                    icon: IconMessage2,
                     title: "Community & Social Integration",
                     desc: "Connect with users through social platforms.",
                   },
@@ -388,7 +393,7 @@ export default function EcommerceApp() {
                 ].map((item, idx) => (
                   <div className="flex items-center gap-3" key={idx}>
                     <div className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-500">
-                      <ChevronRight className="h-3 w-3 text-white" />
+                      <IconChevronRight className="h-3 w-3 text-white" />
                     </div>
                     <span className="font-semibold text-gray-700">{item}</span>
                   </div>
@@ -409,42 +414,42 @@ export default function EcommerceApp() {
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
             {[
               {
-                icon: Globe,
+                icon: IconGlobe,
                 title: "Easy to Navigate",
                 desc: "Intuitive and user-friendly interfaces for seamless shopping experiences.",
               },
               {
-                icon: CreditCard,
+                icon: IconCreditCard,
                 title: "Integrated Payment Systems",
                 desc: "Multiple secure payment options for a smooth checkout process.",
               },
               {
-                icon: Smartphone,
+                icon: IconDeviceMobile,
                 title: "Personalized Experience",
                 desc: "Customization options tailored to individual customer preferences.",
               },
               {
-                icon: Zap,
+                icon: IconBolt,
                 title: "Feature-Rich",
                 desc: "A comprehensive set of features that cater to a variety of business needs.",
               },
               {
-                icon: Layout,
+                icon: IconLayout,
                 title: "Easy to Manage",
                 desc: "Streamlined back-end management for effortless store operation and monitoring.",
               },
               {
-                icon: ShieldCheck,
+                icon: IconShieldCheck,
                 title: "Highly Secure",
                 desc: "Robust security features to protect user data and transactions.",
               },
               {
-                icon: Users,
+                icon: IconUsers,
                 title: "Affordable Solutions",
                 desc: "Cost-effective services that help you maximize your business potential.",
               },
               {
-                icon: Smartphone,
+                icon: IconDeviceMobile,
                 title: "Highly Responsive",
                 desc: "Optimized for seamless use across all devices, ensuring a great user experience.",
               },
@@ -695,14 +700,14 @@ export default function EcommerceApp() {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
         >
-          <MessageSquare className="h-7 w-7" />
+          <IconMessage2 className="h-7 w-7" />
         </motion.button>
         <motion.button
           className="flex h-14 w-14 items-center justify-center rounded-full bg-[#007bff] text-white shadow-xl"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
         >
-          <ChevronRight className="h-7 w-7 -rotate-90" />
+          <IconChevronRight className="h-7 w-7 -rotate-90" />
         </motion.button>
       </div>
     </div>

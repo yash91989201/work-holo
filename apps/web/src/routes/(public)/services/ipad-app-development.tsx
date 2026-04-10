@@ -37,7 +37,7 @@ const features = [
       "Connected workflows spanning ERP, CRM, analytics, cloud storage, and real-time data services.",
     icon: IconTopologyStar3,
   },
-] as const;
+];
 
 export const Route = createFileRoute("/(public)/services/ipad-app-development")(
   { component: IPadAppDevelopmentRoute }

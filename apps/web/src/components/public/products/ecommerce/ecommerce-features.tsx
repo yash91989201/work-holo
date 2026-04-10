@@ -1,5 +1,10 @@
+import {
+  IconCreditCard,
+  IconHeart,
+  IconLayout,
+  IconMessage2,
+} from "@tabler/icons-react";
 import { motion } from "framer-motion";
-import { CreditCard, Heart, Layout, MessageSquare } from "lucide-react";
 
 const SectionHeading = ({
   title,
@@ -63,22 +68,22 @@ export default function EcommerceFeatures() {
             <div className="grid gap-6 sm:grid-cols-2">
               {[
                 {
-                  icon: Layout,
+                  icon: IconLayout,
                   title: "User-Friendly Interface",
                   desc: "Intuitive and easy to navigate for all users.",
                 },
                 {
-                  icon: CreditCard,
+                  icon: IconCreditCard,
                   title: "Secure Payment Options",
                   desc: "Multiple secure payment gateways integrated.",
                 },
                 {
-                  icon: Heart,
+                  icon: IconHeart,
                   title: "Wishlists & Saved Items",
                   desc: "Allow users to save products for later.",
                 },
                 {
-                  icon: MessageSquare,
+                  icon: IconMessage2,
                   title: "Community & Social Integration",
                   desc: "Connect with users through social platforms.",
                 },

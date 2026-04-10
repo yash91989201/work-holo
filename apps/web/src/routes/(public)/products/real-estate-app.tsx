@@ -1,11 +1,21 @@
-import { Bell, Calculator, Home, Search } from "@tabler/icons-react";
+import {
+  IconBell,
+  IconCalculator,
+  IconHome,
+  IconSearch,
+} from "@tabler/icons-react";
+import { createFileRoute } from "@tanstack/react-router";
 import {
   BookingCta,
   BookingFeatures,
   BookingHero,
 } from "@/components/public/products/booking";
 
-export default function RealEstateApp() {
+export const Route = createFileRoute("/(public)/products/real-estate-app")({
+  component: RouteComponent,
+});
+
+export default function RouteComponent() {
   const heroData = {
     title: "Real Estate App",
     description: "Real estate app development for web and mobile platforms.",
@@ -16,22 +26,22 @@ export default function RealEstateApp() {
 
   const features = [
     {
-      icon: Search,
+      icon: IconSearch,
       title: "Property Search & Filters",
       description: "Advanced search and filtering options.",
     },
     {
-      icon: Home,
+      icon: IconHome,
       title: "Virtual Tours & Photos",
       description: "Immersive property viewing.",
     },
     {
-      icon: Bell,
+      icon: IconBell,
       title: "Price Alerts",
       description: "Get notified of price changes.",
     },
     {
-      icon: Calculator,
+      icon: IconCalculator,
       title: "Mortgage Calculator",
       description: "Calculate mortgage payments.",
     },

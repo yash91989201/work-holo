@@ -1,18 +1,23 @@
 import {
-  Bottle,
-  Clock,
-  MapPin,
-  Shield,
-  Star,
-  Users,
+  IconBottle,
+  IconClock,
+  IconMapPin,
+  IconShield,
+  IconStar,
+  IconUsers,
 } from "@tabler/icons-react";
+import { createFileRoute } from "@tanstack/react-router";
 import {
   ProductCta,
   ProductFeatures,
   ProductHero,
 } from "@/components/public/products/on-demand";
 
-export default function MilkDeliveryApp() {
+export const Route = createFileRoute("/(public)/products/milk-delivery-app")({
+  component: RouteComponent,
+});
+
+export default function RouteComponent() {
   const heroData = {
     title: "Milk Delivery App Development",
     description:
@@ -24,32 +29,32 @@ export default function MilkDeliveryApp() {
 
   const features = [
     {
-      icon: Bottle,
+      icon: IconBottle,
       title: "Fresh Delivery",
       description: "Daily fresh milk delivery.",
     },
     {
-      icon: Clock,
+      icon: IconClock,
       title: "Flexible Scheduling",
       description: "Schedule deliveries as per your needs.",
     },
     {
-      icon: MapPin,
+      icon: IconMapPin,
       title: "Local Suppliers",
       description: "Connect with local dairy farms.",
     },
     {
-      icon: Star,
+      icon: IconStar,
       title: "Quality Control",
       description: "Ensured quality and hygiene.",
     },
     {
-      icon: Shield,
+      icon: IconShield,
       title: "Safe Handling",
       description: "Safe and hygienic delivery.",
     },
     {
-      icon: Users,
+      icon: IconUsers,
       title: "Subscription Plans",
       description: "Flexible subscription options.",
     },

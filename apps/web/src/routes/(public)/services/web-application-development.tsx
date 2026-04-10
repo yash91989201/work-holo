@@ -37,7 +37,7 @@ const features = [
       "Secure digital solutions for startups, brands, and public-sector engagements with long-term technical support.",
     icon: IconCode,
   },
-] as const;
+];
 
 export const Route = createFileRoute(
   "/(public)/services/web-application-development"

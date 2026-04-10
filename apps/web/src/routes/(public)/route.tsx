@@ -18,7 +18,7 @@ function RouteComponent() {
   });
 
   return (
-    <div className="grid h-svh grid-rows-[auto_1fr_auto]">
+    <div className="grid min-h-svh grid-rows-[auto_1fr_auto]">
       <Header />
       {isFetching ? <FullScreenLoader /> : <Outlet />}
       <Footer />

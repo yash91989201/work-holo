@@ -1,11 +1,23 @@
-import { Car, Clock, MapPin, Shield, Star, Users } from "@tabler/icons-react";
+import {
+  IconCar,
+  IconClock,
+  IconMapPin,
+  IconShield,
+  IconStar,
+  IconUsers,
+} from "@tabler/icons-react";
+import { createFileRoute } from "@tanstack/react-router";
 import {
   ProductCta,
   ProductFeatures,
   ProductHero,
 } from "@/components/public/products/on-demand";
 
-export default function CarWashApp() {
+export const Route = createFileRoute("/(public)/products/car-wash-app")({
+  component: RouteComponent,
+});
+
+export default function RouteComponent() {
   const heroData = {
     title: "On-Demand Car Wash App",
     description: "Convenient car washing services at your location.",
@@ -16,32 +28,32 @@ export default function CarWashApp() {
 
   const features = [
     {
-      icon: Car,
+      icon: IconCar,
       title: "Professional Service",
       description: "Expert car washing services.",
     },
     {
-      icon: Clock,
+      icon: IconClock,
       title: "On-Demand Booking",
       description: "Book services anytime.",
     },
     {
-      icon: MapPin,
+      icon: IconMapPin,
       title: "Mobile Service",
       description: "Service at your location.",
     },
     {
-      icon: Star,
+      icon: IconStar,
       title: "Quality Assurance",
       description: "High-quality cleaning.",
     },
     {
-      icon: Shield,
+      icon: IconShield,
       title: "Eco-Friendly",
       description: "Environmentally friendly products.",
     },
     {
-      icon: Users,
+      icon: IconUsers,
       title: "Provider Network",
       description: "Network of service providers.",
     },

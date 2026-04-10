@@ -7,21 +7,21 @@ import React, { useState } from "react";
  */
 
 import {
-  ArrowRight,
-  Building2,
-  CheckCircle2,
-  ChevronDown,
-  Database,
-  Globe,
-  Layout,
-  Monitor,
-  Rocket,
-  Search,
-  ShieldCheck,
-  ShoppingCart,
-  Stethoscope,
-  TrendingUp,
-} from "lucide-react";
+  IconArrowRight,
+  IconBuilding,
+  IconChevronDown,
+  IconCircleCheck,
+  IconDatabase,
+  IconDeviceDesktop,
+  IconGlobe,
+  IconLayout,
+  IconRocket,
+  IconSearch,
+  IconShieldCheck,
+  IconShoppingCart,
+  IconStethoscope,
+  IconTrendingUp,
+} from "@tabler/icons-react";
 
 // --- Types ---
 
@@ -103,14 +103,17 @@ const Hero = () => {
 
 const WhatIsContentMarketing = () => {
   const cards = [
-    { icon: <Layout className="text-[#7B2CBF]" />, title: "Content Strategy" },
-    { icon: <Search className="text-[#00A3FF]" />, title: "SEO Alignment" },
     {
-      icon: <ShieldCheck className="text-[#F2A93B]" />,
+      icon: <IconLayout className="text-[#7B2CBF]" />,
+      title: "Content Strategy",
+    },
+    { icon: <IconSearch className="text-[#00A3FF]" />, title: "SEO Alignment" },
+    {
+      icon: <IconShieldCheck className="text-[#F2A93B]" />,
       title: "Authority Building",
     },
     {
-      icon: <TrendingUp className="text-[#00C853]" />,
+      icon: <IconTrendingUp className="text-[#00C853]" />,
       title: "Lead Generation",
     },
   ];
@@ -217,7 +220,7 @@ const BusinessBenefits = () => {
                 className="flex items-center gap-3 font-medium text-[#0B1120]/80 text-lg"
                 key={idx}
               >
-                <CheckCircle2 className="text-[#F2A93B]" size={20} />
+                <IconCircleCheck className="text-[#F2A93B]" size={20} />
                 {benefit}
               </li>
             ))}
@@ -342,7 +345,7 @@ const ContentFramework = () => {
               </div>
               {idx < steps.length - 1 && (
                 <div className="z-10 hidden items-center px-4 lg:flex">
-                  <ArrowRight className="text-black/20" size={20} />
+                  <IconArrowRight className="text-black/20" size={20} />
                 </div>
               )}
             </React.Fragment>
@@ -391,12 +394,12 @@ const WhyChoose = () => {
 
 const Industries = () => {
   const industries: IndustryCard[] = [
-    { icon: <Monitor size={32} />, label: "Technology & SaaS" },
-    { icon: <Database size={32} />, label: "Financial Services" },
-    { icon: <Stethoscope size={32} />, label: "Healthcare" },
-    { icon: <ShoppingCart size={32} />, label: "eCommerce" },
-    { icon: <Building2 size={32} />, label: "Enterprise B2B" },
-    { icon: <Rocket size={32} />, label: "Startup Growth" },
+    { icon: <IconDeviceDesktop size={32} />, label: "Technology & SaaS" },
+    { icon: <IconDatabase size={32} />, label: "Financial Services" },
+    { icon: <IconStethoscope size={32} />, label: "Healthcare" },
+    { icon: <IconShoppingCart size={32} />, label: "eCommerce" },
+    { icon: <IconBuilding size={32} />, label: "Enterprise B2B" },
+    { icon: <IconRocket size={32} />, label: "Startup Growth" },
   ];
 
   return (
@@ -551,9 +554,9 @@ const FAQ = () => {
                   {faq.question}
                 </span>
                 {openIndex === idx ? (
-                  <ChevronDown className="rotate-180 transition-transform" />
+                  <IconChevronDown className="rotate-180 transition-transform" />
                 ) : (
-                  <ChevronDown className="transition-transform" />
+                  <IconChevronDown className="transition-transform" />
                 )}
               </button>
               <AnimatePresence>
@@ -627,7 +630,7 @@ const GlobalPresence = () => {
     <section className="border-white/5 border-t bg-[#0B1120] py-24">
       <div className="mx-auto max-w-[1440px] px-6">
         <div className="mb-16 flex items-center gap-3 text-white">
-          <Globe className="text-[#00A3FF]" size={24} />
+          <IconGlobe className="text-[#00A3FF]" size={24} />
           <h2 className="font-bold text-2xl">Global Presence</h2>
         </div>
 

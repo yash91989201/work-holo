@@ -1,9 +1,9 @@
-import type { Icon } from "@tabler/icons-react";
+import type { TablerIcon } from "@tabler/icons-react";
 import { motion } from "framer-motion";
 
 interface Feature {
   description: string;
-  icon: typeof Icon;
+  icon: TablerIcon;
   title: string;
 }
 

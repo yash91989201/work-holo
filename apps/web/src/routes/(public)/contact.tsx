@@ -8,10 +8,10 @@ import {
 } from "@/components/public/contact";
 
 export const Route = createFileRoute("/(public)/contact")({
-  component: ContactPage,
+  component: RouteComponent,
 });
 
-function ContactPage() {
+function RouteComponent() {
   return (
     <div className="flex min-h-screen flex-col">
       <HeroSection />

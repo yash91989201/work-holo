@@ -15,7 +15,7 @@ type ServiceFeature = {
 };
 
 type ServiceFeaturesProps = {
-  items: ServiceFeature[];
+  items: readonly ServiceFeature[];
   kicker?: string;
   technologies?: string[];
   title: string;

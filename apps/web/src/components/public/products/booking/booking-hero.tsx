@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import Image from "next/image";
+import { Image } from "@/components/shared/image";
 import { Button } from "@/components/ui/button";
 
 interface BookingHeroProps {
@@ -44,10 +44,14 @@ export function BookingHero({
         >
           <Image
             alt={title}
-            className="mx-auto rounded-lg shadow-lg"
+            className="h-full w-full"
             height={600}
+            objectFit="cover"
+            priority
+            sizes="(max-width: 768px) 100vw, 800px"
             src={image}
             width={800}
+            wrapperClassName="mx-auto max-w-full rounded-lg shadow-lg"
           />
         </motion.div>
       </div>

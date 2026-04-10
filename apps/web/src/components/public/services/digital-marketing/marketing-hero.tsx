@@ -1,5 +1,5 @@
+import { IconChevronRight } from "@tabler/icons-react";
 import { motion } from "framer-motion";
-import { ChevronRight } from "lucide-react";
 
 export const MarketingHero = () => (
   <section className="relative overflow-hidden bg-[#05070A] px-4 py-20 text-center text-white md:px-12">
@@ -9,9 +9,9 @@ export const MarketingHero = () => (
     <div className="relative z-10 mx-auto max-w-4xl">
       <div className="mb-6 flex items-center justify-center gap-2 text-[12px] uppercase tracking-widest opacity-60">
         <span>Home</span>
-        <ChevronRight size={12} />
+        <IconChevronRight size={12} />
         <span>Services</span>
-        <ChevronRight size={12} />
+        <IconChevronRight size={12} />
         <span className="text-yellow-500">Digital Marketing Solutions</span>
       </div>
       <motion.h1

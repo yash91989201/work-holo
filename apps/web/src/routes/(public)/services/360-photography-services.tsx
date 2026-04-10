@@ -37,7 +37,7 @@ const features = [
       "High-quality capture for real estate, tourism, showrooms, and event-driven marketing experiences.",
     icon: IconBuildingCommunity,
   },
-] as const;
+];
 
 export const Route = createFileRoute(
   "/(public)/services/360-photography-services"

@@ -1,9 +1,4 @@
-import {
-  IconBook,
-  IconCode,
-  IconShoppingBag,
-  IconUsers,
-} from "@tabler/icons-react";
+import { IconBook, IconCode, IconShoppingBag } from "@tabler/icons-react";
 
 export const TOP_BAR = {
   email: "hr@workholo.com",
@@ -19,64 +14,64 @@ export const TOP_BAR = {
 };
 
 export const NAV_DATA = [
-  {
-    title: "Home",
-    hasMegaMenu: true,
-    items: [
-      {
-        id: "about-us",
-        label: "About WorkHolo",
-        icon: IconUsers,
-        description:
-          "WorkHolo builds ready-to-use and custom websites and software solutions for businesses to launch and scale faster.",
-        links: [],
-      },
-    ],
-    centerContent: {
-      title: "LATEST SOLUTIONS",
-      links: [
-        {
-          label: "Company Overview",
-          desc: "WorkHolo Labs delivers innovative mobile and web app solutions for modern businesses",
-        },
-        {
-          label: "Vision & Mission",
-          desc: "Driving digital innovation with purpose and empowering businesses globally",
-        },
-        {
-          label: "Leadership Team",
-          desc: "Meet the experienced minds leading WorkHolo Labs to digital excellence",
-        },
-        {
-          label: "Our Journey",
-          desc: "14+ years of building world-class digital products across 20+ industries",
-        },
-        {
-          label: "Awards & Recognition",
-          desc: "Industry accolades celebrating our commitment to quality and innovation",
-        },
-        {
-          label: "NASSCOM Membership",
-          desc: "Proud member of India's premier IT industry association",
-        },
-        {
-          label: "Life at WorkHolo Labs",
-          desc: "Explore our vibrant culture, talented people, and collaborative work environment",
-        },
-      ],
-    },
-    whySection: {
-      title: "ABOUT WORKHOLO",
-      points: [
-        "Ready-to-Launch Digital Products",
-        "Fully Customizable Solutions",
-        "Fast Development & Delivery",
-        "Scalable & Future-Ready Systems",
-        "Built for Real Business Needs",
-      ],
-      buttonText: "Get in Touch",
-    },
-  },
+  // {
+  //   title: "Home",
+  //   hasMegaMenu: true,
+  //   items: [
+  //     {
+  //       id: "about-us",
+  //       label: "About WorkHolo",
+  //       icon: IconUsers,
+  //       description:
+  //         "WorkHolo builds ready-to-use and custom websites and software solutions for businesses to launch and scale faster.",
+  //       links: [],
+  //     },
+  //   ],
+  //   centerContent: {
+  //     title: "LATEST SOLUTIONS",
+  //     links: [
+  //       {
+  //         label: "Company Overview",
+  //         desc: "WorkHolo Labs delivers innovative mobile and web app solutions for modern businesses",
+  //       },
+  //       {
+  //         label: "Vision & Mission",
+  //         desc: "Driving digital innovation with purpose and empowering businesses globally",
+  //       },
+  //       {
+  //         label: "Leadership Team",
+  //         desc: "Meet the experienced minds leading WorkHolo Labs to digital excellence",
+  //       },
+  //       {
+  //         label: "Our Journey",
+  //         desc: "14+ years of building world-class digital products across 20+ industries",
+  //       },
+  //       {
+  //         label: "Awards & Recognition",
+  //         desc: "Industry accolades celebrating our commitment to quality and innovation",
+  //       },
+  //       {
+  //         label: "NASSCOM Membership",
+  //         desc: "Proud member of India's premier IT industry association",
+  //       },
+  //       {
+  //         label: "Life at WorkHolo Labs",
+  //         desc: "Explore our vibrant culture, talented people, and collaborative work environment",
+  //       },
+  //     ],
+  //   },
+  //   whySection: {
+  //     title: "ABOUT WORKHOLO",
+  //     points: [
+  //       "Ready-to-Launch Digital Products",
+  //       "Fully Customizable Solutions",
+  //       "Fast Development & Delivery",
+  //       "Scalable & Future-Ready Systems",
+  //       "Built for Real Business Needs",
+  //     ],
+  //     buttonText: "Get in Touch",
+  //   },
+  // },
   {
     title: "Services",
     hasMegaMenu: true,

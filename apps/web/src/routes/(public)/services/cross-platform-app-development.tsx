@@ -37,7 +37,7 @@ const features = [
       "Unified connections to your existing systems, third-party tools, and cloud platforms.",
     icon: IconTopologyComplex,
   },
-] as const;
+];
 
 export const Route = createFileRoute(
   "/(public)/services/cross-platform-app-development"

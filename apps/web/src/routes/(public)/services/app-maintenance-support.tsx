@@ -37,7 +37,7 @@ const features = [
       "Enhance features and user experience based on analytics, customer feedback, and evolving goals.",
     icon: IconActivityHeartbeat,
   },
-] as const;
+];
 
 export const Route = createFileRoute(
   "/(public)/services/app-maintenance-support"

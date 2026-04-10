@@ -1,26 +1,20 @@
+import {
+  IconActivity,
+  IconBolt,
+  IconBuilding,
+  IconChartPie,
+  IconChevronDown,
+  IconChevronRight,
+  IconCircleCheck,
+  IconCreditCard,
+  IconDeviceDesktop,
+  IconRocket,
+  IconShoppingCart,
+  IconStethoscope,
+  IconTrendingUp,
+} from "@tabler/icons-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
-import {
-  Activity,
-  Building2,
-  CheckCircle2,
-  ChevronDown,
-  ChevronRight,
-  CreditCard,
-  Monitor,
-  PieChart,
-  Rocket,
-  ShoppingCart,
-  Stethoscope,
-  TrendingUp,
-  Zap,
-} from "lucide-react";
 
 // --- Components ---
 
@@ -40,9 +34,9 @@ const Hero = () => (
       >
         <nav className="mb-10 flex items-center justify-center gap-3 font-medium text-[14px] text-gray-400">
           <span className="cursor-pointer hover:text-white">Home</span>
-          <ChevronRight className="h-3.5 w-3.5" />
+          <IconChevronRight className="h-3.5 w-3.5" />
           <span className="cursor-pointer hover:text-white">Services</span>
-          <ChevronRight className="h-3.5 w-3.5" />
+          <IconChevronRight className="h-3.5 w-3.5" />
           <span className="text-[#F2A93B]">Conversion Rate Optimization</span>
         </nav>
 
@@ -76,19 +70,19 @@ const Hero = () => (
 const WhatIsCRO = () => {
   const cards = [
     {
-      icon: <PieChart className="h-10 w-10 text-blue-500" />,
+      icon: <IconChartPie className="h-10 w-10 text-blue-500" />,
       title: "Funnel Analysis",
     },
     {
-      icon: <Zap className="h-10 w-10 text-green-500" />,
+      icon: <IconBolt className="h-10 w-10 text-green-500" />,
       title: "A/B Testing",
     },
     {
-      icon: <Activity className="h-10 w-10 text-orange-500" />,
+      icon: <IconActivity className="h-10 w-10 text-orange-500" />,
       title: "Heatmap Analysis",
     },
     {
-      icon: <TrendingUp className="h-10 w-10 text-purple-500" />,
+      icon: <IconTrendingUp className="h-10 w-10 text-purple-500" />,
       title: "Revenue Growth",
     },
   ];
@@ -213,7 +207,7 @@ const BusinessBenefits = () => {
                   className="flex items-start gap-4 font-medium text-[19px] text-gray-700"
                   key={idx}
                 >
-                  <CheckCircle2 className="mt-0.5 h-7 w-7 shrink-0 text-yellow-500" />
+                  <IconCircleCheck className="mt-0.5 h-7 w-7 shrink-0 text-yellow-500" />
                   <span>{benefit}</span>
                 </li>
               ))}
@@ -332,7 +326,7 @@ const Framework = () => {
               </motion.div>
               {idx < steps.length - 1 && (
                 <div className="mx-4 hidden md:block">
-                  <ChevronRight className="h-8 w-8 text-blue-300" />
+                  <IconChevronRight className="h-8 w-8 text-blue-300" />
                 </div>
               )}
             </div>
@@ -386,27 +380,27 @@ const Industries = () => {
   const industries = [
     {
       title: "SaaS & Subscriptions",
-      icon: <Monitor className="h-14 w-14 text-blue-500" />,
+      icon: <IconDeviceDesktop className="h-14 w-14 text-blue-500" />,
     },
     {
       title: "eCommerce & Retail",
-      icon: <ShoppingCart className="h-14 w-14 text-green-500" />,
+      icon: <IconShoppingCart className="h-14 w-14 text-green-500" />,
     },
     {
       title: "Financial Services",
-      icon: <CreditCard className="h-14 w-14 text-blue-400" />,
+      icon: <IconCreditCard className="h-14 w-14 text-blue-400" />,
     },
     {
       title: "Healthcare",
-      icon: <Stethoscope className="h-14 w-14 text-red-400" />,
+      icon: <IconStethoscope className="h-14 w-14 text-red-400" />,
     },
     {
       title: "Enterprise B2B",
-      icon: <Building2 className="h-14 w-14 text-gray-600" />,
+      icon: <IconBuilding className="h-14 w-14 text-gray-600" />,
     },
     {
       title: "Startup Growth",
-      icon: <Rocket className="h-14 w-14 text-orange-500" />,
+      icon: <IconRocket className="h-14 w-14 text-orange-500" />,
     },
   ];
 
@@ -564,7 +558,7 @@ const FAQ = () => {
                 <div
                   className={`transition-transform duration-300 ${openIdx === idx ? "rotate-180" : ""}`}
                 >
-                  <ChevronDown className="h-7 w-7 text-gray-400" />
+                  <IconChevronDown className="h-7 w-7 text-gray-400" />
                 </div>
               </button>
               <AnimatePresence>

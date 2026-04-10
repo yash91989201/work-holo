@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 export function HeroSection() {
   return (
-    <section className="relative flex min-h-[100dvh] items-center justify-center overflow-hidden pt-32 pb-16 md:pt-48 md:pb-24">
+    <section className="relative flex items-center justify-center">
       {/* Layer 1: Background Image & Gradients (z-0) */}
       <div className="pointer-events-none absolute inset-0 z-0">
         <img

@@ -1,28 +1,22 @@
+import {
+  IconArrowRight,
+  IconBuilding,
+  IconChevronDown,
+  IconChevronUp,
+  IconCircleCheck,
+  IconCreditCard,
+  IconDeviceDesktop,
+  IconGlobe,
+  IconHeartbeat,
+  IconMail,
+  IconMapPin,
+  IconMessage2,
+  IconPhone,
+  IconRocket,
+  IconShoppingCart,
+} from "@tabler/icons-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
-import {
-  ArrowRight,
-  Building2,
-  CheckCircle2,
-  ChevronDown,
-  ChevronUp,
-  CreditCard,
-  Globe,
-  HeartPulse,
-  Mail,
-  MapPin,
-  MessageSquare,
-  Monitor,
-  Phone,
-  Rocket,
-  ShoppingCart,
-} from "lucide-react";
 
 // --- Components ---
 
@@ -85,12 +79,15 @@ const Hero = () => {
 const WhatIsSection = () => {
   const cards = [
     {
-      icon: <Mail className="text-brand-purple" />,
+      icon: <IconMail className="text-brand-purple" />,
       title: "Lifecycle Campaigns",
     },
-    { icon: <Rocket className="text-brand-orange" />, title: "Automation" },
-    { icon: <Globe className="text-blue-500" />, title: "Segmentation" },
-    { icon: <Monitor className="text-green-500" />, title: "Performance" },
+    { icon: <IconRocket className="text-brand-orange" />, title: "Automation" },
+    { icon: <IconGlobe className="text-blue-500" />, title: "Segmentation" },
+    {
+      icon: <IconDeviceDesktop className="text-green-500" />,
+      title: "Performance",
+    },
   ];
 
   return (
@@ -196,7 +193,7 @@ const BenefitsSection = () => {
                 className="flex items-center gap-3 font-medium text-gray-700"
                 key={idx}
               >
-                <CheckCircle2 className="text-brand-orange" size={20} />
+                <IconCircleCheck className="text-brand-orange" size={20} />
                 {benefit}
               </li>
             ))}
@@ -308,7 +305,7 @@ const ProcessSection = () => {
               </div>
               {idx < steps.length - 1 && (
                 <div className="hidden md:block">
-                  <ArrowRight
+                  <IconArrowRight
                     className="text-blue-200 transition-colors group-hover:text-blue-500"
                     size={20}
                   />
@@ -362,12 +359,12 @@ const WhyChooseSection = () => {
 
 const IndustriesSection = () => {
   const industries = [
-    { icon: <Monitor size={32} />, title: "SaaS & Subscriptions" },
-    { icon: <ShoppingCart size={32} />, title: "eCommerce" },
-    { icon: <CreditCard size={32} />, title: "Financial Services" },
-    { icon: <HeartPulse size={32} />, title: "Healthcare" },
-    { icon: <Building2 size={32} />, title: "B2B Enterprises" },
-    { icon: <Rocket size={32} />, title: "Startup Growth" },
+    { icon: <IconDeviceDesktop size={32} />, title: "SaaS & Subscriptions" },
+    { icon: <IconShoppingCart size={32} />, title: "eCommerce" },
+    { icon: <IconCreditCard size={32} />, title: "Financial Services" },
+    { icon: <IconHeartbeat size={32} />, title: "Healthcare" },
+    { icon: <IconBuilding size={32} />, title: "B2B Enterprises" },
+    { icon: <IconRocket size={32} />, title: "Startup Growth" },
   ];
 
   return (
@@ -518,9 +515,9 @@ const FAQSection = () => {
                   {faq.q}
                 </span>
                 {openIdx === idx ? (
-                  <ChevronUp size={20} />
+                  <IconChevronUp size={20} />
                 ) : (
-                  <ChevronDown size={20} />
+                  <IconChevronDown size={20} />
                 )}
               </button>
               <AnimatePresence>
@@ -573,7 +570,7 @@ const FloatingWidgets = () => {
         className="flex h-12 w-12 transform items-center justify-center rounded-full bg-blue-500 text-white shadow-2xl transition-all hover:scale-110 hover:bg-blue-600"
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       >
-        <ChevronUp size={24} />
+        <IconChevronUp size={24} />
       </button>
 
       {/* WhatsApp */}
@@ -597,7 +594,7 @@ const FloatingWidgets = () => {
           <div className="absolute right-4 -bottom-1 h-2 w-2 rotate-45 bg-white" />
         </div>
         <button className="flex h-16 w-16 items-center justify-center rounded-full bg-black text-white shadow-2xl transition-transform hover:scale-110">
-          <MessageSquare size={28} />
+          <IconMessage2 size={28} />
           <div className="absolute top-0 right-0 flex h-5 w-5 items-center justify-center rounded-full border-2 border-white bg-red-500 font-bold text-[10px]">
             1
           </div>
@@ -646,11 +643,11 @@ const LatestJobsSection = () => {
               </div>
               <h3 className="font-bold text-slate-800 text-xl">{job.title}</h3>
               <div className="flex items-center gap-2 text-gray-500 text-sm">
-                <MapPin size={14} /> {job.location}
+                <IconMapPin size={14} /> {job.location}
               </div>
               <button className="group mt-4 flex items-center gap-2 font-bold text-brand-purple text-sm">
                 Apply Now{" "}
-                <ArrowRight
+                <IconArrowRight
                   className="transition-transform group-hover:translate-x-1"
                   size={16}
                 />
@@ -691,7 +688,7 @@ const JointTalentSection = () => {
                   className="flex h-32 w-32 items-center justify-center rounded-2xl border border-white/20 bg-white/10 backdrop-blur-sm"
                   key={i}
                 >
-                  <Globe className="text-white/40" size={48} />
+                  <IconGlobe className="text-white/40" size={48} />
                 </div>
               ))}
             </div>
@@ -780,7 +777,7 @@ const ContactSection = () => {
           <div className="space-y-8">
             <div className="flex items-start gap-4">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-slate-100 bg-white text-brand-purple shadow-sm">
-                <Mail size={24} />
+                <IconMail size={24} />
               </div>
               <div>
                 <h4 className="font-bold text-slate-800">Email Us</h4>
@@ -789,7 +786,7 @@ const ContactSection = () => {
             </div>
             <div className="flex items-start gap-4">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-slate-100 bg-white text-brand-purple shadow-sm">
-                <Phone size={24} />
+                <IconPhone size={24} />
               </div>
               <div>
                 <h4 className="font-bold text-slate-800">Call Us</h4>
@@ -798,7 +795,7 @@ const ContactSection = () => {
             </div>
             <div className="flex items-start gap-4">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-slate-100 bg-white text-brand-purple shadow-sm">
-                <MapPin size={24} />
+                <IconMapPin size={24} />
               </div>
               <div>
                 <h4 className="font-bold text-slate-800">Our Office</h4>
