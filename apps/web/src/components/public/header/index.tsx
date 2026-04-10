@@ -42,16 +42,21 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="container mx-auto flex h-14 items-center px-4 md:px-6">
         <div className="mr-4 hidden md:flex">
-          <Link className="mr-6 flex items-center space-x-2" to="/">
+          <Link className="mr-6 flex items-center gap-2" to="/">
             <Image
               alt="Work Holo logo"
               height={32}
               src="/logo.webp"
               width={48}
             />
-            <h2 className="hidden font-bold text-xl sm:inline-block xl:text-2xl">
-              Work Holo
-            </h2>
+            <div className="hidden flex-col justify-center sm:flex">
+              <h2 className="font-bold font-michroma text-xl leading-none xl:text-2xl">
+                WORKHOLO
+              </h2>
+              <span className="mt-1 text-[0.55rem] text-muted-foreground tracking-[0.32em]">
+                Custom Software Solution
+              </span>
+            </div>
           </Link>
           <DesktopNav />
         </div>
@@ -59,14 +64,21 @@ export function Header() {
         <div className="flex flex-1 items-center justify-between md:justify-end">
           <div className="flex items-center md:hidden">
             <MobileNav />
-            <Link className="ml-4 flex items-center space-x-2" to="/">
+            <Link className="ml-4 flex items-center gap-2" to="/">
               <Image
                 alt="Work Holo logo"
                 height={24}
                 src="/logo.webp"
                 width={32}
               />
-              <span className="font-bold">Work Holo</span>
+              <div className="flex flex-col justify-center">
+                <span className="font-michroma font-semibold leading-none">
+                  WORKHOLO
+                </span>
+                <span className="mt-0.5 text-[0.45rem] text-muted-foreground tracking-[0.22em]">
+                  Custom Software Solution
+                </span>
+              </div>
             </Link>
           </div>
 
@@ -94,7 +106,7 @@ function DesktopNav() {
           <NavigationMenuItem key={nav.title}>
             {nav.hasMegaMenu ? (
               <>
-                <NavigationMenuTrigger className="bg-transparent transition-colors hover:text-primary">
+                <NavigationMenuTrigger className="bg-transparent font-semibold transition-colors hover:text-primary">
                   {nav.title}
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
@@ -270,7 +282,10 @@ function DesktopNav() {
             ) : (
               <Link to={(ROUTES[nav.title] ?? "/") as "/"}>
                 <NavigationMenuLink
-                  className={cn(navigationMenuTriggerStyle(), "bg-transparent")}
+                  className={cn(
+                    navigationMenuTriggerStyle(),
+                    "bg-transparent font-semibold"
+                  )}
                 >
                   {nav.title}
                 </NavigationMenuLink>
@@ -298,7 +313,14 @@ function MobileNav() {
       >
         <div className="flex items-center gap-2 border-b p-6">
           <Image alt="Work Holo logo" height={32} src="/logo.webp" width={48} />
-          <span className="font-black text-lg">WORKHOLO</span>
+          <div className="flex flex-col justify-center">
+            <span className="font-michroma font-semibold text-lg leading-none">
+              WORKHOLO
+            </span>
+            <span className="mt-1 text-[0.6rem] text-muted-foreground tracking-[0.28em]">
+              Custom Software Solution
+            </span>
+          </div>
         </div>
 
         <div className="flex-1 overflow-y-auto">
@@ -310,7 +332,7 @@ function MobileNav() {
                   key={nav.title}
                   value={`item-${index}`}
                 >
-                  <AccordionTrigger className="px-4 py-4 font-bold text-[16px] hover:no-underline">
+                  <AccordionTrigger className="px-4 py-4 font-semibold text-[16px] hover:no-underline">
                     {nav.title}
                   </AccordionTrigger>
                   <AccordionContent className="[&_a]:no-underline">
@@ -364,7 +386,7 @@ function MobileNav() {
                 <div className="border-b px-4" key={nav.title}>
                   <SheetClose asChild>
                     <Link
-                      className="flex w-full items-center py-4 font-bold text-[16px] transition-colors hover:text-primary"
+                      className="flex w-full items-center py-4 font-semibold text-[16px] transition-colors hover:text-primary"
                       to={(ROUTES[nav.title] ?? "/") as "/"}
                     >
                       {nav.title}

@@ -3,14 +3,16 @@ import { motion } from "framer-motion";
 
 export function HeroSection() {
   return (
-    <section className="relative flex items-center justify-center">
+    <section className="relative flex min-h-[calc(100svh-4.5rem)] items-center justify-center">
       {/* Layer 1: Background Image & Gradients (z-0) */}
       <div className="pointer-events-none absolute inset-0 z-0">
         <img
           alt="Background"
           className="h-full w-full object-cover opacity-20"
+          height={1080}
           referrerPolicy="no-referrer"
           src="https://img.freepik.com/free-photo/connecting-dots-background-network-communication-design_53876-160207.jpg"
+          width={1920}
         />
         <div className="absolute top-1/4 left-1/4 h-[500px] w-[500px] animate-pulse rounded-full bg-primary/20 blur-[120px]" />
         <div className="absolute right-1/4 bottom-1/4 h-[600px] w-[600px] animate-pulse rounded-full bg-blue-600/10 blur-[150px] delay-1000" />
@@ -48,8 +50,10 @@ export function HeroSection() {
             <img
               alt="Floating 1"
               className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+              height={800}
               referrerPolicy="no-referrer"
               src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=800"
+              width={800}
             />
           </motion.div>
 
@@ -81,8 +85,10 @@ export function HeroSection() {
             <img
               alt="Floating 2"
               className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+              height={600}
               referrerPolicy="no-referrer"
               src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=600"
+              width={600}
             />
           </motion.div>
 
@@ -114,8 +120,10 @@ export function HeroSection() {
             <img
               alt="Floating 3"
               className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+              height={800}
               referrerPolicy="no-referrer"
               src="https://images.unsplash.com/photo-1587614382346-4ec70e388b28?q=80&w=800"
+              width={600}
             />
           </motion.div>
 
@@ -145,8 +153,10 @@ export function HeroSection() {
             <img
               alt="Floating 4"
               className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+              height={800}
               referrerPolicy="no-referrer"
               src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800"
+              width={800}
             />
           </motion.div>
 
@@ -178,36 +188,32 @@ export function HeroSection() {
             <img
               alt="Floating 5"
               className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+              height={600}
               referrerPolicy="no-referrer"
               src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?q=80&w=600"
+              width={600}
             />
           </motion.div>
         </div>
       </div>
 
       {/* Layer 3: Main Content (z-20) */}
-      <div className="container relative z-20 mx-auto mt-14 px-6 lg:px-12">
+      <div className="container relative z-20 mx-auto px-6 lg:px-12">
         <div className="flex flex-col items-center text-center">
           <div className="relative w-full max-w-6xl">
             <motion.div
               animate={{
                 opacity: 1,
-                y:
-                  typeof window !== "undefined" && window.innerWidth < 768
-                    ? -70
-                    : -50,
+                y: 0,
               }}
-              className="font-black font-display text-[9vw] uppercase leading-[0.85] tracking-tighter md:text-[9vw] lg:text-[9vw]"
+              className="font-black font-display text-[clamp(3.25rem,6vw,6rem)] uppercase leading-[0.85] tracking-tighter"
               initial={{ opacity: 0, y: 30 }}
               transition={{ duration: 1 }}
             >
-              <span className="z-50 bg-gradient-to-r from-blue-300 to-purple-400 bg-clip-text text-transparent">
+              <span className="z-50 mb-4 block bg-gradient-to-r from-blue-300 to-purple-400 bg-clip-text text-transparent md:mb-6">
                 WorkHolo
-              </span>{" "}
-              <br />
-              <span className="text-foreground/10 outline-text">
-                Build. Customize. Sell.
               </span>
+              <span className="outline-text">Build. Customize. Sell.</span>
             </motion.div>
           </div>
 
@@ -223,10 +229,16 @@ export function HeroSection() {
             </p>
 
             <div className="mb-16 flex flex-wrap justify-center gap-6">
-              <button className="rounded-full bg-primary px-10 py-5 font-bold text-primary-foreground text-sm uppercase tracking-widest shadow-[0_0_30px_rgba(var(--primary),0.4)] transition-all duration-300 hover:bg-foreground hover:text-background">
+              <button
+                className="rounded-full bg-primary px-10 py-5 font-bold text-primary-foreground text-sm uppercase tracking-widest shadow-[0_0_30px_rgba(var(--primary),0.4)] transition-all duration-300 hover:bg-foreground hover:text-background"
+                type="button"
+              >
                 Explore Solutions
               </button>
-              <button className="rounded-full border border-foreground/20 px-10 py-5 font-bold text-foreground text-sm uppercase tracking-widest transition-all duration-300 hover:bg-foreground hover:text-background">
+              <button
+                className="rounded-full border border-foreground/20 px-10 py-5 font-bold text-foreground text-sm uppercase tracking-widest transition-all duration-300 hover:bg-foreground hover:text-background"
+                type="button"
+              >
                 Contact Us
               </button>
             </div>
@@ -243,12 +255,12 @@ export function HeroSection() {
       </div>
       <style>{`
         .outline-text {
-          -webkit-text-stroke: 1px rgba(var(--foreground), 0.2);
-          color: transparent;
+          -webkit-text-stroke: 1px color-mix(in oklab, var(--color-foreground) 18%, transparent);
+          color: color-mix(in oklab, var(--color-foreground) 10%, transparent);
         }
         @media (min-width: 768px) {
           .outline-text {
-            -webkit-text-stroke: 2px rgba(var(--foreground), 0.2);
+            -webkit-text-stroke: 2px color-mix(in oklab, var(--color-foreground) 22%, transparent);
           }
         }
       `}</style>

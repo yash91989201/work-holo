@@ -1,4 +1,5 @@
 import {
+  IconArrowRight,
   IconBellFilled,
   IconBriefcase,
   IconLayoutDashboardFilled,
@@ -10,10 +11,11 @@ import {
   IconUserFilled,
 } from "@tabler/icons-react";
 import { Link, useNavigate, useRouter } from "@tanstack/react-router";
+import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -44,9 +46,51 @@ export function AccountDropdown() {
 
   if (!session) {
     return (
-      <Button asChild variant="outline">
-        <Link to="/login">Log In</Link>
-      </Button>
+      <motion.div
+        animate="rest"
+        initial="rest"
+        whileHover="hover"
+        whileTap="tap"
+      >
+        <Link
+          className={`${buttonVariants({ variant: "default" })} group relative gap-2 overflow-hidden rounded-full px-5 font-bold shadow-lg transition-shadow hover:shadow-xl`}
+          to="/login"
+        >
+          <motion.span
+            aria-hidden="true"
+            className="absolute inset-y-0 left-[-20%] w-12 bg-white/25 blur-xl"
+            transition={{ duration: 0.7, ease: "easeInOut" }}
+            variants={{
+              rest: { opacity: 0, x: "-120%" },
+              hover: { opacity: 1, x: "260%" },
+              tap: { opacity: 0.8, x: "180%" },
+            }}
+          />
+          <span className="relative flex items-center gap-2">
+            <motion.span
+              transition={{ duration: 0.18, ease: "easeOut" }}
+              variants={{
+                rest: { scale: 1 },
+                hover: { scale: 1.03 },
+                tap: { scale: 0.98 },
+              }}
+            >
+              Launch your workspace
+            </motion.span>
+            <motion.span
+              className="inline-flex"
+              transition={{ type: "spring", stiffness: 420, damping: 24 }}
+              variants={{
+                rest: { x: 0, rotate: 0 },
+                hover: { x: 4, rotate: -6 },
+                tap: { x: 2, scale: 0.96 },
+              }}
+            >
+              <IconArrowRight className="h-4 w-4" />
+            </motion.span>
+          </span>
+        </Link>
+      </motion.div>
     );
   }
 
