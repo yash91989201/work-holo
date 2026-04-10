@@ -1,11 +1,23 @@
-import { Clock, MapPin, Shield, Star, Truck, Users } from "@tabler/icons-react";
+import {
+  IconClock,
+  IconMapPin,
+  IconShield,
+  IconStar,
+  IconTruck,
+  IconUsers,
+} from "@tabler/icons-react";
+import { createFileRoute } from "@tanstack/react-router";
 import {
   ProductCta,
   ProductFeatures,
   ProductHero,
 } from "@/components/public/products/on-demand";
 
-export default function FoodDeliveryApp() {
+export const Route = createFileRoute("/(public)/products/food-delivery-app")({
+  component: RouteComponent,
+});
+
+export default function RouteComponent() {
   const heroData = {
     title: "Revolutionary Food Delivery App",
     description:
@@ -17,32 +29,32 @@ export default function FoodDeliveryApp() {
 
   const features = [
     {
-      icon: Truck,
+      icon: IconTruck,
       title: "Fast Delivery",
       description: "Get your food delivered in under 30 minutes.",
     },
     {
-      icon: Clock,
+      icon: IconClock,
       title: "Real-time Tracking",
       description: "Track your order in real-time.",
     },
     {
-      icon: MapPin,
+      icon: IconMapPin,
       title: "Location Services",
       description: "Find restaurants near you.",
     },
     {
-      icon: Star,
+      icon: IconStar,
       title: "Ratings & Reviews",
       description: "Rate your experience.",
     },
     {
-      icon: Shield,
+      icon: IconShield,
       title: "Secure Payments",
       description: "Safe and secure transactions.",
     },
     {
-      icon: Users,
+      icon: IconUsers,
       title: "Driver Network",
       description: "Large network of drivers.",
     },

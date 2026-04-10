@@ -1,18 +1,25 @@
 import {
-  Clock,
-  MapPin,
-  Shield,
-  ShoppingCart,
-  Star,
-  Users,
+  IconClock,
+  IconMapPin,
+  IconShield,
+  IconShoppingCart,
+  IconStar,
+  IconUsers,
 } from "@tabler/icons-react";
+import { createFileRoute } from "@tanstack/react-router";
 import {
   ProductCta,
   ProductFeatures,
   ProductHero,
 } from "@/components/public/products/on-demand";
 
-export default function GroceryDeliveryApp() {
+export const Route = createFileRoute("/(public)/products/grocery-delivery-app")(
+  {
+    component: RouteComponent,
+  }
+);
+
+export default function RouteComponent() {
   const heroData = {
     title: "Grocery Delivery App Development",
     description:
@@ -24,32 +31,32 @@ export default function GroceryDeliveryApp() {
 
   const features = [
     {
-      icon: ShoppingCart,
+      icon: IconShoppingCart,
       title: "Easy Ordering",
       description: "Browse and order groceries with ease.",
     },
     {
-      icon: Clock,
+      icon: IconClock,
       title: "Scheduled Delivery",
       description: "Choose your preferred delivery time.",
     },
     {
-      icon: MapPin,
+      icon: IconMapPin,
       title: "Location Tracking",
       description: "Real-time delivery tracking.",
     },
     {
-      icon: Star,
+      icon: IconStar,
       title: "Quality Assurance",
       description: "Fresh and quality products.",
     },
     {
-      icon: Shield,
+      icon: IconShield,
       title: "Secure Payments",
       description: "Multiple secure payment options.",
     },
     {
-      icon: Users,
+      icon: IconUsers,
       title: "Vendor Network",
       description: "Wide range of grocery vendors.",
     },

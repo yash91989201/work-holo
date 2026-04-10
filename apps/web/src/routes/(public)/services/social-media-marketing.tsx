@@ -1,19 +1,19 @@
-import { AnimatePresence, motion } from "framer-motion";
 import {
-  ArrowRight,
-  BarChart3,
-  Briefcase,
-  CheckCircle2,
-  CreditCard,
-  HeartPulse,
-  Minus,
-  Monitor,
-  Plus,
-  Rocket,
-  ShoppingCart,
-  Users,
-  Zap,
-} from "lucide-react";
+  IconArrowRight,
+  IconBolt,
+  IconBriefcase,
+  IconChartBar,
+  IconCircleCheck,
+  IconCreditCard,
+  IconDeviceDesktop,
+  IconHeartbeat,
+  IconMinus,
+  IconPlus,
+  IconRocket,
+  IconShoppingCart,
+  IconUsers,
+} from "@tabler/icons-react";
+import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 
 // --- Components ---
@@ -92,16 +92,19 @@ const WhatIsSocial = () => (
       <div className="grid grid-cols-2 gap-6">
         {[
           {
-            icon: <Monitor className="text-blue-400" />,
+            icon: <IconDeviceDesktop className="text-blue-400" />,
             title: "Platform Strategy",
           },
-          { icon: <Zap className="text-pink-400" />, title: "Paid Social" },
           {
-            icon: <Users className="text-purple-400" />,
+            icon: <IconBolt className="text-pink-400" />,
+            title: "Paid Social",
+          },
+          {
+            icon: <IconUsers className="text-purple-400" />,
             title: "Community Growth",
           },
           {
-            icon: <BarChart3 className="text-green-400" />,
+            icon: <IconChartBar className="text-green-400" />,
             title: "Analytics",
           },
         ].map((item, i) => (
@@ -175,7 +178,10 @@ const Benefits = () => (
               className="flex items-center gap-4 text-gray-300 text-lg"
               key={i}
             >
-              <CheckCircle2 className="flex-shrink-0 text-accent" size={24} />
+              <IconCircleCheck
+                className="flex-shrink-0 text-accent"
+                size={24}
+              />
               {text}
             </li>
           ))}
@@ -278,7 +284,7 @@ const Framework = () => (
                 {step.id}
               </div>
             </div>
-            {i < 5 && <ArrowRight className="text-gray-600 lg:hidden" />}
+            {i < 5 && <IconArrowRight className="text-gray-600 lg:hidden" />}
           </div>
         ))}
       </div>
@@ -332,23 +338,29 @@ const Industries = () => (
     <div className="container-max grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
       {[
         {
-          icon: <Monitor className="text-blue-400" />,
+          icon: <IconDeviceDesktop className="text-blue-400" />,
           title: "Technology & SaaS",
         },
         {
-          icon: <CreditCard className="text-green-400" />,
+          icon: <IconCreditCard className="text-green-400" />,
           title: "Financial Services",
         },
-        { icon: <HeartPulse className="text-red-400" />, title: "Healthcare" },
         {
-          icon: <ShoppingCart className="text-orange-400" />,
+          icon: <IconHeartbeat className="text-red-400" />,
+          title: "Healthcare",
+        },
+        {
+          icon: <IconShoppingCart className="text-orange-400" />,
           title: "eCommerce",
         },
         {
-          icon: <Briefcase className="text-purple-400" />,
+          icon: <IconBriefcase className="text-purple-400" />,
           title: "Enterprise B2B",
         },
-        { icon: <Rocket className="text-pink-400" />, title: "Startup Growth" },
+        {
+          icon: <IconRocket className="text-pink-400" />,
+          title: "Startup Growth",
+        },
       ].map((industry, i) => (
         <motion.div
           className="glass-card group flex flex-col items-center gap-6 p-12 text-center transition-all hover:bg-white/10"
@@ -480,9 +492,9 @@ const FAQ = () => {
             >
               {faq.q}
               {openIndex === i ? (
-                <Minus className="text-accent" size={20} />
+                <IconMinus className="text-accent" size={20} />
               ) : (
-                <Plus className="text-accent" size={20} />
+                <IconPlus className="text-accent" size={20} />
               )}
             </button>
             <AnimatePresence>

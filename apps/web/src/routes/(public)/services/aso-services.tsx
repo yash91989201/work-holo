@@ -1,20 +1,20 @@
-import { AnimatePresence, motion } from "framer-motion";
 import {
-  ArrowRight,
-  Building2,
-  CheckCircle2,
-  ChevronDown,
-  CreditCard,
-  HeartPulse,
-  Layers,
-  MessageSquare,
-  Monitor,
-  Search,
-  ShoppingBag,
-  Smartphone,
-  Target,
-  Truck,
-} from "lucide-react";
+  IconArrowRight,
+  IconBuilding,
+  IconChevronDown,
+  IconCircleCheck,
+  IconCreditCard,
+  IconDeviceDesktop,
+  IconDeviceMobile,
+  IconHeartbeat,
+  IconMessage2,
+  IconSearch,
+  IconShoppingBag,
+  IconTarget,
+  IconTruck,
+  IconStack2 as Layers,
+} from "@tabler/icons-react";
+import { AnimatePresence, motion } from "framer-motion";
 import React, { useState } from "react";
 
 // --- Components ---
@@ -50,16 +50,19 @@ const Hero = () => {
 
 const WhatIsASO = () => {
   const services = [
-    { icon: <Search className="text-blue-500" />, title: "Keyword Strategy" },
+    {
+      icon: <IconSearch className="text-blue-500" />,
+      title: "Keyword Strategy",
+    },
     {
       icon: <Layers className="text-purple-500" />,
       title: "Listing Optimization",
     },
     {
-      icon: <Smartphone className="text-orange-500" />,
+      icon: <IconDeviceMobile className="text-orange-500" />,
       title: "Visual Assets",
     },
-    { icon: <Target className="text-green-500" />, title: "A/B Testing" },
+    { icon: <IconTarget className="text-green-500" />, title: "A/B Testing" },
   ];
 
   return (
@@ -152,7 +155,7 @@ const BusinessBenefits = () => {
           <div className="flex flex-col gap-6">
             {benefits.map((b, i) => (
               <div className="flex items-start gap-4" key={i}>
-                <CheckCircle2
+                <IconCircleCheck
                   className="mt-1 shrink-0 text-orange-500"
                   size={20}
                 />
@@ -264,7 +267,7 @@ const Framework = () => {
               </div>
               {i < steps.length - 1 && (
                 <div className="hidden text-gray-200 lg:block">
-                  <ArrowRight size={24} />
+                  <IconArrowRight size={24} />
                 </div>
               )}
             </React.Fragment>
@@ -310,12 +313,12 @@ const WhyChoose = () => {
 
 const Industries = () => {
   const industries = [
-    { icon: <Monitor />, title: "SaaS & Mobile Products" },
-    { icon: <CreditCard />, title: "FinTech Applications" },
-    { icon: <ShoppingBag />, title: "eCommerce Apps" },
-    { icon: <HeartPulse />, title: "Healthcare & Wellness" },
-    { icon: <Truck />, title: "On-Demand Platforms" },
-    { icon: <Building2 />, title: "Enterprise Mobile" },
+    { icon: <IconDeviceDesktop />, title: "SaaS & Mobile Products" },
+    { icon: <IconCreditCard />, title: "FinTech Applications" },
+    { icon: <IconShoppingBag />, title: "eCommerce Apps" },
+    { icon: <IconHeartbeat />, title: "Healthcare & Wellness" },
+    { icon: <IconTruck />, title: "On-Demand Platforms" },
+    { icon: <IconBuilding />, title: "Enterprise Mobile" },
   ];
 
   return (
@@ -506,7 +509,7 @@ const LatestJobs = () => {
                 </div>
               </div>
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#F8FAFC] text-[#7B2CBF] transition-all group-hover:bg-[#7B2CBF] group-hover:text-white">
-                <ArrowRight size={20} />
+                <IconArrowRight size={20} />
               </div>
             </motion.div>
           ))}
@@ -585,7 +588,7 @@ const FAQ = () => {
                 <span className="font-bold text-[#050A18] text-lg">
                   {faq.q}
                 </span>
-                <ChevronDown
+                <IconChevronDown
                   className={`transition-transform duration-300 ${openIndex === i ? "rotate-180" : ""}`}
                 />
               </button>
@@ -646,13 +649,13 @@ export default function ASOServices() {
           className="rounded-full bg-green-500 p-4 text-white shadow-2xl shadow-green-500/40"
           whileHover={{ scale: 1.1 }}
         >
-          <MessageSquare size={28} />
+          <IconMessage2 size={28} />
         </motion.button>
         <motion.button
           className="rounded-full bg-blue-500 p-4 text-white shadow-2xl shadow-blue-500/40"
           whileHover={{ scale: 1.1 }}
         >
-          <ArrowRight className="-rotate-90" size={28} />
+          <IconArrowRight className="-rotate-90" size={28} />
         </motion.button>
       </div>
     </div>

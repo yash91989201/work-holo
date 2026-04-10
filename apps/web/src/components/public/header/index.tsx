@@ -33,7 +33,9 @@ import {
 import { cn } from "@/lib/utils";
 import { AccountDropdown } from "./account-dropdown";
 import { MyOrgButton } from "./my-org-button";
-import { createPath, NAV_DATA, TOP_BAR } from "./nav-data";
+import { createPath, NAV_DATA, ROUTES, TOP_BAR } from "./nav-data";
+
+type NavLink = { label: string; desc: string };
 
 export function Header() {
   return (
@@ -45,7 +47,7 @@ export function Header() {
               alt="Work Holo logo"
               height={32}
               src="/logo.webp"
-              width={32}
+              width={48}
             />
             <h2 className="hidden font-bold text-xl sm:inline-block xl:text-2xl">
               Work Holo
@@ -62,7 +64,7 @@ export function Header() {
                 alt="Work Holo logo"
                 height={24}
                 src="/logo.webp"
-                width={24}
+                width={32}
               />
               <span className="font-bold">Work Holo</span>
             </Link>
@@ -148,10 +150,26 @@ function DesktopNav() {
                       {nav.title === "Home" ? (
                         <div className="space-y-6">
                           <h4 className="font-black text-[12px] text-muted-foreground uppercase tracking-widest">
-                            {nav.centerContent?.title}
+                            {
+                              (
+                                nav as {
+                                  centerContent?: {
+                                    title: string;
+                                    links: NavLink[];
+                                  };
+                                }
+                              ).centerContent?.title
+                            }
                           </h4>
                           <div className="grid grid-cols-2 gap-x-8 gap-y-6">
-                            {nav.centerContent?.links.map((link) => (
+                            {(
+                              nav as {
+                                centerContent?: {
+                                  title: string;
+                                  links: NavLink[];
+                                };
+                              }
+                            ).centerContent?.links.map((link: NavLink) => (
                               <Link
                                 className="group block"
                                 key={link.label}
@@ -250,9 +268,7 @@ function DesktopNav() {
                 </NavigationMenuContent>
               </>
             ) : (
-              <Link
-                to={nav.title === "Home" ? "/" : `/${nav.title.toLowerCase()}`}
-              >
+              <Link to={(ROUTES[nav.title] ?? "/") as "/"}>
                 <NavigationMenuLink
                   className={cn(navigationMenuTriggerStyle(), "bg-transparent")}
                 >
@@ -281,40 +297,47 @@ function MobileNav() {
         side="left"
       >
         <div className="flex items-center gap-2 border-b p-6">
-          <Image alt="Work Holo logo" height={32} src="/logo.webp" width={32} />
+          <Image alt="Work Holo logo" height={32} src="/logo.webp" width={48} />
           <span className="font-black text-lg">WORKHOLO</span>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-4 py-2">
-          <Accordion className="w-full" type="multiple">
+        <div className="flex-1 overflow-y-auto">
+          <Accordion className="rounded-none border-0" type="multiple">
             {NAV_DATA.map((nav, index) =>
               nav.hasMegaMenu ? (
                 <AccordionItem
-                  className="border-b-0"
+                  className=""
                   key={nav.title}
                   value={`item-${index}`}
                 >
-                  <AccordionTrigger className="py-4 font-bold text-[16px] hover:no-underline">
+                  <AccordionTrigger className="px-4 py-4 font-bold text-[16px] hover:no-underline">
                     {nav.title}
                   </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="space-y-4 rounded-xl bg-muted/50 p-4">
+                  <AccordionContent className="[&_a]:no-underline">
+                    <div className="space-y-4 pb-2">
                       {nav.items?.map((item) => (
                         <div className="space-y-2" key={item.id}>
                           <div className="flex items-center gap-3">
-                            <div className="rounded-md bg-background p-1.5 text-primary shadow-sm">
+                            <div className="rounded-md bg-muted p-1.5 text-primary">
                               <item.icon size={16} />
                             </div>
-                            <span className="font-bold text-[14px]">
+                            <span className="font-semibold text-[13px] text-muted-foreground uppercase tracking-wide">
                               {item.label}
                             </span>
                           </div>
-                          <div className="flex flex-col gap-2 pl-9">
+                          <div className="flex flex-col gap-1 pl-9">
                             {nav.title === "Home"
-                              ? nav.centerContent?.links.map((link) => (
+                              ? (
+                                  nav as {
+                                    centerContent?: {
+                                      title: string;
+                                      links: NavLink[];
+                                    };
+                                  }
+                                ).centerContent?.links.map((link: NavLink) => (
                                   <SheetClose asChild key={link.label}>
                                     <Link
-                                      className="text-[13px] text-muted-foreground transition-colors hover:text-primary"
+                                      className="py-1 text-[14px] text-foreground transition-colors hover:text-primary"
                                       to={createPath("home", link.label)}
                                     >
                                       {link.label}
@@ -324,7 +347,7 @@ function MobileNav() {
                               : item.links.map((link) => (
                                   <SheetClose asChild key={link.label}>
                                     <Link
-                                      className="text-[13px] text-muted-foreground transition-colors hover:text-primary"
+                                      className="py-1 text-[14px] text-foreground transition-colors hover:text-primary"
                                       to={createPath(nav.title, link.label)}
                                     >
                                       {link.label}
@@ -338,15 +361,11 @@ function MobileNav() {
                   </AccordionContent>
                 </AccordionItem>
               ) : (
-                <div className="py-4" key={nav.title}>
+                <div className="border-b px-4" key={nav.title}>
                   <SheetClose asChild>
                     <Link
-                      className="block w-full font-bold text-[16px]"
-                      to={
-                        nav.title === "Home"
-                          ? "/"
-                          : `/${nav.title.toLowerCase()}`
-                      }
+                      className="flex w-full items-center py-4 font-bold text-[16px] transition-colors hover:text-primary"
+                      to={(ROUTES[nav.title] ?? "/") as "/"}
                     >
                       {nav.title}
                     </Link>

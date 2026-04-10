@@ -37,7 +37,7 @@ const features = [
       "Faster time-to-market through efficient tooling, over-the-air updates, and production-ready release practices.",
     icon: IconBrandReactNative,
   },
-] as const;
+];
 
 export const Route = createFileRoute(
   "/(public)/services/react-native-app-development"

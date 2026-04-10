@@ -1,3 +1,11 @@
+import {
+  IconBrandGithub,
+  IconBrandNextjs,
+  IconBrandReact,
+  IconBrandTailwind,
+  IconBrandTypescript,
+  IconBrandVercel,
+} from "@tabler/icons-react";
 import { SectionWrapper } from "./section-wrapper";
 
 const techs = [

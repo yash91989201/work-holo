@@ -50,15 +50,20 @@ import { Route as publicServicesAwsCloudServicesRouteImport } from './routes/(pu
 import { Route as publicServicesAppMaintenanceSupportRouteImport } from './routes/(public)/services/app-maintenance-support'
 import { Route as publicServicesAndroidAppDevelopmentRouteImport } from './routes/(public)/services/android-app-development'
 import { Route as publicServices360PhotographyServicesRouteImport } from './routes/(public)/services/360-photography-services'
-import { Route as publicResourcesWebDevelopersRouteImport } from './routes/(public)/resources/web-developers'
-import { Route as publicResourcesUiUxDesignersRouteImport } from './routes/(public)/resources/ui-ux-designers'
-import { Route as publicResourcesReactNativeAppDevelopersRouteImport } from './routes/(public)/resources/react-native-app-developers'
-import { Route as publicResourcesMobileAppDesignersRouteImport } from './routes/(public)/resources/mobile-app-designers'
-import { Route as publicResourcesIpadAppDevelopersRouteImport } from './routes/(public)/resources/ipad-app-developers'
-import { Route as publicResourcesIosAppDevelopersRouteImport } from './routes/(public)/resources/ios-app-developers'
-import { Route as publicResourcesFlutterAppDevelopersRouteImport } from './routes/(public)/resources/flutter-app-developers'
-import { Route as publicResourcesCustomSoftwareDevelopersRouteImport } from './routes/(public)/resources/custom-software-developers'
-import { Route as publicResourcesAndroidAppDevelopersRouteImport } from './routes/(public)/resources/android-app-developers'
+import { Route as publicProductsTicketBookingAppRouteImport } from './routes/(public)/products/ticket-booking-app'
+import { Route as publicProductsTaxiBookingAppRouteImport } from './routes/(public)/products/taxi-booking-app'
+import { Route as publicProductsRealEstateAppRouteImport } from './routes/(public)/products/real-estate-app'
+import { Route as publicProductsOnlineShoppingAppRouteImport } from './routes/(public)/products/online-shopping-app'
+import { Route as publicProductsMultiVendorMarketplaceRouteImport } from './routes/(public)/products/multi-vendor-marketplace'
+import { Route as publicProductsMilkDeliveryAppRouteImport } from './routes/(public)/products/milk-delivery-app'
+import { Route as publicProductsHotelBookingAppRouteImport } from './routes/(public)/products/hotel-booking-app'
+import { Route as publicProductsGroceryDeliveryAppRouteImport } from './routes/(public)/products/grocery-delivery-app'
+import { Route as publicProductsGamingAppRouteImport } from './routes/(public)/products/gaming-app'
+import { Route as publicProductsFoodDeliveryAppRouteImport } from './routes/(public)/products/food-delivery-app'
+import { Route as publicProductsEcommerceAppRouteImport } from './routes/(public)/products/ecommerce-app'
+import { Route as publicProductsELearningAppRouteImport } from './routes/(public)/products/e-learning-app'
+import { Route as publicProductsChefManagementAppRouteImport } from './routes/(public)/products/chef-management-app'
+import { Route as publicProductsCarWashAppRouteImport } from './routes/(public)/products/car-wash-app'
 import { Route as publicAboutVisionMissionRouteImport } from './routes/(public)/about/vision-mission'
 import { Route as publicAboutOurJourneyRouteImport } from './routes/(public)/about/our-journey'
 import { Route as publicAboutNasscomMembershipRouteImport } from './routes/(public)/about/nasscom-membership'
@@ -344,58 +349,87 @@ const publicServices360PhotographyServicesRoute =
     path: '/services/360-photography-services',
     getParentRoute: () => publicRouteRoute,
   } as any)
-const publicResourcesWebDevelopersRoute =
-  publicResourcesWebDevelopersRouteImport.update({
-    id: '/resources/web-developers',
-    path: '/resources/web-developers',
+const publicProductsTicketBookingAppRoute =
+  publicProductsTicketBookingAppRouteImport.update({
+    id: '/products/ticket-booking-app',
+    path: '/products/ticket-booking-app',
     getParentRoute: () => publicRouteRoute,
   } as any)
-const publicResourcesUiUxDesignersRoute =
-  publicResourcesUiUxDesignersRouteImport.update({
-    id: '/resources/ui-ux-designers',
-    path: '/resources/ui-ux-designers',
+const publicProductsTaxiBookingAppRoute =
+  publicProductsTaxiBookingAppRouteImport.update({
+    id: '/products/taxi-booking-app',
+    path: '/products/taxi-booking-app',
     getParentRoute: () => publicRouteRoute,
   } as any)
-const publicResourcesReactNativeAppDevelopersRoute =
-  publicResourcesReactNativeAppDevelopersRouteImport.update({
-    id: '/resources/react-native-app-developers',
-    path: '/resources/react-native-app-developers',
+const publicProductsRealEstateAppRoute =
+  publicProductsRealEstateAppRouteImport.update({
+    id: '/products/real-estate-app',
+    path: '/products/real-estate-app',
     getParentRoute: () => publicRouteRoute,
   } as any)
-const publicResourcesMobileAppDesignersRoute =
-  publicResourcesMobileAppDesignersRouteImport.update({
-    id: '/resources/mobile-app-designers',
-    path: '/resources/mobile-app-designers',
+const publicProductsOnlineShoppingAppRoute =
+  publicProductsOnlineShoppingAppRouteImport.update({
+    id: '/products/online-shopping-app',
+    path: '/products/online-shopping-app',
     getParentRoute: () => publicRouteRoute,
   } as any)
-const publicResourcesIpadAppDevelopersRoute =
-  publicResourcesIpadAppDevelopersRouteImport.update({
-    id: '/resources/ipad-app-developers',
-    path: '/resources/ipad-app-developers',
+const publicProductsMultiVendorMarketplaceRoute =
+  publicProductsMultiVendorMarketplaceRouteImport.update({
+    id: '/products/multi-vendor-marketplace',
+    path: '/products/multi-vendor-marketplace',
     getParentRoute: () => publicRouteRoute,
   } as any)
-const publicResourcesIosAppDevelopersRoute =
-  publicResourcesIosAppDevelopersRouteImport.update({
-    id: '/resources/ios-app-developers',
-    path: '/resources/ios-app-developers',
+const publicProductsMilkDeliveryAppRoute =
+  publicProductsMilkDeliveryAppRouteImport.update({
+    id: '/products/milk-delivery-app',
+    path: '/products/milk-delivery-app',
     getParentRoute: () => publicRouteRoute,
   } as any)
-const publicResourcesFlutterAppDevelopersRoute =
-  publicResourcesFlutterAppDevelopersRouteImport.update({
-    id: '/resources/flutter-app-developers',
-    path: '/resources/flutter-app-developers',
+const publicProductsHotelBookingAppRoute =
+  publicProductsHotelBookingAppRouteImport.update({
+    id: '/products/hotel-booking-app',
+    path: '/products/hotel-booking-app',
     getParentRoute: () => publicRouteRoute,
   } as any)
-const publicResourcesCustomSoftwareDevelopersRoute =
-  publicResourcesCustomSoftwareDevelopersRouteImport.update({
-    id: '/resources/custom-software-developers',
-    path: '/resources/custom-software-developers',
+const publicProductsGroceryDeliveryAppRoute =
+  publicProductsGroceryDeliveryAppRouteImport.update({
+    id: '/products/grocery-delivery-app',
+    path: '/products/grocery-delivery-app',
     getParentRoute: () => publicRouteRoute,
   } as any)
-const publicResourcesAndroidAppDevelopersRoute =
-  publicResourcesAndroidAppDevelopersRouteImport.update({
-    id: '/resources/android-app-developers',
-    path: '/resources/android-app-developers',
+const publicProductsGamingAppRoute = publicProductsGamingAppRouteImport.update({
+  id: '/products/gaming-app',
+  path: '/products/gaming-app',
+  getParentRoute: () => publicRouteRoute,
+} as any)
+const publicProductsFoodDeliveryAppRoute =
+  publicProductsFoodDeliveryAppRouteImport.update({
+    id: '/products/food-delivery-app',
+    path: '/products/food-delivery-app',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicProductsEcommerceAppRoute =
+  publicProductsEcommerceAppRouteImport.update({
+    id: '/products/ecommerce-app',
+    path: '/products/ecommerce-app',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicProductsELearningAppRoute =
+  publicProductsELearningAppRouteImport.update({
+    id: '/products/e-learning-app',
+    path: '/products/e-learning-app',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicProductsChefManagementAppRoute =
+  publicProductsChefManagementAppRouteImport.update({
+    id: '/products/chef-management-app',
+    path: '/products/chef-management-app',
+    getParentRoute: () => publicRouteRoute,
+  } as any)
+const publicProductsCarWashAppRoute =
+  publicProductsCarWashAppRouteImport.update({
+    id: '/products/car-wash-app',
+    path: '/products/car-wash-app',
     getParentRoute: () => publicRouteRoute,
   } as any)
 const publicAboutVisionMissionRoute =
@@ -716,15 +750,20 @@ export interface FileRoutesByFullPath {
   '/about/nasscom-membership': typeof publicAboutNasscomMembershipRoute
   '/about/our-journey': typeof publicAboutOurJourneyRoute
   '/about/vision-mission': typeof publicAboutVisionMissionRoute
-  '/resources/android-app-developers': typeof publicResourcesAndroidAppDevelopersRoute
-  '/resources/custom-software-developers': typeof publicResourcesCustomSoftwareDevelopersRoute
-  '/resources/flutter-app-developers': typeof publicResourcesFlutterAppDevelopersRoute
-  '/resources/ios-app-developers': typeof publicResourcesIosAppDevelopersRoute
-  '/resources/ipad-app-developers': typeof publicResourcesIpadAppDevelopersRoute
-  '/resources/mobile-app-designers': typeof publicResourcesMobileAppDesignersRoute
-  '/resources/react-native-app-developers': typeof publicResourcesReactNativeAppDevelopersRoute
-  '/resources/ui-ux-designers': typeof publicResourcesUiUxDesignersRoute
-  '/resources/web-developers': typeof publicResourcesWebDevelopersRoute
+  '/products/car-wash-app': typeof publicProductsCarWashAppRoute
+  '/products/chef-management-app': typeof publicProductsChefManagementAppRoute
+  '/products/e-learning-app': typeof publicProductsELearningAppRoute
+  '/products/ecommerce-app': typeof publicProductsEcommerceAppRoute
+  '/products/food-delivery-app': typeof publicProductsFoodDeliveryAppRoute
+  '/products/gaming-app': typeof publicProductsGamingAppRoute
+  '/products/grocery-delivery-app': typeof publicProductsGroceryDeliveryAppRoute
+  '/products/hotel-booking-app': typeof publicProductsHotelBookingAppRoute
+  '/products/milk-delivery-app': typeof publicProductsMilkDeliveryAppRoute
+  '/products/multi-vendor-marketplace': typeof publicProductsMultiVendorMarketplaceRoute
+  '/products/online-shopping-app': typeof publicProductsOnlineShoppingAppRoute
+  '/products/real-estate-app': typeof publicProductsRealEstateAppRoute
+  '/products/taxi-booking-app': typeof publicProductsTaxiBookingAppRoute
+  '/products/ticket-booking-app': typeof publicProductsTicketBookingAppRoute
   '/services/360-photography-services': typeof publicServices360PhotographyServicesRoute
   '/services/android-app-development': typeof publicServicesAndroidAppDevelopmentRoute
   '/services/app-maintenance-support': typeof publicServicesAppMaintenanceSupportRoute
@@ -813,15 +852,20 @@ export interface FileRoutesByTo {
   '/about/nasscom-membership': typeof publicAboutNasscomMembershipRoute
   '/about/our-journey': typeof publicAboutOurJourneyRoute
   '/about/vision-mission': typeof publicAboutVisionMissionRoute
-  '/resources/android-app-developers': typeof publicResourcesAndroidAppDevelopersRoute
-  '/resources/custom-software-developers': typeof publicResourcesCustomSoftwareDevelopersRoute
-  '/resources/flutter-app-developers': typeof publicResourcesFlutterAppDevelopersRoute
-  '/resources/ios-app-developers': typeof publicResourcesIosAppDevelopersRoute
-  '/resources/ipad-app-developers': typeof publicResourcesIpadAppDevelopersRoute
-  '/resources/mobile-app-designers': typeof publicResourcesMobileAppDesignersRoute
-  '/resources/react-native-app-developers': typeof publicResourcesReactNativeAppDevelopersRoute
-  '/resources/ui-ux-designers': typeof publicResourcesUiUxDesignersRoute
-  '/resources/web-developers': typeof publicResourcesWebDevelopersRoute
+  '/products/car-wash-app': typeof publicProductsCarWashAppRoute
+  '/products/chef-management-app': typeof publicProductsChefManagementAppRoute
+  '/products/e-learning-app': typeof publicProductsELearningAppRoute
+  '/products/ecommerce-app': typeof publicProductsEcommerceAppRoute
+  '/products/food-delivery-app': typeof publicProductsFoodDeliveryAppRoute
+  '/products/gaming-app': typeof publicProductsGamingAppRoute
+  '/products/grocery-delivery-app': typeof publicProductsGroceryDeliveryAppRoute
+  '/products/hotel-booking-app': typeof publicProductsHotelBookingAppRoute
+  '/products/milk-delivery-app': typeof publicProductsMilkDeliveryAppRoute
+  '/products/multi-vendor-marketplace': typeof publicProductsMultiVendorMarketplaceRoute
+  '/products/online-shopping-app': typeof publicProductsOnlineShoppingAppRoute
+  '/products/real-estate-app': typeof publicProductsRealEstateAppRoute
+  '/products/taxi-booking-app': typeof publicProductsTaxiBookingAppRoute
+  '/products/ticket-booking-app': typeof publicProductsTicketBookingAppRoute
   '/services/360-photography-services': typeof publicServices360PhotographyServicesRoute
   '/services/android-app-development': typeof publicServicesAndroidAppDevelopmentRoute
   '/services/app-maintenance-support': typeof publicServicesAppMaintenanceSupportRoute
@@ -909,15 +953,20 @@ export interface FileRoutesById {
   '/(public)/about/nasscom-membership': typeof publicAboutNasscomMembershipRoute
   '/(public)/about/our-journey': typeof publicAboutOurJourneyRoute
   '/(public)/about/vision-mission': typeof publicAboutVisionMissionRoute
-  '/(public)/resources/android-app-developers': typeof publicResourcesAndroidAppDevelopersRoute
-  '/(public)/resources/custom-software-developers': typeof publicResourcesCustomSoftwareDevelopersRoute
-  '/(public)/resources/flutter-app-developers': typeof publicResourcesFlutterAppDevelopersRoute
-  '/(public)/resources/ios-app-developers': typeof publicResourcesIosAppDevelopersRoute
-  '/(public)/resources/ipad-app-developers': typeof publicResourcesIpadAppDevelopersRoute
-  '/(public)/resources/mobile-app-designers': typeof publicResourcesMobileAppDesignersRoute
-  '/(public)/resources/react-native-app-developers': typeof publicResourcesReactNativeAppDevelopersRoute
-  '/(public)/resources/ui-ux-designers': typeof publicResourcesUiUxDesignersRoute
-  '/(public)/resources/web-developers': typeof publicResourcesWebDevelopersRoute
+  '/(public)/products/car-wash-app': typeof publicProductsCarWashAppRoute
+  '/(public)/products/chef-management-app': typeof publicProductsChefManagementAppRoute
+  '/(public)/products/e-learning-app': typeof publicProductsELearningAppRoute
+  '/(public)/products/ecommerce-app': typeof publicProductsEcommerceAppRoute
+  '/(public)/products/food-delivery-app': typeof publicProductsFoodDeliveryAppRoute
+  '/(public)/products/gaming-app': typeof publicProductsGamingAppRoute
+  '/(public)/products/grocery-delivery-app': typeof publicProductsGroceryDeliveryAppRoute
+  '/(public)/products/hotel-booking-app': typeof publicProductsHotelBookingAppRoute
+  '/(public)/products/milk-delivery-app': typeof publicProductsMilkDeliveryAppRoute
+  '/(public)/products/multi-vendor-marketplace': typeof publicProductsMultiVendorMarketplaceRoute
+  '/(public)/products/online-shopping-app': typeof publicProductsOnlineShoppingAppRoute
+  '/(public)/products/real-estate-app': typeof publicProductsRealEstateAppRoute
+  '/(public)/products/taxi-booking-app': typeof publicProductsTaxiBookingAppRoute
+  '/(public)/products/ticket-booking-app': typeof publicProductsTicketBookingAppRoute
   '/(public)/services/360-photography-services': typeof publicServices360PhotographyServicesRoute
   '/(public)/services/android-app-development': typeof publicServicesAndroidAppDevelopmentRoute
   '/(public)/services/app-maintenance-support': typeof publicServicesAppMaintenanceSupportRoute
@@ -1009,15 +1058,20 @@ export interface FileRouteTypes {
     | '/about/nasscom-membership'
     | '/about/our-journey'
     | '/about/vision-mission'
-    | '/resources/android-app-developers'
-    | '/resources/custom-software-developers'
-    | '/resources/flutter-app-developers'
-    | '/resources/ios-app-developers'
-    | '/resources/ipad-app-developers'
-    | '/resources/mobile-app-designers'
-    | '/resources/react-native-app-developers'
-    | '/resources/ui-ux-designers'
-    | '/resources/web-developers'
+    | '/products/car-wash-app'
+    | '/products/chef-management-app'
+    | '/products/e-learning-app'
+    | '/products/ecommerce-app'
+    | '/products/food-delivery-app'
+    | '/products/gaming-app'
+    | '/products/grocery-delivery-app'
+    | '/products/hotel-booking-app'
+    | '/products/milk-delivery-app'
+    | '/products/multi-vendor-marketplace'
+    | '/products/online-shopping-app'
+    | '/products/real-estate-app'
+    | '/products/taxi-booking-app'
+    | '/products/ticket-booking-app'
     | '/services/360-photography-services'
     | '/services/android-app-development'
     | '/services/app-maintenance-support'
@@ -1106,15 +1160,20 @@ export interface FileRouteTypes {
     | '/about/nasscom-membership'
     | '/about/our-journey'
     | '/about/vision-mission'
-    | '/resources/android-app-developers'
-    | '/resources/custom-software-developers'
-    | '/resources/flutter-app-developers'
-    | '/resources/ios-app-developers'
-    | '/resources/ipad-app-developers'
-    | '/resources/mobile-app-designers'
-    | '/resources/react-native-app-developers'
-    | '/resources/ui-ux-designers'
-    | '/resources/web-developers'
+    | '/products/car-wash-app'
+    | '/products/chef-management-app'
+    | '/products/e-learning-app'
+    | '/products/ecommerce-app'
+    | '/products/food-delivery-app'
+    | '/products/gaming-app'
+    | '/products/grocery-delivery-app'
+    | '/products/hotel-booking-app'
+    | '/products/milk-delivery-app'
+    | '/products/multi-vendor-marketplace'
+    | '/products/online-shopping-app'
+    | '/products/real-estate-app'
+    | '/products/taxi-booking-app'
+    | '/products/ticket-booking-app'
     | '/services/360-photography-services'
     | '/services/android-app-development'
     | '/services/app-maintenance-support'
@@ -1201,15 +1260,20 @@ export interface FileRouteTypes {
     | '/(public)/about/nasscom-membership'
     | '/(public)/about/our-journey'
     | '/(public)/about/vision-mission'
-    | '/(public)/resources/android-app-developers'
-    | '/(public)/resources/custom-software-developers'
-    | '/(public)/resources/flutter-app-developers'
-    | '/(public)/resources/ios-app-developers'
-    | '/(public)/resources/ipad-app-developers'
-    | '/(public)/resources/mobile-app-designers'
-    | '/(public)/resources/react-native-app-developers'
-    | '/(public)/resources/ui-ux-designers'
-    | '/(public)/resources/web-developers'
+    | '/(public)/products/car-wash-app'
+    | '/(public)/products/chef-management-app'
+    | '/(public)/products/e-learning-app'
+    | '/(public)/products/ecommerce-app'
+    | '/(public)/products/food-delivery-app'
+    | '/(public)/products/gaming-app'
+    | '/(public)/products/grocery-delivery-app'
+    | '/(public)/products/hotel-booking-app'
+    | '/(public)/products/milk-delivery-app'
+    | '/(public)/products/multi-vendor-marketplace'
+    | '/(public)/products/online-shopping-app'
+    | '/(public)/products/real-estate-app'
+    | '/(public)/products/taxi-booking-app'
+    | '/(public)/products/ticket-booking-app'
     | '/(public)/services/360-photography-services'
     | '/(public)/services/android-app-development'
     | '/(public)/services/app-maintenance-support'
@@ -1577,67 +1641,102 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof publicServices360PhotographyServicesRouteImport
       parentRoute: typeof publicRouteRoute
     }
-    '/(public)/resources/web-developers': {
-      id: '/(public)/resources/web-developers'
-      path: '/resources/web-developers'
-      fullPath: '/resources/web-developers'
-      preLoaderRoute: typeof publicResourcesWebDevelopersRouteImport
+    '/(public)/products/ticket-booking-app': {
+      id: '/(public)/products/ticket-booking-app'
+      path: '/products/ticket-booking-app'
+      fullPath: '/products/ticket-booking-app'
+      preLoaderRoute: typeof publicProductsTicketBookingAppRouteImport
       parentRoute: typeof publicRouteRoute
     }
-    '/(public)/resources/ui-ux-designers': {
-      id: '/(public)/resources/ui-ux-designers'
-      path: '/resources/ui-ux-designers'
-      fullPath: '/resources/ui-ux-designers'
-      preLoaderRoute: typeof publicResourcesUiUxDesignersRouteImport
+    '/(public)/products/taxi-booking-app': {
+      id: '/(public)/products/taxi-booking-app'
+      path: '/products/taxi-booking-app'
+      fullPath: '/products/taxi-booking-app'
+      preLoaderRoute: typeof publicProductsTaxiBookingAppRouteImport
       parentRoute: typeof publicRouteRoute
     }
-    '/(public)/resources/react-native-app-developers': {
-      id: '/(public)/resources/react-native-app-developers'
-      path: '/resources/react-native-app-developers'
-      fullPath: '/resources/react-native-app-developers'
-      preLoaderRoute: typeof publicResourcesReactNativeAppDevelopersRouteImport
+    '/(public)/products/real-estate-app': {
+      id: '/(public)/products/real-estate-app'
+      path: '/products/real-estate-app'
+      fullPath: '/products/real-estate-app'
+      preLoaderRoute: typeof publicProductsRealEstateAppRouteImport
       parentRoute: typeof publicRouteRoute
     }
-    '/(public)/resources/mobile-app-designers': {
-      id: '/(public)/resources/mobile-app-designers'
-      path: '/resources/mobile-app-designers'
-      fullPath: '/resources/mobile-app-designers'
-      preLoaderRoute: typeof publicResourcesMobileAppDesignersRouteImport
+    '/(public)/products/online-shopping-app': {
+      id: '/(public)/products/online-shopping-app'
+      path: '/products/online-shopping-app'
+      fullPath: '/products/online-shopping-app'
+      preLoaderRoute: typeof publicProductsOnlineShoppingAppRouteImport
       parentRoute: typeof publicRouteRoute
     }
-    '/(public)/resources/ipad-app-developers': {
-      id: '/(public)/resources/ipad-app-developers'
-      path: '/resources/ipad-app-developers'
-      fullPath: '/resources/ipad-app-developers'
-      preLoaderRoute: typeof publicResourcesIpadAppDevelopersRouteImport
+    '/(public)/products/multi-vendor-marketplace': {
+      id: '/(public)/products/multi-vendor-marketplace'
+      path: '/products/multi-vendor-marketplace'
+      fullPath: '/products/multi-vendor-marketplace'
+      preLoaderRoute: typeof publicProductsMultiVendorMarketplaceRouteImport
       parentRoute: typeof publicRouteRoute
     }
-    '/(public)/resources/ios-app-developers': {
-      id: '/(public)/resources/ios-app-developers'
-      path: '/resources/ios-app-developers'
-      fullPath: '/resources/ios-app-developers'
-      preLoaderRoute: typeof publicResourcesIosAppDevelopersRouteImport
+    '/(public)/products/milk-delivery-app': {
+      id: '/(public)/products/milk-delivery-app'
+      path: '/products/milk-delivery-app'
+      fullPath: '/products/milk-delivery-app'
+      preLoaderRoute: typeof publicProductsMilkDeliveryAppRouteImport
       parentRoute: typeof publicRouteRoute
     }
-    '/(public)/resources/flutter-app-developers': {
-      id: '/(public)/resources/flutter-app-developers'
-      path: '/resources/flutter-app-developers'
-      fullPath: '/resources/flutter-app-developers'
-      preLoaderRoute: typeof publicResourcesFlutterAppDevelopersRouteImport
+    '/(public)/products/hotel-booking-app': {
+      id: '/(public)/products/hotel-booking-app'
+      path: '/products/hotel-booking-app'
+      fullPath: '/products/hotel-booking-app'
+      preLoaderRoute: typeof publicProductsHotelBookingAppRouteImport
       parentRoute: typeof publicRouteRoute
     }
-    '/(public)/resources/custom-software-developers': {
-      id: '/(public)/resources/custom-software-developers'
-      path: '/resources/custom-software-developers'
-      fullPath: '/resources/custom-software-developers'
-      preLoaderRoute: typeof publicResourcesCustomSoftwareDevelopersRouteImport
+    '/(public)/products/grocery-delivery-app': {
+      id: '/(public)/products/grocery-delivery-app'
+      path: '/products/grocery-delivery-app'
+      fullPath: '/products/grocery-delivery-app'
+      preLoaderRoute: typeof publicProductsGroceryDeliveryAppRouteImport
       parentRoute: typeof publicRouteRoute
     }
-    '/(public)/resources/android-app-developers': {
-      id: '/(public)/resources/android-app-developers'
-      path: '/resources/android-app-developers'
-      fullPath: '/resources/android-app-developers'
-      preLoaderRoute: typeof publicResourcesAndroidAppDevelopersRouteImport
+    '/(public)/products/gaming-app': {
+      id: '/(public)/products/gaming-app'
+      path: '/products/gaming-app'
+      fullPath: '/products/gaming-app'
+      preLoaderRoute: typeof publicProductsGamingAppRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/products/food-delivery-app': {
+      id: '/(public)/products/food-delivery-app'
+      path: '/products/food-delivery-app'
+      fullPath: '/products/food-delivery-app'
+      preLoaderRoute: typeof publicProductsFoodDeliveryAppRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/products/ecommerce-app': {
+      id: '/(public)/products/ecommerce-app'
+      path: '/products/ecommerce-app'
+      fullPath: '/products/ecommerce-app'
+      preLoaderRoute: typeof publicProductsEcommerceAppRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/products/e-learning-app': {
+      id: '/(public)/products/e-learning-app'
+      path: '/products/e-learning-app'
+      fullPath: '/products/e-learning-app'
+      preLoaderRoute: typeof publicProductsELearningAppRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/products/chef-management-app': {
+      id: '/(public)/products/chef-management-app'
+      path: '/products/chef-management-app'
+      fullPath: '/products/chef-management-app'
+      preLoaderRoute: typeof publicProductsChefManagementAppRouteImport
+      parentRoute: typeof publicRouteRoute
+    }
+    '/(public)/products/car-wash-app': {
+      id: '/(public)/products/car-wash-app'
+      path: '/products/car-wash-app'
+      fullPath: '/products/car-wash-app'
+      preLoaderRoute: typeof publicProductsCarWashAppRouteImport
       parentRoute: typeof publicRouteRoute
     }
     '/(public)/about/vision-mission': {
@@ -2257,15 +2356,20 @@ interface publicRouteRouteChildren {
   publicContactRoute: typeof publicContactRoute
   publicPortfolioRoute: typeof publicPortfolioRoute
   publicIndexRoute: typeof publicIndexRoute
-  publicResourcesAndroidAppDevelopersRoute: typeof publicResourcesAndroidAppDevelopersRoute
-  publicResourcesCustomSoftwareDevelopersRoute: typeof publicResourcesCustomSoftwareDevelopersRoute
-  publicResourcesFlutterAppDevelopersRoute: typeof publicResourcesFlutterAppDevelopersRoute
-  publicResourcesIosAppDevelopersRoute: typeof publicResourcesIosAppDevelopersRoute
-  publicResourcesIpadAppDevelopersRoute: typeof publicResourcesIpadAppDevelopersRoute
-  publicResourcesMobileAppDesignersRoute: typeof publicResourcesMobileAppDesignersRoute
-  publicResourcesReactNativeAppDevelopersRoute: typeof publicResourcesReactNativeAppDevelopersRoute
-  publicResourcesUiUxDesignersRoute: typeof publicResourcesUiUxDesignersRoute
-  publicResourcesWebDevelopersRoute: typeof publicResourcesWebDevelopersRoute
+  publicProductsCarWashAppRoute: typeof publicProductsCarWashAppRoute
+  publicProductsChefManagementAppRoute: typeof publicProductsChefManagementAppRoute
+  publicProductsELearningAppRoute: typeof publicProductsELearningAppRoute
+  publicProductsEcommerceAppRoute: typeof publicProductsEcommerceAppRoute
+  publicProductsFoodDeliveryAppRoute: typeof publicProductsFoodDeliveryAppRoute
+  publicProductsGamingAppRoute: typeof publicProductsGamingAppRoute
+  publicProductsGroceryDeliveryAppRoute: typeof publicProductsGroceryDeliveryAppRoute
+  publicProductsHotelBookingAppRoute: typeof publicProductsHotelBookingAppRoute
+  publicProductsMilkDeliveryAppRoute: typeof publicProductsMilkDeliveryAppRoute
+  publicProductsMultiVendorMarketplaceRoute: typeof publicProductsMultiVendorMarketplaceRoute
+  publicProductsOnlineShoppingAppRoute: typeof publicProductsOnlineShoppingAppRoute
+  publicProductsRealEstateAppRoute: typeof publicProductsRealEstateAppRoute
+  publicProductsTaxiBookingAppRoute: typeof publicProductsTaxiBookingAppRoute
+  publicProductsTicketBookingAppRoute: typeof publicProductsTicketBookingAppRoute
   publicServices360PhotographyServicesRoute: typeof publicServices360PhotographyServicesRoute
   publicServicesAndroidAppDevelopmentRoute: typeof publicServicesAndroidAppDevelopmentRoute
   publicServicesAppMaintenanceSupportRoute: typeof publicServicesAppMaintenanceSupportRoute
@@ -2304,20 +2408,21 @@ const publicRouteRouteChildren: publicRouteRouteChildren = {
   publicContactRoute: publicContactRoute,
   publicPortfolioRoute: publicPortfolioRoute,
   publicIndexRoute: publicIndexRoute,
-  publicResourcesAndroidAppDevelopersRoute:
-    publicResourcesAndroidAppDevelopersRoute,
-  publicResourcesCustomSoftwareDevelopersRoute:
-    publicResourcesCustomSoftwareDevelopersRoute,
-  publicResourcesFlutterAppDevelopersRoute:
-    publicResourcesFlutterAppDevelopersRoute,
-  publicResourcesIosAppDevelopersRoute: publicResourcesIosAppDevelopersRoute,
-  publicResourcesIpadAppDevelopersRoute: publicResourcesIpadAppDevelopersRoute,
-  publicResourcesMobileAppDesignersRoute:
-    publicResourcesMobileAppDesignersRoute,
-  publicResourcesReactNativeAppDevelopersRoute:
-    publicResourcesReactNativeAppDevelopersRoute,
-  publicResourcesUiUxDesignersRoute: publicResourcesUiUxDesignersRoute,
-  publicResourcesWebDevelopersRoute: publicResourcesWebDevelopersRoute,
+  publicProductsCarWashAppRoute: publicProductsCarWashAppRoute,
+  publicProductsChefManagementAppRoute: publicProductsChefManagementAppRoute,
+  publicProductsELearningAppRoute: publicProductsELearningAppRoute,
+  publicProductsEcommerceAppRoute: publicProductsEcommerceAppRoute,
+  publicProductsFoodDeliveryAppRoute: publicProductsFoodDeliveryAppRoute,
+  publicProductsGamingAppRoute: publicProductsGamingAppRoute,
+  publicProductsGroceryDeliveryAppRoute: publicProductsGroceryDeliveryAppRoute,
+  publicProductsHotelBookingAppRoute: publicProductsHotelBookingAppRoute,
+  publicProductsMilkDeliveryAppRoute: publicProductsMilkDeliveryAppRoute,
+  publicProductsMultiVendorMarketplaceRoute:
+    publicProductsMultiVendorMarketplaceRoute,
+  publicProductsOnlineShoppingAppRoute: publicProductsOnlineShoppingAppRoute,
+  publicProductsRealEstateAppRoute: publicProductsRealEstateAppRoute,
+  publicProductsTaxiBookingAppRoute: publicProductsTaxiBookingAppRoute,
+  publicProductsTicketBookingAppRoute: publicProductsTicketBookingAppRoute,
   publicServices360PhotographyServicesRoute:
     publicServices360PhotographyServicesRoute,
   publicServicesAndroidAppDevelopmentRoute:

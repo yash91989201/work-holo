@@ -37,7 +37,7 @@ const features = [
       "Reliable API, payment, Firebase, and third-party SDK integrations for real-time business functionality.",
     icon: IconPlugConnected,
   },
-] as const;
+];
 
 export const Route = createFileRoute(
   "/(public)/services/android-app-development"

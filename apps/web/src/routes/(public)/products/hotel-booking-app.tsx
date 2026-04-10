@@ -1,11 +1,21 @@
-import { CreditCard, Phone, Tag, User } from "@tabler/icons-react";
+import {
+  IconCreditCard,
+  IconPhone,
+  IconTag,
+  IconUser,
+} from "@tabler/icons-react";
+import { createFileRoute } from "@tanstack/react-router";
 import {
   BookingCta,
   BookingFeatures,
   BookingHero,
 } from "@/components/public/products/booking";
 
-export default function HotelBookingApp() {
+export const Route = createFileRoute("/(public)/products/hotel-booking-app")({
+  component: RouteComponent,
+});
+
+export default function RouteComponent() {
   const heroData = {
     title: "Hotel Booking App",
     description:
@@ -17,22 +27,22 @@ export default function HotelBookingApp() {
 
   const features = [
     {
-      icon: Tag,
+      icon: IconTag,
       title: "Best Offers & Discounts",
       description: "Exclusive deals and discounts for members.",
     },
     {
-      icon: CreditCard,
+      icon: IconCreditCard,
       title: "Seamless Payments",
       description: "Secure payment processing.",
     },
     {
-      icon: User,
+      icon: IconUser,
       title: "Reviewing & Rating",
       description: "User reviews and ratings.",
     },
     {
-      icon: Phone,
+      icon: IconPhone,
       title: "SOS Alert",
       description: "Emergency contact feature.",
     },

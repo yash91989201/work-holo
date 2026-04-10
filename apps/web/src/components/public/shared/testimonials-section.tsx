@@ -1,3 +1,4 @@
+import { IconStar } from "@tabler/icons-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { SectionWrapper } from "./section-wrapper";
 
@@ -20,7 +21,7 @@ export const TestimonialsSection = () => {
               <CardContent className="pt-6">
                 <div className="mb-4 flex">
                   {Array.from({ length: testimonial.rating }).map((_, i) => (
-                    <Star
+                    <IconStar
                       className="h-4 w-4 fill-current text-yellow-500"
                       key={i}
                     />

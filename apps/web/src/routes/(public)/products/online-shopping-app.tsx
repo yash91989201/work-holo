@@ -1,29 +1,28 @@
+import {
+  IconChevronDown,
+  IconCircleCheck,
+  IconDatabase,
+  IconDeviceMobile,
+  IconGlobe,
+  IconHeart,
+  IconLayout,
+  IconMail,
+  IconMessageCircle,
+  IconMinus,
+  IconPhone,
+  IconPlus,
+  IconShieldCheck,
+  IconUsers,
+} from "@tabler/icons-react";
+import { createFileRoute } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
-import {
-  CheckCircle2,
-  ChevronDown,
-  Database,
-  Globe,
-  Heart,
-  Layout,
-  Mail,
-  MessageCircle,
-  Minus,
-  Phone,
-  Plus,
-  ShieldCheck,
-  Smartphone,
-  Users,
-} from "lucide-react";
-
 // --- Components ---
+
+export const Route = createFileRoute("/(public)/products/online-shopping-app")({
+  component: RouteComponent,
+});
 
 const Hero = () => {
   return (
@@ -68,7 +67,7 @@ const Hero = () => {
           <div className="absolute -bottom-10 -left-10 hidden rounded-2xl bg-white p-6 shadow-xl md:block">
             <div className="flex items-center gap-4">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
-                <CheckCircle2 size={24} />
+                <IconCircleCheck size={24} />
               </div>
               <div>
                 <p className="font-bold text-gray-900">100% Secure</p>
@@ -113,22 +112,22 @@ const KeyFeatures = () => {
   const features = [
     {
       title: "User-Friendly Interface",
-      icon: <Smartphone className="h-8 w-8" />,
+      icon: <IconDeviceMobile className="h-8 w-8" />,
       color: "bg-blue-50 text-blue-600",
     },
     {
       title: "Secure Payment Options",
-      icon: <ShieldCheck className="h-8 w-8" />,
+      icon: <IconShieldCheck className="h-8 w-8" />,
       color: "bg-green-50 text-green-600",
     },
     {
       title: "Wishlists & Saved Items",
-      icon: <Heart className="h-8 w-8" />,
+      icon: <IconHeart className="h-8 w-8" />,
       color: "bg-red-50 text-red-600",
     },
     {
       title: "Community & Social Integration",
-      icon: <Users className="h-8 w-8" />,
+      icon: <IconUsers className="h-8 w-8" />,
       color: "bg-purple-50 text-purple-600",
     },
   ];
@@ -313,7 +312,7 @@ const ApplicationFeatures = () => {
                     key={item}
                   >
                     <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/20 text-primary">
-                      <CheckCircle2 size={14} />
+                      <IconCircleCheck size={14} />
                     </div>
                     Advanced {activeTab} dashboard and management tools.
                   </li>
@@ -335,42 +334,42 @@ const Services = () => {
     {
       title: "Custom Store Design",
       desc: "Unique App Designs Aligned with Your Brand",
-      icon: <Layout />,
+      icon: <IconLayout />,
     },
     {
       title: "Mobile App Development",
       desc: "Advanced iOS & Android Shopping Apps",
-      icon: <Smartphone />,
+      icon: <IconDeviceMobile />,
     },
     {
       title: "Payment Gateway Setup",
       desc: "Secure & Seamless Payment Processing",
-      icon: <ShieldCheck />,
+      icon: <IconShieldCheck />,
     },
     {
       title: "UX/UI Design",
       desc: "Intuitive Interfaces for Smooth Shopping",
-      icon: <Layout />,
+      icon: <IconLayout />,
     },
     {
       title: "Multi-Vendor Marketplace",
       desc: "Easy Management for Multiple Sellers",
-      icon: <Users />,
+      icon: <IconUsers />,
     },
     {
       title: "Order Tracking",
       desc: "Real-Time Order & Delivery Updates",
-      icon: <Globe />,
+      icon: <IconGlobe />,
     },
     {
       title: "Product Catalog System",
       desc: "Simple Tools for Product Listings & Updates",
-      icon: <Database />,
+      icon: <IconDatabase />,
     },
     {
       title: "Customer Support Chat",
       desc: "AI Chatbots & Integrated Support Systems",
-      icon: <MessageCircle />,
+      icon: <IconMessageCircle />,
     },
   ];
 
@@ -530,7 +529,11 @@ const FAQ = () => {
                 <div
                   className={`flex h-8 w-8 items-center justify-center rounded-full transition-all ${openIndex === i ? "rotate-180 bg-primary text-white" : "bg-gray-100 text-gray-500"}`}
                 >
-                  {openIndex === i ? <Minus size={18} /> : <Plus size={18} />}
+                  {openIndex === i ? (
+                    <IconMinus size={18} />
+                  ) : (
+                    <IconPlus size={18} />
+                  )}
                 </div>
               </button>
               <AnimatePresence>
@@ -563,7 +566,7 @@ const WhatsAppButton = () => (
     target="_blank"
   >
     <div className="absolute inset-0 animate-ping rounded-full bg-[#25D366] opacity-20" />
-    <MessageCircle size={32} />
+    <IconMessageCircle size={32} />
     <span className="absolute right-full mr-4 whitespace-nowrap rounded-lg bg-white px-4 py-2 font-bold text-black text-sm opacity-0 shadow-xl transition-opacity group-hover:opacity-100">
       Chat with us
     </span>
@@ -583,12 +586,12 @@ const ScrollToTop = () => {
       className={`fixed right-8 bottom-28 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-secondary text-white shadow-xl transition-all ${visible ? "scale-100 opacity-100" : "scale-0 opacity-0"}`}
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
     >
-      <ChevronDown className="rotate-180" size={24} />
+      <IconChevronDown className="rotate-180" size={24} />
     </button>
   );
 };
 
-export default function OnlineShoppingApp() {
+export default function RouteComponent() {
   return (
     <div className="min-h-screen bg-white">
       {/* Top Info Bar */}
@@ -599,19 +602,19 @@ export default function OnlineShoppingApp() {
               className="flex items-center gap-1 transition-colors hover:text-primary"
               href="mailto:contact@WorkHololabs.com"
             >
-              <Mail size={12} /> contact@WorkHololabs.com
+              <IconMail size={12} /> contact@WorkHololabs.com
             </a>
             <a
               className="flex items-center gap-1 transition-colors hover:text-primary"
               href="tel:+919390683154"
             >
-              <Phone size={12} /> +91 9390683154
+              <IconPhone size={12} /> +91 9390683154
             </a>
             <a
               className="flex items-center gap-1 transition-colors hover:text-primary"
               href="tel:+15512220070"
             >
-              <Phone size={12} /> +1 (551) 222-0070
+              <IconPhone size={12} /> +1 (551) 222-0070
             </a>
           </div>
           <div className="flex items-center gap-4">

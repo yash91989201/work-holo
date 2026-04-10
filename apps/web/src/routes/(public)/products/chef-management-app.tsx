@@ -1,18 +1,23 @@
 import {
-  ChefHat,
-  Clock,
-  MapPin,
-  Shield,
-  Star,
-  Users,
+  IconChefHat,
+  IconClock,
+  IconMapPin,
+  IconShield,
+  IconStar,
+  IconUsers,
 } from "@tabler/icons-react";
+import { createFileRoute } from "@tanstack/react-router";
 import {
   ProductCta,
   ProductFeatures,
   ProductHero,
 } from "@/components/public/products/on-demand";
 
-export default function ChefManagementApp() {
+export const Route = createFileRoute("/(public)/products/chef-management-app")({
+  component: RouteComponent,
+});
+
+export default function RouteComponent() {
   const heroData = {
     title: "Chef Management App Development",
     description:
@@ -24,32 +29,32 @@ export default function ChefManagementApp() {
 
   const features = [
     {
-      icon: ChefHat,
+      icon: IconChefHat,
       title: "Recipe Management",
       description: "Organize and manage recipes.",
     },
     {
-      icon: Clock,
+      icon: IconClock,
       title: "Order Tracking",
       description: "Track orders in real-time.",
     },
     {
-      icon: MapPin,
+      icon: IconMapPin,
       title: "Inventory Control",
       description: "Manage kitchen inventory.",
     },
     {
-      icon: Star,
+      icon: IconStar,
       title: "Staff Coordination",
       description: "Coordinate kitchen staff.",
     },
     {
-      icon: Shield,
+      icon: IconShield,
       title: "Quality Assurance",
       description: "Maintain food quality.",
     },
     {
-      icon: Users,
+      icon: IconUsers,
       title: "Multi-Role Access",
       description: "Access for different roles.",
     },

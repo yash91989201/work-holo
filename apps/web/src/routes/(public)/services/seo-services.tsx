@@ -1,28 +1,22 @@
+import {
+  IconArrowUp,
+  IconBuilding,
+  IconChartBar,
+  IconChevronDown,
+  IconChevronRight,
+  IconCircleCheck,
+  IconCreditCard,
+  IconDeviceDesktop,
+  IconHeartbeat,
+  IconLink,
+  IconMapPin,
+  IconMessageCircle,
+  IconRocket,
+  IconShoppingCart,
+} from "@tabler/icons-react";
 import { AnimatePresence, motion } from "framer-motion";
 import type React from "react";
 import { useState } from "react";
-
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
-import {
-  ArrowUp,
-  BarChart3,
-  Building2,
-  CheckCircle2,
-  ChevronDown,
-  ChevronRight,
-  CreditCard,
-  HeartPulse,
-  Link as LinkIcon,
-  MapPin,
-  MessageCircle,
-  Monitor,
-  Rocket,
-  ShoppingCart,
-} from "lucide-react";
 
 // --- Types ---
 
@@ -105,18 +99,21 @@ const Hero = () => {
 const WhatIsSeo = () => {
   const cards = [
     {
-      icon: <Monitor className="h-8 w-8 text-[#00A3FF]" />,
+      icon: <IconDeviceDesktop className="h-8 w-8 text-[#00A3FF]" />,
       title: "Technical SEO",
     },
     {
-      icon: <BarChart3 className="h-8 w-8 text-[#00A3FF]" />,
+      icon: <IconChartBar className="h-8 w-8 text-[#00A3FF]" />,
       title: "Content Strategy",
     },
     {
-      icon: <LinkIcon className="h-8 w-8 text-[#00A3FF]" />,
+      icon: <IconLink className="h-8 w-8 text-[#00A3FF]" />,
       title: "Authority Building",
     },
-    { icon: <MapPin className="h-8 w-8 text-[#00A3FF]" />, title: "Local SEO" },
+    {
+      icon: <IconMapPin className="h-8 w-8 text-[#00A3FF]" />,
+      title: "Local SEO",
+    },
   ];
 
   return (
@@ -222,7 +219,7 @@ const Outcomes = () => {
             <ul className="space-y-4">
               {benefits.map((benefit, idx) => (
                 <li className="flex items-start" key={idx}>
-                  <CheckCircle2 className="mt-0.5 mr-3 h-6 w-6 flex-shrink-0 text-[#FF9D00]" />
+                  <IconCircleCheck className="mt-0.5 mr-3 h-6 w-6 flex-shrink-0 text-[#FF9D00]" />
                   <span className="text-[#4B5563] text-lg">{benefit}</span>
                 </li>
               ))}
@@ -348,7 +345,7 @@ const Framework = () => {
               </div>
               {idx < steps.length - 1 && (
                 <div className="text-[#E2E8F0] lg:hidden">
-                  <ChevronRight className="h-6 w-6 rotate-90" />
+                  <IconChevronRight className="h-6 w-6 rotate-90" />
                 </div>
               )}
             </div>
@@ -398,12 +395,18 @@ const WhyChoose = () => {
 
 const Industries = () => {
   const industries: IndustryItem[] = [
-    { icon: <Monitor className="h-10 w-10" />, title: "Technology & SaaS" },
-    { icon: <ShoppingCart className="h-10 w-10" />, title: "eCommerce" },
-    { icon: <HeartPulse className="h-10 w-10" />, title: "Healthcare" },
-    { icon: <CreditCard className="h-10 w-10" />, title: "Financial Services" },
-    { icon: <Building2 className="h-10 w-10" />, title: "Enterprise B2B" },
-    { icon: <Rocket className="h-10 w-10" />, title: "Startups" },
+    {
+      icon: <IconDeviceDesktop className="h-10 w-10" />,
+      title: "Technology & SaaS",
+    },
+    { icon: <IconShoppingCart className="h-10 w-10" />, title: "eCommerce" },
+    { icon: <IconHeartbeat className="h-10 w-10" />, title: "Healthcare" },
+    {
+      icon: <IconCreditCard className="h-10 w-10" />,
+      title: "Financial Services",
+    },
+    { icon: <IconBuilding className="h-10 w-10" />, title: "Enterprise B2B" },
+    { icon: <IconRocket className="h-10 w-10" />, title: "Startups" },
   ];
 
   return (
@@ -560,7 +563,7 @@ const FAQ = () => {
                 <span className="font-bold text-[#1F2937] text-lg">
                   {faq.question}
                 </span>
-                <ChevronDown
+                <IconChevronDown
                   className={`h-5 w-5 text-[#4B5563] transition-transform ${activeIndex === idx ? "rotate-180" : ""}`}
                 />
               </button>
@@ -610,13 +613,13 @@ const StickyWidgets = () => {
   return (
     <div className="fixed right-8 bottom-8 z-50 flex flex-col space-y-4">
       <button className="flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] shadow-2xl transition-transform hover:scale-110">
-        <MessageCircle className="h-8 w-8 text-white" />
+        <IconMessageCircle className="h-8 w-8 text-white" />
       </button>
       <button
         className="flex h-14 w-14 items-center justify-center rounded-full bg-[#00A3FF] shadow-2xl transition-transform hover:scale-110"
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       >
-        <ArrowUp className="h-8 w-8 text-white" />
+        <IconArrowUp className="h-8 w-8 text-white" />
       </button>
     </div>
   );
