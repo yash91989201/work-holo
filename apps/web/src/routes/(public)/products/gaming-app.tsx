@@ -8,7 +8,7 @@ import {
   IconTrophy,
 } from "@tabler/icons-react";
 import { createFileRoute } from "@tanstack/react-router";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 
 // --- Components ---

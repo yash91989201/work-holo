@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 export const MarketingFeatures = () => (
   <section className="bg-white px-4 py-24 md:px-12">

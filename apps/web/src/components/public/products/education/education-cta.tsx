@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 const PRIMARY_PURPLE = "#7B2CBF";
 

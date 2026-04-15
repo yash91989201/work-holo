@@ -15,8 +15,15 @@ import {
   IconRocket,
   IconShoppingCart,
 } from "@tabler/icons-react";
-import { AnimatePresence, motion } from "framer-motion";
+import { createFileRoute } from "@tanstack/react-router";
+import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
+
+export const Route = createFileRoute(
+  "/(public)/services/email-marketing-services"
+)({
+  component: EmailMarketingServices,
+});
 
 // --- Components ---
 

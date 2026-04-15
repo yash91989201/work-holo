@@ -7,7 +7,7 @@ import {
   IconUsers,
   IconWorld,
 } from "@tabler/icons-react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 interface PartnerCardProps {
   description: string;

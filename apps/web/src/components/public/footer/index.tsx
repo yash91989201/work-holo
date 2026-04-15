@@ -1,6 +1,6 @@
 import { IconBrandX, IconChevronUp, IconWorld } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 export function Footer() {
   const scrollToTop = () => {

@@ -1,3 +1,4 @@
+import { createFileRoute } from "@tanstack/react-router";
 import AiCta from "@/components/public/services/ai-data/ai-cta";
 import AiFeatures from "@/components/public/services/ai-data/ai-features";
 import AiHero from "@/components/public/services/ai-data/ai-hero";
@@ -34,6 +35,12 @@ const FEATURES = [
       "GDPR-aligned data handling, role-based access control, encryption at rest & in transit, and backup & disaster recovery planning.",
   },
 ];
+
+export const Route = createFileRoute(
+  "/(public)/services/cyber-security-services"
+)({
+  component: CyberSecurityServices,
+});
 
 export default function CyberSecurityServices() {
   return (
