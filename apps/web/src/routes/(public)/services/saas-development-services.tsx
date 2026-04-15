@@ -1,6 +1,13 @@
+import { createFileRoute } from "@tanstack/react-router";
 import AiCta from "@/components/public/services/ai-data/ai-cta";
 import AiFeatures from "@/components/public/services/ai-data/ai-features";
 import AiHero from "@/components/public/services/ai-data/ai-hero";
+
+export const Route = createFileRoute(
+  "/(public)/services/saas-development-services"
+)({
+  component: SaasDevelopmentServices,
+});
 
 const FEATURES = [
   {

@@ -4,7 +4,7 @@ import {
   IconLayout,
   IconMessage2,
 } from "@tabler/icons-react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 const SectionHeading = ({
   title,

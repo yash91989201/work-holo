@@ -14,8 +14,13 @@ import {
   IconTruck,
   IconStack2 as Layers,
 } from "@tabler/icons-react";
-import { AnimatePresence, motion } from "framer-motion";
+import { createFileRoute } from "@tanstack/react-router";
+import { AnimatePresence, motion } from "motion/react";
 import React, { useState } from "react";
+
+export const Route = createFileRoute("/(public)/services/aso-services")({
+  component: ASOServices,
+});
 
 // --- Components ---
 

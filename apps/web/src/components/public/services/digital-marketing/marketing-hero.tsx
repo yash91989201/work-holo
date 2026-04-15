@@ -1,5 +1,5 @@
 import { IconChevronRight } from "@tabler/icons-react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 export const MarketingHero = () => (
   <section className="relative overflow-hidden bg-[#05070A] px-4 py-20 text-center text-white md:px-12">

@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Image } from "@/components/shared/image";
 import { Button } from "@/components/ui/button";
 
