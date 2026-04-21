@@ -9,21 +9,21 @@ import { useDebouncedValue } from "@tanstack/react-pacer";
 import { Link, useParams } from "@tanstack/react-router";
 import { useState } from "react";
 import { DmUserPicker } from "@/components/modules/communication/dm/user-picker";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import { Badge } from "@work-holo/ui/components/badge";
+import { Button } from "@work-holo/ui/components/button";
+import { Collapsible, CollapsibleTrigger } from "@work-holo/ui/components/collapsible";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from "@/components/ui/hover-card";
+} from "@work-holo/ui/components/hover-card";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from "@/components/ui/input-group";
+} from "@work-holo/ui/components/input-group";
 import {
   SidebarGroup,
   SidebarGroupAction,
@@ -35,9 +35,9 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
   useSidebar,
-} from "@/components/ui/sidebar";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Spinner } from "@/components/ui/spinner";
+} from "@work-holo/ui/components/sidebar";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
+import { Spinner } from "@work-holo/ui/components/spinner";
 import { useDmConversations } from "@/hooks/communications/dm/use-dm-conversations";
 import { useDmUnreadCount } from "@/hooks/communications/dm/use-dm-unread-count";
 import { useAuthedSession } from "@/hooks/use-authed-session";

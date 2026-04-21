@@ -11,66 +11,13 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as publicRouteRouteImport } from './routes/(public)/route'
 import { Route as authenticatedRouteRouteImport } from './routes/(authenticated)/route'
+import { Route as authRouteRouteImport } from './routes/(auth)/route'
 import { Route as publicIndexRouteImport } from './routes/(public)/index'
-import { Route as publicPortfolioRouteImport } from './routes/(public)/portfolio'
-import { Route as publicContactRouteImport } from './routes/(public)/contact'
+import { Route as publicRscDemoRouteImport } from './routes/(public)/rsc-demo'
 import { Route as authSignupRouteImport } from './routes/(auth)/signup'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
-import { Route as publicAboutRouteRouteImport } from './routes/(public)/about/route'
 import { Route as authenticatedSettingsRouteRouteImport } from './routes/(authenticated)/settings/route'
 import { Route as authenticatedPlatformRouteRouteImport } from './routes/(authenticated)/platform/route'
-import { Route as publicServicesWebApplicationDevelopmentRouteImport } from './routes/(public)/services/web-application-development'
-import { Route as publicServicesUxResearchServicesRouteImport } from './routes/(public)/services/ux-research-services'
-import { Route as publicServicesUiUxDesignCompanyRouteImport } from './routes/(public)/services/ui-ux-design-company'
-import { Route as publicServicesSalesforceIntegrationRouteImport } from './routes/(public)/services/salesforce-integration'
-import { Route as publicServicesSalesforceImplementationRouteImport } from './routes/(public)/services/salesforce-implementation'
-import { Route as publicServicesSalesforceConsultingRouteImport } from './routes/(public)/services/salesforce-consulting'
-import { Route as publicServicesSalesCloudRouteImport } from './routes/(public)/services/sales-cloud'
-import { Route as publicServicesReactNativeAppDevelopmentRouteImport } from './routes/(public)/services/react-native-app-development'
-import { Route as publicServicesProductDesignServicesRouteImport } from './routes/(public)/services/product-design-services'
-import { Route as publicServicesMobileAppDevelopmentRouteImport } from './routes/(public)/services/mobile-app-development'
-import { Route as publicServicesMobileAppDesignRouteImport } from './routes/(public)/services/mobile-app-design'
-import { Route as publicServicesLightningMigrationDevelopmentRouteImport } from './routes/(public)/services/lightning-migration-development'
-import { Route as publicServicesIpadAppDevelopmentRouteImport } from './routes/(public)/services/ipad-app-development'
-import { Route as publicServicesIotDevelopmentRouteImport } from './routes/(public)/services/iot-development'
-import { Route as publicServicesIosAppDevelopmentRouteImport } from './routes/(public)/services/ios-app-development'
-import { Route as publicServicesFlutterAppDevelopmentRouteImport } from './routes/(public)/services/flutter-app-development'
-import { Route as publicServicesEnterpriseApplicationDevelopmentRouteImport } from './routes/(public)/services/enterprise-application-development'
-import { Route as publicServicesDevopsServicesRouteImport } from './routes/(public)/services/devops-services'
-import { Route as publicServicesDevopsConsultingServicesRouteImport } from './routes/(public)/services/devops-consulting-services'
-import { Route as publicServicesDesignSystemDevelopmentRouteImport } from './routes/(public)/services/design-system-development'
-import { Route as publicServicesCustomSoftwareDevelopmentRouteImport } from './routes/(public)/services/custom-software-development'
-import { Route as publicServicesCustomCmsDevelopmentRouteImport } from './routes/(public)/services/custom-cms-development'
-import { Route as publicServicesCrossPlatformAppDevelopmentRouteImport } from './routes/(public)/services/cross-platform-app-development'
-import { Route as publicServicesCloudServicesRouteImport } from './routes/(public)/services/cloud-services'
-import { Route as publicServicesCloudSecurityServicesRouteImport } from './routes/(public)/services/cloud-security-services'
-import { Route as publicServicesCloudMigrationServicesRouteImport } from './routes/(public)/services/cloud-migration-services'
-import { Route as publicServicesCloudManagedServicesRouteImport } from './routes/(public)/services/cloud-managed-services'
-import { Route as publicServicesAwsCloudServicesRouteImport } from './routes/(public)/services/aws-cloud-services'
-import { Route as publicServicesAppMaintenanceSupportRouteImport } from './routes/(public)/services/app-maintenance-support'
-import { Route as publicServicesAndroidAppDevelopmentRouteImport } from './routes/(public)/services/android-app-development'
-import { Route as publicServices360PhotographyServicesRouteImport } from './routes/(public)/services/360-photography-services'
-import { Route as publicProductsTicketBookingAppRouteImport } from './routes/(public)/products/ticket-booking-app'
-import { Route as publicProductsTaxiBookingAppRouteImport } from './routes/(public)/products/taxi-booking-app'
-import { Route as publicProductsRealEstateAppRouteImport } from './routes/(public)/products/real-estate-app'
-import { Route as publicProductsOnlineShoppingAppRouteImport } from './routes/(public)/products/online-shopping-app'
-import { Route as publicProductsMultiVendorMarketplaceRouteImport } from './routes/(public)/products/multi-vendor-marketplace'
-import { Route as publicProductsMilkDeliveryAppRouteImport } from './routes/(public)/products/milk-delivery-app'
-import { Route as publicProductsHotelBookingAppRouteImport } from './routes/(public)/products/hotel-booking-app'
-import { Route as publicProductsGroceryDeliveryAppRouteImport } from './routes/(public)/products/grocery-delivery-app'
-import { Route as publicProductsGamingAppRouteImport } from './routes/(public)/products/gaming-app'
-import { Route as publicProductsFoodDeliveryAppRouteImport } from './routes/(public)/products/food-delivery-app'
-import { Route as publicProductsEcommerceAppRouteImport } from './routes/(public)/products/ecommerce-app'
-import { Route as publicProductsELearningAppRouteImport } from './routes/(public)/products/e-learning-app'
-import { Route as publicProductsChefManagementAppRouteImport } from './routes/(public)/products/chef-management-app'
-import { Route as publicProductsCarWashAppRouteImport } from './routes/(public)/products/car-wash-app'
-import { Route as publicAboutVisionMissionRouteImport } from './routes/(public)/about/vision-mission'
-import { Route as publicAboutOurJourneyRouteImport } from './routes/(public)/about/our-journey'
-import { Route as publicAboutNasscomMembershipRouteImport } from './routes/(public)/about/nasscom-membership'
-import { Route as publicAboutLifeAtWorkholoLabsRouteImport } from './routes/(public)/about/life-at-workholo-labs'
-import { Route as publicAboutLeadershipTeamRouteImport } from './routes/(public)/about/leadership-team'
-import { Route as publicAboutCompanyOverviewRouteImport } from './routes/(public)/about/company-overview'
-import { Route as publicAboutAwardsRecognitionRouteImport } from './routes/(public)/about/awards-recognition'
 import { Route as authenticatedOrgNewRouteImport } from './routes/(authenticated)/org/new'
 import { Route as authAcceptInvitationIdRouteImport } from './routes/(auth)/accept-invitation.$id'
 import { Route as authenticatedPlatformDashboardRouteRouteImport } from './routes/(authenticated)/platform/dashboard/route'
@@ -121,35 +68,29 @@ const authenticatedRouteRoute = authenticatedRouteRouteImport.update({
   id: '/(authenticated)',
   getParentRoute: () => rootRouteImport,
 } as any)
+const authRouteRoute = authRouteRouteImport.update({
+  id: '/(auth)',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const publicIndexRoute = publicIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => publicRouteRoute,
 } as any)
-const publicPortfolioRoute = publicPortfolioRouteImport.update({
-  id: '/portfolio',
-  path: '/portfolio',
-  getParentRoute: () => publicRouteRoute,
-} as any)
-const publicContactRoute = publicContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
+const publicRscDemoRoute = publicRscDemoRouteImport.update({
+  id: '/rsc-demo',
+  path: '/rsc-demo',
   getParentRoute: () => publicRouteRoute,
 } as any)
 const authSignupRoute = authSignupRouteImport.update({
-  id: '/(auth)/signup',
+  id: '/signup',
   path: '/signup',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => authRouteRoute,
 } as any)
 const authLoginRoute = authLoginRouteImport.update({
-  id: '/(auth)/login',
+  id: '/login',
   path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const publicAboutRouteRoute = publicAboutRouteRouteImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => publicRouteRoute,
+  getParentRoute: () => authRouteRoute,
 } as any)
 const authenticatedSettingsRouteRoute =
   authenticatedSettingsRouteRouteImport.update({
@@ -163,325 +104,15 @@ const authenticatedPlatformRouteRoute =
     path: '/platform',
     getParentRoute: () => authenticatedRouteRoute,
   } as any)
-const publicServicesWebApplicationDevelopmentRoute =
-  publicServicesWebApplicationDevelopmentRouteImport.update({
-    id: '/services/web-application-development',
-    path: '/services/web-application-development',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicServicesUxResearchServicesRoute =
-  publicServicesUxResearchServicesRouteImport.update({
-    id: '/services/ux-research-services',
-    path: '/services/ux-research-services',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicServicesUiUxDesignCompanyRoute =
-  publicServicesUiUxDesignCompanyRouteImport.update({
-    id: '/services/ui-ux-design-company',
-    path: '/services/ui-ux-design-company',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicServicesSalesforceIntegrationRoute =
-  publicServicesSalesforceIntegrationRouteImport.update({
-    id: '/services/salesforce-integration',
-    path: '/services/salesforce-integration',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicServicesSalesforceImplementationRoute =
-  publicServicesSalesforceImplementationRouteImport.update({
-    id: '/services/salesforce-implementation',
-    path: '/services/salesforce-implementation',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicServicesSalesforceConsultingRoute =
-  publicServicesSalesforceConsultingRouteImport.update({
-    id: '/services/salesforce-consulting',
-    path: '/services/salesforce-consulting',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicServicesSalesCloudRoute =
-  publicServicesSalesCloudRouteImport.update({
-    id: '/services/sales-cloud',
-    path: '/services/sales-cloud',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicServicesReactNativeAppDevelopmentRoute =
-  publicServicesReactNativeAppDevelopmentRouteImport.update({
-    id: '/services/react-native-app-development',
-    path: '/services/react-native-app-development',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicServicesProductDesignServicesRoute =
-  publicServicesProductDesignServicesRouteImport.update({
-    id: '/services/product-design-services',
-    path: '/services/product-design-services',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicServicesMobileAppDevelopmentRoute =
-  publicServicesMobileAppDevelopmentRouteImport.update({
-    id: '/services/mobile-app-development',
-    path: '/services/mobile-app-development',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicServicesMobileAppDesignRoute =
-  publicServicesMobileAppDesignRouteImport.update({
-    id: '/services/mobile-app-design',
-    path: '/services/mobile-app-design',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicServicesLightningMigrationDevelopmentRoute =
-  publicServicesLightningMigrationDevelopmentRouteImport.update({
-    id: '/services/lightning-migration-development',
-    path: '/services/lightning-migration-development',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicServicesIpadAppDevelopmentRoute =
-  publicServicesIpadAppDevelopmentRouteImport.update({
-    id: '/services/ipad-app-development',
-    path: '/services/ipad-app-development',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicServicesIotDevelopmentRoute =
-  publicServicesIotDevelopmentRouteImport.update({
-    id: '/services/iot-development',
-    path: '/services/iot-development',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicServicesIosAppDevelopmentRoute =
-  publicServicesIosAppDevelopmentRouteImport.update({
-    id: '/services/ios-app-development',
-    path: '/services/ios-app-development',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicServicesFlutterAppDevelopmentRoute =
-  publicServicesFlutterAppDevelopmentRouteImport.update({
-    id: '/services/flutter-app-development',
-    path: '/services/flutter-app-development',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicServicesEnterpriseApplicationDevelopmentRoute =
-  publicServicesEnterpriseApplicationDevelopmentRouteImport.update({
-    id: '/services/enterprise-application-development',
-    path: '/services/enterprise-application-development',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicServicesDevopsServicesRoute =
-  publicServicesDevopsServicesRouteImport.update({
-    id: '/services/devops-services',
-    path: '/services/devops-services',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicServicesDevopsConsultingServicesRoute =
-  publicServicesDevopsConsultingServicesRouteImport.update({
-    id: '/services/devops-consulting-services',
-    path: '/services/devops-consulting-services',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicServicesDesignSystemDevelopmentRoute =
-  publicServicesDesignSystemDevelopmentRouteImport.update({
-    id: '/services/design-system-development',
-    path: '/services/design-system-development',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicServicesCustomSoftwareDevelopmentRoute =
-  publicServicesCustomSoftwareDevelopmentRouteImport.update({
-    id: '/services/custom-software-development',
-    path: '/services/custom-software-development',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicServicesCustomCmsDevelopmentRoute =
-  publicServicesCustomCmsDevelopmentRouteImport.update({
-    id: '/services/custom-cms-development',
-    path: '/services/custom-cms-development',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicServicesCrossPlatformAppDevelopmentRoute =
-  publicServicesCrossPlatformAppDevelopmentRouteImport.update({
-    id: '/services/cross-platform-app-development',
-    path: '/services/cross-platform-app-development',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicServicesCloudServicesRoute =
-  publicServicesCloudServicesRouteImport.update({
-    id: '/services/cloud-services',
-    path: '/services/cloud-services',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicServicesCloudSecurityServicesRoute =
-  publicServicesCloudSecurityServicesRouteImport.update({
-    id: '/services/cloud-security-services',
-    path: '/services/cloud-security-services',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicServicesCloudMigrationServicesRoute =
-  publicServicesCloudMigrationServicesRouteImport.update({
-    id: '/services/cloud-migration-services',
-    path: '/services/cloud-migration-services',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicServicesCloudManagedServicesRoute =
-  publicServicesCloudManagedServicesRouteImport.update({
-    id: '/services/cloud-managed-services',
-    path: '/services/cloud-managed-services',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicServicesAwsCloudServicesRoute =
-  publicServicesAwsCloudServicesRouteImport.update({
-    id: '/services/aws-cloud-services',
-    path: '/services/aws-cloud-services',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicServicesAppMaintenanceSupportRoute =
-  publicServicesAppMaintenanceSupportRouteImport.update({
-    id: '/services/app-maintenance-support',
-    path: '/services/app-maintenance-support',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicServicesAndroidAppDevelopmentRoute =
-  publicServicesAndroidAppDevelopmentRouteImport.update({
-    id: '/services/android-app-development',
-    path: '/services/android-app-development',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicServices360PhotographyServicesRoute =
-  publicServices360PhotographyServicesRouteImport.update({
-    id: '/services/360-photography-services',
-    path: '/services/360-photography-services',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicProductsTicketBookingAppRoute =
-  publicProductsTicketBookingAppRouteImport.update({
-    id: '/products/ticket-booking-app',
-    path: '/products/ticket-booking-app',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicProductsTaxiBookingAppRoute =
-  publicProductsTaxiBookingAppRouteImport.update({
-    id: '/products/taxi-booking-app',
-    path: '/products/taxi-booking-app',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicProductsRealEstateAppRoute =
-  publicProductsRealEstateAppRouteImport.update({
-    id: '/products/real-estate-app',
-    path: '/products/real-estate-app',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicProductsOnlineShoppingAppRoute =
-  publicProductsOnlineShoppingAppRouteImport.update({
-    id: '/products/online-shopping-app',
-    path: '/products/online-shopping-app',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicProductsMultiVendorMarketplaceRoute =
-  publicProductsMultiVendorMarketplaceRouteImport.update({
-    id: '/products/multi-vendor-marketplace',
-    path: '/products/multi-vendor-marketplace',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicProductsMilkDeliveryAppRoute =
-  publicProductsMilkDeliveryAppRouteImport.update({
-    id: '/products/milk-delivery-app',
-    path: '/products/milk-delivery-app',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicProductsHotelBookingAppRoute =
-  publicProductsHotelBookingAppRouteImport.update({
-    id: '/products/hotel-booking-app',
-    path: '/products/hotel-booking-app',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicProductsGroceryDeliveryAppRoute =
-  publicProductsGroceryDeliveryAppRouteImport.update({
-    id: '/products/grocery-delivery-app',
-    path: '/products/grocery-delivery-app',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicProductsGamingAppRoute = publicProductsGamingAppRouteImport.update({
-  id: '/products/gaming-app',
-  path: '/products/gaming-app',
-  getParentRoute: () => publicRouteRoute,
-} as any)
-const publicProductsFoodDeliveryAppRoute =
-  publicProductsFoodDeliveryAppRouteImport.update({
-    id: '/products/food-delivery-app',
-    path: '/products/food-delivery-app',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicProductsEcommerceAppRoute =
-  publicProductsEcommerceAppRouteImport.update({
-    id: '/products/ecommerce-app',
-    path: '/products/ecommerce-app',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicProductsELearningAppRoute =
-  publicProductsELearningAppRouteImport.update({
-    id: '/products/e-learning-app',
-    path: '/products/e-learning-app',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicProductsChefManagementAppRoute =
-  publicProductsChefManagementAppRouteImport.update({
-    id: '/products/chef-management-app',
-    path: '/products/chef-management-app',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicProductsCarWashAppRoute =
-  publicProductsCarWashAppRouteImport.update({
-    id: '/products/car-wash-app',
-    path: '/products/car-wash-app',
-    getParentRoute: () => publicRouteRoute,
-  } as any)
-const publicAboutVisionMissionRoute =
-  publicAboutVisionMissionRouteImport.update({
-    id: '/vision-mission',
-    path: '/vision-mission',
-    getParentRoute: () => publicAboutRouteRoute,
-  } as any)
-const publicAboutOurJourneyRoute = publicAboutOurJourneyRouteImport.update({
-  id: '/our-journey',
-  path: '/our-journey',
-  getParentRoute: () => publicAboutRouteRoute,
-} as any)
-const publicAboutNasscomMembershipRoute =
-  publicAboutNasscomMembershipRouteImport.update({
-    id: '/nasscom-membership',
-    path: '/nasscom-membership',
-    getParentRoute: () => publicAboutRouteRoute,
-  } as any)
-const publicAboutLifeAtWorkholoLabsRoute =
-  publicAboutLifeAtWorkholoLabsRouteImport.update({
-    id: '/life-at-workholo-labs',
-    path: '/life-at-workholo-labs',
-    getParentRoute: () => publicAboutRouteRoute,
-  } as any)
-const publicAboutLeadershipTeamRoute =
-  publicAboutLeadershipTeamRouteImport.update({
-    id: '/leadership-team',
-    path: '/leadership-team',
-    getParentRoute: () => publicAboutRouteRoute,
-  } as any)
-const publicAboutCompanyOverviewRoute =
-  publicAboutCompanyOverviewRouteImport.update({
-    id: '/company-overview',
-    path: '/company-overview',
-    getParentRoute: () => publicAboutRouteRoute,
-  } as any)
-const publicAboutAwardsRecognitionRoute =
-  publicAboutAwardsRecognitionRouteImport.update({
-    id: '/awards-recognition',
-    path: '/awards-recognition',
-    getParentRoute: () => publicAboutRouteRoute,
-  } as any)
 const authenticatedOrgNewRoute = authenticatedOrgNewRouteImport.update({
   id: '/org/new',
   path: '/org/new',
   getParentRoute: () => authenticatedRouteRoute,
 } as any)
 const authAcceptInvitationIdRoute = authAcceptInvitationIdRouteImport.update({
-  id: '/(auth)/accept-invitation/$id',
+  id: '/accept-invitation/$id',
   path: '/accept-invitation/$id',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => authRouteRoute,
 } as any)
 const authenticatedPlatformDashboardRouteRoute =
   authenticatedPlatformDashboardRouteRouteImport.update({
@@ -733,68 +364,14 @@ const authenticatedOrgSlugWorkspaceCommunicationChannelsChannelIdIndexRoute =
 export interface FileRoutesByFullPath {
   '/platform': typeof authenticatedPlatformRouteRouteWithChildren
   '/settings': typeof authenticatedSettingsRouteRouteWithChildren
-  '/about': typeof publicAboutRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/signup': typeof authSignupRoute
-  '/contact': typeof publicContactRoute
-  '/portfolio': typeof publicPortfolioRoute
+  '/rsc-demo': typeof publicRscDemoRoute
   '/': typeof publicIndexRoute
   '/org/$slug': typeof authenticatedOrgSlugRouteRouteWithChildren
   '/platform/dashboard': typeof authenticatedPlatformDashboardRouteRouteWithChildren
   '/accept-invitation/$id': typeof authAcceptInvitationIdRoute
   '/org/new': typeof authenticatedOrgNewRoute
-  '/about/awards-recognition': typeof publicAboutAwardsRecognitionRoute
-  '/about/company-overview': typeof publicAboutCompanyOverviewRoute
-  '/about/leadership-team': typeof publicAboutLeadershipTeamRoute
-  '/about/life-at-workholo-labs': typeof publicAboutLifeAtWorkholoLabsRoute
-  '/about/nasscom-membership': typeof publicAboutNasscomMembershipRoute
-  '/about/our-journey': typeof publicAboutOurJourneyRoute
-  '/about/vision-mission': typeof publicAboutVisionMissionRoute
-  '/products/car-wash-app': typeof publicProductsCarWashAppRoute
-  '/products/chef-management-app': typeof publicProductsChefManagementAppRoute
-  '/products/e-learning-app': typeof publicProductsELearningAppRoute
-  '/products/ecommerce-app': typeof publicProductsEcommerceAppRoute
-  '/products/food-delivery-app': typeof publicProductsFoodDeliveryAppRoute
-  '/products/gaming-app': typeof publicProductsGamingAppRoute
-  '/products/grocery-delivery-app': typeof publicProductsGroceryDeliveryAppRoute
-  '/products/hotel-booking-app': typeof publicProductsHotelBookingAppRoute
-  '/products/milk-delivery-app': typeof publicProductsMilkDeliveryAppRoute
-  '/products/multi-vendor-marketplace': typeof publicProductsMultiVendorMarketplaceRoute
-  '/products/online-shopping-app': typeof publicProductsOnlineShoppingAppRoute
-  '/products/real-estate-app': typeof publicProductsRealEstateAppRoute
-  '/products/taxi-booking-app': typeof publicProductsTaxiBookingAppRoute
-  '/products/ticket-booking-app': typeof publicProductsTicketBookingAppRoute
-  '/services/360-photography-services': typeof publicServices360PhotographyServicesRoute
-  '/services/android-app-development': typeof publicServicesAndroidAppDevelopmentRoute
-  '/services/app-maintenance-support': typeof publicServicesAppMaintenanceSupportRoute
-  '/services/aws-cloud-services': typeof publicServicesAwsCloudServicesRoute
-  '/services/cloud-managed-services': typeof publicServicesCloudManagedServicesRoute
-  '/services/cloud-migration-services': typeof publicServicesCloudMigrationServicesRoute
-  '/services/cloud-security-services': typeof publicServicesCloudSecurityServicesRoute
-  '/services/cloud-services': typeof publicServicesCloudServicesRoute
-  '/services/cross-platform-app-development': typeof publicServicesCrossPlatformAppDevelopmentRoute
-  '/services/custom-cms-development': typeof publicServicesCustomCmsDevelopmentRoute
-  '/services/custom-software-development': typeof publicServicesCustomSoftwareDevelopmentRoute
-  '/services/design-system-development': typeof publicServicesDesignSystemDevelopmentRoute
-  '/services/devops-consulting-services': typeof publicServicesDevopsConsultingServicesRoute
-  '/services/devops-services': typeof publicServicesDevopsServicesRoute
-  '/services/enterprise-application-development': typeof publicServicesEnterpriseApplicationDevelopmentRoute
-  '/services/flutter-app-development': typeof publicServicesFlutterAppDevelopmentRoute
-  '/services/ios-app-development': typeof publicServicesIosAppDevelopmentRoute
-  '/services/iot-development': typeof publicServicesIotDevelopmentRoute
-  '/services/ipad-app-development': typeof publicServicesIpadAppDevelopmentRoute
-  '/services/lightning-migration-development': typeof publicServicesLightningMigrationDevelopmentRoute
-  '/services/mobile-app-design': typeof publicServicesMobileAppDesignRoute
-  '/services/mobile-app-development': typeof publicServicesMobileAppDevelopmentRoute
-  '/services/product-design-services': typeof publicServicesProductDesignServicesRoute
-  '/services/react-native-app-development': typeof publicServicesReactNativeAppDevelopmentRoute
-  '/services/sales-cloud': typeof publicServicesSalesCloudRoute
-  '/services/salesforce-consulting': typeof publicServicesSalesforceConsultingRoute
-  '/services/salesforce-implementation': typeof publicServicesSalesforceImplementationRoute
-  '/services/salesforce-integration': typeof publicServicesSalesforceIntegrationRoute
-  '/services/ui-ux-design-company': typeof publicServicesUiUxDesignCompanyRoute
-  '/services/ux-research-services': typeof publicServicesUxResearchServicesRoute
-  '/services/web-application-development': typeof publicServicesWebApplicationDevelopmentRoute
   '/org/$slug/console': typeof authenticatedOrgSlugConsoleRouteRouteWithChildren
   '/org/$slug/manage': typeof authenticatedOrgSlugManageRouteRouteWithChildren
   '/org/$slug/workspace': typeof authenticatedOrgSlugWorkspaceRouteRouteWithChildren
@@ -836,67 +413,13 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/platform': typeof authenticatedPlatformRouteRouteWithChildren
   '/settings': typeof authenticatedSettingsRouteRouteWithChildren
-  '/about': typeof publicAboutRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/signup': typeof authSignupRoute
-  '/contact': typeof publicContactRoute
-  '/portfolio': typeof publicPortfolioRoute
+  '/rsc-demo': typeof publicRscDemoRoute
   '/': typeof publicIndexRoute
   '/org/$slug': typeof authenticatedOrgSlugRouteRouteWithChildren
   '/accept-invitation/$id': typeof authAcceptInvitationIdRoute
   '/org/new': typeof authenticatedOrgNewRoute
-  '/about/awards-recognition': typeof publicAboutAwardsRecognitionRoute
-  '/about/company-overview': typeof publicAboutCompanyOverviewRoute
-  '/about/leadership-team': typeof publicAboutLeadershipTeamRoute
-  '/about/life-at-workholo-labs': typeof publicAboutLifeAtWorkholoLabsRoute
-  '/about/nasscom-membership': typeof publicAboutNasscomMembershipRoute
-  '/about/our-journey': typeof publicAboutOurJourneyRoute
-  '/about/vision-mission': typeof publicAboutVisionMissionRoute
-  '/products/car-wash-app': typeof publicProductsCarWashAppRoute
-  '/products/chef-management-app': typeof publicProductsChefManagementAppRoute
-  '/products/e-learning-app': typeof publicProductsELearningAppRoute
-  '/products/ecommerce-app': typeof publicProductsEcommerceAppRoute
-  '/products/food-delivery-app': typeof publicProductsFoodDeliveryAppRoute
-  '/products/gaming-app': typeof publicProductsGamingAppRoute
-  '/products/grocery-delivery-app': typeof publicProductsGroceryDeliveryAppRoute
-  '/products/hotel-booking-app': typeof publicProductsHotelBookingAppRoute
-  '/products/milk-delivery-app': typeof publicProductsMilkDeliveryAppRoute
-  '/products/multi-vendor-marketplace': typeof publicProductsMultiVendorMarketplaceRoute
-  '/products/online-shopping-app': typeof publicProductsOnlineShoppingAppRoute
-  '/products/real-estate-app': typeof publicProductsRealEstateAppRoute
-  '/products/taxi-booking-app': typeof publicProductsTaxiBookingAppRoute
-  '/products/ticket-booking-app': typeof publicProductsTicketBookingAppRoute
-  '/services/360-photography-services': typeof publicServices360PhotographyServicesRoute
-  '/services/android-app-development': typeof publicServicesAndroidAppDevelopmentRoute
-  '/services/app-maintenance-support': typeof publicServicesAppMaintenanceSupportRoute
-  '/services/aws-cloud-services': typeof publicServicesAwsCloudServicesRoute
-  '/services/cloud-managed-services': typeof publicServicesCloudManagedServicesRoute
-  '/services/cloud-migration-services': typeof publicServicesCloudMigrationServicesRoute
-  '/services/cloud-security-services': typeof publicServicesCloudSecurityServicesRoute
-  '/services/cloud-services': typeof publicServicesCloudServicesRoute
-  '/services/cross-platform-app-development': typeof publicServicesCrossPlatformAppDevelopmentRoute
-  '/services/custom-cms-development': typeof publicServicesCustomCmsDevelopmentRoute
-  '/services/custom-software-development': typeof publicServicesCustomSoftwareDevelopmentRoute
-  '/services/design-system-development': typeof publicServicesDesignSystemDevelopmentRoute
-  '/services/devops-consulting-services': typeof publicServicesDevopsConsultingServicesRoute
-  '/services/devops-services': typeof publicServicesDevopsServicesRoute
-  '/services/enterprise-application-development': typeof publicServicesEnterpriseApplicationDevelopmentRoute
-  '/services/flutter-app-development': typeof publicServicesFlutterAppDevelopmentRoute
-  '/services/ios-app-development': typeof publicServicesIosAppDevelopmentRoute
-  '/services/iot-development': typeof publicServicesIotDevelopmentRoute
-  '/services/ipad-app-development': typeof publicServicesIpadAppDevelopmentRoute
-  '/services/lightning-migration-development': typeof publicServicesLightningMigrationDevelopmentRoute
-  '/services/mobile-app-design': typeof publicServicesMobileAppDesignRoute
-  '/services/mobile-app-development': typeof publicServicesMobileAppDevelopmentRoute
-  '/services/product-design-services': typeof publicServicesProductDesignServicesRoute
-  '/services/react-native-app-development': typeof publicServicesReactNativeAppDevelopmentRoute
-  '/services/sales-cloud': typeof publicServicesSalesCloudRoute
-  '/services/salesforce-consulting': typeof publicServicesSalesforceConsultingRoute
-  '/services/salesforce-implementation': typeof publicServicesSalesforceImplementationRoute
-  '/services/salesforce-integration': typeof publicServicesSalesforceIntegrationRoute
-  '/services/ui-ux-design-company': typeof publicServicesUiUxDesignCompanyRoute
-  '/services/ux-research-services': typeof publicServicesUxResearchServicesRoute
-  '/services/web-application-development': typeof publicServicesWebApplicationDevelopmentRoute
   '/settings/account/notifications': typeof authenticatedSettingsAccountNotificationsRoute
   '/settings/account/preferences': typeof authenticatedSettingsAccountPreferencesRoute
   '/settings/account/profile': typeof authenticatedSettingsAccountProfileRoute
@@ -932,72 +455,19 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/(auth)': typeof authRouteRouteWithChildren
   '/(authenticated)': typeof authenticatedRouteRouteWithChildren
   '/(public)': typeof publicRouteRouteWithChildren
   '/(authenticated)/platform': typeof authenticatedPlatformRouteRouteWithChildren
   '/(authenticated)/settings': typeof authenticatedSettingsRouteRouteWithChildren
-  '/(public)/about': typeof publicAboutRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/signup': typeof authSignupRoute
-  '/(public)/contact': typeof publicContactRoute
-  '/(public)/portfolio': typeof publicPortfolioRoute
+  '/(public)/rsc-demo': typeof publicRscDemoRoute
   '/(public)/': typeof publicIndexRoute
   '/(authenticated)/org/$slug': typeof authenticatedOrgSlugRouteRouteWithChildren
   '/(authenticated)/platform/dashboard': typeof authenticatedPlatformDashboardRouteRouteWithChildren
   '/(auth)/accept-invitation/$id': typeof authAcceptInvitationIdRoute
   '/(authenticated)/org/new': typeof authenticatedOrgNewRoute
-  '/(public)/about/awards-recognition': typeof publicAboutAwardsRecognitionRoute
-  '/(public)/about/company-overview': typeof publicAboutCompanyOverviewRoute
-  '/(public)/about/leadership-team': typeof publicAboutLeadershipTeamRoute
-  '/(public)/about/life-at-workholo-labs': typeof publicAboutLifeAtWorkholoLabsRoute
-  '/(public)/about/nasscom-membership': typeof publicAboutNasscomMembershipRoute
-  '/(public)/about/our-journey': typeof publicAboutOurJourneyRoute
-  '/(public)/about/vision-mission': typeof publicAboutVisionMissionRoute
-  '/(public)/products/car-wash-app': typeof publicProductsCarWashAppRoute
-  '/(public)/products/chef-management-app': typeof publicProductsChefManagementAppRoute
-  '/(public)/products/e-learning-app': typeof publicProductsELearningAppRoute
-  '/(public)/products/ecommerce-app': typeof publicProductsEcommerceAppRoute
-  '/(public)/products/food-delivery-app': typeof publicProductsFoodDeliveryAppRoute
-  '/(public)/products/gaming-app': typeof publicProductsGamingAppRoute
-  '/(public)/products/grocery-delivery-app': typeof publicProductsGroceryDeliveryAppRoute
-  '/(public)/products/hotel-booking-app': typeof publicProductsHotelBookingAppRoute
-  '/(public)/products/milk-delivery-app': typeof publicProductsMilkDeliveryAppRoute
-  '/(public)/products/multi-vendor-marketplace': typeof publicProductsMultiVendorMarketplaceRoute
-  '/(public)/products/online-shopping-app': typeof publicProductsOnlineShoppingAppRoute
-  '/(public)/products/real-estate-app': typeof publicProductsRealEstateAppRoute
-  '/(public)/products/taxi-booking-app': typeof publicProductsTaxiBookingAppRoute
-  '/(public)/products/ticket-booking-app': typeof publicProductsTicketBookingAppRoute
-  '/(public)/services/360-photography-services': typeof publicServices360PhotographyServicesRoute
-  '/(public)/services/android-app-development': typeof publicServicesAndroidAppDevelopmentRoute
-  '/(public)/services/app-maintenance-support': typeof publicServicesAppMaintenanceSupportRoute
-  '/(public)/services/aws-cloud-services': typeof publicServicesAwsCloudServicesRoute
-  '/(public)/services/cloud-managed-services': typeof publicServicesCloudManagedServicesRoute
-  '/(public)/services/cloud-migration-services': typeof publicServicesCloudMigrationServicesRoute
-  '/(public)/services/cloud-security-services': typeof publicServicesCloudSecurityServicesRoute
-  '/(public)/services/cloud-services': typeof publicServicesCloudServicesRoute
-  '/(public)/services/cross-platform-app-development': typeof publicServicesCrossPlatformAppDevelopmentRoute
-  '/(public)/services/custom-cms-development': typeof publicServicesCustomCmsDevelopmentRoute
-  '/(public)/services/custom-software-development': typeof publicServicesCustomSoftwareDevelopmentRoute
-  '/(public)/services/design-system-development': typeof publicServicesDesignSystemDevelopmentRoute
-  '/(public)/services/devops-consulting-services': typeof publicServicesDevopsConsultingServicesRoute
-  '/(public)/services/devops-services': typeof publicServicesDevopsServicesRoute
-  '/(public)/services/enterprise-application-development': typeof publicServicesEnterpriseApplicationDevelopmentRoute
-  '/(public)/services/flutter-app-development': typeof publicServicesFlutterAppDevelopmentRoute
-  '/(public)/services/ios-app-development': typeof publicServicesIosAppDevelopmentRoute
-  '/(public)/services/iot-development': typeof publicServicesIotDevelopmentRoute
-  '/(public)/services/ipad-app-development': typeof publicServicesIpadAppDevelopmentRoute
-  '/(public)/services/lightning-migration-development': typeof publicServicesLightningMigrationDevelopmentRoute
-  '/(public)/services/mobile-app-design': typeof publicServicesMobileAppDesignRoute
-  '/(public)/services/mobile-app-development': typeof publicServicesMobileAppDevelopmentRoute
-  '/(public)/services/product-design-services': typeof publicServicesProductDesignServicesRoute
-  '/(public)/services/react-native-app-development': typeof publicServicesReactNativeAppDevelopmentRoute
-  '/(public)/services/sales-cloud': typeof publicServicesSalesCloudRoute
-  '/(public)/services/salesforce-consulting': typeof publicServicesSalesforceConsultingRoute
-  '/(public)/services/salesforce-implementation': typeof publicServicesSalesforceImplementationRoute
-  '/(public)/services/salesforce-integration': typeof publicServicesSalesforceIntegrationRoute
-  '/(public)/services/ui-ux-design-company': typeof publicServicesUiUxDesignCompanyRoute
-  '/(public)/services/ux-research-services': typeof publicServicesUxResearchServicesRoute
-  '/(public)/services/web-application-development': typeof publicServicesWebApplicationDevelopmentRoute
   '/(authenticated)/org/$slug/console': typeof authenticatedOrgSlugConsoleRouteRouteWithChildren
   '/(authenticated)/org/$slug/manage': typeof authenticatedOrgSlugManageRouteRouteWithChildren
   '/(authenticated)/org/$slug/workspace': typeof authenticatedOrgSlugWorkspaceRouteRouteWithChildren
@@ -1041,68 +511,14 @@ export interface FileRouteTypes {
   fullPaths:
     | '/platform'
     | '/settings'
-    | '/about'
     | '/login'
     | '/signup'
-    | '/contact'
-    | '/portfolio'
+    | '/rsc-demo'
     | '/'
     | '/org/$slug'
     | '/platform/dashboard'
     | '/accept-invitation/$id'
     | '/org/new'
-    | '/about/awards-recognition'
-    | '/about/company-overview'
-    | '/about/leadership-team'
-    | '/about/life-at-workholo-labs'
-    | '/about/nasscom-membership'
-    | '/about/our-journey'
-    | '/about/vision-mission'
-    | '/products/car-wash-app'
-    | '/products/chef-management-app'
-    | '/products/e-learning-app'
-    | '/products/ecommerce-app'
-    | '/products/food-delivery-app'
-    | '/products/gaming-app'
-    | '/products/grocery-delivery-app'
-    | '/products/hotel-booking-app'
-    | '/products/milk-delivery-app'
-    | '/products/multi-vendor-marketplace'
-    | '/products/online-shopping-app'
-    | '/products/real-estate-app'
-    | '/products/taxi-booking-app'
-    | '/products/ticket-booking-app'
-    | '/services/360-photography-services'
-    | '/services/android-app-development'
-    | '/services/app-maintenance-support'
-    | '/services/aws-cloud-services'
-    | '/services/cloud-managed-services'
-    | '/services/cloud-migration-services'
-    | '/services/cloud-security-services'
-    | '/services/cloud-services'
-    | '/services/cross-platform-app-development'
-    | '/services/custom-cms-development'
-    | '/services/custom-software-development'
-    | '/services/design-system-development'
-    | '/services/devops-consulting-services'
-    | '/services/devops-services'
-    | '/services/enterprise-application-development'
-    | '/services/flutter-app-development'
-    | '/services/ios-app-development'
-    | '/services/iot-development'
-    | '/services/ipad-app-development'
-    | '/services/lightning-migration-development'
-    | '/services/mobile-app-design'
-    | '/services/mobile-app-development'
-    | '/services/product-design-services'
-    | '/services/react-native-app-development'
-    | '/services/sales-cloud'
-    | '/services/salesforce-consulting'
-    | '/services/salesforce-implementation'
-    | '/services/salesforce-integration'
-    | '/services/ui-ux-design-company'
-    | '/services/ux-research-services'
-    | '/services/web-application-development'
     | '/org/$slug/console'
     | '/org/$slug/manage'
     | '/org/$slug/workspace'
@@ -1144,67 +560,13 @@ export interface FileRouteTypes {
   to:
     | '/platform'
     | '/settings'
-    | '/about'
     | '/login'
     | '/signup'
-    | '/contact'
-    | '/portfolio'
+    | '/rsc-demo'
     | '/'
     | '/org/$slug'
     | '/accept-invitation/$id'
     | '/org/new'
-    | '/about/awards-recognition'
-    | '/about/company-overview'
-    | '/about/leadership-team'
-    | '/about/life-at-workholo-labs'
-    | '/about/nasscom-membership'
-    | '/about/our-journey'
-    | '/about/vision-mission'
-    | '/products/car-wash-app'
-    | '/products/chef-management-app'
-    | '/products/e-learning-app'
-    | '/products/ecommerce-app'
-    | '/products/food-delivery-app'
-    | '/products/gaming-app'
-    | '/products/grocery-delivery-app'
-    | '/products/hotel-booking-app'
-    | '/products/milk-delivery-app'
-    | '/products/multi-vendor-marketplace'
-    | '/products/online-shopping-app'
-    | '/products/real-estate-app'
-    | '/products/taxi-booking-app'
-    | '/products/ticket-booking-app'
-    | '/services/360-photography-services'
-    | '/services/android-app-development'
-    | '/services/app-maintenance-support'
-    | '/services/aws-cloud-services'
-    | '/services/cloud-managed-services'
-    | '/services/cloud-migration-services'
-    | '/services/cloud-security-services'
-    | '/services/cloud-services'
-    | '/services/cross-platform-app-development'
-    | '/services/custom-cms-development'
-    | '/services/custom-software-development'
-    | '/services/design-system-development'
-    | '/services/devops-consulting-services'
-    | '/services/devops-services'
-    | '/services/enterprise-application-development'
-    | '/services/flutter-app-development'
-    | '/services/ios-app-development'
-    | '/services/iot-development'
-    | '/services/ipad-app-development'
-    | '/services/lightning-migration-development'
-    | '/services/mobile-app-design'
-    | '/services/mobile-app-development'
-    | '/services/product-design-services'
-    | '/services/react-native-app-development'
-    | '/services/sales-cloud'
-    | '/services/salesforce-consulting'
-    | '/services/salesforce-implementation'
-    | '/services/salesforce-integration'
-    | '/services/ui-ux-design-company'
-    | '/services/ux-research-services'
-    | '/services/web-application-development'
     | '/settings/account/notifications'
     | '/settings/account/preferences'
     | '/settings/account/profile'
@@ -1239,72 +601,19 @@ export interface FileRouteTypes {
     | '/org/$slug/workspace/communication/dm/$conversationId'
   id:
     | '__root__'
+    | '/(auth)'
     | '/(authenticated)'
     | '/(public)'
     | '/(authenticated)/platform'
     | '/(authenticated)/settings'
-    | '/(public)/about'
     | '/(auth)/login'
     | '/(auth)/signup'
-    | '/(public)/contact'
-    | '/(public)/portfolio'
+    | '/(public)/rsc-demo'
     | '/(public)/'
     | '/(authenticated)/org/$slug'
     | '/(authenticated)/platform/dashboard'
     | '/(auth)/accept-invitation/$id'
     | '/(authenticated)/org/new'
-    | '/(public)/about/awards-recognition'
-    | '/(public)/about/company-overview'
-    | '/(public)/about/leadership-team'
-    | '/(public)/about/life-at-workholo-labs'
-    | '/(public)/about/nasscom-membership'
-    | '/(public)/about/our-journey'
-    | '/(public)/about/vision-mission'
-    | '/(public)/products/car-wash-app'
-    | '/(public)/products/chef-management-app'
-    | '/(public)/products/e-learning-app'
-    | '/(public)/products/ecommerce-app'
-    | '/(public)/products/food-delivery-app'
-    | '/(public)/products/gaming-app'
-    | '/(public)/products/grocery-delivery-app'
-    | '/(public)/products/hotel-booking-app'
-    | '/(public)/products/milk-delivery-app'
-    | '/(public)/products/multi-vendor-marketplace'
-    | '/(public)/products/online-shopping-app'
-    | '/(public)/products/real-estate-app'
-    | '/(public)/products/taxi-booking-app'
-    | '/(public)/products/ticket-booking-app'
-    | '/(public)/services/360-photography-services'
-    | '/(public)/services/android-app-development'
-    | '/(public)/services/app-maintenance-support'
-    | '/(public)/services/aws-cloud-services'
-    | '/(public)/services/cloud-managed-services'
-    | '/(public)/services/cloud-migration-services'
-    | '/(public)/services/cloud-security-services'
-    | '/(public)/services/cloud-services'
-    | '/(public)/services/cross-platform-app-development'
-    | '/(public)/services/custom-cms-development'
-    | '/(public)/services/custom-software-development'
-    | '/(public)/services/design-system-development'
-    | '/(public)/services/devops-consulting-services'
-    | '/(public)/services/devops-services'
-    | '/(public)/services/enterprise-application-development'
-    | '/(public)/services/flutter-app-development'
-    | '/(public)/services/ios-app-development'
-    | '/(public)/services/iot-development'
-    | '/(public)/services/ipad-app-development'
-    | '/(public)/services/lightning-migration-development'
-    | '/(public)/services/mobile-app-design'
-    | '/(public)/services/mobile-app-development'
-    | '/(public)/services/product-design-services'
-    | '/(public)/services/react-native-app-development'
-    | '/(public)/services/sales-cloud'
-    | '/(public)/services/salesforce-consulting'
-    | '/(public)/services/salesforce-implementation'
-    | '/(public)/services/salesforce-integration'
-    | '/(public)/services/ui-ux-design-company'
-    | '/(public)/services/ux-research-services'
-    | '/(public)/services/web-application-development'
     | '/(authenticated)/org/$slug/console'
     | '/(authenticated)/org/$slug/manage'
     | '/(authenticated)/org/$slug/workspace'
@@ -1345,11 +654,9 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  authRouteRoute: typeof authRouteRouteWithChildren
   authenticatedRouteRoute: typeof authenticatedRouteRouteWithChildren
   publicRouteRoute: typeof publicRouteRouteWithChildren
-  authLoginRoute: typeof authLoginRoute
-  authSignupRoute: typeof authSignupRoute
-  authAcceptInvitationIdRoute: typeof authAcceptInvitationIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -1368,6 +675,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(auth)': {
+      id: '/(auth)'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof authRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/(public)/': {
       id: '/(public)/'
       path: '/'
@@ -1375,18 +689,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof publicIndexRouteImport
       parentRoute: typeof publicRouteRoute
     }
-    '/(public)/portfolio': {
-      id: '/(public)/portfolio'
-      path: '/portfolio'
-      fullPath: '/portfolio'
-      preLoaderRoute: typeof publicPortfolioRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/contact': {
-      id: '/(public)/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof publicContactRouteImport
+    '/(public)/rsc-demo': {
+      id: '/(public)/rsc-demo'
+      path: '/rsc-demo'
+      fullPath: '/rsc-demo'
+      preLoaderRoute: typeof publicRscDemoRouteImport
       parentRoute: typeof publicRouteRoute
     }
     '/(auth)/signup': {
@@ -1394,21 +701,14 @@ declare module '@tanstack/react-router' {
       path: '/signup'
       fullPath: '/signup'
       preLoaderRoute: typeof authSignupRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof authRouteRoute
     }
     '/(auth)/login': {
       id: '/(auth)/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof authLoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/(public)/about': {
-      id: '/(public)/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof publicAboutRouteRouteImport
-      parentRoute: typeof publicRouteRoute
+      parentRoute: typeof authRouteRoute
     }
     '/(authenticated)/settings': {
       id: '/(authenticated)/settings'
@@ -1424,370 +724,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authenticatedPlatformRouteRouteImport
       parentRoute: typeof authenticatedRouteRoute
     }
-    '/(public)/services/web-application-development': {
-      id: '/(public)/services/web-application-development'
-      path: '/services/web-application-development'
-      fullPath: '/services/web-application-development'
-      preLoaderRoute: typeof publicServicesWebApplicationDevelopmentRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/services/ux-research-services': {
-      id: '/(public)/services/ux-research-services'
-      path: '/services/ux-research-services'
-      fullPath: '/services/ux-research-services'
-      preLoaderRoute: typeof publicServicesUxResearchServicesRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/services/ui-ux-design-company': {
-      id: '/(public)/services/ui-ux-design-company'
-      path: '/services/ui-ux-design-company'
-      fullPath: '/services/ui-ux-design-company'
-      preLoaderRoute: typeof publicServicesUiUxDesignCompanyRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/services/salesforce-integration': {
-      id: '/(public)/services/salesforce-integration'
-      path: '/services/salesforce-integration'
-      fullPath: '/services/salesforce-integration'
-      preLoaderRoute: typeof publicServicesSalesforceIntegrationRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/services/salesforce-implementation': {
-      id: '/(public)/services/salesforce-implementation'
-      path: '/services/salesforce-implementation'
-      fullPath: '/services/salesforce-implementation'
-      preLoaderRoute: typeof publicServicesSalesforceImplementationRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/services/salesforce-consulting': {
-      id: '/(public)/services/salesforce-consulting'
-      path: '/services/salesforce-consulting'
-      fullPath: '/services/salesforce-consulting'
-      preLoaderRoute: typeof publicServicesSalesforceConsultingRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/services/sales-cloud': {
-      id: '/(public)/services/sales-cloud'
-      path: '/services/sales-cloud'
-      fullPath: '/services/sales-cloud'
-      preLoaderRoute: typeof publicServicesSalesCloudRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/services/react-native-app-development': {
-      id: '/(public)/services/react-native-app-development'
-      path: '/services/react-native-app-development'
-      fullPath: '/services/react-native-app-development'
-      preLoaderRoute: typeof publicServicesReactNativeAppDevelopmentRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/services/product-design-services': {
-      id: '/(public)/services/product-design-services'
-      path: '/services/product-design-services'
-      fullPath: '/services/product-design-services'
-      preLoaderRoute: typeof publicServicesProductDesignServicesRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/services/mobile-app-development': {
-      id: '/(public)/services/mobile-app-development'
-      path: '/services/mobile-app-development'
-      fullPath: '/services/mobile-app-development'
-      preLoaderRoute: typeof publicServicesMobileAppDevelopmentRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/services/mobile-app-design': {
-      id: '/(public)/services/mobile-app-design'
-      path: '/services/mobile-app-design'
-      fullPath: '/services/mobile-app-design'
-      preLoaderRoute: typeof publicServicesMobileAppDesignRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/services/lightning-migration-development': {
-      id: '/(public)/services/lightning-migration-development'
-      path: '/services/lightning-migration-development'
-      fullPath: '/services/lightning-migration-development'
-      preLoaderRoute: typeof publicServicesLightningMigrationDevelopmentRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/services/ipad-app-development': {
-      id: '/(public)/services/ipad-app-development'
-      path: '/services/ipad-app-development'
-      fullPath: '/services/ipad-app-development'
-      preLoaderRoute: typeof publicServicesIpadAppDevelopmentRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/services/iot-development': {
-      id: '/(public)/services/iot-development'
-      path: '/services/iot-development'
-      fullPath: '/services/iot-development'
-      preLoaderRoute: typeof publicServicesIotDevelopmentRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/services/ios-app-development': {
-      id: '/(public)/services/ios-app-development'
-      path: '/services/ios-app-development'
-      fullPath: '/services/ios-app-development'
-      preLoaderRoute: typeof publicServicesIosAppDevelopmentRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/services/flutter-app-development': {
-      id: '/(public)/services/flutter-app-development'
-      path: '/services/flutter-app-development'
-      fullPath: '/services/flutter-app-development'
-      preLoaderRoute: typeof publicServicesFlutterAppDevelopmentRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/services/enterprise-application-development': {
-      id: '/(public)/services/enterprise-application-development'
-      path: '/services/enterprise-application-development'
-      fullPath: '/services/enterprise-application-development'
-      preLoaderRoute: typeof publicServicesEnterpriseApplicationDevelopmentRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/services/devops-services': {
-      id: '/(public)/services/devops-services'
-      path: '/services/devops-services'
-      fullPath: '/services/devops-services'
-      preLoaderRoute: typeof publicServicesDevopsServicesRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/services/devops-consulting-services': {
-      id: '/(public)/services/devops-consulting-services'
-      path: '/services/devops-consulting-services'
-      fullPath: '/services/devops-consulting-services'
-      preLoaderRoute: typeof publicServicesDevopsConsultingServicesRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/services/design-system-development': {
-      id: '/(public)/services/design-system-development'
-      path: '/services/design-system-development'
-      fullPath: '/services/design-system-development'
-      preLoaderRoute: typeof publicServicesDesignSystemDevelopmentRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/services/custom-software-development': {
-      id: '/(public)/services/custom-software-development'
-      path: '/services/custom-software-development'
-      fullPath: '/services/custom-software-development'
-      preLoaderRoute: typeof publicServicesCustomSoftwareDevelopmentRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/services/custom-cms-development': {
-      id: '/(public)/services/custom-cms-development'
-      path: '/services/custom-cms-development'
-      fullPath: '/services/custom-cms-development'
-      preLoaderRoute: typeof publicServicesCustomCmsDevelopmentRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/services/cross-platform-app-development': {
-      id: '/(public)/services/cross-platform-app-development'
-      path: '/services/cross-platform-app-development'
-      fullPath: '/services/cross-platform-app-development'
-      preLoaderRoute: typeof publicServicesCrossPlatformAppDevelopmentRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/services/cloud-services': {
-      id: '/(public)/services/cloud-services'
-      path: '/services/cloud-services'
-      fullPath: '/services/cloud-services'
-      preLoaderRoute: typeof publicServicesCloudServicesRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/services/cloud-security-services': {
-      id: '/(public)/services/cloud-security-services'
-      path: '/services/cloud-security-services'
-      fullPath: '/services/cloud-security-services'
-      preLoaderRoute: typeof publicServicesCloudSecurityServicesRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/services/cloud-migration-services': {
-      id: '/(public)/services/cloud-migration-services'
-      path: '/services/cloud-migration-services'
-      fullPath: '/services/cloud-migration-services'
-      preLoaderRoute: typeof publicServicesCloudMigrationServicesRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/services/cloud-managed-services': {
-      id: '/(public)/services/cloud-managed-services'
-      path: '/services/cloud-managed-services'
-      fullPath: '/services/cloud-managed-services'
-      preLoaderRoute: typeof publicServicesCloudManagedServicesRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/services/aws-cloud-services': {
-      id: '/(public)/services/aws-cloud-services'
-      path: '/services/aws-cloud-services'
-      fullPath: '/services/aws-cloud-services'
-      preLoaderRoute: typeof publicServicesAwsCloudServicesRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/services/app-maintenance-support': {
-      id: '/(public)/services/app-maintenance-support'
-      path: '/services/app-maintenance-support'
-      fullPath: '/services/app-maintenance-support'
-      preLoaderRoute: typeof publicServicesAppMaintenanceSupportRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/services/android-app-development': {
-      id: '/(public)/services/android-app-development'
-      path: '/services/android-app-development'
-      fullPath: '/services/android-app-development'
-      preLoaderRoute: typeof publicServicesAndroidAppDevelopmentRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/services/360-photography-services': {
-      id: '/(public)/services/360-photography-services'
-      path: '/services/360-photography-services'
-      fullPath: '/services/360-photography-services'
-      preLoaderRoute: typeof publicServices360PhotographyServicesRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/products/ticket-booking-app': {
-      id: '/(public)/products/ticket-booking-app'
-      path: '/products/ticket-booking-app'
-      fullPath: '/products/ticket-booking-app'
-      preLoaderRoute: typeof publicProductsTicketBookingAppRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/products/taxi-booking-app': {
-      id: '/(public)/products/taxi-booking-app'
-      path: '/products/taxi-booking-app'
-      fullPath: '/products/taxi-booking-app'
-      preLoaderRoute: typeof publicProductsTaxiBookingAppRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/products/real-estate-app': {
-      id: '/(public)/products/real-estate-app'
-      path: '/products/real-estate-app'
-      fullPath: '/products/real-estate-app'
-      preLoaderRoute: typeof publicProductsRealEstateAppRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/products/online-shopping-app': {
-      id: '/(public)/products/online-shopping-app'
-      path: '/products/online-shopping-app'
-      fullPath: '/products/online-shopping-app'
-      preLoaderRoute: typeof publicProductsOnlineShoppingAppRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/products/multi-vendor-marketplace': {
-      id: '/(public)/products/multi-vendor-marketplace'
-      path: '/products/multi-vendor-marketplace'
-      fullPath: '/products/multi-vendor-marketplace'
-      preLoaderRoute: typeof publicProductsMultiVendorMarketplaceRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/products/milk-delivery-app': {
-      id: '/(public)/products/milk-delivery-app'
-      path: '/products/milk-delivery-app'
-      fullPath: '/products/milk-delivery-app'
-      preLoaderRoute: typeof publicProductsMilkDeliveryAppRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/products/hotel-booking-app': {
-      id: '/(public)/products/hotel-booking-app'
-      path: '/products/hotel-booking-app'
-      fullPath: '/products/hotel-booking-app'
-      preLoaderRoute: typeof publicProductsHotelBookingAppRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/products/grocery-delivery-app': {
-      id: '/(public)/products/grocery-delivery-app'
-      path: '/products/grocery-delivery-app'
-      fullPath: '/products/grocery-delivery-app'
-      preLoaderRoute: typeof publicProductsGroceryDeliveryAppRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/products/gaming-app': {
-      id: '/(public)/products/gaming-app'
-      path: '/products/gaming-app'
-      fullPath: '/products/gaming-app'
-      preLoaderRoute: typeof publicProductsGamingAppRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/products/food-delivery-app': {
-      id: '/(public)/products/food-delivery-app'
-      path: '/products/food-delivery-app'
-      fullPath: '/products/food-delivery-app'
-      preLoaderRoute: typeof publicProductsFoodDeliveryAppRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/products/ecommerce-app': {
-      id: '/(public)/products/ecommerce-app'
-      path: '/products/ecommerce-app'
-      fullPath: '/products/ecommerce-app'
-      preLoaderRoute: typeof publicProductsEcommerceAppRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/products/e-learning-app': {
-      id: '/(public)/products/e-learning-app'
-      path: '/products/e-learning-app'
-      fullPath: '/products/e-learning-app'
-      preLoaderRoute: typeof publicProductsELearningAppRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/products/chef-management-app': {
-      id: '/(public)/products/chef-management-app'
-      path: '/products/chef-management-app'
-      fullPath: '/products/chef-management-app'
-      preLoaderRoute: typeof publicProductsChefManagementAppRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/products/car-wash-app': {
-      id: '/(public)/products/car-wash-app'
-      path: '/products/car-wash-app'
-      fullPath: '/products/car-wash-app'
-      preLoaderRoute: typeof publicProductsCarWashAppRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/about/vision-mission': {
-      id: '/(public)/about/vision-mission'
-      path: '/vision-mission'
-      fullPath: '/about/vision-mission'
-      preLoaderRoute: typeof publicAboutVisionMissionRouteImport
-      parentRoute: typeof publicAboutRouteRoute
-    }
-    '/(public)/about/our-journey': {
-      id: '/(public)/about/our-journey'
-      path: '/our-journey'
-      fullPath: '/about/our-journey'
-      preLoaderRoute: typeof publicAboutOurJourneyRouteImport
-      parentRoute: typeof publicAboutRouteRoute
-    }
-    '/(public)/about/nasscom-membership': {
-      id: '/(public)/about/nasscom-membership'
-      path: '/nasscom-membership'
-      fullPath: '/about/nasscom-membership'
-      preLoaderRoute: typeof publicAboutNasscomMembershipRouteImport
-      parentRoute: typeof publicAboutRouteRoute
-    }
-    '/(public)/about/life-at-workholo-labs': {
-      id: '/(public)/about/life-at-workholo-labs'
-      path: '/life-at-workholo-labs'
-      fullPath: '/about/life-at-workholo-labs'
-      preLoaderRoute: typeof publicAboutLifeAtWorkholoLabsRouteImport
-      parentRoute: typeof publicAboutRouteRoute
-    }
-    '/(public)/about/leadership-team': {
-      id: '/(public)/about/leadership-team'
-      path: '/leadership-team'
-      fullPath: '/about/leadership-team'
-      preLoaderRoute: typeof publicAboutLeadershipTeamRouteImport
-      parentRoute: typeof publicAboutRouteRoute
-    }
-    '/(public)/about/company-overview': {
-      id: '/(public)/about/company-overview'
-      path: '/company-overview'
-      fullPath: '/about/company-overview'
-      preLoaderRoute: typeof publicAboutCompanyOverviewRouteImport
-      parentRoute: typeof publicAboutRouteRoute
-    }
-    '/(public)/about/awards-recognition': {
-      id: '/(public)/about/awards-recognition'
-      path: '/awards-recognition'
-      fullPath: '/about/awards-recognition'
-      preLoaderRoute: typeof publicAboutAwardsRecognitionRouteImport
-      parentRoute: typeof publicAboutRouteRoute
-    }
     '/(authenticated)/org/new': {
       id: '/(authenticated)/org/new'
       path: '/org/new'
@@ -1800,7 +736,7 @@ declare module '@tanstack/react-router' {
       path: '/accept-invitation/$id'
       fullPath: '/accept-invitation/$id'
       preLoaderRoute: typeof authAcceptInvitationIdRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof authRouteRoute
     }
     '/(authenticated)/platform/dashboard': {
       id: '/(authenticated)/platform/dashboard'
@@ -2078,6 +1014,22 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface authRouteRouteChildren {
+  authLoginRoute: typeof authLoginRoute
+  authSignupRoute: typeof authSignupRoute
+  authAcceptInvitationIdRoute: typeof authAcceptInvitationIdRoute
+}
+
+const authRouteRouteChildren: authRouteRouteChildren = {
+  authLoginRoute: authLoginRoute,
+  authSignupRoute: authSignupRoute,
+  authAcceptInvitationIdRoute: authAcceptInvitationIdRoute,
+}
+
+const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
+  authRouteRouteChildren,
+)
+
 interface authenticatedPlatformDashboardRouteRouteChildren {
   authenticatedPlatformDashboardIndexRoute: typeof authenticatedPlatformDashboardIndexRoute
   authenticatedPlatformDashboardOrganizationsOrgIdRoute: typeof authenticatedPlatformDashboardOrganizationsOrgIdRoute
@@ -2328,153 +1280,14 @@ const authenticatedRouteRouteChildren: authenticatedRouteRouteChildren = {
 const authenticatedRouteRouteWithChildren =
   authenticatedRouteRoute._addFileChildren(authenticatedRouteRouteChildren)
 
-interface publicAboutRouteRouteChildren {
-  publicAboutAwardsRecognitionRoute: typeof publicAboutAwardsRecognitionRoute
-  publicAboutCompanyOverviewRoute: typeof publicAboutCompanyOverviewRoute
-  publicAboutLeadershipTeamRoute: typeof publicAboutLeadershipTeamRoute
-  publicAboutLifeAtWorkholoLabsRoute: typeof publicAboutLifeAtWorkholoLabsRoute
-  publicAboutNasscomMembershipRoute: typeof publicAboutNasscomMembershipRoute
-  publicAboutOurJourneyRoute: typeof publicAboutOurJourneyRoute
-  publicAboutVisionMissionRoute: typeof publicAboutVisionMissionRoute
-}
-
-const publicAboutRouteRouteChildren: publicAboutRouteRouteChildren = {
-  publicAboutAwardsRecognitionRoute: publicAboutAwardsRecognitionRoute,
-  publicAboutCompanyOverviewRoute: publicAboutCompanyOverviewRoute,
-  publicAboutLeadershipTeamRoute: publicAboutLeadershipTeamRoute,
-  publicAboutLifeAtWorkholoLabsRoute: publicAboutLifeAtWorkholoLabsRoute,
-  publicAboutNasscomMembershipRoute: publicAboutNasscomMembershipRoute,
-  publicAboutOurJourneyRoute: publicAboutOurJourneyRoute,
-  publicAboutVisionMissionRoute: publicAboutVisionMissionRoute,
-}
-
-const publicAboutRouteRouteWithChildren =
-  publicAboutRouteRoute._addFileChildren(publicAboutRouteRouteChildren)
-
 interface publicRouteRouteChildren {
-  publicAboutRouteRoute: typeof publicAboutRouteRouteWithChildren
-  publicContactRoute: typeof publicContactRoute
-  publicPortfolioRoute: typeof publicPortfolioRoute
+  publicRscDemoRoute: typeof publicRscDemoRoute
   publicIndexRoute: typeof publicIndexRoute
-  publicProductsCarWashAppRoute: typeof publicProductsCarWashAppRoute
-  publicProductsChefManagementAppRoute: typeof publicProductsChefManagementAppRoute
-  publicProductsELearningAppRoute: typeof publicProductsELearningAppRoute
-  publicProductsEcommerceAppRoute: typeof publicProductsEcommerceAppRoute
-  publicProductsFoodDeliveryAppRoute: typeof publicProductsFoodDeliveryAppRoute
-  publicProductsGamingAppRoute: typeof publicProductsGamingAppRoute
-  publicProductsGroceryDeliveryAppRoute: typeof publicProductsGroceryDeliveryAppRoute
-  publicProductsHotelBookingAppRoute: typeof publicProductsHotelBookingAppRoute
-  publicProductsMilkDeliveryAppRoute: typeof publicProductsMilkDeliveryAppRoute
-  publicProductsMultiVendorMarketplaceRoute: typeof publicProductsMultiVendorMarketplaceRoute
-  publicProductsOnlineShoppingAppRoute: typeof publicProductsOnlineShoppingAppRoute
-  publicProductsRealEstateAppRoute: typeof publicProductsRealEstateAppRoute
-  publicProductsTaxiBookingAppRoute: typeof publicProductsTaxiBookingAppRoute
-  publicProductsTicketBookingAppRoute: typeof publicProductsTicketBookingAppRoute
-  publicServices360PhotographyServicesRoute: typeof publicServices360PhotographyServicesRoute
-  publicServicesAndroidAppDevelopmentRoute: typeof publicServicesAndroidAppDevelopmentRoute
-  publicServicesAppMaintenanceSupportRoute: typeof publicServicesAppMaintenanceSupportRoute
-  publicServicesAwsCloudServicesRoute: typeof publicServicesAwsCloudServicesRoute
-  publicServicesCloudManagedServicesRoute: typeof publicServicesCloudManagedServicesRoute
-  publicServicesCloudMigrationServicesRoute: typeof publicServicesCloudMigrationServicesRoute
-  publicServicesCloudSecurityServicesRoute: typeof publicServicesCloudSecurityServicesRoute
-  publicServicesCloudServicesRoute: typeof publicServicesCloudServicesRoute
-  publicServicesCrossPlatformAppDevelopmentRoute: typeof publicServicesCrossPlatformAppDevelopmentRoute
-  publicServicesCustomCmsDevelopmentRoute: typeof publicServicesCustomCmsDevelopmentRoute
-  publicServicesCustomSoftwareDevelopmentRoute: typeof publicServicesCustomSoftwareDevelopmentRoute
-  publicServicesDesignSystemDevelopmentRoute: typeof publicServicesDesignSystemDevelopmentRoute
-  publicServicesDevopsConsultingServicesRoute: typeof publicServicesDevopsConsultingServicesRoute
-  publicServicesDevopsServicesRoute: typeof publicServicesDevopsServicesRoute
-  publicServicesEnterpriseApplicationDevelopmentRoute: typeof publicServicesEnterpriseApplicationDevelopmentRoute
-  publicServicesFlutterAppDevelopmentRoute: typeof publicServicesFlutterAppDevelopmentRoute
-  publicServicesIosAppDevelopmentRoute: typeof publicServicesIosAppDevelopmentRoute
-  publicServicesIotDevelopmentRoute: typeof publicServicesIotDevelopmentRoute
-  publicServicesIpadAppDevelopmentRoute: typeof publicServicesIpadAppDevelopmentRoute
-  publicServicesLightningMigrationDevelopmentRoute: typeof publicServicesLightningMigrationDevelopmentRoute
-  publicServicesMobileAppDesignRoute: typeof publicServicesMobileAppDesignRoute
-  publicServicesMobileAppDevelopmentRoute: typeof publicServicesMobileAppDevelopmentRoute
-  publicServicesProductDesignServicesRoute: typeof publicServicesProductDesignServicesRoute
-  publicServicesReactNativeAppDevelopmentRoute: typeof publicServicesReactNativeAppDevelopmentRoute
-  publicServicesSalesCloudRoute: typeof publicServicesSalesCloudRoute
-  publicServicesSalesforceConsultingRoute: typeof publicServicesSalesforceConsultingRoute
-  publicServicesSalesforceImplementationRoute: typeof publicServicesSalesforceImplementationRoute
-  publicServicesSalesforceIntegrationRoute: typeof publicServicesSalesforceIntegrationRoute
-  publicServicesUiUxDesignCompanyRoute: typeof publicServicesUiUxDesignCompanyRoute
-  publicServicesUxResearchServicesRoute: typeof publicServicesUxResearchServicesRoute
-  publicServicesWebApplicationDevelopmentRoute: typeof publicServicesWebApplicationDevelopmentRoute
 }
 
 const publicRouteRouteChildren: publicRouteRouteChildren = {
-  publicAboutRouteRoute: publicAboutRouteRouteWithChildren,
-  publicContactRoute: publicContactRoute,
-  publicPortfolioRoute: publicPortfolioRoute,
+  publicRscDemoRoute: publicRscDemoRoute,
   publicIndexRoute: publicIndexRoute,
-  publicProductsCarWashAppRoute: publicProductsCarWashAppRoute,
-  publicProductsChefManagementAppRoute: publicProductsChefManagementAppRoute,
-  publicProductsELearningAppRoute: publicProductsELearningAppRoute,
-  publicProductsEcommerceAppRoute: publicProductsEcommerceAppRoute,
-  publicProductsFoodDeliveryAppRoute: publicProductsFoodDeliveryAppRoute,
-  publicProductsGamingAppRoute: publicProductsGamingAppRoute,
-  publicProductsGroceryDeliveryAppRoute: publicProductsGroceryDeliveryAppRoute,
-  publicProductsHotelBookingAppRoute: publicProductsHotelBookingAppRoute,
-  publicProductsMilkDeliveryAppRoute: publicProductsMilkDeliveryAppRoute,
-  publicProductsMultiVendorMarketplaceRoute:
-    publicProductsMultiVendorMarketplaceRoute,
-  publicProductsOnlineShoppingAppRoute: publicProductsOnlineShoppingAppRoute,
-  publicProductsRealEstateAppRoute: publicProductsRealEstateAppRoute,
-  publicProductsTaxiBookingAppRoute: publicProductsTaxiBookingAppRoute,
-  publicProductsTicketBookingAppRoute: publicProductsTicketBookingAppRoute,
-  publicServices360PhotographyServicesRoute:
-    publicServices360PhotographyServicesRoute,
-  publicServicesAndroidAppDevelopmentRoute:
-    publicServicesAndroidAppDevelopmentRoute,
-  publicServicesAppMaintenanceSupportRoute:
-    publicServicesAppMaintenanceSupportRoute,
-  publicServicesAwsCloudServicesRoute: publicServicesAwsCloudServicesRoute,
-  publicServicesCloudManagedServicesRoute:
-    publicServicesCloudManagedServicesRoute,
-  publicServicesCloudMigrationServicesRoute:
-    publicServicesCloudMigrationServicesRoute,
-  publicServicesCloudSecurityServicesRoute:
-    publicServicesCloudSecurityServicesRoute,
-  publicServicesCloudServicesRoute: publicServicesCloudServicesRoute,
-  publicServicesCrossPlatformAppDevelopmentRoute:
-    publicServicesCrossPlatformAppDevelopmentRoute,
-  publicServicesCustomCmsDevelopmentRoute:
-    publicServicesCustomCmsDevelopmentRoute,
-  publicServicesCustomSoftwareDevelopmentRoute:
-    publicServicesCustomSoftwareDevelopmentRoute,
-  publicServicesDesignSystemDevelopmentRoute:
-    publicServicesDesignSystemDevelopmentRoute,
-  publicServicesDevopsConsultingServicesRoute:
-    publicServicesDevopsConsultingServicesRoute,
-  publicServicesDevopsServicesRoute: publicServicesDevopsServicesRoute,
-  publicServicesEnterpriseApplicationDevelopmentRoute:
-    publicServicesEnterpriseApplicationDevelopmentRoute,
-  publicServicesFlutterAppDevelopmentRoute:
-    publicServicesFlutterAppDevelopmentRoute,
-  publicServicesIosAppDevelopmentRoute: publicServicesIosAppDevelopmentRoute,
-  publicServicesIotDevelopmentRoute: publicServicesIotDevelopmentRoute,
-  publicServicesIpadAppDevelopmentRoute: publicServicesIpadAppDevelopmentRoute,
-  publicServicesLightningMigrationDevelopmentRoute:
-    publicServicesLightningMigrationDevelopmentRoute,
-  publicServicesMobileAppDesignRoute: publicServicesMobileAppDesignRoute,
-  publicServicesMobileAppDevelopmentRoute:
-    publicServicesMobileAppDevelopmentRoute,
-  publicServicesProductDesignServicesRoute:
-    publicServicesProductDesignServicesRoute,
-  publicServicesReactNativeAppDevelopmentRoute:
-    publicServicesReactNativeAppDevelopmentRoute,
-  publicServicesSalesCloudRoute: publicServicesSalesCloudRoute,
-  publicServicesSalesforceConsultingRoute:
-    publicServicesSalesforceConsultingRoute,
-  publicServicesSalesforceImplementationRoute:
-    publicServicesSalesforceImplementationRoute,
-  publicServicesSalesforceIntegrationRoute:
-    publicServicesSalesforceIntegrationRoute,
-  publicServicesUiUxDesignCompanyRoute: publicServicesUiUxDesignCompanyRoute,
-  publicServicesUxResearchServicesRoute: publicServicesUxResearchServicesRoute,
-  publicServicesWebApplicationDevelopmentRoute:
-    publicServicesWebApplicationDevelopmentRoute,
 }
 
 const publicRouteRouteWithChildren = publicRouteRoute._addFileChildren(
@@ -2482,12 +1295,19 @@ const publicRouteRouteWithChildren = publicRouteRoute._addFileChildren(
 )
 
 const rootRouteChildren: RootRouteChildren = {
+  authRouteRoute: authRouteRouteWithChildren,
   authenticatedRouteRoute: authenticatedRouteRouteWithChildren,
   publicRouteRoute: publicRouteRouteWithChildren,
-  authLoginRoute: authLoginRoute,
-  authSignupRoute: authSignupRoute,
-  authAcceptInvitationIdRoute: authAcceptInvitationIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

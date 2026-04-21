@@ -7,9 +7,9 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Switch } from "@/components/ui/switch";
+} from "@work-holo/ui/components/select";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
+import { Switch } from "@work-holo/ui/components/switch";
 import {
   Table,
   TableBody,
@@ -17,13 +17,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@work-holo/ui/components/table";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@work-holo/ui/components/tooltip";
 import { useNotificationPermission } from "@/hooks/use-notification-permission";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
 import { queryClient, queryUtils } from "@/utils/orpc";

@@ -8,8 +8,8 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Suspense, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge } from "@work-holo/ui/components/badge";
+import { Button } from "@work-holo/ui/components/button";
 import {
   Card,
   CardContent,
@@ -17,12 +17,12 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Spinner } from "@/components/ui/spinner";
+} from "@work-holo/ui/components/card";
+import { Checkbox } from "@work-holo/ui/components/checkbox";
+import { RadioGroup, RadioGroupItem } from "@work-holo/ui/components/radio-group";
+import { Separator } from "@work-holo/ui/components/separator";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
+import { Spinner } from "@work-holo/ui/components/spinner";
 import {
   useModuleConfig,
   useUpdateModuleConfig,

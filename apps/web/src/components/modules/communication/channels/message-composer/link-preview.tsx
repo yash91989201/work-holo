@@ -1,7 +1,7 @@
 import { IconX } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@work-holo/ui/components/button";
+import { Card, CardContent } from "@work-holo/ui/components/card";
 import { cn } from "@/lib/utils";
 
 interface LinkPreviewData {

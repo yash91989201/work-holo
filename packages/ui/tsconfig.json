@@ -1,0 +1,14 @@
+{
+  "extends": "@work-holo/config/tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "paths": {
+      "@work-holo/ui/*": ["./src/*"]
+    },
+    "strictNullChecks": true,
+    "noUncheckedIndexedAccess": false
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["node_modules", "src/components/chart.tsx"]
+}

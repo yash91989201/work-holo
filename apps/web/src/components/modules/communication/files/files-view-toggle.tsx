@@ -1,6 +1,6 @@
 import { IconLayoutGrid, IconTable } from "@tabler/icons-react";
 import { useNavigate, useSearch } from "@tanstack/react-router";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { ToggleGroup, ToggleGroupItem } from "@work-holo/ui/components/toggle-group";
 import { cn } from "@/lib/utils";
 
 type ViewType = "table" | "grid";

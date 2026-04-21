@@ -8,20 +8,20 @@ import {
   IconTrash,
 } from "@tabler/icons-react";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@work-holo/ui/components/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@work-holo/ui/components/dropdown-menu";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@work-holo/ui/components/tooltip";
 
 interface DmMessageActionsProps {
   canEdit: boolean;

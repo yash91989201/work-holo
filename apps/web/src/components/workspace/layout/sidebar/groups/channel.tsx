@@ -9,19 +9,19 @@ import { useDebouncedValue } from "@tanstack/react-pacer";
 import { Link, useParams } from "@tanstack/react-router";
 import { useState } from "react";
 import { CreateChannelForm } from "@/components/modules/communication/channels/create-channel-form";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge } from "@work-holo/ui/components/badge";
+import { Button } from "@work-holo/ui/components/button";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from "@/components/ui/hover-card";
+} from "@work-holo/ui/components/hover-card";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from "@/components/ui/input-group";
+} from "@work-holo/ui/components/input-group";
 import {
   SidebarGroup,
   SidebarGroupAction,
@@ -33,8 +33,8 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
   useSidebar,
-} from "@/components/ui/sidebar";
-import { Spinner } from "@/components/ui/spinner";
+} from "@work-holo/ui/components/sidebar";
+import { Spinner } from "@work-holo/ui/components/spinner";
 import { useChannelUnreadCounts } from "@/hooks/communications/use-channel-unread-counts";
 import { useUserChannels } from "@/hooks/communications/use-user-channels";
 import { Can } from "@/lib/permission";

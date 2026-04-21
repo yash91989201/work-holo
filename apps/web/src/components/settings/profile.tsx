@@ -9,8 +9,8 @@ import {
 } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import { Button } from "@work-holo/ui/components/button";
 import {
   Dialog,
   DialogContent,
@@ -19,31 +19,31 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@work-holo/ui/components/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { FieldGroup } from "@/components/ui/field";
-import { useAppForm } from "@/components/ui/form/hooks";
+} from "@work-holo/ui/components/dropdown-menu";
+import { FieldGroup } from "@work-holo/ui/components/field";
+import { useAppForm } from "@work-holo/ui/components/form/hooks";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from "@/components/ui/input-group";
+} from "@work-holo/ui/components/input-group";
 import {
   Item,
   ItemActions,
   ItemContent,
   ItemDescription,
   ItemTitle,
-} from "@/components/ui/item";
-import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Spinner } from "@/components/ui/spinner";
+} from "@work-holo/ui/components/item";
+import { Separator } from "@work-holo/ui/components/separator";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
+import { Spinner } from "@work-holo/ui/components/spinner";
 import { useProfileMutation } from "@/hooks/use-profile-mutation";
 import { useSession } from "@/hooks/use-session";
 import { authClient } from "@/lib/auth-client";

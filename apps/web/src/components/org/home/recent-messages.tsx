@@ -3,9 +3,9 @@ import { eq, useLiveQuery } from "@tanstack/react-db";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import DOMPurify from "dompurify";
 import parse from "html-react-parser";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import { Badge } from "@work-holo/ui/components/badge";
+import { Button } from "@work-holo/ui/components/button";
 import {
   Card,
   CardAction,
@@ -13,13 +13,13 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@work-holo/ui/components/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@work-holo/ui/components/dropdown-menu";
 import {
   Item,
   ItemActions,
@@ -29,8 +29,8 @@ import {
   ItemHeader,
   ItemMedia,
   ItemTitle,
-} from "@/components/ui/item";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@work-holo/ui/components/item";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
 import { channelReadCollection } from "@/db/collections";
 import { useMessageMutations } from "@/hooks/communications/use-message-mutations";
 import { useRecentMessages } from "@/hooks/communications/use-recent-messages";

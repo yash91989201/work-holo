@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 import { Suspense, useState } from "react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { Button } from "@work-holo/ui/components/button";
 import {
   Dialog,
   DialogContent,
@@ -12,11 +12,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { FieldGroup } from "@/components/ui/field";
-import { useAppForm } from "@/components/ui/form/hooks";
-import { SelectItem } from "@/components/ui/select";
-import { Spinner } from "@/components/ui/spinner";
+} from "@work-holo/ui/components/dialog";
+import { FieldGroup } from "@work-holo/ui/components/field";
+import { useAppForm } from "@work-holo/ui/components/form/hooks";
+import { SelectItem } from "@work-holo/ui/components/select";
+import { Spinner } from "@work-holo/ui/components/spinner";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { CreateChannelFormSchema } from "@/lib/schemas/communication/channel";
 import { queryClient, queryUtils } from "@/utils/orpc";

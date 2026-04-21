@@ -5,7 +5,7 @@ import {
   IconSunFilled,
 } from "@tabler/icons-react";
 import { useTheme } from "next-themes";
-import { Button } from "@/components/ui/button";
+import { Button } from "@work-holo/ui/components/button";
 import {
   Item,
   ItemActions,
@@ -13,7 +13,7 @@ import {
   ItemDescription,
   ItemHeader,
   ItemTitle,
-} from "@/components/ui/item";
+} from "@work-holo/ui/components/item";
 import {
   Select,
   SelectContent,
@@ -22,9 +22,9 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { Switch } from "@/components/ui/switch";
+} from "@work-holo/ui/components/select";
+import { Separator } from "@work-holo/ui/components/separator";
+import { Switch } from "@work-holo/ui/components/switch";
 import {
   type FontFamily,
   type FontSize,

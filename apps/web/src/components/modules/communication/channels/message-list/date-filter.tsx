@@ -1,12 +1,12 @@
 import { IconCalendarWeekFilled, IconSquareXFilled } from "@tabler/icons-react";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+import { Button } from "@work-holo/ui/components/button";
+import { Calendar } from "@work-holo/ui/components/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@work-holo/ui/components/popover";
 import { cn } from "@/lib/utils";
 
 interface DateFilterProps {

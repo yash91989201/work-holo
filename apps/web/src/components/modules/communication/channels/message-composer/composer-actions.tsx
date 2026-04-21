@@ -5,26 +5,26 @@ import {
   IconPaperclip,
   IconSend,
 } from "@tabler/icons-react";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@work-holo/ui/components/badge";
 import {
   EmojiPicker,
   EmojiPickerContent,
   EmojiPickerFooter,
   EmojiPickerSearch,
-} from "@/components/ui/emoji-picker";
-import { InputGroupButton } from "@/components/ui/input-group";
+} from "@work-holo/ui/components/emoji-picker";
+import { InputGroupButton } from "@work-holo/ui/components/input-group";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { Spinner } from "@/components/ui/spinner";
+} from "@work-holo/ui/components/popover";
+import { Spinner } from "@work-holo/ui/components/spinner";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@work-holo/ui/components/tooltip";
 import { cn } from "@/lib/utils";
 
 interface ComposerActionsProps {

@@ -16,20 +16,20 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { ButtonGroup } from "@/components/ui/button-group";
+} from "@work-holo/ui/components/alert-dialog";
+import { Button } from "@work-holo/ui/components/button";
+import { ButtonGroup } from "@work-holo/ui/components/button-group";
 import {
   EmojiPicker,
   EmojiPickerContent,
   EmojiPickerFooter,
   EmojiPickerSearch,
-} from "@/components/ui/emoji-picker";
+} from "@work-holo/ui/components/emoji-picker";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@work-holo/ui/components/popover";
 import { cn } from "@/lib/utils";
 
 const QUICK_REACTIONS = ["👍", "😂", "🎉", "👀"] as const;

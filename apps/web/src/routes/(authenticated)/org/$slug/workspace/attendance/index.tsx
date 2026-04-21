@@ -6,14 +6,14 @@ import { Suspense, useMemo, useState } from "react";
 import { AttendanceAnalyticsSummary } from "@/components/modules/attendance/analytics-summary";
 import { MarkAttendance } from "@/components/modules/attendance/mark-attendance";
 import { WorkBlocksList } from "@/components/modules/attendance/work-blocks-list";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@work-holo/ui/components/badge";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@work-holo/ui/components/select";
 import { queryUtils } from "@/utils/orpc";
 
 export const Route = createFileRoute(

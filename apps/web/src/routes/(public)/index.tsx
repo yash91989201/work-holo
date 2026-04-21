@@ -1,17 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  BigTextSection,
-  ContactPreview,
-  FutureSection,
-  HeroSection,
-  LogoBar,
-  MarqueeSection,
-  PortfolioPreview,
-  ServicesOverview,
-  StatsSection,
-  TeamSection,
-  TestimonialsSection,
-} from "@/components/public/home";
+
+import { CTASection } from "@/components/public/cta-section";
+import { FeaturesSection } from "@/components/public/features-section";
+import { HeroSection } from "@/components/public/hero-section";
+import { NoteSection } from "@/components/public/note-section";
 
 export const Route = createFileRoute("/(public)/")({
   component: HomePage,
@@ -19,18 +11,11 @@ export const Route = createFileRoute("/(public)/")({
 
 function HomePage() {
   return (
-    <div className="w-full overflow-x-hidden selection:bg-primary selection:text-primary-foreground">
+    <main className="container mx-auto w-full">
       <HeroSection />
-      <LogoBar />
-      <ServicesOverview />
-      <BigTextSection />
-      <FutureSection />
-      <StatsSection />
-      <TeamSection />
-      <MarqueeSection />
-      <PortfolioPreview />
-      <TestimonialsSection />
-      <ContactPreview />
-    </div>
+      <FeaturesSection />
+      <NoteSection />
+      <CTASection />
+    </main>
   );
 }

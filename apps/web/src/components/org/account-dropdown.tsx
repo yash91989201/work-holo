@@ -21,8 +21,8 @@ import {
   useRouter,
 } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import { Badge } from "@work-holo/ui/components/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,8 +34,8 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@work-holo/ui/components/dropdown-menu";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { useMemberRole } from "@/hooks/use-member-role";
 import { useOrgPresence, useSetManualStatus } from "@/hooks/use-presence";

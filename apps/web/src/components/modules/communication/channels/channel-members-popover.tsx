@@ -1,13 +1,13 @@
 import { IconUserFilled } from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import { Badge } from "@work-holo/ui/components/badge";
+import { Button } from "@work-holo/ui/components/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@work-holo/ui/components/popover";
 import { queryUtils } from "@/utils/orpc";
 
 interface ChannelMembersPopoverProps {

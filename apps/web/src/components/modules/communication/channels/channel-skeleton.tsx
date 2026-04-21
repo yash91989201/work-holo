@@ -4,11 +4,11 @@ import {
   IconPaperclip,
   IconSend,
 } from "@tabler/icons-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@work-holo/ui/components/badge";
+import { Button } from "@work-holo/ui/components/button";
+import { ScrollArea } from "@work-holo/ui/components/scroll-area";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
+import { Textarea } from "@work-holo/ui/components/textarea";
 
 const MessageRowSkeleton = () => (
   <div className="flex gap-3 px-4 py-3">

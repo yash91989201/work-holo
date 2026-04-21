@@ -11,8 +11,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+} from "@work-holo/ui/components/alert-dialog";
+import { Button } from "@work-holo/ui/components/button";
 import { queryClient, queryUtils } from "@/utils/orpc";
 
 interface RemoveMemberDialogProps {

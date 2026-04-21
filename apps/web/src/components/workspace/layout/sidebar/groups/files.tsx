@@ -7,7 +7,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
+} from "@work-holo/ui/components/sidebar";
 
 export const DEFAULT_FILE_SEARCH = {
   page: 1,

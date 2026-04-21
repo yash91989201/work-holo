@@ -114,10 +114,6 @@ function applyTheme(theme: ThemeConfig) {
     "--tracking-normal",
     letterSpacingMap[theme.letterSpacing]
   );
-
-  document.body.style.fontSize = fontSizeMap[theme.fontSize];
-  document.body.style.fontFamily = fontFamilyMap[theme.fontFamily];
-  document.body.style.letterSpacing = letterSpacingMap[theme.letterSpacing];
 }
 
 export const useThemeStore = create<ThemeStore>()(

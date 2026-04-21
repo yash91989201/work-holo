@@ -7,18 +7,18 @@ import {
 } from "@tabler/icons-react";
 import type { Editor } from "@tiptap/core";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@work-holo/ui/components/button";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from "@/components/ui/input-group";
+} from "@work-holo/ui/components/input-group";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@work-holo/ui/components/popover";
 
 interface LinkBubbleMenuProps {
   editor: Editor;

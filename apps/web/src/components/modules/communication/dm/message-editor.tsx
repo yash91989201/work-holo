@@ -18,33 +18,33 @@ import {
   IconStrikethrough,
 } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { ButtonGroup } from "@/components/ui/button-group";
+import { Button } from "@work-holo/ui/components/button";
+import { ButtonGroup } from "@work-holo/ui/components/button-group";
 import {
   EmojiPicker,
   EmojiPickerContent,
   EmojiPickerFooter,
   EmojiPickerSearch,
-} from "@/components/ui/emoji-picker";
+} from "@work-holo/ui/components/emoji-picker";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from "@/components/ui/input-group";
+} from "@work-holo/ui/components/input-group";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { Separator } from "@/components/ui/separator";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+} from "@work-holo/ui/components/popover";
+import { Separator } from "@work-holo/ui/components/separator";
+import { ToggleGroup, ToggleGroupItem } from "@work-holo/ui/components/toggle-group";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@work-holo/ui/components/tooltip";
 import { cn } from "@/lib/utils";
 
 type FocusHandler = (() => void) | null;

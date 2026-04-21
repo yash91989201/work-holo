@@ -29,7 +29,7 @@ export type LogInFormType = z.infer<typeof LogInFormSchema>;
 Import the custom form hook:
 
 ```ts
-import { useAppForm } from "@/components/ui/form/hooks";
+import { useAppForm } from "@work-holo/ui/components/form/hooks";
 ```
 
 Initialize the form:
@@ -114,10 +114,10 @@ import { formOptions } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { FieldGroup } from "@/components/ui/field";
-import { useAppForm } from "@/components/ui/form/hooks";
-import { Spinner } from "@/components/ui/spinner";
+import { Button } from "@work-holo/ui/components/button";
+import { FieldGroup } from "@work-holo/ui/components/field";
+import { useAppForm } from "@work-holo/ui/components/form/hooks";
+import { Spinner } from "@work-holo/ui/components/spinner";
 import { ExampleFormSchema } from "@/lib/schemas/example";
 import type { ExampleFormType } from "@/lib/types";
 import { queryUtils } from "@/utils/orpc";

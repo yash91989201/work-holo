@@ -4,7 +4,7 @@
     "outDir": "dist",
     "rootDir": "..",
     "rootDirs": ["."],
-    "baseUrl": ".",
+
     "ignoreDeprecations": "6.0",
     "strictNullChecks": true
   },

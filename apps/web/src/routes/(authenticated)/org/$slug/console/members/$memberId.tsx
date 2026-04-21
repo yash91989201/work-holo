@@ -20,11 +20,11 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+} from "@work-holo/ui/components/alert-dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import { Badge } from "@work-holo/ui/components/badge";
+import { Button } from "@work-holo/ui/components/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@work-holo/ui/components/card";
 import {
   Dialog,
   DialogContent,
@@ -32,13 +32,13 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { FieldGroup } from "@/components/ui/field";
-import { useAppForm } from "@/components/ui/form/hooks";
-import { SelectItem } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Spinner } from "@/components/ui/spinner";
+} from "@work-holo/ui/components/dialog";
+import { FieldGroup } from "@work-holo/ui/components/field";
+import { useAppForm } from "@work-holo/ui/components/form/hooks";
+import { SelectItem } from "@work-holo/ui/components/select";
+import { Separator } from "@work-holo/ui/components/separator";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
+import { Spinner } from "@work-holo/ui/components/spinner";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { authClient } from "@/lib/auth-client";
 import { getRoleBadgeVariant, getRoleIcon } from "@/lib/org";

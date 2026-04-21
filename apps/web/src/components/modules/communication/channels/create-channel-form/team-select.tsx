@@ -1,13 +1,13 @@
 import { IconChevronDown, IconRefresh } from "@tabler/icons-react";
-import { Button } from "@/components/ui/button";
-import { withForm } from "@/components/ui/form/hooks";
+import { Button } from "@work-holo/ui/components/button";
+import { withForm } from "@work-holo/ui/components/form/hooks";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@work-holo/ui/components/select";
 import { useListOrgTeams } from "@/hooks/use-list-org-teams";
 import { cn } from "@/lib/utils";
 import { withFallback } from "@/types/component-fallback";

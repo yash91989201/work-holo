@@ -1,5 +1,5 @@
 import { IconArrowDown, IconLoader2 } from "@tabler/icons-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@work-holo/ui/components/button";
 import { useMarkDmMessagesRead } from "@/hooks/communications/dm/use-dm-mark-messages-read";
 import { useVirtualDmMessages } from "@/hooks/communications/dm/use-dm-messages";
 import { useVisibleDmMessages } from "@/hooks/communications/dm/use-dm-visible-messages";

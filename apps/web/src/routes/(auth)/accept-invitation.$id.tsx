@@ -12,7 +12,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@work-holo/ui/components/card";
 
 const RouteSearchSchema = z.object({
   email: z.email(),

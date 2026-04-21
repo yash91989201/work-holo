@@ -24,10 +24,10 @@
     "pusher": "^5.3.3"
   },
   "peerDependencies": {
-    "typescript": "^6.0.2"
+    "typescript": "^6.0.3"
   },
   "dependencies": {
-    "@orpc/server": "^1.13.13",
+    "@orpc/server": "^1.13.14",
     "@work-holo/db": "workspace:*",
     "@work-holo/env": "workspace:*",
     "casbin": "^5.49.0",

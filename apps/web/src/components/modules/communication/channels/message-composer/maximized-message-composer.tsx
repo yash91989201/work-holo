@@ -6,7 +6,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@work-holo/ui/components/dialog";
 import { useMessageMutations } from "@/hooks/communications/use-message-mutations";
 import { useTypingIndicator } from "@/hooks/communications/use-typing-indicator";
 import { useAuthedSession } from "@/hooks/use-authed-session";

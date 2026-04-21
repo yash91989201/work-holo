@@ -20,6 +20,7 @@
     "check-types": "turbo check-types",
     "dev:native": "turbo -F native dev",
     "dev:web": "turbo -F web dev",
+    "dev:www": "turbo -F www dev",
     "dev:server": "turbo -F server dev",
     "db:push": "turbo -F @work-holo/db db:push",
     "db:studio": "turbo -F @work-holo/db db:studio",
@@ -28,17 +29,17 @@
     "seed": "turbo -F seeder seed"
   },
   "dependencies": {
-    "dotenv": "^17.3.1",
+    "dotenv": "^17.4.2",
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.10",
-    "@types/bun": "^1.3.11",
+    "@biomejs/biome": "2.4.12",
+    "@types/bun": "^1.3.12",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
-    "oxlint": "^1.58.0",
-    "turbo": "^2.9.1",
-    "ultracite": "7.4.0",
+    "oxlint": "^1.61.0",
+    "turbo": "^2.9.6",
+    "ultracite": "7.6.0",
     "web-push": "^3.6.7"
   },
   "lint-staged": {
@@ -52,5 +53,5 @@
     "@better-auth/expo": "1.5.5",
     "@better-auth/passkey": "1.5.5"
   },
-  "packageManager": "bun@1.3.10"
+  "packageManager": "bun@1.3.13"
 }

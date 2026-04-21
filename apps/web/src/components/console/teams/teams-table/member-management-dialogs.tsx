@@ -2,9 +2,9 @@ import { IconUserMinus, IconUserPlus } from "@tabler/icons-react";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@work-holo/ui/components/badge";
+import { Button } from "@work-holo/ui/components/button";
+import { Checkbox } from "@work-holo/ui/components/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -13,8 +13,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Spinner } from "@/components/ui/spinner";
+} from "@work-holo/ui/components/dialog";
+import { Spinner } from "@work-holo/ui/components/spinner";
 import { useListOrgMembers } from "@/hooks/use-list-org-members";
 import { queryClient, queryUtils } from "@/utils/orpc";
 

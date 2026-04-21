@@ -39,10 +39,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Badge } from "@/components/ui/badge";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+} from "@work-holo/ui/components/alert-dialog";
+import { Badge } from "@work-holo/ui/components/badge";
+import { Button, buttonVariants } from "@work-holo/ui/components/button";
+import { Checkbox } from "@work-holo/ui/components/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -51,29 +51,29 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@work-holo/ui/components/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { FieldGroup } from "@/components/ui/field";
-import { useAppForm } from "@/components/ui/form/hooks";
+} from "@work-holo/ui/components/dropdown-menu";
+import { FieldGroup } from "@work-holo/ui/components/field";
+import { useAppForm } from "@work-holo/ui/components/form/hooks";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-} from "@/components/ui/input-group";
+} from "@work-holo/ui/components/input-group";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Spinner } from "@/components/ui/spinner";
+} from "@work-holo/ui/components/select";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
+import { Spinner } from "@work-holo/ui/components/spinner";
 import {
   Table,
   TableBody,
@@ -81,7 +81,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@work-holo/ui/components/table";
 import { useListOrgMembers } from "@/hooks/use-list-org-members";
 import { queryClient, queryUtils } from "@/utils/orpc";
 import { ChannelMembersPopover } from "./channel-members-popover";

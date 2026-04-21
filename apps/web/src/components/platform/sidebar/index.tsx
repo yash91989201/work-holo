@@ -7,7 +7,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-} from "@/components/ui/sidebar";
+} from "@work-holo/ui/components/sidebar";
 import { NavMain } from "./nav-main";
 
 type PlatformSidebarProps = React.ComponentProps<typeof BaseSidebar> & {

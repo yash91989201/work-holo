@@ -3,7 +3,7 @@ import type { MessageWithSenderType } from "@work-holo/api/lib/types";
 import DOMPurify from "dompurify";
 import parse from "html-react-parser";
 import { type JSX, useRef } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@work-holo/ui/components/button";
 import { cn, formatFileSize } from "@/lib/utils";
 import { LinkPreview } from "../../message-composer/link-preview";
 

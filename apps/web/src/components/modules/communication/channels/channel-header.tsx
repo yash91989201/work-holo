@@ -9,37 +9,37 @@ import { Link, useParams } from "@tanstack/react-router";
 import DOMPurify from "dompurify";
 import parse from "html-react-parser";
 import { useEffect, useId, useRef, useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import { Badge } from "@work-holo/ui/components/badge";
+import { Button, buttonVariants } from "@work-holo/ui/components/button";
 import {
   Empty,
   EmptyDescription,
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@/components/ui/empty";
+} from "@work-holo/ui/components/empty";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
   InputGroupText,
-} from "@/components/ui/input-group";
-import { Kbd } from "@/components/ui/kbd";
+} from "@work-holo/ui/components/input-group";
+import { Kbd } from "@work-holo/ui/components/kbd";
 import {
   Popover,
   PopoverAnchor,
   PopoverContent,
-} from "@/components/ui/popover";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Spinner } from "@/components/ui/spinner";
+} from "@work-holo/ui/components/popover";
+import { ScrollArea } from "@work-holo/ui/components/scroll-area";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
+import { Spinner } from "@work-holo/ui/components/spinner";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@work-holo/ui/components/tooltip";
 import { useChannelMentions } from "@/hooks/communications/use-channel-mentions";
 import { useMessageSearch } from "@/hooks/communications/use-message-search";
 import { formatMessageTimestamp } from "@/lib/utils";

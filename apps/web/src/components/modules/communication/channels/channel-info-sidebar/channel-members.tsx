@@ -1,13 +1,13 @@
 import { IconSearch, IconX } from "@tabler/icons-react";
 import { useDebouncedValue } from "@tanstack/react-pacer";
 import { useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from "@/components/ui/input-group";
+} from "@work-holo/ui/components/input-group";
 import {
   Item,
   ItemActions,
@@ -16,8 +16,8 @@ import {
   ItemGroup,
   ItemMedia,
   ItemTitle,
-} from "@/components/ui/item";
-import { ScrollArea } from "@/components/ui/scroll-area";
+} from "@work-holo/ui/components/item";
+import { ScrollArea } from "@work-holo/ui/components/scroll-area";
 import { Can, useCan } from "@/lib/permission";
 import { cn } from "@/lib/utils";
 import { getInitials } from "@/utils";

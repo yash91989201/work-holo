@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { Header } from "@/components/manage/layout/header";
 import { Sidebar } from "@/components/manage/layout/sidebar";
 import { PresenceHeartbeat } from "@/components/org/presence-heartbeat";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@work-holo/ui/components/sidebar";
 
 export const Route = createFileRoute("/(authenticated)/org/$slug/manage")({
   component: RouteComponent,

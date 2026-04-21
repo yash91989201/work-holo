@@ -14,21 +14,21 @@ import { useRef, useState } from "react";
 import { toast } from "sonner";
 import type { z } from "zod";
 import { Image } from "@/components/shared/image";
-import { Button } from "@/components/ui/button";
+import { Button } from "@work-holo/ui/components/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@work-holo/ui/components/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@work-holo/ui/components/dropdown-menu";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { queryUtils } from "@/utils/orpc";
 

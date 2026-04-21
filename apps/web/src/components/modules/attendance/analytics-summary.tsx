@@ -9,8 +9,8 @@ import {
 import type { AttendanceAnalyticsOutput } from "@work-holo/api/lib/schemas/attendance";
 import type React from "react";
 import type { z } from "zod";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
+import { Card, CardContent, CardHeader, CardTitle } from "@work-holo/ui/components/card";
+import { Progress } from "@work-holo/ui/components/progress";
 import { cn } from "@/lib/utils";
 
 type AttendanceAnalytics = z.infer<typeof AttendanceAnalyticsOutput>;

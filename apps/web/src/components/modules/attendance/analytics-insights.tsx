@@ -8,8 +8,8 @@ import {
 } from "@tabler/icons-react";
 import type { AttendanceAnalyticsOutput } from "@work-holo/api/lib/schemas/attendance";
 import type { z } from "zod";
-import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
+import { Badge } from "@work-holo/ui/components/badge";
+import { Card } from "@work-holo/ui/components/card";
 
 type AttendanceAnalytics = z.infer<typeof AttendanceAnalyticsOutput>;
 
