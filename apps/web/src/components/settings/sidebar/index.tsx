@@ -7,7 +7,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@work-holo/ui/components/dropdown-menu";
 import {
   Sidebar,
   SidebarContent,
@@ -16,8 +16,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-} from "@/components/ui/sidebar";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@work-holo/ui/components/sidebar";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
 import { useActiveMemberRole } from "@/hooks/use-active-member-role";
 import { useActiveOrgSlug } from "@/hooks/use-active-org-slug";
 import { getOrgRouteByRole } from "@/utils";

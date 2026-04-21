@@ -2,8 +2,8 @@ import { IconChecks } from "@tabler/icons-react";
 import { eq, inArray, useLiveQuery } from "@tanstack/react-db";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Suspense, useMemo } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import { Button } from "@work-holo/ui/components/button";
 import {
   Dialog,
   DialogContent,
@@ -11,7 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@work-holo/ui/components/dialog";
 import {
   Item,
   ItemContent,
@@ -19,9 +19,9 @@ import {
   ItemGroup,
   ItemMedia,
   ItemTitle,
-} from "@/components/ui/item";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@work-holo/ui/components/item";
+import { ScrollArea } from "@work-holo/ui/components/scroll-area";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
 import {
   messageReadSummaryCollection,
   usersCollection,

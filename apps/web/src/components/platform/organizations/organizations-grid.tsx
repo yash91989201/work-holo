@@ -8,22 +8,22 @@ import { useDebouncedCallback } from "@tanstack/react-pacer";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@work-holo/ui/components/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@work-holo/ui/components/card";
 import {
   Empty,
   EmptyDescription,
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@/components/ui/empty";
+} from "@work-holo/ui/components/empty";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from "@/components/ui/input-group";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@work-holo/ui/components/input-group";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
 import { queryUtils } from "@/utils/orpc";
 
 export function OrganizationsGrid() {

@@ -2,7 +2,7 @@ import { IconArrowLeft } from "@tabler/icons-react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Suspense, useState } from "react";
 import { OrgDetail } from "@/components/platform/organizations/org-detail";
-import { Button } from "@/components/ui/button";
+import { Button } from "@work-holo/ui/components/button";
 
 export const Route = createFileRoute(
   "/(authenticated)/platform/dashboard/organizations/$orgId"

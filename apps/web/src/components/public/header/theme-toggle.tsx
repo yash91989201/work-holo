@@ -1,11 +1,11 @@
 import { IconMoonFilled, IconSunFilled } from "@tabler/icons-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@work-holo/ui/components/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@work-holo/ui/components/dropdown-menu";
 import { useTheme } from "@/providers/theme-provider";
 
 export function ThemeToggle() {

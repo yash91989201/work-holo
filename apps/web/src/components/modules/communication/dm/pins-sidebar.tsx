@@ -5,7 +5,7 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { useParams } from "@tanstack/react-router";
-import { Button } from "@/components/ui/button";
+import { Button } from "@work-holo/ui/components/button";
 // Import the pinned messages hook
 import { useVirtualDmPinnedMessages } from "@/hooks/communications/dm/use-dm-pinned-messages";
 import { cn } from "@/lib/utils";

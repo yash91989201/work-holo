@@ -1,0 +1,49 @@
+{
+	"name": "www",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"build": "vite build",
+		"serve": "vite preview",
+		"dev": "vite dev"
+	},
+	"dependencies": {
+		"@orpc/client": "^1.13.14",
+		"@orpc/server": "^1.13.14",
+		"@orpc/tanstack-query": "^1.13.14",
+		"@tailwindcss/vite": "^4.2.3",
+		"@tanstack/react-form": "^1.29.0",
+		"@tanstack/react-query": "^5.99.2",
+		"@tanstack/react-router": "^1.168.23",
+		"@tanstack/react-router-ssr-query": "^1.166.11",
+		"@tanstack/react-start": "^1.167.42",
+		"@work-holo/ui": "workspace:*",
+    "babel-plugin-react-compiler": "^1.0.0",
+		"better-auth": "^1.5.5",
+		"dotenv": "^17.4.2",
+		"lucide-react": "^1.8.0",
+		"next-themes": "^0.4.6",
+		"react": "^19.2.5",
+		"react-dom": "^19.2.5",
+		"sonner": "^2.0.7",
+		"tailwindcss": "^4.2.3",
+		"zod": "^4.3.6",
+		"@work-holo/env": "workspace:*",
+		"@work-holo/api": "workspace:*"
+	},
+	"devDependencies": {
+		"@rolldown/plugin-babel": "^0.2.3",
+		"@tanstack/react-query-devtools": "^5.99.2",
+		"@tanstack/react-router-devtools": "^1.166.13",
+		"@work-holo/config": "workspace:*",
+		"@types/react": "^19.2.14",
+		"@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "@vitejs/plugin-rsc": "^0.5.24",
+		"jsdom": "^29.0.2",
+		"nitro": "^3.0.260415-beta",
+		"typescript": "^6.0.3",
+		"vite": "^8.0.9",
+		"web-vitals": "^5.2.0"
+	}
+}

@@ -24,35 +24,35 @@ import {
 import { EditorContent } from "@tiptap/react";
 import type { KeyboardEvent } from "react";
 import { useCallback, useEffect, useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ButtonGroup } from "@/components/ui/button-group";
+import { Badge } from "@work-holo/ui/components/badge";
+import { Button } from "@work-holo/ui/components/button";
+import { ButtonGroup } from "@work-holo/ui/components/button-group";
 import {
   EmojiPicker,
   EmojiPickerContent,
   EmojiPickerFooter,
   EmojiPickerSearch,
-} from "@/components/ui/emoji-picker";
+} from "@work-holo/ui/components/emoji-picker";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from "@/components/ui/input-group";
+} from "@work-holo/ui/components/input-group";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { Separator } from "@/components/ui/separator";
-import { Spinner } from "@/components/ui/spinner";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+} from "@work-holo/ui/components/popover";
+import { Separator } from "@work-holo/ui/components/separator";
+import { Spinner } from "@work-holo/ui/components/spinner";
+import { ToggleGroup, ToggleGroupItem } from "@work-holo/ui/components/toggle-group";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@work-holo/ui/components/tooltip";
 import { useMessageEditor } from "@/hooks/communications/use-message-editor";
 import { cn } from "@/lib/utils";
 import { AutoLinkPreview } from "./auto-link-preview";

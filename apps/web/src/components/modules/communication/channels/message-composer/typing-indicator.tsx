@@ -1,9 +1,9 @@
-import { Item, ItemContent, ItemTitle } from "@/components/ui/item";
+import { Item, ItemContent, ItemTitle } from "@work-holo/ui/components/item";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@work-holo/ui/components/popover";
 
 interface TypingIndicatorProps {
   typingUsers: { userId: string; userName: string }[];

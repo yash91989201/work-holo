@@ -24,26 +24,26 @@ import { useRef, useState } from "react";
 import { toast } from "sonner";
 import type { z } from "zod";
 import { Image } from "@/components/shared/image";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import { Badge } from "@work-holo/ui/components/badge";
+import { Button } from "@work-holo/ui/components/button";
 import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuSeparator,
   ContextMenuTrigger,
-} from "@/components/ui/context-menu";
-import { Dialog, DialogClose, DialogContent } from "@/components/ui/dialog";
+} from "@work-holo/ui/components/context-menu";
+import { Dialog, DialogClose, DialogContent } from "@work-holo/ui/components/dialog";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@work-holo/ui/components/select";
+import { Separator } from "@work-holo/ui/components/separator";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { queryUtils } from "@/utils/orpc";
 import {

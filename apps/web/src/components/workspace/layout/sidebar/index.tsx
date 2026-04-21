@@ -6,7 +6,7 @@ import {
   SidebarHeader,
   SidebarMenu,
   SidebarRail,
-} from "@/components/ui/sidebar";
+} from "@work-holo/ui/components/sidebar";
 import { AttendanceGroup } from "./groups/attendance";
 import { ChannelGroup } from "./groups/channel";
 import { DmGroup } from "./groups/dm";

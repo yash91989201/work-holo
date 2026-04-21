@@ -7,14 +7,14 @@ import type { AttendanceAnalyticsOutput } from "@work-holo/api/lib/schemas/atten
 import { format, getDay } from "date-fns";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import type { z } from "zod";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Button } from "@work-holo/ui/components/button";
+import { Card } from "@work-holo/ui/components/card";
 import {
   type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart";
+} from "@work-holo/ui/components/chart";
 
 type AttendanceAnalytics = z.infer<typeof AttendanceAnalyticsOutput>;
 

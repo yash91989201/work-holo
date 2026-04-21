@@ -3,8 +3,8 @@ import { useDebouncedValue } from "@tanstack/react-pacer";
 import { useMutation } from "@tanstack/react-query";
 import { Suspense, useState } from "react";
 import { toast } from "sonner";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import { Button } from "@work-holo/ui/components/button";
 import {
   Dialog,
   DialogContent,
@@ -12,13 +12,13 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@work-holo/ui/components/dialog";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from "@/components/ui/input-group";
+} from "@work-holo/ui/components/input-group";
 import {
   Item,
   ItemActions,
@@ -27,8 +27,8 @@ import {
   ItemGroup,
   ItemMedia,
   ItemTitle,
-} from "@/components/ui/item";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@work-holo/ui/components/item";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
 import { useListOrgMembers } from "@/hooks/use-list-org-members";
 import { getInitials } from "@/utils";
 import { queryClient, queryUtils } from "@/utils/orpc";

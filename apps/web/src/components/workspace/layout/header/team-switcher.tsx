@@ -6,8 +6,8 @@ import {
 } from "@tabler/icons-react";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { useState } from "react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback } from "@work-holo/ui/components/avatar";
+import { Button } from "@work-holo/ui/components/button";
 import {
   Command,
   CommandEmpty,
@@ -15,13 +15,13 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
+} from "@work-holo/ui/components/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@work-holo/ui/components/popover";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
 import { useActiveMemberRole } from "@/hooks/use-active-member-role";
 import { useMyTeams } from "@/hooks/use-my-teams";
 import { useSession } from "@/hooks/use-session";

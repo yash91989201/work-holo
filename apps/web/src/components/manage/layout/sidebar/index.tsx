@@ -14,7 +14,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-} from "@/components/ui/sidebar";
+} from "@work-holo/ui/components/sidebar";
 
 export function Sidebar({
   ...props

@@ -5,9 +5,9 @@ import {
   IconSearch,
 } from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@work-holo/ui/components/badge";
+import { Input } from "@work-holo/ui/components/input";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
 import {
   Table,
   TableBody,
@@ -15,7 +15,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@work-holo/ui/components/table";
 import { queryUtils } from "@/utils/orpc";
 
 function platformRoleBadgeVariant(

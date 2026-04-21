@@ -1,7 +1,7 @@
 import { IconUsers } from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, useParams } from "@tanstack/react-router";
-import { buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@work-holo/ui/components/button";
 import {
   Empty,
   EmptyContent,
@@ -9,10 +9,10 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@/components/ui/empty";
-import { withForm } from "@/components/ui/form/hooks";
-import { SelectItem } from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@work-holo/ui/components/empty";
+import { withForm } from "@work-holo/ui/components/form/hooks";
+import { SelectItem } from "@work-holo/ui/components/select";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
 import { authClient } from "@/lib/auth-client";
 import { withFallback } from "@/types/component-fallback";
 import { inviteFormOpts } from "./form-options";

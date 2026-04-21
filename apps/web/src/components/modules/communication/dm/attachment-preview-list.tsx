@@ -1,5 +1,5 @@
 import { IconX } from "@tabler/icons-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@work-holo/ui/components/button";
 
 interface Attachment {
   file: File;

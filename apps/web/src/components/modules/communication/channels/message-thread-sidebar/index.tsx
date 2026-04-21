@@ -8,7 +8,7 @@ import { useParams } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { MessageComposer } from "@/components/modules/communication/channels/message-composer";
 import { MessageItem } from "@/components/modules/communication/channels/message-list/message-item";
-import { Button } from "@/components/ui/button";
+import { Button } from "@work-holo/ui/components/button";
 import { useVirtualMessageThread } from "@/hooks/communications/use-message-thread";
 import { cn } from "@/lib/utils";
 import {

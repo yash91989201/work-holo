@@ -7,9 +7,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@work-holo/ui/components/dropdown-menu";
+import { SidebarMenuButton, SidebarMenuItem } from "@work-holo/ui/components/sidebar";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
 import { useActiveOrganization } from "@/hooks/use-active-organization";
 import { useOrgSwitcher } from "@/hooks/use-org-switcher";
 import { authClient } from "@/lib/auth-client";

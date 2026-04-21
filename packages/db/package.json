@@ -22,11 +22,11 @@
     "chokidar": "^5.0.0"
   },
   "peerDependencies": {
-    "typescript": "^6.0.2"
+    "typescript": "^6.0.3"
   },
   "dependencies": {
     "@t3-oss/env-core": "^0.13.11",
-    "dotenv": "^17.3.1",
+    "dotenv": "^17.4.2",
     "drizzle-cuid2": "^2.2.0",
     "drizzle-orm": "^0.45.2",
     "drizzle-zod": "^0.8.3",

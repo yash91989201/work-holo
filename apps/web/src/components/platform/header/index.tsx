@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { Navigator } from "@/components/org/navigator";
-import { Separator } from "@/components/ui/separator";
-import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Separator } from "@work-holo/ui/components/separator";
+import { SidebarTrigger } from "@work-holo/ui/components/sidebar";
 import { PlatformAccountDropdown } from "./account-dropdown";
 
 export function PlatformHeader() {

@@ -11,7 +11,7 @@ import type { NotificationEventType } from "@work-holo/api/services/notification
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { DM_EVENT_DEFINITIONS } from "@/components/settings/notifications/constants";
-import { Button } from "@/components/ui/button";
+import { Button } from "@work-holo/ui/components/button";
 import {
   Item,
   ItemActions,
@@ -20,17 +20,17 @@ import {
   ItemGroup,
   ItemSeparator,
   ItemTitle,
-} from "@/components/ui/item";
-import { Label } from "@/components/ui/label";
+} from "@work-holo/ui/components/item";
+import { Label } from "@work-holo/ui/components/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Switch } from "@/components/ui/switch";
+} from "@work-holo/ui/components/select";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
+import { Switch } from "@work-holo/ui/components/switch";
 import { useNotificationPermission } from "@/hooks/use-notification-permission";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
 import { queryUtils } from "@/utils/orpc";
