@@ -1,9 +1,18 @@
+import { createORPCClient } from "@orpc/client";
+import { createTanstackQueryUtils } from "@orpc/tanstack-query";
+import { TanStackDevtools } from "@tanstack/react-devtools";
+import { formDevtoolsPlugin } from "@tanstack/react-form-devtools";
+import { pacerDevtoolsPlugin } from "@tanstack/react-pacer-devtools";
 import type { QueryClient } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
 import { HeadContent, Outlet, Scripts, createRootRouteWithContext } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import type { AppRouterClient } from "@work-holo/api/routers/index";
+import { env } from "@work-holo/env/www";
+import { useState } from "react";
 import { Toaster } from "@work-holo/ui/components/sonner";
 import type { orpcClient, queryUtils } from "@/utils/orpc";
+import { link } from "@/utils/orpc";
 import appCss from "@/styles/index.css?url";
 
 export interface RouterAppContext {
@@ -37,6 +46,9 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
 });
 
 function RootDocument() {
+  const [client] = useState<AppRouterClient>(() => createORPCClient(link));
+  const [_orpcUtils] = useState(() => createTanstackQueryUtils(client));
+
   return (
     <html lang="en" className="dark">
       <head>
@@ -47,8 +59,24 @@ function RootDocument() {
           <Outlet />
         </div>
         <Toaster richColors />
-        <TanStackRouterDevtools position="bottom-left" />
-        <ReactQueryDevtools position="bottom" buttonPosition="bottom-right" />
+        {env.VITE_ENV === "development" && (
+          <TanStackDevtools
+            plugins={[
+              {
+                name: "TanStack Query",
+                render: <ReactQueryDevtoolsPanel />,
+                defaultOpen: true,
+              },
+              {
+                name: "TanStack Router",
+                render: <TanStackRouterDevtoolsPanel />,
+                defaultOpen: false,
+              },
+              formDevtoolsPlugin(),
+              pacerDevtoolsPlugin(),
+            ]}
+          />
+        )}
         <Scripts />
       </body>
     </html>
