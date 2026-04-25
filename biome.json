@@ -3,6 +3,14 @@
   "files": {
     "ignoreUnknown": false,
     "includes": [
+      "**",
+      "!.claude",
+      "!.opencode",
+      "!node_modules",
+      "!dist",
+      "!build",
+      "!.output",
+      "!.vinxi",
       "!**/.next",
       "!**/dist",
       "!**/.turbo",
