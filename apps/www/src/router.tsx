@@ -1,16 +1,16 @@
 import "@/styles/index.css";
-import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
 import { createRouter as createTanStackRouter } from "@tanstack/react-router";
-import Loader from "@/components/loader";
-import { routeTree } from "./routeTree.gen";
+import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
 import { orpcClient, queryClient, queryUtils } from "@/utils/orpc";
+import { FullScreenLoader } from "./components/shared/full-screen-loader";
+import { routeTree } from "./routeTree.gen";
 
 export const getRouter = () => {
   const router = createTanStackRouter({
     routeTree,
     scrollRestoration: true,
     defaultPreloadStaleTime: 0,
-    defaultPendingComponent: () => <Loader />,
+    defaultPendingComponent: () => <FullScreenLoader />,
     defaultNotFoundComponent: () => <div>Not Found</div>,
     context: { queryUtils, queryClient, orpcClient },
   });

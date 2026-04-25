@@ -13,6 +13,8 @@ import { useState } from "react";
 import { Toaster } from "@work-holo/ui/components/sonner";
 import type { orpcClient, queryUtils } from "@/utils/orpc";
 import { link } from "@/utils/orpc";
+import { Header } from "@/components/shared/header";
+import { Footer } from "@/components/shared/footer";
 import appCss from "@/styles/index.css?url";
 
 export interface RouterAppContext {
@@ -42,22 +44,21 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
       },
     ],
   }),
+  shellComponent:ShellComponent,
   component: RootDocument,
 });
 
-function RootDocument() {
+function ShellComponent({children}:{children:React.ReactNode}){
   const [client] = useState<AppRouterClient>(() => createORPCClient(link));
   const [_orpcUtils] = useState(() => createTanstackQueryUtils(client));
 
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
       <body>
-        <div className="grid h-svh grid-rows-[auto_1fr]">
-          <Outlet />
-        </div>
+        {children}
         <Toaster richColors />
         {env.VITE_ENV === "development" && (
           <TanStackDevtools
@@ -80,5 +81,17 @@ function RootDocument() {
         <Scripts />
       </body>
     </html>
+  )
+}
+
+function RootDocument() {
+  return (
+        <div className="flex min-h-svh flex-col">
+          <Header />
+          <main className="flex-1">
+            <Outlet />
+          </main>
+          <Footer />
+        </div>
   );
 }
