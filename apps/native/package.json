@@ -15,11 +15,11 @@
     "@expo/metro-runtime": "~55.0.10",
     "@expo/vector-icons": "^15.1.1",
     "@gorhom/bottom-sheet": "^5.2.10",
-    "@orpc/client": "^1.13.14",
-    "@orpc/tanstack-query": "^1.13.14",
-    "@react-navigation/drawer": "^7.9.8",
-    "@react-navigation/elements": "^2.9.14",
-    "@tanstack/react-query": "^5.99.2",
+    "@orpc/client": "^1.14.0",
+    "@orpc/tanstack-query": "^1.14.0",
+    "@react-navigation/drawer": "^7.9.9",
+    "@react-navigation/elements": "^2.9.15",
+    "@tanstack/react-query": "^5.100.3",
     "@work-holo/api": "workspace:*",
     "@work-holo/env": "workspace:*",
     "better-auth": "^1.5.5",
@@ -47,7 +47,7 @@
     "tailwind-merge": "^3.5.0",
     "tailwind-variants": "3.2.2",
     "tailwindcss": "~4.2.4",
-    "uniwind": "^1.6.2"
+    "uniwind": "^1.6.3"
   },
   "devDependencies": {
     "@types/node": "^25.6.0",
