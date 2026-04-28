@@ -22,6 +22,10 @@ COPY apps/www/package.json apps/www/
 RUN --mount=type=cache,target=/root/.bun/install/cache \
   bun install
 
+# @vitejs/plugin-rsc uses fs.renameSync for RSC temp output. Docker overlayfs can
+# throw EXDEV for that rename, so add a copy+remove fallback inside the image.
+RUN bun -e 'const fs = require("fs"), path = require("path"); const bunDir = path.join(process.cwd(), "node_modules/.bun"); const pluginDir = fs.readdirSync(bunDir).find((name) => name.startsWith("@vitejs+plugin-rsc@")); if (!pluginDir) throw new Error("@vitejs/plugin-rsc not found"); const file = path.join(bunDir, pluginDir, "node_modules/@vitejs/plugin-rsc/dist/plugin-BhzHKRFo.js"); let source = fs.readFileSync(file, "utf8"); const move = (from, to) => `try { fs.renameSync(${from}, ${to}); } catch (error) { if (error && error.code === "EXDEV") { fs.cpSync(${from}, ${to}, { recursive: true }); fs.rmSync(${from}, { recursive: true, force: true }); } else { throw error; } }`; source = source.replace("fs.renameSync(rscOutDir, tempRscOutDir);", move("rscOutDir", "tempRscOutDir")).replace("fs.renameSync(tempRscOutDir, rscOutDir);", move("tempRscOutDir", "rscOutDir")); fs.writeFileSync(file, source);'
+
 # Copy source.
 COPY packages/config packages/config
 COPY packages/env packages/env
@@ -32,6 +36,7 @@ COPY packages/permission packages/permission
 COPY packages/infrastructure packages/infrastructure
 COPY packages/ui packages/ui
 COPY apps/www apps/www
+COPY apps/web/server.ts apps/web/
 
 # Build-time public envs.
 ARG VITE_ENV
@@ -54,11 +59,8 @@ FROM oven/bun:1.3.13-slim AS runtime
 WORKDIR /app/apps/www
 
 COPY --from=builder /app/apps/www/dist ./dist
+COPY --from=builder /app/apps/web/server.ts /app/apps/web/server.ts
 
-ENV NODE_ENV=production
-ENV HOST=0.0.0.0
-ENV PORT=5100
+COPY --from=builder /app/apps/www/server.ts ./server.ts
 
-EXPOSE 5100
-
-CMD ["bun", "-e", "import handler from './dist/server/server.js'; Bun.serve({ hostname: '0.0.0.0', port: Number(process.env.PORT ?? 5100), fetch: (...args) => handler.fetch(...args) });"]
+CMD ["bun", "server.ts"]
