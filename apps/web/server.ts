@@ -71,6 +71,12 @@ const SERVER_PORT = Number(process.env.PORT ?? 3001);
 const CLIENT_DIRECTORY = "./dist/client";
 const SERVER_ENTRY_POINT = "./dist/server/server.js";
 
+function healthCheckHandler() {
+  return new Response("OK", {
+    headers: { "Content-Type": "text/plain; charset=utf-8" },
+  });
+}
+
 // Logging utilities for professional output
 const log = {
   info: (message: string) => {
@@ -541,6 +547,9 @@ async function initializeServer() {
     routes: {
       // Serve static assets (preloaded or on-demand)
       ...routes,
+
+      // Lightweight container health probe.
+      "/health": healthCheckHandler,
 
       // Fallback to TanStack Start handler for all other routes
       "/*": (req: Request) => {
