@@ -62,11 +62,4 @@ WORKDIR /app/apps/web
 COPY --from=builder /app/apps/web/dist ./dist
 COPY --from=builder /app/apps/web/server.ts ./server.ts
 
-ENV NODE_ENV=production
-ENV BUN_ENV=production
-ENV HOST=0.0.0.0
-ENV PORT=3001
-
-EXPOSE 3001
-
 CMD ["bun", "server.ts"]
