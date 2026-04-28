@@ -14,9 +14,9 @@ import {
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import type { AppRouterClient } from "@work-holo/api/routers/index";
 import { env } from "@work-holo/env/web";
-import { useState } from "react";
 import { Toaster } from "@work-holo/ui/components/sonner";
 import { TooltipProvider } from "@work-holo/ui/components/tooltip";
+import { useState } from "react";
 import { ThemeProvider } from "@/providers/theme-provider";
 import appCss from "@/styles/index.css?url";
 import type { orpcClient, queryUtils } from "@/utils/orpc";
@@ -71,50 +71,52 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
       },
     ],
   }),
+  shellComponent: ShellComponent,
   component: RootDocument,
 });
+
+function ShellComponent({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <head>
+        <HeadContent />
+      </head>
+      <body>
+        {children}
+        <Scripts />
+      </body>
+    </html>
+  );
+}
 
 function RootDocument() {
   const [client] = useState<AppRouterClient>(() => createORPCClient(link));
   const [_orpcUtils] = useState(() => createTanstackQueryUtils(client));
 
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          disableTransitionOnChange
-          storageKey="vite-ui-theme"
-        >
-          <TooltipProvider>
-            <Outlet />
-          </TooltipProvider>
-          <Toaster richColors />
-          {env.VITE_ENV === "development" && (
-            <TanStackDevtools
-              plugins={[
-                {
-                  name: "TanStack Query",
-                  render: <ReactQueryDevtoolsPanel />,
-                  defaultOpen: true,
-                },
-                {
-                  name: "TanStack Router",
-                  render: <TanStackRouterDevtoolsPanel />,
-                  defaultOpen: false,
-                },
-                formDevtoolsPlugin(),
-                pacerDevtoolsPlugin(),
-              ]}
-            />
-          )}
-        </ThemeProvider>
-        <Scripts />
-      </body>
-    </html>
+    <ThemeProvider defaultTheme="system" storageKey="app-theme">
+      <TooltipProvider>
+        <Outlet />
+      </TooltipProvider>
+      <Toaster richColors />
+      {env.VITE_ENV === "development" && (
+        <TanStackDevtools
+          plugins={[
+            {
+              name: "TanStack Query",
+              render: <ReactQueryDevtoolsPanel />,
+              defaultOpen: true,
+            },
+            {
+              name: "TanStack Router",
+              render: <TanStackRouterDevtoolsPanel />,
+              defaultOpen: false,
+            },
+            formDevtoolsPlugin(),
+            pacerDevtoolsPlugin(),
+          ]}
+        />
+      )}
+    </ThemeProvider>
   );
 }

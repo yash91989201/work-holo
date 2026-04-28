@@ -13,7 +13,6 @@ import { Route as publicRouteRouteImport } from './routes/(public)/route'
 import { Route as authenticatedRouteRouteImport } from './routes/(authenticated)/route'
 import { Route as authRouteRouteImport } from './routes/(auth)/route'
 import { Route as publicIndexRouteImport } from './routes/(public)/index'
-import { Route as publicRscDemoRouteImport } from './routes/(public)/rsc-demo'
 import { Route as authSignupRouteImport } from './routes/(auth)/signup'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as authenticatedSettingsRouteRouteImport } from './routes/(authenticated)/settings/route'
@@ -75,11 +74,6 @@ const authRouteRoute = authRouteRouteImport.update({
 const publicIndexRoute = publicIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => publicRouteRoute,
-} as any)
-const publicRscDemoRoute = publicRscDemoRouteImport.update({
-  id: '/rsc-demo',
-  path: '/rsc-demo',
   getParentRoute: () => publicRouteRoute,
 } as any)
 const authSignupRoute = authSignupRouteImport.update({
@@ -366,7 +360,6 @@ export interface FileRoutesByFullPath {
   '/settings': typeof authenticatedSettingsRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/signup': typeof authSignupRoute
-  '/rsc-demo': typeof publicRscDemoRoute
   '/': typeof publicIndexRoute
   '/org/$slug': typeof authenticatedOrgSlugRouteRouteWithChildren
   '/platform/dashboard': typeof authenticatedPlatformDashboardRouteRouteWithChildren
@@ -415,7 +408,6 @@ export interface FileRoutesByTo {
   '/settings': typeof authenticatedSettingsRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/signup': typeof authSignupRoute
-  '/rsc-demo': typeof publicRscDemoRoute
   '/': typeof publicIndexRoute
   '/org/$slug': typeof authenticatedOrgSlugRouteRouteWithChildren
   '/accept-invitation/$id': typeof authAcceptInvitationIdRoute
@@ -462,7 +454,6 @@ export interface FileRoutesById {
   '/(authenticated)/settings': typeof authenticatedSettingsRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/signup': typeof authSignupRoute
-  '/(public)/rsc-demo': typeof publicRscDemoRoute
   '/(public)/': typeof publicIndexRoute
   '/(authenticated)/org/$slug': typeof authenticatedOrgSlugRouteRouteWithChildren
   '/(authenticated)/platform/dashboard': typeof authenticatedPlatformDashboardRouteRouteWithChildren
@@ -513,7 +504,6 @@ export interface FileRouteTypes {
     | '/settings'
     | '/login'
     | '/signup'
-    | '/rsc-demo'
     | '/'
     | '/org/$slug'
     | '/platform/dashboard'
@@ -562,7 +552,6 @@ export interface FileRouteTypes {
     | '/settings'
     | '/login'
     | '/signup'
-    | '/rsc-demo'
     | '/'
     | '/org/$slug'
     | '/accept-invitation/$id'
@@ -608,7 +597,6 @@ export interface FileRouteTypes {
     | '/(authenticated)/settings'
     | '/(auth)/login'
     | '/(auth)/signup'
-    | '/(public)/rsc-demo'
     | '/(public)/'
     | '/(authenticated)/org/$slug'
     | '/(authenticated)/platform/dashboard'
@@ -687,13 +675,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof publicIndexRouteImport
-      parentRoute: typeof publicRouteRoute
-    }
-    '/(public)/rsc-demo': {
-      id: '/(public)/rsc-demo'
-      path: '/rsc-demo'
-      fullPath: '/rsc-demo'
-      preLoaderRoute: typeof publicRscDemoRouteImport
       parentRoute: typeof publicRouteRoute
     }
     '/(auth)/signup': {
@@ -1281,12 +1262,10 @@ const authenticatedRouteRouteWithChildren =
   authenticatedRouteRoute._addFileChildren(authenticatedRouteRouteChildren)
 
 interface publicRouteRouteChildren {
-  publicRscDemoRoute: typeof publicRscDemoRoute
   publicIndexRoute: typeof publicIndexRoute
 }
 
 const publicRouteRouteChildren: publicRouteRouteChildren = {
-  publicRscDemoRoute: publicRscDemoRoute,
   publicIndexRoute: publicIndexRoute,
 }
 

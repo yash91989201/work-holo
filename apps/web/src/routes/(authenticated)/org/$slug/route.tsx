@@ -56,7 +56,7 @@ function useCurrentNotificationContext(
     if (dmMatch?.[1]) {
       return { entityType: "dm" as const, entityId: dmMatch[1] };
     }
-    return undefined;
+    return;
   }, [pathname]);
 }
 
