@@ -7,12 +7,17 @@ import {
 } from "@tabler/icons-react";
 import { useDebouncedValue } from "@tanstack/react-pacer";
 import { Link, useParams } from "@tanstack/react-router";
-import { useState } from "react";
-import { DmUserPicker } from "@/components/modules/communication/dm/user-picker";
-import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@work-holo/ui/components/avatar";
 import { Badge } from "@work-holo/ui/components/badge";
 import { Button } from "@work-holo/ui/components/button";
-import { Collapsible, CollapsibleTrigger } from "@work-holo/ui/components/collapsible";
+import {
+  Collapsible,
+  CollapsibleTrigger,
+} from "@work-holo/ui/components/collapsible";
 import {
   HoverCard,
   HoverCardContent,
@@ -38,6 +43,8 @@ import {
 } from "@work-holo/ui/components/sidebar";
 import { Skeleton } from "@work-holo/ui/components/skeleton";
 import { Spinner } from "@work-holo/ui/components/spinner";
+import { useState } from "react";
+import { DmUserPicker } from "@/components/modules/communication/dm/user-picker";
 import { useDmConversations } from "@/hooks/communications/dm/use-dm-conversations";
 import { useDmUnreadCount } from "@/hooks/communications/dm/use-dm-unread-count";
 import { useAuthedSession } from "@/hooks/use-authed-session";
@@ -122,26 +129,25 @@ const DmGroup = () => {
         <SidebarGroupContent>
           <SidebarMenuItem>
             <Collapsible>
-              <HoverCard
-                closeDelay={100}
-                onOpenChange={setHoverOpen}
-                open={hoverOpen}
-                openDelay={50}
-              >
-                <HoverCardTrigger asChild>
-                  <CollapsibleTrigger asChild>
-                    <SidebarMenuButton
-                      aria-expanded="false"
-                      aria-haspopup="true"
-                      aria-label="Direct Messages"
-                    >
-                      <IconMessageCircle aria-hidden="true" />
-                      <span className="sr-only text-balance text-sm">
-                        Direct Messages
-                      </span>
-                    </SidebarMenuButton>
-                  </CollapsibleTrigger>
-                </HoverCardTrigger>
+              <HoverCard onOpenChange={setHoverOpen} open={hoverOpen}>
+                <HoverCardTrigger
+                  render={
+                    <CollapsibleTrigger
+                      render={
+                        <SidebarMenuButton
+                          aria-expanded="false"
+                          aria-haspopup="true"
+                          aria-label="Direct Messages"
+                        >
+                          <IconMessageCircle aria-hidden="true" />
+                          <span className="sr-only text-balance text-sm">
+                            Direct Messages
+                          </span>
+                        </SidebarMenuButton>
+                      }
+                    />
+                  }
+                />
                 <HoverCardContent
                   align="start"
                   aria-label="Direct messages list"
@@ -187,53 +193,54 @@ const DmGroup = () => {
                           return (
                             <SidebarMenuSubItem key={conversation.id}>
                               <SidebarMenuSubButton
-                                asChild
                                 className="[&>svg]:size-3"
                                 isActive={
                                   conversation.id === activeConversationId
                                 }
-                              >
-                                <Link
-                                  onClick={() => setHoverOpen(false)}
-                                  params={{
-                                    slug,
-                                    conversationId: conversation.id,
-                                  }}
-                                  to="/org/$slug/workspace/communication/dm/$conversationId"
-                                >
-                                  <Avatar className="size-4">
-                                    <AvatarImage
-                                      src={
-                                        conversation.otherParticipant?.image ??
-                                        undefined
-                                      }
-                                    />
-                                    <AvatarFallback className="text-[8px]">
-                                      {getInitials(
-                                        conversation.otherParticipant?.name
+                                render={
+                                  <Link
+                                    onClick={() => setHoverOpen(false)}
+                                    params={{
+                                      slug,
+                                      conversationId: conversation.id,
+                                    }}
+                                    to="/org/$slug/workspace/communication/dm/$conversationId"
+                                  >
+                                    <Avatar className="size-4">
+                                      <AvatarImage
+                                        src={
+                                          conversation.otherParticipant
+                                            ?.image ?? undefined
+                                        }
+                                      />
+                                      <AvatarFallback className="text-[8px]">
+                                        {getInitials(
+                                          conversation.otherParticipant?.name
+                                        )}
+                                      </AvatarFallback>
+                                    </Avatar>
+                                    <span className="flex-1 truncate">
+                                      {conversation.otherParticipant?.name ??
+                                        "Unknown"}
+                                    </span>
+                                    {conversation.isMuted && (
+                                      <IconVolume3
+                                        aria-label="Muted"
+                                        className="size-3 text-muted-foreground"
+                                      />
+                                    )}
+                                    {!conversation.isMuted &&
+                                      unreadCount > 0 && (
+                                        <Badge
+                                          className="ml-auto h-5 w-5 shrink-0 items-center justify-center rounded-full p-0"
+                                          variant="default"
+                                        >
+                                          {unreadCount}
+                                        </Badge>
                                       )}
-                                    </AvatarFallback>
-                                  </Avatar>
-                                  <span className="flex-1 truncate">
-                                    {conversation.otherParticipant?.name ??
-                                      "Unknown"}
-                                  </span>
-                                  {conversation.isMuted && (
-                                    <IconVolume3
-                                      aria-label="Muted"
-                                      className="size-3 text-muted-foreground"
-                                    />
-                                  )}
-                                  {!conversation.isMuted && unreadCount > 0 && (
-                                    <Badge
-                                      className="ml-auto h-5 w-5 shrink-0 items-center justify-center rounded-full p-0"
-                                      variant="default"
-                                    >
-                                      {unreadCount}
-                                    </Badge>
-                                  )}
-                                </Link>
-                              </SidebarMenuSubButton>
+                                  </Link>
+                                }
+                              />
                             </SidebarMenuSubItem>
                           );
                         })
@@ -276,9 +283,10 @@ const DmGroup = () => {
               )}
             </Button>
           )}
-          <SidebarGroupAction asChild className="translate-y-0">
-            <DmUserPicker />
-          </SidebarGroupAction>
+          <SidebarGroupAction
+            className="translate-y-0"
+            render={<DmUserPicker />}
+          />
         </div>
       </div>
       {searchVisible && (
@@ -312,43 +320,45 @@ const DmGroup = () => {
             return (
               <SidebarMenuItem key={conversation.id}>
                 <SidebarMenuButton
-                  asChild
                   isActive={conversation.id === activeConversationId}
-                >
-                  <Link
-                    params={{
-                      slug,
-                      conversationId: conversation.id,
-                    }}
-                    to="/org/$slug/workspace/communication/dm/$conversationId"
-                  >
-                    <Avatar className="size-4">
-                      <AvatarImage
-                        src={conversation.otherParticipant?.image ?? undefined}
-                      />
-                      <AvatarFallback className="text-[8px]">
-                        {getInitials(conversation.otherParticipant?.name)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <span className="flex-1 truncate">
-                      {conversation.otherParticipant?.name ?? "Unknown"}
-                    </span>
-                    {conversation.isMuted && (
-                      <IconVolume3
-                        aria-label="Muted"
-                        className="size-3 text-muted-foreground"
-                      />
-                    )}
-                    {!conversation.isMuted && unreadCount > 0 && (
-                      <Badge
-                        className="ml-auto h-5 w-5 shrink-0 items-center justify-center rounded-full p-0"
-                        variant="default"
-                      >
-                        {unreadCount}
-                      </Badge>
-                    )}
-                  </Link>
-                </SidebarMenuButton>
+                  render={
+                    <Link
+                      params={{
+                        slug,
+                        conversationId: conversation.id,
+                      }}
+                      to="/org/$slug/workspace/communication/dm/$conversationId"
+                    >
+                      <Avatar className="size-4">
+                        <AvatarImage
+                          src={
+                            conversation.otherParticipant?.image ?? undefined
+                          }
+                        />
+                        <AvatarFallback className="text-[8px]">
+                          {getInitials(conversation.otherParticipant?.name)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="flex-1 truncate">
+                        {conversation.otherParticipant?.name ?? "Unknown"}
+                      </span>
+                      {conversation.isMuted && (
+                        <IconVolume3
+                          aria-label="Muted"
+                          className="size-3 text-muted-foreground"
+                        />
+                      )}
+                      {!conversation.isMuted && unreadCount > 0 && (
+                        <Badge
+                          className="ml-auto h-5 w-5 shrink-0 items-center justify-center rounded-full p-0"
+                          variant="default"
+                        >
+                          {unreadCount}
+                        </Badge>
+                      )}
+                    </Link>
+                  }
+                />
               </SidebarMenuItem>
             );
           })
@@ -373,21 +383,25 @@ const DmGroupSkeleton = () => {
           <SidebarMenuItem>
             <Collapsible>
               <HoverCard>
-                <HoverCardTrigger asChild>
-                  <CollapsibleTrigger asChild>
-                    <SidebarMenuButton
-                      aria-expanded="false"
-                      aria-haspopup="true"
-                      aria-label="Direct Messages"
-                      disabled
-                    >
-                      <IconMessageCircle aria-hidden="true" />
-                      <span className="sr-only text-balance text-sm">
-                        Direct Messages
-                      </span>
-                    </SidebarMenuButton>
-                  </CollapsibleTrigger>
-                </HoverCardTrigger>
+                <HoverCardTrigger
+                  render={
+                    <CollapsibleTrigger
+                      render={
+                        <SidebarMenuButton
+                          aria-expanded="false"
+                          aria-haspopup="true"
+                          aria-label="Direct Messages"
+                          disabled
+                        >
+                          <IconMessageCircle aria-hidden="true" />
+                          <span className="sr-only text-balance text-sm">
+                            Direct Messages
+                          </span>
+                        </SidebarMenuButton>
+                      }
+                    />
+                  }
+                />
                 <HoverCardContent
                   align="start"
                   aria-label="Direct messages list"

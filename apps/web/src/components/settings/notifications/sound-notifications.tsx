@@ -1,4 +1,4 @@
-import { IconPlayerPlay, IconUpload } from "@tabler/icons-react";
+import { IconPlayerPlay} from "@tabler/icons-react";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
@@ -125,6 +125,7 @@ export function SoundNotifications() {
             soundType: string;
             presetId?: string | null;
             customSoundUrl?: string | null;
+            customSoundName?: string | null;
           } | null;
         }
       | undefined
@@ -133,6 +134,14 @@ export function SoundNotifications() {
       pref?.preference?.soundType === "custom"
         ? "custom"
         : pref?.preference?.presetId || presetsData?.presets[0]?.id || "";
+
+    const selectItems = [
+      ...(presetsData?.presets.map((preset) => ({
+        label: preset.name,
+        value: preset.id,
+      })) || []),
+      { label: "Upload Custom...", value: "custom" },
+    ];
 
     const handlePlaySound = () => {
       if (
@@ -170,24 +179,22 @@ export function SoundNotifications() {
             </Button>
           )}
           <Select
-            onValueChange={(val) => handleSoundChange(scope, val)}
+            items={selectItems}
+            onValueChange={(val) => {
+              if (val === null) return
+              handleSoundChange(scope, val)
+            }}
             value={currentValue}
           >
             <SelectTrigger className="w-50">
-              <SelectValue placeholder="Select a sound" />
+              <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {presetsData?.presets.map((preset) => (
-                <SelectItem key={preset.id} value={preset.id}>
-                  {preset.name}
+              {selectItems.map((item) => (
+                <SelectItem key={item.value} value={item.value}>
+                  {item.label}
                 </SelectItem>
               ))}
-              <SelectItem value="custom">
-                <div className="flex items-center gap-2">
-                  <IconUpload className="size-4" />
-                  <span>Upload Custom...</span>
-                </div>
-              </SelectItem>
             </SelectContent>
           </Select>
         </ItemActions>

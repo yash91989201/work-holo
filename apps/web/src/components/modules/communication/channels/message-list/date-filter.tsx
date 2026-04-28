@@ -37,8 +37,7 @@ export function DateFilter({
   return (
     <div className="absolute inset-x-0 top-4 z-30 flex justify-center">
       <Popover onOpenChange={setOpen} open={open}>
-        <PopoverTrigger asChild>
-          <Button
+        <PopoverTrigger render={<Button
             className={cn(
               "gap-2 rounded-full shadow-lg",
               selectedDate && "pr-2"
@@ -65,8 +64,7 @@ export function DateFilter({
                 <IconSquareXFilled className="h-3 w-3" />
               </Button>
             )}
-          </Button>
-        </PopoverTrigger>
+          </Button>} />
         <PopoverContent align="center" className="w-auto p-0">
           <Calendar
             disabled={(date) => {

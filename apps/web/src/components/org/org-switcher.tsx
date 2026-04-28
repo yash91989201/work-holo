@@ -1,15 +1,19 @@
 import { IconCheck, IconPlus, IconSelector } from "@tabler/icons-react";
-import { Image } from "@/components/shared/image";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@work-holo/ui/components/dropdown-menu";
-import { SidebarMenuButton, SidebarMenuItem } from "@work-holo/ui/components/sidebar";
+import {
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@work-holo/ui/components/sidebar";
 import { Skeleton } from "@work-holo/ui/components/skeleton";
+import { Image } from "@/components/shared/image";
 import { useActiveOrganization } from "@/hooks/use-active-organization";
 import { useOrgSwitcher } from "@/hooks/use-org-switcher";
 import { authClient } from "@/lib/auth-client";
@@ -70,68 +74,72 @@ export const OrgSwitcher = () => {
   return (
     <SidebarMenuItem>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <SidebarMenuButton
-            disabled={isSwitching}
-            size="lg"
-            tooltip={activeOrganization.name}
-          >
-            <OrgLogo
-              logo={activeOrganization.logo}
-              name={activeOrganization.name}
-              size="md"
-            />
-            <span className="truncate font-semibold group-data-[collapsible=icon]:hidden">
-              {activeOrganization.name}
-            </span>
-            <IconSelector className="ml-auto size-4 group-data-[collapsible=icon]:hidden" />
-          </SidebarMenuButton>
-        </DropdownMenuTrigger>
+        <DropdownMenuTrigger
+          render={
+            <SidebarMenuButton
+              disabled={isSwitching}
+              size="lg"
+              tooltip={activeOrganization.name}
+            >
+              <OrgLogo
+                logo={activeOrganization.logo}
+                name={activeOrganization.name}
+                size="md"
+              />
+              <span className="truncate font-semibold group-data-[collapsible=icon]:hidden">
+                {activeOrganization.name}
+              </span>
+              <IconSelector className="ml-auto size-4 group-data-[collapsible=icon]:hidden" />
+            </SidebarMenuButton>
+          }
+        />
 
         <DropdownMenuContent
           className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
           side="right"
           sideOffset={4}
         >
-          <DropdownMenuLabel className="text-muted-foreground text-xs">
-            Organizations
-          </DropdownMenuLabel>
+          <DropdownMenuGroup>
+            <DropdownMenuLabel className="text-muted-foreground text-xs">
+              Organizations
+            </DropdownMenuLabel>
 
-          <DropdownMenuItem className="gap-2 p-2">
-            <OrgLogo
-              logo={activeOrganization.logo}
-              name={activeOrganization.name}
-              size="sm"
-            />
-            <span className="flex-1 font-medium">
-              {activeOrganization.name}
-            </span>
-            <IconCheck className="size-4" />
-          </DropdownMenuItem>
-
-          {isLoadingOrgs ? (
-            <DropdownMenuItem className="gap-2 p-2" disabled>
-              <Skeleton className="size-6" />
-              <Skeleton className="h-4 flex-1" />
+            <DropdownMenuItem className="gap-2 p-2">
+              <OrgLogo
+                logo={activeOrganization.logo}
+                name={activeOrganization.name}
+                size="sm"
+              />
+              <span className="flex-1 font-medium">
+                {activeOrganization.name}
+              </span>
+              <IconCheck className="size-4" />
             </DropdownMenuItem>
-          ) : (
-            otherOrganizations.map((org) => (
-              <DropdownMenuItem
-                className="gap-2 p-2"
-                disabled={isSwitching}
-                key={org.id}
-                onClick={() =>
-                  switchOrganization({
-                    organizationId: org.id,
-                    organizationSlug: org.slug,
-                  })
-                }
-              >
-                <OrgLogo logo={org.logo} name={org.name} size="sm" />
-                <span className="flex-1">{org.name}</span>
+
+            {isLoadingOrgs ? (
+              <DropdownMenuItem className="gap-2 p-2" disabled>
+                <Skeleton className="size-6" />
+                <Skeleton className="h-4 flex-1" />
               </DropdownMenuItem>
-            ))
-          )}
+            ) : (
+              otherOrganizations.map((org) => (
+                <DropdownMenuItem
+                  className="gap-2 p-2"
+                  disabled={isSwitching}
+                  key={org.id}
+                  onClick={() =>
+                    switchOrganization({
+                      organizationId: org.id,
+                      organizationSlug: org.slug,
+                    })
+                  }
+                >
+                  <OrgLogo logo={org.logo} name={org.name} size="sm" />
+                  <span className="flex-1">{org.name}</span>
+                </DropdownMenuItem>
+              ))
+            )}
+          </DropdownMenuGroup>
 
           <Can permission={(p) => p.org.create}>
             <DropdownMenuSeparator />
@@ -153,35 +161,39 @@ export const OrgSwitcher = () => {
 const OrgSwitcherSkeleton = () => (
   <SidebarMenuItem>
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <SidebarMenuButton disabled size="lg">
-          <Skeleton className="size-8" />
-          <Skeleton className="h-4 w-32 group-data-[collapsible=icon]:hidden" />
-          <IconSelector className="ml-auto size-4 group-data-[collapsible=icon]:hidden" />
-        </SidebarMenuButton>
-      </DropdownMenuTrigger>
+      <DropdownMenuTrigger
+        render={
+          <SidebarMenuButton disabled size="lg">
+            <Skeleton className="size-8" />
+            <Skeleton className="h-4 w-32 group-data-[collapsible=icon]:hidden" />
+            <IconSelector className="ml-auto size-4 group-data-[collapsible=icon]:hidden" />
+          </SidebarMenuButton>
+        }
+      />
 
       <DropdownMenuContent
         className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
         side="right"
         sideOffset={4}
       >
-        <DropdownMenuLabel className="text-muted-foreground text-xs">
-          Organizations
-        </DropdownMenuLabel>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel className="text-muted-foreground text-xs">
+            Organizations
+          </DropdownMenuLabel>
 
-        {/* Active org placeholder */}
-        <DropdownMenuItem className="gap-2 p-2" disabled>
-          <Skeleton className="size-6" />
-          <Skeleton className="h-4 flex-1" />
-          <IconCheck className="size-4" />
-        </DropdownMenuItem>
+          {/* Active org placeholder */}
+          <DropdownMenuItem className="gap-2 p-2" disabled>
+            <Skeleton className="size-6" />
+            <Skeleton className="h-4 flex-1" />
+            <IconCheck className="size-4" />
+          </DropdownMenuItem>
 
-        {/* Loading skeleton for other orgs */}
-        <DropdownMenuItem className="gap-2 p-2" disabled>
-          <Skeleton className="size-6" />
-          <Skeleton className="h-4 flex-1" />
-        </DropdownMenuItem>
+          {/* Loading skeleton for other orgs */}
+          <DropdownMenuItem className="gap-2 p-2" disabled>
+            <Skeleton className="size-6" />
+            <Skeleton className="h-4 flex-1" />
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
 
         <DropdownMenuSeparator />
         <DropdownMenuItem className="gap-2 p-2" disabled>

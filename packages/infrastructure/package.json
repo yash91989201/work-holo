@@ -13,7 +13,7 @@
     "typescript": "^6.0.3"
   },
   "dependencies": {
-    "@opensearch-project/opensearch": "^3.5.1",
+    "@opensearch-project/opensearch": "^3.6.0",
     "amqplib": "^1.0.3",
     "pusher": "^5.3.3"
   },

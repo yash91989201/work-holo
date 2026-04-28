@@ -44,16 +44,14 @@ export function RemoveMemberDialog({
 
   return (
     <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button
+      <AlertDialogTrigger render={<Button
           aria-label={`Remove ${memberName}`}
           className="opacity-0 transition-opacity group-hover/item:opacity-100"
           size="icon"
           variant="ghost"
         >
           <IconUserMinus />
-        </Button>
-      </AlertDialogTrigger>
+        </Button>} />
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Remove member</AlertDialogTitle>

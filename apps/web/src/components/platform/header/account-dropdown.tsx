@@ -49,23 +49,25 @@ export function PlatformAccountDropdown() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          className="relative flex h-auto cursor-pointer items-center justify-center rounded-full bg-transparent p-0 transition-opacity hover:bg-transparent hover:opacity-80"
-          type="button"
-          variant="ghost"
-        >
-          <Avatar className="h-9 w-9">
-            <AvatarImage
-              alt={user.name ?? "User"}
-              src={user.image ?? undefined}
-            />
-            <AvatarFallback className="bg-orange-500 font-semibold text-sm text-white">
-              {initials}
-            </AvatarFallback>
-          </Avatar>
-        </Button>
-      </DropdownMenuTrigger>
+      <DropdownMenuTrigger
+        render={
+          <Button
+            className="relative flex h-auto cursor-pointer items-center justify-center rounded-full bg-transparent p-0 transition-opacity hover:bg-transparent hover:opacity-80"
+            type="button"
+            variant="ghost"
+          >
+            <Avatar className="h-9 w-9">
+              <AvatarImage
+                alt={user.name ?? "User"}
+                src={user.image ?? undefined}
+              />
+              <AvatarFallback className="bg-orange-500 font-semibold text-sm text-white">
+                {initials}
+              </AvatarFallback>
+            </Avatar>
+          </Button>
+        }
+      />
       <DropdownMenuContent align="end" className="w-80">
         <div className="relative h-24 w-full overflow-hidden rounded-t-lg bg-linear-to-br from-violet-500 via-purple-500 to-pink-500" />
 

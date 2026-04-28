@@ -17,7 +17,6 @@ import {
   IconSend,
   IconStrikethrough,
 } from "@tabler/icons-react";
-import { useEffect, useRef, useState } from "react";
 import { Button } from "@work-holo/ui/components/button";
 import { ButtonGroup } from "@work-holo/ui/components/button-group";
 import {
@@ -38,13 +37,17 @@ import {
   PopoverTrigger,
 } from "@work-holo/ui/components/popover";
 import { Separator } from "@work-holo/ui/components/separator";
-import { ToggleGroup, ToggleGroupItem } from "@work-holo/ui/components/toggle-group";
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@work-holo/ui/components/toggle-group";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@work-holo/ui/components/tooltip";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 type FocusHandler = (() => void) | null;
@@ -298,7 +301,7 @@ export function DmMessageEditor({
         {isFormattingBarOpen && (
           <div className="flex shrink-0 flex-wrap items-center gap-3 border-b bg-muted/20 px-2 py-1">
             {/* Formatting Group */}
-            <ToggleGroup type="multiple" variant="default">
+            <ToggleGroup variant="default">
               <ToggleGroupItem
                 aria-label="Toggle bold"
                 onClick={toggleBold}
@@ -336,7 +339,7 @@ export function DmMessageEditor({
             <Separator orientation="vertical" />
 
             {/* Lists Group */}
-            <ToggleGroup type="multiple" variant="default">
+            <ToggleGroup variant="default">
               <ToggleGroupItem
                 aria-label="Toggle bullet list"
                 onClick={toggleBulletList}
@@ -363,17 +366,19 @@ export function DmMessageEditor({
                 onOpenChange={setIsLinkPopoverOpen}
                 open={isLinkPopoverOpen}
               >
-                <PopoverTrigger asChild>
-                  <Button
-                    aria-label="Add a link"
-                    onClick={handleAddLink}
-                    size="icon"
-                    title="Insert Link"
-                    variant="ghost"
-                  >
-                    <IconLink />
-                  </Button>
-                </PopoverTrigger>
+                <PopoverTrigger
+                  render={
+                    <Button
+                      aria-label="Add a link"
+                      onClick={handleAddLink}
+                      size="icon"
+                      title="Insert Link"
+                      variant="ghost"
+                    >
+                      <IconLink />
+                    </Button>
+                  }
+                />
                 <PopoverContent
                   align="start"
                   className="w-96 p-0"
@@ -446,7 +451,7 @@ export function DmMessageEditor({
             <div className="p-3">
               <textarea
                 className={cn(
-                  "min-h-[80px] w-full resize-none bg-transparent text-sm outline-none placeholder:text-muted-foreground",
+                  "min-h-20 w-full resize-none bg-transparent text-sm outline-none placeholder:text-muted-foreground",
                   disabled && "opacity-50"
                 )}
                 disabled={disabled}
@@ -489,16 +494,18 @@ export function DmMessageEditor({
           <div className="flex items-center gap-3">
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    aria-label="Toggle formatting toolbar"
-                    onClick={() => setIsFormattingBarOpen((v) => !v)}
-                    size="sm"
-                    variant={isFormattingBarOpen ? "default" : "ghost"}
-                  >
-                    <IconMarkdown />
-                  </Button>
-                </TooltipTrigger>
+                <TooltipTrigger
+                  render={
+                    <Button
+                      aria-label="Toggle formatting toolbar"
+                      onClick={() => setIsFormattingBarOpen((v) => !v)}
+                      size="sm"
+                      variant={isFormattingBarOpen ? "default" : "ghost"}
+                    >
+                      <IconMarkdown />
+                    </Button>
+                  }
+                />
                 <TooltipContent>
                   <p>
                     {isFormattingBarOpen ? "Hide" : "Show"} formatting toolbar
@@ -543,29 +550,31 @@ export function DmMessageEditor({
             <ButtonGroup>
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      aria-label={
-                        isRecording ? "Stop recording" : "Start voice message"
-                      }
-                      className={cn(
-                        "transition-all duration-200",
-                        isRecording && "relative"
-                      )}
-                      disabled={!onVoiceRecord || content.trim().length > 0}
-                      onClick={onVoiceRecord}
-                      size="icon"
-                      title={voiceRecordTitle}
-                      variant="ghost"
-                    >
-                      <IconMicrophone
+                  <TooltipTrigger
+                    render={
+                      <Button
+                        aria-label={
+                          isRecording ? "Stop recording" : "Start voice message"
+                        }
                         className={cn(
-                          content.trim().length > 0 && "opacity-50",
-                          isRecording && "text-red-500"
+                          "transition-all duration-200",
+                          isRecording && "relative"
                         )}
-                      />
-                    </Button>
-                  </TooltipTrigger>
+                        disabled={!onVoiceRecord || content.trim().length > 0}
+                        onClick={onVoiceRecord}
+                        size="icon"
+                        title={voiceRecordTitle}
+                        variant="ghost"
+                      >
+                        <IconMicrophone
+                          className={cn(
+                            content.trim().length > 0 && "opacity-50",
+                            isRecording && "text-red-500"
+                          )}
+                        />
+                      </Button>
+                    }
+                  />
                   {content.trim().length > 0 && (
                     <TooltipContent>
                       <p>Clear text to record audio</p>
@@ -574,17 +583,19 @@ export function DmMessageEditor({
                 </Tooltip>
               </TooltipProvider>
               <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    className="transition-all duration-200"
-                    disabled={!onEmojiSelect || hasAudio}
-                    size="icon"
-                    title="Add emoji"
-                    variant="ghost"
-                  >
-                    <IconMoodPlus className={cn(hasAudio && "opacity-50")} />
-                  </Button>
-                </PopoverTrigger>
+                <PopoverTrigger
+                  render={
+                    <Button
+                      className="transition-all duration-200"
+                      disabled={!onEmojiSelect || hasAudio}
+                      size="icon"
+                      title="Add emoji"
+                      variant="ghost"
+                    >
+                      <IconMoodPlus className={cn(hasAudio && "opacity-50")} />
+                    </Button>
+                  }
+                />
                 <PopoverContent align="end" side="top">
                   <EmojiPicker onEmojiSelect={onEmojiSelect}>
                     <EmojiPickerSearch placeholder="Search emoji..." />

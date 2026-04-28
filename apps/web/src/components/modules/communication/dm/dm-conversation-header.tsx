@@ -28,7 +28,6 @@ import {
 import { Kbd } from "@work-holo/ui/components/kbd";
 import {
   Popover,
-  PopoverAnchor,
   PopoverContent,
 } from "@work-holo/ui/components/popover";
 import { ScrollArea } from "@work-holo/ui/components/scroll-area";
@@ -55,6 +54,7 @@ const SKELETON_ROW_KEYS = ["row-1", "row-2", "row-3"];
 
 export function DmConversationHeader() {
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const anchorRef = useRef<HTMLDivElement | null>(null);
 
   const { conversationId } = useParams({
     from: "/(authenticated)/org/$slug/workspace/communication/dm/$conversationId",
@@ -282,64 +282,63 @@ export function DmConversationHeader() {
         {/* Actions */}
         <div className="ml-auto flex items-center gap-2">
           <Popover open={hasQuery}>
-            <PopoverAnchor asChild>
-              <div className="w-44 sm:w-60 md:w-72">
-                <InputGroup className="h-8 rounded-full bg-background">
-                  <InputGroupAddon>
-                    <InputGroupText>
-                      {isLoading ? <Spinner /> : <IconSearch />}
-                    </InputGroupText>
-                  </InputGroupAddon>
-                  <InputGroupInput
-                    aria-label="Search messages"
-                    onChange={(event) => {
-                      setQuery(event.target.value);
-                    }}
-                    onKeyDown={(event) => {
-                      const isSearchShortcut =
-                        (event.metaKey || event.ctrlKey) &&
-                        event.key.toLowerCase() === "k" &&
-                        !event.shiftKey;
+            <div ref={anchorRef} className="w-44 sm:w-60 md:w-72">
+              <InputGroup className="h-8 rounded-full bg-background">
+                    <InputGroupAddon>
+                      <InputGroupText>
+                        {isLoading ? <Spinner /> : <IconSearch />}
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <InputGroupInput
+                      aria-label="Search messages"
+                      onChange={(event) => {
+                        setQuery(event.target.value);
+                      }}
+                      onKeyDown={(event) => {
+                        const isSearchShortcut =
+                          (event.metaKey || event.ctrlKey) &&
+                          event.key.toLowerCase() === "k" &&
+                          !event.shiftKey;
 
-                      if (isSearchShortcut) {
-                        event.preventDefault();
-                        inputRef.current?.select();
-                        return;
-                      }
+                        if (isSearchShortcut) {
+                          event.preventDefault();
+                          inputRef.current?.select();
+                          return;
+                        }
 
-                      if (event.key === "Escape") {
-                        setQuery("");
-                        inputRef.current?.blur();
-                      }
-                    }}
-                    placeholder="Search messages..."
-                    ref={inputRef}
-                    value={query}
-                  />
-                  <InputGroupAddon
-                    align="inline-end"
-                    className="hidden md:flex"
-                  >
-                    {hasQuery ? (
-                      <InputGroupButton
-                        aria-label="Clear search"
-                        onClick={() => setQuery("")}
-                        size="icon-xs"
-                      >
-                        <IconX className="size-3" />
-                      </InputGroupButton>
-                    ) : (
-                      <Kbd>Ctrl/Cmd K</Kbd>
-                    )}
-                  </InputGroupAddon>
-                </InputGroup>
-              </div>
-            </PopoverAnchor>
+                        if (event.key === "Escape") {
+                          setQuery("");
+                          inputRef.current?.blur();
+                        }
+                      }}
+                      placeholder="Search messages..."
+                      ref={inputRef}
+                      value={query}
+                    />
+                    <InputGroupAddon
+                      align="inline-end"
+                      className="hidden md:flex"
+                    >
+                      {hasQuery ? (
+                        <InputGroupButton
+                          aria-label="Clear search"
+                          onClick={() => setQuery("")}
+                          size="icon-xs"
+                        >
+                          <IconX className="size-3" />
+                        </InputGroupButton>
+                      ) : (
+                        <Kbd>Ctrl/Cmd K</Kbd>
+                      )}
+                    </InputGroupAddon>
+                  </InputGroup>
+                </div>
 
             <PopoverContent
               align="end"
+              anchor={anchorRef.current ?? undefined}
               className="w-[min(46rem,calc(100vw-1rem))] gap-0 overflow-hidden p-0"
-              onOpenAutoFocus={(event) => event.preventDefault()}
+              initialFocus={false}
               side="bottom"
               sideOffset={8}
             >
@@ -348,30 +347,34 @@ export function DmConversationHeader() {
           </Popover>
 
           <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                onClick={togglePinnedMessages}
-                size="icon-sm"
-                variant={isPinsOpen ? "secondary" : "ghost"}
-              >
-                <IconPinFilled />
-              </Button>
-            </TooltipTrigger>
+            <TooltipTrigger
+              render={
+                <Button
+                  onClick={togglePinnedMessages}
+                  size="icon-sm"
+                  variant={isPinsOpen ? "secondary" : "ghost"}
+                >
+                  <IconPinFilled />
+                </Button>
+              }
+            />
             <TooltipContent>
               {isPinsOpen ? "Close pinned messages" : "View pinned messages"}
             </TooltipContent>
           </Tooltip>
 
           <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                onClick={toggleInfoSidebar}
-                size="icon-sm"
-                variant={isInfoOpen ? "secondary" : "ghost"}
-              >
-                <IconInfoCircleFilled />
-              </Button>
-            </TooltipTrigger>
+            <TooltipTrigger
+              render={
+                <Button
+                  onClick={toggleInfoSidebar}
+                  size="icon-sm"
+                  variant={isInfoOpen ? "secondary" : "ghost"}
+                >
+                  <IconInfoCircleFilled />
+                </Button>
+              }
+            />
             <TooltipContent>Conversation Info</TooltipContent>
           </Tooltip>
 

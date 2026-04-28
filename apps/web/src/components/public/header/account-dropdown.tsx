@@ -10,8 +10,11 @@ import {
   IconUserFilled,
 } from "@tabler/icons-react";
 import { Link, useNavigate, useRouter } from "@tanstack/react-router";
-import { toast } from "sonner";
-import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@work-holo/ui/components/avatar";
 import { Badge } from "@work-holo/ui/components/badge";
 import { Button } from "@work-holo/ui/components/button";
 import {
@@ -27,6 +30,7 @@ import {
   DropdownMenuTrigger,
 } from "@work-holo/ui/components/dropdown-menu";
 import { Skeleton } from "@work-holo/ui/components/skeleton";
+import { toast } from "sonner";
 import { useActiveMemberRole } from "@/hooks/use-active-member-role";
 import { useActiveOrgSlug } from "@/hooks/use-active-org-slug";
 import { useSession } from "@/hooks/use-session";
@@ -44,9 +48,7 @@ export function AccountDropdown() {
 
   if (!session) {
     return (
-      <Button asChild variant="outline">
-        <Link to="/login">Log In</Link>
-      </Button>
+      <Button render={<Link to="/login">Log In</Link>} variant="outline" />
     );
   }
 
@@ -70,22 +72,24 @@ export function AccountDropdown() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button
-          className="relative flex cursor-pointer items-center justify-center rounded-full transition-opacity hover:opacity-80"
-          type="button"
-        >
-          <Avatar className="h-9 w-9">
-            <AvatarImage
-              alt={user.name ?? "User"}
-              src={user.image ?? undefined}
-            />
-            <AvatarFallback className="bg-orange-500 font-semibold text-sm text-white">
-              {initials}
-            </AvatarFallback>
-          </Avatar>
-        </button>
-      </DropdownMenuTrigger>
+      <DropdownMenuTrigger
+        render={
+          <button
+            className="relative flex cursor-pointer items-center justify-center rounded-full transition-opacity hover:opacity-80"
+            type="button"
+          >
+            <Avatar className="h-9 w-9">
+              <AvatarImage
+                alt={user.name ?? "User"}
+                src={user.image ?? undefined}
+              />
+              <AvatarFallback className="bg-orange-500 font-semibold text-sm text-white">
+                {initials}
+              </AvatarFallback>
+            </Avatar>
+          </button>
+        }
+      />
       <DropdownMenuContent align="end" className="w-80">
         <div className="relative h-24 w-full overflow-hidden rounded-t-lg bg-linear-to-br from-violet-500 via-purple-500 to-pink-500" />
 
@@ -115,37 +119,43 @@ export function AccountDropdown() {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuLabel>Organization</DropdownMenuLabel>
-              <DropdownMenuItem asChild>
-                <Link
-                  className="cursor-pointer"
-                  params={{ slug }}
-                  to="/org/$slug/workspace"
-                >
-                  <IconBriefcase />
-                  Workspace
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link
-                  className="cursor-pointer"
-                  params={{ slug }}
-                  to="/org/$slug/console"
-                >
-                  <IconUserFilled />
-                  Console
-                </Link>
-              </DropdownMenuItem>
-              {role === "owner" && (
-                <DropdownMenuItem asChild>
+              <DropdownMenuItem
+                render={
                   <Link
                     className="cursor-pointer"
                     params={{ slug }}
-                    to="/org/$slug/manage"
+                    to="/org/$slug/workspace"
                   >
-                    <IconLayoutDashboardFilled />
-                    Manage
+                    <IconBriefcase />
+                    Workspace
                   </Link>
-                </DropdownMenuItem>
+                }
+              />
+              <DropdownMenuItem
+                render={
+                  <Link
+                    className="cursor-pointer"
+                    params={{ slug }}
+                    to="/org/$slug/console"
+                  >
+                    <IconUserFilled />
+                    Console
+                  </Link>
+                }
+              />
+              {role === "owner" && (
+                <DropdownMenuItem
+                  render={
+                    <Link
+                      className="cursor-pointer"
+                      params={{ slug }}
+                      to="/org/$slug/manage"
+                    >
+                      <IconLayoutDashboardFilled />
+                      Manage
+                    </Link>
+                  }
+                />
               )}
             </DropdownMenuGroup>
           </>
@@ -153,33 +163,44 @@ export function AccountDropdown() {
 
         <DropdownMenuGroup>
           <DropdownMenuLabel>Account</DropdownMenuLabel>
-          <DropdownMenuItem asChild>
-            <Link className="cursor-pointer" to="/settings/account/profile">
-              <IconUserFilled />
-              Profile
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link className="cursor-pointer" to="/settings/account/preferences">
-              <IconSettingsFilled />
-              Preferences
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link
-              className="cursor-pointer"
-              to="/settings/account/notifications"
-            >
-              <IconBellFilled />
-              Notifications
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link className="cursor-pointer" to="/settings/account/security">
-              <IconShieldFilled />
-              Security & Access
-            </Link>
-          </DropdownMenuItem>
+          <DropdownMenuItem
+            render={
+              <Link className="cursor-pointer" to="/settings/account/profile">
+                <IconUserFilled />
+                Profile
+              </Link>
+            }
+          />
+          <DropdownMenuItem
+            render={
+              <Link
+                className="cursor-pointer"
+                to="/settings/account/preferences"
+              >
+                <IconSettingsFilled />
+                Preferences
+              </Link>
+            }
+          />
+          <DropdownMenuItem
+            render={
+              <Link
+                className="cursor-pointer"
+                to="/settings/account/notifications"
+              >
+                <IconBellFilled />
+                Notifications
+              </Link>
+            }
+          />
+          <DropdownMenuItem
+            render={
+              <Link className="cursor-pointer" to="/settings/account/security">
+                <IconShieldFilled />
+                Security & Access
+              </Link>
+            }
+          />
           <DropdownMenuSub>
             <DropdownMenuSubTrigger className="gap-2">
               {theme === "dark" ? (
@@ -220,12 +241,10 @@ export function AccountDropdown() {
   );
 }
 
-const AccountDropdownSkeleton = () => {
-  return (
-    <div className="relative flex items-center justify-center">
-      <Skeleton className="h-9 w-9 rounded-full" />
-    </div>
-  );
-};
+const AccountDropdownSkeleton = () => (
+  <div className="relative flex items-center justify-center">
+    <Skeleton className="h-9 w-9 rounded-full" />
+  </div>
+);
 
 AccountDropdown.Fallback = AccountDropdownSkeleton;

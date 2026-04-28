@@ -1,24 +1,13 @@
 # syntax=docker/dockerfile:1.7
 
-# ============================================================
-# Base
-# ============================================================
-FROM oven/bun:1.3.12-slim AS base
+FROM oven/bun:1.3.13-slim AS builder
+
 WORKDIR /app
-
-# Common runtime env
-ENV NODE_ENV=production
-ENV BUN_ENV=production
-
-# ============================================================
-# Dependencies
-# ============================================================
-FROM base AS deps
 
 # Copy root manifests first for better cache reuse
 COPY package.json bun.lock bunfig.toml ./
 
-# Copy workspace package manifests only
+# Copy ALL workspace package manifests (bun --frozen-lockfile validates all workspaces exist)
 COPY packages/config/package.json packages/config/
 COPY packages/env/package.json packages/env/
 COPY packages/db/package.json packages/db/
@@ -26,23 +15,16 @@ COPY packages/auth/package.json packages/auth/
 COPY packages/api/package.json packages/api/
 COPY packages/permission/package.json packages/permission/
 COPY packages/infrastructure/package.json packages/infrastructure/
+COPY packages/ui/package.json packages/ui/
 COPY apps/web/package.json apps/web/
 
-# Install all deps needed to build
+# Install all deps needed to build (including dev deps)
 RUN --mount=type=cache,target=/root/.bun/install/cache \
-  bun install 
+  bun install
 
-# ============================================================
-# Builder
-# ============================================================
-FROM base AS builder
-WORKDIR /app
-
-# Reuse installed dependencies
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/package.json ./package.json
-COPY --from=deps /app/bun.lock ./bun.lock
-COPY --from=deps /app/bunfig.toml ./bunfig.toml
+# @vitejs/plugin-rsc uses fs.renameSync for RSC temp output. Docker overlayfs can
+# throw EXDEV for that rename, so add a copy+remove fallback inside the image.
+RUN bun -e 'const fs = require("fs"), path = require("path"); const bunDir = path.join(process.cwd(), "node_modules/.bun"); const pluginDir = fs.readdirSync(bunDir).find((name) => name.startsWith("@vitejs+plugin-rsc@")); if (!pluginDir) throw new Error("@vitejs/plugin-rsc not found"); const file = path.join(bunDir, pluginDir, "node_modules/@vitejs/plugin-rsc/dist/plugin-BhzHKRFo.js"); let source = fs.readFileSync(file, "utf8"); const move = (from, to) => `try { fs.renameSync(${from}, ${to}); } catch (error) { if (error && error.code === "EXDEV") { fs.cpSync(${from}, ${to}, { recursive: true }); fs.rmSync(${from}, { recursive: true, force: true }); } else { throw error; } }`; source = source.replace("fs.renameSync(rscOutDir, tempRscOutDir);", move("rscOutDir", "tempRscOutDir")).replace("fs.renameSync(tempRscOutDir, rscOutDir);", move("tempRscOutDir", "rscOutDir")); fs.writeFileSync(file, source);'
 
 # Copy source
 COPY packages/config packages/config
@@ -52,6 +34,7 @@ COPY packages/auth packages/auth
 COPY packages/api packages/api
 COPY packages/permission packages/permission
 COPY packages/infrastructure packages/infrastructure
+COPY packages/ui packages/ui
 COPY apps/web apps/web
 
 # Build-time public envs only
@@ -65,34 +48,25 @@ ENV VITE_WEB_URL=${VITE_WEB_URL}
 ENV VITE_SERVER_URL=${VITE_SERVER_URL}
 ENV VITE_IMAGE_TRANSFORMATION_URL=${VITE_IMAGE_TRANSFORMATION_URL}
 
-# Tell Nitro to optimize output for Bun
-ENV NITRO_PRESET=bun
+ENV NODE_ENV=production
 
+# Build the application
 WORKDIR /app/apps/web
 RUN bun run build
 
-# ============================================================
-# Runtime
-# ============================================================
-FROM oven/bun:1.3.12-slim AS runner
-WORKDIR /app
+FROM oven/bun:1.3.13-slim AS runtime
+
+WORKDIR /app/apps/web
+
+# Runtime only needs built output and the Bun server entrypoint.
+COPY --from=builder /app/apps/web/dist ./dist
+COPY --from=builder /app/apps/web/server.ts ./server.ts
 
 ENV NODE_ENV=production
 ENV BUN_ENV=production
 ENV HOST=0.0.0.0
-ENV PORT=3000
+ENV PORT=3001
 
-# Run as the non-root bun user included in the official image
-USER bun
+EXPOSE 3001
 
-# Copy only runtime output
-COPY --chown=bun:bun --from=builder /app/apps/web/.output ./.output
-
-EXPOSE 3000
-
-# Healthcheck assumes your app serves "/" with 200.
-# If you have a dedicated /health route, switch to that.
-HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
-  CMD bun -e "const r = await fetch('http://127.0.0.1:' + (process.env.PORT || 3000)); if (!r.ok) throw new Error('unhealthy')"
-
-CMD ["bun", "run", ".output/server/index.mjs"]
+CMD ["bun", "server.ts"]

@@ -219,12 +219,14 @@ export const FileActions = ({ file }: FileActionsProps) => {
   return (
     <>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="secondary">
-            <span className="sr-only">Open menu</span>
-            <IconDots />
-          </Button>
-        </DropdownMenuTrigger>
+        <DropdownMenuTrigger
+          render={
+            <Button variant="secondary">
+              <span className="sr-only">Open menu</span>
+              <IconDots />
+            </Button>
+          }
+        />
         <DropdownMenuContent align="end">
           <DropdownMenuItem disabled={!file.url} onClick={handlePreviewOrOpen}>
             <IconExternalLink className="mr-2 h-4 w-4" />

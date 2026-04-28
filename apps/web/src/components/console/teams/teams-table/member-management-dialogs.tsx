@@ -64,16 +64,14 @@ export function AddTeamMemberDialog({ teamId }: { teamId: string }) {
 
   return (
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
-      <DialogTrigger asChild>
-        <Button
-          className="flex w-full items-center justify-start gap-1.5"
-          size="sm"
-          variant="ghost"
-        >
-          <IconUserPlus className="size-4" />
-          Add members
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger render={<Button
+        className="flex w-full items-center justify-start gap-1.5"
+        size="sm"
+        variant="ghost"
+      >
+        <IconUserPlus className="size-4" />
+        Add members
+      </Button>} />
       <DialogContent className="sm:max-w-106">
         <DialogHeader>
           <DialogTitle>Add Members to Team</DialogTitle>
@@ -197,16 +195,14 @@ export function RemoveTeamMemberDialog({ teamId }: { teamId: string }) {
 
   return (
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
-      <DialogTrigger asChild>
-        <Button
-          className="flex w-full items-center justify-start gap-1.5"
-          size="sm"
-          variant="ghost"
-        >
-          <IconUserMinus className="size-4" />
-          <span>Remove Members</span>
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger render={<Button
+        className="flex w-full items-center justify-start gap-1.5"
+        size="sm"
+        variant="ghost"
+      >
+        <IconUserMinus className="size-4" />
+        <span>Remove Members</span>
+      </Button>} />
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Remove Members from Team</DialogTitle>

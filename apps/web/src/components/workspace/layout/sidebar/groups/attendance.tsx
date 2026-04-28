@@ -46,15 +46,15 @@ export function AttendanceGroup() {
             return (
               <SidebarMenuItem key={link.label}>
                 <SidebarMenuButton
-                  asChild
                   isActive={isActive}
+                  render={
+                    <Link {...link}>
+                      {link.icon && <link.icon />}
+                      <span>{link.label}</span>
+                    </Link>
+                  }
                   tooltip={link.label}
-                >
-                  <Link {...link}>
-                    {link.icon && <link.icon />}
-                    <span>{link.label}</span>
-                  </Link>
-                </SidebarMenuButton>
+                />
               </SidebarMenuItem>
             );
           })}

@@ -15,6 +15,7 @@ import type { orpcClient, queryUtils } from "@/utils/orpc";
 import { link } from "@/utils/orpc";
 import { Header } from "@/components/shared/header";
 import { Footer } from "@/components/shared/footer";
+import { SmoothScrollProvider } from "@/components/shared/smooth-scroll-provider";
 import appCss from "@/styles/index.css?url";
 
 export interface RouterAppContext {
@@ -86,12 +87,14 @@ function ShellComponent({children}:{children:React.ReactNode}){
 
 function RootDocument() {
   return (
-        <div className="flex min-h-svh flex-col">
-          <Header />
-          <main className="flex-1">
-            <Outlet />
-          </main>
-          <Footer />
-        </div>
+    <SmoothScrollProvider>
+      <div className="flex min-h-svh flex-col">
+        <Header />
+        <main className="flex-1">
+          <Outlet />
+        </main>
+        <Footer />
+      </div>
+    </SmoothScrollProvider>
   );
 }

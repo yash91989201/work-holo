@@ -70,12 +70,10 @@ export const InvitationForm = () => {
 
   return (
     <Dialog onOpenChange={setIsOpen} open={isOpen}>
-      <DialogTrigger asChild>
-        <Button>
-          <IconPlus className="mr-2 h-4 w-4" />
-          Invite Member
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger render={<Button>
+        <IconPlus className="mr-2 h-4 w-4" />
+        Invite Member
+      </Button>} />
 
       <DialogContent>
         <DialogHeader>

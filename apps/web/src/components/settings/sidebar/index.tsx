@@ -62,18 +62,9 @@ function BackToOrgDropdown() {
   return (
     <SidebarMenuItem>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <SidebarMenuButton>
-            <IconArrowLeft />
-            <span>Back to Org</span>
-          </SidebarMenuButton>
-        </DropdownMenuTrigger>
+        <DropdownMenuTrigger render={<SidebarMenuButton><IconArrowLeft /><span>Back to Org</span></SidebarMenuButton>} />
         <DropdownMenuContent align="start" sideOffset={4}>
-          <DropdownMenuItem asChild>
-            <Link {...orgRoute}>
-              <span>Go to Organization</span>
-            </Link>
-          </DropdownMenuItem>
+          <DropdownMenuItem render={<Link {...orgRoute}><span>Go to Organization</span></Link>} />
           {canGoBack && (
             <DropdownMenuItem onClick={handleGoBack}>
               <span>Go Back</span>

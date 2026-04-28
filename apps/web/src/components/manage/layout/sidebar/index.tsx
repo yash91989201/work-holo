@@ -41,16 +41,7 @@ export function Sidebar({
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  isActive={isActive}
-                  tooltip="Organization Overview"
-                >
-                  <Link params={{ slug }} to="/org/$slug/manage">
-                    <IconBuildingCommunity />
-                    <span>Overview</span>
-                  </Link>
-                </SidebarMenuButton>
+                <SidebarMenuButton isActive={isActive} render={<Link params={{ slug }} to="/org/$slug/manage"><IconBuildingCommunity /><span>Overview</span></Link>} tooltip="Organization Overview" />
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>

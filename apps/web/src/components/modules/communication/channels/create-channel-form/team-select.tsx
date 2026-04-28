@@ -41,11 +41,15 @@ const TeamSelectBase = withForm({
               </Button>
             </div>
             <Select
+              items={teams.map((team) => ({
+                label: team.name,
+                value: team.id,
+              }))}
               onValueChange={(value) => field.handleChange(value ?? undefined)}
               value={field.state.value ?? ""}
             >
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select team" />
+                <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 {teams.map((team) => (

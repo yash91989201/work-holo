@@ -1,4 +1,4 @@
-import { env } from "@work-holo/env/web";
+import { env } from "@work-holo/env/www";
 import { cn } from "@work-holo/ui/lib/utils";
 import {
   type CSSProperties,
@@ -101,7 +101,7 @@ const buildImageUrl = (options: {
     TRAILING_SLASH_REGEX,
     ""
   );
-  const websiteUrl = env.VITE_WEB_URL.replace(TRAILING_SLASH_REGEX, "");
+  const websiteUrl = env.VITE_WWW_URL.replace(TRAILING_SLASH_REGEX, "");
   const absoluteSource = src.startsWith("/") ? `${websiteUrl}${src}` : src;
   const plainSource = encodePlainSourceUrl(absoluteSource);
   const outputExtension = format ?? "webp";

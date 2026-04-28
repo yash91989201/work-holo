@@ -1,5 +1,4 @@
 import { useDmMessageReactions } from "@/hooks/communications/dm/use-dm-reactions";
-import { useAuthedSession } from "@/hooks/use-authed-session";
 import { cn } from "@/lib/utils";
 
 interface DmMessageReactionsProps {
@@ -13,7 +12,6 @@ export function DmMessageReactions({
   onAddReaction,
   onRemoveReaction,
 }: DmMessageReactionsProps) {
-  const { user } = useAuthedSession();
   const reactions = useDmMessageReactions(messageId);
 
   if (reactions.length === 0) {
