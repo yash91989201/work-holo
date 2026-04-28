@@ -52,15 +52,15 @@ export function NavMain() {
               <Link {...item}>
                 {({ isActive }) => (
                   <SidebarMenuButton
-                    asChild
                     isActive={isActive}
+                    render={
+                      <div className="flex items-center gap-2">
+                        {item.icon && <item.icon />}
+                        <span>{item.label}</span>
+                      </div>
+                    }
                     tooltip={item.label}
-                  >
-                    <div className="flex items-center gap-2">
-                      {item.icon && <item.icon />}
-                      <span>{item.label}</span>
-                    </div>
-                  </SidebarMenuButton>
+                  />
                 )}
               </Link>
             </SidebarMenuItem>

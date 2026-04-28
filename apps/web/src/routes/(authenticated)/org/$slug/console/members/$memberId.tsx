@@ -274,12 +274,7 @@ function MemberDetailContent() {
     return (
       <div className="flex h-96 flex-col items-center justify-center gap-4">
         <p className="text-lg text-muted-foreground">Member not found</p>
-        <Button asChild variant="outline">
-          <Link params={{ slug }} to="/org/$slug/console/members">
-            <IconArrowLeft className="mr-2 h-4 w-4" />
-            Back to Members
-          </Link>
-        </Button>
+        <Button render={<Link params={{ slug }} to="/org/$slug/console/members"><IconArrowLeft className="mr-2 h-4 w-4" />Back to Members</Link>} variant="outline" />
       </div>
     );
   }
@@ -293,11 +288,7 @@ function MemberDetailContent() {
     <>
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <Button asChild size="icon" variant="outline">
-            <Link params={{ slug }} to="/org/$slug/console/members">
-              <IconArrowLeft className="h-4 w-4" />
-            </Link>
-          </Button>
+          <Button render={<Link params={{ slug }} to="/org/$slug/console/members"><IconArrowLeft className="h-4 w-4" /></Link>} size="icon" variant="outline" />
           <div>
             <h1 className="font-bold text-2xl">Member Details</h1>
             <p className="text-muted-foreground text-sm">

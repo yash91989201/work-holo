@@ -94,11 +94,13 @@ export function SupportTable() {
             </TableCell>
             <TableCell>
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button size="icon" variant="ghost">
-                    <IconDots className="size-4" />
-                  </Button>
-                </DropdownMenuTrigger>
+                <DropdownMenuTrigger
+                  render={
+                    <Button size="icon" variant="ghost">
+                      <IconDots className="size-4" />
+                    </Button>
+                  }
+                />
                 <DropdownMenuContent align="end">
                   {u.banned ? (
                     <DropdownMenuItem

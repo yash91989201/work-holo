@@ -268,11 +268,9 @@ const columns: ColumnDef<InvitationRecord>[] = [
 
       return (
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className="h-8 w-8 p-0" variant="ghost">
-              <IconDots className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
+          <DropdownMenuTrigger render={<Button className="h-8 w-8 p-0" variant="ghost">
+            <IconDots className="h-4 w-4" />
+          </Button>} />
           <DropdownMenuContent align="end" className="w-48">
             <DropdownMenuItem onClick={() => onCopy(invitation)}>
               <IconCopyCheckFilled className="mr-2 h-4 w-4" />
@@ -557,24 +555,22 @@ export const InvitationsTable = () => {
           </Select>
 
           <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                className={expiryDateRange ? "" : "text-muted-foreground"}
-                variant="outline"
-              >
-                <IconCalendarEventFilled className="mr-2 h-4 w-4" />
-                {!expiryDateRange?.from && <span>Expiry date</span>}
-                {expiryDateRange?.from &&
-                  !expiryDateRange.to &&
-                  format(expiryDateRange.from, "LLL dd, y")}
-                {expiryDateRange?.from && expiryDateRange.to && (
-                  <>
-                    {format(expiryDateRange.from, "LLL dd, y")} -{" "}
-                    {format(expiryDateRange.to, "LLL dd, y")}
-                  </>
-                )}
-              </Button>
-            </PopoverTrigger>
+            <PopoverTrigger render={<Button
+              className={expiryDateRange ? "" : "text-muted-foreground"}
+              variant="outline"
+            >
+              <IconCalendarEventFilled className="mr-2 h-4 w-4" />
+              {!expiryDateRange?.from && <span>Expiry date</span>}
+              {expiryDateRange?.from &&
+                !expiryDateRange.to &&
+                format(expiryDateRange.from, "LLL dd, y")}
+              {expiryDateRange?.from && expiryDateRange.to && (
+                <>
+                  {format(expiryDateRange.from, "LLL dd, y")} -{" "}
+                  {format(expiryDateRange.to, "LLL dd, y")}
+                </>
+              )}
+            </Button>} />
             <PopoverContent align="start" className="w-auto p-0">
               <Calendar
                 defaultMonth={expiryDateRange?.from}

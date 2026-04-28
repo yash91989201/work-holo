@@ -214,37 +214,24 @@ export const ChannelsListTable = () => {
 
           return (
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button size="icon" variant="ghost">
+              <DropdownMenuTrigger render={<Button size="icon" variant="ghost">
                   <IconDots />
-                </Button>
-              </DropdownMenuTrigger>
+                </Button>} />
 
               <DropdownMenuContent className="flex flex-col items-stretch gap-1.5">
-                <DropdownMenuItem asChild>
-                  <Suspense fallback={<AddMemberDialog.Fallback />}>
+                <DropdownMenuItem render={<Suspense fallback={<AddMemberDialog.Fallback />}>
                     <AddMemberDialog channelId={channel.id} />
-                  </Suspense>
-                </DropdownMenuItem>
+                  </Suspense>} />
 
-                <DropdownMenuItem asChild>
-                  <Suspense fallback={<RemoveMemberDialog.Fallback />}>
+                <DropdownMenuItem render={<Suspense fallback={<RemoveMemberDialog.Fallback />}>
                     <RemoveMemberDialog channelId={channel.id} />
-                  </Suspense>
-                </DropdownMenuItem>
+                  </Suspense>} />
 
-                <DropdownMenuItem asChild>
-                  <Suspense fallback={<UpdateChannelDialog.Fallback />}>
+                <DropdownMenuItem render={<Suspense fallback={<UpdateChannelDialog.Fallback />}>
                     <UpdateChannelDialog channelId={channel.id} />
-                  </Suspense>
-                </DropdownMenuItem>
+                  </Suspense>} />
 
-                <DropdownMenuItem
-                  asChild
-                  className="text-destructive focus:text-destructive"
-                >
-                  <DeleteChannelDialog channelId={channel.id} />
-                </DropdownMenuItem>
+                <DropdownMenuItem className="text-destructive focus:text-destructive" render={<DeleteChannelDialog channelId={channel.id} />} />
               </DropdownMenuContent>
             </DropdownMenu>
           );
@@ -492,15 +479,13 @@ export function AddMemberDialog({ channelId }: { channelId: string }) {
 
   return (
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
-      <DialogTrigger asChild>
-        <Button
+      <DialogTrigger render={<Button
           className="flex items-center justify-start gap-1.5"
           variant="ghost"
         >
           <IconUserPlus className="size-4" />
           Add Members
-        </Button>
-      </DialogTrigger>
+        </Button>} />
 
       <DialogContent className="sm:max-w-105">
         <DialogHeader>
@@ -655,15 +640,13 @@ export function RemoveMemberDialog({ channelId }: { channelId: string }) {
 
   return (
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
-      <DialogTrigger asChild>
-        <Button
+      <DialogTrigger render={<Button
           className="flex items-center justify-start gap-1.5"
           variant="ghost"
         >
           <IconUserMinus className="size-4" />
           <span>Remove Members</span>
-        </Button>
-      </DialogTrigger>
+        </Button>} />
 
       <DialogContent>
         <DialogHeader>
@@ -784,11 +767,7 @@ export function DeleteChannelDialog({ channelId }: { channelId: string }) {
   );
   return (
     <AlertDialog onOpenChange={toggleDialog} open={dialog}>
-      <AlertDialogTrigger
-        className={buttonVariants({ variant: "destructive" })}
-      >
-        Delete Channel
-      </AlertDialogTrigger>
+      <AlertDialogTrigger render={<span className={buttonVariants({ variant: "destructive" })}>Delete Channel</span>} />
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
@@ -870,15 +849,13 @@ export function UpdateChannelDialog({ channelId }: { channelId: string }) {
 
   return (
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
-      <DialogTrigger asChild>
-        <Button
+      <DialogTrigger render={<Button
           className="flex items-center justify-start gap-1.5"
           variant="ghost"
         >
           <IconEdit className="size-4" />
           Edit Channel
-        </Button>
-      </DialogTrigger>
+        </Button>} />
 
       <DialogContent className="sm:max-w-105">
         <DialogHeader>

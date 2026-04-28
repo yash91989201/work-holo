@@ -1,10 +1,5 @@
 import type { ReactNode } from "react";
-import {
-  Select,
-  SelectContent,
-  SelectTrigger,
-  SelectValue,
-} from "../select";
+import { Select, SelectContent, SelectTrigger, SelectValue } from "../select";
 import { FormBase, type FormControlProps } from "./form-base";
 import { useFieldContext } from "./hooks";
 
@@ -28,7 +23,10 @@ export function FormSelect({
   return (
     <FormBase {...props}>
       <Select
-        onValueChange={(e) => field.handleChange(e)}
+        onValueChange={(value) => {
+          if (value === null) return;
+          field.handleChange(value);
+        }}
         value={field.state.value}
       >
         <SelectTrigger

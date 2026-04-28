@@ -178,7 +178,13 @@ export function FilesFilterToolbar() {
           </InputGroupAddon>
         </InputGroup>
 
-        <Select onValueChange={handleTypeChange} value={searchParams.type}>
+        <Select
+          onValueChange={(value) => {
+            if (value === null) return;
+            handleTypeChange(value);
+          }}
+          value={searchParams.type}
+        >
           <SelectTrigger className="w-35">
             <SelectValue placeholder="Type" />
           </SelectTrigger>
@@ -192,7 +198,13 @@ export function FilesFilterToolbar() {
           </SelectContent>
         </Select>
 
-        <Select onValueChange={handleSortChange} value={sortValue}>
+        <Select
+          onValueChange={(value) => {
+            if (value === null) return;
+            handleSortChange(value);
+          }}
+          value={sortValue}
+        >
           <SelectTrigger className="w-40">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
@@ -207,7 +219,10 @@ export function FilesFilterToolbar() {
         </Select>
 
         <Select
-          onValueChange={handleSenderChange}
+          onValueChange={(value) => {
+            if (value === null) return;
+            handleSenderChange(value);
+          }}
           value={searchParams.onlyMine ? "mine" : "all"}
         >
           <SelectTrigger className="w-38">

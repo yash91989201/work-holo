@@ -147,31 +147,34 @@ function ProfileImageSection({
       </ItemContent>
       <ItemActions>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild disabled={isUploadingImage}>
-            <button
-              className="relative cursor-pointer rounded-full focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-              type="button"
-            >
-              <Avatar className="size-9">
-                <AvatarImage alt={userName} src={imageUrl || undefined} />
-                <AvatarFallback>
-                  {userName
-                    ?.split(" ")
-                    .map((n) => n[0])
-                    .join("")
-                    .toUpperCase()
-                    .slice(0, 2)}
-                </AvatarFallback>
-              </Avatar>
-              <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/50 opacity-0 transition-opacity hover:opacity-100">
-                {isUploadingImage ? (
-                  <IconLoader2 className="size-5 animate-spin text-white" />
-                ) : (
-                  <IconCamera className="size-5 text-white" />
-                )}
-              </div>
-            </button>
-          </DropdownMenuTrigger>
+          <DropdownMenuTrigger
+            disabled={isUploadingImage}
+            render={
+              <button
+                className="relative cursor-pointer rounded-full focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                type="button"
+              >
+                <Avatar className="size-9">
+                  <AvatarImage alt={userName} src={imageUrl || undefined} />
+                  <AvatarFallback>
+                    {userName
+                      ?.split(" ")
+                      .map((n) => n[0])
+                      .join("")
+                      .toUpperCase()
+                      .slice(0, 2)}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/50 opacity-0 transition-opacity hover:opacity-100">
+                  {isUploadingImage ? (
+                    <IconLoader2 className="size-5 animate-spin text-white" />
+                  ) : (
+                    <IconCamera className="size-5 text-white" />
+                  )}
+                </div>
+              </button>
+            }
+          />
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={triggerFileInput}>
               <IconCamera className="size-4" />
@@ -249,11 +252,13 @@ function EmailUpdateDialog({
 
   return (
     <Dialog onOpenChange={onOpenChange} open={isOpen}>
-      <DialogTrigger asChild>
-        <Button size="sm" variant="ghost">
-          <IconPencil className="size-4" />
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger
+        render={
+          <Button size="sm" variant="ghost">
+            <IconPencil className="size-4" />
+          </Button>
+        }
+      />
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Update Email Address</DialogTitle>

@@ -54,16 +54,10 @@ export function Sidebar({
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  isActive={isConsoleActive}
-                  tooltip="Console"
-                >
-                  <Link params={{ slug }} to="/org/$slug/console">
-                    <IconDeviceLaptop />
-                    <span>Console</span>
-                  </Link>
-                </SidebarMenuButton>
+                <SidebarMenuButton isActive={isConsoleActive} render={<Link params={{ slug }} to="/org/$slug/console">
+                  <IconDeviceLaptop />
+                  <span>Console</span>
+                </Link>} tooltip="Console" />
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
@@ -72,31 +66,19 @@ export function Sidebar({
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  isActive={isMembersActive}
-                  tooltip="Members"
-                >
-                  <Link params={{ slug }} to="/org/$slug/console/members">
-                    <IconUsers />
-                    <span>Members</span>
-                  </Link>
-                </SidebarMenuButton>
+                <SidebarMenuButton isActive={isMembersActive} render={<Link params={{ slug }} to="/org/$slug/console/members">
+                  <IconUsers />
+                  <span>Members</span>
+                </Link>} tooltip="Members" />
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  isActive={isInvitationsActive}
-                  tooltip="Invitations"
+                <SidebarMenuButton isActive={isInvitationsActive} render={<Link
+                  params={{ slug }}
+                  to="/org/$slug/console/members/invitations"
                 >
-                  <Link
-                    params={{ slug }}
-                    to="/org/$slug/console/members/invitations"
-                  >
-                    <IconMailFilled />
-                    <span>Invitations</span>
-                  </Link>
-                </SidebarMenuButton>
+                  <IconMailFilled />
+                  <span>Invitations</span>
+                </Link>} tooltip="Invitations" />
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
@@ -105,16 +87,10 @@ export function Sidebar({
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  isActive={isTeamsActive}
-                  tooltip="Teams"
-                >
-                  <Link params={{ slug }} to="/org/$slug/console/teams">
-                    <IconSitemapFilled />
-                    <span>Teams</span>
-                  </Link>
-                </SidebarMenuButton>
+                <SidebarMenuButton isActive={isTeamsActive} render={<Link params={{ slug }} to="/org/$slug/console/teams">
+                  <IconSitemapFilled />
+                  <span>Teams</span>
+                </Link>} tooltip="Teams" />
               </SidebarMenuItem>
               {canReadRoles && (
                 <SidebarMenuItem>
@@ -138,21 +114,15 @@ export function Sidebar({
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  isActive={location.pathname.startsWith(
-                    `/org/${slug}/console/modules/communication`
-                  )}
-                  tooltip="Communication"
+                <SidebarMenuButton isActive={location.pathname.startsWith(
+                  `/org/${slug}/console/modules/communication`
+                )} render={<Link
+                  params={{ slug }}
+                  to="/org/$slug/console/modules/communication"
                 >
-                  <Link
-                    params={{ slug }}
-                    to="/org/$slug/console/modules/communication"
-                  >
-                    <IconPuzzle />
-                    <span>Communication</span>
-                  </Link>
-                </SidebarMenuButton>
+                  <IconPuzzle />
+                  <span>Communication</span>
+                </Link>} tooltip="Communication" />
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>

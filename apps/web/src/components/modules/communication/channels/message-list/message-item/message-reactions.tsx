@@ -32,9 +32,8 @@ export function MessageReactions({
   return (
     <div className="flex flex-wrap gap-1.5">
       {reactions.map((reaction) => (
-        <HoverCard key={reaction.emoji} openDelay={300}>
-          <HoverCardTrigger asChild>
-            <Badge
+        <HoverCard key={reaction.emoji}>
+          <HoverCardTrigger delay={300} render={<Badge
               className={cn(
                 "cursor-pointer gap-1 font-medium transition-colors",
                 reaction.hasCurrentUser
@@ -52,8 +51,7 @@ export function MessageReactions({
             >
               <span className="text-sm leading-none">{reaction.emoji}</span>
               <span className="text-xs">{reaction.count}</span>
-            </Badge>
-          </HoverCardTrigger>
+            </Badge>} />
           <HoverCardContent align="start" className="w-64 p-0">
             <Item>
               <ItemTitle>Reacted with {reaction.emoji}</ItemTitle>

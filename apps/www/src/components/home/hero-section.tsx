@@ -1,15 +1,22 @@
 import { motion } from "motion/react";
 import {
-  IconArrowUpRight,
   IconPhone,
   IconCircleCheck,
-  IconArrowDown,
   IconStarFilled,
 } from "@tabler/icons-react";
 import { CTAButton } from "@work-holo/ui/components/cta-button";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@work-holo/ui/components/avatar";
 
-const avatarColors = ["bg-primary/80", "bg-primary/60", "bg-primary/40", "bg-primary/20"];
-const avatarInitials = ["JD", "MK", "AL", "RK"];
+const avatarData = [
+  { initials: "JD", color: "bg-primary/80", src: "https://i.pravatar.cc/150?u=jd" },
+  { initials: "MK", color: "bg-primary/60", src: "https://i.pravatar.cc/150?u=mk" },
+  { initials: "AL", color: "bg-primary/40", src: "https://i.pravatar.cc/150?u=al" },
+  { initials: "RK", color: "bg-primary/20", src: "https://i.pravatar.cc/150?u=rk" },
+];
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -33,9 +40,9 @@ const itemVariants = {
 
 const floatVariants = {
   animate: {
-    y: [0, -8, 0],
+    y: [0, -12, 0],
     transition: {
-      duration: 4,
+      duration: 6,
       repeat: Infinity,
       ease: "easeInOut",
     },
@@ -44,14 +51,28 @@ const floatVariants = {
 
 const floatVariantsSlow = {
   animate: {
-    y: [0, -6, 0],
+    y: [0, -10, 0],
+    x: [0, 4, 0],
     transition: {
-      duration: 5,
+      duration: 8,
       repeat: Infinity,
       ease: "easeInOut",
-      delay: 1,
+      delay: 1.5,
     },
   },
+};
+
+const textRevealVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.8,
+      delay: i * 0.15,
+      ease: [0.22, 1, 0.36, 1] as const,
+    },
+  }),
 };
 
 export function HeroSection() {
@@ -128,24 +149,39 @@ export function HeroSection() {
               [ TRANSFORMING IDEAS ]
             </motion.p>
 
-            {/* Headline */}
-            <motion.h1
-              variants={itemVariants}
-              className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground leading-[1.05] tracking-tight"
-            >
-              Innovative Tech
-              <br />
-              Solutions for
-              <br />
-              Business.
-            </motion.h1>
+            {/* Headline with text fill-in animation */}
+            <div className="mb-8">
+              {["Innovative Tech", "Solutions for", "Business."].map((line, i) => (
+                <motion.div
+                  key={i}
+                  custom={i}
+                  variants={textRevealVariants}
+                  initial="hidden"
+                  animate="visible"
+                  className="overflow-hidden"
+                >
+                  <motion.h1
+                    className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.05] tracking-tight"
+                    initial={{ color: "oklch(0.56 0.021 213.5)" }}
+                    animate={{ color: "oklch(0.987 0.002 197.1)" }}
+                    transition={{
+                      duration: 1.2,
+                      delay: 0.5 + i * 0.2,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                  >
+                    {line}
+                  </motion.h1>
+                </motion.div>
+              ))}
+            </div>
 
             {/* CTA Row */}
             <motion.div
               variants={itemVariants}
-              className="mt-8 flex flex-wrap items-center gap-5"
+              className="flex flex-wrap items-center gap-5"
             >
-              <CTAButton icon={<IconArrowUpRight className="size-4" />}>
+              <CTAButton>
                 Explore Services
               </CTAButton>
 
@@ -181,15 +217,14 @@ export function HeroSection() {
             transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] as const }}
             className="relative"
           >
-            {/* Main Image */}
-            <div className="relative rounded-3xl overflow-hidden aspect-[4/5] lg:aspect-auto lg:h-[560px]">
+            <div className="relative rounded-3xl overflow-hidden aspect-4/5 lg:aspect-auto lg:h-140">
               <img
                 src="/assets/hero-img.png"
                 alt="Professional working on laptop"
                 className="w-full h-full object-cover"
               />
               {/* Subtle overlay for depth */}
-              <div className="absolute inset-0 bg-gradient-to-t from-background/30 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-background/30 via-transparent to-transparent" />
             </div>
 
             {/* Floating Card - Trusted by */}
@@ -217,16 +252,19 @@ export function HeroSection() {
               animate="animate"
               className="absolute -bottom-4 -right-4 sm:right-4 lg:-right-6"
             >
-              <div className="bg-card/95 backdrop-blur-md border border-border/50 rounded-3xl px-5 py-4 shadow-xl min-w-[200px]">
-                {/* Avatar Stack */}
+              <div className="bg-card/95 backdrop-blur-md border border-border/50 rounded-3xl px-5 py-4 shadow-xl min-w-50">
+                {/* Avatar Stack using Avatar component */}
                 <div className="flex -space-x-2.5 mb-3">
-                  {avatarInitials.map((initial, i) => (
-                    <div
+                  {avatarData.map((avatar, i) => (
+                    <Avatar
                       key={i}
-                      className={`flex size-9 items-center justify-center rounded-full ${avatarColors[i]} border-2 border-card text-xs font-bold text-primary-foreground`}
+                      className={`size-9 border-2 border-card ${avatar.color}`}
                     >
-                      {initial}
-                    </div>
+                      <AvatarImage src={avatar.src} alt={avatar.initials} />
+                      <AvatarFallback className="bg-transparent text-primary-foreground text-xs font-bold">
+                        {avatar.initials}
+                      </AvatarFallback>
+                    </Avatar>
                   ))}
                 </div>
 
@@ -253,30 +291,6 @@ export function HeroSection() {
           </motion.div>
         </div>
       </div>
-
-      {/* Scroll Down Indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2, duration: 0.6 }}
-        className="absolute bottom-8 left-4 sm:left-8 lg:left-12 flex flex-col items-center gap-3"
-      >
-        <span
-          className="text-[11px] font-medium text-muted-foreground tracking-wider uppercase"
-          style={{ writingMode: "vertical-rl" }}
-        >
-          Scroll Down
-        </span>
-        <motion.button
-          onClick={() => window.scrollTo({ top: window.innerHeight, behavior: "smooth" })}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
-          className="flex size-10 items-center justify-center rounded-full bg-muted/50 border border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-          aria-label="Scroll down"
-        >
-          <IconArrowDown className="size-4" />
-        </motion.button>
-      </motion.div>
     </section>
   );
 }

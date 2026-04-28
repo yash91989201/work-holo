@@ -148,11 +148,9 @@ function MessageReadersDialog({
 }) {
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Button size="icon-sm" variant="ghost">
+      <DialogTrigger render={<Button size="icon-sm" variant="ghost">
           <IconChecks className="size-3.5" />
-        </Button>
-      </DialogTrigger>
+        </Button>} />
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Seen by {readCount}</DialogTitle>

@@ -54,9 +54,7 @@ export function Navigator() {
                 {isLast ? (
                   <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
                 ) : (
-                  <BreadcrumbLink asChild>
-                    <Link to={crumb.path}>{crumb.label}</Link>
-                  </BreadcrumbLink>
+                  <BreadcrumbLink render={<Link to={crumb.path}>{crumb.label}</Link>} />
                 )}
               </BreadcrumbItem>
             </Fragment>

@@ -74,8 +74,7 @@ export function MessageActions({
         )}
       >
         <Popover>
-          <PopoverTrigger asChild>
-            <Button
+          <PopoverTrigger render={<Button
               size="icon-sm"
               title="Add reaction"
               type="button"
@@ -83,8 +82,7 @@ export function MessageActions({
             >
               <IconMoodPlus className="h-3.5 w-3.5" />
               <span className="sr-only">Add reaction</span>
-            </Button>
-          </PopoverTrigger>
+            </Button>} />
           <PopoverContent align="center" side="left" sideOffset={8}>
             <EmojiPicker
               onEmojiSelect={(emoji) => {
@@ -171,8 +169,7 @@ export function MessageActions({
 function DeleteMessage({ onDelete }: { onDelete: () => void }) {
   return (
     <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button
+      <AlertDialogTrigger render={<Button
           aria-label="Delete message"
           className="text-destructive hover:bg-destructive/10 hover:text-destructive"
           size="icon-sm"
@@ -180,8 +177,7 @@ function DeleteMessage({ onDelete }: { onDelete: () => void }) {
           variant="ghost"
         >
           <IconTrashFilled className="h-3.5 w-3.5" />
-        </Button>
-      </AlertDialogTrigger>
+        </Button>} />
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Delete Message</AlertDialogTitle>

@@ -3,7 +3,6 @@ import {
   IconBellOff,
   IconMail,
   IconPlayerPlay,
-  IconUpload,
   IconVolume,
 } from "@tabler/icons-react";
 import {
@@ -12,9 +11,6 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import type { NotificationEventType } from "@work-holo/api/services/notification/types";
-import { useRef, useState } from "react";
-import { toast } from "sonner";
-import { CHANNEL_EVENT_DEFINITIONS } from "@/components/settings/notifications/constants";
 import { Button } from "@work-holo/ui/components/button";
 import {
   Item,
@@ -35,6 +31,9 @@ import {
 } from "@work-holo/ui/components/select";
 import { Skeleton } from "@work-holo/ui/components/skeleton";
 import { Switch } from "@work-holo/ui/components/switch";
+import { useRef, useState } from "react";
+import { toast } from "sonner";
+import { CHANNEL_EVENT_DEFINITIONS } from "@/components/settings/notifications/constants";
 import { useNotificationPermission } from "@/hooks/use-notification-permission";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
 import { queryUtils } from "@/utils/orpc";
@@ -204,7 +203,7 @@ export function ChannelNotificationSettings({
         customSoundName: file.name,
       });
       toast.success("Custom sound uploaded successfully");
-    } catch (_error) {
+    } catch {
       toast.error("Failed to upload sound");
     } finally {
       setIsUploading(false);
@@ -252,6 +251,15 @@ export function ChannelNotificationSettings({
       currentSoundValue = soundPref.preference.presetId;
     }
   }
+
+  const selectItems = [
+    { label: "Default (Global)", value: "default" },
+    ...(presetsData?.presets.map((preset) => ({
+      label: preset.name,
+      value: preset.id,
+    })) || []),
+    { label: "Upload Custom...", value: "custom" },
+  ];
 
   const handlePlaySound = () => {
     const effectivePreference =
@@ -348,25 +356,22 @@ export function ChannelNotificationSettings({
                   )}
                   <Select
                     disabled={isUploading}
-                    onValueChange={handleSoundChange}
+                    items={selectItems}
+                    onValueChange={(value) => {
+                      if (value === null) return;
+                      handleSoundChange(value);
+                    }}
                     value={currentSoundValue}
                   >
                     <SelectTrigger className="w-36">
-                      <SelectValue placeholder="Select sound" />
+                      <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="default">Default (Global)</SelectItem>
-                      {presetsData.presets.map((preset) => (
-                        <SelectItem key={preset.id} value={preset.id}>
-                          {preset.name}
+                      {selectItems.map((item) => (
+                        <SelectItem key={item.value} value={item.value}>
+                          {item.label}
                         </SelectItem>
                       ))}
-                      <SelectItem value="custom">
-                        <div className="flex items-center gap-1.5">
-                          <IconUpload className="size-3.5" />
-                          <span>Upload Custom…</span>
-                        </div>
-                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </ItemActions>
@@ -477,80 +482,78 @@ export function ChannelNotificationSettings({
   );
 }
 
-const ChannelNotificationSettingsSkeleton = () => {
-  return (
-    <div className="space-y-4 p-3">
-      <div className="space-y-1.5">
-        <p className="px-1 font-medium text-muted-foreground text-xs uppercase tracking-wider">
-          Channel
-        </p>
-        <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
-          <Item size="sm">
-            <ItemContent>
-              <ItemTitle>
-                <IconBell className="size-3.5 text-muted-foreground" />
-                Mute Channel
-              </ItemTitle>
-              <ItemDescription>Silence all notifications</ItemDescription>
-            </ItemContent>
-            <ItemActions>
-              <Skeleton className="h-5 w-9 rounded-full" />
-            </ItemActions>
-          </Item>
-        </div>
-      </div>
-
-      <div className="space-y-1.5">
-        <p className="px-1 font-medium text-muted-foreground text-xs uppercase tracking-wider">
-          Sound
-        </p>
-        <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
-          <Item size="sm">
-            <ItemContent>
-              <ItemTitle>
-                <IconVolume className="size-3.5 text-muted-foreground" />
-                Notification Sound
-              </ItemTitle>
-              <ItemDescription>Sound played for this channel</ItemDescription>
-            </ItemContent>
-            <ItemActions>
-              <Skeleton className="h-9 w-9 rounded-md" />
-              <Skeleton className="h-9 w-36 rounded-md" />
-            </ItemActions>
-          </Item>
-        </div>
-      </div>
-
-      <div className="space-y-1.5">
-        <p className="px-1 font-medium text-muted-foreground text-xs uppercase tracking-wider">
-          Event Overrides
-        </p>
-        <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
-          <ItemGroup className="gap-0">
-            {CHANNEL_EVENT_DEFINITIONS.map((event, i) => (
-              <div key={event.id}>
-                {i > 0 && <ItemSeparator />}
-                <Item size="sm">
-                  <ItemContent>
-                    <ItemTitle>{event.label}</ItemTitle>
-                    <ItemDescription>{event.description}</ItemDescription>
-                  </ItemContent>
-                  <ItemActions className="gap-3">
-                    {[0, 1, 2].map((j) => (
-                      <div className="flex flex-col items-center gap-1" key={j}>
-                        <Skeleton className="h-5 w-9 rounded-full" />
-                        <Skeleton className="h-3 w-6 rounded" />
-                      </div>
-                    ))}
-                  </ItemActions>
-                </Item>
-              </div>
-            ))}
-          </ItemGroup>
-        </div>
+const ChannelNotificationSettingsSkeleton = () => (
+  <div className="space-y-4 p-3">
+    <div className="space-y-1.5">
+      <p className="px-1 font-medium text-muted-foreground text-xs uppercase tracking-wider">
+        Channel
+      </p>
+      <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
+        <Item size="sm">
+          <ItemContent>
+            <ItemTitle>
+              <IconBell className="size-3.5 text-muted-foreground" />
+              Mute Channel
+            </ItemTitle>
+            <ItemDescription>Silence all notifications</ItemDescription>
+          </ItemContent>
+          <ItemActions>
+            <Skeleton className="h-5 w-9 rounded-full" />
+          </ItemActions>
+        </Item>
       </div>
     </div>
-  );
-};
+
+    <div className="space-y-1.5">
+      <p className="px-1 font-medium text-muted-foreground text-xs uppercase tracking-wider">
+        Sound
+      </p>
+      <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
+        <Item size="sm">
+          <ItemContent>
+            <ItemTitle>
+              <IconVolume className="size-3.5 text-muted-foreground" />
+              Notification Sound
+            </ItemTitle>
+            <ItemDescription>Sound played for this channel</ItemDescription>
+          </ItemContent>
+          <ItemActions>
+            <Skeleton className="h-9 w-9 rounded-md" />
+            <Skeleton className="h-9 w-36 rounded-md" />
+          </ItemActions>
+        </Item>
+      </div>
+    </div>
+
+    <div className="space-y-1.5">
+      <p className="px-1 font-medium text-muted-foreground text-xs uppercase tracking-wider">
+        Event Overrides
+      </p>
+      <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
+        <ItemGroup className="gap-0">
+          {CHANNEL_EVENT_DEFINITIONS.map((event, i) => (
+            <div key={event.id}>
+              {i > 0 && <ItemSeparator />}
+              <Item size="sm">
+                <ItemContent>
+                  <ItemTitle>{event.label}</ItemTitle>
+                  <ItemDescription>{event.description}</ItemDescription>
+                </ItemContent>
+                <ItemActions className="gap-3">
+                  {[0, 1, 2].map((j) => (
+                    <div className="flex flex-col items-center gap-1" key={j}>
+                      <Skeleton className="h-5 w-9 rounded-full" />
+                      <Skeleton className="h-3 w-6 rounded" />
+                    </div>
+                  ))}
+                </ItemActions>
+              </Item>
+            </div>
+          ))}
+        </ItemGroup>
+      </div>
+    </div>
+  </div>
+);
 
 ChannelNotificationSettings.Fallback = ChannelNotificationSettingsSkeleton;

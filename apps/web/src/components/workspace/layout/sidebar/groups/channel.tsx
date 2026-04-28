@@ -111,12 +111,7 @@ const ChannelGroup = () => {
         <SidebarGroupLabel>Channels</SidebarGroupLabel>
         <SidebarGroupContent>
           <HoverCard>
-            <HoverCardTrigger asChild>
-              <SidebarMenuButton aria-label="Channels">
-                <IconBroadcast />
-                <span className="sr-only">Channels</span>
-              </SidebarMenuButton>
-            </HoverCardTrigger>
+            <HoverCardTrigger render={<SidebarMenuButton aria-label="Channels"><IconBroadcast /><span className="sr-only">Channels</span></SidebarMenuButton>} />
             <HoverCardContent
               align="start"
               className="w-fit min-w-56 p-0"
@@ -159,31 +154,31 @@ const ChannelGroup = () => {
                       return (
                         <SidebarMenuSubItem key={channel.id}>
                           <SidebarMenuSubButton
-                            asChild
                             className="[&>svg]:size-3"
                             isActive={channel.id === params?.channelId}
-                          >
-                            <Link
-                              params={{
-                                slug,
-                                channelId: channel.id,
-                              }}
-                              to="/org/$slug/workspace/communication/channels/$channelId"
-                            >
-                              <IconHash className="shrink-0" />
-                              <span className="flex-1 truncate">
-                                {channel.name}
-                              </span>
-                              {unreadCount > 0 && (
-                                <Badge
-                                  className="ml-auto h-5 w-5 shrink-0 items-center justify-center rounded-full p-0"
-                                  variant="default"
-                                >
-                                  {unreadCount}
-                                </Badge>
-                              )}
-                            </Link>
-                          </SidebarMenuSubButton>
+                            render={
+                              <Link
+                                params={{
+                                  slug,
+                                  channelId: channel.id,
+                                }}
+                                to="/org/$slug/workspace/communication/channels/$channelId"
+                              >
+                                <IconHash className="shrink-0" />
+                                <span className="flex-1 truncate">
+                                  {channel.name}
+                                </span>
+                                {unreadCount > 0 && (
+                                  <Badge
+                                    className="ml-auto h-5 w-5 shrink-0 items-center justify-center rounded-full p-0"
+                                    variant="default"
+                                  >
+                                    {unreadCount}
+                                  </Badge>
+                                )}
+                              </Link>
+                            }
+                          />
                         </SidebarMenuSubItem>
                       );
                     })
@@ -223,9 +218,7 @@ const ChannelGroup = () => {
             </Button>
           )}
           <Can permission={(p) => p.channel.create}>
-            <SidebarGroupAction asChild className="static translate-y-0">
-              <CreateChannelForm />
-            </SidebarGroupAction>
+            <SidebarGroupAction className="static translate-y-0" render={<CreateChannelForm />} />
           </Can>
         </div>
       </div>
@@ -257,29 +250,7 @@ const ChannelGroup = () => {
             const unreadCount = getUnreadCount(channel.id);
             return (
               <SidebarMenuItem key={channel.id}>
-                <SidebarMenuButton
-                  asChild
-                  isActive={channel.id === params?.channelId}
-                >
-                  <Link
-                    params={{
-                      slug,
-                      channelId: channel.id,
-                    }}
-                    to="/org/$slug/workspace/communication/channels/$channelId"
-                  >
-                    <IconHash />
-                    <span className="flex-1">{channel.name}</span>
-                    {unreadCount > 0 && (
-                      <Badge
-                        className="ml-auto h-5 w-5 shrink-0 items-center justify-center rounded-full p-0"
-                        variant="default"
-                      >
-                        {unreadCount}
-                      </Badge>
-                    )}
-                  </Link>
-                </SidebarMenuButton>
+                <SidebarMenuButton isActive={channel.id === params?.channelId} render={<Link params={{ slug, channelId: channel.id }} to="/org/$slug/workspace/communication/channels/$channelId"><IconHash /><span className="flex-1">{channel.name}</span>{unreadCount > 0 && (<Badge className="ml-auto h-5 w-5 shrink-0 items-center justify-center rounded-full p-0" variant="default">{unreadCount}</Badge>)}</Link>} />
               </SidebarMenuItem>
             );
           })

@@ -3,7 +3,6 @@
   "files": {
     "ignoreUnknown": false,
     "includes": [
-      "**",
       "!.claude",
       "!.opencode",
       "!node_modules",
@@ -29,7 +28,7 @@
       "!**/.source"
     ]
   },
-  "extends": ["ultracite/core", "ultracite/react"],
+  "extends": ["ultracite/biome/core", "ultracite/biome/react"],
   "linter": {
     "rules": {
       "complexity": {

@@ -2,6 +2,7 @@ import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { Suspense } from "react";
 import { ChannelHeader } from "@/components/modules/communication/channels/channel-header";
 import { ChannelInfoSidebar } from "@/components/modules/communication/channels/channel-info-sidebar";
+import { ChannelRouteSkeleton } from "@/components/modules/communication/channels/channel-route-skeleton";
 import { MentionsSidebar } from "@/components/modules/communication/channels/mentions-sidebar";
 import { MessageListSkeleton } from "@/components/modules/communication/channels/message-list/message-list-skeleton";
 import { MessageThreadSidebar } from "@/components/modules/communication/channels/message-thread-sidebar";
@@ -33,6 +34,7 @@ export const Route = createFileRoute(
     );
     return { crumb: channel.name };
   },
+  pendingComponent: ChannelRouteSkeleton,
   component: RouteComponent,
 });
 

@@ -121,11 +121,13 @@ export function EmailNotifications() {
             />
           ) : (
             <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="inline-block">
-                  <Switch checked={false} disabled />
-                </div>
-              </TooltipTrigger>
+              <TooltipTrigger
+                render={
+                  <div className="inline-block">
+                    <Switch checked={false} disabled />
+                  </div>
+                }
+              />
               <TooltipContent>
                 <p>
                   Enable push notifications above to configure per-event
@@ -137,9 +139,13 @@ export function EmailNotifications() {
         </TableCell>
         <TableCell className="text-right">
           <Select
-            onValueChange={(
-              val: "off" | "immediate" | "15min" | "hourly" | "daily"
-            ) => handleEmailChange(event.id, val)}
+            onValueChange={(val) => {
+              if (val === null) return;
+              handleEmailChange(
+                event.id,
+                val as "off" | "immediate" | "15min" | "hourly" | "daily"
+              );
+            }}
             value={emailValue}
           >
             <SelectTrigger className="h-8 w-36 text-xs">

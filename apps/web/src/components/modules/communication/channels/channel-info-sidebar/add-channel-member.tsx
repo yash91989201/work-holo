@@ -168,12 +168,10 @@ export function AddChannelMember({
 
   return (
     <Dialog onOpenChange={setOpen} open={open}>
-      <DialogTrigger asChild>
-        <Button className="w-full gap-1.5" size="lg" variant="secondary">
+      <DialogTrigger render={<Button className="w-full gap-1.5" size="lg" variant="secondary">
           <IconUserPlus />
           <span>Add member</span>
-        </Button>
-      </DialogTrigger>
+        </Button>} />
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Add member</DialogTitle>

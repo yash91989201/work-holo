@@ -196,16 +196,18 @@ export function RecentMentions() {
                       </ItemDescription>
                       <ItemActions className="mt-2 gap-1">
                         <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              className="h-7 rounded-md px-2 text-[11px]"
-                              size="sm"
-                              type="button"
-                              variant="ghost"
-                            >
-                              React
-                            </Button>
-                          </DropdownMenuTrigger>
+                          <DropdownMenuTrigger
+                            render={
+                              <Button
+                                className="h-7 rounded-md px-2 text-[11px]"
+                                size="sm"
+                                type="button"
+                                variant="ghost"
+                              >
+                                React
+                              </Button>
+                            }
+                          />
                           <DropdownMenuContent
                             align="start"
                             className="w-auto p-1"

@@ -6,6 +6,7 @@ import {
 } from "@tabler/icons-react";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
+import { cn } from "../lib/utils";
 import { Badge } from "./badge";
 import { Button } from "./button";
 import {
@@ -17,13 +18,8 @@ import {
   CommandList,
   CommandSeparator,
 } from "./command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "./popover";
+import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Separator } from "./separator";
-import { cn } from "../lib/utils";
 
 /**
  * Animation types and configurations
@@ -109,7 +105,7 @@ interface MultiSelectGroup {
 interface MultiSelectProps
   extends Omit<
       React.ButtonHTMLAttributes<HTMLButtonElement>,
-      "animationConfig"
+      "animationConfig" | "ref"
     >,
     VariantProps<typeof multiSelectVariants> {
   /**
@@ -224,6 +220,10 @@ interface MultiSelectProps
    * Optional, can be used to customize popover appearance.
    */
   popoverClassName?: string;
+  /**
+   * Ref for imperative handle
+   */
+  ref?: React.Ref<MultiSelectRef>;
 
   /**
    * If true, the component will reset its internal state when defaultValue changes.
@@ -301,493 +301,477 @@ export interface MultiSelectRef {
   setSelectedValues: (values: string[]) => void;
 }
 
-export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
-  (
-    {
-      options,
-      onValueChange,
-      variant,
-      defaultValue = [],
-      placeholder = "Select options",
-      animation = 0,
-      animationConfig,
-      maxCount = 3,
-      modalPopover = false,
-      asChild = false,
-      className,
-      hideSelectAll = false,
-      searchable = true,
-      emptyIndicator,
-      autoSize = false,
-      singleLine = false,
-      popoverClassName,
-      disabled = false,
-      responsive,
-      minWidth,
-      maxWidth,
-      deduplicateOptions = false,
-      resetOnDefaultValueChange = true,
-      closeOnSelect = false,
-      ...props
+export function MultiSelect({
+  options,
+  onValueChange,
+  variant,
+  defaultValue = [],
+  placeholder = "Select options",
+  animation = 0,
+  animationConfig,
+  maxCount = 3,
+  modalPopover = false,
+  asChild = false,
+  className,
+  hideSelectAll = false,
+  searchable = true,
+  emptyIndicator,
+  autoSize = false,
+  singleLine = false,
+  popoverClassName,
+  disabled = false,
+  responsive,
+  minWidth,
+  maxWidth,
+  deduplicateOptions = false,
+  resetOnDefaultValueChange = true,
+  closeOnSelect = false,
+  ref,
+  ...props
+}: MultiSelectProps) {
+  const [selectedValues, setSelectedValues] =
+    React.useState<string[]>(defaultValue);
+  const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
+  const [isAnimating, setIsAnimating] = React.useState(false);
+  const [searchValue, setSearchValue] = React.useState("");
+
+  const [politeMessage, setPoliteMessage] = React.useState("");
+  const [assertiveMessage, setAssertiveMessage] = React.useState("");
+  const prevSelectedCount = React.useRef(selectedValues.length);
+  const prevIsOpen = React.useRef(isPopoverOpen);
+  const prevSearchValue = React.useRef(searchValue);
+
+  const announce = React.useCallback(
+    (message: string, priority: "polite" | "assertive" = "polite") => {
+      if (priority === "assertive") {
+        setAssertiveMessage(message);
+        setTimeout(() => setAssertiveMessage(""), 100);
+      } else {
+        setPoliteMessage(message);
+        setTimeout(() => setPoliteMessage(""), 100);
+      }
     },
-    ref
-  ) => {
-    const [selectedValues, setSelectedValues] =
-      React.useState<string[]>(defaultValue);
-    const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
-    const [isAnimating, setIsAnimating] = React.useState(false);
-    const [searchValue, setSearchValue] = React.useState("");
+    []
+  );
 
-    const [politeMessage, setPoliteMessage] = React.useState("");
-    const [assertiveMessage, setAssertiveMessage] = React.useState("");
-    const prevSelectedCount = React.useRef(selectedValues.length);
-    const prevIsOpen = React.useRef(isPopoverOpen);
-    const prevSearchValue = React.useRef(searchValue);
+  const multiSelectId = React.useId();
+  const listboxId = `${multiSelectId}-listbox`;
+  const triggerDescriptionId = `${multiSelectId}-description`;
+  const selectedCountId = `${multiSelectId}-count`;
 
-    const announce = React.useCallback(
-      (message: string, priority: "polite" | "assertive" = "polite") => {
-        if (priority === "assertive") {
-          setAssertiveMessage(message);
-          setTimeout(() => setAssertiveMessage(""), 100);
-        } else {
-          setPoliteMessage(message);
-          setTimeout(() => setPoliteMessage(""), 100);
+  const prevDefaultValueRef = React.useRef<string[]>(defaultValue);
+
+  const isGroupedOptions = React.useCallback(
+    (
+      opts: MultiSelectOption[] | MultiSelectGroup[]
+    ): opts is MultiSelectGroup[] => opts.length > 0 && "heading" in opts[0],
+    []
+  );
+
+  const arraysEqual = React.useCallback((a: string[], b: string[]): boolean => {
+    if (a.length !== b.length) return false;
+    const sortedA = [...a].sort();
+    const sortedB = [...b].sort();
+    return sortedA.every((val, index) => val === sortedB[index]);
+  }, []);
+
+  const resetToDefault = React.useCallback(() => {
+    setSelectedValues(defaultValue);
+    setIsPopoverOpen(false);
+    setSearchValue("");
+    onValueChange(defaultValue);
+  }, [defaultValue, onValueChange]);
+
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
+
+  React.useImperativeHandle(
+    ref,
+    () => ({
+      reset: resetToDefault,
+      getSelectedValues: () => selectedValues,
+      setSelectedValues: (values: string[]) => {
+        setSelectedValues(values);
+        onValueChange(values);
+      },
+      clear: () => {
+        setSelectedValues([]);
+        onValueChange([]);
+      },
+      focus: () => {
+        if (buttonRef.current) {
+          buttonRef.current.focus();
+          const originalOutline = buttonRef.current.style.outline;
+          const originalOutlineOffset = buttonRef.current.style.outlineOffset;
+          buttonRef.current.style.outline = "2px solid hsl(var(--ring))";
+          buttonRef.current.style.outlineOffset = "2px";
+          setTimeout(() => {
+            if (buttonRef.current) {
+              buttonRef.current.style.outline = originalOutline;
+              buttonRef.current.style.outlineOffset = originalOutlineOffset;
+            }
+          }, 1000);
         }
       },
-      []
-    );
+    }),
+    [resetToDefault, selectedValues, onValueChange]
+  );
 
-    const multiSelectId = React.useId();
-    const listboxId = `${multiSelectId}-listbox`;
-    const triggerDescriptionId = `${multiSelectId}-description`;
-    const selectedCountId = `${multiSelectId}-count`;
+  const [screenSize, setScreenSize] = React.useState<
+    "mobile" | "tablet" | "desktop"
+  >("desktop");
 
-    const prevDefaultValueRef = React.useRef<string[]>(defaultValue);
-
-    const isGroupedOptions = React.useCallback(
-      (
-        opts: MultiSelectOption[] | MultiSelectGroup[]
-      ): opts is MultiSelectGroup[] => opts.length > 0 && "heading" in opts[0],
-      []
-    );
-
-    const arraysEqual = React.useCallback(
-      (a: string[], b: string[]): boolean => {
-        if (a.length !== b.length) return false;
-        const sortedA = [...a].sort();
-        const sortedB = [...b].sort();
-        return sortedA.every((val, index) => val === sortedB[index]);
-      },
-      []
-    );
-
-    const resetToDefault = React.useCallback(() => {
-      setSelectedValues(defaultValue);
-      setIsPopoverOpen(false);
-      setSearchValue("");
-      onValueChange(defaultValue);
-    }, [defaultValue, onValueChange]);
-
-    const buttonRef = React.useRef<HTMLButtonElement>(null);
-
-    React.useImperativeHandle(
-      ref,
-      () => ({
-        reset: resetToDefault,
-        getSelectedValues: () => selectedValues,
-        setSelectedValues: (values: string[]) => {
-          setSelectedValues(values);
-          onValueChange(values);
-        },
-        clear: () => {
-          setSelectedValues([]);
-          onValueChange([]);
-        },
-        focus: () => {
-          if (buttonRef.current) {
-            buttonRef.current.focus();
-            const originalOutline = buttonRef.current.style.outline;
-            const originalOutlineOffset = buttonRef.current.style.outlineOffset;
-            buttonRef.current.style.outline = "2px solid hsl(var(--ring))";
-            buttonRef.current.style.outlineOffset = "2px";
-            setTimeout(() => {
-              if (buttonRef.current) {
-                buttonRef.current.style.outline = originalOutline;
-                buttonRef.current.style.outlineOffset = originalOutlineOffset;
-              }
-            }, 1000);
-          }
-        },
-      }),
-      [resetToDefault, selectedValues, onValueChange]
-    );
-
-    const [screenSize, setScreenSize] = React.useState<
-      "mobile" | "tablet" | "desktop"
-    >("desktop");
-
-    React.useEffect(() => {
-      if (typeof window === "undefined") return;
-      const handleResize = () => {
-        const width = window.innerWidth;
-        if (width < 640) {
-          setScreenSize("mobile");
-        } else if (width < 1024) {
-          setScreenSize("tablet");
-        } else {
-          setScreenSize("desktop");
-        }
-      };
-      handleResize();
-      window.addEventListener("resize", handleResize);
-      return () => {
-        if (typeof window !== "undefined") {
-          window.removeEventListener("resize", handleResize);
-        }
-      };
-    }, []);
-
-    const getResponsiveSettings = () => {
-      if (!responsive) {
-        return {
-          maxCount,
-          hideIcons: false,
-          compactMode: false,
-        };
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width < 640) {
+        setScreenSize("mobile");
+      } else if (width < 1024) {
+        setScreenSize("tablet");
+      } else {
+        setScreenSize("desktop");
       }
-      if (responsive === true) {
-        const defaultResponsive = {
-          mobile: { maxCount: 2, hideIcons: false, compactMode: true },
-          tablet: { maxCount: 4, hideIcons: false, compactMode: false },
-          desktop: { maxCount: 6, hideIcons: false, compactMode: false },
-        };
-        const currentSettings = defaultResponsive[screenSize];
-        return {
-          maxCount: currentSettings?.maxCount ?? maxCount,
-          hideIcons: currentSettings?.hideIcons ?? false,
-          compactMode: currentSettings?.compactMode ?? false,
-        };
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => {
+      if (typeof window !== "undefined") {
+        window.removeEventListener("resize", handleResize);
       }
-      const currentSettings = responsive[screenSize];
+    };
+  }, []);
+
+  const getResponsiveSettings = () => {
+    if (!responsive) {
+      return {
+        maxCount,
+        hideIcons: false,
+        compactMode: false,
+      };
+    }
+    if (responsive === true) {
+      const defaultResponsive = {
+        mobile: { maxCount: 2, hideIcons: false, compactMode: true },
+        tablet: { maxCount: 4, hideIcons: false, compactMode: false },
+        desktop: { maxCount: 6, hideIcons: false, compactMode: false },
+      };
+      const currentSettings = defaultResponsive[screenSize];
       return {
         maxCount: currentSettings?.maxCount ?? maxCount,
         hideIcons: currentSettings?.hideIcons ?? false,
         compactMode: currentSettings?.compactMode ?? false,
       };
+    }
+    const currentSettings = responsive[screenSize];
+    return {
+      maxCount: currentSettings?.maxCount ?? maxCount,
+      hideIcons: currentSettings?.hideIcons ?? false,
+      compactMode: currentSettings?.compactMode ?? false,
     };
+  };
 
-    const responsiveSettings = getResponsiveSettings();
+  const responsiveSettings = getResponsiveSettings();
 
-    const getBadgeAnimationClass = () => {
-      if (animationConfig?.badgeAnimation) {
-        switch (animationConfig.badgeAnimation) {
-          case "bounce":
-            return isAnimating
-              ? "animate-bounce"
-              : "hover:-translate-y-1 hover:scale-110";
-          case "pulse":
-            return "hover:animate-pulse";
-          case "wiggle":
-            return "hover:animate-wiggle";
-          case "fade":
-            return "hover:opacity-80";
-          case "slide":
-            return "hover:translate-x-1";
-          case "none":
-            return "";
-          default:
-            return "";
-        }
+  const getBadgeAnimationClass = () => {
+    if (animationConfig?.badgeAnimation) {
+      switch (animationConfig.badgeAnimation) {
+        case "bounce":
+          return isAnimating
+            ? "animate-bounce"
+            : "hover:-translate-y-1 hover:scale-110";
+        case "pulse":
+          return "hover:animate-pulse";
+        case "wiggle":
+          return "hover:animate-wiggle";
+        case "fade":
+          return "hover:opacity-80";
+        case "slide":
+          return "hover:translate-x-1";
+        case "none":
+          return "";
+        default:
+          return "";
       }
-      return isAnimating ? "animate-bounce" : "";
-    };
+    }
+    return isAnimating ? "animate-bounce" : "";
+  };
 
-    const getPopoverAnimationClass = () => {
-      if (animationConfig?.popoverAnimation) {
-        switch (animationConfig.popoverAnimation) {
-          case "scale":
-            return "animate-scaleIn";
-          case "slide":
-            return "animate-slideInDown";
-          case "fade":
-            return "animate-fadeIn";
-          case "flip":
-            return "animate-flipIn";
-          case "none":
-            return "";
-          default:
-            return "";
-        }
+  const getPopoverAnimationClass = () => {
+    if (animationConfig?.popoverAnimation) {
+      switch (animationConfig.popoverAnimation) {
+        case "scale":
+          return "animate-scaleIn";
+        case "slide":
+          return "animate-slideInDown";
+        case "fade":
+          return "animate-fadeIn";
+        case "flip":
+          return "animate-flipIn";
+        case "none":
+          return "";
+        default:
+          return "";
       }
-      return "";
-    };
+    }
+    return "";
+  };
 
-    const getAllOptions = React.useCallback((): MultiSelectOption[] => {
-      if (options.length === 0) return [];
-      let allOptions: MultiSelectOption[];
-      if (isGroupedOptions(options)) {
-        allOptions = options.flatMap((group) => group.options);
-      } else {
-        allOptions = options;
-      }
-      const valueSet = new Set<string>();
-      const duplicates: string[] = [];
-      const uniqueOptions: MultiSelectOption[] = [];
-      allOptions.forEach((option) => {
-        if (valueSet.has(option.value)) {
-          duplicates.push(option.value);
-          if (!deduplicateOptions) {
-            uniqueOptions.push(option);
-          }
-        } else {
-          valueSet.add(option.value);
+  const getAllOptions = React.useCallback((): MultiSelectOption[] => {
+    if (options.length === 0) return [];
+    let allOptions: MultiSelectOption[];
+    if (isGroupedOptions(options)) {
+      allOptions = options.flatMap((group) => group.options);
+    } else {
+      allOptions = options;
+    }
+    const valueSet = new Set<string>();
+    const duplicates: string[] = [];
+    const uniqueOptions: MultiSelectOption[] = [];
+    allOptions.forEach((option) => {
+      if (valueSet.has(option.value)) {
+        duplicates.push(option.value);
+        if (!deduplicateOptions) {
           uniqueOptions.push(option);
         }
-      });
-      if (process.env.NODE_ENV === "development" && duplicates.length > 0) {
-        const action = deduplicateOptions
-          ? "automatically removed"
-          : "detected";
+      } else {
+        valueSet.add(option.value);
+        uniqueOptions.push(option);
+      }
+    });
+    if (process.env.NODE_ENV === "development" && duplicates.length > 0) {
+      const action = deduplicateOptions ? "automatically removed" : "detected";
+      console.warn(
+        `MultiSelect: Duplicate option values ${action}: ${duplicates.join(
+          ", "
+        )}. ` +
+          `${
+            deduplicateOptions
+              ? "Duplicates have been removed automatically."
+              : "This may cause unexpected behavior. Consider setting 'deduplicateOptions={true}' or ensure all option values are unique."
+          }`
+      );
+    }
+    return deduplicateOptions ? uniqueOptions : allOptions;
+  }, [options, deduplicateOptions, isGroupedOptions]);
+
+  const getOptionByValue = React.useCallback(
+    (value: string): MultiSelectOption | undefined => {
+      const option = getAllOptions().find((option) => option.value === value);
+      if (!option && process.env.NODE_ENV === "development") {
         console.warn(
-          `MultiSelect: Duplicate option values ${action}: ${duplicates.join(
-            ", "
-          )}. ` +
-            `${
-              deduplicateOptions
-                ? "Duplicates have been removed automatically."
-                : "This may cause unexpected behavior. Consider setting 'deduplicateOptions={true}' or ensure all option values are unique."
-            }`
+          `MultiSelect: Option with value "${value}" not found in options list`
         );
       }
-      return deduplicateOptions ? uniqueOptions : allOptions;
-    }, [options, deduplicateOptions, isGroupedOptions]);
+      return option;
+    },
+    [getAllOptions]
+  );
 
-    const getOptionByValue = React.useCallback(
-      (value: string): MultiSelectOption | undefined => {
-        const option = getAllOptions().find((option) => option.value === value);
-        if (!option && process.env.NODE_ENV === "development") {
-          console.warn(
-            `MultiSelect: Option with value "${value}" not found in options list`
-          );
-        }
-        return option;
-      },
-      [getAllOptions]
+  const filteredOptions = React.useMemo(() => {
+    if (!(searchable && searchValue)) return options;
+    if (options.length === 0) return [];
+    if (isGroupedOptions(options)) {
+      return options
+        .map((group) => ({
+          ...group,
+          options: group.options.filter(
+            (option) =>
+              option.label.toLowerCase().includes(searchValue.toLowerCase()) ||
+              option.value.toLowerCase().includes(searchValue.toLowerCase())
+          ),
+        }))
+        .filter((group) => group.options.length > 0);
+    }
+    return options.filter(
+      (option) =>
+        option.label.toLowerCase().includes(searchValue.toLowerCase()) ||
+        option.value.toLowerCase().includes(searchValue.toLowerCase())
     );
+  }, [options, searchValue, searchable, isGroupedOptions]);
 
-    const filteredOptions = React.useMemo(() => {
-      if (!(searchable && searchValue)) return options;
-      if (options.length === 0) return [];
-      if (isGroupedOptions(options)) {
-        return options
-          .map((group) => ({
-            ...group,
-            options: group.options.filter(
-              (option) =>
-                option.label
-                  .toLowerCase()
-                  .includes(searchValue.toLowerCase()) ||
-                option.value.toLowerCase().includes(searchValue.toLowerCase())
-            ),
-          }))
-          .filter((group) => group.options.length > 0);
-      }
-      return options.filter(
-        (option) =>
-          option.label.toLowerCase().includes(searchValue.toLowerCase()) ||
-          option.value.toLowerCase().includes(searchValue.toLowerCase())
-      );
-    }, [options, searchValue, searchable, isGroupedOptions]);
-
-    const handleInputKeyDown = (
-      event: React.KeyboardEvent<HTMLInputElement>
-    ) => {
-      if (event.key === "Enter") {
-        setIsPopoverOpen(true);
-      } else if (event.key === "Backspace" && !event.currentTarget.value) {
-        const newSelectedValues = [...selectedValues];
-        newSelectedValues.pop();
-        setSelectedValues(newSelectedValues);
-        onValueChange(newSelectedValues);
-      }
-    };
-
-    const toggleOption = (optionValue: string) => {
-      if (disabled) return;
-      const option = getOptionByValue(optionValue);
-      if (option?.disabled) return;
-      const newSelectedValues = selectedValues.includes(optionValue)
-        ? selectedValues.filter((value) => value !== optionValue)
-        : [...selectedValues, optionValue];
+  const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      setIsPopoverOpen(true);
+    } else if (event.key === "Backspace" && !event.currentTarget.value) {
+      const newSelectedValues = [...selectedValues];
+      newSelectedValues.pop();
       setSelectedValues(newSelectedValues);
       onValueChange(newSelectedValues);
-      if (closeOnSelect) {
-        setIsPopoverOpen(false);
+    }
+  };
+
+  const toggleOption = (optionValue: string) => {
+    if (disabled) return;
+    const option = getOptionByValue(optionValue);
+    if (option?.disabled) return;
+    const newSelectedValues = selectedValues.includes(optionValue)
+      ? selectedValues.filter((value) => value !== optionValue)
+      : [...selectedValues, optionValue];
+    setSelectedValues(newSelectedValues);
+    onValueChange(newSelectedValues);
+    if (closeOnSelect) {
+      setIsPopoverOpen(false);
+    }
+  };
+
+  const handleClear = () => {
+    if (disabled) return;
+    setSelectedValues([]);
+    onValueChange([]);
+  };
+
+  const handleTogglePopover = () => {
+    if (disabled) return;
+    setIsPopoverOpen((prev) => !prev);
+  };
+
+  const clearExtraOptions = () => {
+    if (disabled) return;
+    const newSelectedValues = selectedValues.slice(
+      0,
+      responsiveSettings.maxCount
+    );
+    setSelectedValues(newSelectedValues);
+    onValueChange(newSelectedValues);
+  };
+
+  const toggleAll = () => {
+    if (disabled) return;
+    const allOptions = getAllOptions().filter((option) => !option.disabled);
+    if (selectedValues.length === allOptions.length) {
+      handleClear();
+    } else {
+      const allValues = allOptions.map((option) => option.value);
+      setSelectedValues(allValues);
+      onValueChange(allValues);
+    }
+
+    if (closeOnSelect) {
+      setIsPopoverOpen(false);
+    }
+  };
+
+  React.useEffect(() => {
+    if (!resetOnDefaultValueChange) return;
+    const prevDefaultValue = prevDefaultValueRef.current;
+    if (!arraysEqual(prevDefaultValue, defaultValue)) {
+      if (!arraysEqual(selectedValues, defaultValue)) {
+        setSelectedValues(defaultValue);
       }
+      prevDefaultValueRef.current = [...defaultValue];
+    }
+  }, [defaultValue, selectedValues, arraysEqual, resetOnDefaultValueChange]);
+
+  const getWidthConstraints = () => {
+    const defaultMinWidth = screenSize === "mobile" ? "0px" : "200px";
+    const effectiveMinWidth = minWidth || defaultMinWidth;
+    const effectiveMaxWidth = maxWidth || "100%";
+    return {
+      minWidth: effectiveMinWidth,
+      maxWidth: effectiveMaxWidth,
+      width: autoSize ? "auto" : "100%",
     };
+  };
 
-    const handleClear = () => {
-      if (disabled) return;
-      setSelectedValues([]);
-      onValueChange([]);
-    };
+  const widthConstraints = getWidthConstraints();
 
-    const handleTogglePopover = () => {
-      if (disabled) return;
-      setIsPopoverOpen((prev) => !prev);
-    };
+  React.useEffect(() => {
+    if (!isPopoverOpen) {
+      setSearchValue("");
+    }
+  }, [isPopoverOpen]);
 
-    const clearExtraOptions = () => {
-      if (disabled) return;
-      const newSelectedValues = selectedValues.slice(
-        0,
-        responsiveSettings.maxCount
-      );
-      setSelectedValues(newSelectedValues);
-      onValueChange(newSelectedValues);
-    };
+  React.useEffect(() => {
+    const selectedCount = selectedValues.length;
+    const allOptions = getAllOptions();
+    const totalOptions = allOptions.filter((opt) => !opt.disabled).length;
+    if (selectedCount !== prevSelectedCount.current) {
+      const diff = selectedCount - prevSelectedCount.current;
+      if (diff > 0) {
+        const addedItems = selectedValues.slice(-diff);
+        const addedLabels = addedItems
+          .map((value) => allOptions.find((opt) => opt.value === value)?.label)
+          .filter(Boolean);
 
-    const toggleAll = () => {
-      if (disabled) return;
-      const allOptions = getAllOptions().filter((option) => !option.disabled);
-      if (selectedValues.length === allOptions.length) {
-        handleClear();
-      } else {
-        const allValues = allOptions.map((option) => option.value);
-        setSelectedValues(allValues);
-        onValueChange(allValues);
-      }
-
-      if (closeOnSelect) {
-        setIsPopoverOpen(false);
-      }
-    };
-
-    React.useEffect(() => {
-      if (!resetOnDefaultValueChange) return;
-      const prevDefaultValue = prevDefaultValueRef.current;
-      if (!arraysEqual(prevDefaultValue, defaultValue)) {
-        if (!arraysEqual(selectedValues, defaultValue)) {
-          setSelectedValues(defaultValue);
-        }
-        prevDefaultValueRef.current = [...defaultValue];
-      }
-    }, [defaultValue, selectedValues, arraysEqual, resetOnDefaultValueChange]);
-
-    const getWidthConstraints = () => {
-      const defaultMinWidth = screenSize === "mobile" ? "0px" : "200px";
-      const effectiveMinWidth = minWidth || defaultMinWidth;
-      const effectiveMaxWidth = maxWidth || "100%";
-      return {
-        minWidth: effectiveMinWidth,
-        maxWidth: effectiveMaxWidth,
-        width: autoSize ? "auto" : "100%",
-      };
-    };
-
-    const widthConstraints = getWidthConstraints();
-
-    React.useEffect(() => {
-      if (!isPopoverOpen) {
-        setSearchValue("");
-      }
-    }, [isPopoverOpen]);
-
-    React.useEffect(() => {
-      const selectedCount = selectedValues.length;
-      const allOptions = getAllOptions();
-      const totalOptions = allOptions.filter((opt) => !opt.disabled).length;
-      if (selectedCount !== prevSelectedCount.current) {
-        const diff = selectedCount - prevSelectedCount.current;
-        if (diff > 0) {
-          const addedItems = selectedValues.slice(-diff);
-          const addedLabels = addedItems
-            .map(
-              (value) => allOptions.find((opt) => opt.value === value)?.label
-            )
-            .filter(Boolean);
-
-          if (addedLabels.length === 1) {
-            announce(
-              `${addedLabels[0]} selected. ${selectedCount} of ${totalOptions} options selected.`
-            );
-          } else {
-            announce(
-              `${addedLabels.length} options selected. ${selectedCount} of ${totalOptions} total selected.`
-            );
-          }
-        } else if (diff < 0) {
+        if (addedLabels.length === 1) {
           announce(
-            `Option removed. ${selectedCount} of ${totalOptions} options selected.`
-          );
-        }
-        prevSelectedCount.current = selectedCount;
-      }
-
-      if (isPopoverOpen !== prevIsOpen.current) {
-        if (isPopoverOpen) {
-          announce(
-            `Dropdown opened. ${totalOptions} options available. Use arrow keys to navigate.`
+            `${addedLabels[0]} selected. ${selectedCount} of ${totalOptions} options selected.`
           );
         } else {
-          announce("Dropdown closed.");
-        }
-        prevIsOpen.current = isPopoverOpen;
-      }
-
-      if (
-        searchValue !== prevSearchValue.current &&
-        searchValue !== undefined
-      ) {
-        if (searchValue && isPopoverOpen) {
-          const filteredCount = allOptions.filter(
-            (opt) =>
-              opt.label.toLowerCase().includes(searchValue.toLowerCase()) ||
-              opt.value.toLowerCase().includes(searchValue.toLowerCase())
-          ).length;
-
           announce(
-            `${filteredCount} option${
-              filteredCount === 1 ? "" : "s"
-            } found for "${searchValue}"`
+            `${addedLabels.length} options selected. ${selectedCount} of ${totalOptions} total selected.`
           );
         }
-        prevSearchValue.current = searchValue;
+      } else if (diff < 0) {
+        announce(
+          `Option removed. ${selectedCount} of ${totalOptions} options selected.`
+        );
       }
-    }, [selectedValues, isPopoverOpen, searchValue, announce, getAllOptions]);
+      prevSelectedCount.current = selectedCount;
+    }
 
-    return (
-      <>
-        <div className="sr-only">
-          <div aria-atomic="true" aria-live="polite" role="status">
-            {politeMessage}
-          </div>
-          <div aria-atomic="true" aria-live="assertive" role="alert">
-            {assertiveMessage}
-          </div>
+    if (isPopoverOpen !== prevIsOpen.current) {
+      if (isPopoverOpen) {
+        announce(
+          `Dropdown opened. ${totalOptions} options available. Use arrow keys to navigate.`
+        );
+      } else {
+        announce("Dropdown closed.");
+      }
+      prevIsOpen.current = isPopoverOpen;
+    }
+
+    if (searchValue !== prevSearchValue.current && searchValue !== undefined) {
+      if (searchValue && isPopoverOpen) {
+        const filteredCount = allOptions.filter(
+          (opt) =>
+            opt.label.toLowerCase().includes(searchValue.toLowerCase()) ||
+            opt.value.toLowerCase().includes(searchValue.toLowerCase())
+        ).length;
+
+        announce(
+          `${filteredCount} option${
+            filteredCount === 1 ? "" : "s"
+          } found for "${searchValue}"`
+        );
+      }
+      prevSearchValue.current = searchValue;
+    }
+  }, [selectedValues, isPopoverOpen, searchValue, announce, getAllOptions]);
+
+  return (
+    <>
+      <div className="sr-only">
+        <div aria-atomic="true" aria-live="polite" role="status">
+          {politeMessage}
+        </div>
+        <div aria-atomic="true" aria-live="assertive" role="alert">
+          {assertiveMessage}
+        </div>
+      </div>
+
+      <Popover
+        modal={modalPopover}
+        onOpenChange={setIsPopoverOpen}
+        open={isPopoverOpen}
+      >
+        <div className="sr-only" id={triggerDescriptionId}>
+          Multi-select dropdown. Use arrow keys to navigate, Enter to select,
+          and Escape to close.
+        </div>
+        <div aria-live="polite" className="sr-only" id={selectedCountId}>
+          {selectedValues.length === 0
+            ? "No options selected"
+            : `${selectedValues.length} option${
+                selectedValues.length === 1 ? "" : "s"
+              } selected: ${selectedValues
+                .map((value) => getOptionByValue(value)?.label)
+                .filter(Boolean)
+                .join(", ")}`}
         </div>
 
-        <Popover
-          modal={modalPopover}
-          onOpenChange={setIsPopoverOpen}
-          open={isPopoverOpen}
-        >
-          <div className="sr-only" id={triggerDescriptionId}>
-            Multi-select dropdown. Use arrow keys to navigate, Enter to select,
-            and Escape to close.
-          </div>
-          <div aria-live="polite" className="sr-only" id={selectedCountId}>
-            {selectedValues.length === 0
-              ? "No options selected"
-              : `${selectedValues.length} option${
-                  selectedValues.length === 1 ? "" : "s"
-                } selected: ${selectedValues
-                  .map((value) => getOptionByValue(value)?.label)
-                  .filter(Boolean)
-                  .join(", ")}`}
-          </div>
-
-          <PopoverTrigger asChild>
+        <PopoverTrigger
+          render={
             <Button
               ref={buttonRef}
               {...props}
@@ -998,143 +982,95 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                 </div>
               )}
             </Button>
-          </PopoverTrigger>
-          <PopoverContent
-            align="start"
-            aria-label="Available options"
-            aria-multiselectable="true"
-            className={cn(
-              "w-auto p-0",
-              getPopoverAnimationClass(),
-              screenSize === "mobile" && "w-[85vw] max-w-70",
-              screenSize === "tablet" && "w-[70vw] max-w-md",
-              screenSize === "desktop" && "min-w-75",
-              popoverClassName
+          }
+        />
+        <PopoverContent
+          align="start"
+          aria-label="Available options"
+          aria-multiselectable="true"
+          className={cn(
+            "w-auto p-0",
+            getPopoverAnimationClass(),
+            screenSize === "mobile" && "w-[85vw] max-w-70",
+            screenSize === "tablet" && "w-[70vw] max-w-md",
+            screenSize === "desktop" && "min-w-75",
+            popoverClassName
+          )}
+          id={listboxId}
+          role="listbox"
+          style={{
+            animationDuration: `${animationConfig?.duration || animation}s`,
+            animationDelay: `${animationConfig?.delay || 0}s`,
+            maxWidth: `min(${widthConstraints.maxWidth}, 85vw)`,
+            maxHeight: screenSize === "mobile" ? "70vh" : "60vh",
+            touchAction: "manipulation",
+          }}
+        >
+          <Command>
+            {searchable && (
+              <CommandInput
+                aria-describedby={`${multiSelectId}-search-help`}
+                aria-label="Search through available options"
+                onKeyDown={handleInputKeyDown}
+                onValueChange={setSearchValue}
+                placeholder="Search options..."
+                value={searchValue}
+              />
             )}
-            id={listboxId}
-            onEscapeKeyDown={() => setIsPopoverOpen(false)}
-            role="listbox"
-            style={{
-              animationDuration: `${animationConfig?.duration || animation}s`,
-              animationDelay: `${animationConfig?.delay || 0}s`,
-              maxWidth: `min(${widthConstraints.maxWidth}, 85vw)`,
-              maxHeight: screenSize === "mobile" ? "70vh" : "60vh",
-              touchAction: "manipulation",
-            }}
-          >
-            <Command>
-              {searchable && (
-                <CommandInput
-                  aria-describedby={`${multiSelectId}-search-help`}
-                  aria-label="Search through available options"
-                  onKeyDown={handleInputKeyDown}
-                  onValueChange={setSearchValue}
-                  placeholder="Search options..."
-                  value={searchValue}
-                />
+            {searchable && (
+              <div className="sr-only" id={`${multiSelectId}-search-help`}>
+                Type to filter options. Use arrow keys to navigate results.
+              </div>
+            )}
+            <CommandList
+              className={cn(
+                "multiselect-scrollbar max-h-[40vh] overflow-y-auto",
+                screenSize === "mobile" && "max-h-[50vh]",
+                "overscroll-behavior-y-contain"
               )}
-              {searchable && (
-                <div className="sr-only" id={`${multiSelectId}-search-help`}>
-                  Type to filter options. Use arrow keys to navigate results.
-                </div>
-              )}
-              <CommandList
-                className={cn(
-                  "multiselect-scrollbar max-h-[40vh] overflow-y-auto",
-                  screenSize === "mobile" && "max-h-[50vh]",
-                  "overscroll-behavior-y-contain"
-                )}
-              >
-                <CommandEmpty>
-                  {emptyIndicator || "No results found."}
-                </CommandEmpty>{" "}
-                {!(hideSelectAll || searchValue) && (
-                  <CommandGroup>
-                    <CommandItem
-                      aria-label={`Select all ${
-                        getAllOptions().length
-                      } options`}
-                      aria-selected={
+            >
+              <CommandEmpty>
+                {emptyIndicator || "No results found."}
+              </CommandEmpty>{" "}
+              {!(hideSelectAll || searchValue) && (
+                <CommandGroup>
+                  <CommandItem
+                    aria-label={`Select all ${getAllOptions().length} options`}
+                    aria-selected={
+                      selectedValues.length ===
+                      getAllOptions().filter((opt) => !opt.disabled).length
+                    }
+                    className="cursor-pointer"
+                    key="all"
+                    onSelect={toggleAll}
+                    role="option"
+                  >
+                    <div
+                      aria-hidden="true"
+                      className={cn(
+                        "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
                         selectedValues.length ===
-                        getAllOptions().filter((opt) => !opt.disabled).length
-                      }
-                      className="cursor-pointer"
-                      key="all"
-                      onSelect={toggleAll}
-                      role="option"
+                          getAllOptions().filter((opt) => !opt.disabled).length
+                          ? "bg-primary text-primary-foreground"
+                          : "opacity-50 [&_svg]:invisible"
+                      )}
                     >
-                      <div
-                        aria-hidden="true"
-                        className={cn(
-                          "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                          selectedValues.length ===
-                            getAllOptions().filter((opt) => !opt.disabled)
-                              .length
-                            ? "bg-primary text-primary-foreground"
-                            : "opacity-50 [&_svg]:invisible"
-                        )}
-                      >
-                        <IconSquareCheckFilled className="h-4 w-4" />
-                      </div>
-                      <span>
-                        (Select All
-                        {getAllOptions().length > 20
-                          ? ` - ${getAllOptions().length} options`
-                          : ""}
-                        )
-                      </span>
-                    </CommandItem>
-                  </CommandGroup>
-                )}
-                {isGroupedOptions(filteredOptions) ? (
-                  filteredOptions.map((group) => (
-                    <CommandGroup heading={group.heading} key={group.heading}>
-                      {group.options.map((option) => {
-                        const isSelected = selectedValues.includes(
-                          option.value
-                        );
-                        return (
-                          <CommandItem
-                            aria-disabled={option.disabled}
-                            aria-label={`${option.label}${
-                              isSelected ? ", selected" : ", not selected"
-                            }${option.disabled ? ", disabled" : ""}`}
-                            aria-selected={isSelected}
-                            className={cn(
-                              "cursor-pointer",
-                              option.disabled && "cursor-not-allowed opacity-50"
-                            )}
-                            disabled={option.disabled}
-                            key={option.value}
-                            onSelect={() => toggleOption(option.value)}
-                            role="option"
-                          >
-                            <div
-                              aria-hidden="true"
-                              className={cn(
-                                "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                                isSelected
-                                  ? "bg-primary text-primary-foreground"
-                                  : "opacity-50 [&_svg]:invisible"
-                              )}
-                            >
-                              <IconSquareCheckFilled className="h-4 w-4" />
-                            </div>
-                            {option.icon && (
-                              <option.icon
-                                aria-hidden="true"
-                                className="mr-2 h-4 w-4 text-muted-foreground"
-                              />
-                            )}
-                            <span>{option.label}</span>
-                          </CommandItem>
-                        );
-                      })}
-                    </CommandGroup>
-                  ))
-                ) : (
-                  <CommandGroup>
-                    {filteredOptions.map((option) => {
+                      <IconSquareCheckFilled className="h-4 w-4" />
+                    </div>
+                    <span>
+                      (Select All
+                      {getAllOptions().length > 20
+                        ? ` - ${getAllOptions().length} options`
+                        : ""}
+                      )
+                    </span>
+                  </CommandItem>
+                </CommandGroup>
+              )}
+              {isGroupedOptions(filteredOptions) ? (
+                filteredOptions.map((group) => (
+                  <CommandGroup heading={group.heading} key={group.heading}>
+                    {group.options.map((option) => {
                       const isSelected = selectedValues.includes(option.value);
                       return (
                         <CommandItem
@@ -1174,50 +1110,90 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                       );
                     })}
                   </CommandGroup>
-                )}
-                <CommandSeparator />
+                ))
+              ) : (
                 <CommandGroup>
-                  <div className="flex items-center justify-between">
-                    {selectedValues.length > 0 && (
-                      <>
-                        <CommandItem
-                          className="flex-1 cursor-pointer justify-center"
-                          onSelect={handleClear}
+                  {filteredOptions.map((option) => {
+                    const isSelected = selectedValues.includes(option.value);
+                    return (
+                      <CommandItem
+                        aria-disabled={option.disabled}
+                        aria-label={`${option.label}${
+                          isSelected ? ", selected" : ", not selected"
+                        }${option.disabled ? ", disabled" : ""}`}
+                        aria-selected={isSelected}
+                        className={cn(
+                          "cursor-pointer",
+                          option.disabled && "cursor-not-allowed opacity-50"
+                        )}
+                        disabled={option.disabled}
+                        key={option.value}
+                        onSelect={() => toggleOption(option.value)}
+                        role="option"
+                      >
+                        <div
+                          aria-hidden="true"
+                          className={cn(
+                            "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                            isSelected
+                              ? "bg-primary text-primary-foreground"
+                              : "opacity-50 [&_svg]:invisible"
+                          )}
                         >
-                          Clear
-                        </CommandItem>
-                        <Separator
-                          className="flex h-full min-h-6"
-                          orientation="vertical"
-                        />
-                      </>
-                    )}
-                    <CommandItem
-                      className="max-w-full flex-1 cursor-pointer justify-center"
-                      onSelect={() => setIsPopoverOpen(false)}
-                    >
-                      Close
-                    </CommandItem>
-                  </div>
+                          <IconSquareCheckFilled className="h-4 w-4" />
+                        </div>
+                        {option.icon && (
+                          <option.icon
+                            aria-hidden="true"
+                            className="mr-2 h-4 w-4 text-muted-foreground"
+                          />
+                        )}
+                        <span>{option.label}</span>
+                      </CommandItem>
+                    );
+                  })}
                 </CommandGroup>
-              </CommandList>
-            </Command>
-          </PopoverContent>
-          {animation > 0 && selectedValues.length > 0 && (
-            <IconWand
-              className={cn(
-                "my-2 h-3 w-3 cursor-pointer bg-background text-foreground",
-                isAnimating ? "" : "text-muted-foreground"
               )}
-              onClick={() => setIsAnimating(!isAnimating)}
-            />
-          )}
-        </Popover>
-      </>
-    );
-  }
-);
-
-MultiSelect.displayName = "MultiSelect";
+              <CommandSeparator />
+              <CommandGroup>
+                <div className="flex items-center justify-between">
+                  {selectedValues.length > 0 && (
+                    <>
+                      <CommandItem
+                        className="flex-1 cursor-pointer justify-center"
+                        onSelect={handleClear}
+                      >
+                        Clear
+                      </CommandItem>
+                      <Separator
+                        className="flex h-full min-h-6"
+                        orientation="vertical"
+                      />
+                    </>
+                  )}
+                  <CommandItem
+                    className="max-w-full flex-1 cursor-pointer justify-center"
+                    onSelect={() => setIsPopoverOpen(false)}
+                  >
+                    Close
+                  </CommandItem>
+                </div>
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+        {animation > 0 && selectedValues.length > 0 && (
+          <IconWand
+            className={cn(
+              "my-2 h-3 w-3 cursor-pointer bg-background text-foreground",
+              isAnimating ? "" : "text-muted-foreground"
+            )}
+            onClick={() => setIsAnimating(!isAnimating)}
+          />
+        )}
+      </Popover>
+    </>
+  );
+}
 
 export type { MultiSelectGroup, MultiSelectOption, MultiSelectProps };

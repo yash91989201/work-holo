@@ -176,18 +176,20 @@ export function UsersTable({ adminRole }: { adminRole: string }) {
                     <div className="flex flex-wrap gap-1">
                       {u.organizations.map((org) => (
                         <Tooltip key={org.orgSlug}>
-                          <TooltipTrigger asChild>
-                            <Badge
-                              className="gap-1"
-                              variant={orgRoleBadgeVariant(org.orgRole)}
-                            >
-                              <IconBuilding className="size-3" />
-                              {org.orgName}
-                              <span className="text-[10px] opacity-70">
-                                ({org.orgRole})
-                              </span>
-                            </Badge>
-                          </TooltipTrigger>
+                          <TooltipTrigger
+                            render={
+                              <Badge
+                                className="gap-1"
+                                variant={orgRoleBadgeVariant(org.orgRole)}
+                              >
+                                <IconBuilding className="size-3" />
+                                {org.orgName}
+                                <span className="text-[10px] opacity-70">
+                                  ({org.orgRole})
+                                </span>
+                              </Badge>
+                            }
+                          />
                           <TooltipContent>
                             {org.orgRole} in {org.orgName}
                           </TooltipContent>
@@ -211,11 +213,13 @@ export function UsersTable({ adminRole }: { adminRole: string }) {
                 <TableCell>
                   {adminRole !== "support" && u.role !== "super_admin" && (
                     <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button size="icon" variant="ghost">
-                          <IconDots className="size-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
+                      <DropdownMenuTrigger
+                        render={
+                          <Button size="icon" variant="ghost">
+                            <IconDots className="size-4" />
+                          </Button>
+                        }
+                      />
                       <DropdownMenuContent align="end">
                         {u.banned ? (
                           <DropdownMenuItem

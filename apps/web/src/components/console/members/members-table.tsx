@@ -379,10 +379,8 @@ export const MembersTable = () => {
         header: ({ table }) => (
           <Checkbox
             aria-label="Select all"
-            checked={
-              table.getIsAllPageRowsSelected() ||
-              (table.getIsSomePageRowsSelected() && "indeterminate")
-            }
+            checked={table.getIsAllPageRowsSelected()}
+            indeterminate={table.getIsSomePageRowsSelected()}
             onCheckedChange={(value) =>
               table.toggleAllPageRowsSelected(!!value)
             }
@@ -625,24 +623,22 @@ export const MembersTable = () => {
               </SelectContent>
             </Select>
             <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  className={dateRange ? "" : "text-muted-foreground"}
-                  variant="outline"
-                >
-                  <IconCalendarEventFilled className="mr-2 h-4 w-4" />
-                  {!dateRange?.from && <span>Filter by date</span>}
-                  {dateRange?.from &&
-                    !dateRange.to &&
-                    format(dateRange.from, "LLL dd, y")}
-                  {dateRange?.from && dateRange.to && (
-                    <>
-                      {format(dateRange.from, "LLL dd, y")} -{" "}
-                      {format(dateRange.to, "LLL dd, y")}
-                    </>
-                  )}
-                </Button>
-              </PopoverTrigger>
+              <PopoverTrigger render={<Button
+                className={dateRange ? "" : "text-muted-foreground"}
+                variant="outline"
+              >
+                <IconCalendarEventFilled className="mr-2 h-4 w-4" />
+                {!dateRange?.from && <span>Filter by date</span>}
+                {dateRange?.from &&
+                  !dateRange.to &&
+                  format(dateRange.from, "LLL dd, y")}
+                {dateRange?.from && dateRange.to && (
+                  <>
+                    {format(dateRange.from, "LLL dd, y")} -{" "}
+                    {format(dateRange.to, "LLL dd, y")}
+                  </>
+                )}
+              </Button>} />
               <PopoverContent align="start" className="w-auto p-0">
                 <Calendar
                   defaultMonth={dateRange?.from}

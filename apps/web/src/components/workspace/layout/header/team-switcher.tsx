@@ -127,24 +127,26 @@ export function TeamSwitcher() {
 
   return (
     <Popover onOpenChange={setOpen} open={open}>
-      <PopoverTrigger asChild>
-        <Button
-          aria-expanded={open}
-          disabled={isSwitching || isRefetching}
-          role="combobox"
-          variant="outline"
-        >
-          <div className="flex items-center gap-2">
-            <Avatar>
-              <AvatarFallback>
-                <IconUsers className="size-3" />
-              </AvatarFallback>
-            </Avatar>
-            <span className="truncate">{displayName}</span>
-          </div>
-          <IconChevronDown className="ml-2 size-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
+      <PopoverTrigger
+        render={
+          <Button
+            aria-expanded={open}
+            disabled={isSwitching || isRefetching}
+            role="combobox"
+            variant="outline"
+          >
+            <div className="flex items-center gap-2">
+              <Avatar>
+                <AvatarFallback>
+                  <IconUsers className="size-3" />
+                </AvatarFallback>
+              </Avatar>
+              <span className="truncate">{displayName}</span>
+            </div>
+            <IconChevronDown className="ml-2 size-4 shrink-0 opacity-50" />
+          </Button>
+        }
+      />
       <PopoverContent align="start" className="w-64 p-0">
         <Command>
           <CommandInput placeholder="Search teams..." />

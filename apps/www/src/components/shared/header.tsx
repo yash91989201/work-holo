@@ -1,25 +1,71 @@
 import { useState, useEffect } from "react";
 import { motion, useScroll, useMotionValueEvent } from "motion/react";
 import {
-  IconBolt,
   IconArrowUpRight,
+  IconBolt,
   IconClock,
   IconSettings,
-  IconSearch,
-  IconLayoutGrid,
   IconChevronDown,
 } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import { cn } from "@work-holo/ui/lib/utils";
 import { CTAButton } from "@work-holo/ui/components/cta-button";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@work-holo/ui/components/navigation-menu";
+import { Image } from "@/components/shared/image";
 
-const navLinks = [
-  { label: "Home", href: "/", active: true, hasDropdown: true },
-  { label: "Pages", href: "#", hasDropdown: true },
-  { label: "Services", href: "#", hasDropdown: true },
-  { label: "Projects", href: "#", hasDropdown: true },
-  { label: "Blog", href: "#", hasDropdown: true },
-  { label: "Contact", href: "#", hasDropdown: false },
+const navItems = [
+  {
+    label: "Home",
+    href: "/",
+    active: true,
+    dropdownItems: [
+      { label: "IT Solutions", href: "/" },
+      { label: "Cloud Services", href: "/" },
+      { label: "Consulting", href: "/" },
+    ],
+  },
+  {
+    label: "Services",
+    href: "/",
+    dropdownItems: [
+      { label: "Managed IT", href: "/" },
+      { label: "Cybersecurity", href: "/" },
+      { label: "Cloud Computing", href: "/" },
+      { label: "IT Consulting", href: "/" },
+    ],
+  },
+  {
+    label: "Projects",
+    href: "/",
+    dropdownItems: [
+      { label: "Mobile Apps", href: "/" },
+      { label: "Web Development", href: "/" },
+      { label: "Cloud Migration", href: "/" },
+    ],
+  },
+  {
+    label: "Company",
+    href: "/",
+    dropdownItems: [
+      { label: "About Us", href: "/" },
+      { label: "Careers", href: "/" },
+    ],
+  },
+  {
+    label: "Contact",
+    href: "/",
+    dropdownItems: [
+      { label: "Get in Touch", href: "/" },
+      { label: "Support", href: "/" },
+    ],
+  },
 ];
 
 export function Header() {
@@ -117,50 +163,62 @@ export function Header() {
         >
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 shrink-0">
-            <div className="flex size-11 items-center justify-center rounded-full bg-primary">
-              <span className="text-base font-bold text-primary-foreground">WH</span>
+            <div className="relative w-16 h-12">
+              <Image
+                src="/logo.webp"
+                alt="Work Holo"
+                width={64}
+                height={48}
+                className="object-contain"
+                unoptimized
+              />
             </div>
-            <span className="text-2xl font-semibold text-foreground tracking-tight">
-              Work Holo
+            <span className="font-heading text-2xl font-bold text-foreground tracking-tight">
+              Workholo
             </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <NavItem
-                key={link.label}
-                href={link.href}
-                label={link.label}
-                active={link.active}
-                hasDropdown={link.hasDropdown}
-              />
-            ))}
+          <div className="hidden lg:flex items-center">
+            <NavigationMenu>
+              <NavigationMenuList>
+                {navItems.map((item) => (
+                  <NavigationMenuItem key={item.label}>
+                    <NavigationMenuTrigger
+                      className={cn(
+                        "text-base font-semibold",
+                        item.active
+                          ? "text-primary"
+                          : "text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      {item.label}
+                    </NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      <div className="grid gap-1 p-2 w-50">
+                        {item.dropdownItems.map((dropItem) => (
+                          <NavigationMenuLink
+                            key={dropItem.label}
+                            render={
+                              <Link to={dropItem.href}>
+                                {dropItem.label}
+                              </Link>
+                            }
+                          />
+                        ))}
+                      </div>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+                ))}
+              </NavigationMenuList>
+            </NavigationMenu>
           </div>
 
           {/* Right Actions */}
           <div className="flex items-center gap-2.5">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="hidden sm:flex size-11 items-center justify-center rounded-full bg-background text-foreground hover:bg-muted transition-colors border border-border/50"
-              aria-label="Search"
-            >
-              <IconSearch className="size-4.5" />
-            </motion.button>
-
-            <CTAButton className="hidden sm:inline-flex" icon={<IconArrowUpRight className="size-4" />}>
+            <CTAButton className="hidden sm:inline-flex">
               Get Started
             </CTAButton>
-
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="hidden sm:flex size-11 items-center justify-center rounded-full bg-background text-foreground hover:bg-muted transition-colors border border-border/50"
-              aria-label="Menu"
-            >
-              <IconLayoutGrid className="size-4.5" />
-            </motion.button>
 
             {/* Mobile Menu Button */}
             <motion.button
@@ -206,9 +264,9 @@ export function Header() {
         className="mx-4 mt-3 overflow-hidden rounded-[1.75rem] border border-border/30 bg-card/95 shadow-[0_18px_50px_rgba(17,17,17,0.16)] backdrop-blur-md sm:mx-6 lg:hidden"
       >
         <div className="px-4 py-4 space-y-1">
-          {navLinks.map((link, index) => (
+          {navItems.map((item, index) => (
             <motion.div
-              key={link.label}
+              key={item.label}
               initial={{ opacity: 0, x: -20 }}
               animate={{
                 opacity: mobileMenuOpen ? 1 : 0,
@@ -221,76 +279,27 @@ export function Header() {
               }}
             >
               <Link
-                to={link.href}
+                to={item.href}
                 className={cn(
                   "flex items-center justify-between rounded-xl px-4 py-3.5 text-base font-medium transition-colors",
-                  link.active
+                  item.active
                     ? "text-primary bg-primary/10"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                 )}
                 onClick={() => setMobileMenuOpen(false)}
               >
-                {link.label}
-                {link.hasDropdown && <IconChevronDown className="size-4" />}
+                {item.label}
+                <IconChevronDown className="size-4" />
               </Link>
             </motion.div>
           ))}
           <div className="pt-3 flex flex-col gap-2">
-            <CTAButton
-              className="w-full"
-              icon={<IconArrowUpRight className="size-4" />}
-            >
+            <CTAButton className="w-full">
               Get Started
             </CTAButton>
           </div>
         </div>
       </motion.div>
     </motion.header>
-  );
-}
-
-function NavItem({
-  href,
-  label,
-  active,
-  hasDropdown,
-}: {
-  href: string;
-  label: string;
-  active?: boolean;
-  hasDropdown: boolean;
-}) {
-  return (
-    <motion.div whileHover="hover" initial="rest" animate="rest">
-      <Link
-        to={href}
-        className={cn(
-          "group relative flex items-center gap-1 px-5 py-2.5 text-[15px] font-medium rounded-xl transition-colors",
-          active
-            ? "text-primary"
-            : "text-muted-foreground hover:text-foreground"
-        )}
-      >
-        <span>{label}</span>
-        {hasDropdown && (
-          <motion.span
-            variants={{
-              rest: { rotate: 0 },
-              hover: { rotate: 180 },
-            }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <IconChevronDown className="size-4 opacity-60" />
-          </motion.span>
-        )}
-        {active && (
-          <motion.span
-            layoutId="activeNav"
-            className="absolute inset-0 bg-primary/10 rounded-xl -z-10"
-            transition={{ type: "spring", stiffness: 380, damping: 30 }}
-          />
-        )}
-      </Link>
-    </motion.div>
   );
 }
