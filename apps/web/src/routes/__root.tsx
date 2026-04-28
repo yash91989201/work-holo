@@ -94,7 +94,12 @@ function RootDocument() {
   const [_orpcUtils] = useState(() => createTanstackQueryUtils(client));
 
   return (
-    <ThemeProvider defaultTheme="system" storageKey="app-theme">
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="light"
+      disableTransitionOnChange
+      storageKey="workholo-app-theme"
+    >
       <TooltipProvider>
         <Outlet />
       </TooltipProvider>
