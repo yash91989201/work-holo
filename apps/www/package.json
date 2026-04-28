@@ -46,7 +46,6 @@
     "@vitejs/plugin-react": "^6.0.1",
     "@vitejs/plugin-rsc": "^0.5.25",
     "jsdom": "^29.1.0",
-    "nitro": "^3.0.260415-beta",
     "typescript": "^6.0.3",
     "vite": "^8.0.10",
     "web-vitals": "^5.2.0"
