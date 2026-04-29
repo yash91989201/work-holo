@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "motion/react";
-import { IconArrowUpRight, IconAward } from "@tabler/icons-react";
-import { Link } from "@tanstack/react-router";
+import { IconAward } from "@tabler/icons-react";
+import { CTAButton } from "@work-holo/ui/components/cta-button";
 
 function AnimatedCounter({
   target,
@@ -93,7 +93,7 @@ function AwardBadge() {
 
 export function AboutSection() {
   return (
-    <section className="relative bg-background py-20 lg:py-28 overflow-hidden">
+    <section id="about" className="relative bg-background py-20 lg:py-28 overflow-hidden scroll-mt-28">
       {/* Background pattern */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.02]">
         <svg
@@ -265,15 +265,7 @@ export function AboutSection() {
                 transition={{ duration: 0.5, delay: 0.7 }}
                 className="flex items-center justify-between"
               >
-                <Link
-                  to="#"
-                  className="group inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/80 transition-colors"
-                >
-                  Learn More
-                  <span className="flex size-7 items-center justify-center rounded-full bg-primary-foreground">
-                    <IconArrowUpRight className="size-4 text-primary transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                  </span>
-                </Link>
+                <CTAButton type="button">Learn More</CTAButton>
 
                 {/* Award Badge */}
                 <div className="hidden sm:block">

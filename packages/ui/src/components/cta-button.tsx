@@ -5,9 +5,10 @@ import { cn } from "../lib/utils";
 
 interface CTAButtonProps extends HTMLMotionProps<"button"> {
   children: React.ReactNode;
+  icon?: React.ReactNode;
 }
 
-function CTAButton({ className, children, ...props }: CTAButtonProps) {
+function CTAButton({ className, children, icon, ...props }: CTAButtonProps) {
   return (
     <motion.button
       className={cn(
@@ -63,7 +64,7 @@ function CTAButton({ className, children, ...props }: CTAButtonProps) {
             },
           }}
         >
-          <IconArrowUpRight className="size-4" />
+          {icon ?? <IconArrowUpRight className="size-4" />}
         </motion.div>
       </motion.div>
     </motion.button>

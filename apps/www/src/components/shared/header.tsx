@@ -20,25 +20,189 @@ import {
 } from "@work-holo/ui/components/navigation-menu";
 import { Image } from "@/components/shared/image";
 
-const navItems = [
+type DropdownItem = {
+  label: string;
+  href: string;
+  hash?: string;
+  description?: string;
+};
+
+type NavGroup = {
+  title: string;
+  items: DropdownItem[];
+};
+
+type NavItem =
+  | {
+      label: string;
+      href: string;
+      hash?: string;
+      active?: boolean;
+      dropdownItems: DropdownItem[];
+      groups?: never;
+    }
+  | {
+      label: string;
+      href: string;
+      hash?: string;
+      active?: boolean;
+      dropdownItems?: never;
+      groups: NavGroup[];
+    };
+
+const navItems: NavItem[] = [
   {
     label: "Home",
     href: "/",
+    hash: "hero",
     active: true,
-    dropdownItems: [
-      { label: "IT Solutions", href: "/" },
-      { label: "Cloud Services", href: "/" },
-      { label: "Consulting", href: "/" },
+    groups: [
+      {
+        title: "Overview",
+        items: [
+          {
+            label: "Why Choose Us",
+            href: "/",
+            hash: "why-choose-us",
+            description: "What makes us different",
+          },
+          {
+            label: "About",
+            href: "/",
+            hash: "about",
+            description: "Company background",
+          },
+        ],
+      },
+      {
+        title: "Solutions",
+        items: [
+          {
+            label: "Services",
+            href: "/",
+            hash: "services",
+            description: "What we build",
+          },
+          {
+            label: "Technologies",
+            href: "/",
+            hash: "technologies",
+            description: "Tools and platforms",
+          },
+          {
+            label: "Process",
+            href: "/",
+            hash: "process",
+            description: "How we work",
+          },
+          {
+            label: "Projects",
+            href: "/",
+            hash: "projects",
+            description: "Selected work",
+          },
+        ],
+      },
+      {
+        title: "Company",
+        items: [
+          {
+            label: "Testimonials",
+            href: "/",
+            hash: "testimonials",
+            description: "Client feedback",
+          },
+          {
+            label: "Team",
+            href: "/",
+            hash: "team",
+            description: "People behind the work",
+          },
+          {
+            label: "Insights",
+            href: "/",
+            hash: "insights",
+            description: "Articles and updates",
+          },
+          {
+            label: "Contact",
+            href: "/",
+            hash: "contact",
+            description: "Start a conversation",
+          },
+        ],
+      },
     ],
   },
   {
     label: "Services",
-    href: "/",
-    dropdownItems: [
-      { label: "Managed IT", href: "/" },
-      { label: "Cybersecurity", href: "/" },
-      { label: "Cloud Computing", href: "/" },
-      { label: "IT Consulting", href: "/" },
+    href: "/services",
+    groups: [
+      {
+        title: "AI Delivery",
+        items: [
+          {
+            label: "Agentic AI",
+            href: "/services/agentic-ai",
+            description: "Autonomous AI for smarter workflows",
+          },
+          {
+            label: "AI Agents",
+            href: "/services/ai-agents",
+            description: "AI agents for product teams",
+          },
+        ],
+      },
+      {
+        title: "AI First Engineering",
+        items: [
+          {
+            label: "MVP",
+            href: "/services/mvp",
+            description: "Launch fast, scale with confidence",
+          },
+          {
+            label: "Web App Development",
+            href: "/services/web-app-development",
+            description: "High-performance, scalable web apps",
+          },
+          {
+            label: "Mobile App Development",
+            href: "/services/mobile-app-development",
+            description: "Seamless iOS & Android experiences",
+          },
+          {
+            label: "QA & Test Automation",
+            href: "/services/qa-test-automation",
+            description: "Faster releases, zero-bug quality",
+          },
+          {
+            label: "UX/UI Design",
+            href: "/services/ux-ui-design",
+            description: "User-first design that drives adoption",
+          },
+          {
+            label: "Data Engineering",
+            href: "/services/data-engineering",
+            description: "AI-ready data foundations for growth",
+          },
+        ],
+      },
+      {
+        title: "Cloud",
+        items: [
+          {
+            label: "AWS",
+            href: "/services/aws",
+            description: "Optimize cost, security & scalability",
+          },
+          {
+            label: "Cloud Engineering & Devops",
+            href: "/services/cloud-engineering-devops",
+            description: "Automated pipelines, reliable deployments",
+          },
+        ],
+      },
     ],
   },
   {
@@ -71,6 +235,7 @@ const navItems = [
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [openMobileItem, setOpenMobileItem] = useState<string | null>(null);
   const { scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
@@ -89,6 +254,12 @@ export function Header() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) {
+      setOpenMobileItem(null);
+    }
+  }, [mobileMenuOpen]);
 
   return (
     <motion.header
@@ -180,7 +351,7 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center">
-            <NavigationMenu>
+            <NavigationMenu align="center">
               <NavigationMenuList>
                 {navItems.map((item) => (
                   <NavigationMenuItem key={item.label}>
@@ -195,18 +366,50 @@ export function Header() {
                       {item.label}
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
-                      <div className="grid gap-1 p-2 w-50">
-                        {item.dropdownItems.map((dropItem) => (
-                          <NavigationMenuLink
-                            key={dropItem.label}
-                            render={
-                              <Link to={dropItem.href}>
-                                {dropItem.label}
-                              </Link>
-                            }
-                          />
-                        ))}
-                      </div>
+                      {"groups" in item && item.groups ? (
+                        <div className="grid grid-cols-3 gap-6 p-5 w-[640px]">
+                          {item.groups.map((group) => (
+                            <div key={group.title} className="flex flex-col gap-3">
+                              <h4 className="text-sm font-semibold text-foreground">
+                                {group.title}
+                              </h4>
+                              <div className="flex flex-col gap-0.5">
+                                {group.items.map((dropItem) => (
+                                  <NavigationMenuLink
+                                    key={dropItem.label}
+                                    className="flex flex-col items-start gap-0.5 rounded-xl p-2.5 hover:bg-muted"
+                                    render={
+                                      <Link to={dropItem.href} hash={dropItem.hash}>
+                                        <span className="text-sm font-medium text-foreground">
+                                          {dropItem.label}
+                                        </span>
+                                        {dropItem.description && (
+                                          <span className="text-xs text-muted-foreground leading-relaxed">
+                                            {dropItem.description}
+                                          </span>
+                                        )}
+                                      </Link>
+                                    }
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="grid gap-1 p-2 w-50">
+                          {item.dropdownItems?.map((dropItem) => (
+                            <NavigationMenuLink
+                              key={dropItem.label}
+                              render={
+                                <Link to={dropItem.href}>
+                                  {dropItem.label}
+                                </Link>
+                              }
+                            />
+                          ))}
+                        </div>
+                      )}
                     </NavigationMenuContent>
                   </NavigationMenuItem>
                 ))}
@@ -263,7 +466,7 @@ export function Header() {
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
         className="mx-4 mt-3 overflow-hidden rounded-[1.75rem] border border-border/30 bg-card/95 shadow-[0_18px_50px_rgba(17,17,17,0.16)] backdrop-blur-md sm:mx-6 lg:hidden"
       >
-        <div className="px-4 py-4 space-y-1">
+        <div className="max-h-[calc(100dvh-10rem)] overflow-y-auto overscroll-contain px-4 py-4 space-y-2 scroll-smooth">
           {navItems.map((item, index) => (
             <motion.div
               key={item.label}
@@ -278,19 +481,144 @@ export function Header() {
                 ease: [0.22, 1, 0.36, 1],
               }}
             >
-              <Link
-                to={item.href}
-                className={cn(
-                  "flex items-center justify-between rounded-xl px-4 py-3.5 text-base font-medium transition-colors",
-                  item.active
-                    ? "text-primary bg-primary/10"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                )}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {item.label}
-                <IconChevronDown className="size-4" />
-              </Link>
+              {"groups" in item && item.groups ? (
+                <div className="rounded-2xl border border-border/40 bg-background/60">
+                  <div className="flex items-stretch">
+                    <Link
+                      to={item.href}
+                      hash={item.hash}
+                      className={cn(
+                        "flex flex-1 items-center justify-between rounded-l-2xl px-4 py-3.5 text-base font-medium transition-colors",
+                        item.active
+                          ? "text-primary bg-primary/10"
+                          : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                      )}
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                    <button
+                      type="button"
+                      className="flex size-12 items-center justify-center rounded-r-2xl border-l border-border/40 text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
+                      onClick={() =>
+                        setOpenMobileItem((current) =>
+                          current === item.label ? null : item.label
+                        )
+                      }
+                      aria-label={`Toggle ${item.label} links`}
+                      aria-expanded={openMobileItem === item.label}
+                    >
+                      <IconChevronDown
+                        className={cn(
+                          "size-4 transition-transform duration-300",
+                          openMobileItem === item.label && "rotate-180"
+                        )}
+                      />
+                    </button>
+                  </div>
+
+                  {openMobileItem === item.label && (
+                    <div className="border-t border-border/40 p-2">
+                      <div className="space-y-4">
+                        {item.groups.map((group) => (
+                          <div key={group.title} className="space-y-1.5">
+                            <h4 className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                              {group.title}
+                            </h4>
+                            <div className="space-y-1">
+                              {group.items.map((dropItem) => (
+                                <Link
+                                  key={dropItem.label}
+                                  to={dropItem.href}
+                                  hash={dropItem.hash}
+                                  className="flex flex-col rounded-xl px-3 py-2.5 transition-colors hover:bg-muted/50"
+                                  onClick={() => setMobileMenuOpen(false)}
+                                >
+                                  <span className="text-sm font-medium text-foreground">
+                                    {dropItem.label}
+                                  </span>
+                                  {dropItem.description && (
+                                    <span className="text-xs text-muted-foreground leading-relaxed">
+                                      {dropItem.description}
+                                    </span>
+                                  )}
+                                </Link>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : item.dropdownItems ? (
+                <div className="rounded-2xl border border-border/40 bg-background/60">
+                  <div className="flex items-stretch">
+                    <Link
+                      to={item.href}
+                      className={cn(
+                        "flex flex-1 items-center justify-between rounded-l-2xl px-4 py-3.5 text-base font-medium transition-colors",
+                        item.active
+                          ? "text-primary bg-primary/10"
+                          : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                      )}
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                    <button
+                      type="button"
+                      className="flex size-12 items-center justify-center rounded-r-2xl border-l border-border/40 text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
+                      onClick={() =>
+                        setOpenMobileItem((current) =>
+                          current === item.label ? null : item.label
+                        )
+                      }
+                      aria-label={`Toggle ${item.label} links`}
+                      aria-expanded={openMobileItem === item.label}
+                    >
+                      <IconChevronDown
+                        className={cn(
+                          "size-4 transition-transform duration-300",
+                          openMobileItem === item.label && "rotate-180"
+                        )}
+                      />
+                    </button>
+                  </div>
+
+                  {openMobileItem === item.label && (
+                    <div className="border-t border-border/40 p-2">
+                      <div className="space-y-1">
+                        {item.dropdownItems.map((dropItem) => (
+                          <Link
+                            key={dropItem.label}
+                            to={dropItem.href}
+                            className="flex rounded-xl px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
+                            onClick={() => setMobileMenuOpen(false)}
+                          >
+                            {dropItem.label}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  to={item.href}
+                  hash={item.hash}
+                  className={cn(
+                    "flex items-center justify-between rounded-2xl px-4 py-3.5 text-base font-medium transition-colors",
+                    item.active
+                      ? "text-primary bg-primary/10"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                  )}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {item.label}
+                  <IconChevronDown className="size-4 opacity-0" />
+                </Link>
+              )}
             </motion.div>
           ))}
           <div className="pt-3 flex flex-col gap-2">
