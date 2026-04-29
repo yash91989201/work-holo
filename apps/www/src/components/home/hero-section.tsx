@@ -65,18 +65,63 @@ const floatVariants = {
   },
 };
 
-const textRevealVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: (i: number) => ({
+const heroTitleLines = [
+  ["Innovative", "Tech"],
+  ["Solutions", "for"],
+  ["Business."],
+] as const;
+
+const wordRevealVariants = {
+  hidden: {
+    clipPath: "inset(0 100% 0 0)",
+    opacity: 0,
+  },
+  visible: (delay: number) => ({
+    clipPath: "inset(0 0% 0 0)",
     opacity: 1,
-    y: 0,
     transition: {
-      duration: 0.8,
-      delay: i * 0.15,
+      duration: 0.72,
+      delay,
       ease: [0.22, 1, 0.36, 1] as const,
     },
   }),
 };
+
+function HeroTitle() {
+  return (
+    <h1 className="font-bold text-4xl text-foreground leading-[1.02] tracking-tight sm:text-5xl lg:text-6xl xl:text-7xl">
+      <span className="sr-only">Innovative Tech Solutions for Business.</span>
+
+      {heroTitleLines.map((line, lineIndex) => (
+        <span className="block" key={line.join(" ")}>
+          {line.map((word, wordIndex) => {
+            const delay = 0.18 + (lineIndex * 2 + wordIndex) * 0.12;
+
+            return (
+              <span
+                className="relative mr-[0.24em] inline-block last:mr-0"
+                key={`${lineIndex}-${wordIndex}`}
+                aria-hidden="true"
+              >
+                <span className="text-foreground/20">{word}</span>
+                <motion.span
+                  className="absolute inset-0 text-foreground"
+                  custom={delay}
+                  initial="hidden"
+                  variants={wordRevealVariants}
+                  viewport={{ amount: 0.8, once: true }}
+                  whileInView="visible"
+                >
+                  {word}
+                </motion.span>
+              </span>
+            );
+          })}
+        </span>
+      ))}
+    </h1>
+  );
+}
 
 export function HeroSection() {
   return (
@@ -105,22 +150,7 @@ export function HeroSection() {
             </motion.p>
 
             <div className="mb-8">
-              {["Innovative Tech", "Solutions for", "Business."].map(
-                (line, i) => (
-                  <motion.div
-                    animate="visible"
-                    className="overflow-hidden"
-                    custom={i}
-                    initial="hidden"
-                    key={i}
-                    variants={textRevealVariants}
-                  >
-                    <motion.h1 className="font-bold text-4xl text-foreground leading-[1.02] tracking-tight sm:text-5xl lg:text-6xl xl:text-7xl">
-                      {line}
-                    </motion.h1>
-                  </motion.div>
-                )
-              )}
+              <HeroTitle />
             </div>
 
             <motion.div
