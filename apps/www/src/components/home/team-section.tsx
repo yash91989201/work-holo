@@ -1,4 +1,9 @@
-import { IconArrowUpRight } from "@tabler/icons-react";
+import {
+  IconArrowUpRight,
+  IconBrandInstagram,
+  IconBrandLinkedin,
+  IconBrandX,
+} from "@tabler/icons-react";
 import { motion } from "motion/react";
 
 const team = [
@@ -46,6 +51,36 @@ const cardVariants = {
     y: 0,
     transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const },
   },
+  hover: {
+    y: -6,
+    transition: { type: "spring", stiffness: 320, damping: 24 },
+  },
+};
+
+const socialLinks = [
+  { icon: IconBrandLinkedin, label: "LinkedIn", href: "#" },
+  { icon: IconBrandX, label: "Twitter", href: "#" },
+  { icon: IconBrandInstagram, label: "Instagram", href: "#" },
+];
+
+const socialTrayVariants = {
+  closed: { opacity: 0, y: 12, scale: 0.96 },
+  open: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { type: "spring", stiffness: 320, damping: 26, staggerChildren: 0.05 },
+  },
+};
+
+const socialItemVariants = {
+  closed: { opacity: 0, x: 14 },
+  open: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 380, damping: 24 } },
+};
+
+const arrowButtonVariants = {
+  closed: { rotate: 0, scale: 1 },
+  open: { rotate: 45, scale: 1.05, transition: { type: "spring", stiffness: 380, damping: 18 } },
 };
 
 export function TeamSection() {
@@ -101,7 +136,7 @@ function TeamCard({ member }: { member: (typeof team)[number] }) {
       className="group relative"
       transition={{ duration: 0.3 }}
       variants={cardVariants}
-      whileHover={{ y: -4 }}
+      whileHover="hover"
     >
       <div className="relative overflow-hidden rounded-2xl border border-border/40 bg-card/50 transition-all duration-300 hover:border-border/70">
         {/* Image */}
@@ -113,12 +148,41 @@ function TeamCard({ member }: { member: (typeof team)[number] }) {
           />
           <div className="absolute inset-0 bg-linear-to-t from-card/80 via-transparent to-transparent" />
 
-          {/* Arrow Button */}
-          <div className="absolute right-4 bottom-4">
-            <div className="flex size-10 cursor-pointer items-center justify-center rounded-full bg-primary transition-colors hover:bg-primary/90">
+          {/* Social hover tray */}
+          <motion.div
+            className="absolute right-4 top-4 z-10 flex flex-col items-end gap-2"
+            initial="closed"
+            animate="closed"
+            variants={socialTrayVariants}
+            whileHover="open"
+          >
+            <motion.div
+              className="flex flex-col items-end gap-2 rounded-2xl border border-border/60 bg-background/90 p-2 shadow-lg shadow-black/10 backdrop-blur-md"
+              variants={socialTrayVariants}
+            >
+              {socialLinks.map((social) => (
+                <motion.a
+                  key={social.label}
+                  className="inline-flex items-center gap-2 rounded-full border border-border/50 bg-card/70 px-3 py-2 text-foreground text-xs shadow-sm transition-colors hover:border-primary/40 hover:text-primary"
+                  href={social.href}
+                  onClick={(event) => event.preventDefault()}
+                  variants={socialItemVariants}
+                >
+                  <social.icon className="size-3.5" />
+                  {social.label}
+                </motion.a>
+              ))}
+            </motion.div>
+
+            <motion.button
+              aria-label="Open social links"
+              className="flex size-10 items-center justify-center rounded-full bg-primary shadow-[0_10px_24px_rgba(0,0,0,0.18)] transition-colors hover:bg-primary/90"
+              type="button"
+              variants={arrowButtonVariants}
+            >
               <IconArrowUpRight className="size-5 text-primary-foreground" />
-            </div>
-          </div>
+            </motion.button>
+          </motion.div>
         </div>
 
         {/* Info */}

@@ -91,6 +91,76 @@ const cardVariants = {
     y: 0,
     transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const },
   },
+  hover: {
+    y: -10,
+    scale: 1.02,
+    transition: { type: "spring", stiffness: 340, damping: 22 },
+  },
+} satisfies Variants;
+
+const cardGlowVariants = {
+  hidden: { opacity: 0, scale: 0.96 },
+  visible: { opacity: 0, scale: 0.96 },
+  hover: { opacity: 1, scale: 1.02 },
+} satisfies Variants;
+
+const accentBarVariants = {
+  hidden: { scaleX: 0, opacity: 0 },
+  visible: { scaleX: 0, opacity: 0 },
+  hover: { scaleX: 1, opacity: 1, transition: { type: "spring", stiffness: 260, damping: 28 } },
+} satisfies Variants;
+
+const iconVariants = {
+  hidden: { opacity: 0, scale: 0.8, rotate: -12 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    rotate: 0,
+    transition: { delay: 0.08, duration: 0.35 },
+  },
+  hover: { scale: 1.08, rotate: 8, transition: { type: "spring", stiffness: 260, damping: 18 } },
+} satisfies Variants;
+
+const contentVariants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.35 } },
+  hover: { x: 3, transition: { duration: 0.18 } },
+} satisfies Variants;
+
+const featureListVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.05, delayChildren: 0.08 } },
+  hover: {},
+} satisfies Variants;
+
+const featureItemVariants = {
+  hidden: { opacity: 0, x: -8 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.25 } },
+  hover: { x: 5, transition: { duration: 0.16 } },
+} satisfies Variants;
+
+const featureArrowVariants = {
+  hidden: { x: 0, scale: 1 },
+  visible: { x: 0, scale: 1 },
+  hover: { x: 2, scale: 1.08, transition: { type: "spring", stiffness: 400, damping: 22 } },
+} satisfies Variants;
+
+const linkVariants = {
+  hidden: { opacity: 0, x: -6 },
+  visible: { opacity: 1, x: 0, transition: { delay: 0.18, duration: 0.25 } },
+  hover: { x: 4 },
+} satisfies Variants;
+
+const arrowVariants = {
+  hidden: { x: 0 },
+  visible: { x: 0 },
+  hover: { x: 5, rotate: 12, transition: { type: "spring", stiffness: 380, damping: 18 } },
+} satisfies Variants;
+
+const underlineVariants = {
+  hidden: { scaleX: 0 },
+  visible: { scaleX: 0 },
+  hover: { scaleX: 1, transition: { type: "spring", stiffness: 320, damping: 26 } },
 } satisfies Variants;
 
 export function ServicesSection() {
@@ -150,54 +220,83 @@ export function ServicesSection() {
 function ServiceCard({ service }: { service: (typeof services)[number] }) {
   return (
     <motion.div
-      className="group relative flex h-full min-w-0 flex-col rounded-2xl border border-border/40 bg-card/50 p-6 transition-all duration-300 hover:border-border/70"
+      className="group relative flex h-full min-w-0 overflow-hidden flex-col rounded-2xl border border-border/40 bg-card/50 p-6 transition-all duration-300 hover:border-border/70 hover:shadow-2xl hover:shadow-primary/5"
       transition={{ duration: 0.3 }}
       variants={cardVariants}
-      whileHover={{ y: -4 }}
+      whileHover="hover"
+      whileTap={{ scale: 0.985 }}
     >
+      <motion.span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 rounded-2xl bg-[linear-gradient(135deg,rgba(255,255,255,0.08),transparent_40%,rgba(255,255,255,0.03))]"
+        variants={cardGlowVariants}
+      />
+      <motion.span
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-10 -top-10 size-32 rounded-full bg-primary/10 blur-3xl"
+        variants={cardGlowVariants}
+      />
+      <motion.span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-6 top-0 h-px origin-left bg-gradient-to-r from-primary/70 via-primary/30 to-transparent"
+        variants={accentBarVariants}
+      />
+
       {/* Number badge */}
-      <span className="absolute top-4 right-4 font-medium text-muted-foreground/40 text-xs">
+      <motion.span className="absolute top-4 right-4 font-medium text-muted-foreground/40 text-xs" variants={contentVariants}>
         {service.num}.
-      </span>
+      </motion.span>
 
       {/* Icon */}
-      <div className="mb-5 flex size-12 items-center justify-center rounded-full border border-border/50 bg-background transition-colors group-hover:border-primary/30">
+      <motion.div
+        className="mb-5 flex size-12 items-center justify-center rounded-full border border-border/50 bg-background transition-colors group-hover:border-primary/30"
+        variants={iconVariants}
+      >
         <service.icon className="size-5 text-primary" strokeWidth={1.5} />
-      </div>
+      </motion.div>
 
       {/* Title */}
-      <h3 className="mb-2 font-semibold text-foreground text-lg">
+      <motion.h3 className="mb-2 font-semibold text-foreground text-lg" variants={contentVariants}>
         {service.title}
-      </h3>
+      </motion.h3>
 
       {/* Description */}
-      <p className="mb-5 text-muted-foreground text-sm leading-relaxed">
+      <motion.p className="mb-5 text-muted-foreground text-sm leading-relaxed" variants={contentVariants}>
         {service.description}
-      </p>
+      </motion.p>
 
       {/* Features box */}
       <div className="mb-4 rounded-xl bg-background/60 p-4">
-        <ul className="space-y-2.5">
+        <motion.ul className="space-y-2.5" variants={featureListVariants}>
           {service.features.map((feature) => (
-            <li
+            <motion.li
               className="flex items-start gap-2 text-muted-foreground text-sm"
               key={feature}
+              variants={featureItemVariants}
             >
-              <IconChevronRight className="mt-0.5 size-3.5 shrink-0 text-primary" />
+              <motion.span variants={featureArrowVariants}>
+                <IconChevronRight className="mt-0.5 size-3.5 shrink-0 text-primary" />
+              </motion.span>
               {feature}
-            </li>
+            </motion.li>
           ))}
-        </ul>
+        </motion.ul>
       </div>
 
       {/* Learn more link */}
-      <Link
-        className="mt-auto inline-flex items-center gap-1 font-medium text-foreground text-sm transition-colors hover:text-primary"
-        to="/"
-      >
-        Learn more
-        <IconChevronRight className="size-3.5" />
-      </Link>
+      <motion.div className="mt-auto" variants={linkVariants}>
+        <Link className="group/link relative inline-flex items-center gap-1 font-medium text-foreground text-sm transition-colors hover:text-primary" to="/">
+          Learn more
+          <motion.span variants={arrowVariants}>
+            <IconChevronRight className="size-3.5" />
+          </motion.span>
+          <motion.span
+            aria-hidden="true"
+            className="absolute -bottom-1 left-0 h-px w-full origin-left bg-primary/60"
+            variants={underlineVariants}
+          />
+        </Link>
+      </motion.div>
     </motion.div>
   );
 }

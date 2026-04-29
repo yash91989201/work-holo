@@ -57,6 +57,18 @@ type NavItem =
       groups: NavGroup[];
     };
 
+function hasGroups(
+  item: NavItem
+): item is Extract<NavItem, { groups: NavGroup[] }> {
+  return "groups" in item;
+}
+
+function hasDropdownItems(
+  item: NavItem
+): item is Extract<NavItem, { dropdownItems: DropdownItem[] }> {
+  return "dropdownItems" in item;
+}
+
 const navItems: NavItem[] = [
   {
     label: "Home",
@@ -243,13 +255,10 @@ function MenuLink({ children, className, hash, to }: MenuLinkProps) {
   return (
     <NavigationMenuLink
       className={className}
-      closeOnClick
-      render={
-        <Link {...(hash ? { hash } : {})} to={to}>
-          {children}
-        </Link>
-      }
-    />
+      render={<Link {...(hash ? { hash } : {})} to={to} />}
+    >
+      {children}
+    </NavigationMenuLink>
   );
 }
 
@@ -374,63 +383,73 @@ export function Header() {
           <div className="hidden items-center lg:flex">
             <NavigationMenu align="center">
               <NavigationMenuList>
-                {navItems.map((item) => (
-                  <NavigationMenuItem key={item.label}>
-                    <NavigationMenuTrigger
-                      className={cn(
-                        "font-semibold text-base",
-                        item.active
-                          ? "text-primary"
-                          : "text-muted-foreground hover:text-foreground"
-                      )}
-                    >
-                      {item.label}
-                    </NavigationMenuTrigger>
-                    <NavigationMenuContent>
-                      {"groups" in item && item.groups ? (
-                        <div className="grid w-160 grid-cols-3 gap-6 p-5">
-                          {item.groups.map((group) => (
-                            <div
-                              className="flex flex-col gap-3"
-                              key={group.title}
-                            >
-                              <h4 className="font-semibold text-foreground text-sm">
-                                {group.title}
-                              </h4>
-                              <div className="flex flex-col gap-0.5">
-                                {group.items.map((dropItem) => (
-                                  <MenuLink
-                                    className="flex flex-col items-start gap-0.5 rounded-xl p-2.5 hover:bg-muted"
-                                    hash={dropItem.hash}
-                                    key={dropItem.label}
-                                    to={dropItem.href}
-                                  >
-                                    <span className="font-medium text-foreground text-sm">
-                                      {dropItem.label}
+                {navItems.map((item) => {
+                  let menuContent: ReactNode = null;
+
+                  if (hasGroups(item)) {
+                    menuContent = (
+                      <div className="grid w-160 grid-cols-3 gap-6 p-5">
+                        {item.groups.map((group) => (
+                          <div
+                            className="flex flex-col gap-3"
+                            key={group.title}
+                          >
+                            <h4 className="font-semibold text-foreground text-sm">
+                              {group.title}
+                            </h4>
+                            <div className="flex flex-col gap-0.5">
+                              {group.items.map((dropItem) => (
+                                <MenuLink
+                                  className="flex flex-col items-start gap-0.5 rounded-xl p-2.5 hover:bg-muted"
+                                  hash={dropItem.hash}
+                                  key={dropItem.label}
+                                  to={dropItem.href}
+                                >
+                                  <span className="font-medium text-foreground text-sm">
+                                    {dropItem.label}
+                                  </span>
+                                  {dropItem.description && (
+                                    <span className="text-muted-foreground text-xs leading-relaxed">
+                                      {dropItem.description}
                                     </span>
-                                    {dropItem.description && (
-                                      <span className="text-muted-foreground text-xs leading-relaxed">
-                                        {dropItem.description}
-                                      </span>
-                                    )}
-                                  </MenuLink>
-                                ))}
-                              </div>
+                                  )}
+                                </MenuLink>
+                              ))}
                             </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="grid w-50 gap-1 p-2">
-                          {item.dropdownItems?.map((dropItem) => (
-                            <MenuLink key={dropItem.label} to={dropItem.href}>
-                              {dropItem.label}
-                            </MenuLink>
-                          ))}
-                        </div>
-                      )}
-                    </NavigationMenuContent>
-                  </NavigationMenuItem>
-                ))}
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  } else if (hasDropdownItems(item)) {
+                    menuContent = (
+                      <div className="grid w-50 gap-1 p-2">
+                        {item.dropdownItems.map((dropItem) => (
+                          <MenuLink key={dropItem.label} to={dropItem.href}>
+                            {dropItem.label}
+                          </MenuLink>
+                        ))}
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <NavigationMenuItem key={item.label}>
+                      <NavigationMenuTrigger
+                        className={cn(
+                          "font-semibold text-base",
+                          item.active
+                            ? "text-primary"
+                            : "text-muted-foreground hover:text-foreground"
+                        )}
+                      >
+                        {item.label}
+                      </NavigationMenuTrigger>
+                      <NavigationMenuContent>
+                        {menuContent}
+                      </NavigationMenuContent>
+                    </NavigationMenuItem>
+                  );
+                })}
               </NavigationMenuList>
             </NavigationMenu>
           </div>
@@ -483,21 +502,11 @@ export function Header() {
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       >
         <div className="max-h-[calc(100dvh-10rem)] space-y-2 overflow-y-auto overscroll-contain scroll-smooth px-4 py-4">
-          {navItems.map((item, index) => (
-            <motion.div
-              animate={{
-                opacity: mobileMenuOpen ? 1 : 0,
-                x: mobileMenuOpen ? 0 : -20,
-              }}
-              initial={{ opacity: 0, x: -20 }}
-              key={item.label}
-              transition={{
-                duration: 0.3,
-                delay: mobileMenuOpen ? index * 0.05 : 0,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-            >
-              {"groups" in item && item.groups ? (
+          {navItems.map((item, index) => {
+            let mobileContent: ReactNode = null;
+
+            if (hasGroups(item)) {
+              mobileContent = (
                 <div className="rounded-2xl border border-border/40 bg-background/60">
                   <div className="flex items-stretch">
                     <Link
@@ -567,70 +576,44 @@ export function Header() {
                     </div>
                   )}
                 </div>
-              ) : item.dropdownItems ? (
-                <div className="rounded-2xl border border-border/40 bg-background/60">
-                  <div className="flex items-stretch">
-                    <Link
-                      className={cn(
-                        "flex flex-1 items-center justify-between rounded-l-2xl px-4 py-3.5 font-medium text-base transition-colors",
-                        item.active
-                          ? "bg-primary/10 text-primary"
-                          : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-                      )}
-                      onClick={() => setMobileMenuOpen(false)}
-                      to={item.href}
-                    >
-                      {item.label}
-                    </Link>
-                    <button
-                      aria-expanded={openMobileItem === item.label}
-                      aria-label={`Toggle ${item.label} links`}
-                      className="flex size-12 items-center justify-center rounded-r-2xl border-border/40 border-l text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
-                      onClick={() =>
-                        setOpenMobileItem((current) =>
-                          current === item.label ? null : item.label
-                        )
-                      }
-                      type="button"
-                    >
-                      <IconChevronDown
-                        className={cn(
-                          "size-4 transition-transform duration-300",
-                          openMobileItem === item.label && "rotate-180"
-                        )}
-                      />
-                    </button>
-                  </div>
-
-                  {openMobileItem === item.label && (
-                    <div className="border-border/40 border-t p-2">
-                      <div className="space-y-1">
-                        {item.dropdownItems.map((dropItem) => (
-                          <Link
-                            className="flex rounded-xl px-3 py-2.5 text-muted-foreground text-sm transition-colors hover:bg-muted/50 hover:text-foreground"
-                            key={dropItem.label}
-                            onClick={() => setMobileMenuOpen(false)}
-                            to={dropItem.href}
-                          >
-                            {dropItem.label}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ) : (
+              );
+            } else if (hasDropdownItems(item)) {
+              mobileContent = (
                 <Link
-                  className="flex items-center justify-between rounded-2xl px-4 py-3.5 font-medium text-base text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
+                  className={cn(
+                    isScrolled
+                      ? hasGroups(item)
+                        ? undefined // groups have a different structure
+                        : item.dropdownItems
+                      : undefined
+                  )}
+                  key={item.label}
                   onClick={() => setMobileMenuOpen(false)}
                   to={item.href}
                 >
                   {item.label}
-                  <IconChevronDown className="size-4 opacity-0" />
                 </Link>
-              )}
-            </motion.div>
-          ))}
+              );
+            }
+
+            return (
+              <motion.div
+                animate={{
+                  opacity: mobileMenuOpen ? 1 : 0,
+                  x: mobileMenuOpen ? 0 : -20,
+                }}
+                initial={{ opacity: 0, x: -20 }}
+                key={item.label}
+                transition={{
+                  duration: 0.3,
+                  delay: mobileMenuOpen ? index * 0.05 : 0,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+              >
+                {mobileContent}
+              </motion.div>
+            );
+          })}
           <div className="flex flex-col gap-2 pt-3">
             <CTAButton className="w-full">Get Started</CTAButton>
           </div>
