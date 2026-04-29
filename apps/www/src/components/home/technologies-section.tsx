@@ -1,4 +1,3 @@
-import { useState, useRef } from "react";
 import { motion } from "motion/react";
 import {
   IconArrowLeft,
@@ -87,20 +86,8 @@ const cardVariants = {
 };
 
 export function TechnologiesSection() {
-  const carouselRef = useRef<HTMLDivElement>(null);
-
-  const scrollTo = (direction: "left" | "right") => {
-    if (carouselRef.current) {
-      const scrollAmount = 300;
-      carouselRef.current.scrollBy({
-        left: direction === "left" ? -scrollAmount : scrollAmount,
-        behavior: "smooth",
-      });
-    }
-  };
-
   return (
-    <section className="relative bg-background py-20 lg:py-28 overflow-hidden">
+    <section id="technologies" className="relative bg-background py-20 lg:py-28 overflow-hidden scroll-mt-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
@@ -126,27 +113,12 @@ export function TechnologiesSection() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-80px" }}
-          className="hidden lg:grid grid-cols-3 gap-4"
+          className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
         >
           {technologies.map((tech) => (
             <TechCard key={tech.id} tech={tech} />
           ))}
         </motion.div>
-
-        {/* Mobile Carousel */}
-        <div className="lg:hidden">
-          <div
-            ref={carouselRef}
-            className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 -mx-4 px-4"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-          >
-            {technologies.map((tech) => (
-              <div key={tech.id} className="flex-shrink-0 w-[280px]">
-                <TechCard tech={tech} />
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
     </section>
   );
@@ -164,25 +136,25 @@ function TechCard({
       transition={{ duration: 0.3 }}
       className="group relative"
     >
-      <div className="relative bg-card/50 border border-border/40 hover:border-border/70 rounded-xl p-5 transition-all duration-300 h-full">
-        <div className="flex items-start gap-4">
+      <div className="relative h-full rounded-xl border border-border/40 bg-card/50 p-4 transition-all duration-300 hover:border-border/70 sm:p-5">
+        <div className="flex items-start gap-3 sm:gap-4">
           {/* Icon */}
           <div
-            className={`flex size-12 items-center justify-center rounded-xl ${tech.bgColor} shrink-0`}
+            className={`flex size-10 items-center justify-center rounded-xl ${tech.bgColor} shrink-0 sm:size-12`}
           >
             {tech.customIcon ? (
               <div className={tech.color}>{tech.customIcon}</div>
             ) : tech.icon ? (
-              <tech.icon className={`size-6 ${tech.color}`} />
+              <tech.icon className={`size-5 sm:size-6 ${tech.color}`} />
             ) : null}
           </div>
 
           {/* Content */}
           <div className="flex-1 min-w-0">
-            <h3 className="text-base font-semibold text-foreground mb-1">
+            <h3 className="mb-1 font-semibold text-foreground text-sm sm:text-base">
               {tech.name}
             </h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
+            <p className="text-xs text-muted-foreground leading-relaxed sm:text-sm">
               {tech.description}
             </p>
           </div>

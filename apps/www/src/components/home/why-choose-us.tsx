@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
-import { motion, useAnimationControls } from "motion/react";
+import { motion, type Variants, useAnimationControls } from "motion/react";
 import {
-  IconArrowUpRight,
   IconThumbUp,
   IconBulb,
   IconRocket,
   IconHeartHandshake,
 } from "@tabler/icons-react";
-import { Link } from "@tanstack/react-router";
+import { CTAButton } from "@work-holo/ui/components/cta-button";
 import { cn } from "@work-holo/ui/lib/utils";
 
 const logos = [
@@ -55,16 +54,16 @@ const containerVariants = {
       delayChildren: 0.2,
     },
   },
-};
+} satisfies Variants;
 
 const itemVariants = {
   hidden: { opacity: 0, y: 24 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const },
   },
-};
+} satisfies Variants;
 
 function LogoMarquee() {
   const controls = useAnimationControls();
@@ -142,7 +141,7 @@ function LogoMarquee() {
 
 export function WhyChooseUs() {
   return (
-    <section className="relative bg-background py-20 lg:py-28 overflow-hidden">
+    <section id="why-choose-us" className="relative bg-background py-20 lg:py-28 overflow-hidden scroll-mt-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Top Badge */}
         <motion.div
@@ -200,15 +199,9 @@ export function WhyChooseUs() {
               <p className="text-sm text-muted-foreground leading-relaxed max-w-[220px]">
                 Our services are customized to meet your unique.
               </p>
-              <Link
-                to="#"
-                className="group inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/80 transition-colors shrink-0"
-              >
+              <CTAButton type="button" className="shrink-0">
                 Learn More
-                <span className="flex size-7 items-center justify-center rounded-full bg-primary-foreground">
-                  <IconArrowUpRight className="size-4 text-primary transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </span>
-              </Link>
+              </CTAButton>
             </div>
           </div>
         </motion.div>
@@ -230,9 +223,13 @@ export function WhyChooseUs() {
               className="group relative p-7 rounded-2xl bg-card/60 border border-border/40 hover:border-border/70 transition-all duration-300"
             >
               {/* Icon */}
-              <div className="flex size-14 items-center justify-center rounded-full bg-background border border-border/50 mb-8 group-hover:border-primary/30 transition-colors">
+              <div className="relative mb-8 flex size-14 items-center justify-center overflow-hidden rounded-full border border-border/50 bg-background transition-colors group-hover:border-primary/30">
+                <motion.div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 rounded-full bg-primary opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:rotate-180"
+                />
                 <feature.icon
-                  className="size-6 text-primary"
+                  className="relative z-10 size-6 text-primary transition-colors duration-300 group-hover:text-white"
                   strokeWidth={1.5}
                 />
               </div>

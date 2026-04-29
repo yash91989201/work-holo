@@ -61,7 +61,7 @@ export function TestimonialsSection() {
   };
 
   return (
-    <section className="relative bg-background py-20 lg:py-28 overflow-hidden">
+    <section id="testimonials" className="relative bg-background py-20 lg:py-28 overflow-hidden scroll-mt-28">
       {/* Video Thumbnail */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}

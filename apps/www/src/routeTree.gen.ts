@@ -10,33 +10,53 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ServicesAiAgentsRouteImport } from './routes/services/ai-agents'
+import { Route as ServicesAgenticAiRouteImport } from './routes/services/agentic-ai'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ServicesAiAgentsRoute = ServicesAiAgentsRouteImport.update({
+  id: '/services/ai-agents',
+  path: '/services/ai-agents',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesAgenticAiRoute = ServicesAgenticAiRouteImport.update({
+  id: '/services/agentic-ai',
+  path: '/services/agentic-ai',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/services/agentic-ai': typeof ServicesAgenticAiRoute
+  '/services/ai-agents': typeof ServicesAiAgentsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/services/agentic-ai': typeof ServicesAgenticAiRoute
+  '/services/ai-agents': typeof ServicesAiAgentsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/services/agentic-ai': typeof ServicesAgenticAiRoute
+  '/services/ai-agents': typeof ServicesAiAgentsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/services/agentic-ai' | '/services/ai-agents'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/services/agentic-ai' | '/services/ai-agents'
+  id: '__root__' | '/' | '/services/agentic-ai' | '/services/ai-agents'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ServicesAgenticAiRoute: typeof ServicesAgenticAiRoute
+  ServicesAiAgentsRoute: typeof ServicesAiAgentsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +68,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/services/ai-agents': {
+      id: '/services/ai-agents'
+      path: '/services/ai-agents'
+      fullPath: '/services/ai-agents'
+      preLoaderRoute: typeof ServicesAiAgentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/agentic-ai': {
+      id: '/services/agentic-ai'
+      path: '/services/agentic-ai'
+      fullPath: '/services/agentic-ai'
+      preLoaderRoute: typeof ServicesAgenticAiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ServicesAgenticAiRoute: ServicesAgenticAiRoute,
+  ServicesAiAgentsRoute: ServicesAiAgentsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
