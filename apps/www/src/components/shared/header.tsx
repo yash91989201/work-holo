@@ -1,14 +1,11 @@
-import { useState, useEffect } from "react";
-import { motion, useScroll, useMotionValueEvent } from "motion/react";
 import {
   IconArrowUpRight,
   IconBolt,
+  IconChevronDown,
   IconClock,
   IconSettings,
-  IconChevronDown,
 } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
-import { cn } from "@work-holo/ui/lib/utils";
 import { CTAButton } from "@work-holo/ui/components/cta-button";
 import {
   NavigationMenu,
@@ -18,6 +15,9 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@work-holo/ui/components/navigation-menu";
+import { cn } from "@work-holo/ui/lib/utils";
+import { motion, useMotionValueEvent, useScroll } from "motion/react";
+import { type ReactNode, useEffect, useState } from "react";
 import { Image } from "@/components/shared/image";
 
 type DropdownItem = {
@@ -30,6 +30,13 @@ type DropdownItem = {
 type NavGroup = {
   title: string;
   items: DropdownItem[];
+};
+
+type MenuLinkProps = {
+  children: ReactNode;
+  className?: string;
+  hash?: string;
+  to: string;
 };
 
 type NavItem =
@@ -232,6 +239,20 @@ const navItems: NavItem[] = [
   },
 ];
 
+function MenuLink({ children, className, hash, to }: MenuLinkProps) {
+  return (
+    <NavigationMenuLink
+      className={className}
+      closeOnClick
+      render={
+        <Link {...(hash ? { hash } : {})} to={to}>
+          {children}
+        </Link>
+      }
+    />
+  );
+}
+
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -263,22 +284,22 @@ export function Header() {
 
   return (
     <motion.header
+      animate={{ y: 0 }}
       className={cn(
-        "fixed top-0 left-0 right-0 z-50",
+        "fixed top-0 right-0 left-0 z-50",
         isScrolled ? "bg-background/95 backdrop-blur-md" : "bg-transparent"
       )}
       initial={{ y: -100 }}
-      animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
     >
       {/* Top Bar */}
       <motion.div
-        className="overflow-hidden"
-        initial={false}
         animate={{
           height: isScrolled ? 0 : "auto",
           opacity: isScrolled ? 0 : 1,
         }}
+        className="overflow-hidden"
+        initial={false}
         transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -289,14 +310,14 @@ export function Header() {
                 Fast & Reliable IT Solution Services.
               </span>
               <Link
+                className="inline-flex items-center gap-1 font-medium text-primary transition-colors hover:text-primary/80"
                 to="/"
-                className="inline-flex items-center gap-1 font-medium text-primary hover:text-primary/80 transition-colors"
               >
                 Join Now
                 <IconArrowUpRight className="size-3.5" />
               </Link>
             </div>
-            <div className="hidden md:flex items-center gap-4 text-muted-foreground">
+            <div className="hidden items-center gap-4 text-muted-foreground md:flex">
               <div className="flex items-center gap-1.5">
                 <IconClock className="size-4.5 text-primary" />
                 <span>9 am to 6 pm [mon-sat]</span>
@@ -326,38 +347,38 @@ export function Header() {
           className={cn(
             "relative flex items-center justify-between transition-all duration-500",
             isScrolled
-              ? "min-h-20 px-5 sm:px-7 lg:px-8 bg-card/90 backdrop-blur-md"
-              : "min-h-24 px-5 sm:px-7 lg:px-8 bg-muted/50 rounded-[1.75rem] border border-border/30"
+              ? "min-h-20 bg-card/90 px-5 backdrop-blur-md sm:px-7 lg:px-8"
+              : "min-h-24 rounded-[1.75rem] border border-border/30 bg-muted/50 px-5 sm:px-7 lg:px-8"
           )}
           layout
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 shrink-0">
-            <div className="relative w-16 h-12">
+          <Link className="flex shrink-0 items-center gap-3" to="/">
+            <div className="relative h-12 w-16">
               <Image
-                src="/logo.webp"
                 alt="Work Holo"
-                width={64}
-                height={48}
                 className="object-contain"
+                height={48}
+                src="/logo.webp"
                 unoptimized
+                width={64}
               />
             </div>
-            <span className="font-heading text-2xl font-bold text-foreground tracking-tight">
+            <span className="font-bold font-heading text-2xl text-foreground tracking-tight">
               Workholo
             </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center">
+          <div className="hidden items-center lg:flex">
             <NavigationMenu align="center">
               <NavigationMenuList>
                 {navItems.map((item) => (
                   <NavigationMenuItem key={item.label}>
                     <NavigationMenuTrigger
                       className={cn(
-                        "text-base font-semibold",
+                        "font-semibold text-base",
                         item.active
                           ? "text-primary"
                           : "text-muted-foreground hover:text-foreground"
@@ -367,46 +388,43 @@ export function Header() {
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
                       {"groups" in item && item.groups ? (
-                        <div className="grid grid-cols-3 gap-6 p-5 w-[640px]">
+                        <div className="grid w-160 grid-cols-3 gap-6 p-5">
                           {item.groups.map((group) => (
-                            <div key={group.title} className="flex flex-col gap-3">
-                              <h4 className="text-sm font-semibold text-foreground">
+                            <div
+                              className="flex flex-col gap-3"
+                              key={group.title}
+                            >
+                              <h4 className="font-semibold text-foreground text-sm">
                                 {group.title}
                               </h4>
                               <div className="flex flex-col gap-0.5">
                                 {group.items.map((dropItem) => (
-                                  <NavigationMenuLink
-                                    key={dropItem.label}
+                                  <MenuLink
                                     className="flex flex-col items-start gap-0.5 rounded-xl p-2.5 hover:bg-muted"
-                                    render={
-                                      <Link to={dropItem.href} hash={dropItem.hash}>
-                                        <span className="text-sm font-medium text-foreground">
-                                          {dropItem.label}
-                                        </span>
-                                        {dropItem.description && (
-                                          <span className="text-xs text-muted-foreground leading-relaxed">
-                                            {dropItem.description}
-                                          </span>
-                                        )}
-                                      </Link>
-                                    }
-                                  />
+                                    hash={dropItem.hash}
+                                    key={dropItem.label}
+                                    to={dropItem.href}
+                                  >
+                                    <span className="font-medium text-foreground text-sm">
+                                      {dropItem.label}
+                                    </span>
+                                    {dropItem.description && (
+                                      <span className="text-muted-foreground text-xs leading-relaxed">
+                                        {dropItem.description}
+                                      </span>
+                                    )}
+                                  </MenuLink>
                                 ))}
                               </div>
                             </div>
                           ))}
                         </div>
                       ) : (
-                        <div className="grid gap-1 p-2 w-50">
+                        <div className="grid w-50 gap-1 p-2">
                           {item.dropdownItems?.map((dropItem) => (
-                            <NavigationMenuLink
-                              key={dropItem.label}
-                              render={
-                                <Link to={dropItem.href}>
-                                  {dropItem.label}
-                                </Link>
-                              }
-                            />
+                            <MenuLink key={dropItem.label} to={dropItem.href}>
+                              {dropItem.label}
+                            </MenuLink>
                           ))}
                         </div>
                       )}
@@ -419,35 +437,33 @@ export function Header() {
 
           {/* Right Actions */}
           <div className="flex items-center gap-2.5">
-            <CTAButton className="hidden sm:inline-flex">
-              Get Started
-            </CTAButton>
+            <CTAButton className="hidden sm:inline-flex">Get Started</CTAButton>
 
             {/* Mobile Menu Button */}
             <motion.button
+              aria-label="Toggle menu"
+              className="flex size-11 items-center justify-center rounded-full border border-border/50 bg-background text-foreground lg:hidden"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden flex size-11 items-center justify-center rounded-full bg-background text-foreground border border-border/50"
-              aria-label="Toggle menu"
             >
               <div className="flex flex-col gap-1">
                 <span
                   className={cn(
-                    "block w-4 h-0.5 bg-foreground transition-all duration-300",
-                    mobileMenuOpen && "rotate-45 translate-y-1.5"
+                    "block h-0.5 w-4 bg-foreground transition-all duration-300",
+                    mobileMenuOpen && "translate-y-1.5 rotate-45"
                   )}
                 />
                 <span
                   className={cn(
-                    "block w-4 h-0.5 bg-foreground transition-all duration-300",
+                    "block h-0.5 w-4 bg-foreground transition-all duration-300",
                     mobileMenuOpen && "opacity-0"
                   )}
                 />
                 <span
                   className={cn(
-                    "block w-4 h-0.5 bg-foreground transition-all duration-300",
-                    mobileMenuOpen && "-rotate-45 -translate-y-1.5"
+                    "block h-0.5 w-4 bg-foreground transition-all duration-300",
+                    mobileMenuOpen && "-translate-y-1.5 -rotate-45"
                   )}
                 />
               </div>
@@ -458,23 +474,23 @@ export function Header() {
 
       {/* Mobile Menu */}
       <motion.div
-        initial={false}
         animate={{
           height: mobileMenuOpen ? "auto" : 0,
           opacity: mobileMenuOpen ? 1 : 0,
         }}
-        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
         className="mx-4 mt-3 overflow-hidden rounded-[1.75rem] border border-border/30 bg-card/95 shadow-[0_18px_50px_rgba(17,17,17,0.16)] backdrop-blur-md sm:mx-6 lg:hidden"
+        initial={false}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       >
-        <div className="max-h-[calc(100dvh-10rem)] overflow-y-auto overscroll-contain px-4 py-4 space-y-2 scroll-smooth">
+        <div className="max-h-[calc(100dvh-10rem)] space-y-2 overflow-y-auto overscroll-contain scroll-smooth px-4 py-4">
           {navItems.map((item, index) => (
             <motion.div
-              key={item.label}
-              initial={{ opacity: 0, x: -20 }}
               animate={{
                 opacity: mobileMenuOpen ? 1 : 0,
                 x: mobileMenuOpen ? 0 : -20,
               }}
+              initial={{ opacity: 0, x: -20 }}
+              key={item.label}
               transition={{
                 duration: 0.3,
                 delay: mobileMenuOpen ? index * 0.05 : 0,
@@ -485,28 +501,28 @@ export function Header() {
                 <div className="rounded-2xl border border-border/40 bg-background/60">
                   <div className="flex items-stretch">
                     <Link
-                      to={item.href}
-                      hash={item.hash}
                       className={cn(
-                        "flex flex-1 items-center justify-between rounded-l-2xl px-4 py-3.5 text-base font-medium transition-colors",
+                        "flex flex-1 items-center justify-between rounded-l-2xl px-4 py-3.5 font-medium text-base transition-colors",
                         item.active
-                          ? "text-primary bg-primary/10"
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                          ? "bg-primary/10 text-primary"
+                          : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
                       )}
+                      hash={item.hash}
                       onClick={() => setMobileMenuOpen(false)}
+                      to={item.href}
                     >
                       {item.label}
                     </Link>
                     <button
-                      type="button"
-                      className="flex size-12 items-center justify-center rounded-r-2xl border-l border-border/40 text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
+                      aria-expanded={openMobileItem === item.label}
+                      aria-label={`Toggle ${item.label} links`}
+                      className="flex size-12 items-center justify-center rounded-r-2xl border-border/40 border-l text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
                       onClick={() =>
                         setOpenMobileItem((current) =>
                           current === item.label ? null : item.label
                         )
                       }
-                      aria-label={`Toggle ${item.label} links`}
-                      aria-expanded={openMobileItem === item.label}
+                      type="button"
                     >
                       <IconChevronDown
                         className={cn(
@@ -518,27 +534,27 @@ export function Header() {
                   </div>
 
                   {openMobileItem === item.label && (
-                    <div className="border-t border-border/40 p-2">
+                    <div className="border-border/40 border-t p-2">
                       <div className="space-y-4">
                         {item.groups.map((group) => (
-                          <div key={group.title} className="space-y-1.5">
-                            <h4 className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                          <div className="space-y-1.5" key={group.title}>
+                            <h4 className="px-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">
                               {group.title}
                             </h4>
                             <div className="space-y-1">
                               {group.items.map((dropItem) => (
                                 <Link
-                                  key={dropItem.label}
-                                  to={dropItem.href}
-                                  hash={dropItem.hash}
                                   className="flex flex-col rounded-xl px-3 py-2.5 transition-colors hover:bg-muted/50"
+                                  hash={dropItem.hash}
+                                  key={dropItem.label}
                                   onClick={() => setMobileMenuOpen(false)}
+                                  to={dropItem.href}
                                 >
-                                  <span className="text-sm font-medium text-foreground">
+                                  <span className="font-medium text-foreground text-sm">
                                     {dropItem.label}
                                   </span>
                                   {dropItem.description && (
-                                    <span className="text-xs text-muted-foreground leading-relaxed">
+                                    <span className="text-muted-foreground text-xs leading-relaxed">
                                       {dropItem.description}
                                     </span>
                                   )}
@@ -555,27 +571,27 @@ export function Header() {
                 <div className="rounded-2xl border border-border/40 bg-background/60">
                   <div className="flex items-stretch">
                     <Link
-                      to={item.href}
                       className={cn(
-                        "flex flex-1 items-center justify-between rounded-l-2xl px-4 py-3.5 text-base font-medium transition-colors",
+                        "flex flex-1 items-center justify-between rounded-l-2xl px-4 py-3.5 font-medium text-base transition-colors",
                         item.active
-                          ? "text-primary bg-primary/10"
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                          ? "bg-primary/10 text-primary"
+                          : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
                       )}
                       onClick={() => setMobileMenuOpen(false)}
+                      to={item.href}
                     >
                       {item.label}
                     </Link>
                     <button
-                      type="button"
-                      className="flex size-12 items-center justify-center rounded-r-2xl border-l border-border/40 text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
+                      aria-expanded={openMobileItem === item.label}
+                      aria-label={`Toggle ${item.label} links`}
+                      className="flex size-12 items-center justify-center rounded-r-2xl border-border/40 border-l text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
                       onClick={() =>
                         setOpenMobileItem((current) =>
                           current === item.label ? null : item.label
                         )
                       }
-                      aria-label={`Toggle ${item.label} links`}
-                      aria-expanded={openMobileItem === item.label}
+                      type="button"
                     >
                       <IconChevronDown
                         className={cn(
@@ -587,14 +603,14 @@ export function Header() {
                   </div>
 
                   {openMobileItem === item.label && (
-                    <div className="border-t border-border/40 p-2">
+                    <div className="border-border/40 border-t p-2">
                       <div className="space-y-1">
                         {item.dropdownItems.map((dropItem) => (
                           <Link
+                            className="flex rounded-xl px-3 py-2.5 text-muted-foreground text-sm transition-colors hover:bg-muted/50 hover:text-foreground"
                             key={dropItem.label}
-                            to={dropItem.href}
-                            className="flex rounded-xl px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
                             onClick={() => setMobileMenuOpen(false)}
+                            to={dropItem.href}
                           >
                             {dropItem.label}
                           </Link>
@@ -605,15 +621,9 @@ export function Header() {
                 </div>
               ) : (
                 <Link
-                  to={item.href}
-                  hash={item.hash}
-                  className={cn(
-                    "flex items-center justify-between rounded-2xl px-4 py-3.5 text-base font-medium transition-colors",
-                    item.active
-                      ? "text-primary bg-primary/10"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                  )}
+                  className="flex items-center justify-between rounded-2xl px-4 py-3.5 font-medium text-base text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
                   onClick={() => setMobileMenuOpen(false)}
+                  to={item.href}
                 >
                   {item.label}
                   <IconChevronDown className="size-4 opacity-0" />
@@ -621,10 +631,8 @@ export function Header() {
               )}
             </motion.div>
           ))}
-          <div className="pt-3 flex flex-col gap-2">
-            <CTAButton className="w-full">
-              Get Started
-            </CTAButton>
+          <div className="flex flex-col gap-2 pt-3">
+            <CTAButton className="w-full">Get Started</CTAButton>
           </div>
         </div>
       </motion.div>
