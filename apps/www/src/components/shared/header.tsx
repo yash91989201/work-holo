@@ -662,7 +662,7 @@ export function Header() {
             );
           })}
           <div className="flex flex-col gap-2 pt-3">
-            <CTAButton className="w-full" href="#contact">
+            <CTAButton className="w-full" href="#contact" to="/contact-us">
               Get in touch
             </CTAButton>
           </div>
