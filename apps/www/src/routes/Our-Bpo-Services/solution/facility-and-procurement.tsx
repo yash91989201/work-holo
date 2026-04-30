@@ -1,11 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute(
-  '/Our-Bpo-Services/Solutions/inbound_services',
+  '/our-bpo-services/solution/facility-and-procurement',
 )({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  return <div>Hello "/Our-Bpo-Services/Solutions/Inbound_Services"!</div>
+  return (
+    <div>Hello "/Our-Bpo-Services/Solutions/facility_and_procurement"!</div>
+  )
 }

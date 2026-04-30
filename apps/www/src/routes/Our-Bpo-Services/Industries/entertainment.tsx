@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute(
-  '/Our-Bpo-Services/Industries/entertainment',
+  '/our-bpo-services/industries/entertainment',
 )({
   component: RouteComponent,
 })
