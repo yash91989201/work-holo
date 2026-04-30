@@ -12,7 +12,12 @@ import {
 } from "@tabler/icons-react";
 import { useDebouncedCallback } from "@tanstack/react-pacer";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useNavigate, useSearch } from "@tanstack/react-router";
+import {
+  Link,
+  useNavigate,
+  useParams,
+  useSearch,
+} from "@tanstack/react-router";
 import {
   type ColumnDef,
   flexRender,
@@ -139,9 +144,11 @@ function UpdateMemberRole({
     <Dialog onOpenChange={onOpenChange} open={open}>
       <DialogContent className="sm:max-w-105">
         <DialogHeader>
-          <DialogTitle>Update member role</DialogTitle>
+          <DialogTitle>Update organization role</DialogTitle>
           <DialogDescription>
-            Change the role for {member.user.name}
+            Change the base organization role for {member.user.name}. Custom
+            role templates are managed from the Roles page, and role
+            assignments are managed from the member details page.
           </DialogDescription>
         </DialogHeader>
 
@@ -156,7 +163,10 @@ function UpdateMemberRole({
             <FieldGroup>
               <form.AppField name="role">
                 {(field) => (
-                  <field.Select label="Role" placeholder="Select a role">
+                  <field.Select
+                    label="Organization role"
+                    placeholder="Select a role"
+                  >
                     <SelectItem value="admin">
                       <div className="flex items-center gap-2">
                         <IconShieldFilled className="h-4 w-4" />
@@ -173,6 +183,11 @@ function UpdateMemberRole({
                 )}
               </form.AppField>
             </FieldGroup>
+
+            <p className="text-muted-foreground text-sm">
+              Need team-specific permissions? Create custom roles from the Roles
+              page, then open the member details page to assign them.
+            </p>
 
             <DialogFooter>
               <Button
@@ -200,7 +215,7 @@ function UpdateMemberRole({
                         Updating...
                       </>
                     ) : (
-                      "Update Role"
+                      "Update organization role"
                     )}
                   </Button>
                 )}
@@ -277,6 +292,9 @@ function RemoveMember({
 
 export const MembersTable = () => {
   const { user } = useAuthedSession();
+  const { slug } = useParams({
+    from: "/(authenticated)/org/$slug/console/members/",
+  });
 
   const search = useSearch({
     from: "/(authenticated)/org/$slug/console/members/",
@@ -409,9 +427,13 @@ export const MembersTable = () => {
                 </AvatarFallback>
               </Avatar>
               <div>
-                <div className="font-medium">
+                <Link
+                  className="font-medium hover:underline"
+                  params={{ memberId: member.id, slug }}
+                  to="/org/$slug/console/members/$memberId"
+                >
                   {member.user.name ?? "Unknown"}
-                </div>
+                </Link>
                 <div className="text-muted-foreground text-sm">
                   {member.user.email}
                 </div>
@@ -472,9 +494,8 @@ export const MembersTable = () => {
         cell: ({ row }) => {
           const member = row.original;
 
-          if (member.userId === user.id || member.role === "owner") {
-            return <div className="text-right text-muted-foreground">-</div>;
-          }
+          const canManageMember =
+            member.userId !== user.id && member.role !== "owner";
 
           return (
             <div className="text-right">
@@ -486,23 +507,35 @@ export const MembersTable = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem
-                    onClick={() => {
-                      setUpdateRoleMember(member);
-                      setIsUpdateRoleOpen(true);
-                    }}
-                  >
-                    Update role
+                  <DropdownMenuItem asChild>
+                    <Link
+                      params={{ memberId: member.id, slug }}
+                      to="/org/$slug/console/members/$memberId"
+                    >
+                      View details
+                    </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className="text-destructive focus:text-destructive"
-                    onClick={() => {
-                      setRemoveMember(member);
-                      setIsRemoveMemberOpen(true);
-                    }}
-                  >
-                    Remove member
-                  </DropdownMenuItem>
+                  {canManageMember && (
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setUpdateRoleMember(member);
+                        setIsUpdateRoleOpen(true);
+                      }}
+                    >
+                      Update organization role
+                    </DropdownMenuItem>
+                  )}
+                  {canManageMember && (
+                    <DropdownMenuItem
+                      className="text-destructive focus:text-destructive"
+                      onClick={() => {
+                        setRemoveMember(member);
+                        setIsRemoveMemberOpen(true);
+                      }}
+                    >
+                      Remove member
+                    </DropdownMenuItem>
+                  )}
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -510,7 +543,7 @@ export const MembersTable = () => {
         },
       },
     ],
-    [user.id]
+    [slug, user.id]
   );
 
   const table = useReactTable({

@@ -43,6 +43,7 @@ import { Route as authenticatedOrgSlugConsoleModulesRouteRouteImport } from './r
 import { Route as authenticatedOrgSlugWorkspaceTeamsIndexRouteImport } from './routes/(authenticated)/org/$slug/workspace/teams/index'
 import { Route as authenticatedOrgSlugWorkspaceAttendanceIndexRouteImport } from './routes/(authenticated)/org/$slug/workspace/attendance/index'
 import { Route as authenticatedOrgSlugConsoleTeamsIndexRouteImport } from './routes/(authenticated)/org/$slug/console/teams/index'
+import { Route as authenticatedOrgSlugConsoleRolesIndexRouteImport } from './routes/(authenticated)/org/$slug/console/roles/index'
 import { Route as authenticatedOrgSlugConsoleMembersIndexRouteImport } from './routes/(authenticated)/org/$slug/console/members/index'
 import { Route as authenticatedOrgSlugWorkspaceAttendanceSettingsRouteImport } from './routes/(authenticated)/org/$slug/workspace/attendance/settings'
 import { Route as authenticatedOrgSlugWorkspaceAttendanceAnalyticsRouteImport } from './routes/(authenticated)/org/$slug/workspace/attendance/analytics'
@@ -252,6 +253,12 @@ const authenticatedOrgSlugConsoleTeamsIndexRoute =
     path: '/teams/',
     getParentRoute: () => authenticatedOrgSlugConsoleRouteRoute,
   } as any)
+const authenticatedOrgSlugConsoleRolesIndexRoute =
+  authenticatedOrgSlugConsoleRolesIndexRouteImport.update({
+    id: '/roles/',
+    path: '/roles/',
+    getParentRoute: () => authenticatedOrgSlugConsoleRouteRoute,
+  } as any)
 const authenticatedOrgSlugConsoleMembersIndexRoute =
   authenticatedOrgSlugConsoleMembersIndexRouteImport.update({
     id: '/members/',
@@ -378,6 +385,7 @@ export interface FileRoutesByFullPath {
   '/org/$slug/workspace/attendance/analytics': typeof authenticatedOrgSlugWorkspaceAttendanceAnalyticsRoute
   '/org/$slug/workspace/attendance/settings': typeof authenticatedOrgSlugWorkspaceAttendanceSettingsRoute
   '/org/$slug/console/members/': typeof authenticatedOrgSlugConsoleMembersIndexRoute
+  '/org/$slug/console/roles/': typeof authenticatedOrgSlugConsoleRolesIndexRoute
   '/org/$slug/console/teams/': typeof authenticatedOrgSlugConsoleTeamsIndexRoute
   '/org/$slug/workspace/attendance/': typeof authenticatedOrgSlugWorkspaceAttendanceIndexRoute
   '/org/$slug/workspace/teams/': typeof authenticatedOrgSlugWorkspaceTeamsIndexRoute
@@ -421,6 +429,7 @@ export interface FileRoutesByTo {
   '/org/$slug/workspace/attendance/analytics': typeof authenticatedOrgSlugWorkspaceAttendanceAnalyticsRoute
   '/org/$slug/workspace/attendance/settings': typeof authenticatedOrgSlugWorkspaceAttendanceSettingsRoute
   '/org/$slug/console/members': typeof authenticatedOrgSlugConsoleMembersIndexRoute
+  '/org/$slug/console/roles': typeof authenticatedOrgSlugConsoleRolesIndexRoute
   '/org/$slug/console/teams': typeof authenticatedOrgSlugConsoleTeamsIndexRoute
   '/org/$slug/workspace/attendance': typeof authenticatedOrgSlugWorkspaceAttendanceIndexRoute
   '/org/$slug/workspace/teams': typeof authenticatedOrgSlugWorkspaceTeamsIndexRoute
@@ -469,6 +478,7 @@ export interface FileRoutesById {
   '/(authenticated)/org/$slug/workspace/attendance/analytics': typeof authenticatedOrgSlugWorkspaceAttendanceAnalyticsRoute
   '/(authenticated)/org/$slug/workspace/attendance/settings': typeof authenticatedOrgSlugWorkspaceAttendanceSettingsRoute
   '/(authenticated)/org/$slug/console/members/': typeof authenticatedOrgSlugConsoleMembersIndexRoute
+  '/(authenticated)/org/$slug/console/roles/': typeof authenticatedOrgSlugConsoleRolesIndexRoute
   '/(authenticated)/org/$slug/console/teams/': typeof authenticatedOrgSlugConsoleTeamsIndexRoute
   '/(authenticated)/org/$slug/workspace/attendance/': typeof authenticatedOrgSlugWorkspaceAttendanceIndexRoute
   '/(authenticated)/org/$slug/workspace/teams/': typeof authenticatedOrgSlugWorkspaceTeamsIndexRoute
@@ -518,6 +528,7 @@ export interface FileRouteTypes {
     | '/org/$slug/workspace/attendance/analytics'
     | '/org/$slug/workspace/attendance/settings'
     | '/org/$slug/console/members/'
+    | '/org/$slug/console/roles/'
     | '/org/$slug/console/teams/'
     | '/org/$slug/workspace/attendance/'
     | '/org/$slug/workspace/teams/'
@@ -561,6 +572,7 @@ export interface FileRouteTypes {
     | '/org/$slug/workspace/attendance/analytics'
     | '/org/$slug/workspace/attendance/settings'
     | '/org/$slug/console/members'
+    | '/org/$slug/console/roles'
     | '/org/$slug/console/teams'
     | '/org/$slug/workspace/attendance'
     | '/org/$slug/workspace/teams'
@@ -608,6 +620,7 @@ export interface FileRouteTypes {
     | '/(authenticated)/org/$slug/workspace/attendance/analytics'
     | '/(authenticated)/org/$slug/workspace/attendance/settings'
     | '/(authenticated)/org/$slug/console/members/'
+    | '/(authenticated)/org/$slug/console/roles/'
     | '/(authenticated)/org/$slug/console/teams/'
     | '/(authenticated)/org/$slug/workspace/attendance/'
     | '/(authenticated)/org/$slug/workspace/teams/'
@@ -869,6 +882,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authenticatedOrgSlugConsoleTeamsIndexRouteImport
       parentRoute: typeof authenticatedOrgSlugConsoleRouteRoute
     }
+    '/(authenticated)/org/$slug/console/roles/': {
+      id: '/(authenticated)/org/$slug/console/roles/'
+      path: '/roles'
+      fullPath: '/org/$slug/console/roles/'
+      preLoaderRoute: typeof authenticatedOrgSlugConsoleRolesIndexRouteImport
+      parentRoute: typeof authenticatedOrgSlugConsoleRouteRoute
+    }
     '/(authenticated)/org/$slug/console/members/': {
       id: '/(authenticated)/org/$slug/console/members/'
       path: '/members'
@@ -1062,6 +1082,7 @@ interface authenticatedOrgSlugConsoleRouteRouteChildren {
   authenticatedOrgSlugConsoleMembersMemberIdRoute: typeof authenticatedOrgSlugConsoleMembersMemberIdRoute
   authenticatedOrgSlugConsoleMembersInvitationsRoute: typeof authenticatedOrgSlugConsoleMembersInvitationsRoute
   authenticatedOrgSlugConsoleMembersIndexRoute: typeof authenticatedOrgSlugConsoleMembersIndexRoute
+  authenticatedOrgSlugConsoleRolesIndexRoute: typeof authenticatedOrgSlugConsoleRolesIndexRoute
   authenticatedOrgSlugConsoleTeamsIndexRoute: typeof authenticatedOrgSlugConsoleTeamsIndexRoute
 }
 
@@ -1077,6 +1098,8 @@ const authenticatedOrgSlugConsoleRouteRouteChildren: authenticatedOrgSlugConsole
       authenticatedOrgSlugConsoleMembersInvitationsRoute,
     authenticatedOrgSlugConsoleMembersIndexRoute:
       authenticatedOrgSlugConsoleMembersIndexRoute,
+    authenticatedOrgSlugConsoleRolesIndexRoute:
+      authenticatedOrgSlugConsoleRolesIndexRoute,
     authenticatedOrgSlugConsoleTeamsIndexRoute:
       authenticatedOrgSlugConsoleTeamsIndexRoute,
   }

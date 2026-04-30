@@ -2,6 +2,7 @@ import {
   IconDeviceLaptop,
   IconMailFilled,
   IconPuzzle,
+  IconShieldFilled,
   IconSitemapFilled,
   IconUsers,
 } from "@tabler/icons-react";
@@ -9,6 +10,7 @@ import { Link, useLocation, useParams } from "@tanstack/react-router";
 import type * as React from "react";
 import { Suspense } from "react";
 import { OrgSwitcher } from "@/components/org/org-switcher";
+import { useCan } from "@/lib/permission/hooks";
 import {
   Sidebar as BaseSidebar,
   SidebarContent,
@@ -35,6 +37,8 @@ export function Sidebar({
   const isInvitationsActive =
     location.pathname === `/org/${slug}/console/members/invitations`;
   const isTeamsActive = location.pathname === `/org/${slug}/console/teams`;
+  const isRolesActive = location.pathname === `/org/${slug}/console/roles`;
+  const canReadRoles = useCan((p) => p.org.role.list);
 
   return (
     <BaseSidebar collapsible="icon" {...props}>
@@ -112,6 +116,20 @@ export function Sidebar({
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+              {canReadRoles && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isRolesActive}
+                    tooltip="Roles"
+                  >
+                    <Link params={{ slug }} to="/org/$slug/console/roles">
+                      <IconShieldFilled />
+                      <span>Roles</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
