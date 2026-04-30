@@ -1,3 +1,10 @@
+import { Link } from "@tanstack/react-router";
+import { CTAButton } from "@work-holo/ui/components/cta-button";
+import { cn } from "@work-holo/ui/lib/utils";
+import { motion, useMotionValueEvent, useScroll } from "motion/react";
+import { type ReactNode, useEffect, useState } from "react";
+import { Image } from "@/components/shared/image";
+
 import {
   IconArrowUpRight,
   IconBolt,
@@ -5,8 +12,6 @@ import {
   IconClock,
   IconSettings,
 } from "@tabler/icons-react";
-import { Link } from "@tanstack/react-router";
-import { CTAButton } from "@work-holo/ui/components/cta-button";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -15,10 +20,6 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@work-holo/ui/components/navigation-menu";
-import { cn } from "@work-holo/ui/lib/utils";
-import { motion, useMotionValueEvent, useScroll } from "motion/react";
-import { type ReactNode, useEffect, useState } from "react";
-import { Image } from "@/components/shared/image";
 
 type DropdownItem = {
   label: string;
@@ -66,19 +67,19 @@ type NavItem =
     };
 
 function isSimpleLink(
-  item: NavItem
+  item: NavItem,
 ): item is Extract<NavItem, { dropdownItems?: never; groups?: never }> {
   return !("groups" in item || "dropdownItems" in item);
 }
 
 function hasGroups(
-  item: NavItem
+  item: NavItem,
 ): item is Extract<NavItem, { groups: NavGroup[] }> {
   return "groups" in item;
 }
 
 function hasDropdownItems(
-  item: NavItem
+  item: NavItem,
 ): item is Extract<NavItem, { dropdownItems: DropdownItem[] }> {
   return "dropdownItems" in item;
 }
@@ -238,6 +239,7 @@ const navItems: NavItem[] = [
       },
     ],
   },
+
   {
     label: "Projects",
     href: "/",
@@ -255,6 +257,139 @@ const navItems: NavItem[] = [
       { label: "Careers", href: "/" },
     ],
   },
+
+  {
+    label: "Our BPO Services",
+    href: "/our-bpo-services",
+    groups: [
+      {
+        title: "Solution",
+        items: [
+          {
+            label: "Outbound Services",
+            href: "/services/OutboundServices",
+            description: "Autonomous AI for smarter workflows",
+          },
+          {
+            label: "Customer Retention",
+            href: "/services/customer-retention",
+            description: "AI agents for product teams",
+          },
+          {
+            label: "Outbound Sales",
+            href: "/services/Outbound-Sales",
+            description: "Autonomous AI for smarter workflows",
+          },
+          {
+            label: "Lead Generation",
+            href: "/services/Lead-Generation",
+            description: "AI agents for product teams",
+          },
+          {
+            label: "Inbound Services",
+            href: "/services/Inbound-Services",
+            description: "Autonomous AI for smarter workflows",
+          },
+          {
+            label: "Customer-Service",
+            href: "/services/customer-service",
+            description: "AI agents for product teams",
+          },
+          {
+            label: "Technical Support",
+            href: "/services/technical-support",
+            description: "Autonomous AI for smarter workflows",
+          },
+          {
+            label: "Payment Processing",
+            href: "/services/payment-processing",
+            description: "AI agents for product teams",
+          },
+          {
+            label: "Account and Collections",
+            href: "/services/account-and-collection",
+            description: "Autonomous AI for smarter workflows",
+          },
+          {
+            label: "Inbound Sales",
+            href: "/services/inbound-sales",
+            description: "AI agents for product teams",
+          },
+          {
+            label: "Facility and Procurement",
+            href: "/services/facility-and-procurement",
+            description: "Autonomous AI for smarter workflows",
+          },
+          {
+            label: "Direct Response Marketing",
+            href: "/services/direct-response-marketing",
+            description: "AI agents for product teams",
+          },
+          {
+            label: "Back Office Processing",
+            href: "/services/back-office-processing",
+            description: "Autonomous AI for smarter workflows",
+          },
+          {
+            label: "Claims Processing",
+            href: "/services/claims-processing",
+            description: "AI agents for product teams",
+          },
+        ],
+      },
+      {
+        title: "Industries",
+        items: [
+          {
+            label: "Insurance",
+            href: "/services/insurance",
+            description: "Launch fast, scale with confidence",
+          },
+          {
+            label: "Healthcare",
+            href: "/services/healthcare",
+            description: "High-performance, scalable web apps",
+          },
+          {
+            label: "Financial",
+            href: "/services/financial",
+            description: "Seamless iOS & Android experiences",
+          },
+          {
+            label: "Logistics and Supply Chain",
+            href: "/services/logistics-and-supply-chain",
+            description: "Faster releases, zero-bug quality",
+          },
+          {
+            label: "Retail",
+            href: "/services/retail",
+            description: "User-first design that drives adoption",
+          },
+          {
+            label: "Telecommunication",
+            href: "/services/data-engineering",
+            description: "AI-ready data foundations for growth",
+          },
+          {
+            label: "Entertainment",
+            href: "/services/entertainment",
+            description: "Faster releases, zero-bug quality",
+          },
+          {
+            label: "Real Estate",
+            href: "/services/real-estate",
+            description: "User-first design that drives adoption",
+          },
+          {
+            label: "Technology",
+            href: "/services/technology",
+            description: "AI-ready data foundations for growth",
+          },
+        ],
+      },
+    ],
+  },
+
   {
     label: "Contact",
     href: "/contact-us",
@@ -281,7 +416,7 @@ export function Header() {
   useMotionValueEvent(scrollY, "change", (latest) => {
     const nextIsScrolled = latest > 20;
     setIsScrolled((current) =>
-      current === nextIsScrolled ? current : nextIsScrolled
+      current === nextIsScrolled ? current : nextIsScrolled,
     );
   });
 
@@ -306,7 +441,7 @@ export function Header() {
       animate={{ y: 0 }}
       className={cn(
         "fixed top-0 right-0 left-0 z-50",
-        isScrolled ? "bg-background/95 backdrop-blur-md" : "bg-transparent"
+        isScrolled ? "bg-background/95 backdrop-blur-md" : "bg-transparent",
       )}
       initial={{ y: -100 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
@@ -357,7 +492,7 @@ export function Header() {
           "w-full",
           isScrolled
             ? "max-w-none px-0 pt-0"
-            : "mx-auto max-w-7xl px-4 pt-3 sm:px-6 lg:px-8"
+            : "mx-auto max-w-7xl px-4 pt-3 sm:px-6 lg:px-8",
         )}
         layout
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
@@ -367,7 +502,7 @@ export function Header() {
             "relative flex items-center justify-between transition-all duration-500",
             isScrolled
               ? "min-h-20 bg-card/90 px-5 backdrop-blur-md sm:px-7 lg:px-8"
-              : "min-h-24 rounded-[1.75rem] border border-border/30 bg-muted/50 px-5 sm:px-7 lg:px-8"
+              : "min-h-24 rounded-[1.75rem] border border-border/30 bg-muted/50 px-5 sm:px-7 lg:px-8",
           )}
           layout
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
@@ -398,7 +533,18 @@ export function Header() {
 
                   if (hasGroups(item)) {
                     menuContent = (
-                      <div className="grid w-160 grid-cols-3 gap-6 p-5">
+                      <div
+                        className={cn(
+                          "grid w-160 grid-cols-3 gap-x-16 gap-y-6 p-5 items-start",
+                          item.label === "Our BPO Services" &&
+                            "max-h-130 overflow-y-auto overscroll-contain",
+                        )}
+                        onWheel={(e) => {
+                          if (item.label === "Our BPO Services") {
+                            e.stopPropagation();
+                          }
+                        }}
+                      >
                         {item.groups.map((group) => (
                           <div
                             className="flex flex-col gap-3"
@@ -450,7 +596,7 @@ export function Header() {
                             "font-semibold text-base",
                             item.active
                               ? "text-primary"
-                              : "text-muted-foreground hover:text-foreground"
+                              : "text-muted-foreground hover:text-foreground",
                           )}
                           hash={item.hash}
                           to={item.href}
@@ -468,7 +614,7 @@ export function Header() {
                           "font-semibold text-base",
                           item.active
                             ? "text-primary"
-                            : "text-muted-foreground hover:text-foreground"
+                            : "text-muted-foreground hover:text-foreground",
                         )}
                       >
                         {item.label}
@@ -501,19 +647,19 @@ export function Header() {
                 <span
                   className={cn(
                     "block h-0.5 w-4 bg-foreground transition-all duration-300",
-                    mobileMenuOpen && "translate-y-1.5 rotate-45"
+                    mobileMenuOpen && "translate-y-1.5 rotate-45",
                   )}
                 />
                 <span
                   className={cn(
                     "block h-0.5 w-4 bg-foreground transition-all duration-300",
-                    mobileMenuOpen && "opacity-0"
+                    mobileMenuOpen && "opacity-0",
                   )}
                 />
                 <span
                   className={cn(
                     "block h-0.5 w-4 bg-foreground transition-all duration-300",
-                    mobileMenuOpen && "-translate-y-1.5 -rotate-45"
+                    mobileMenuOpen && "-translate-y-1.5 -rotate-45",
                   )}
                 />
               </div>
@@ -545,7 +691,7 @@ export function Header() {
                         "flex flex-1 items-center justify-between rounded-l-2xl px-4 py-3.5 font-medium text-base transition-colors",
                         item.active
                           ? "bg-primary/10 text-primary"
-                          : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+                          : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
                       )}
                       hash={item.hash}
                       onClick={() => setMobileMenuOpen(false)}
@@ -559,7 +705,7 @@ export function Header() {
                       className="flex size-12 items-center justify-center rounded-r-2xl border-border/40 border-l text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
                       onClick={() =>
                         setOpenMobileItem((current) =>
-                          current === item.label ? null : item.label
+                          current === item.label ? null : item.label,
                         )
                       }
                       type="button"
@@ -567,7 +713,7 @@ export function Header() {
                       <IconChevronDown
                         className={cn(
                           "size-4 transition-transform duration-300",
-                          openMobileItem === item.label && "rotate-180"
+                          openMobileItem === item.label && "rotate-180",
                         )}
                       />
                     </button>
@@ -615,7 +761,7 @@ export function Header() {
                     "flex items-center justify-between rounded-2xl px-4 py-3.5 font-medium text-base transition-colors",
                     item.active
                       ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+                      : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
                   )}
                   key={item.label}
                   onClick={() => setMobileMenuOpen(false)}
@@ -631,7 +777,7 @@ export function Header() {
                     "flex items-center justify-between rounded-2xl px-4 py-3.5 font-medium text-base transition-colors",
                     item.active
                       ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+                      : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
                   )}
                   hash={item.hash}
                   key={item.label}
