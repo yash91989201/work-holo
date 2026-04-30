@@ -60,7 +60,7 @@ const floatVariants = {
     transition: {
       duration: 6,
       repeat: Number.POSITIVE_INFINITY,
-      ease: "easeInOut",
+      ease: "easeInOut" as const,
     },
   },
 };
@@ -99,9 +99,9 @@ function HeroTitle() {
 
             return (
               <span
+                aria-hidden="true"
                 className="relative mr-[0.24em] inline-block last:mr-0"
                 key={`${lineIndex}-${wordIndex}`}
-                aria-hidden="true"
               >
                 <span className="text-foreground/20">{word}</span>
                 <motion.span
@@ -123,9 +123,16 @@ function HeroTitle() {
   );
 }
 
+function scrollToServices() {
+  document.getElementById("services")?.scrollIntoView({ behavior: "smooth" });
+}
+
 export function HeroSection() {
   return (
-    <section id="hero" className="page-gradient relative overflow-hidden bg-background px-4 py-8 scroll-mt-28 sm:px-6 sm:py-10 lg:px-8 lg:py-12">
+    <section
+      className="page-gradient relative scroll-mt-28 overflow-hidden bg-background px-4 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-12"
+      id="hero"
+    >
       <div className="pointer-events-none absolute inset-0">
         <div
           className="absolute inset-y-0 right-0 w-[58%] bg-center bg-cover opacity-[0.05]"
@@ -157,7 +164,11 @@ export function HeroSection() {
               className="flex flex-wrap items-center gap-5"
               variants={itemVariants}
             >
-              <CTAButton className="shadow-[0_18px_40px_rgba(168,85,247,0.22)]">
+              <CTAButton
+                className="shadow-[0_18px_40px_rgba(168,85,247,0.22)]"
+                onClick={scrollToServices}
+                type="button"
+              >
                 Explore Services
               </CTAButton>
 
@@ -188,7 +199,7 @@ export function HeroSection() {
           {/* Right Column - Image with floating cards */}
           <motion.div
             animate={{ opacity: 1, x: 0 }}
-            className="relative z-10 mx-auto w-full max-w-[38rem] lg:translate-y-1"
+            className="relative z-10 mx-auto w-full max-w-152 lg:translate-y-1"
             initial={{ opacity: 0, x: 50 }}
             transition={{
               duration: 0.8,
@@ -197,7 +208,7 @@ export function HeroSection() {
             }}
           >
             <div className="relative overflow-hidden rounded-[2.25rem] border border-border/40 bg-card/50 p-4 shadow-[0_30px_90px_rgba(15,23,42,0.12)] backdrop-blur-sm sm:p-5">
-              <div className="relative aspect-[4/5] overflow-hidden rounded-[1.75rem]">
+              <div className="relative aspect-4/5 overflow-hidden rounded-[1.75rem]">
                 <img
                   alt="Professional working on laptop"
                   className="h-full w-full object-cover"
@@ -218,9 +229,11 @@ export function HeroSection() {
                 </div>
                 <div>
                   <p className="font-semibold text-foreground text-sm">
-                    Trusted by 800+
+                    Trusted by 100+
                   </p>
-                  <p className="text-muted-foreground text-xs">Tech Giants.</p>
+                  <p className="text-muted-foreground text-xs">
+                    Tech companies.
+                  </p>
                 </div>
               </div>
             </motion.div>

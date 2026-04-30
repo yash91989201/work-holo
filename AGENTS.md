@@ -8,11 +8,9 @@ All rules are non-negotiable unless explicitly stated otherwise.
 ## Table of Contents
 
 1. [Communication Style — Caveman Mode](#0-communication-style--caveman-mode)
-2. [File Editing](#1-file-editing)
-3. [Codebase Exploration — `warp-grep`](#2-codebase-exploration--warp-grep)
-4. [Browser Automation — `agent-browser`](#3-browser-automation--agent-browser)
-5. [Frontend API — oRPC + TanStack Query](#4-frontend-api--orpc--tanstack-query)
-6. [Context-Mode — Mandatory Routing Rules](#5-context-mode--mandatory-routing-rules)
+2. [Browser Automation — `agent-browser`](#1-browser-automation--agent-browser)
+3. [Frontend API — oRPC + TanStack Query](#2-frontend-api--orpc--tanstack-query)
+4. [Context-Mode — Mandatory Routing Rules](#3-context-mode--mandatory-routing-rules)
 
 ---
 
@@ -29,31 +27,7 @@ All rules are non-negotiable unless explicitly stated otherwise.
 
 ---
 
-## 1. File Editing
-
-**Rule:** Always use `edit_file`. Never use `str_replace` or full file rewrites.
-
-**Why:** `edit_file` accepts partial snippets, minimises diffs, and reduces unintended side effects.
-
----
-
-## 2. Codebase Exploration — `warp-grep`
-
-`warp-grep` is a subagent for fast semantic codebase search.
-
-**Rule:** Always run `warp-grep` at the start of any investigation before writing or modifying code.
-
-**Query style — intent over keywords:**
-
-| ✅ Good Queries | ❌ Avoid |
-| --- | --- |
-| `"Find the XYZ flow"` | Exact keyword searches |
-| `"How does XYZ work?"` | Overly narrow or literal queries |
-| `"Where is <e> coming from?"` | — |
-
----
-
-## 3. Browser Automation — `agent-browser`
+## 1. Browser Automation — `agent-browser`
 
 Run `agent-browser --help` for the full reference.
 
@@ -70,7 +44,7 @@ agent-browser fill @e2 "text"  # Fill an input by ref
 
 ---
 
-## 4. Frontend API — oRPC + TanStack Query
+## 2. Frontend API — oRPC + TanStack Query
 
 All API calls **must** use the `queryUtils` + TanStack Query pattern. Never call procedures directly.
 
@@ -101,13 +75,13 @@ All API calls **must** use the `queryUtils` + TanStack Query pattern. Never call
 
 ---
 
-## 5. Context-Mode — Mandatory Routing Rules
+## 3. Context-Mode — Mandatory Routing Rules
 
 > **Critical:** These rules are **not optional**. A single unrouted command can dump 56 KB into context and waste the entire session. Follow the routing rules exactly.
 
 ---
 
-### 5.1 Blocked Commands
+### 3.1 Blocked Commands
 
 The following commands are **intercepted and blocked** by the context-mode plugin. Do not retry them in any form.
 
@@ -130,7 +104,7 @@ Shell commands containing `fetch('http`, `requests.get(`, `requests.post(`, `htt
 
 ---
 
-### 5.2 Redirected Tools — Use Sandbox Equivalents
+### 3.2 Redirected Tools — Use Sandbox Equivalents
 
 #### Shell (output > 20 lines)
 
@@ -157,7 +131,7 @@ Search results can flood context.
 
 ---
 
-### 5.3 Tool Selection Hierarchy
+### 3.3 Tool Selection Hierarchy
 
 Use tools in this priority order:
 
@@ -178,7 +152,7 @@ Use tools in this priority order:
 
 ---
 
-### 5.4 Output Constraints
+### 3.4 Output Constraints
 
 - Keep responses **under 500 words**.
 - Write all artifacts (code, configs, PRDs) to **files** — never return them as inline text. Return only: file path + one-line description.
@@ -186,7 +160,7 @@ Use tools in this priority order:
 
 ---
 
-### 5.5 `ctx` Utility Commands
+### 3.5 `ctx` Utility Commands
 
 | Command | Action |
 | --- | --- |

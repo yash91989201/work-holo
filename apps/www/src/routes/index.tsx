@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AboutSection } from "@/components/home/about-section";
-import { ContactSection } from "@/components/home/contact-section";
+import { ContactCard } from "@/components/shared/contact-card";
 import { HeroSection } from "@/components/home/hero-section";
 import { InsightsSection } from "@/components/home/insights-section";
 import { ProcessSection } from "@/components/home/process-section";
@@ -28,7 +28,11 @@ function RouteComponent() {
       <ProcessSection />
       <ProjectsSection />
       <InsightsSection />
-      <ContactSection />
+      <section id="contact" className="relative py-20 scroll-mt-28 lg:py-28">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <ContactCard />
+        </div>
+      </section>
     </div>
   );
 }

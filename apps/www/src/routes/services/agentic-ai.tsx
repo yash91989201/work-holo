@@ -1,30 +1,28 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { HeroSection } from "@/components/services/agentic-ai/hero-section";
-import { WhatIsSection } from "@/components/services/agentic-ai/what-is-section";
-import { UseCasesSection } from "@/components/services/agentic-ai/use-cases-section";
-import { WhyNowSection } from "@/components/services/agentic-ai/why-now-section";
-import { CapabilitiesSection } from "@/components/services/agentic-ai/capabilities-section";
-import { ProcessSection } from "@/components/services/agentic-ai/process-section";
-import { WhyLogicielSection } from "@/components/services/agentic-ai/why-logiciel-section";
-import { IntegrationsSection } from "@/components/services/agentic-ai/integrations-section";
-import { SuccessStoriesSection } from "@/components/services/agentic-ai/success-stories-section";
+import { getServiceData } from "@/components/services/service-data";
+import { ServiceDetailPage } from "@/components/services/service-detail-page";
 
 export const Route = createFileRoute("/services/agentic-ai")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  return (
-    <div className="relative overflow-hidden bg-background">
-      <HeroSection />
-      <WhatIsSection />
-      <UseCasesSection />
-      <WhyNowSection />
-      <CapabilitiesSection />
-      <ProcessSection />
-      <WhyLogicielSection />
-      <IntegrationsSection />
-      <SuccessStoriesSection />
-    </div>
-  );
+  const data = getServiceData("agentic-ai");
+
+  if (!data) {
+    return (
+      <div className="relative flex min-h-[60vh] items-center justify-center overflow-hidden bg-background">
+        <div className="text-center">
+          <h1 className="font-bold font-heading text-4xl text-foreground">
+            Service Not Found
+          </h1>
+          <p className="mt-4 text-lg text-muted-foreground">
+            The requested service page does not exist.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return <ServiceDetailPage data={data} />;
 }

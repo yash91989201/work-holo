@@ -55,7 +55,21 @@ type NavItem =
       active?: boolean;
       dropdownItems?: never;
       groups: NavGroup[];
+    }
+  | {
+      label: string;
+      href: string;
+      hash?: string;
+      active?: boolean;
+      dropdownItems?: never;
+      groups?: never;
     };
+
+function isSimpleLink(
+  item: NavItem
+): item is Extract<NavItem, { dropdownItems?: never; groups?: never }> {
+  return !("groups" in item || "dropdownItems" in item);
+}
 
 function hasGroups(
   item: NavItem
@@ -243,11 +257,7 @@ const navItems: NavItem[] = [
   },
   {
     label: "Contact",
-    href: "/",
-    dropdownItems: [
-      { label: "Get in Touch", href: "/" },
-      { label: "Support", href: "/" },
-    ],
+    href: "/contact-us",
   },
 ];
 
@@ -316,7 +326,7 @@ export function Header() {
             <div className="flex items-center gap-2 text-muted-foreground">
               <IconBolt className="size-4.5 text-primary" fill="currentColor" />
               <span className="hidden sm:inline">
-                Fast & Reliable IT Solution Services.
+                Fast & Reliable IT Solutions.
               </span>
               <Link
                 className="inline-flex items-center gap-1 font-medium text-primary transition-colors hover:text-primary/80"
@@ -432,6 +442,25 @@ export function Header() {
                     );
                   }
 
+                  if (isSimpleLink(item)) {
+                    return (
+                      <NavigationMenuItem key={item.label}>
+                        <MenuLink
+                          className={cn(
+                            "font-semibold text-base",
+                            item.active
+                              ? "text-primary"
+                              : "text-muted-foreground hover:text-foreground"
+                          )}
+                          hash={item.hash}
+                          to={item.href}
+                        >
+                          {item.label}
+                        </MenuLink>
+                      </NavigationMenuItem>
+                    );
+                  }
+
                   return (
                     <NavigationMenuItem key={item.label}>
                       <NavigationMenuTrigger
@@ -456,7 +485,9 @@ export function Header() {
 
           {/* Right Actions */}
           <div className="flex items-center gap-2.5">
-            <CTAButton className="hidden sm:inline-flex">Get Started</CTAButton>
+            <CTAButton className="hidden sm:inline-flex" href="#contact">
+              Get in touch
+            </CTAButton>
 
             {/* Mobile Menu Button */}
             <motion.button
@@ -581,12 +612,28 @@ export function Header() {
               mobileContent = (
                 <Link
                   className={cn(
-                    isScrolled
-                      ? hasGroups(item)
-                        ? undefined // groups have a different structure
-                        : item.dropdownItems
-                      : undefined
+                    "flex items-center justify-between rounded-2xl px-4 py-3.5 font-medium text-base transition-colors",
+                    item.active
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
                   )}
+                  key={item.label}
+                  onClick={() => setMobileMenuOpen(false)}
+                  to={item.href}
+                >
+                  {item.label}
+                </Link>
+              );
+            } else if (isSimpleLink(item)) {
+              mobileContent = (
+                <Link
+                  className={cn(
+                    "flex items-center justify-between rounded-2xl px-4 py-3.5 font-medium text-base transition-colors",
+                    item.active
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+                  )}
+                  hash={item.hash}
                   key={item.label}
                   onClick={() => setMobileMenuOpen(false)}
                   to={item.href}
@@ -615,7 +662,9 @@ export function Header() {
             );
           })}
           <div className="flex flex-col gap-2 pt-3">
-            <CTAButton className="w-full">Get Started</CTAButton>
+            <CTAButton className="w-full" href="#contact">
+              Get in touch
+            </CTAButton>
           </div>
         </div>
       </motion.div>
