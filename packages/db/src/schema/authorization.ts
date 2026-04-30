@@ -1,5 +1,5 @@
 import { cuid2 } from "drizzle-cuid2/postgres";
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   boolean,
   index,
@@ -56,10 +56,12 @@ export const roleTemplateTable = pgTable(
       .$onUpdate(() => /* @__PURE__ */ new Date()),
   },
   (table) => [
-    uniqueIndex("roleTemplateNameOrganizationIdIdx").on(
-      table.name,
-      table.organizationId
-    ),
+    uniqueIndex("roleTemplateSystemNameIdx")
+      .on(table.name)
+      .where(sql`${table.organizationId} is null`),
+    uniqueIndex("roleTemplateOrgNameIdx")
+      .on(table.name, table.organizationId)
+      .where(sql`${table.organizationId} is not null`),
     index("roleTemplateOrganizationIdIdx").on(table.organizationId),
   ]
 );
@@ -113,12 +115,17 @@ export const roleAssignmentTable = pgTable(
       .notNull(),
   },
   (table) => [
-    uniqueIndex("roleAssignmentUniqueIdx").on(
-      table.userId,
-      table.roleTemplateId,
-      table.organizationId,
-      table.teamId
-    ),
+    uniqueIndex("roleAssignmentOrgUniqueIdx")
+      .on(table.userId, table.roleTemplateId, table.organizationId)
+      .where(sql`${table.teamId} is null`),
+    uniqueIndex("roleAssignmentTeamUniqueIdx")
+      .on(
+        table.userId,
+        table.roleTemplateId,
+        table.organizationId,
+        table.teamId
+      )
+      .where(sql`${table.teamId} is not null`),
     index("roleAssignmentScopeIdx").on(table.organizationId, table.teamId),
     index("roleAssignmentUserIdIdx").on(table.userId),
   ]

@@ -37,6 +37,12 @@ export const MemberWithUserSchema = MemberSelectSchema.extend({
   }),
 });
 
+export const GetMemberInput = z.object({
+  memberId: z.string(),
+});
+
+export const GetMemberOutput = MemberWithUserSchema.nullable();
+
 export const ListMembersOutput = z.object({
   members: z.array(MemberWithUserSchema),
   total: z.number(),
