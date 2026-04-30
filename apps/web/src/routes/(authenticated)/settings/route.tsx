@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { SettingsSidebar } from "@/components/settings/sidebar";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@work-holo/ui/components/sidebar";
 
 export const Route = createFileRoute("/(authenticated)/settings")({
   component: RouteComponent,

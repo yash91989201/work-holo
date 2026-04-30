@@ -1,9 +1,9 @@
 import { formOptions } from "@tanstack/react-form";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { FieldGroup } from "@/components/ui/field";
-import { useAppForm } from "@/components/ui/form/hooks";
-import { Spinner } from "@/components/ui/spinner";
+import { Button } from "@work-holo/ui/components/button";
+import { FieldGroup } from "@work-holo/ui/components/field";
+import { useAppForm } from "@work-holo/ui/components/form/hooks";
+import { Spinner } from "@work-holo/ui/components/spinner";
 import { authClient } from "@/lib/auth-client";
 import { ChangePasswordFormSchema } from "@/lib/schemas/settings/security";
 import type { ChangePasswordFormType } from "@/lib/types";

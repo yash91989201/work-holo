@@ -1,8 +1,8 @@
 import { IconPlus } from "@tabler/icons-react";
 import React from "react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@work-holo/ui/components/button";
+import { Checkbox } from "@work-holo/ui/components/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -10,16 +10,16 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@work-holo/ui/components/dialog";
 import {
   FieldError,
   FieldGroup,
   FieldLegend,
   FieldSet,
-} from "@/components/ui/field";
-import { useAppForm } from "@/components/ui/form/hooks";
-import { Label } from "@/components/ui/label";
-import { Spinner } from "@/components/ui/spinner";
+} from "@work-holo/ui/components/field";
+import { useAppForm } from "@work-holo/ui/components/form/hooks";
+import { Label } from "@work-holo/ui/components/label";
+import { Spinner } from "@work-holo/ui/components/spinner";
 import { authClient } from "@/lib/auth-client";
 import { CreateTeamFormSchema } from "@/lib/schemas/team";
 import { queryClient, queryUtils } from "@/utils/orpc";
@@ -61,12 +61,10 @@ export const CreateTeamForm = () => {
 
   return (
     <Dialog onOpenChange={setOpen} open={open}>
-      <DialogTrigger asChild>
-        <Button className="gap-1.5">
-          <IconPlus />
-          New Team
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger render={<Button className="gap-1.5">
+        <IconPlus />
+        New Team
+      </Button>} />
 
       <DialogContent>
         <DialogHeader>

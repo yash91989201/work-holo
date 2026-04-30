@@ -6,8 +6,8 @@ import {
 } from "@tabler/icons-react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Suspense } from "react";
-import { Card } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Card } from "@work-holo/ui/components/card";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
 
 export const Route = createFileRoute("/(authenticated)/org/$slug/console/")({
   staticData: { crumb: "Console" },

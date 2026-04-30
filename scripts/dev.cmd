@@ -30,6 +30,7 @@ set "DEV_SMTP_PASS=dev-smtp-pass"
 
 set "ENV_SERVER=apps\server\.env"
 set "ENV_WEB=apps\web\.env"
+set "ENV_WWW=apps\www\.env"
 set "ENV_NOTIFICATION=workers\notification\.env"
 set "ENV_SEARCH=workers\message-search\.env"
 set "ENV_READ_RECEIPT=workers\read-receipt\.env"
@@ -244,6 +245,26 @@ if "!CHANGED!"=="1" (
 endlocal
 exit /b 0
 
+:ensure_env_csv_contains
+setlocal EnableDelayedExpansion
+set "TARGET=%~1"
+set "ENV_KEY=%~2"
+set "ENV_VALUE=%~3"
+set "PS_EXIT="
+powershell -NoProfile -Command "$path = '%TARGET%'; $key = '%ENV_KEY%'; $value = '%ENV_VALUE%'; if (-not (Test-Path -LiteralPath $path)) { exit 1 }; $lines = Get-Content -LiteralPath $path; $found = $false; $changed = $false; $result = New-Object System.Collections.Generic.List[string]; foreach ($line in $lines) { if ($line -like ($key + '=*')) { $found = $true; $current = $line.Substring($key.Length + 1).Trim(); if ([string]::IsNullOrWhiteSpace($current) -or $current -eq '""' -or $current -eq '''''') { $next = $value } else { $items = @(); foreach ($item in ($current -split ',')) { $trimmed = $item.Trim(); if (-not [string]::IsNullOrWhiteSpace($trimmed)) { $items += $trimmed } }; if ($items -notcontains $value) { $items += $value }; $next = [string]::Join(',', $items) }; if ($next -ne $current) { $changed = $true }; $result.Add($key + '=' + $next) } else { $result.Add($line) } }; if (-not $found) { $result.Add($key + '=' + $value); $changed = $true }; if ($changed) { Set-Content -LiteralPath $path -Value $result -Encoding utf8NoBOM; exit 0 }; exit 2"
+set "PS_EXIT=%ERRORLEVEL%"
+if "%PS_EXIT%"=="0" (
+  endlocal & set "%~4=1"
+  exit /b 0
+)
+if "%PS_EXIT%"=="2" (
+  endlocal
+  exit /b 0
+)
+endlocal
+exit /b 1
+
+
 :write_env_server
 set "TARGET=%ROOT_DIR%\%ENV_SERVER%"
 call :ensure_parent_dir "%TARGET%"
@@ -251,7 +272,7 @@ if not exist "%TARGET%" (
   (
     echo BETTER_AUTH_SECRET=%~1
     echo BETTER_AUTH_URL=http://localhost:3000
-    echo CORS_ORIGIN=http://localhost:3001
+    echo CORS_ORIGIN=http://localhost:3001,http://localhost:5100
     echo DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
     echo REDIS_URL=redis://localhost:6379
     echo RABBITMQ_URL=amqp://admin:admin@localhost:5672
@@ -280,7 +301,7 @@ if not exist "%TARGET%" (
 set "ENV_CHANGED=0"
 call :ensure_env_default "%TARGET%" "BETTER_AUTH_SECRET" "%~1" ENV_CHANGED
 call :ensure_env_default "%TARGET%" "BETTER_AUTH_URL" "http://localhost:3000" ENV_CHANGED
-call :ensure_env_default "%TARGET%" "CORS_ORIGIN" "http://localhost:3001" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "CORS_ORIGIN" "http://localhost:3001,http://localhost:5100" ENV_CHANGED
 call :ensure_env_default "%TARGET%" "DATABASE_URL" "postgresql://postgres:postgres@localhost:5432/postgres" ENV_CHANGED
 call :ensure_env_default "%TARGET%" "REDIS_URL" "redis://localhost:6379" ENV_CHANGED
 call :ensure_env_default "%TARGET%" "RABBITMQ_URL" "amqp://admin:admin@localhost:5672" ENV_CHANGED
@@ -302,6 +323,7 @@ call :ensure_env_default "%TARGET%" "PUSHER_HOST" "localhost" ENV_CHANGED
 call :ensure_env_default "%TARGET%" "PUSHER_PORT" "6001" ENV_CHANGED
 call :ensure_env_default "%TARGET%" "CASBIN_ENFORCE" "false" ENV_CHANGED
 call :ensure_env_default "%TARGET%" "OPENSEARCH_URL" "http://localhost:9200" ENV_CHANGED
+call :ensure_env_csv_contains "%TARGET%" "CORS_ORIGIN" "http://localhost:5100" ENV_CHANGED
 if "%ENV_CHANGED%"=="1" (
   call :log_success "Backfilled missing env values in %ENV_SERVER%"
 ) else (
@@ -345,6 +367,32 @@ if "%ENV_CHANGED%"=="1" (
   call :log_warn "Keeping existing file: %ENV_WEB%"
 )
 exit /b 0
+
+:write_env_www
+set "TARGET=%ROOT_DIR%\%ENV_WWW%"
+call :ensure_parent_dir "%TARGET%"
+if not exist "%TARGET%" (
+  (
+    echo VITE_ENV=development
+    echo VITE_WWW_URL=http://localhost:5100
+    echo VITE_SERVER_URL=http://localhost:3000
+    echo VITE_IMAGE_TRANSFORMATION_URL=http://localhost:8080
+  ) > "%TARGET%"
+  call :log_success "Created %ENV_WWW%"
+  exit /b 0
+)
+set "ENV_CHANGED=0"
+call :ensure_env_default "%TARGET%" "VITE_ENV" "development" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "VITE_WWW_URL" "http://localhost:5100" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "VITE_SERVER_URL" "http://localhost:3000" ENV_CHANGED
+call :ensure_env_default "%TARGET%" "VITE_IMAGE_TRANSFORMATION_URL" "http://localhost:8080" ENV_CHANGED
+if "%ENV_CHANGED%"=="1" (
+  call :log_success "Backfilled missing env values in %ENV_WWW%"
+ ) else (
+  call :log_warn "Keeping existing file: %ENV_WWW%"
+ )
+exit /b 0
+
 
 :write_env_notification
 set "TARGET=%ROOT_DIR%\%ENV_NOTIFICATION%"
@@ -448,6 +496,7 @@ call :generate_better_auth_secret SECRET || exit /b 1
 call :generate_vapid_keys
 call :write_env_server "%SECRET%" || exit /b 1
 call :write_env_web || exit /b 1
+call :write_env_www || exit /b 1
 call :write_env_notification || exit /b 1
 call :write_env_search || exit /b 1
 call :write_env_read_receipt || exit /b 1
@@ -1108,6 +1157,7 @@ set /a FAILED=0
 call :check_deps || set /a FAILED=1
 call :check_env_exists "%ENV_SERVER%" || set /a FAILED=1
 call :check_env_exists "%ENV_WEB%" || set /a FAILED=1
+call :check_env_exists "%ENV_WWW%" || set /a FAILED=1
 call :check_env_exists "%ENV_NOTIFICATION%" || set /a FAILED=1
 call :check_env_exists "%ENV_SEARCH%" || set /a FAILED=1
 call :check_env_exists "%ENV_READ_RECEIPT%" || set /a FAILED=1
@@ -1191,6 +1241,12 @@ if %ERRORLEVEL%==0 (
 ) else (
   echo   - %ENV_WEB%
 )
+call :check_env_exists "%ENV_WWW%" >nul 2>nul
+if %ERRORLEVEL%==0 (
+  echo   + %ENV_WWW%
+ ) else (
+  echo   - %ENV_WWW%
+ )
 call :check_env_exists "%ENV_NOTIFICATION%" >nul 2>nul
 if %ERRORLEVEL%==0 (
   echo   + %ENV_NOTIFICATION%
@@ -1304,6 +1360,7 @@ echo.
 echo Managed env files:
 echo   apps/server/.env
 echo   apps/web/.env
+echo   apps/www/.env
 echo   workers/notification/.env
 echo   workers/message-search/.env
 echo   workers/read-receipt/.env

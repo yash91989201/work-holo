@@ -5,8 +5,8 @@ import {
   IconUserCheck,
 } from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent } from "@work-holo/ui/components/card";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
 import { queryUtils } from "@/utils/orpc";
 
 interface StatItem {

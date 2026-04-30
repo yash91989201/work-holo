@@ -14,7 +14,7 @@
     "@work-holo/config": "workspace:*"
   },
   "peerDependencies": {
-    "typescript": "^6.0.2"
+    "typescript": "^6.0.3"
   },
   "dependencies": {
     "@better-auth/expo": "^1.5.5",
@@ -24,7 +24,7 @@
     "@work-holo/db": "workspace:*",
     "@work-holo/permission": "workspace:*",
     "better-auth": "^1.5.5",
-    "dotenv": "^17.3.1",
+    "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
     "zod": "^4.3.6"
   }

@@ -37,42 +37,42 @@ import type { DateRange } from "react-day-picker";
 import { toast } from "sonner";
 import type { z } from "zod";
 import { InvitationForm } from "@/components/console/invitations/invitation-form";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import { Badge } from "@work-holo/ui/components/badge";
+import { Button } from "@work-holo/ui/components/button";
+import { Calendar } from "@work-holo/ui/components/calendar";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
-} from "@/components/ui/card";
+} from "@work-holo/ui/components/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@work-holo/ui/components/dropdown-menu";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from "@/components/ui/input-group";
+} from "@work-holo/ui/components/input-group";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@work-holo/ui/components/popover";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@work-holo/ui/components/select";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
 import {
   Table,
   TableBody,
@@ -80,7 +80,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@work-holo/ui/components/table";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { authClient } from "@/lib/auth-client";
 import { getRoleBadgeVariant, getStatusBadgeVariant } from "@/lib/org";
@@ -268,11 +268,9 @@ const columns: ColumnDef<InvitationRecord>[] = [
 
       return (
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className="h-8 w-8 p-0" variant="ghost">
-              <IconDots className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
+          <DropdownMenuTrigger render={<Button className="h-8 w-8 p-0" variant="ghost">
+            <IconDots className="h-4 w-4" />
+          </Button>} />
           <DropdownMenuContent align="end" className="w-48">
             <DropdownMenuItem onClick={() => onCopy(invitation)}>
               <IconCopyCheckFilled className="mr-2 h-4 w-4" />
@@ -557,24 +555,22 @@ export const InvitationsTable = () => {
           </Select>
 
           <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                className={expiryDateRange ? "" : "text-muted-foreground"}
-                variant="outline"
-              >
-                <IconCalendarEventFilled className="mr-2 h-4 w-4" />
-                {!expiryDateRange?.from && <span>Expiry date</span>}
-                {expiryDateRange?.from &&
-                  !expiryDateRange.to &&
-                  format(expiryDateRange.from, "LLL dd, y")}
-                {expiryDateRange?.from && expiryDateRange.to && (
-                  <>
-                    {format(expiryDateRange.from, "LLL dd, y")} -{" "}
-                    {format(expiryDateRange.to, "LLL dd, y")}
-                  </>
-                )}
-              </Button>
-            </PopoverTrigger>
+            <PopoverTrigger render={<Button
+              className={expiryDateRange ? "" : "text-muted-foreground"}
+              variant="outline"
+            >
+              <IconCalendarEventFilled className="mr-2 h-4 w-4" />
+              {!expiryDateRange?.from && <span>Expiry date</span>}
+              {expiryDateRange?.from &&
+                !expiryDateRange.to &&
+                format(expiryDateRange.from, "LLL dd, y")}
+              {expiryDateRange?.from && expiryDateRange.to && (
+                <>
+                  {format(expiryDateRange.from, "LLL dd, y")} -{" "}
+                  {format(expiryDateRange.to, "LLL dd, y")}
+                </>
+              )}
+            </Button>} />
             <PopoverContent align="start" className="w-auto p-0">
               <Calendar
                 defaultMonth={expiryDateRange?.from}

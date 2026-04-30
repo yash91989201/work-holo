@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as publicRouteRouteImport } from './routes/(public)/route'
 import { Route as authenticatedRouteRouteImport } from './routes/(authenticated)/route'
+import { Route as authRouteRouteImport } from './routes/(auth)/route'
 import { Route as publicIndexRouteImport } from './routes/(public)/index'
 import { Route as authSignupRouteImport } from './routes/(auth)/signup'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
@@ -65,20 +66,24 @@ const authenticatedRouteRoute = authenticatedRouteRouteImport.update({
   id: '/(authenticated)',
   getParentRoute: () => rootRouteImport,
 } as any)
+const authRouteRoute = authRouteRouteImport.update({
+  id: '/(auth)',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const publicIndexRoute = publicIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => publicRouteRoute,
 } as any)
 const authSignupRoute = authSignupRouteImport.update({
-  id: '/(auth)/signup',
+  id: '/signup',
   path: '/signup',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => authRouteRoute,
 } as any)
 const authLoginRoute = authLoginRouteImport.update({
-  id: '/(auth)/login',
+  id: '/login',
   path: '/login',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => authRouteRoute,
 } as any)
 const authenticatedSettingsRouteRoute =
   authenticatedSettingsRouteRouteImport.update({
@@ -98,9 +103,9 @@ const authenticatedOrgNewRoute = authenticatedOrgNewRouteImport.update({
   getParentRoute: () => authenticatedRouteRoute,
 } as any)
 const authAcceptInvitationIdRoute = authAcceptInvitationIdRouteImport.update({
-  id: '/(auth)/accept-invitation/$id',
+  id: '/accept-invitation/$id',
   path: '/accept-invitation/$id',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => authRouteRoute,
 } as any)
 const authenticatedPlatformDashboardRouteRoute =
   authenticatedPlatformDashboardRouteRouteImport.update({
@@ -433,6 +438,7 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/(auth)': typeof authRouteRouteWithChildren
   '/(authenticated)': typeof authenticatedRouteRouteWithChildren
   '/(public)': typeof publicRouteRouteWithChildren
   '/(authenticated)/platform': typeof authenticatedPlatformRouteRouteWithChildren
@@ -572,6 +578,7 @@ export interface FileRouteTypes {
     | '/org/$slug/workspace/communication/dm/$conversationId'
   id:
     | '__root__'
+    | '/(auth)'
     | '/(authenticated)'
     | '/(public)'
     | '/(authenticated)/platform'
@@ -622,11 +629,9 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  authRouteRoute: typeof authRouteRouteWithChildren
   authenticatedRouteRoute: typeof authenticatedRouteRouteWithChildren
   publicRouteRoute: typeof publicRouteRouteWithChildren
-  authLoginRoute: typeof authLoginRoute
-  authSignupRoute: typeof authSignupRoute
-  authAcceptInvitationIdRoute: typeof authAcceptInvitationIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -645,6 +650,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(auth)': {
+      id: '/(auth)'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof authRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/(public)/': {
       id: '/(public)/'
       path: '/'
@@ -657,14 +669,14 @@ declare module '@tanstack/react-router' {
       path: '/signup'
       fullPath: '/signup'
       preLoaderRoute: typeof authSignupRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof authRouteRoute
     }
     '/(auth)/login': {
       id: '/(auth)/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof authLoginRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof authRouteRoute
     }
     '/(authenticated)/settings': {
       id: '/(authenticated)/settings'
@@ -692,7 +704,7 @@ declare module '@tanstack/react-router' {
       path: '/accept-invitation/$id'
       fullPath: '/accept-invitation/$id'
       preLoaderRoute: typeof authAcceptInvitationIdRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof authRouteRoute
     }
     '/(authenticated)/platform/dashboard': {
       id: '/(authenticated)/platform/dashboard'
@@ -963,6 +975,22 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface authRouteRouteChildren {
+  authLoginRoute: typeof authLoginRoute
+  authSignupRoute: typeof authSignupRoute
+  authAcceptInvitationIdRoute: typeof authAcceptInvitationIdRoute
+}
+
+const authRouteRouteChildren: authRouteRouteChildren = {
+  authLoginRoute: authLoginRoute,
+  authSignupRoute: authSignupRoute,
+  authAcceptInvitationIdRoute: authAcceptInvitationIdRoute,
+}
+
+const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
+  authRouteRouteChildren,
+)
+
 interface authenticatedPlatformDashboardRouteRouteChildren {
   authenticatedPlatformDashboardIndexRoute: typeof authenticatedPlatformDashboardIndexRoute
   authenticatedPlatformDashboardOrganizationsOrgIdRoute: typeof authenticatedPlatformDashboardOrganizationsOrgIdRoute
@@ -1223,12 +1251,19 @@ const publicRouteRouteWithChildren = publicRouteRoute._addFileChildren(
 )
 
 const rootRouteChildren: RootRouteChildren = {
+  authRouteRoute: authRouteRouteWithChildren,
   authenticatedRouteRoute: authenticatedRouteRouteWithChildren,
   publicRouteRoute: publicRouteRouteWithChildren,
-  authLoginRoute: authLoginRoute,
-  authSignupRoute: authSignupRoute,
-  authAcceptInvitationIdRoute: authAcceptInvitationIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

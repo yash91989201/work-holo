@@ -3,6 +3,7 @@ import type { db as Db } from "@work-holo/db";
 import {
   channelMemberTable,
   channelTable,
+  member,
   messageTable,
 } from "@work-holo/db/schema/index";
 import { and, eq } from "drizzle-orm";
@@ -65,9 +66,21 @@ export class PermissionResourceGuard {
     });
 
     if (!membership) {
-      throw new ORPCError("FORBIDDEN", {
-        message: "You are not a member of this channel",
+      const orgMembership = await this.db.query.member.findFirst({
+        where: and(
+          eq(member.organizationId, this.orgId),
+          eq(member.userId, this.userId)
+        ),
+        columns: { role: true },
       });
+
+      const isAdmin = orgMembership?.role === "owner" || orgMembership?.role === "admin";
+
+      if (!isAdmin) {
+        throw new ORPCError("FORBIDDEN", {
+          message: "You are not a member of this channel",
+        });
+      }
     }
 
     const teamId = channel.teamId ?? undefined;

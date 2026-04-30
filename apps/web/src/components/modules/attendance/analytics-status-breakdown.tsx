@@ -2,7 +2,7 @@ import { IconChartDonut } from "@tabler/icons-react";
 import type { AttendanceAnalyticsOutput } from "@work-holo/api/lib/schemas/attendance";
 import { Cell, Pie, PieChart } from "recharts";
 import type { z } from "zod";
-import { Card } from "@/components/ui/card";
+import { Card } from "@work-holo/ui/components/card";
 
 type AttendanceAnalytics = z.infer<typeof AttendanceAnalyticsOutput>;
 

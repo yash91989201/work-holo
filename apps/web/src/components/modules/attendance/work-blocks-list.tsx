@@ -7,16 +7,16 @@ import {
 } from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import type { WorkBlockType } from "@work-holo/db/lib/types";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@work-holo/ui/components/badge";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@work-holo/ui/components/card";
+import { ScrollArea } from "@work-holo/ui/components/scroll-area";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
 import { formatDuration } from "@/utils";
 import { queryUtils } from "@/utils/orpc";
 

@@ -9,8 +9,8 @@ import {
   IconWifiOff,
 } from "@tabler/icons-react";
 import { useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import { Badge } from "@work-holo/ui/components/badge";
 import {
   Card,
   CardAction,
@@ -18,17 +18,17 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
+} from "@work-holo/ui/components/card";
+import { ScrollArea } from "@work-holo/ui/components/scroll-area";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@work-holo/ui/components/select";
+import { Separator } from "@work-holo/ui/components/separator";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
 import { useListOrgMembers } from "@/hooks/use-list-org-members";
 import type { PresenceStatus } from "@/hooks/use-presence";
 import { useOrgPresence } from "@/hooks/use-presence";

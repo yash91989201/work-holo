@@ -8,20 +8,20 @@ import {
   IconTrash,
 } from "@tabler/icons-react";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@work-holo/ui/components/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@work-holo/ui/components/dropdown-menu";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@work-holo/ui/components/tooltip";
 
 interface DmMessageActionsProps {
   canEdit: boolean;
@@ -57,21 +57,23 @@ export function DmMessageActions({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <TooltipProvider delayDuration={300}>
+    <TooltipProvider delay={300}>
       <div className="flex items-center gap-0.5 rounded-lg border bg-background p-1 shadow-sm">
         {/* Quick reactions */}
         {REACTIONS.slice(0, 3).map((emoji) => (
           <Tooltip key={emoji}>
-            <TooltipTrigger asChild>
-              <Button
-                className="h-7 w-7 text-base"
-                onClick={() => onReact(emoji)}
-                size="icon"
-                variant="ghost"
-              >
-                {emoji}
-              </Button>
-            </TooltipTrigger>
+            <TooltipTrigger
+              render={
+                <Button
+                  className="h-7 w-7 text-base"
+                  onClick={() => onReact(emoji)}
+                  size="icon"
+                  variant="ghost"
+                >
+                  {emoji}
+                </Button>
+              }
+            />
             <TooltipContent>React with {emoji}</TooltipContent>
           </Tooltip>
         ))}
@@ -79,13 +81,17 @@ export function DmMessageActions({
         {/* More actions dropdown */}
         <DropdownMenu onOpenChange={setIsOpen} open={isOpen}>
           <Tooltip>
-            <TooltipTrigger asChild>
-              <DropdownMenuTrigger asChild>
-                <Button className="h-7 w-7" size="icon" variant="ghost">
-                  <IconDots className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-            </TooltipTrigger>
+            <TooltipTrigger
+              render={
+                <DropdownMenuTrigger
+                  render={
+                    <Button className="h-7 w-7" size="icon" variant="ghost">
+                      <IconDots className="h-4 w-4" />
+                    </Button>
+                  }
+                />
+              }
+            />
             <TooltipContent>More actions</TooltipContent>
           </Tooltip>
 

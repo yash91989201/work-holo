@@ -4,22 +4,22 @@ import { useIsFetching } from "@tanstack/react-query";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@work-holo/ui/components/button";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from "@/components/ui/input-group";
+} from "@work-holo/ui/components/input-group";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Spinner } from "@/components/ui/spinner";
+} from "@work-holo/ui/components/select";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
+import { Spinner } from "@work-holo/ui/components/spinner";
 import { queryUtils } from "@/utils/orpc";
 import { FilesViewToggle } from "./files-view-toggle";
 
@@ -178,7 +178,13 @@ export function FilesFilterToolbar() {
           </InputGroupAddon>
         </InputGroup>
 
-        <Select onValueChange={handleTypeChange} value={searchParams.type}>
+        <Select
+          onValueChange={(value) => {
+            if (value === null) return;
+            handleTypeChange(value);
+          }}
+          value={searchParams.type}
+        >
           <SelectTrigger className="w-35">
             <SelectValue placeholder="Type" />
           </SelectTrigger>
@@ -192,7 +198,13 @@ export function FilesFilterToolbar() {
           </SelectContent>
         </Select>
 
-        <Select onValueChange={handleSortChange} value={sortValue}>
+        <Select
+          onValueChange={(value) => {
+            if (value === null) return;
+            handleSortChange(value);
+          }}
+          value={sortValue}
+        >
           <SelectTrigger className="w-40">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
@@ -207,7 +219,10 @@ export function FilesFilterToolbar() {
         </Select>
 
         <Select
-          onValueChange={handleSenderChange}
+          onValueChange={(value) => {
+            if (value === null) return;
+            handleSenderChange(value);
+          }}
           value={searchParams.onlyMine ? "mine" : "all"}
         >
           <SelectTrigger className="w-38">

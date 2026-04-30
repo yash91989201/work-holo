@@ -247,56 +247,87 @@ export const channelRouter = {
   list: orgMemberProcedure
     .input(ListChannelsInput)
     .output(ListChannelsOutput)
-    .handler(async ({ context: { db, orgId }, input }) => {
-      const { page, limit, search, filters, sorting } = input;
-      const offset = (page - 1) * limit;
+    .handler(
+      async ({ context: { db, orgId, session, orgMembership }, input }) => {
+        const { page, limit, search, filters, sorting } = input;
+        const offset = (page - 1) * limit;
 
-      const conditions = [eq(channelTable.organizationId, orgId)];
+        const conditions = [eq(channelTable.organizationId, orgId)];
 
-      if (search) {
-        conditions.push(like(channelTable.name, `%${search}%`));
+        if (search) {
+          conditions.push(like(channelTable.name, `%${search}%`));
+        }
+
+        if (filters?.type) {
+          conditions.push(eq(channelTable.type, filters.type));
+        }
+
+        if (filters?.teamId) {
+          conditions.push(eq(channelTable.teamId, filters.teamId));
+        }
+
+        if (!filters?.includeArchived) {
+          conditions.push(eq(channelTable.isArchived, false));
+        }
+
+        const isAdmin =
+          orgMembership.role === "owner" || orgMembership.role === "admin";
+
+        if (!isAdmin) {
+          const userMemberChannels = await db
+            .select({ channelId: channelMemberTable.channelId })
+            .from(channelMemberTable)
+            .innerJoin(
+              channelTable,
+              eq(channelMemberTable.channelId, channelTable.id)
+            )
+            .where(
+              and(
+                eq(channelMemberTable.userId, session.user.id),
+                eq(channelTable.organizationId, orgId)
+              )
+            );
+
+          const accessibleChannelIds = userMemberChannels.map(
+            (r) => r.channelId
+          );
+
+          if (accessibleChannelIds.length === 0) {
+            return { channels: [], total: 0, pageCount: 0 };
+          }
+
+          conditions.push(inArray(channelTable.id, accessibleChannelIds));
+        }
+
+        const whereClause =
+          conditions.length > 1 ? and(...conditions) : conditions[0];
+
+        const orderBy = getChannelOrderBy(sorting);
+
+        const channels = await db.query.channelTable.findMany({
+          where: whereClause,
+          limit,
+          offset,
+          orderBy,
+          with: {
+            creator: true,
+          },
+        });
+
+        const totalResult = await db
+          .select({ count: count() })
+          .from(channelTable)
+          .where(whereClause);
+        const total = Number(totalResult[0]?.count ?? 0);
+        const pageCount = Math.ceil(total / limit);
+
+        return {
+          channels,
+          total,
+          pageCount,
+        };
       }
-
-      if (filters?.type) {
-        conditions.push(eq(channelTable.type, filters.type));
-      }
-
-      if (filters?.teamId) {
-        conditions.push(eq(channelTable.teamId, filters.teamId));
-      }
-
-      if (!filters?.includeArchived) {
-        conditions.push(eq(channelTable.isArchived, false));
-      }
-
-      const whereClause =
-        conditions.length > 1 ? and(...conditions) : conditions[0];
-
-      const orderBy = getChannelOrderBy(sorting);
-
-      const channels = await db.query.channelTable.findMany({
-        where: whereClause,
-        limit,
-        offset,
-        orderBy,
-        with: {
-          creator: true,
-        },
-      });
-
-      const totalResult = await db
-        .select({ count: count() })
-        .from(channelTable)
-        .where(whereClause);
-      const total = Number(totalResult[0]?.count ?? 0);
-      const pageCount = Math.ceil(total / limit);
-
-      return {
-        channels,
-        total,
-        pageCount,
-      };
-    }),
+    ),
 
   /**
    * Lists members of a channel with their user details and role.

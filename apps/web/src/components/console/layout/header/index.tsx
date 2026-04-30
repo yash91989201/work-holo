@@ -2,8 +2,8 @@ import { Suspense } from "react";
 import { AccountDropdown } from "@/components/org/account-dropdown";
 import { Navigator } from "@/components/org/navigator";
 import { NotificationDropdown } from "@/components/org/notification-dropdown";
-import { Separator } from "@/components/ui/separator";
-import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Separator } from "@work-holo/ui/components/separator";
+import { SidebarTrigger } from "@work-holo/ui/components/sidebar";
 
 export function Header() {
   return (

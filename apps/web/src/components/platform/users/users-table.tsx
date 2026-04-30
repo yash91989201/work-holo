@@ -3,29 +3,29 @@ import { useDebouncedCallback } from "@tanstack/react-pacer";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge } from "@work-holo/ui/components/badge";
+import { Button } from "@work-holo/ui/components/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@work-holo/ui/components/dropdown-menu";
 import {
   Empty,
   EmptyDescription,
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@/components/ui/empty";
+} from "@work-holo/ui/components/empty";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from "@/components/ui/input-group";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@work-holo/ui/components/input-group";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
 import {
   Table,
   TableBody,
@@ -33,12 +33,12 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@work-holo/ui/components/table";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@work-holo/ui/components/tooltip";
 import { queryUtils } from "@/utils/orpc";
 
 function platformRoleBadgeVariant(
@@ -176,18 +176,20 @@ export function UsersTable({ adminRole }: { adminRole: string }) {
                     <div className="flex flex-wrap gap-1">
                       {u.organizations.map((org) => (
                         <Tooltip key={org.orgSlug}>
-                          <TooltipTrigger asChild>
-                            <Badge
-                              className="gap-1"
-                              variant={orgRoleBadgeVariant(org.orgRole)}
-                            >
-                              <IconBuilding className="size-3" />
-                              {org.orgName}
-                              <span className="text-[10px] opacity-70">
-                                ({org.orgRole})
-                              </span>
-                            </Badge>
-                          </TooltipTrigger>
+                          <TooltipTrigger
+                            render={
+                              <Badge
+                                className="gap-1"
+                                variant={orgRoleBadgeVariant(org.orgRole)}
+                              >
+                                <IconBuilding className="size-3" />
+                                {org.orgName}
+                                <span className="text-[10px] opacity-70">
+                                  ({org.orgRole})
+                                </span>
+                              </Badge>
+                            }
+                          />
                           <TooltipContent>
                             {org.orgRole} in {org.orgName}
                           </TooltipContent>
@@ -211,11 +213,13 @@ export function UsersTable({ adminRole }: { adminRole: string }) {
                 <TableCell>
                   {adminRole !== "support" && u.role !== "super_admin" && (
                     <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button size="icon" variant="ghost">
-                          <IconDots className="size-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
+                      <DropdownMenuTrigger
+                        render={
+                          <Button size="icon" variant="ghost">
+                            <IconDots className="size-4" />
+                          </Button>
+                        }
+                      />
                       <DropdownMenuContent align="end">
                         {u.banned ? (
                           <DropdownMenuItem

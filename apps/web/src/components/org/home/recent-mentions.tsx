@@ -2,22 +2,22 @@ import { IconArrowBackUp, IconCheck } from "@tabler/icons-react";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import DOMPurify from "dompurify";
 import parse from "html-react-parser";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import { Badge } from "@work-holo/ui/components/badge";
+import { Button } from "@work-holo/ui/components/button";
 import {
   Card,
   CardAction,
   CardContent,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@work-holo/ui/components/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@work-holo/ui/components/dropdown-menu";
 import {
   Item,
   ItemActions,
@@ -27,9 +27,9 @@ import {
   ItemHeader,
   ItemMedia,
   ItemTitle,
-} from "@/components/ui/item";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@work-holo/ui/components/item";
+import { ScrollArea } from "@work-holo/ui/components/scroll-area";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
 import { useMessageMutations } from "@/hooks/communications/use-message-mutations";
 import { useRecentMentions } from "@/hooks/communications/use-recent-mentions";
 import { useAuthedSession } from "@/hooks/use-authed-session";
@@ -196,16 +196,18 @@ export function RecentMentions() {
                       </ItemDescription>
                       <ItemActions className="mt-2 gap-1">
                         <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              className="h-7 rounded-md px-2 text-[11px]"
-                              size="sm"
-                              type="button"
-                              variant="ghost"
-                            >
-                              React
-                            </Button>
-                          </DropdownMenuTrigger>
+                          <DropdownMenuTrigger
+                            render={
+                              <Button
+                                className="h-7 rounded-md px-2 text-[11px]"
+                                size="sm"
+                                type="button"
+                                variant="ghost"
+                              >
+                                React
+                              </Button>
+                            }
+                          />
                           <DropdownMenuContent
                             align="start"
                             className="w-auto p-1"

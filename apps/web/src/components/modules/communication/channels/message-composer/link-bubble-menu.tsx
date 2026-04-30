@@ -7,18 +7,18 @@ import {
 } from "@tabler/icons-react";
 import type { Editor } from "@tiptap/core";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@work-holo/ui/components/button";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from "@/components/ui/input-group";
+} from "@work-holo/ui/components/input-group";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@work-holo/ui/components/popover";
 
 interface LinkBubbleMenuProps {
   editor: Editor;
@@ -157,8 +157,7 @@ export function LinkBubbleMenu({ editor }: LinkBubbleMenuProps) {
           <IconExternalLink className="h-4 w-4" />
         </Button>
         <Popover onOpenChange={setIsEditPopoverOpen} open={isEditPopoverOpen}>
-          <PopoverTrigger asChild>
-            <Button
+          <PopoverTrigger render={<Button
               className="h-9 rounded-none border-r"
               onClick={() => {
                 setEditUrl(currentUrl || "");
@@ -170,8 +169,7 @@ export function LinkBubbleMenu({ editor }: LinkBubbleMenuProps) {
               variant="ghost"
             >
               <IconPencil className="h-4 w-4" />
-            </Button>
-          </PopoverTrigger>
+            </Button>} />
           <PopoverContent align="start" className="w-80 p-2">
             <InputGroup>
               <InputGroupInput

@@ -1,4 +1,4 @@
-import { IconChartBar, IconLayoutDashboard } from "@tabler/icons-react";
+import { IconChartDonut, IconLayoutDashboard } from "@tabler/icons-react";
 import {
   Link,
   linkOptions,
@@ -12,7 +12,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
+} from "@work-holo/ui/components/sidebar";
 
 export function AttendanceGroup() {
   const { slug } = useParams({
@@ -31,7 +31,7 @@ export function AttendanceGroup() {
       params: { slug },
       to: "/org/$slug/workspace/attendance/analytics",
       label: "Analytics",
-      icon: IconChartBar,
+      icon: IconChartDonut,
     },
   ]);
 
@@ -46,15 +46,15 @@ export function AttendanceGroup() {
             return (
               <SidebarMenuItem key={link.label}>
                 <SidebarMenuButton
-                  asChild
                   isActive={isActive}
+                  render={
+                    <Link {...link}>
+                      {link.icon && <link.icon />}
+                      <span>{link.label}</span>
+                    </Link>
+                  }
                   tooltip={link.label}
-                >
-                  <Link {...link}>
-                    {link.icon && <link.icon />}
-                    <span>{link.label}</span>
-                  </Link>
-                </SidebarMenuButton>
+                />
               </SidebarMenuItem>
             );
           })}

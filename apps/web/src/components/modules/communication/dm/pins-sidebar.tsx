@@ -4,8 +4,7 @@ import {
   IconPinFilled,
   IconX,
 } from "@tabler/icons-react";
-import { useParams } from "@tanstack/react-router";
-import { Button } from "@/components/ui/button";
+import { Button } from "@work-holo/ui/components/button";
 // Import the pinned messages hook
 import { useVirtualDmPinnedMessages } from "@/hooks/communications/dm/use-dm-pinned-messages";
 import { cn } from "@/lib/utils";
@@ -14,9 +13,6 @@ import { DmMessageItem } from "./message-item";
 
 export function DmPinsSidebar() {
   const { isOpen, closePinnedMessages: onClose } = useDmPinnedMessagesSidebar();
-  const { conversationId } = useParams({
-    from: "/(authenticated)/org/$slug/workspace/communication/dm/$conversationId",
-  });
 
   const {
     scrollRef,

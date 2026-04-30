@@ -1,13 +1,13 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import { Badge } from "@work-holo/ui/components/badge";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from "@/components/ui/hover-card";
-import { Item, ItemContent, ItemMedia, ItemTitle } from "@/components/ui/item";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
+} from "@work-holo/ui/components/hover-card";
+import { Item, ItemContent, ItemMedia, ItemTitle } from "@work-holo/ui/components/item";
+import { ScrollArea } from "@work-holo/ui/components/scroll-area";
+import { Separator } from "@work-holo/ui/components/separator";
 import { useMessageReactions } from "@/hooks/communications/use-message-reactions";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { cn } from "@/lib/utils";
@@ -32,9 +32,8 @@ export function MessageReactions({
   return (
     <div className="flex flex-wrap gap-1.5">
       {reactions.map((reaction) => (
-        <HoverCard key={reaction.emoji} openDelay={300}>
-          <HoverCardTrigger asChild>
-            <Badge
+        <HoverCard key={reaction.emoji}>
+          <HoverCardTrigger delay={300} render={<Badge
               className={cn(
                 "cursor-pointer gap-1 font-medium transition-colors",
                 reaction.hasCurrentUser
@@ -52,8 +51,7 @@ export function MessageReactions({
             >
               <span className="text-sm leading-none">{reaction.emoji}</span>
               <span className="text-xs">{reaction.count}</span>
-            </Badge>
-          </HoverCardTrigger>
+            </Badge>} />
           <HoverCardContent align="start" className="w-64 p-0">
             <Item>
               <ItemTitle>Reacted with {reaction.emoji}</ItemTitle>

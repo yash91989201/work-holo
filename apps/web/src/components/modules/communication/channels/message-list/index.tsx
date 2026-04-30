@@ -1,5 +1,5 @@
 import { IconArrowDown, IconLoader2 } from "@tabler/icons-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@work-holo/ui/components/button";
 import { useMarkMessagesRead } from "@/hooks/communications/use-mark-messages-read";
 import { useVirtualMessages } from "@/hooks/communications/use-messages";
 import { useVisibleMessages } from "@/hooks/communications/use-visible-messages";

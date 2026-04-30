@@ -24,26 +24,26 @@ import { useRef, useState } from "react";
 import { toast } from "sonner";
 import type { z } from "zod";
 import { Image } from "@/components/shared/image";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import { Badge } from "@work-holo/ui/components/badge";
+import { Button } from "@work-holo/ui/components/button";
 import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuSeparator,
   ContextMenuTrigger,
-} from "@/components/ui/context-menu";
-import { Dialog, DialogClose, DialogContent } from "@/components/ui/dialog";
+} from "@work-holo/ui/components/context-menu";
+import { Dialog, DialogClose, DialogContent } from "@work-holo/ui/components/dialog";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@work-holo/ui/components/select";
+import { Separator } from "@work-holo/ui/components/separator";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { queryUtils } from "@/utils/orpc";
 import {
@@ -118,16 +118,18 @@ const FileInfoDialog = ({
   return (
     <Dialog onOpenChange={onOpenChange} open={open}>
       <DialogContent className="max-w-sm gap-0 overflow-hidden p-0">
-        <DialogClose asChild>
-          <Button
-            className="absolute top-3 right-3 z-10"
-            size="icon"
-            variant="secondary"
-          >
-            <IconX className="h-4 w-4" />
-            <span className="sr-only">Close</span>
-          </Button>
-        </DialogClose>
+        <DialogClose
+          render={
+            <Button
+              className="absolute top-3 right-3 z-10"
+              size="icon"
+              variant="secondary"
+            >
+              <IconX className="h-4 w-4" />
+              <span className="sr-only">Close</span>
+            </Button>
+          }
+        />
 
         <div className="relative h-44 w-full overflow-hidden bg-muted">
           {isImage ? (
@@ -384,19 +386,21 @@ const FileGridCard = ({ file }: { file: FileItem }) => {
   return (
     <>
       <ContextMenu>
-        <ContextMenuTrigger asChild>
-          <article className="group flex flex-col overflow-hidden rounded-2xl border border-border/60 bg-card transition-shadow duration-200 hover:shadow-sm">
-            <FilePreview file={file} />
-            <div className="px-3 py-2.5">
-              <p
-                className="truncate font-medium text-sm"
-                title={file.originalName}
-              >
-                {file.originalName}
-              </p>
-            </div>
-          </article>
-        </ContextMenuTrigger>
+        <ContextMenuTrigger
+          render={
+            <article className="group flex flex-col overflow-hidden rounded-2xl border border-border/60 bg-card transition-shadow duration-200 hover:shadow-sm">
+              <FilePreview file={file} />
+              <div className="px-3 py-2.5">
+                <p
+                  className="truncate font-medium text-sm"
+                  title={file.originalName}
+                >
+                  {file.originalName}
+                </p>
+              </div>
+            </article>
+          }
+        />
 
         <ContextMenuContent>
           <ContextMenuItem disabled={!file.url} onClick={handlePreviewOrOpen}>

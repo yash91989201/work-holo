@@ -1,12 +1,12 @@
 import { IconChevronDown, IconRefresh, IconUsers } from "@tabler/icons-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { withForm } from "@/components/ui/form/hooks";
+import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import { Badge } from "@work-holo/ui/components/badge";
+import { Button } from "@work-holo/ui/components/button";
+import { withForm } from "@work-holo/ui/components/form/hooks";
 import {
   MultiSelect,
   type MultiSelectOption,
-} from "@/components/ui/multi-select";
+} from "@work-holo/ui/components/multi-select";
 import { useListOrgMembers } from "@/hooks/use-list-org-members";
 import { cn } from "@/lib/utils";
 import { withFallback } from "@/types/component-fallback";

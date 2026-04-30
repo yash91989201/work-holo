@@ -6,7 +6,7 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@/components/ui/empty";
+} from "@work-holo/ui/components/empty";
 
 export const Route = createFileRoute("/(authenticated)/org/$slug/manage/")({
   component: RouteComponent,

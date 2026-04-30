@@ -7,7 +7,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
+} from "@work-holo/ui/components/sidebar";
 
 export const DEFAULT_FILE_SEARCH = {
   page: 1,
@@ -33,16 +33,7 @@ export function FilesGroup() {
       <SidebarGroupContent>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={isActive} tooltip="Files">
-              <Link
-                params={{ slug }}
-                search={DEFAULT_FILE_SEARCH}
-                to="/org/$slug/workspace/communication/channels/files"
-              >
-                <IconPaperclip />
-                <span>Files</span>
-              </Link>
-            </SidebarMenuButton>
+            <SidebarMenuButton isActive={isActive} render={<Link params={{ slug }} search={DEFAULT_FILE_SEARCH} to="/org/$slug/workspace/communication/channels/files"><IconPaperclip /><span>Files</span></Link>} tooltip="Files" />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarGroupContent>

@@ -3,12 +3,12 @@ import { formOptions } from "@tanstack/react-form";
 import { useNavigate } from "@tanstack/react-router";
 
 import { Image } from "@/components/shared/image";
-import { Button } from "@/components/ui/button";
+import { Button } from "@work-holo/ui/components/button";
 import {
   InputGroupAddon,
   InputGroupButton,
-} from "@/components/ui/form/form-input-group";
-import { useAppForm } from "@/components/ui/form/hooks";
+} from "@work-holo/ui/components/form/form-input-group";
+import { useAppForm } from "@work-holo/ui/components/form/hooks";
 import { authClient } from "@/lib/auth-client";
 import { CreateOrgFormSchema } from "@/lib/schemas/org";
 import type { CreateOrgFormType } from "@/lib/types";

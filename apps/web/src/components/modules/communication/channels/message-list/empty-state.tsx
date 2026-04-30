@@ -6,7 +6,7 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@/components/ui/empty";
+} from "@work-holo/ui/components/empty";
 
 export const EmptyState = () => (
   <div className="flex h-full items-center justify-center p-8">

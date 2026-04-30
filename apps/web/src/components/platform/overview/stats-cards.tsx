@@ -6,8 +6,8 @@ import {
   IconUsers,
 } from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent, CardHeader, CardTitle } from "@work-holo/ui/components/card";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
 import { queryUtils } from "@/utils/orpc";
 
 export function StatsCards() {

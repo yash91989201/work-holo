@@ -6,9 +6,9 @@ import {
 } from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@work-holo/ui/components/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@work-holo/ui/components/card";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
 import { queryUtils } from "@/utils/orpc";
 
 export function OwnerDetail({ ownerId }: { ownerId: string }) {

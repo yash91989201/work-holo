@@ -146,7 +146,7 @@ const { mutateAsync: createChannel } = useMutation(
 import { IconX } from "@tabler/icons-react";
 import { z } from "zod";
 import { useMutation } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
+import { Button } from "@work-holo/ui/components/button";
 import {
   Field,
   FieldContent,
@@ -155,16 +155,16 @@ import {
   FieldGroup,
   FieldLegend,
   FieldSet,
-} from "@/components/ui/field";
-import { useAppForm } from "@/components/ui/form/hooks";
+} from "@work-holo/ui/components/field";
+import { useAppForm } from "@work-holo/ui/components/form/hooks";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from "@/components/ui/input-group";
-import { SelectItem } from "@/components/ui/select";
-import { Spinner } from "@/components/ui/spinner";
+} from "@work-holo/ui/components/input-group";
+import { SelectItem } from "@work-holo/ui/components/select";
+import { Spinner } from "@work-holo/ui/components/spinner";
 import { queryUtils } from "@/utils/orpc";
 
 export const PROJECT_STATUSES = ["draft", "active", "finished"] as const;

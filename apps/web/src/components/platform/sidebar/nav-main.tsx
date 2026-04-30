@@ -14,7 +14,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
+} from "@work-holo/ui/components/sidebar";
 
 const navItems = [
   {
@@ -76,15 +76,15 @@ export function NavMain({ adminRole }: NavMainProps) {
             return (
               <SidebarMenuItem key={item.to}>
                 <SidebarMenuButton
-                  asChild
                   isActive={isActive}
+                  render={
+                    <Link to={item.to}>
+                      <item.icon />
+                      <span>{item.label}</span>
+                    </Link>
+                  }
                   tooltip={item.label}
-                >
-                  <Link to={item.to}>
-                    <item.icon />
-                    <span>{item.label}</span>
-                  </Link>
-                </SidebarMenuButton>
+                />
               </SidebarMenuItem>
             );
           })}
