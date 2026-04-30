@@ -6,6 +6,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@work-holo/ui/components/accordion";
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemTitle,
+} from "@work-holo/ui/components/item";
+import { cn } from "@work-holo/ui/lib/utils";
 import { motion } from "motion/react";
 import { useState } from "react";
 import type { ServicePageData } from "./service-data";
@@ -15,8 +22,6 @@ import { ServiceGalleryImage, ServiceImage } from "./service-image";
 interface ServiceDetailPageProps {
   data: ServicePageData;
 }
-
-/* ─────────────────────────── Sidebar ─────────────────────────── */
 
 function ServiceSidebar({ currentSlug }: { currentSlug: string }) {
   const services = getServiceList(currentSlug);
@@ -34,24 +39,29 @@ function ServiceSidebar({ currentSlug }: { currentSlug: string }) {
         <div className="border-border/10 border-b px-4 py-4 sm:px-6">
           <h3 className="font-semibold text-foreground">More services</h3>
         </div>
-        <div className="divide-y divide-border/10">
+        <div className="p-2">
           {services.map((service) => (
-            <Link
-              className={`group flex items-center justify-between px-4 py-4 transition-colors hover:bg-card/50 sm:px-6 ${
-                service.isActive
-                  ? "bg-primary/5 text-primary"
-                  : "text-foreground"
-              }`}
+            <Item
+              className={cn(
+                service.isActive &&
+                  "border-primary/20 bg-primary/5 text-primary"
+              )}
               key={service.slug}
-              to={service.href}
+              render={<Link to={service.href} />}
+              variant={service.isActive ? "outline" : "default"}
             >
-              <span className="text-sm">{service.title}</span>
-              <IconChevronRight
-                className={`size-4 transition-transform group-hover:translate-x-1 ${
-                  service.isActive ? "text-primary" : "text-muted-foreground"
-                }`}
-              />
-            </Link>
+              <ItemContent>
+                <ItemTitle>{service.title}</ItemTitle>
+              </ItemContent>
+              <ItemActions>
+                <IconChevronRight
+                  className={cn(
+                    "size-4 transition-transform group-hover/item:translate-x-1",
+                    service.isActive ? "text-primary" : "text-muted-foreground"
+                  )}
+                />
+              </ItemActions>
+            </Item>
           ))}
         </div>
       </motion.div>
@@ -89,8 +99,6 @@ function ServiceSidebar({ currentSlug }: { currentSlug: string }) {
     </div>
   );
 }
-
-/* ─────────────────────── Main Component ─────────────────────── */
 
 export function ServiceDetailPage({ data }: ServiceDetailPageProps) {
   const [openFAQ, setOpenFAQ] = useState<string[]>(["item-0"]);
