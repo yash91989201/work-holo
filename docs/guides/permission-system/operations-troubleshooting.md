@@ -23,6 +23,7 @@ Check in order:
 4. permission event emitted (`permission:update` to user channel)
 5. frontend subscription active (`usePermissionSync` mounted)
 6. query invalidation and refetch occurred (`user.permission.get`)
+7. if the change was a base org-role change, confirm Better Auth `member.role` was updated and that an org-scoped request ran through `orgMemberProcedure` to trigger `assignOrgUserRole(...)` synchronization
 
 ## Unexpected deny on API
 
@@ -31,9 +32,11 @@ Check in order:
 1. correct org context in request (`activeOrganizationId`)
 2. resource guard preconditions (channel org match, channel membership, message existence)
 3. permission key correctness (exists in vocabulary)
-4. bitset contains expected bit index for user
-5. Casbin rules present for subject/domain/object/action
-6. deny override exists and is active (not expired)
+4. for base org access, verify the user's Better Auth membership row has the expected `member.role`
+5. for custom access, verify the expected non-system `roleAssignment` exists with the correct `teamId` / org scope
+6. bitset contains expected bit index for user
+7. Casbin rules present for subject/domain/object/action
+8. deny override exists and is active (not expired)
 
 ## Enforce mode behavior
 
@@ -57,6 +60,7 @@ From frontend sync hook:
 - runtime checks: `packages/permission/src/services/authorization-engine.ts`
 - cache behavior: `packages/permission/src/services/cache-manager.ts`
 - compile behavior: `packages/permission/src/services/policy-manager.ts`
+- membership/system-role sync: `packages/permission/src/utils/assign-org-user-role.ts`
 - route usage: `packages/api/src/routers/communication/channel.ts`
 - route usage: `packages/api/src/routers/communication/message.ts`
 - web hydration: `apps/web/src/lib/permission/permission-context.tsx`

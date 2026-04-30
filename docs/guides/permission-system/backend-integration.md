@@ -28,7 +28,7 @@ Initialized managers:
   - `db`: request database handle
   - managers: cache/policy/engine/event/map
 
-`orgMemberProcedure` then validates organization membership and adds member role metadata.
+`orgMemberProcedure` then validates organization membership, synchronizes the permission system's persisted system-role assignment from Better Auth via `assignOrgUserRole(...)`, and adds member role metadata.
 
 ## Permission check usage patterns in API routers
 
@@ -60,6 +60,12 @@ In communication routes, this combines membership validation with permission enf
 
 This endpoint is the single source used by web permission context.
 
+## Prefer permission checks over raw org role checks
+
+API routes should enforce authorization through `context.permission.check(...)`, not by manually checking `context.orgMembership.role` strings.
+
+For example, `packages/api/src/routers/org/module-config.ts` now uses `context.permission.check(context.permission.org.update())` instead of a hardcoded `owner/admin` bypass. This keeps backend authorization compatible with future custom roles.
+
 ## Admin mutation flow
 
 `PermissionAdmin` methods (`assignRole`, `revokeRole`, `createPolicyOverride`, `removePolicyOverride`, `recompilePolicies`) follow this pattern:
@@ -79,9 +85,14 @@ For org-wide recompile, org-level decision/bitset/map keys are invalidated.
 
 ## Admin API constraints
 
-**Role revocation requires teamId for team-scoped roles:**
+`PermissionAdmin.assignRole(...)` and `PermissionAdmin.revokeRole(...)` now validate the role model more strictly:
 
-`PermissionAdmin.revokeRole(targetUserId, roleTemplateId, options)` validates:
-- If the role template has `scope: "team"` and no `teamId` is provided in options, throws `BAD_REQUEST` error
-- This prevents accidental revocation across all teams when only a single team assignment should be removed
-- Org-scoped roles can still be revoked without providing `teamId`
+- system role templates cannot be assigned or revoked through `PermissionAdmin`
+  - org system roles are controlled by Better Auth membership on `member.role`
+- non-system role templates must belong to the current organization
+- `teamId` is required for `scope: "team"` role templates
+- `teamId` is rejected for `scope: "org"` role templates
+- when `teamId` is provided, the team must belong to the current organization
+- role assignment writes use `onConflictDoNothing()` so repeated assignment is idempotent
+
+This means the admin API is only for custom assignable roles and direct policy overrides. Base `owner` / `admin` / `member` changes should happen through the organization membership system, not through permission role assignment APIs.
