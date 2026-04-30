@@ -8,17 +8,24 @@ export function useMyTeams(role: string | undefined) {
   const { teams, refetchTeams, isRefetching } = useListOrgTeams();
   const session = useSession();
   const isOwnerOrAdmin = role === "owner" || role === "admin";
+  const activeOrganizationId = session?.session.activeOrganizationId;
 
-  const { data: myTeamMemberships } = useSuspenseQuery({
-    queryKey: [...getAuthQueryKey.organization.myTeamMemberships(), role],
+  const { data: myTeams } = useSuspenseQuery({
+    queryKey: [
+      ...getAuthQueryKey.organization.myTeamMemberships(),
+      role,
+      activeOrganizationId,
+    ],
     queryFn: async () => {
       if (isOwnerOrAdmin || !role) {
         return null;
       }
-      const { data, error } = await authClient.organization.listTeamMembers();
+
+      const { data, error } = await authClient.organization.listUserTeams();
       if (error !== null) {
         return [];
       }
+
       return data;
     },
   });
@@ -27,15 +34,10 @@ export function useMyTeams(role: string | undefined) {
     return { teams, refetchTeams, isRefetching };
   }
 
-  const userId = session?.user?.id;
-  const myTeamIds = new Set(
-    (myTeamMemberships ?? [])
-      .filter((tm) => tm.userId === userId)
-      .map((tm) => tm.teamId)
-  );
+  const myTeamIds = new Set((myTeams ?? []).map((team) => team.id));
 
   return {
-    teams: teams.filter((t) => myTeamIds.has(t.id)),
+    teams: teams.filter((team) => myTeamIds.has(team.id)),
     refetchTeams,
     isRefetching,
   };

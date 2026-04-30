@@ -1,5 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createContext } from "react";
+import { useSession } from "@/hooks/use-session";
 import { queryUtils } from "@/utils/orpc";
 
 export type PermissionRecord = Record<string, boolean>;
@@ -25,8 +26,15 @@ export function PermissionProvider({
 }: {
   children: React.ReactNode;
 }) {
+  const session = useSession();
+  const activeTeamId = session?.session.activeTeamId ?? undefined;
+
   const { data: permissionMap } = useSuspenseQuery(
-    queryUtils.user.permission.get.queryOptions({})
+    queryUtils.user.permission.get.queryOptions({
+      input: {
+        teamId: activeTeamId,
+      },
+    })
   );
 
   return (

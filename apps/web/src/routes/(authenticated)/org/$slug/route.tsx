@@ -7,12 +7,13 @@ import {
   useNotificationPusher,
 } from "@/hooks/notifications/use-notification-pusher";
 import { useTabNotification } from "@/hooks/notifications/use-tab-notification";
+import { usePermissionSync } from "@/hooks/use-permission-sync";
 import { authClient } from "@/lib/auth-client";
 import { PermissionProvider } from "@/lib/permission";
 import { queryClient, queryUtils } from "@/utils/orpc";
 
 export const Route = createFileRoute("/(authenticated)/org/$slug")({
-  loader: async ({ params }) => {
+  loader: async () => {
     const [activeOrganization, memberRole] = await Promise.all([
       authClient.organization.getFullOrganization(),
       authClient.organization.getActiveMemberRole(),
@@ -26,13 +27,7 @@ export const Route = createFileRoute("/(authenticated)/org/$slug")({
     }
 
     return {
-      orgName:
-        activeOrganization.data?.name ??
-        params.slug
-          .split("-")
-          .filter(Boolean)
-          .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-          .join(" "),
+      orgName: activeOrganization.data?.name,
       role: memberRole.data.role,
     };
   },
@@ -72,7 +67,9 @@ function RouteComponent() {
   const { pathname } = useLocation();
   const context = useCurrentNotificationContext(pathname);
   const { unreadCount } = useNotifications();
+
   const { notify } = useTabNotification({ unreadCount, defaultTitle: orgName });
+  usePermissionSync();
   useNotificationPusher(slug, context, notify);
 
   return (

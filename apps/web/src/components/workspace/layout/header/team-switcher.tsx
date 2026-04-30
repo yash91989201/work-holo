@@ -28,7 +28,7 @@ import { useSession } from "@/hooks/use-session";
 import { getAuthQueryKey } from "@/lib/auth/query-keys";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
-import { queryClient } from "@/utils/orpc";
+import { queryClient, queryUtils } from "@/utils/orpc";
 
 export function TeamSwitcher() {
   const [open, setOpen] = useState(false);
@@ -86,6 +86,10 @@ export function TeamSwitcher() {
         });
       }
 
+      await queryClient.invalidateQueries({
+        queryKey: queryUtils.user.permission.key(),
+      });
+
       // Navigate to workspace home after switching team
       navigate({
         to: "/org/$slug/workspace",
@@ -120,10 +124,6 @@ export function TeamSwitcher() {
   }
 
   const displayName = selectedTeam?.name ?? "Select team";
-
-  if (!selectedTeam && teams.length > 0) {
-    return <TeamSwitcherSkeleton />;
-  }
 
   return (
     <Popover onOpenChange={setOpen} open={open}>
