@@ -9,13 +9,77 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ContactUsRouteImport } from './routes/contact-us'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ServicesIndexRouteImport } from './routes/services/index'
+import { Route as ServicesWebAppDevelopmentRouteImport } from './routes/services/web-app-development'
+import { Route as ServicesUxUiDesignRouteImport } from './routes/services/ux-ui-design'
+import { Route as ServicesQaTestAutomationRouteImport } from './routes/services/qa-test-automation'
+import { Route as ServicesMvpRouteImport } from './routes/services/mvp'
+import { Route as ServicesMobileAppDevelopmentRouteImport } from './routes/services/mobile-app-development'
+import { Route as ServicesDataEngineeringRouteImport } from './routes/services/data-engineering'
+import { Route as ServicesCloudEngineeringDevopsRouteImport } from './routes/services/cloud-engineering-devops'
+import { Route as ServicesAwsRouteImport } from './routes/services/aws'
 import { Route as ServicesAiAgentsRouteImport } from './routes/services/ai-agents'
 import { Route as ServicesAgenticAiRouteImport } from './routes/services/agentic-ai'
 
+const ContactUsRoute = ContactUsRouteImport.update({
+  id: '/contact-us',
+  path: '/contact-us',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesIndexRoute = ServicesIndexRouteImport.update({
+  id: '/services/',
+  path: '/services/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesWebAppDevelopmentRoute =
+  ServicesWebAppDevelopmentRouteImport.update({
+    id: '/services/web-app-development',
+    path: '/services/web-app-development',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ServicesUxUiDesignRoute = ServicesUxUiDesignRouteImport.update({
+  id: '/services/ux-ui-design',
+  path: '/services/ux-ui-design',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesQaTestAutomationRoute =
+  ServicesQaTestAutomationRouteImport.update({
+    id: '/services/qa-test-automation',
+    path: '/services/qa-test-automation',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ServicesMvpRoute = ServicesMvpRouteImport.update({
+  id: '/services/mvp',
+  path: '/services/mvp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesMobileAppDevelopmentRoute =
+  ServicesMobileAppDevelopmentRouteImport.update({
+    id: '/services/mobile-app-development',
+    path: '/services/mobile-app-development',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ServicesDataEngineeringRoute = ServicesDataEngineeringRouteImport.update({
+  id: '/services/data-engineering',
+  path: '/services/data-engineering',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesCloudEngineeringDevopsRoute =
+  ServicesCloudEngineeringDevopsRouteImport.update({
+    id: '/services/cloud-engineering-devops',
+    path: '/services/cloud-engineering-devops',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ServicesAwsRoute = ServicesAwsRouteImport.update({
+  id: '/services/aws',
+  path: '/services/aws',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicesAiAgentsRoute = ServicesAiAgentsRouteImport.update({
@@ -31,41 +95,191 @@ const ServicesAgenticAiRoute = ServicesAgenticAiRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/contact-us': typeof ContactUsRoute
   '/services/agentic-ai': typeof ServicesAgenticAiRoute
   '/services/ai-agents': typeof ServicesAiAgentsRoute
+  '/services/aws': typeof ServicesAwsRoute
+  '/services/cloud-engineering-devops': typeof ServicesCloudEngineeringDevopsRoute
+  '/services/data-engineering': typeof ServicesDataEngineeringRoute
+  '/services/mobile-app-development': typeof ServicesMobileAppDevelopmentRoute
+  '/services/mvp': typeof ServicesMvpRoute
+  '/services/qa-test-automation': typeof ServicesQaTestAutomationRoute
+  '/services/ux-ui-design': typeof ServicesUxUiDesignRoute
+  '/services/web-app-development': typeof ServicesWebAppDevelopmentRoute
+  '/services/': typeof ServicesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/contact-us': typeof ContactUsRoute
   '/services/agentic-ai': typeof ServicesAgenticAiRoute
   '/services/ai-agents': typeof ServicesAiAgentsRoute
+  '/services/aws': typeof ServicesAwsRoute
+  '/services/cloud-engineering-devops': typeof ServicesCloudEngineeringDevopsRoute
+  '/services/data-engineering': typeof ServicesDataEngineeringRoute
+  '/services/mobile-app-development': typeof ServicesMobileAppDevelopmentRoute
+  '/services/mvp': typeof ServicesMvpRoute
+  '/services/qa-test-automation': typeof ServicesQaTestAutomationRoute
+  '/services/ux-ui-design': typeof ServicesUxUiDesignRoute
+  '/services/web-app-development': typeof ServicesWebAppDevelopmentRoute
+  '/services': typeof ServicesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/contact-us': typeof ContactUsRoute
   '/services/agentic-ai': typeof ServicesAgenticAiRoute
   '/services/ai-agents': typeof ServicesAiAgentsRoute
+  '/services/aws': typeof ServicesAwsRoute
+  '/services/cloud-engineering-devops': typeof ServicesCloudEngineeringDevopsRoute
+  '/services/data-engineering': typeof ServicesDataEngineeringRoute
+  '/services/mobile-app-development': typeof ServicesMobileAppDevelopmentRoute
+  '/services/mvp': typeof ServicesMvpRoute
+  '/services/qa-test-automation': typeof ServicesQaTestAutomationRoute
+  '/services/ux-ui-design': typeof ServicesUxUiDesignRoute
+  '/services/web-app-development': typeof ServicesWebAppDevelopmentRoute
+  '/services/': typeof ServicesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/services/agentic-ai' | '/services/ai-agents'
+  fullPaths:
+    | '/'
+    | '/contact-us'
+    | '/services/agentic-ai'
+    | '/services/ai-agents'
+    | '/services/aws'
+    | '/services/cloud-engineering-devops'
+    | '/services/data-engineering'
+    | '/services/mobile-app-development'
+    | '/services/mvp'
+    | '/services/qa-test-automation'
+    | '/services/ux-ui-design'
+    | '/services/web-app-development'
+    | '/services/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/services/agentic-ai' | '/services/ai-agents'
-  id: '__root__' | '/' | '/services/agentic-ai' | '/services/ai-agents'
+  to:
+    | '/'
+    | '/contact-us'
+    | '/services/agentic-ai'
+    | '/services/ai-agents'
+    | '/services/aws'
+    | '/services/cloud-engineering-devops'
+    | '/services/data-engineering'
+    | '/services/mobile-app-development'
+    | '/services/mvp'
+    | '/services/qa-test-automation'
+    | '/services/ux-ui-design'
+    | '/services/web-app-development'
+    | '/services'
+  id:
+    | '__root__'
+    | '/'
+    | '/contact-us'
+    | '/services/agentic-ai'
+    | '/services/ai-agents'
+    | '/services/aws'
+    | '/services/cloud-engineering-devops'
+    | '/services/data-engineering'
+    | '/services/mobile-app-development'
+    | '/services/mvp'
+    | '/services/qa-test-automation'
+    | '/services/ux-ui-design'
+    | '/services/web-app-development'
+    | '/services/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ContactUsRoute: typeof ContactUsRoute
   ServicesAgenticAiRoute: typeof ServicesAgenticAiRoute
   ServicesAiAgentsRoute: typeof ServicesAiAgentsRoute
+  ServicesAwsRoute: typeof ServicesAwsRoute
+  ServicesCloudEngineeringDevopsRoute: typeof ServicesCloudEngineeringDevopsRoute
+  ServicesDataEngineeringRoute: typeof ServicesDataEngineeringRoute
+  ServicesMobileAppDevelopmentRoute: typeof ServicesMobileAppDevelopmentRoute
+  ServicesMvpRoute: typeof ServicesMvpRoute
+  ServicesQaTestAutomationRoute: typeof ServicesQaTestAutomationRoute
+  ServicesUxUiDesignRoute: typeof ServicesUxUiDesignRoute
+  ServicesWebAppDevelopmentRoute: typeof ServicesWebAppDevelopmentRoute
+  ServicesIndexRoute: typeof ServicesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/contact-us': {
+      id: '/contact-us'
+      path: '/contact-us'
+      fullPath: '/contact-us'
+      preLoaderRoute: typeof ContactUsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/': {
+      id: '/services/'
+      path: '/services'
+      fullPath: '/services/'
+      preLoaderRoute: typeof ServicesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/web-app-development': {
+      id: '/services/web-app-development'
+      path: '/services/web-app-development'
+      fullPath: '/services/web-app-development'
+      preLoaderRoute: typeof ServicesWebAppDevelopmentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/ux-ui-design': {
+      id: '/services/ux-ui-design'
+      path: '/services/ux-ui-design'
+      fullPath: '/services/ux-ui-design'
+      preLoaderRoute: typeof ServicesUxUiDesignRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/qa-test-automation': {
+      id: '/services/qa-test-automation'
+      path: '/services/qa-test-automation'
+      fullPath: '/services/qa-test-automation'
+      preLoaderRoute: typeof ServicesQaTestAutomationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/mvp': {
+      id: '/services/mvp'
+      path: '/services/mvp'
+      fullPath: '/services/mvp'
+      preLoaderRoute: typeof ServicesMvpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/mobile-app-development': {
+      id: '/services/mobile-app-development'
+      path: '/services/mobile-app-development'
+      fullPath: '/services/mobile-app-development'
+      preLoaderRoute: typeof ServicesMobileAppDevelopmentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/data-engineering': {
+      id: '/services/data-engineering'
+      path: '/services/data-engineering'
+      fullPath: '/services/data-engineering'
+      preLoaderRoute: typeof ServicesDataEngineeringRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/cloud-engineering-devops': {
+      id: '/services/cloud-engineering-devops'
+      path: '/services/cloud-engineering-devops'
+      fullPath: '/services/cloud-engineering-devops'
+      preLoaderRoute: typeof ServicesCloudEngineeringDevopsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/aws': {
+      id: '/services/aws'
+      path: '/services/aws'
+      fullPath: '/services/aws'
+      preLoaderRoute: typeof ServicesAwsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/services/ai-agents': {
@@ -87,8 +301,18 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ContactUsRoute: ContactUsRoute,
   ServicesAgenticAiRoute: ServicesAgenticAiRoute,
   ServicesAiAgentsRoute: ServicesAiAgentsRoute,
+  ServicesAwsRoute: ServicesAwsRoute,
+  ServicesCloudEngineeringDevopsRoute: ServicesCloudEngineeringDevopsRoute,
+  ServicesDataEngineeringRoute: ServicesDataEngineeringRoute,
+  ServicesMobileAppDevelopmentRoute: ServicesMobileAppDevelopmentRoute,
+  ServicesMvpRoute: ServicesMvpRoute,
+  ServicesQaTestAutomationRoute: ServicesQaTestAutomationRoute,
+  ServicesUxUiDesignRoute: ServicesUxUiDesignRoute,
+  ServicesWebAppDevelopmentRoute: ServicesWebAppDevelopmentRoute,
+  ServicesIndexRoute: ServicesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

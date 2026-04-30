@@ -5,18 +5,23 @@ import { formDevtoolsPlugin } from "@tanstack/react-form-devtools";
 import { pacerDevtoolsPlugin } from "@tanstack/react-pacer-devtools";
 import type { QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
-import { HeadContent, Outlet, Scripts, createRootRouteWithContext } from "@tanstack/react-router";
+import {
+  createRootRouteWithContext,
+  HeadContent,
+  Outlet,
+  Scripts,
+} from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import type { AppRouterClient } from "@work-holo/api/routers/index";
 import { env } from "@work-holo/env/www";
-import { useState } from "react";
 import { Toaster } from "@work-holo/ui/components/sonner";
-import type { orpcClient, queryUtils } from "@/utils/orpc";
-import { link } from "@/utils/orpc";
-import { Header } from "@/components/shared/header";
+import { useState } from "react";
 import { Footer } from "@/components/shared/footer";
+import { Header } from "@/components/shared/header";
 import { SmoothScrollProvider } from "@/components/shared/smooth-scroll-provider";
 import appCss from "@/styles/index.css?url";
+import type { orpcClient, queryUtils } from "@/utils/orpc";
+import { link } from "@/utils/orpc";
 
 export interface RouterAppContext {
   orpcClient: typeof orpcClient;
@@ -45,16 +50,16 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
       },
     ],
   }),
-  shellComponent:ShellComponent,
+  shellComponent: ShellComponent,
   component: RootDocument,
 });
 
-function ShellComponent({children}:{children:React.ReactNode}){
+function ShellComponent({ children }: { children: React.ReactNode }) {
   const [client] = useState<AppRouterClient>(() => createORPCClient(link));
   const [_orpcUtils] = useState(() => createTanstackQueryUtils(client));
 
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
+    <html className="dark" lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
@@ -82,7 +87,7 @@ function ShellComponent({children}:{children:React.ReactNode}){
         <Scripts />
       </body>
     </html>
-  )
+  );
 }
 
 function RootDocument() {

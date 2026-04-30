@@ -2,12 +2,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import { getServiceData } from "@/components/services/service-data";
 import { ServiceDetailPage } from "@/components/services/service-detail-page";
 
-export const Route = createFileRoute("/services/ai-agents")({
+export const Route = createFileRoute("/services/web-app-development")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const data = getServiceData("ai-agents");
+  const data = getServiceData("web-app-development");
 
   if (!data) {
     return (

@@ -1,10 +1,10 @@
 import {
+  IconBrain,
   IconChevronRight,
-  IconCloud,
-  IconDeviceDesktop,
-  IconNetwork,
-  IconSettings,
-  IconShieldLock,
+  IconCode,
+  IconDeviceMobile,
+  IconRobot,
+  IconRocket,
 } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import { CTAButton } from "@work-holo/ui/components/cta-button";
@@ -13,62 +13,62 @@ import { motion, type Variants } from "motion/react";
 const services = [
   {
     num: "01",
-    icon: IconDeviceDesktop,
-    title: "Managed IT Services",
-    description:
-      "Comprehensive IT management, including monitoring, maintenance.",
+    icon: IconBrain,
+    title: "Agentic AI",
+    description: "Autonomous AI for smarter workflows",
+    href: "/services/agentic-ai",
     features: [
-      "24/7 system monitoring",
-      "IT support & troubleshooting",
-      "Remote IT assistance",
+      "Autonomous decision-making",
+      "Workflow automation",
+      "Intelligent task routing",
     ],
   },
   {
     num: "02",
-    icon: IconCloud,
-    title: "Cloud Computing",
-    description:
-      "Scalable cloud-based services, including migration, storage, and security.",
+    icon: IconRobot,
+    title: "AI Agents",
+    description: "AI agents for product teams",
+    href: "/services/ai-agents",
     features: [
-      "Scalable cloud storage",
-      "SaaS, PaaS, and IaaS integration",
-      "Hybrid & multi-cloud",
+      "Custom agent development",
+      "Multi-agent orchestration",
+      "Integration with existing tools",
     ],
   },
   {
     num: "03",
-    icon: IconShieldLock,
-    title: "Cybersecurity Solutions",
-    description:
-      "Advanced security measures, including firewall protection, threat detection.",
+    icon: IconRocket,
+    title: "MVP Development",
+    description: "Launch fast, scale with confidence",
+    href: "/services/mvp",
     features: [
-      "Firewall & network security",
-      "Threat detection & prevention",
-      "Endpoint protection",
+      "Rapid prototyping",
+      "Market validation",
+      "Scalable architecture",
     ],
   },
   {
     num: "04",
-    icon: IconSettings,
-    title: "IT Consulting & Strategy",
-    description:
-      "Expert guidance to optimize IT infrastructure, streamline operations, and drive.",
+    icon: IconCode,
+    title: "Web App Development",
+    description: "High-performance, scalable web apps",
+    href: "/services/web-app-development",
     features: [
-      "Transformation planning",
-      "IT infrastructure optimization",
-      "Risk assessment",
+      "Modern tech stacks",
+      "Progressive Web Apps",
+      "Performance optimization",
     ],
   },
   {
     num: "05",
-    icon: IconNetwork,
-    title: "Network Infrastructure",
-    description:
-      "Designing, implementing, and maintaining secure and high-performance .",
+    icon: IconDeviceMobile,
+    title: "Mobile App Development",
+    description: "Seamless iOS & Android experiences",
+    href: "/services/mobile-app-development",
     features: [
-      "Transformation planning",
-      "IT infrastructure optimization",
-      "Risk assessment",
+      "Native & cross-platform",
+      "UI/UX implementation",
+      "App store deployment",
     ],
   },
 ];
@@ -107,7 +107,11 @@ const cardGlowVariants = {
 const accentBarVariants = {
   hidden: { scaleX: 0, opacity: 0 },
   visible: { scaleX: 0, opacity: 0 },
-  hover: { scaleX: 1, opacity: 1, transition: { type: "spring", stiffness: 260, damping: 28 } },
+  hover: {
+    scaleX: 1,
+    opacity: 1,
+    transition: { type: "spring", stiffness: 260, damping: 28 },
+  },
 } satisfies Variants;
 
 const iconVariants = {
@@ -118,7 +122,11 @@ const iconVariants = {
     rotate: 0,
     transition: { delay: 0.08, duration: 0.35 },
   },
-  hover: { scale: 1.08, rotate: 8, transition: { type: "spring", stiffness: 260, damping: 18 } },
+  hover: {
+    scale: 1.08,
+    rotate: 8,
+    transition: { type: "spring", stiffness: 260, damping: 18 },
+  },
 } satisfies Variants;
 
 const contentVariants = {
@@ -142,7 +150,11 @@ const featureItemVariants = {
 const featureArrowVariants = {
   hidden: { x: 0, scale: 1 },
   visible: { x: 0, scale: 1 },
-  hover: { x: 2, scale: 1.08, transition: { type: "spring", stiffness: 400, damping: 22 } },
+  hover: {
+    x: 2,
+    scale: 1.08,
+    transition: { type: "spring", stiffness: 400, damping: 22 },
+  },
 } satisfies Variants;
 
 const linkVariants = {
@@ -154,18 +166,28 @@ const linkVariants = {
 const arrowVariants = {
   hidden: { x: 0 },
   visible: { x: 0 },
-  hover: { x: 5, rotate: 12, transition: { type: "spring", stiffness: 380, damping: 18 } },
+  hover: {
+    x: 5,
+    rotate: 12,
+    transition: { type: "spring", stiffness: 380, damping: 18 },
+  },
 } satisfies Variants;
 
 const underlineVariants = {
   hidden: { scaleX: 0 },
   visible: { scaleX: 0 },
-  hover: { scaleX: 1, transition: { type: "spring", stiffness: 320, damping: 26 } },
+  hover: {
+    scaleX: 1,
+    transition: { type: "spring", stiffness: 320, damping: 26 },
+  },
 } satisfies Variants;
 
 export function ServicesSection() {
   return (
-    <section id="services" className="relative overflow-hidden bg-background py-20 lg:py-28 scroll-mt-28">
+    <section
+      className="relative scroll-mt-28 overflow-hidden bg-background py-20 lg:py-28"
+      id="services"
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-8 lg:grid-cols-12 lg:gap-6">
           {/* Left Column - Header */}
@@ -184,7 +206,9 @@ export function ServicesSection() {
               <br />
               for a Smarter.
             </h2>
-            <CTAButton type="button">Learn More</CTAButton>
+            <CTAButton href="/services" type="button">
+              View all
+            </CTAButton>
           </motion.div>
 
           {/* Right Column - Cards Grid */}
@@ -201,7 +225,7 @@ export function ServicesSection() {
           </motion.div>
 
           <motion.div
-            className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:col-span-12"
+            className="grid gap-5 sm:grid-cols-2 lg:col-span-12 lg:grid-cols-3"
             initial="hidden"
             variants={containerVariants}
             viewport={{ once: true, margin: "-80px" }}
@@ -220,7 +244,7 @@ export function ServicesSection() {
 function ServiceCard({ service }: { service: (typeof services)[number] }) {
   return (
     <motion.div
-      className="group relative flex h-full min-w-0 overflow-hidden flex-col rounded-2xl border border-border/40 bg-card/50 p-6 transition-all duration-300 hover:border-border/70 hover:shadow-2xl hover:shadow-primary/5"
+      className="group relative flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-border/40 bg-card/50 p-6 transition-all duration-300 hover:border-border/70 hover:shadow-2xl hover:shadow-primary/5"
       transition={{ duration: 0.3 }}
       variants={cardVariants}
       whileHover="hover"
@@ -233,7 +257,7 @@ function ServiceCard({ service }: { service: (typeof services)[number] }) {
       />
       <motion.span
         aria-hidden="true"
-        className="pointer-events-none absolute -right-10 -top-10 size-32 rounded-full bg-primary/10 blur-3xl"
+        className="pointer-events-none absolute -top-10 -right-10 size-32 rounded-full bg-primary/10 blur-3xl"
         variants={cardGlowVariants}
       />
       <motion.span
@@ -243,7 +267,10 @@ function ServiceCard({ service }: { service: (typeof services)[number] }) {
       />
 
       {/* Number badge */}
-      <motion.span className="absolute top-4 right-4 font-medium text-muted-foreground/40 text-xs" variants={contentVariants}>
+      <motion.span
+        className="absolute top-4 right-4 font-medium text-muted-foreground/40 text-xs"
+        variants={contentVariants}
+      >
         {service.num}.
       </motion.span>
 
@@ -256,12 +283,18 @@ function ServiceCard({ service }: { service: (typeof services)[number] }) {
       </motion.div>
 
       {/* Title */}
-      <motion.h3 className="mb-2 font-semibold text-foreground text-lg" variants={contentVariants}>
+      <motion.h3
+        className="mb-2 font-semibold text-foreground text-lg"
+        variants={contentVariants}
+      >
         {service.title}
       </motion.h3>
 
       {/* Description */}
-      <motion.p className="mb-5 text-muted-foreground text-sm leading-relaxed" variants={contentVariants}>
+      <motion.p
+        className="mb-5 text-muted-foreground text-sm leading-relaxed"
+        variants={contentVariants}
+      >
         {service.description}
       </motion.p>
 
@@ -285,7 +318,10 @@ function ServiceCard({ service }: { service: (typeof services)[number] }) {
 
       {/* Learn more link */}
       <motion.div className="mt-auto" variants={linkVariants}>
-        <Link className="group/link relative inline-flex items-center gap-1 font-medium text-foreground text-sm transition-colors hover:text-primary" to="/">
+        <Link
+          className="group/link relative inline-flex items-center gap-1 font-medium text-foreground text-sm transition-colors hover:text-primary"
+          to={service.href}
+        >
           Learn more
           <motion.span variants={arrowVariants}>
             <IconChevronRight className="size-3.5" />
