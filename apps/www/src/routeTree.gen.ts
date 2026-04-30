@@ -22,6 +22,27 @@ import { Route as ServicesCloudEngineeringDevopsRouteImport } from './routes/ser
 import { Route as ServicesAwsRouteImport } from './routes/services/aws'
 import { Route as ServicesAiAgentsRouteImport } from './routes/services/ai-agents'
 import { Route as ServicesAgenticAiRouteImport } from './routes/services/agentic-ai'
+import { Route as OurBpoServicesSolutionsTechnical_supportRouteImport } from './routes/Our-Bpo-Services/Solutions/technical_support'
+import { Route as OurBpoServicesSolutionsPayment_processingRouteImport } from './routes/Our-Bpo-Services/Solutions/payment_processing'
+import { Route as OurBpoServicesSolutionsOutbound_servicesRouteImport } from './routes/Our-Bpo-Services/Solutions/outbound_services'
+import { Route as OurBpoServicesSolutionsLead_generationRouteImport } from './routes/Our-Bpo-Services/Solutions/lead_generation'
+import { Route as OurBpoServicesSolutionsInbound_servicesRouteImport } from './routes/Our-Bpo-Services/Solutions/inbound_services'
+import { Route as OurBpoServicesSolutionsInbound_salesRouteImport } from './routes/Our-Bpo-Services/Solutions/inbound_sales'
+import { Route as OurBpoServicesSolutionsFacility_and_procurementRouteImport } from './routes/Our-Bpo-Services/Solutions/facility_and_procurement'
+import { Route as OurBpoServicesSolutionsDirect_response_marketingRouteImport } from './routes/Our-Bpo-Services/Solutions/direct_response_marketing'
+import { Route as OurBpoServicesSolutionsCustomer_retentionRouteImport } from './routes/Our-Bpo-Services/Solutions/customer_retention'
+import { Route as OurBpoServicesSolutionsClaims_processingRouteImport } from './routes/Our-Bpo-Services/Solutions/claims_processing'
+import { Route as OurBpoServicesSolutionsBack_office_processingRouteImport } from './routes/Our-Bpo-Services/Solutions/back_office_processing'
+import { Route as OurBpoServicesSolutionsAccounting_and_collectionsRouteImport } from './routes/Our-Bpo-Services/Solutions/accounting_and_collections'
+import { Route as OurBpoServicesIndustriesTelecommunicationsRouteImport } from './routes/Our-Bpo-Services/Industries/telecommunications'
+import { Route as OurBpoServicesIndustriesTechnologyRouteImport } from './routes/Our-Bpo-Services/Industries/technology'
+import { Route as OurBpoServicesIndustriesRetailRouteImport } from './routes/Our-Bpo-Services/Industries/retail'
+import { Route as OurBpoServicesIndustriesReal_estateRouteImport } from './routes/Our-Bpo-Services/Industries/real_estate'
+import { Route as OurBpoServicesIndustriesLogistics_supply_chainRouteImport } from './routes/Our-Bpo-Services/Industries/logistics_supply_chain'
+import { Route as OurBpoServicesIndustriesInsuranceRouteImport } from './routes/Our-Bpo-Services/Industries/insurance'
+import { Route as OurBpoServicesIndustriesHealthcareRouteImport } from './routes/Our-Bpo-Services/Industries/healthcare'
+import { Route as OurBpoServicesIndustriesFinancialRouteImport } from './routes/Our-Bpo-Services/Industries/financial'
+import { Route as OurBpoServicesIndustriesEntertainmentRouteImport } from './routes/Our-Bpo-Services/Industries/entertainment'
 
 const ContactUsRoute = ContactUsRouteImport.update({
   id: '/contact-us',
@@ -92,6 +113,132 @@ const ServicesAgenticAiRoute = ServicesAgenticAiRouteImport.update({
   path: '/services/agentic-ai',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OurBpoServicesSolutionsTechnical_supportRoute =
+  OurBpoServicesSolutionsTechnical_supportRouteImport.update({
+    id: '/Our-Bpo-Services/Solutions/technical_support',
+    path: '/Our-Bpo-Services/Solutions/technical_support',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const OurBpoServicesSolutionsPayment_processingRoute =
+  OurBpoServicesSolutionsPayment_processingRouteImport.update({
+    id: '/Our-Bpo-Services/Solutions/payment_processing',
+    path: '/Our-Bpo-Services/Solutions/payment_processing',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const OurBpoServicesSolutionsOutbound_servicesRoute =
+  OurBpoServicesSolutionsOutbound_servicesRouteImport.update({
+    id: '/Our-Bpo-Services/Solutions/outbound_services',
+    path: '/Our-Bpo-Services/Solutions/outbound_services',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const OurBpoServicesSolutionsLead_generationRoute =
+  OurBpoServicesSolutionsLead_generationRouteImport.update({
+    id: '/Our-Bpo-Services/Solutions/lead_generation',
+    path: '/Our-Bpo-Services/Solutions/lead_generation',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const OurBpoServicesSolutionsInbound_servicesRoute =
+  OurBpoServicesSolutionsInbound_servicesRouteImport.update({
+    id: '/Our-Bpo-Services/Solutions/inbound_services',
+    path: '/Our-Bpo-Services/Solutions/inbound_services',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const OurBpoServicesSolutionsInbound_salesRoute =
+  OurBpoServicesSolutionsInbound_salesRouteImport.update({
+    id: '/Our-Bpo-Services/Solutions/inbound_sales',
+    path: '/Our-Bpo-Services/Solutions/inbound_sales',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const OurBpoServicesSolutionsFacility_and_procurementRoute =
+  OurBpoServicesSolutionsFacility_and_procurementRouteImport.update({
+    id: '/Our-Bpo-Services/Solutions/facility_and_procurement',
+    path: '/Our-Bpo-Services/Solutions/facility_and_procurement',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const OurBpoServicesSolutionsDirect_response_marketingRoute =
+  OurBpoServicesSolutionsDirect_response_marketingRouteImport.update({
+    id: '/Our-Bpo-Services/Solutions/direct_response_marketing',
+    path: '/Our-Bpo-Services/Solutions/direct_response_marketing',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const OurBpoServicesSolutionsCustomer_retentionRoute =
+  OurBpoServicesSolutionsCustomer_retentionRouteImport.update({
+    id: '/Our-Bpo-Services/Solutions/customer_retention',
+    path: '/Our-Bpo-Services/Solutions/customer_retention',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const OurBpoServicesSolutionsClaims_processingRoute =
+  OurBpoServicesSolutionsClaims_processingRouteImport.update({
+    id: '/Our-Bpo-Services/Solutions/claims_processing',
+    path: '/Our-Bpo-Services/Solutions/claims_processing',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const OurBpoServicesSolutionsBack_office_processingRoute =
+  OurBpoServicesSolutionsBack_office_processingRouteImport.update({
+    id: '/Our-Bpo-Services/Solutions/back_office_processing',
+    path: '/Our-Bpo-Services/Solutions/back_office_processing',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const OurBpoServicesSolutionsAccounting_and_collectionsRoute =
+  OurBpoServicesSolutionsAccounting_and_collectionsRouteImport.update({
+    id: '/Our-Bpo-Services/Solutions/accounting_and_collections',
+    path: '/Our-Bpo-Services/Solutions/accounting_and_collections',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const OurBpoServicesIndustriesTelecommunicationsRoute =
+  OurBpoServicesIndustriesTelecommunicationsRouteImport.update({
+    id: '/Our-Bpo-Services/Industries/telecommunications',
+    path: '/Our-Bpo-Services/Industries/telecommunications',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const OurBpoServicesIndustriesTechnologyRoute =
+  OurBpoServicesIndustriesTechnologyRouteImport.update({
+    id: '/Our-Bpo-Services/Industries/technology',
+    path: '/Our-Bpo-Services/Industries/technology',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const OurBpoServicesIndustriesRetailRoute =
+  OurBpoServicesIndustriesRetailRouteImport.update({
+    id: '/Our-Bpo-Services/Industries/retail',
+    path: '/Our-Bpo-Services/Industries/retail',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const OurBpoServicesIndustriesReal_estateRoute =
+  OurBpoServicesIndustriesReal_estateRouteImport.update({
+    id: '/Our-Bpo-Services/Industries/real_estate',
+    path: '/Our-Bpo-Services/Industries/real_estate',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const OurBpoServicesIndustriesLogistics_supply_chainRoute =
+  OurBpoServicesIndustriesLogistics_supply_chainRouteImport.update({
+    id: '/Our-Bpo-Services/Industries/logistics_supply_chain',
+    path: '/Our-Bpo-Services/Industries/logistics_supply_chain',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const OurBpoServicesIndustriesInsuranceRoute =
+  OurBpoServicesIndustriesInsuranceRouteImport.update({
+    id: '/Our-Bpo-Services/Industries/insurance',
+    path: '/Our-Bpo-Services/Industries/insurance',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const OurBpoServicesIndustriesHealthcareRoute =
+  OurBpoServicesIndustriesHealthcareRouteImport.update({
+    id: '/Our-Bpo-Services/Industries/healthcare',
+    path: '/Our-Bpo-Services/Industries/healthcare',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const OurBpoServicesIndustriesFinancialRoute =
+  OurBpoServicesIndustriesFinancialRouteImport.update({
+    id: '/Our-Bpo-Services/Industries/financial',
+    path: '/Our-Bpo-Services/Industries/financial',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const OurBpoServicesIndustriesEntertainmentRoute =
+  OurBpoServicesIndustriesEntertainmentRouteImport.update({
+    id: '/Our-Bpo-Services/Industries/entertainment',
+    path: '/Our-Bpo-Services/Industries/entertainment',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -107,6 +254,27 @@ export interface FileRoutesByFullPath {
   '/services/ux-ui-design': typeof ServicesUxUiDesignRoute
   '/services/web-app-development': typeof ServicesWebAppDevelopmentRoute
   '/services/': typeof ServicesIndexRoute
+  '/Our-Bpo-Services/Industries/entertainment': typeof OurBpoServicesIndustriesEntertainmentRoute
+  '/Our-Bpo-Services/Industries/financial': typeof OurBpoServicesIndustriesFinancialRoute
+  '/Our-Bpo-Services/Industries/healthcare': typeof OurBpoServicesIndustriesHealthcareRoute
+  '/Our-Bpo-Services/Industries/insurance': typeof OurBpoServicesIndustriesInsuranceRoute
+  '/Our-Bpo-Services/Industries/logistics_supply_chain': typeof OurBpoServicesIndustriesLogistics_supply_chainRoute
+  '/Our-Bpo-Services/Industries/real_estate': typeof OurBpoServicesIndustriesReal_estateRoute
+  '/Our-Bpo-Services/Industries/retail': typeof OurBpoServicesIndustriesRetailRoute
+  '/Our-Bpo-Services/Industries/technology': typeof OurBpoServicesIndustriesTechnologyRoute
+  '/Our-Bpo-Services/Industries/telecommunications': typeof OurBpoServicesIndustriesTelecommunicationsRoute
+  '/Our-Bpo-Services/Solutions/accounting_and_collections': typeof OurBpoServicesSolutionsAccounting_and_collectionsRoute
+  '/Our-Bpo-Services/Solutions/back_office_processing': typeof OurBpoServicesSolutionsBack_office_processingRoute
+  '/Our-Bpo-Services/Solutions/claims_processing': typeof OurBpoServicesSolutionsClaims_processingRoute
+  '/Our-Bpo-Services/Solutions/customer_retention': typeof OurBpoServicesSolutionsCustomer_retentionRoute
+  '/Our-Bpo-Services/Solutions/direct_response_marketing': typeof OurBpoServicesSolutionsDirect_response_marketingRoute
+  '/Our-Bpo-Services/Solutions/facility_and_procurement': typeof OurBpoServicesSolutionsFacility_and_procurementRoute
+  '/Our-Bpo-Services/Solutions/inbound_sales': typeof OurBpoServicesSolutionsInbound_salesRoute
+  '/Our-Bpo-Services/Solutions/inbound_services': typeof OurBpoServicesSolutionsInbound_servicesRoute
+  '/Our-Bpo-Services/Solutions/lead_generation': typeof OurBpoServicesSolutionsLead_generationRoute
+  '/Our-Bpo-Services/Solutions/outbound_services': typeof OurBpoServicesSolutionsOutbound_servicesRoute
+  '/Our-Bpo-Services/Solutions/payment_processing': typeof OurBpoServicesSolutionsPayment_processingRoute
+  '/Our-Bpo-Services/Solutions/technical_support': typeof OurBpoServicesSolutionsTechnical_supportRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -122,6 +290,27 @@ export interface FileRoutesByTo {
   '/services/ux-ui-design': typeof ServicesUxUiDesignRoute
   '/services/web-app-development': typeof ServicesWebAppDevelopmentRoute
   '/services': typeof ServicesIndexRoute
+  '/Our-Bpo-Services/Industries/entertainment': typeof OurBpoServicesIndustriesEntertainmentRoute
+  '/Our-Bpo-Services/Industries/financial': typeof OurBpoServicesIndustriesFinancialRoute
+  '/Our-Bpo-Services/Industries/healthcare': typeof OurBpoServicesIndustriesHealthcareRoute
+  '/Our-Bpo-Services/Industries/insurance': typeof OurBpoServicesIndustriesInsuranceRoute
+  '/Our-Bpo-Services/Industries/logistics_supply_chain': typeof OurBpoServicesIndustriesLogistics_supply_chainRoute
+  '/Our-Bpo-Services/Industries/real_estate': typeof OurBpoServicesIndustriesReal_estateRoute
+  '/Our-Bpo-Services/Industries/retail': typeof OurBpoServicesIndustriesRetailRoute
+  '/Our-Bpo-Services/Industries/technology': typeof OurBpoServicesIndustriesTechnologyRoute
+  '/Our-Bpo-Services/Industries/telecommunications': typeof OurBpoServicesIndustriesTelecommunicationsRoute
+  '/Our-Bpo-Services/Solutions/accounting_and_collections': typeof OurBpoServicesSolutionsAccounting_and_collectionsRoute
+  '/Our-Bpo-Services/Solutions/back_office_processing': typeof OurBpoServicesSolutionsBack_office_processingRoute
+  '/Our-Bpo-Services/Solutions/claims_processing': typeof OurBpoServicesSolutionsClaims_processingRoute
+  '/Our-Bpo-Services/Solutions/customer_retention': typeof OurBpoServicesSolutionsCustomer_retentionRoute
+  '/Our-Bpo-Services/Solutions/direct_response_marketing': typeof OurBpoServicesSolutionsDirect_response_marketingRoute
+  '/Our-Bpo-Services/Solutions/facility_and_procurement': typeof OurBpoServicesSolutionsFacility_and_procurementRoute
+  '/Our-Bpo-Services/Solutions/inbound_sales': typeof OurBpoServicesSolutionsInbound_salesRoute
+  '/Our-Bpo-Services/Solutions/inbound_services': typeof OurBpoServicesSolutionsInbound_servicesRoute
+  '/Our-Bpo-Services/Solutions/lead_generation': typeof OurBpoServicesSolutionsLead_generationRoute
+  '/Our-Bpo-Services/Solutions/outbound_services': typeof OurBpoServicesSolutionsOutbound_servicesRoute
+  '/Our-Bpo-Services/Solutions/payment_processing': typeof OurBpoServicesSolutionsPayment_processingRoute
+  '/Our-Bpo-Services/Solutions/technical_support': typeof OurBpoServicesSolutionsTechnical_supportRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -138,6 +327,27 @@ export interface FileRoutesById {
   '/services/ux-ui-design': typeof ServicesUxUiDesignRoute
   '/services/web-app-development': typeof ServicesWebAppDevelopmentRoute
   '/services/': typeof ServicesIndexRoute
+  '/Our-Bpo-Services/Industries/entertainment': typeof OurBpoServicesIndustriesEntertainmentRoute
+  '/Our-Bpo-Services/Industries/financial': typeof OurBpoServicesIndustriesFinancialRoute
+  '/Our-Bpo-Services/Industries/healthcare': typeof OurBpoServicesIndustriesHealthcareRoute
+  '/Our-Bpo-Services/Industries/insurance': typeof OurBpoServicesIndustriesInsuranceRoute
+  '/Our-Bpo-Services/Industries/logistics_supply_chain': typeof OurBpoServicesIndustriesLogistics_supply_chainRoute
+  '/Our-Bpo-Services/Industries/real_estate': typeof OurBpoServicesIndustriesReal_estateRoute
+  '/Our-Bpo-Services/Industries/retail': typeof OurBpoServicesIndustriesRetailRoute
+  '/Our-Bpo-Services/Industries/technology': typeof OurBpoServicesIndustriesTechnologyRoute
+  '/Our-Bpo-Services/Industries/telecommunications': typeof OurBpoServicesIndustriesTelecommunicationsRoute
+  '/Our-Bpo-Services/Solutions/accounting_and_collections': typeof OurBpoServicesSolutionsAccounting_and_collectionsRoute
+  '/Our-Bpo-Services/Solutions/back_office_processing': typeof OurBpoServicesSolutionsBack_office_processingRoute
+  '/Our-Bpo-Services/Solutions/claims_processing': typeof OurBpoServicesSolutionsClaims_processingRoute
+  '/Our-Bpo-Services/Solutions/customer_retention': typeof OurBpoServicesSolutionsCustomer_retentionRoute
+  '/Our-Bpo-Services/Solutions/direct_response_marketing': typeof OurBpoServicesSolutionsDirect_response_marketingRoute
+  '/Our-Bpo-Services/Solutions/facility_and_procurement': typeof OurBpoServicesSolutionsFacility_and_procurementRoute
+  '/Our-Bpo-Services/Solutions/inbound_sales': typeof OurBpoServicesSolutionsInbound_salesRoute
+  '/Our-Bpo-Services/Solutions/inbound_services': typeof OurBpoServicesSolutionsInbound_servicesRoute
+  '/Our-Bpo-Services/Solutions/lead_generation': typeof OurBpoServicesSolutionsLead_generationRoute
+  '/Our-Bpo-Services/Solutions/outbound_services': typeof OurBpoServicesSolutionsOutbound_servicesRoute
+  '/Our-Bpo-Services/Solutions/payment_processing': typeof OurBpoServicesSolutionsPayment_processingRoute
+  '/Our-Bpo-Services/Solutions/technical_support': typeof OurBpoServicesSolutionsTechnical_supportRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -155,6 +365,27 @@ export interface FileRouteTypes {
     | '/services/ux-ui-design'
     | '/services/web-app-development'
     | '/services/'
+    | '/Our-Bpo-Services/Industries/entertainment'
+    | '/Our-Bpo-Services/Industries/financial'
+    | '/Our-Bpo-Services/Industries/healthcare'
+    | '/Our-Bpo-Services/Industries/insurance'
+    | '/Our-Bpo-Services/Industries/logistics_supply_chain'
+    | '/Our-Bpo-Services/Industries/real_estate'
+    | '/Our-Bpo-Services/Industries/retail'
+    | '/Our-Bpo-Services/Industries/technology'
+    | '/Our-Bpo-Services/Industries/telecommunications'
+    | '/Our-Bpo-Services/Solutions/accounting_and_collections'
+    | '/Our-Bpo-Services/Solutions/back_office_processing'
+    | '/Our-Bpo-Services/Solutions/claims_processing'
+    | '/Our-Bpo-Services/Solutions/customer_retention'
+    | '/Our-Bpo-Services/Solutions/direct_response_marketing'
+    | '/Our-Bpo-Services/Solutions/facility_and_procurement'
+    | '/Our-Bpo-Services/Solutions/inbound_sales'
+    | '/Our-Bpo-Services/Solutions/inbound_services'
+    | '/Our-Bpo-Services/Solutions/lead_generation'
+    | '/Our-Bpo-Services/Solutions/outbound_services'
+    | '/Our-Bpo-Services/Solutions/payment_processing'
+    | '/Our-Bpo-Services/Solutions/technical_support'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -170,6 +401,27 @@ export interface FileRouteTypes {
     | '/services/ux-ui-design'
     | '/services/web-app-development'
     | '/services'
+    | '/Our-Bpo-Services/Industries/entertainment'
+    | '/Our-Bpo-Services/Industries/financial'
+    | '/Our-Bpo-Services/Industries/healthcare'
+    | '/Our-Bpo-Services/Industries/insurance'
+    | '/Our-Bpo-Services/Industries/logistics_supply_chain'
+    | '/Our-Bpo-Services/Industries/real_estate'
+    | '/Our-Bpo-Services/Industries/retail'
+    | '/Our-Bpo-Services/Industries/technology'
+    | '/Our-Bpo-Services/Industries/telecommunications'
+    | '/Our-Bpo-Services/Solutions/accounting_and_collections'
+    | '/Our-Bpo-Services/Solutions/back_office_processing'
+    | '/Our-Bpo-Services/Solutions/claims_processing'
+    | '/Our-Bpo-Services/Solutions/customer_retention'
+    | '/Our-Bpo-Services/Solutions/direct_response_marketing'
+    | '/Our-Bpo-Services/Solutions/facility_and_procurement'
+    | '/Our-Bpo-Services/Solutions/inbound_sales'
+    | '/Our-Bpo-Services/Solutions/inbound_services'
+    | '/Our-Bpo-Services/Solutions/lead_generation'
+    | '/Our-Bpo-Services/Solutions/outbound_services'
+    | '/Our-Bpo-Services/Solutions/payment_processing'
+    | '/Our-Bpo-Services/Solutions/technical_support'
   id:
     | '__root__'
     | '/'
@@ -185,6 +437,27 @@ export interface FileRouteTypes {
     | '/services/ux-ui-design'
     | '/services/web-app-development'
     | '/services/'
+    | '/Our-Bpo-Services/Industries/entertainment'
+    | '/Our-Bpo-Services/Industries/financial'
+    | '/Our-Bpo-Services/Industries/healthcare'
+    | '/Our-Bpo-Services/Industries/insurance'
+    | '/Our-Bpo-Services/Industries/logistics_supply_chain'
+    | '/Our-Bpo-Services/Industries/real_estate'
+    | '/Our-Bpo-Services/Industries/retail'
+    | '/Our-Bpo-Services/Industries/technology'
+    | '/Our-Bpo-Services/Industries/telecommunications'
+    | '/Our-Bpo-Services/Solutions/accounting_and_collections'
+    | '/Our-Bpo-Services/Solutions/back_office_processing'
+    | '/Our-Bpo-Services/Solutions/claims_processing'
+    | '/Our-Bpo-Services/Solutions/customer_retention'
+    | '/Our-Bpo-Services/Solutions/direct_response_marketing'
+    | '/Our-Bpo-Services/Solutions/facility_and_procurement'
+    | '/Our-Bpo-Services/Solutions/inbound_sales'
+    | '/Our-Bpo-Services/Solutions/inbound_services'
+    | '/Our-Bpo-Services/Solutions/lead_generation'
+    | '/Our-Bpo-Services/Solutions/outbound_services'
+    | '/Our-Bpo-Services/Solutions/payment_processing'
+    | '/Our-Bpo-Services/Solutions/technical_support'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -201,6 +474,27 @@ export interface RootRouteChildren {
   ServicesUxUiDesignRoute: typeof ServicesUxUiDesignRoute
   ServicesWebAppDevelopmentRoute: typeof ServicesWebAppDevelopmentRoute
   ServicesIndexRoute: typeof ServicesIndexRoute
+  OurBpoServicesIndustriesEntertainmentRoute: typeof OurBpoServicesIndustriesEntertainmentRoute
+  OurBpoServicesIndustriesFinancialRoute: typeof OurBpoServicesIndustriesFinancialRoute
+  OurBpoServicesIndustriesHealthcareRoute: typeof OurBpoServicesIndustriesHealthcareRoute
+  OurBpoServicesIndustriesInsuranceRoute: typeof OurBpoServicesIndustriesInsuranceRoute
+  OurBpoServicesIndustriesLogistics_supply_chainRoute: typeof OurBpoServicesIndustriesLogistics_supply_chainRoute
+  OurBpoServicesIndustriesReal_estateRoute: typeof OurBpoServicesIndustriesReal_estateRoute
+  OurBpoServicesIndustriesRetailRoute: typeof OurBpoServicesIndustriesRetailRoute
+  OurBpoServicesIndustriesTechnologyRoute: typeof OurBpoServicesIndustriesTechnologyRoute
+  OurBpoServicesIndustriesTelecommunicationsRoute: typeof OurBpoServicesIndustriesTelecommunicationsRoute
+  OurBpoServicesSolutionsAccounting_and_collectionsRoute: typeof OurBpoServicesSolutionsAccounting_and_collectionsRoute
+  OurBpoServicesSolutionsBack_office_processingRoute: typeof OurBpoServicesSolutionsBack_office_processingRoute
+  OurBpoServicesSolutionsClaims_processingRoute: typeof OurBpoServicesSolutionsClaims_processingRoute
+  OurBpoServicesSolutionsCustomer_retentionRoute: typeof OurBpoServicesSolutionsCustomer_retentionRoute
+  OurBpoServicesSolutionsDirect_response_marketingRoute: typeof OurBpoServicesSolutionsDirect_response_marketingRoute
+  OurBpoServicesSolutionsFacility_and_procurementRoute: typeof OurBpoServicesSolutionsFacility_and_procurementRoute
+  OurBpoServicesSolutionsInbound_salesRoute: typeof OurBpoServicesSolutionsInbound_salesRoute
+  OurBpoServicesSolutionsInbound_servicesRoute: typeof OurBpoServicesSolutionsInbound_servicesRoute
+  OurBpoServicesSolutionsLead_generationRoute: typeof OurBpoServicesSolutionsLead_generationRoute
+  OurBpoServicesSolutionsOutbound_servicesRoute: typeof OurBpoServicesSolutionsOutbound_servicesRoute
+  OurBpoServicesSolutionsPayment_processingRoute: typeof OurBpoServicesSolutionsPayment_processingRoute
+  OurBpoServicesSolutionsTechnical_supportRoute: typeof OurBpoServicesSolutionsTechnical_supportRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -296,6 +590,153 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesAgenticAiRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/Our-Bpo-Services/Solutions/technical_support': {
+      id: '/Our-Bpo-Services/Solutions/technical_support'
+      path: '/Our-Bpo-Services/Solutions/technical_support'
+      fullPath: '/Our-Bpo-Services/Solutions/technical_support'
+      preLoaderRoute: typeof OurBpoServicesSolutionsTechnical_supportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Our-Bpo-Services/Solutions/payment_processing': {
+      id: '/Our-Bpo-Services/Solutions/payment_processing'
+      path: '/Our-Bpo-Services/Solutions/payment_processing'
+      fullPath: '/Our-Bpo-Services/Solutions/payment_processing'
+      preLoaderRoute: typeof OurBpoServicesSolutionsPayment_processingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Our-Bpo-Services/Solutions/outbound_services': {
+      id: '/Our-Bpo-Services/Solutions/outbound_services'
+      path: '/Our-Bpo-Services/Solutions/outbound_services'
+      fullPath: '/Our-Bpo-Services/Solutions/outbound_services'
+      preLoaderRoute: typeof OurBpoServicesSolutionsOutbound_servicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Our-Bpo-Services/Solutions/lead_generation': {
+      id: '/Our-Bpo-Services/Solutions/lead_generation'
+      path: '/Our-Bpo-Services/Solutions/lead_generation'
+      fullPath: '/Our-Bpo-Services/Solutions/lead_generation'
+      preLoaderRoute: typeof OurBpoServicesSolutionsLead_generationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Our-Bpo-Services/Solutions/inbound_services': {
+      id: '/Our-Bpo-Services/Solutions/inbound_services'
+      path: '/Our-Bpo-Services/Solutions/inbound_services'
+      fullPath: '/Our-Bpo-Services/Solutions/inbound_services'
+      preLoaderRoute: typeof OurBpoServicesSolutionsInbound_servicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Our-Bpo-Services/Solutions/inbound_sales': {
+      id: '/Our-Bpo-Services/Solutions/inbound_sales'
+      path: '/Our-Bpo-Services/Solutions/inbound_sales'
+      fullPath: '/Our-Bpo-Services/Solutions/inbound_sales'
+      preLoaderRoute: typeof OurBpoServicesSolutionsInbound_salesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Our-Bpo-Services/Solutions/facility_and_procurement': {
+      id: '/Our-Bpo-Services/Solutions/facility_and_procurement'
+      path: '/Our-Bpo-Services/Solutions/facility_and_procurement'
+      fullPath: '/Our-Bpo-Services/Solutions/facility_and_procurement'
+      preLoaderRoute: typeof OurBpoServicesSolutionsFacility_and_procurementRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Our-Bpo-Services/Solutions/direct_response_marketing': {
+      id: '/Our-Bpo-Services/Solutions/direct_response_marketing'
+      path: '/Our-Bpo-Services/Solutions/direct_response_marketing'
+      fullPath: '/Our-Bpo-Services/Solutions/direct_response_marketing'
+      preLoaderRoute: typeof OurBpoServicesSolutionsDirect_response_marketingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Our-Bpo-Services/Solutions/customer_retention': {
+      id: '/Our-Bpo-Services/Solutions/customer_retention'
+      path: '/Our-Bpo-Services/Solutions/customer_retention'
+      fullPath: '/Our-Bpo-Services/Solutions/customer_retention'
+      preLoaderRoute: typeof OurBpoServicesSolutionsCustomer_retentionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Our-Bpo-Services/Solutions/claims_processing': {
+      id: '/Our-Bpo-Services/Solutions/claims_processing'
+      path: '/Our-Bpo-Services/Solutions/claims_processing'
+      fullPath: '/Our-Bpo-Services/Solutions/claims_processing'
+      preLoaderRoute: typeof OurBpoServicesSolutionsClaims_processingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Our-Bpo-Services/Solutions/back_office_processing': {
+      id: '/Our-Bpo-Services/Solutions/back_office_processing'
+      path: '/Our-Bpo-Services/Solutions/back_office_processing'
+      fullPath: '/Our-Bpo-Services/Solutions/back_office_processing'
+      preLoaderRoute: typeof OurBpoServicesSolutionsBack_office_processingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Our-Bpo-Services/Solutions/accounting_and_collections': {
+      id: '/Our-Bpo-Services/Solutions/accounting_and_collections'
+      path: '/Our-Bpo-Services/Solutions/accounting_and_collections'
+      fullPath: '/Our-Bpo-Services/Solutions/accounting_and_collections'
+      preLoaderRoute: typeof OurBpoServicesSolutionsAccounting_and_collectionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Our-Bpo-Services/Industries/telecommunications': {
+      id: '/Our-Bpo-Services/Industries/telecommunications'
+      path: '/Our-Bpo-Services/Industries/telecommunications'
+      fullPath: '/Our-Bpo-Services/Industries/telecommunications'
+      preLoaderRoute: typeof OurBpoServicesIndustriesTelecommunicationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Our-Bpo-Services/Industries/technology': {
+      id: '/Our-Bpo-Services/Industries/technology'
+      path: '/Our-Bpo-Services/Industries/technology'
+      fullPath: '/Our-Bpo-Services/Industries/technology'
+      preLoaderRoute: typeof OurBpoServicesIndustriesTechnologyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Our-Bpo-Services/Industries/retail': {
+      id: '/Our-Bpo-Services/Industries/retail'
+      path: '/Our-Bpo-Services/Industries/retail'
+      fullPath: '/Our-Bpo-Services/Industries/retail'
+      preLoaderRoute: typeof OurBpoServicesIndustriesRetailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Our-Bpo-Services/Industries/real_estate': {
+      id: '/Our-Bpo-Services/Industries/real_estate'
+      path: '/Our-Bpo-Services/Industries/real_estate'
+      fullPath: '/Our-Bpo-Services/Industries/real_estate'
+      preLoaderRoute: typeof OurBpoServicesIndustriesReal_estateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Our-Bpo-Services/Industries/logistics_supply_chain': {
+      id: '/Our-Bpo-Services/Industries/logistics_supply_chain'
+      path: '/Our-Bpo-Services/Industries/logistics_supply_chain'
+      fullPath: '/Our-Bpo-Services/Industries/logistics_supply_chain'
+      preLoaderRoute: typeof OurBpoServicesIndustriesLogistics_supply_chainRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Our-Bpo-Services/Industries/insurance': {
+      id: '/Our-Bpo-Services/Industries/insurance'
+      path: '/Our-Bpo-Services/Industries/insurance'
+      fullPath: '/Our-Bpo-Services/Industries/insurance'
+      preLoaderRoute: typeof OurBpoServicesIndustriesInsuranceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Our-Bpo-Services/Industries/healthcare': {
+      id: '/Our-Bpo-Services/Industries/healthcare'
+      path: '/Our-Bpo-Services/Industries/healthcare'
+      fullPath: '/Our-Bpo-Services/Industries/healthcare'
+      preLoaderRoute: typeof OurBpoServicesIndustriesHealthcareRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Our-Bpo-Services/Industries/financial': {
+      id: '/Our-Bpo-Services/Industries/financial'
+      path: '/Our-Bpo-Services/Industries/financial'
+      fullPath: '/Our-Bpo-Services/Industries/financial'
+      preLoaderRoute: typeof OurBpoServicesIndustriesFinancialRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Our-Bpo-Services/Industries/entertainment': {
+      id: '/Our-Bpo-Services/Industries/entertainment'
+      path: '/Our-Bpo-Services/Industries/entertainment'
+      fullPath: '/Our-Bpo-Services/Industries/entertainment'
+      preLoaderRoute: typeof OurBpoServicesIndustriesEntertainmentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -313,6 +754,47 @@ const rootRouteChildren: RootRouteChildren = {
   ServicesUxUiDesignRoute: ServicesUxUiDesignRoute,
   ServicesWebAppDevelopmentRoute: ServicesWebAppDevelopmentRoute,
   ServicesIndexRoute: ServicesIndexRoute,
+  OurBpoServicesIndustriesEntertainmentRoute:
+    OurBpoServicesIndustriesEntertainmentRoute,
+  OurBpoServicesIndustriesFinancialRoute:
+    OurBpoServicesIndustriesFinancialRoute,
+  OurBpoServicesIndustriesHealthcareRoute:
+    OurBpoServicesIndustriesHealthcareRoute,
+  OurBpoServicesIndustriesInsuranceRoute:
+    OurBpoServicesIndustriesInsuranceRoute,
+  OurBpoServicesIndustriesLogistics_supply_chainRoute:
+    OurBpoServicesIndustriesLogistics_supply_chainRoute,
+  OurBpoServicesIndustriesReal_estateRoute:
+    OurBpoServicesIndustriesReal_estateRoute,
+  OurBpoServicesIndustriesRetailRoute: OurBpoServicesIndustriesRetailRoute,
+  OurBpoServicesIndustriesTechnologyRoute:
+    OurBpoServicesIndustriesTechnologyRoute,
+  OurBpoServicesIndustriesTelecommunicationsRoute:
+    OurBpoServicesIndustriesTelecommunicationsRoute,
+  OurBpoServicesSolutionsAccounting_and_collectionsRoute:
+    OurBpoServicesSolutionsAccounting_and_collectionsRoute,
+  OurBpoServicesSolutionsBack_office_processingRoute:
+    OurBpoServicesSolutionsBack_office_processingRoute,
+  OurBpoServicesSolutionsClaims_processingRoute:
+    OurBpoServicesSolutionsClaims_processingRoute,
+  OurBpoServicesSolutionsCustomer_retentionRoute:
+    OurBpoServicesSolutionsCustomer_retentionRoute,
+  OurBpoServicesSolutionsDirect_response_marketingRoute:
+    OurBpoServicesSolutionsDirect_response_marketingRoute,
+  OurBpoServicesSolutionsFacility_and_procurementRoute:
+    OurBpoServicesSolutionsFacility_and_procurementRoute,
+  OurBpoServicesSolutionsInbound_salesRoute:
+    OurBpoServicesSolutionsInbound_salesRoute,
+  OurBpoServicesSolutionsInbound_servicesRoute:
+    OurBpoServicesSolutionsInbound_servicesRoute,
+  OurBpoServicesSolutionsLead_generationRoute:
+    OurBpoServicesSolutionsLead_generationRoute,
+  OurBpoServicesSolutionsOutbound_servicesRoute:
+    OurBpoServicesSolutionsOutbound_servicesRoute,
+  OurBpoServicesSolutionsPayment_processingRoute:
+    OurBpoServicesSolutionsPayment_processingRoute,
+  OurBpoServicesSolutionsTechnical_supportRoute:
+    OurBpoServicesSolutionsTechnical_supportRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
