@@ -129,7 +129,7 @@ export function ServiceDetailPage({ data }: ServiceDetailPageProps) {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-8 lg:grid-cols-12 lg:gap-8">
             {/* Main Content */}
-            <div className="order-2 lg:order-1 lg:col-span-8">
+            <div className="order-1 lg:col-span-8">
               {/* Title & Description */}
               <motion.div
                 className="mb-8 sm:mb-10"
@@ -289,7 +289,7 @@ export function ServiceDetailPage({ data }: ServiceDetailPageProps) {
             </div>
 
             {/* Sidebar */}
-            <div className="order-1 lg:order-2 lg:col-span-4">
+            <div className="order-2 lg:order-2 lg:col-span-4">
               <div className="lg:sticky lg:top-24">
                 <ServiceSidebar currentSlug={data.slug} />
               </div>
