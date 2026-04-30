@@ -32,7 +32,8 @@ export class PermissionMapManager {
    */
   async buildPermissionMap(
     userId: string,
-    orgId: string
+    orgId: string,
+    teamId?: string
   ): Promise<PermissionMap> {
     let policyVersion = await this.policyManager.getPolicyVersion(orgId);
 
@@ -45,22 +46,38 @@ export class PermissionMapManager {
     const cached = await this.cacheManager.getCachedPermissionMap(
       userId,
       orgId,
-      policyVersion
+      policyVersion,
+      teamId
     );
     if (cached) return cached;
 
-    const dbSnapshot = await this.loadSnapshotFromDb(userId, orgId);
-    if (dbSnapshot && dbSnapshot.policyVersion === policyVersion) {
-      await this.cacheManager.setCachedPermissionMap(userId, orgId, dbSnapshot);
-      return dbSnapshot;
+    if (!teamId) {
+      const dbSnapshot = await this.loadSnapshotFromDb(userId, orgId);
+      if (dbSnapshot && dbSnapshot.policyVersion === policyVersion) {
+        await this.cacheManager.setCachedPermissionMap(
+          userId,
+          orgId,
+          dbSnapshot
+        );
+        return dbSnapshot;
+      }
     }
 
-    const permissionMap = await this.computePermissionMap(userId, orgId);
+    const permissionMap = await this.computePermissionMap(userId, orgId, teamId);
 
-    await Promise.all([
-      this.saveSnapshot(userId, orgId, permissionMap),
-      this.cacheManager.setCachedPermissionMap(userId, orgId, permissionMap),
-    ]);
+    if (!teamId) {
+      await Promise.all([
+        this.saveSnapshot(userId, orgId, permissionMap),
+        this.cacheManager.setCachedPermissionMap(userId, orgId, permissionMap),
+      ]);
+    } else {
+      await this.cacheManager.setCachedPermissionMap(
+        userId,
+        orgId,
+        permissionMap,
+        teamId
+      );
+    }
 
     return permissionMap;
   }
@@ -129,7 +146,8 @@ export class PermissionMapManager {
    */
   private async computePermissionMap(
     userId: string,
-    orgId: string
+    orgId: string,
+    teamId?: string
   ): Promise<PermissionMap> {
     const enforcer = await this.policyManager.getEnforcer();
     const domain = `org:${orgId}`;
@@ -140,13 +158,25 @@ export class PermissionMapManager {
       if (entry.subResources.length > 0) {
         objParts.push(...entry.subResources);
       }
-      const objName = objParts.join(":");
-      const allowed = await enforcer.enforce(
-        userId,
-        domain,
-        { name: objName, ownerId: "" },
-        entry.key
-      );
+      const baseObject = objParts.join(":");
+      const candidateObjects = teamId
+        ? [baseObject, `team:${teamId}:${baseObject}`]
+        : [baseObject];
+
+      let allowed = false;
+      for (const objName of candidateObjects) {
+        allowed = await enforcer.enforce(
+          userId,
+          domain,
+          { name: objName, ownerId: "" },
+          entry.key
+        );
+
+        if (allowed) {
+          break;
+        }
+      }
+
       permissions[entry.key] = allowed;
     }
 
@@ -154,6 +184,7 @@ export class PermissionMapManager {
     return {
       userId,
       orgId,
+      teamId,
       policyVersion: currentVersion,
       permissions,
       computedAt: Date.now(),

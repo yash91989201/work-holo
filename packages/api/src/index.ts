@@ -5,7 +5,11 @@ import {
   moduleUserAccessTable,
   orgModuleConfigTable,
 } from "@work-holo/db/schema/authorization";
-import { PermissionManagers, PermissionService } from "@work-holo/permission";
+import {
+  assignOrgUserRole,
+  PermissionManagers,
+  PermissionService,
+} from "@work-holo/permission";
 import { and, eq, inArray } from "drizzle-orm";
 import type { Context } from "./context";
 import { MODULE_IDS } from "./lib/module-ids";
@@ -81,6 +85,13 @@ export const orgMemberProcedure = orgProcedure.use(
         message: "You are not a member of this organization",
       });
     }
+
+    await assignOrgUserRole(
+      context.db,
+      context.session.user.id,
+      context.orgId,
+      membership.role
+    );
 
     return next({
       context: {

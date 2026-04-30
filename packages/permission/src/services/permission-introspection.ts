@@ -26,10 +26,11 @@ export class PermissionIntrospection {
    * Returns the full permission map for the current user context.
    * @returns Complete permission map with all evaluated permissions
    */
-  getPermissionMap(): Promise<PermissionMap> {
+  getPermissionMap(teamId?: string): Promise<PermissionMap> {
     return this.permissionMapManager.buildPermissionMap(
       this.userId,
-      this.orgId
+      this.orgId,
+      teamId
     );
   }
 }

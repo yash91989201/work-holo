@@ -1,4 +1,5 @@
 import type { db as Db } from "@work-holo/db";
+import { member, team, teamMember } from "@work-holo/db/schema/auth";
 import {
   policyOverrideTable,
   policyVersionTable,
@@ -49,7 +50,8 @@ type RoleAssignmentRow = {
   organizationId: string;
   teamId: string | null;
   roleTemplate: {
-    name: string;
+    id: string;
+    isSystem: boolean;
     scope: "org" | "team";
   };
 };
@@ -66,7 +68,6 @@ type RolePermissionRow = {
     subResource: string;
   };
   roleTemplate: {
-    name: string;
     scope: "org" | "team";
   };
 };
@@ -479,20 +480,20 @@ export class PolicyManager {
 
   /**
    * Builds a Casbin role identifier for org- or team-scoped templates.
-   * @param roleName Template name
+   * @param roleTemplateId Role template ID
    * @param scope Org or team scope
    * @param teamId Team ID for team-scoped roles
    * @returns Role identifier string
    */
-  private buildRoleName(
-    roleName: string,
+  private buildRoleSubject(
+    roleTemplateId: string,
     scope: "org" | "team",
     teamId?: string | null
   ): string {
     if (scope === "team" && teamId) {
-      return `role:${roleName}:team:${teamId}`;
+      return `role:${roleTemplateId}:team:${teamId}`;
     }
-    return `role:${roleName}`;
+    return `role:${roleTemplateId}`;
   }
 
   /**
@@ -506,8 +507,8 @@ export class PolicyManager {
     return assignments.map((a) => ({
       ptype: "g" as const,
       user: a.userId,
-      role: this.buildRoleName(
-        a.roleTemplate.name,
+      role: this.buildRoleSubject(
+        a.roleTemplateId,
         a.roleTemplate.scope,
         a.teamId
       ),
@@ -541,8 +542,8 @@ export class PolicyManager {
 
         return Array.from(teamIds).map((teamId) => ({
           ptype: "p" as const,
-          sub: this.buildRoleName(
-            rolePermission.roleTemplate.name,
+          sub: this.buildRoleSubject(
+            rolePermission.roleTemplateId,
             rolePermission.roleTemplate.scope,
             teamId
           ),
@@ -560,8 +561,8 @@ export class PolicyManager {
 
       return {
         ptype: "p" as const,
-        sub: this.buildRoleName(
-          rolePermission.roleTemplate.name,
+        sub: this.buildRoleSubject(
+          rolePermission.roleTemplateId,
           rolePermission.roleTemplate.scope
         ),
         dom: this.buildDomain(orgId),
@@ -619,25 +620,101 @@ export class PolicyManager {
   private async fetchRoleAssignments(
     orgId: string
   ): Promise<RoleAssignmentRow[]> {
-    const rows = await this.db.query.roleAssignmentTable.findMany({
-      where: eq(roleAssignmentTable.organizationId, orgId),
-      columns: {
-        userId: true,
-        roleTemplateId: true,
-        organizationId: true,
-        teamId: true,
-      },
-      with: {
-        roleTemplate: {
+    const [assignmentRows, memberships, systemTemplates, teamMemberships] =
+      await Promise.all([
+        this.db.query.roleAssignmentTable.findMany({
+          where: eq(roleAssignmentTable.organizationId, orgId),
           columns: {
-            name: true,
-            scope: true,
+            userId: true,
+            roleTemplateId: true,
+            organizationId: true,
+            teamId: true,
           },
-        },
-      },
-    });
+          with: {
+            roleTemplate: {
+              columns: {
+                id: true,
+                isSystem: true,
+                scope: true,
+              },
+            },
+          },
+        }),
+        this.db.query.member.findMany({
+          where: eq(member.organizationId, orgId),
+          columns: {
+            userId: true,
+            role: true,
+          },
+        }),
+        this.db.query.roleTemplateTable.findMany({
+          where: and(
+            eq(roleTemplateTable.isSystem, true),
+            eq(roleTemplateTable.scope, "org"),
+            isNull(roleTemplateTable.organizationId)
+          ),
+          columns: {
+            id: true,
+            name: true,
+          },
+        }),
+        this.db
+          .select({
+            userId: teamMember.userId,
+            teamId: teamMember.teamId,
+          })
+          .from(teamMember)
+          .innerJoin(team, eq(teamMember.teamId, team.id))
+          .where(eq(team.organizationId, orgId)),
+      ]);
 
-    return rows as RoleAssignmentRow[];
+    const templateIdBySystemRole = new Map(
+      systemTemplates.map((template) => [template.name, template.id])
+    );
+
+    const validTeamMemberships = new Set(
+      teamMemberships.map((membership) => `${membership.userId}:${membership.teamId}`)
+    );
+
+    const customAssignments = assignmentRows.filter((assignment) => {
+      if (assignment.roleTemplate.isSystem) {
+        return false;
+      }
+
+      if (assignment.roleTemplate.scope === "team") {
+        return Boolean(
+          assignment.teamId &&
+            validTeamMemberships.has(`${assignment.userId}:${assignment.teamId}`)
+        );
+      }
+
+      return true;
+    }) as RoleAssignmentRow[];
+
+    const systemAssignments: RoleAssignmentRow[] = memberships.flatMap(
+      (membership) => {
+        const roleTemplateId = templateIdBySystemRole.get(membership.role);
+        if (!roleTemplateId) {
+          return [];
+        }
+
+        return [
+          {
+            userId: membership.userId,
+            roleTemplateId,
+            organizationId: orgId,
+            teamId: null,
+            roleTemplate: {
+              id: roleTemplateId,
+              isSystem: true,
+              scope: "org",
+            },
+          },
+        ];
+      }
+    );
+
+    return [...customAssignments, ...systemAssignments];
   }
 
   /**
@@ -678,7 +755,6 @@ export class PolicyManager {
         },
         roleTemplate: {
           columns: {
-            name: true,
             scope: true,
           },
         },

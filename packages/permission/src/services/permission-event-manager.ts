@@ -156,6 +156,7 @@ export class PermissionEventManager {
    */
   private broadcastToOrg(event: PermissionEvent): void {
     if (!this.pusher) return;
+    if (event.broadcastOrg === false) return;
 
     const channel = `private-org-${event.orgId}`;
     this.pusher
@@ -164,6 +165,7 @@ export class PermissionEventManager {
         orgId: event.orgId,
         teamId: event.teamId,
         timestamp: event.timestamp,
+        payload: event.payload,
       })
       .catch((err: unknown) => {
         console.error(
