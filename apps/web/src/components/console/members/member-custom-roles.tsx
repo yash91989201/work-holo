@@ -1,25 +1,23 @@
 import { IconPlus, IconTrash } from "@tabler/icons-react";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
-import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge } from "@work-holo/ui/components/badge";
+import { Button } from "@work-holo/ui/components/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@work-holo/ui/components/card";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Spinner } from "@/components/ui/spinner";
+} from "@work-holo/ui/components/select";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
+import { Spinner } from "@work-holo/ui/components/spinner";
 import {
   Table,
   TableBody,
@@ -27,7 +25,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@work-holo/ui/components/table";
+import { useMemo, useState } from "react";
+import { toast } from "sonner";
 import { useCan } from "@/lib/permission/hooks";
 import { queryClient, queryUtils } from "@/utils/orpc";
 
@@ -135,25 +135,27 @@ export function MemberCustomRoles({
     queryUtils.org.role.revoke.mutationOptions()
   );
 
-  const teamRows = useMemo(() => {
-    return data.availableTeams.map((team) => {
-      const assignments = data.assignments.filter(
-        (assignment) => assignment.teamId === team.id
-      );
-      const assignedRoleIds = new Set(
-        assignments.map((assignment) => assignment.roleTemplateId)
-      );
-      const assignableRoles = data.availableRoles.filter(
-        (role) => !assignedRoleIds.has(role.id)
-      );
+  const teamRows = useMemo(
+    () =>
+      data.availableTeams.map((team) => {
+        const assignments = data.assignments.filter(
+          (assignment) => assignment.teamId === team.id
+        );
+        const assignedRoleIds = new Set(
+          assignments.map((assignment) => assignment.roleTemplateId)
+        );
+        const assignableRoles = data.availableRoles.filter(
+          (role) => !assignedRoleIds.has(role.id)
+        );
 
-      return {
-        team,
-        assignments,
-        assignableRoles,
-      };
-    });
-  }, [data.assignments, data.availableRoles, data.availableTeams]);
+        return {
+          team,
+          assignments,
+          assignableRoles,
+        };
+      }),
+    [data.assignments, data.availableRoles, data.availableTeams]
+  );
 
   const handleAssign = async (teamId: string, fallbackRoleId?: string) => {
     if (!allowAssign) {

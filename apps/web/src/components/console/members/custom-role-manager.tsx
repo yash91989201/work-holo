@@ -1,30 +1,30 @@
 import { IconEdit, IconPlus, IconShield, IconTrash } from "@tabler/icons-react";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
-import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge } from "@work-holo/ui/components/badge";
+import { Button } from "@work-holo/ui/components/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
+} from "@work-holo/ui/components/card";
+import { Checkbox } from "@work-holo/ui/components/checkbox";
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Spinner } from "@/components/ui/spinner";
-import { Textarea } from "@/components/ui/textarea";
+} from "@work-holo/ui/components/dialog";
+import { Input } from "@work-holo/ui/components/input";
+import { Label } from "@work-holo/ui/components/label";
+import { ScrollArea } from "@work-holo/ui/components/scroll-area";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
+import { Spinner } from "@work-holo/ui/components/spinner";
+import { Textarea } from "@work-holo/ui/components/textarea";
+import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import { useCan } from "@/lib/permission/hooks";
 import { queryClient, queryUtils } from "@/utils/orpc";
 
@@ -77,17 +77,19 @@ function RoleDialog({
     setSelectedKeys(role?.permissionKeys ?? []);
   }, [open, role]);
 
-  const groupedPermissions = useMemo(() => {
-    return availablePermissions.reduce<Record<string, AvailablePermission[]>>(
-      (acc, permission) => {
-        const group = permission.resource;
-        acc[group] ??= [];
-        acc[group].push(permission);
-        return acc;
-      },
-      {}
-    );
-  }, [availablePermissions]);
+  const groupedPermissions = useMemo(
+    () =>
+      availablePermissions.reduce<Record<string, AvailablePermission[]>>(
+        (acc, permission) => {
+          const group = permission.resource;
+          acc[group] ??= [];
+          acc[group].push(permission);
+          return acc;
+        },
+        {}
+      ),
+    [availablePermissions]
+  );
 
   const invalidateRoleQueries = async () => {
     await queryClient.invalidateQueries({
