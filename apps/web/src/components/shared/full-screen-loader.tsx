@@ -14,14 +14,15 @@ export function FullScreenLoader({ className }: FullScreenLoaderProps) {
       )}
     >
       <div className="flex flex-col items-center gap-4">
-        <picture className="relative">
-          <Image
-            alt="Work Holo logo"
-            height={240}
-            src="/logo.webp"
-            width={360}
-          />
-        </picture>
+        <Image
+          alt="Work Holo"
+          aspectRatio={3 / 2}
+          decorative
+          objectFit="contain"
+          priority
+          src="/logo.webp"
+          width={240}
+        />
         <h1 className="font-bold text-2xl text-foreground lg:text-3xl">
           Work Holo
         </h1>
