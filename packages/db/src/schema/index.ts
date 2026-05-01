@@ -3,5 +3,6 @@ export * from "./auth";
 export * from "./authorization";
 export * from "./casbin";
 export * from "./channel";
+export * from "./dialer";
 export * from "./direct-message";
 export * from "./notification";

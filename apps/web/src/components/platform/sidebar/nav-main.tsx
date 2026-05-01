@@ -3,6 +3,9 @@ import {
   IconCrown,
   IconHeadphones,
   IconLayoutDashboard,
+  IconPhone,
+  IconPhoneCall,
+  IconServer,
   IconShieldCheck,
   IconUsers,
 } from "@tabler/icons-react";
@@ -16,7 +19,7 @@ import {
   SidebarMenuItem,
 } from "@work-holo/ui/components/sidebar";
 
-const navItems = [
+const platformNavItems = [
   {
     to: "/platform/dashboard",
     label: "Overview",
@@ -55,6 +58,29 @@ const navItems = [
   },
 ] as const;
 
+const dialerNavItems = [
+  {
+    to: "/platform/dashboard/dialer/trunks",
+    label: "SIP Trunks",
+    icon: IconPhone,
+  },
+  {
+    to: "/platform/dashboard/dialer/dids",
+    label: "DID Inventory",
+    icon: IconPhoneCall,
+  },
+  {
+    to: "/platform/dashboard/dialer/extensions",
+    label: "Agent Extensions",
+    icon: IconUsers,
+  },
+  {
+    to: "/platform/dashboard/dialer/status",
+    label: "Server Status",
+    icon: IconServer,
+  },
+];
+
 type NavMainProps = {
   adminRole: string;
 };
@@ -62,34 +88,61 @@ type NavMainProps = {
 export function NavMain({ adminRole }: NavMainProps) {
   const location = useLocation();
 
-  const visibleItems = navItems.filter(
+  const visiblePlatformItems = platformNavItems.filter(
     (item) => !item.superAdminOnly || adminRole === "super_admin"
   );
 
   return (
-    <SidebarGroup>
-      <SidebarGroupLabel>Dashboard</SidebarGroupLabel>
-      <SidebarGroupContent>
-        <SidebarMenu>
-          {visibleItems.map((item) => {
-            const isActive = location.pathname === item.to;
-            return (
-              <SidebarMenuItem key={item.to}>
-                <SidebarMenuButton
-                  isActive={isActive}
-                  render={
+    <>
+      <SidebarGroup>
+        <SidebarGroupLabel>Dashboard</SidebarGroupLabel>
+        <SidebarGroupContent>
+          <SidebarMenu>
+            {visiblePlatformItems.map((item) => {
+              const isActive = location.pathname === item.to;
+              return (
+                <SidebarMenuItem key={item.to}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isActive}
+                    tooltip={item.label}
+                  >
                     <Link to={item.to}>
                       <item.icon />
                       <span>{item.label}</span>
                     </Link>
-                  }
-                  tooltip={item.label}
-                />
-              </SidebarMenuItem>
-            );
-          })}
-        </SidebarMenu>
-      </SidebarGroupContent>
-    </SidebarGroup>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              );
+            })}
+          </SidebarMenu>
+        </SidebarGroupContent>
+      </SidebarGroup>
+
+      <SidebarGroup>
+        <SidebarGroupLabel>Dialer</SidebarGroupLabel>
+        <SidebarGroupContent>
+          <SidebarMenu>
+            {dialerNavItems.map((item) => {
+              const isActive = location.pathname.startsWith(item.to);
+              return (
+                <SidebarMenuItem key={item.to}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isActive}
+                    tooltip={item.label}
+                  >
+                    <Link to={item.to as string}>
+                      <item.icon />
+                      <span>{item.label}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              );
+            })}
+          </SidebarMenu>
+        </SidebarGroupContent>
+      </SidebarGroup>
+    </>
   );
 }
