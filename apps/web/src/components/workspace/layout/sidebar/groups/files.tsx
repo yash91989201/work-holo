@@ -33,7 +33,20 @@ export function FilesGroup() {
       <SidebarGroupContent>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton isActive={isActive} render={<Link params={{ slug }} search={DEFAULT_FILE_SEARCH} to="/org/$slug/workspace/communication/channels/files"><IconPaperclip /><span>Files</span></Link>} tooltip="Files" />
+            <SidebarMenuButton
+              isActive={isActive}
+              render={
+                <Link
+                  params={{ slug }}
+                  search={DEFAULT_FILE_SEARCH}
+                  to="/org/$slug/workspace/communication/channels/files"
+                >
+                  <IconPaperclip />
+                  <span>Files</span>
+                </Link>
+              }
+              tooltip="Files"
+            />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarGroupContent>

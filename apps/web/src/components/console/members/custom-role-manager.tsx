@@ -1,9 +1,4 @@
-import {
-  IconEdit,
-  IconPlus,
-  IconShield,
-  IconTrash,
-} from "@tabler/icons-react";
+import { IconEdit, IconPlus, IconShield, IconTrash } from "@tabler/icons-react";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -213,45 +208,50 @@ function RoleDialog({
 
             <ScrollArea className="h-[28rem] rounded-md border p-4">
               <div className="space-y-6">
-                {Object.entries(groupedPermissions).map(([group, permissions]) => (
-                  <div className="space-y-3" key={group}>
-                    <div>
-                      <h4 className="font-medium capitalize">{group}</h4>
-                      <p className="text-muted-foreground text-xs">
-                        Team-scoped permissions available for {group}
-                      </p>
-                    </div>
+                {Object.entries(groupedPermissions).map(
+                  ([group, permissions]) => (
+                    <div className="space-y-3" key={group}>
+                      <div>
+                        <h4 className="font-medium capitalize">{group}</h4>
+                        <p className="text-muted-foreground text-xs">
+                          Team-scoped permissions available for {group}
+                        </p>
+                      </div>
 
-                    <div className="grid gap-3 md:grid-cols-2">
-                      {permissions.map((permission) => {
-                        const checked = selectedKeys.includes(permission.key);
+                      <div className="grid gap-3 md:grid-cols-2">
+                        {permissions.map((permission) => {
+                          const checked = selectedKeys.includes(permission.key);
 
-                        return (
-                          <label
-                            className="flex cursor-pointer items-start gap-3 rounded-lg border p-3"
-                            key={permission.key}
-                          >
-                            <Checkbox
-                              checked={checked}
-                              onCheckedChange={(value) =>
-                                togglePermission(permission.key, value === true)
-                              }
-                            />
-                            <div className="min-w-0 space-y-1">
-                              <div className="font-medium text-sm">
-                                {formatPermissionLabel(permission)}
+                          return (
+                            <label
+                              className="flex cursor-pointer items-start gap-3 rounded-lg border p-3"
+                              key={permission.key}
+                            >
+                              <Checkbox
+                                checked={checked}
+                                onCheckedChange={(value) =>
+                                  togglePermission(
+                                    permission.key,
+                                    value === true
+                                  )
+                                }
+                              />
+                              <div className="min-w-0 space-y-1">
+                                <div className="font-medium text-sm">
+                                  {formatPermissionLabel(permission)}
+                                </div>
+                                <div className="text-muted-foreground text-xs">
+                                  {permission.description ||
+                                    `${permission.resource}:${permission.subResource || "root"}`}
+                                </div>
                               </div>
-                              <div className="text-muted-foreground text-xs">
-                                {permission.description ||
-                                  `${permission.resource}:${permission.subResource || "root"}`}
-                              </div>
-                            </div>
-                          </label>
-                        );
-                      })}
+                            </label>
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                )}
               </div>
             </ScrollArea>
           </div>
@@ -324,7 +324,7 @@ export function CustomRoleManager() {
       return;
     }
 
-    if (!window.confirm(`Delete the custom role \"${displayName}\"?`)) {
+    if (!window.confirm(`Delete the custom role "${displayName}"?`)) {
       return;
     }
 
@@ -341,8 +341,8 @@ export function CustomRoleManager() {
               Custom team roles
             </CardTitle>
             <CardDescription>
-              Create reusable team-scoped roles and choose which permissions they
-              grant.
+              Create reusable team-scoped roles and choose which permissions
+              they grant.
             </CardDescription>
           </div>
 
@@ -390,7 +390,9 @@ export function CustomRoleManager() {
                       {canDelete && (
                         <Button
                           disabled={removeMutation.isPending}
-                          onClick={() => handleDelete(role.id, role.displayName)}
+                          onClick={() =>
+                            handleDelete(role.id, role.displayName)
+                          }
                           size="icon"
                           variant="outline"
                         >

@@ -1,7 +1,5 @@
 import { IconUserMinus, IconUserPlus } from "@tabler/icons-react";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { toast } from "sonner";
 import { Badge } from "@work-holo/ui/components/badge";
 import { Button } from "@work-holo/ui/components/button";
 import { Checkbox } from "@work-holo/ui/components/checkbox";
@@ -15,6 +13,8 @@ import {
   DialogTrigger,
 } from "@work-holo/ui/components/dialog";
 import { Spinner } from "@work-holo/ui/components/spinner";
+import { useState } from "react";
+import { toast } from "sonner";
 import { useListOrgMembers } from "@/hooks/use-list-org-members";
 import { queryClient, queryUtils } from "@/utils/orpc";
 
@@ -64,14 +64,18 @@ export function AddTeamMemberDialog({ teamId }: { teamId: string }) {
 
   return (
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
-      <DialogTrigger render={<Button
-        className="flex w-full items-center justify-start gap-1.5"
-        size="sm"
-        variant="ghost"
-      >
-        <IconUserPlus className="size-4" />
-        Add members
-      </Button>} />
+      <DialogTrigger
+        render={
+          <Button
+            className="flex w-full items-center justify-start gap-1.5"
+            size="sm"
+            variant="ghost"
+          >
+            <IconUserPlus className="size-4" />
+            Add members
+          </Button>
+        }
+      />
       <DialogContent className="sm:max-w-106">
         <DialogHeader>
           <DialogTitle>Add Members to Team</DialogTitle>
@@ -195,14 +199,18 @@ export function RemoveTeamMemberDialog({ teamId }: { teamId: string }) {
 
   return (
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
-      <DialogTrigger render={<Button
-        className="flex w-full items-center justify-start gap-1.5"
-        size="sm"
-        variant="ghost"
-      >
-        <IconUserMinus className="size-4" />
-        <span>Remove Members</span>
-      </Button>} />
+      <DialogTrigger
+        render={
+          <Button
+            className="flex w-full items-center justify-start gap-1.5"
+            size="sm"
+            variant="ghost"
+          >
+            <IconUserMinus className="size-4" />
+            <span>Remove Members</span>
+          </Button>
+        }
+      />
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Remove Members from Team</DialogTitle>

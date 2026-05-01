@@ -74,7 +74,8 @@ export class PermissionResourceGuard {
         columns: { role: true },
       });
 
-      const isAdmin = orgMembership?.role === "owner" || orgMembership?.role === "admin";
+      const isAdmin =
+        orgMembership?.role === "owner" || orgMembership?.role === "admin";
 
       if (!isAdmin) {
         throw new ORPCError("FORBIDDEN", {

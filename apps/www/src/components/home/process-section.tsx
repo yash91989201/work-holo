@@ -43,20 +43,23 @@ const cardVariants = {
 
 export function ProcessSection() {
   return (
-    <section id="process" className="relative bg-background py-20 lg:py-28 overflow-hidden scroll-mt-28">
+    <section
+      className="relative scroll-mt-28 overflow-hidden bg-background py-20 lg:py-28"
+      id="process"
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
+          className="mb-16 text-center"
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
-          className="text-center mb-16"
+          viewport={{ once: true }}
+          whileInView={{ opacity: 1, y: 0 }}
         >
-          <p className="text-sm font-medium tracking-[0.2em] text-primary uppercase mb-5">
+          <p className="mb-5 font-medium text-primary text-sm uppercase tracking-[0.2em]">
             [ OUR WORKING PROCESS ]
           </p>
-          <h2 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold text-foreground leading-[1.1] tracking-tight">
+          <h2 className="font-bold text-3xl text-foreground leading-[1.1] tracking-tight sm:text-4xl lg:text-[2.75rem]">
             Transform Your Business
             <br />
             in 3 Simple Steps.
@@ -65,25 +68,25 @@ export function ProcessSection() {
 
         {/* Steps Grid */}
         <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-80px" }}
           className="relative"
+          initial="hidden"
+          variants={containerVariants}
+          viewport={{ once: true, margin: "-80px" }}
+          whileInView="visible"
         >
           {/* Connecting dashed line */}
-          <div className="hidden lg:block absolute top-[60px] left-[10%] right-[10%] h-0">
-            <div className="relative w-full h-full">
-              <div className="absolute inset-0 border-t-2 border-dashed border-primary/30" />
+          <div className="absolute top-[60px] right-[10%] left-[10%] hidden h-0 lg:block">
+            <div className="relative h-full w-full">
+              <div className="absolute inset-0 border-primary/30 border-t-2 border-dashed" />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-6">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3 lg:gap-6">
             {steps.map((step, index) => (
               <ProcessCard
+                isLast={index === steps.length - 1}
                 key={step.num}
                 step={step}
-                isLast={index === steps.length - 1}
               />
             ))}
           </div>
@@ -101,27 +104,27 @@ function ProcessCard({
   isLast: boolean;
 }) {
   return (
-    <motion.div variants={cardVariants} className="relative">
-      <div className="relative bg-card/60 border border-border/40 rounded-2xl p-8 pt-14">
+    <motion.div className="relative" variants={cardVariants}>
+      <div className="relative rounded-2xl border border-border/40 bg-card/60 p-8 pt-14">
         {/* Number Badge */}
         <div className="absolute -top-10 left-1/2 -translate-x-1/2">
           <div className="relative">
             <div className="flex size-20 items-center justify-center rounded-full bg-primary">
-              <span className="text-2xl font-bold text-primary-foreground">
+              <span className="font-bold text-2xl text-primary-foreground">
                 {step.num}
               </span>
             </div>
             {/* Inner shadow ring */}
-            <div className="absolute inset-0 rounded-full bg-gradient-to-b from-black/10 to-transparent pointer-events-none" />
+            <div className="pointer-events-none absolute inset-0 rounded-full bg-gradient-to-b from-black/10 to-transparent" />
           </div>
         </div>
 
         {/* Content */}
         <div className="mt-6 text-center">
-          <h3 className="text-xl font-semibold text-foreground mb-4">
+          <h3 className="mb-4 font-semibold text-foreground text-xl">
             {step.title}
           </h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">
+          <p className="text-muted-foreground text-sm leading-relaxed">
             {step.description}
           </p>
         </div>

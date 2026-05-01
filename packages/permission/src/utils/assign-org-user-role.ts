@@ -52,14 +52,16 @@ export async function assignOrgUserRole(
   }
 
   if (systemTemplateIds.length > 0) {
-    await db.delete(roleAssignmentTable).where(
-      and(
-        eq(roleAssignmentTable.userId, userId),
-        eq(roleAssignmentTable.organizationId, orgId),
-        isNull(roleAssignmentTable.teamId),
-        inArray(roleAssignmentTable.roleTemplateId, systemTemplateIds)
-      )
-    );
+    await db
+      .delete(roleAssignmentTable)
+      .where(
+        and(
+          eq(roleAssignmentTable.userId, userId),
+          eq(roleAssignmentTable.organizationId, orgId),
+          isNull(roleAssignmentTable.teamId),
+          inArray(roleAssignmentTable.roleTemplateId, systemTemplateIds)
+        )
+      );
   }
 
   if (template) {

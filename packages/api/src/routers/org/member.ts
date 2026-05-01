@@ -39,10 +39,7 @@ export const memberRouter = {
         .from(member)
         .innerJoin(user, eq(member.userId, user.id))
         .where(
-          and(
-            eq(member.organizationId, orgId),
-            eq(member.id, input.memberId)
-          )
+          and(eq(member.organizationId, orgId), eq(member.id, input.memberId))
         )
         .limit(1);
 

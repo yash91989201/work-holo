@@ -673,7 +673,9 @@ export class PolicyManager {
     );
 
     const validTeamMemberships = new Set(
-      teamMemberships.map((membership) => `${membership.userId}:${membership.teamId}`)
+      teamMemberships.map(
+        (membership) => `${membership.userId}:${membership.teamId}`
+      )
     );
 
     const customAssignments = assignmentRows.filter((assignment) => {
@@ -684,7 +686,9 @@ export class PolicyManager {
       if (assignment.roleTemplate.scope === "team") {
         return Boolean(
           assignment.teamId &&
-            validTeamMemberships.has(`${assignment.userId}:${assignment.teamId}`)
+            validTeamMemberships.has(
+              `${assignment.userId}:${assignment.teamId}`
+            )
         );
       }
 

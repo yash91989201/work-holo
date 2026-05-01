@@ -1,9 +1,11 @@
 import { IconArrowBackUp, IconCheck } from "@tabler/icons-react";
 import { eq, useLiveQuery } from "@tanstack/react-db";
 import { useNavigate, useParams } from "@tanstack/react-router";
-import DOMPurify from "dompurify";
-import parse from "html-react-parser";
-import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@work-holo/ui/components/avatar";
 import { Badge } from "@work-holo/ui/components/badge";
 import { Button } from "@work-holo/ui/components/button";
 import {
@@ -31,6 +33,8 @@ import {
   ItemTitle,
 } from "@work-holo/ui/components/item";
 import { Skeleton } from "@work-holo/ui/components/skeleton";
+import DOMPurify from "dompurify";
+import parse from "html-react-parser";
 import { channelReadCollection } from "@/db/collections";
 import { useMessageMutations } from "@/hooks/communications/use-message-mutations";
 import { useRecentMessages } from "@/hooks/communications/use-recent-messages";

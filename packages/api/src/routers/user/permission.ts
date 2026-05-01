@@ -23,7 +23,8 @@ export const permissionRouter = {
     )
     .handler(async ({ context, input }) => {
       const permissionMap = await context.permission.getPermissionMap({
-        teamId: input.teamId ?? context.session.session.activeTeamId ?? undefined,
+        teamId:
+          input.teamId ?? context.session.session.activeTeamId ?? undefined,
       });
       return permissionMap;
     }),

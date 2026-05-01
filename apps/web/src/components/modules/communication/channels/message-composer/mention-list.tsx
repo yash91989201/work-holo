@@ -1,11 +1,8 @@
 import {
-  forwardRef,
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useState,
-} from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@work-holo/ui/components/avatar";
 import {
   Item,
   ItemContent,
@@ -14,6 +11,13 @@ import {
   ItemMedia,
   ItemTitle,
 } from "@work-holo/ui/components/item";
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from "react";
 import { cn } from "@/lib/utils";
 
 export interface MentionListProps {

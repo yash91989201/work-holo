@@ -5,7 +5,6 @@ import {
   IconUsers,
 } from "@tabler/icons-react";
 import { useNavigate, useParams } from "@tanstack/react-router";
-import { useState } from "react";
 import { Avatar, AvatarFallback } from "@work-holo/ui/components/avatar";
 import { Button } from "@work-holo/ui/components/button";
 import {
@@ -22,6 +21,7 @@ import {
   PopoverTrigger,
 } from "@work-holo/ui/components/popover";
 import { Skeleton } from "@work-holo/ui/components/skeleton";
+import { useState } from "react";
 import { useActiveMemberRole } from "@/hooks/use-active-member-role";
 import { useMyTeams } from "@/hooks/use-my-teams";
 import { useSession } from "@/hooks/use-session";

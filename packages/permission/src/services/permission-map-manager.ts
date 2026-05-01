@@ -63,20 +63,24 @@ export class PermissionMapManager {
       }
     }
 
-    const permissionMap = await this.computePermissionMap(userId, orgId, teamId);
+    const permissionMap = await this.computePermissionMap(
+      userId,
+      orgId,
+      teamId
+    );
 
-    if (!teamId) {
-      await Promise.all([
-        this.saveSnapshot(userId, orgId, permissionMap),
-        this.cacheManager.setCachedPermissionMap(userId, orgId, permissionMap),
-      ]);
-    } else {
+    if (teamId) {
       await this.cacheManager.setCachedPermissionMap(
         userId,
         orgId,
         permissionMap,
         teamId
       );
+    } else {
+      await Promise.all([
+        this.saveSnapshot(userId, orgId, permissionMap),
+        this.cacheManager.setCachedPermissionMap(userId, orgId, permissionMap),
+      ]);
     }
 
     return permissionMap;

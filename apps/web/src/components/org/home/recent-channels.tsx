@@ -9,11 +9,19 @@ import {
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, useParams } from "@tanstack/react-router";
 import type { ChannelMemberType } from "@work-holo/db/lib/types";
-import * as React from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@work-holo/ui/components/avatar";
 import { Badge } from "@work-holo/ui/components/badge";
 import { buttonVariants } from "@work-holo/ui/components/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@work-holo/ui/components/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@work-holo/ui/components/card";
 import {
   Empty,
   EmptyContent,
@@ -33,6 +41,7 @@ import {
   ItemTitle,
 } from "@work-holo/ui/components/item";
 import { ScrollArea } from "@work-holo/ui/components/scroll-area";
+import * as React from "react";
 import { getInitials } from "@/utils";
 import { queryUtils } from "@/utils/orpc";
 

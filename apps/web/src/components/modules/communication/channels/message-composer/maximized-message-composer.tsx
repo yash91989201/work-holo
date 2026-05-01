@@ -1,12 +1,12 @@
 import { useParams } from "@tanstack/react-router";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@work-holo/ui/components/dialog";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { useMessageMutations } from "@/hooks/communications/use-message-mutations";
 import { useTypingIndicator } from "@/hooks/communications/use-typing-indicator";
 import { useAuthedSession } from "@/hooks/use-authed-session";
@@ -254,7 +254,11 @@ export function MaximizedMessageComposer() {
   dialogTitle = isReplying ? "Reply to Message" : dialogTitle;
 
   return (
-    <Dialog disablePointerDismissal onOpenChange={handleOpenChange} open={isOpen}>
+    <Dialog
+      disablePointerDismissal
+      onOpenChange={handleOpenChange}
+      open={isOpen}
+    >
       <DialogContent
         className={cn("flex flex-col overflow-y-auto p-0", {
           "h-screen w-screen max-w-none rounded-none": isMobile,

@@ -330,7 +330,10 @@ export class PermissionAdmin {
    */
   private async assertUserBelongsToOrganization(userId: string): Promise<void> {
     const orgMember = await this.db.query.member.findFirst({
-      where: and(eq(member.userId, userId), eq(member.organizationId, this.orgId)),
+      where: and(
+        eq(member.userId, userId),
+        eq(member.organizationId, this.orgId)
+      ),
       columns: { id: true },
     });
 

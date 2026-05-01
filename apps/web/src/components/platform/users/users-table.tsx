@@ -2,7 +2,6 @@ import { IconBuilding, IconDots, IconSearch, IconX } from "@tabler/icons-react";
 import { useDebouncedCallback } from "@tanstack/react-pacer";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate, useSearch } from "@tanstack/react-router";
-import { useState } from "react";
 import { Badge } from "@work-holo/ui/components/badge";
 import { Button } from "@work-holo/ui/components/button";
 import {
@@ -39,6 +38,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@work-holo/ui/components/tooltip";
+import { useState } from "react";
 import { queryUtils } from "@/utils/orpc";
 
 function platformRoleBadgeVariant(

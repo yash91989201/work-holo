@@ -350,7 +350,9 @@ export class AuthorizationEngine {
       }),
     ]);
 
-    const membershipTeamIds = new Set(teamMemberships.map((entry) => entry.teamId));
+    const membershipTeamIds = new Set(
+      teamMemberships.map((entry) => entry.teamId)
+    );
 
     const applicableTemplateIds = assignments
       .filter((assignment) => {

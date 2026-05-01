@@ -53,8 +53,8 @@ function RouteComponent() {
         <h1 className="font-bold text-3xl tracking-tight">Custom roles</h1>
         <p className="max-w-3xl text-muted-foreground">
           Create reusable team-scoped role templates, choose exactly which
-          permissions they grant, then assign them from each member&apos;s detail
-          page.
+          permissions they grant, then assign them from each member&apos;s
+          detail page.
         </p>
       </div>
 

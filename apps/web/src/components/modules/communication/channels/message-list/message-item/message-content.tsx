@@ -1,9 +1,9 @@
 import { IconDownload, IconFile, IconMaximize } from "@tabler/icons-react";
 import type { MessageWithSenderType } from "@work-holo/api/lib/types";
+import { Button } from "@work-holo/ui/components/button";
 import DOMPurify from "dompurify";
 import parse from "html-react-parser";
 import { type JSX, useRef } from "react";
-import { Button } from "@work-holo/ui/components/button";
 import { cn, formatFileSize } from "@/lib/utils";
 import { LinkPreview } from "../../message-composer/link-preview";
 
@@ -87,7 +87,21 @@ export function MessageContent({
                 </p>
               </div>
               {attachment.url && (
-                <Button className="shrink-0" size="icon-sm" variant="ghost" render={<a download href={attachment.url} rel="noopener noreferrer" target="_blank"><IconDownload className="size-4" /></a>} />
+                <Button
+                  className="shrink-0"
+                  render={
+                    <a
+                      download
+                      href={attachment.url}
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      <IconDownload className="size-4" />
+                    </a>
+                  }
+                  size="icon-sm"
+                  variant="ghost"
+                />
               )}
             </div>
           );
@@ -157,7 +171,21 @@ export function MessageContent({
                   </p>
                 </div>
                 {attachment.url && (
-                  <Button className="shrink-0" size="icon-sm" variant="ghost" render={<a download href={attachment.url} rel="noopener noreferrer" target="_blank"><IconDownload className="size-4" /></a>} />
+                  <Button
+                    className="shrink-0"
+                    render={
+                      <a
+                        download
+                        href={attachment.url}
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        <IconDownload className="size-4" />
+                      </a>
+                    }
+                    size="icon-sm"
+                    variant="ghost"
+                  />
                 )}
               </div>
             );
@@ -175,7 +203,22 @@ function AudioPlayer({ url }: { url: string }) {
     <div className="flex w-100 items-center gap-2.5 rounded-lg border bg-background p-2.5">
       {/** biome-ignore lint/a11y/useMediaCaption: <track is not required here> */}
       <audio className="flex-1" controls ref={audioRef} src={url} />
-      <Button className="shrink-0" size="icon-sm" variant="ghost" render={<a download href={url} rel="noopener noreferrer" target="_blank" title="Download audio"><IconDownload className="size-4" /></a>} />
+      <Button
+        className="shrink-0"
+        render={
+          <a
+            download
+            href={url}
+            rel="noopener noreferrer"
+            target="_blank"
+            title="Download audio"
+          >
+            <IconDownload className="size-4" />
+          </a>
+        }
+        size="icon-sm"
+        variant="ghost"
+      />
     </div>
   );
 }
@@ -188,7 +231,22 @@ function VideoPlayer({ url }: { url: string }) {
         Your browser does not support the video tag.
       </video>
       <div className="absolute top-2 right-2 opacity-0 transition-opacity group-hover:opacity-100">
-        <Button className="bg-background/90 backdrop-blur-sm hover:bg-background" size="icon-sm" variant="secondary" render={<a download href={url} rel="noopener noreferrer" target="_blank" title="Download video"><IconDownload className="size-4" /></a>} />
+        <Button
+          className="bg-background/90 backdrop-blur-sm hover:bg-background"
+          render={
+            <a
+              download
+              href={url}
+              rel="noopener noreferrer"
+              target="_blank"
+              title="Download video"
+            >
+              <IconDownload className="size-4" />
+            </a>
+          }
+          size="icon-sm"
+          variant="secondary"
+        />
       </div>
     </div>
   );
@@ -222,7 +280,21 @@ function ImagePreview({ url, fileName }: { url: string; fileName: string }) {
         width={100}
       />
       <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 transition-opacity group-hover:opacity-100">
-        <Button className="bg-background/90 backdrop-blur-sm hover:bg-background" size="icon-sm" variant="secondary" render={<a href={url} rel="noopener noreferrer" target="_blank" title="Open full size"><IconMaximize className="size-4" /></a>} />
+        <Button
+          className="bg-background/90 backdrop-blur-sm hover:bg-background"
+          render={
+            <a
+              href={url}
+              rel="noopener noreferrer"
+              target="_blank"
+              title="Open full size"
+            >
+              <IconMaximize className="size-4" />
+            </a>
+          }
+          size="icon-sm"
+          variant="secondary"
+        />
         <Button
           className="bg-background/90 backdrop-blur-sm hover:bg-background"
           onClick={handleDownload}

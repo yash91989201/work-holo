@@ -1,9 +1,9 @@
+import { Separator } from "@work-holo/ui/components/separator";
+import { SidebarTrigger } from "@work-holo/ui/components/sidebar";
 import { Suspense } from "react";
 import { AccountDropdown } from "@/components/org/account-dropdown";
 import { Navigator } from "@/components/org/navigator";
 import { NotificationDropdown } from "@/components/org/notification-dropdown";
-import { Separator } from "@work-holo/ui/components/separator";
-import { SidebarTrigger } from "@work-holo/ui/components/sidebar";
 
 export function Header() {
   return (

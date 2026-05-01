@@ -1,6 +1,5 @@
 import { IconUserMinus } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,6 +12,7 @@ import {
   AlertDialogTrigger,
 } from "@work-holo/ui/components/alert-dialog";
 import { Button } from "@work-holo/ui/components/button";
+import { toast } from "sonner";
 import { queryClient, queryUtils } from "@/utils/orpc";
 
 interface RemoveMemberDialogProps {
@@ -44,14 +44,18 @@ export function RemoveMemberDialog({
 
   return (
     <AlertDialog>
-      <AlertDialogTrigger render={<Button
-          aria-label={`Remove ${memberName}`}
-          className="opacity-0 transition-opacity group-hover/item:opacity-100"
-          size="icon"
-          variant="ghost"
-        >
-          <IconUserMinus />
-        </Button>} />
+      <AlertDialogTrigger
+        render={
+          <Button
+            aria-label={`Remove ${memberName}`}
+            className="opacity-0 transition-opacity group-hover/item:opacity-100"
+            size="icon"
+            variant="ghost"
+          >
+            <IconUserMinus />
+          </Button>
+        }
+      />
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Remove member</AlertDialogTitle>

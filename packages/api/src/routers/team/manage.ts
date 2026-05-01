@@ -10,7 +10,17 @@ import {
 import { auth } from "@work-holo/auth";
 import { roleAssignmentTable } from "@work-holo/db/schema/authorization";
 import { team } from "@work-holo/db/schema/index";
-import { and, asc, count, desc, eq, gte, inArray, like, lte } from "drizzle-orm";
+import {
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  gte,
+  inArray,
+  like,
+  lte,
+} from "drizzle-orm";
 import { orgMemberProcedure } from "../../index";
 
 export const manageRouter = {
@@ -216,13 +226,15 @@ export const manageRouter = {
           }
 
           if (removedUserIds.length > 0) {
-            await db.delete(roleAssignmentTable).where(
-              and(
-                eq(roleAssignmentTable.organizationId, orgId),
-                eq(roleAssignmentTable.teamId, teamId),
-                inArray(roleAssignmentTable.userId, removedUserIds)
-              )
-            );
+            await db
+              .delete(roleAssignmentTable)
+              .where(
+                and(
+                  eq(roleAssignmentTable.organizationId, orgId),
+                  eq(roleAssignmentTable.teamId, teamId),
+                  inArray(roleAssignmentTable.userId, removedUserIds)
+                )
+              );
 
             await permission.recompilePolicies({
               affectedUserIds: removedUserIds,

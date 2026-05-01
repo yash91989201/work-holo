@@ -69,23 +69,39 @@ const socialTrayVariants = {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { type: "spring", stiffness: 320, damping: 26, staggerChildren: 0.05 },
+    transition: {
+      type: "spring",
+      stiffness: 320,
+      damping: 26,
+      staggerChildren: 0.05,
+    },
   },
 };
 
 const socialItemVariants = {
   closed: { opacity: 0, x: 14 },
-  open: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 380, damping: 24 } },
+  open: {
+    opacity: 1,
+    x: 0,
+    transition: { type: "spring", stiffness: 380, damping: 24 },
+  },
 };
 
 const arrowButtonVariants = {
   closed: { rotate: 0, scale: 1 },
-  open: { rotate: 45, scale: 1.05, transition: { type: "spring", stiffness: 380, damping: 18 } },
+  open: {
+    rotate: 45,
+    scale: 1.05,
+    transition: { type: "spring", stiffness: 380, damping: 18 },
+  },
 };
 
 export function TeamSection() {
   return (
-    <section id="team" className="relative overflow-hidden bg-background py-20 lg:py-28 scroll-mt-28">
+    <section
+      className="relative scroll-mt-28 overflow-hidden bg-background py-20 lg:py-28"
+      id="team"
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
@@ -150,21 +166,21 @@ function TeamCard({ member }: { member: (typeof team)[number] }) {
 
           {/* Social hover tray */}
           <motion.div
-            className="absolute right-4 top-4 z-10 flex flex-col items-end gap-2"
-            initial="closed"
             animate="closed"
+            className="absolute top-4 right-4 z-10 flex flex-col items-end gap-2"
+            initial="closed"
             variants={socialTrayVariants}
             whileHover="open"
           >
             <motion.div
-              className="flex flex-col items-end gap-2 rounded-2xl border border-border/60 bg-background/90 p-2 shadow-lg shadow-black/10 backdrop-blur-md"
+              className="flex flex-col items-end gap-2 rounded-2xl border border-border/60 bg-background/90 p-2 shadow-black/10 shadow-lg backdrop-blur-md"
               variants={socialTrayVariants}
             >
               {socialLinks.map((social) => (
                 <motion.a
-                  key={social.label}
                   className="inline-flex items-center gap-2 rounded-full border border-border/50 bg-card/70 px-3 py-2 text-foreground text-xs shadow-sm transition-colors hover:border-primary/40 hover:text-primary"
                   href={social.href}
+                  key={social.label}
                   onClick={(event) => event.preventDefault()}
                   variants={socialItemVariants}
                 >

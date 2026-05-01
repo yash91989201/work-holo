@@ -1,6 +1,10 @@
 import { IconUserFilled } from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@work-holo/ui/components/avatar";
 import { Badge } from "@work-holo/ui/components/badge";
 import { Button } from "@work-holo/ui/components/button";
 import {
@@ -29,10 +33,14 @@ export const ChannelMembersPopover = ({
 
   return (
     <Popover>
-      <PopoverTrigger render={<Button className="gap-1" size="sm" variant="outline">
-          <IconUserFilled className="h-3 w-3" />
-          {memberCount}
-        </Button>} />
+      <PopoverTrigger
+        render={
+          <Button className="gap-1" size="sm" variant="outline">
+            <IconUserFilled className="h-3 w-3" />
+            {memberCount}
+          </Button>
+        }
+      />
       <PopoverContent align="start" className="w-64">
         <div className="space-y-2">
           <h4 className="font-medium text-sm">Members ({memberCount})</h4>

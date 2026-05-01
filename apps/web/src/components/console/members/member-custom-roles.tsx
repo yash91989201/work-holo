@@ -128,8 +128,12 @@ export function MemberCustomRoles({
     })
   );
 
-  const assignMutation = useMutation(queryUtils.org.role.assign.mutationOptions());
-  const revokeMutation = useMutation(queryUtils.org.role.revoke.mutationOptions());
+  const assignMutation = useMutation(
+    queryUtils.org.role.assign.mutationOptions()
+  );
+  const revokeMutation = useMutation(
+    queryUtils.org.role.revoke.mutationOptions()
+  );
 
   const teamRows = useMemo(() => {
     return data.availableTeams.map((team) => {
@@ -216,14 +220,16 @@ export function MemberCustomRoles({
           <div className="space-y-1">
             <CardTitle>Custom roles by team</CardTitle>
             <CardDescription>
-              Every team this member belongs to is listed below. Assign or remove
-              team-scoped custom roles directly from the table.
+              Every team this member belongs to is listed below. Assign or
+              remove team-scoped custom roles directly from the table.
             </CardDescription>
           </div>
 
           <div className="flex flex-wrap gap-2 text-xs">
             <Badge variant="outline">{data.availableTeams.length} teams</Badge>
-            <Badge variant="outline">{data.assignments.length} custom roles</Badge>
+            <Badge variant="outline">
+              {data.assignments.length} custom roles
+            </Badge>
             {allowAssign && <Badge variant="secondary">Editable</Badge>}
           </div>
         </div>
@@ -232,8 +238,8 @@ export function MemberCustomRoles({
       <CardContent className="p-0">
         {data.availableRoles.length === 0 ? (
           <div className="p-6 text-muted-foreground text-sm">
-            No custom roles have been created yet. Create role templates from the
-            Roles page first.
+            No custom roles have been created yet. Create role templates from
+            the Roles page first.
           </div>
         ) : data.availableTeams.length === 0 ? (
           <div className="p-6 text-muted-foreground text-sm">
@@ -284,7 +290,9 @@ export function MemberCustomRoles({
                             <TeamRoleBadge
                               assignment={assignment}
                               canRemove={allowRemove}
-                              isRemoving={removingAssignmentId === assignment.id}
+                              isRemoving={
+                                removingAssignmentId === assignment.id
+                              }
                               key={assignment.id}
                               onRemove={handleRevoke}
                             />

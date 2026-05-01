@@ -1,9 +1,11 @@
 import { IconSearch, IconUserPlus, IconX } from "@tabler/icons-react";
 import { useDebouncedValue } from "@tanstack/react-pacer";
 import { useMutation } from "@tanstack/react-query";
-import { Suspense, useState } from "react";
-import { toast } from "sonner";
-import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@work-holo/ui/components/avatar";
 import { Button } from "@work-holo/ui/components/button";
 import {
   Dialog,
@@ -29,6 +31,8 @@ import {
   ItemTitle,
 } from "@work-holo/ui/components/item";
 import { Skeleton } from "@work-holo/ui/components/skeleton";
+import { Suspense, useState } from "react";
+import { toast } from "sonner";
 import { useListOrgMembers } from "@/hooks/use-list-org-members";
 import { getInitials } from "@/utils";
 import { queryClient, queryUtils } from "@/utils/orpc";
@@ -168,10 +172,14 @@ export function AddChannelMember({
 
   return (
     <Dialog onOpenChange={setOpen} open={open}>
-      <DialogTrigger render={<Button className="w-full gap-1.5" size="lg" variant="secondary">
-          <IconUserPlus />
-          <span>Add member</span>
-        </Button>} />
+      <DialogTrigger
+        render={
+          <Button className="w-full gap-1.5" size="lg" variant="secondary">
+            <IconUserPlus />
+            <span>Add member</span>
+          </Button>
+        }
+      />
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Add member</DialogTitle>

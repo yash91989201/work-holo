@@ -11,8 +11,8 @@ import { and, asc, eq, inArray, ne } from "drizzle-orm";
 import { orgMemberProcedure } from "../../index";
 import {
   AssignCustomRoleInput,
-  CustomRoleMutationOutput,
   CreateCustomRoleInput,
+  CustomRoleMutationOutput,
   DeleteCustomRoleInput,
   GetMemberRoleAssignmentsInput,
   GetMemberRoleAssignmentsOutput,
@@ -65,7 +65,9 @@ async function resolveCustomRolePermissionNodes(
     });
   }
 
-  const invalidNodes = permissionNodes.filter((node) => node.resource === "org");
+  const invalidNodes = permissionNodes.filter(
+    (node) => node.resource === "org"
+  );
   if (invalidNodes.length > 0) {
     throw new ORPCError("BAD_REQUEST", {
       message:
@@ -94,7 +96,8 @@ async function ensureCustomRoleNameAvailable(
   const conflicting = existing.find((row) => row.id !== excludeRoleTemplateId);
   if (conflicting) {
     throw new ORPCError("BAD_REQUEST", {
-      message: "A custom role with this name already exists in the organization",
+      message:
+        "A custom role with this name already exists in the organization",
     });
   }
 }
@@ -306,7 +309,12 @@ export const roleRouter = {
         input.permissionKeys
       );
 
-      await ensureCustomRoleNameAvailable(db, orgId, name, input.roleTemplateId);
+      await ensureCustomRoleNameAvailable(
+        db,
+        orgId,
+        name,
+        input.roleTemplateId
+      );
 
       await db.transaction(async (tx) => {
         await tx

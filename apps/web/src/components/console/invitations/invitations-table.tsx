@@ -31,13 +31,11 @@ import {
 } from "@tanstack/react-table";
 import type { InvitationSelectSchema } from "@work-holo/api/lib/schemas/admin-invitation";
 import { env } from "@work-holo/env/web";
-import { format } from "date-fns";
-import { useState } from "react";
-import type { DateRange } from "react-day-picker";
-import { toast } from "sonner";
-import type { z } from "zod";
-import { InvitationForm } from "@/components/console/invitations/invitation-form";
-import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@work-holo/ui/components/avatar";
 import { Badge } from "@work-holo/ui/components/badge";
 import { Button } from "@work-holo/ui/components/button";
 import { Calendar } from "@work-holo/ui/components/calendar";
@@ -81,6 +79,12 @@ import {
   TableHeader,
   TableRow,
 } from "@work-holo/ui/components/table";
+import { format } from "date-fns";
+import { useState } from "react";
+import type { DateRange } from "react-day-picker";
+import { toast } from "sonner";
+import type { z } from "zod";
+import { InvitationForm } from "@/components/console/invitations/invitation-form";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { authClient } from "@/lib/auth-client";
 import { getRoleBadgeVariant, getStatusBadgeVariant } from "@/lib/org";
@@ -268,9 +272,13 @@ const columns: ColumnDef<InvitationRecord>[] = [
 
       return (
         <DropdownMenu>
-          <DropdownMenuTrigger render={<Button className="h-8 w-8 p-0" variant="ghost">
-            <IconDots className="h-4 w-4" />
-          </Button>} />
+          <DropdownMenuTrigger
+            render={
+              <Button className="h-8 w-8 p-0" variant="ghost">
+                <IconDots className="h-4 w-4" />
+              </Button>
+            }
+          />
           <DropdownMenuContent align="end" className="w-48">
             <DropdownMenuItem onClick={() => onCopy(invitation)}>
               <IconCopyCheckFilled className="mr-2 h-4 w-4" />
@@ -555,22 +563,26 @@ export const InvitationsTable = () => {
           </Select>
 
           <Popover>
-            <PopoverTrigger render={<Button
-              className={expiryDateRange ? "" : "text-muted-foreground"}
-              variant="outline"
-            >
-              <IconCalendarEventFilled className="mr-2 h-4 w-4" />
-              {!expiryDateRange?.from && <span>Expiry date</span>}
-              {expiryDateRange?.from &&
-                !expiryDateRange.to &&
-                format(expiryDateRange.from, "LLL dd, y")}
-              {expiryDateRange?.from && expiryDateRange.to && (
-                <>
-                  {format(expiryDateRange.from, "LLL dd, y")} -{" "}
-                  {format(expiryDateRange.to, "LLL dd, y")}
-                </>
-              )}
-            </Button>} />
+            <PopoverTrigger
+              render={
+                <Button
+                  className={expiryDateRange ? "" : "text-muted-foreground"}
+                  variant="outline"
+                >
+                  <IconCalendarEventFilled className="mr-2 h-4 w-4" />
+                  {!expiryDateRange?.from && <span>Expiry date</span>}
+                  {expiryDateRange?.from &&
+                    !expiryDateRange.to &&
+                    format(expiryDateRange.from, "LLL dd, y")}
+                  {expiryDateRange?.from && expiryDateRange.to && (
+                    <>
+                      {format(expiryDateRange.from, "LLL dd, y")} -{" "}
+                      {format(expiryDateRange.to, "LLL dd, y")}
+                    </>
+                  )}
+                </Button>
+              }
+            />
             <PopoverContent align="start" className="w-auto p-0">
               <Calendar
                 defaultMonth={expiryDateRange?.from}
