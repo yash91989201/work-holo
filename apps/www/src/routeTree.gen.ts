@@ -25,11 +25,13 @@ import { Route as ServicesAgenticAiRouteImport } from './routes/services/agentic
 import { Route as OurBpoServicesSolutionTechnicalSupportRouteImport } from './routes/our-bpo-services/solution/technical-support'
 import { Route as OurBpoServicesSolutionPaymentProcessingRouteImport } from './routes/our-bpo-services/solution/payment-processing'
 import { Route as OurBpoServicesSolutionOutboundServicesRouteImport } from './routes/our-bpo-services/solution/outbound-services'
+import { Route as OurBpoServicesSolutionOutboundSalesRouteImport } from './routes/our-bpo-services/solution/outbound-sales'
 import { Route as OurBpoServicesSolutionLeadGenerationRouteImport } from './routes/our-bpo-services/solution/lead-generation'
 import { Route as OurBpoServicesSolutionInboundServicesRouteImport } from './routes/our-bpo-services/solution/inbound-services'
 import { Route as OurBpoServicesSolutionInboundSalesRouteImport } from './routes/our-bpo-services/solution/inbound-sales'
 import { Route as OurBpoServicesSolutionFacilityAndProcurementRouteImport } from './routes/our-bpo-services/solution/facility-and-procurement'
 import { Route as OurBpoServicesSolutionDirectResponseMarketingRouteImport } from './routes/our-bpo-services/solution/direct-response-marketing'
+import { Route as OurBpoServicesSolutionCustomerServiceRouteImport } from './routes/our-bpo-services/solution/customer-service'
 import { Route as OurBpoServicesSolutionCustomerRetentionRouteImport } from './routes/our-bpo-services/solution/customer-retention'
 import { Route as OurBpoServicesSolutionClaimsProcessingRouteImport } from './routes/our-bpo-services/solution/claims-processing'
 import { Route as OurBpoServicesSolutionBackOfficeProcessingRouteImport } from './routes/our-bpo-services/solution/back-office-processing'
@@ -131,6 +133,12 @@ const OurBpoServicesSolutionOutboundServicesRoute =
     path: '/our-bpo-services/solution/outbound-services',
     getParentRoute: () => rootRouteImport,
   } as any)
+const OurBpoServicesSolutionOutboundSalesRoute =
+  OurBpoServicesSolutionOutboundSalesRouteImport.update({
+    id: '/our-bpo-services/solution/outbound-sales',
+    path: '/our-bpo-services/solution/outbound-sales',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const OurBpoServicesSolutionLeadGenerationRoute =
   OurBpoServicesSolutionLeadGenerationRouteImport.update({
     id: '/our-bpo-services/solution/lead-generation',
@@ -159,6 +167,12 @@ const OurBpoServicesSolutionDirectResponseMarketingRoute =
   OurBpoServicesSolutionDirectResponseMarketingRouteImport.update({
     id: '/our-bpo-services/solution/direct-response-marketing',
     path: '/our-bpo-services/solution/direct-response-marketing',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const OurBpoServicesSolutionCustomerServiceRoute =
+  OurBpoServicesSolutionCustomerServiceRouteImport.update({
+    id: '/our-bpo-services/solution/customer-service',
+    path: '/our-bpo-services/solution/customer-service',
     getParentRoute: () => rootRouteImport,
   } as any)
 const OurBpoServicesSolutionCustomerRetentionRoute =
@@ -267,11 +281,13 @@ export interface FileRoutesByFullPath {
   '/our-bpo-services/solution/back-office-processing': typeof OurBpoServicesSolutionBackOfficeProcessingRoute
   '/our-bpo-services/solution/claims-processing': typeof OurBpoServicesSolutionClaimsProcessingRoute
   '/our-bpo-services/solution/customer-retention': typeof OurBpoServicesSolutionCustomerRetentionRoute
+  '/our-bpo-services/solution/customer-service': typeof OurBpoServicesSolutionCustomerServiceRoute
   '/our-bpo-services/solution/direct-response-marketing': typeof OurBpoServicesSolutionDirectResponseMarketingRoute
   '/our-bpo-services/solution/facility-and-procurement': typeof OurBpoServicesSolutionFacilityAndProcurementRoute
   '/our-bpo-services/solution/inbound-sales': typeof OurBpoServicesSolutionInboundSalesRoute
   '/our-bpo-services/solution/inbound-services': typeof OurBpoServicesSolutionInboundServicesRoute
   '/our-bpo-services/solution/lead-generation': typeof OurBpoServicesSolutionLeadGenerationRoute
+  '/our-bpo-services/solution/outbound-sales': typeof OurBpoServicesSolutionOutboundSalesRoute
   '/our-bpo-services/solution/outbound-services': typeof OurBpoServicesSolutionOutboundServicesRoute
   '/our-bpo-services/solution/payment-processing': typeof OurBpoServicesSolutionPaymentProcessingRoute
   '/our-bpo-services/solution/technical-support': typeof OurBpoServicesSolutionTechnicalSupportRoute
@@ -303,11 +319,13 @@ export interface FileRoutesByTo {
   '/our-bpo-services/solution/back-office-processing': typeof OurBpoServicesSolutionBackOfficeProcessingRoute
   '/our-bpo-services/solution/claims-processing': typeof OurBpoServicesSolutionClaimsProcessingRoute
   '/our-bpo-services/solution/customer-retention': typeof OurBpoServicesSolutionCustomerRetentionRoute
+  '/our-bpo-services/solution/customer-service': typeof OurBpoServicesSolutionCustomerServiceRoute
   '/our-bpo-services/solution/direct-response-marketing': typeof OurBpoServicesSolutionDirectResponseMarketingRoute
   '/our-bpo-services/solution/facility-and-procurement': typeof OurBpoServicesSolutionFacilityAndProcurementRoute
   '/our-bpo-services/solution/inbound-sales': typeof OurBpoServicesSolutionInboundSalesRoute
   '/our-bpo-services/solution/inbound-services': typeof OurBpoServicesSolutionInboundServicesRoute
   '/our-bpo-services/solution/lead-generation': typeof OurBpoServicesSolutionLeadGenerationRoute
+  '/our-bpo-services/solution/outbound-sales': typeof OurBpoServicesSolutionOutboundSalesRoute
   '/our-bpo-services/solution/outbound-services': typeof OurBpoServicesSolutionOutboundServicesRoute
   '/our-bpo-services/solution/payment-processing': typeof OurBpoServicesSolutionPaymentProcessingRoute
   '/our-bpo-services/solution/technical-support': typeof OurBpoServicesSolutionTechnicalSupportRoute
@@ -340,11 +358,13 @@ export interface FileRoutesById {
   '/our-bpo-services/solution/back-office-processing': typeof OurBpoServicesSolutionBackOfficeProcessingRoute
   '/our-bpo-services/solution/claims-processing': typeof OurBpoServicesSolutionClaimsProcessingRoute
   '/our-bpo-services/solution/customer-retention': typeof OurBpoServicesSolutionCustomerRetentionRoute
+  '/our-bpo-services/solution/customer-service': typeof OurBpoServicesSolutionCustomerServiceRoute
   '/our-bpo-services/solution/direct-response-marketing': typeof OurBpoServicesSolutionDirectResponseMarketingRoute
   '/our-bpo-services/solution/facility-and-procurement': typeof OurBpoServicesSolutionFacilityAndProcurementRoute
   '/our-bpo-services/solution/inbound-sales': typeof OurBpoServicesSolutionInboundSalesRoute
   '/our-bpo-services/solution/inbound-services': typeof OurBpoServicesSolutionInboundServicesRoute
   '/our-bpo-services/solution/lead-generation': typeof OurBpoServicesSolutionLeadGenerationRoute
+  '/our-bpo-services/solution/outbound-sales': typeof OurBpoServicesSolutionOutboundSalesRoute
   '/our-bpo-services/solution/outbound-services': typeof OurBpoServicesSolutionOutboundServicesRoute
   '/our-bpo-services/solution/payment-processing': typeof OurBpoServicesSolutionPaymentProcessingRoute
   '/our-bpo-services/solution/technical-support': typeof OurBpoServicesSolutionTechnicalSupportRoute
@@ -378,11 +398,13 @@ export interface FileRouteTypes {
     | '/our-bpo-services/solution/back-office-processing'
     | '/our-bpo-services/solution/claims-processing'
     | '/our-bpo-services/solution/customer-retention'
+    | '/our-bpo-services/solution/customer-service'
     | '/our-bpo-services/solution/direct-response-marketing'
     | '/our-bpo-services/solution/facility-and-procurement'
     | '/our-bpo-services/solution/inbound-sales'
     | '/our-bpo-services/solution/inbound-services'
     | '/our-bpo-services/solution/lead-generation'
+    | '/our-bpo-services/solution/outbound-sales'
     | '/our-bpo-services/solution/outbound-services'
     | '/our-bpo-services/solution/payment-processing'
     | '/our-bpo-services/solution/technical-support'
@@ -414,11 +436,13 @@ export interface FileRouteTypes {
     | '/our-bpo-services/solution/back-office-processing'
     | '/our-bpo-services/solution/claims-processing'
     | '/our-bpo-services/solution/customer-retention'
+    | '/our-bpo-services/solution/customer-service'
     | '/our-bpo-services/solution/direct-response-marketing'
     | '/our-bpo-services/solution/facility-and-procurement'
     | '/our-bpo-services/solution/inbound-sales'
     | '/our-bpo-services/solution/inbound-services'
     | '/our-bpo-services/solution/lead-generation'
+    | '/our-bpo-services/solution/outbound-sales'
     | '/our-bpo-services/solution/outbound-services'
     | '/our-bpo-services/solution/payment-processing'
     | '/our-bpo-services/solution/technical-support'
@@ -450,11 +474,13 @@ export interface FileRouteTypes {
     | '/our-bpo-services/solution/back-office-processing'
     | '/our-bpo-services/solution/claims-processing'
     | '/our-bpo-services/solution/customer-retention'
+    | '/our-bpo-services/solution/customer-service'
     | '/our-bpo-services/solution/direct-response-marketing'
     | '/our-bpo-services/solution/facility-and-procurement'
     | '/our-bpo-services/solution/inbound-sales'
     | '/our-bpo-services/solution/inbound-services'
     | '/our-bpo-services/solution/lead-generation'
+    | '/our-bpo-services/solution/outbound-sales'
     | '/our-bpo-services/solution/outbound-services'
     | '/our-bpo-services/solution/payment-processing'
     | '/our-bpo-services/solution/technical-support'
@@ -487,11 +513,13 @@ export interface RootRouteChildren {
   OurBpoServicesSolutionBackOfficeProcessingRoute: typeof OurBpoServicesSolutionBackOfficeProcessingRoute
   OurBpoServicesSolutionClaimsProcessingRoute: typeof OurBpoServicesSolutionClaimsProcessingRoute
   OurBpoServicesSolutionCustomerRetentionRoute: typeof OurBpoServicesSolutionCustomerRetentionRoute
+  OurBpoServicesSolutionCustomerServiceRoute: typeof OurBpoServicesSolutionCustomerServiceRoute
   OurBpoServicesSolutionDirectResponseMarketingRoute: typeof OurBpoServicesSolutionDirectResponseMarketingRoute
   OurBpoServicesSolutionFacilityAndProcurementRoute: typeof OurBpoServicesSolutionFacilityAndProcurementRoute
   OurBpoServicesSolutionInboundSalesRoute: typeof OurBpoServicesSolutionInboundSalesRoute
   OurBpoServicesSolutionInboundServicesRoute: typeof OurBpoServicesSolutionInboundServicesRoute
   OurBpoServicesSolutionLeadGenerationRoute: typeof OurBpoServicesSolutionLeadGenerationRoute
+  OurBpoServicesSolutionOutboundSalesRoute: typeof OurBpoServicesSolutionOutboundSalesRoute
   OurBpoServicesSolutionOutboundServicesRoute: typeof OurBpoServicesSolutionOutboundServicesRoute
   OurBpoServicesSolutionPaymentProcessingRoute: typeof OurBpoServicesSolutionPaymentProcessingRoute
   OurBpoServicesSolutionTechnicalSupportRoute: typeof OurBpoServicesSolutionTechnicalSupportRoute
@@ -611,6 +639,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OurBpoServicesSolutionOutboundServicesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/our-bpo-services/solution/outbound-sales': {
+      id: '/our-bpo-services/solution/outbound-sales'
+      path: '/our-bpo-services/solution/outbound-sales'
+      fullPath: '/our-bpo-services/solution/outbound-sales'
+      preLoaderRoute: typeof OurBpoServicesSolutionOutboundSalesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/our-bpo-services/solution/lead-generation': {
       id: '/our-bpo-services/solution/lead-generation'
       path: '/our-bpo-services/solution/lead-generation'
@@ -644,6 +679,13 @@ declare module '@tanstack/react-router' {
       path: '/our-bpo-services/solution/direct-response-marketing'
       fullPath: '/our-bpo-services/solution/direct-response-marketing'
       preLoaderRoute: typeof OurBpoServicesSolutionDirectResponseMarketingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/our-bpo-services/solution/customer-service': {
+      id: '/our-bpo-services/solution/customer-service'
+      path: '/our-bpo-services/solution/customer-service'
+      fullPath: '/our-bpo-services/solution/customer-service'
+      preLoaderRoute: typeof OurBpoServicesSolutionCustomerServiceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/our-bpo-services/solution/customer-retention': {
@@ -779,6 +821,8 @@ const rootRouteChildren: RootRouteChildren = {
     OurBpoServicesSolutionClaimsProcessingRoute,
   OurBpoServicesSolutionCustomerRetentionRoute:
     OurBpoServicesSolutionCustomerRetentionRoute,
+  OurBpoServicesSolutionCustomerServiceRoute:
+    OurBpoServicesSolutionCustomerServiceRoute,
   OurBpoServicesSolutionDirectResponseMarketingRoute:
     OurBpoServicesSolutionDirectResponseMarketingRoute,
   OurBpoServicesSolutionFacilityAndProcurementRoute:
@@ -789,6 +833,8 @@ const rootRouteChildren: RootRouteChildren = {
     OurBpoServicesSolutionInboundServicesRoute,
   OurBpoServicesSolutionLeadGenerationRoute:
     OurBpoServicesSolutionLeadGenerationRoute,
+  OurBpoServicesSolutionOutboundSalesRoute:
+    OurBpoServicesSolutionOutboundSalesRoute,
   OurBpoServicesSolutionOutboundServicesRoute:
     OurBpoServicesSolutionOutboundServicesRoute,
   OurBpoServicesSolutionPaymentProcessingRoute:

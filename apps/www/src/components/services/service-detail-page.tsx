@@ -1,16 +1,17 @@
 import { IconCheck, IconChevronRight, IconPhone } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
+import { motion } from "motion/react";
+import { useState } from "react";
+import type { ServicePageData } from "./service-data";
+import { getServiceList } from "./service-data";
+import { ServiceGalleryImage, ServiceImage } from "./service-image";
+
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@work-holo/ui/components/accordion";
-import { motion } from "motion/react";
-import { useState } from "react";
-import type { ServicePageData } from "./service-data";
-import { getServiceList } from "./service-data";
-import { ServiceGalleryImage, ServiceImage } from "./service-image";
 
 interface ServiceDetailPageProps {
   data: ServicePageData;
@@ -120,7 +121,7 @@ export function ServiceDetailPage({ data }: ServiceDetailPageProps) {
             className="h-full w-full"
             title={data.title}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-background via-background/20 to-transparent" />
         </motion.div>
       </section>
 
@@ -198,7 +199,7 @@ export function ServiceDetailPage({ data }: ServiceDetailPageProps) {
                     whileHover={{ scale: 1.02 }}
                   >
                     <ServiceGalleryImage
-                      className="aspect-[4/3] w-full"
+                      className="aspect-4/3 w-full"
                       index={index}
                       title={data.title}
                     />
