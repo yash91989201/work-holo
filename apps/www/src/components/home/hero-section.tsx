@@ -1,3 +1,6 @@
+import { CTAButton } from "@work-holo/ui/components/cta-button";
+import { motion } from "motion/react";
+
 import {
   IconCircleCheck,
   IconPhone,
@@ -8,8 +11,6 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@work-holo/ui/components/avatar";
-import { CTAButton } from "@work-holo/ui/components/cta-button";
-import { motion } from "motion/react";
 
 const avatarData = [
   {
@@ -212,7 +213,7 @@ export function HeroSection() {
                 <img
                   alt="Professional working on laptop"
                   className="h-full w-full object-cover"
-                  src="/assets/hero-img.png"
+                  src="/assets/hero-img.jpeg"
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-primary/12 via-transparent to-transparent" />
               </div>

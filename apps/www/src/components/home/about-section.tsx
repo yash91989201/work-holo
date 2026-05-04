@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
-import { motion, useInView } from "motion/react";
 import { IconAward } from "@tabler/icons-react";
 import { CTAButton } from "@work-holo/ui/components/cta-button";
+import { motion, useInView } from "motion/react";
+import { useEffect, useRef, useState } from "react";
 
 function AnimatedCounter({
   target,
@@ -133,7 +133,7 @@ export function AboutSection() {
             {/* Main Image */}
             <div className="relative rounded-3xl overflow-hidden aspect-[4/3]">
               <img
-                src="/assets/hero-img.png"
+                src="/assets/diverse-team-planning-stockcake.webp"
                 alt="Team collaborating"
                 className="w-full h-full object-cover"
               />

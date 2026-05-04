@@ -1,10 +1,11 @@
+import { motion } from "motion/react";
+
 import {
   IconArrowUpRight,
   IconBrandInstagram,
   IconBrandLinkedin,
   IconBrandX,
 } from "@tabler/icons-react";
-import { motion } from "motion/react";
 
 const team = [
   {

@@ -616,7 +616,7 @@ export default function BPOPage(props: WebPageProps) {
         </section>
 
         {/* Stats Section */}
-        <section className="py-24 border-y border-white/10 bg-white/[0.02]">
+        <section className="py-24 border-y border-white/10 bg-white/2">
           <div className="max-w-7xl mx-auto px-6">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
               {stats.map((stat, i) => (
@@ -679,7 +679,7 @@ export default function BPOPage(props: WebPageProps) {
         </section>
 
         {/* Workflow Showcase */}
-        <section className="py-36 px-6 bg-white/[0.03] relative overflow-hidden">
+        <section className="py-36 px-6 bg-white/3 relative overflow-hidden">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-200 h-200 bg-brand/5 blur-[120px] rounded-full pointer-events-none" />
 
           <div className="max-w-7xl mx-auto relative z-10 grid lg:grid-cols-2 gap-24 items-center">
@@ -735,7 +735,7 @@ export default function BPOPage(props: WebPageProps) {
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                   {/* Subtle brand-tinted overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-brand/20 via-transparent to-blue-500/10 opacity-40 group-hover:opacity-60 transition-opacity duration-500 pointer-events-none" />
+                  <div className="absolute inset-0 bg-linear-to-br from-brand/20 via-transparent to-blue-500/10 opacity-40 group-hover:opacity-60 transition-opacity duration-500 pointer-events-none" />
                 </div>
               </motion.div>
 

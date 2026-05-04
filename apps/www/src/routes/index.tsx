@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AboutSection } from "@/components/home/about-section";
-import { ContactCard } from "@/components/shared/contact-card";
 import { HeroSection } from "@/components/home/hero-section";
 import { InsightsSection } from "@/components/home/insights-section";
 import { ProcessSection } from "@/components/home/process-section";
@@ -10,6 +9,7 @@ import { TeamSection } from "@/components/home/team-section";
 import { TechnologiesSection } from "@/components/home/technologies-section";
 import { TestimonialsSection } from "@/components/home/testimonials-section";
 import { WhyChooseUs } from "@/components/home/why-choose-us";
+import { ContactCard } from "@/components/shared/contact-card";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
@@ -23,7 +23,7 @@ function RouteComponent() {
       <AboutSection />
       <ServicesSection />
       <TestimonialsSection />
-      <TeamSection />
+      {/* <TeamSection /> */}
       <TechnologiesSection />
       <ProcessSection />
       <ProjectsSection />
