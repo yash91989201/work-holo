@@ -14,8 +14,8 @@ const pageData : WebPageProps = {
 "headlineAccent": "Confie BPO",
 "description": "Helping you optimize your operations for maximum benefits, including revenue building and creative solutions with more than 1,500 bilingual employees staffing our BPO center.",
 "primaryCta": {
-"label": "Improve your ROI",
-"href": "#"
+"label": "Book Your Consultaion",
+"href": "/contact-us"
 },
 "terminalCommand": "npm run start",
 "terminalMessage": "1,500+ bilingual employees ready"
