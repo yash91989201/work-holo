@@ -19,7 +19,7 @@ const pageData: WebPageProps = {
       "If you really want to close the gap between your innovation and consumer understanding, Confie BPO is the bridge you’ve been looking for.",
     primaryCta: {
       label: "Book Your Consultation",
-      href: "#",
+      href: "/contact-us",
     },
     terminalCommand: "npm run start",
     terminalMessage: "Improve your ROI",

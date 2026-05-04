@@ -16,7 +16,7 @@ const pageData: WebPageProps = {
 "description": "Talk to Our Experts",
 "primaryCta": {
 "label": "Book Your Consultation",
-"href": "#"
+"href": "/contact-us"
 },
 "terminalCommand": "npm run start",
 "terminalMessage": "Improve your ROI"

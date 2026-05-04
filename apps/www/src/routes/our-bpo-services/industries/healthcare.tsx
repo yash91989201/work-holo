@@ -17,7 +17,7 @@ const pageData: WebPageProps = {
       "At Confie BPO, we have a proven track record. Our call center works with a variety of clients in healthcare and related fields to drive administrative and cost savings to the next level.",
     primaryCta: {
       label: "Book Your Consultation",
-      href: "#",
+      href: "/contact-us",
     },
     terminalCommand: "Talk to Our Experts",
     terminalMessage: "Improve your ROI",

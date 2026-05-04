@@ -19,7 +19,7 @@ const pageData: WebPageProps = {
       "Business process outsourcing (BPO) teams provide call center services to streamline your work in the real estate sphere so you can focus on closing deals instead of spending time drumming up prospects and updating listings.",
     primaryCta: {
       label: "Book Your Consultation",
-      href: "#",
+      href: "/contact-us",
     },
     terminalCommand: "npm run start",
     terminalMessage: "Talk to Our Experts",

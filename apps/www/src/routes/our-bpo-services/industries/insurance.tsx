@@ -24,7 +24,7 @@ const hero: HeroProps = {
     "As the owner of a young insurance company or one with a few more years of experience, you know the challenges of a constantly evolving industry.",
   primaryCta: {
     label: "Book Your Consultation",
-    href: "#consultation",
+    href: "/contact-us",
   },
   terminalCommand: "$ nexus deploy --region insurance-bpo",
   terminalMessage: "Active nodes",

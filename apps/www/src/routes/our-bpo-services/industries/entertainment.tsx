@@ -19,7 +19,7 @@ const pageData: WebPageProps = {
       "Unleash Your Hidden Potential Today with One Simple Click. Talk to Our Experts to scale your entertainment operations seamlessly.",
     primaryCta: {
       label: "Book Your Consultation",
-      href: "#",
+      href: "/contact-us",
     },
     terminalCommand: "Improve your ROI",
     terminalMessage: "One Simple Click",

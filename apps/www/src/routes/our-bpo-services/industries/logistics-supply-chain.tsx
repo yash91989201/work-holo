@@ -27,7 +27,7 @@ const hero: HeroProps = {
     "Protect your operations with expert data processing, organization, and back office services to ensure every link in your supply chain stays unbreakable.",
   primaryCta: {
     label: "Book Your Consultation",
-    href: "#",
+    href: "/contact-us",
   },
   terminalCommand: "npm run logistics",
   terminalMessage: "Optimizing Supply Chain...",

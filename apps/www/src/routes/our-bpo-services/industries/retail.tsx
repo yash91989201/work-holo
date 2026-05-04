@@ -14,7 +14,7 @@ const pageData: WebPageProps = {
       "In today’s e-commerce and digital world, you cannot afford to fall behind your competition. Your customers want to feel connected and like they matter.",
     primaryCta: {
       label: "Book Your Consultation",
-      href: "#",
+      href: "/contact-us",
     },
     terminalCommand: "npm run start",
     terminalMessage: "Talk to Our Experts",
