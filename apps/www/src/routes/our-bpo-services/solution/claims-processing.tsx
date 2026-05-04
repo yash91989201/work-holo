@@ -15,7 +15,7 @@ const pageData : WebPageProps={
 "description": "Processing insurance or healthcare claims is a complex task. By working with a BPO call center that specializes in case handling, you can forego the lengthy claims management process entirely and reinvest that time and energy right back into your business.",
 "primaryCta": {
 "label": "Book Your Consultation",
-"href": "#"
+"href": "/contact-us"
 },
 "terminalCommand": "npm run start",
 "terminalMessage": "Talk to Our Experts"

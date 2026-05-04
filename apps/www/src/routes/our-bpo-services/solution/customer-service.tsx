@@ -15,7 +15,7 @@ const pageData : WebPageProps= {
 "description": "Confie BPO manages your entire client care process, from answering questions to troubleshooting common issues. Our agents use hands-on experience and training to truly understand your customers' needs and provide satisfying resolutions.",
 "primaryCta": {
 "label": "Book Your Consultation",
-"href": "#"
+"href": "/contact-us"
 },
 "terminalCommand": "npm start",
 "terminalMessage": "Largest personal lines agency in the U.S. handling millions of calls across industries."
@@ -153,7 +153,7 @@ const pageData : WebPageProps= {
 "imagePosition": "right",
 "cta": {
 "label": "Book Your Consultation",
-"href": "#"
+"href": "/contact-us"
 }
 }
 ]

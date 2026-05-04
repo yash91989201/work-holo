@@ -15,7 +15,7 @@ const pageData : WebPageProps={
 "description": "Unlock your company’s full potential with an expert team focused on facility and procurement management.",
 "primaryCta": {
 "label": "Book Your Consultation",
-"href": "#"
+"href": "/contact-us"
 },
 "terminalCommand": "Talk to Our Experts",
 "terminalMessage": "Improve your ROI"

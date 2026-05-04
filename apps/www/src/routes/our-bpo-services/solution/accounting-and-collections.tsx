@@ -15,7 +15,7 @@ const pagedata : WebPageProps={
 "description": "An accounting and collections call center is a third-party business that provides financial services to help you manage your company’s money effectively, maintain consistent cash flow, and streamline your company’s finances.",
 "primaryCta": {
 "label": "Book Your Consultation",
-"href": "#"
+"href": "/contact-us"
 },
 "terminalCommand": "Talk to Our Experts",
 "terminalMessage": "Improve your ROI"

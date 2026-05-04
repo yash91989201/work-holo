@@ -15,7 +15,7 @@ const pageData: WebPageProps = {
 "description": "Leader in Back Office Processing Call Center Services. At Confie BPO, we can take care of these back office processing call center services for you.",
 "primaryCta": {
 "label": "Book Your Consultation",
-"href": "#"
+"href": "/contact-us"
 },
 "terminalCommand": "npm run start",
 "terminalMessage": "Improve your ROI"

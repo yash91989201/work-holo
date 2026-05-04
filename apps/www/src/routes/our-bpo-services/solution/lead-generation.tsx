@@ -15,7 +15,7 @@ const pageData : WebPageProps ={
 "description": "Generating leads is at the core of any sales team — before you can kick start the sales process, you need to find people who could be interested in hearing your pitch.",
 "primaryCta": {
 "label": "Book Your Consultation",
-"href": "#"
+"href": "/contact-us"
 },
 "terminalCommand": "npm run start",
 "terminalMessage": "Talk to Our Experts"
@@ -199,7 +199,7 @@ const pageData : WebPageProps ={
 "imagePosition": "right",
 "cta": {
 "label": "Book Your Consultation",
-"href": "#"
+"href": "/contact-us"
 }
 }
 ]

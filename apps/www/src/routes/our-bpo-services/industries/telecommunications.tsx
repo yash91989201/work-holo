@@ -15,7 +15,7 @@ const pageData: WebPageProps = {
 "description": "Confie BPO provides specialized call center solutions that include excellent inbound and outbound customer service, sales, and technology solutions.",
 "primaryCta": {
 "label": "Book Your Consultation",
-"href": "#"
+"href": "/contact-us"
 },
 "terminalCommand": "npm run start-bpo",
 "terminalMessage": "Telecommunications systems active."

@@ -15,7 +15,7 @@ const pageData : WebPageProps= {
 "description": "Every business is built on sales. If you want a bigger, better business, the solution is simple: You need to make more sales. We’re here to help you achieve that dream!",
 "primaryCta": {
 "label": "Book Your Consultation",
-"href": "#"
+"href": "/contact-us"
 },
 "terminalCommand": "npm start",
 "terminalMessage": "Talk to Our Experts"
