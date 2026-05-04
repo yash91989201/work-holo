@@ -168,4 +168,3 @@ Use tools in this priority order:
 | `ctx doctor` | Call the `doctor` MCP tool, run returned shell command, display as checklist |
 | `ctx upgrade` | Call the `upgrade` MCP tool, run returned shell command, display as checklist |
 
-📖 [API Client Usage Guide](docs/technical/api-client-usage.md)
