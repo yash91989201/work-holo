@@ -343,7 +343,7 @@ export const MembersTable = () => {
         to: new Date(search.endDate),
       };
     }
-    return undefined;
+    return;
   }, [search.startDate, search.endDate]);
 
   const [updateRoleMember, setUpdateRoleMember] =

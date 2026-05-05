@@ -174,14 +174,12 @@ const WorkBlockToggle = () => {
   );
 };
 
-WorkBlockToggle.Fallback = () => {
-  return (
-    <SidebarMenuButton disabled>
-      <Skeleton className="h-4 w-4 rounded-sm" />
-      <Skeleton className="h-4 w-20" />
-    </SidebarMenuButton>
-  );
-};
+WorkBlockToggle.Fallback = () => (
+  <SidebarMenuButton disabled>
+    <Skeleton className="h-4 w-4 rounded-sm" />
+    <Skeleton className="h-4 w-20" />
+  </SidebarMenuButton>
+);
 
 const MarkAttendanceButton = () => {
   const { data: attendance, refetch } = useSuspenseQuery(
@@ -329,11 +327,9 @@ const MarkAttendanceButton = () => {
   );
 };
 
-MarkAttendanceButton.Fallback = () => {
-  return (
-    <SidebarMenuButton disabled>
-      <Skeleton className="h-4 w-4 rounded-sm" />
-      <Skeleton className="h-4 w-24" />
-    </SidebarMenuButton>
-  );
-};
+MarkAttendanceButton.Fallback = () => (
+  <SidebarMenuButton disabled>
+    <Skeleton className="h-4 w-4 rounded-sm" />
+    <Skeleton className="h-4 w-24" />
+  </SidebarMenuButton>
+);

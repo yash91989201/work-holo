@@ -258,13 +258,11 @@ export const FilesTable = () => {
       {
         id: "actions",
         header: () => <div className="text-right">Actions</div>,
-        cell: ({ row }) => {
-          return (
-            <div className="text-right">
-              <FileActions file={row.original} />
-            </div>
-          );
-        },
+        cell: ({ row }) => (
+          <div className="text-right">
+            <FileActions file={row.original} />
+          </div>
+        ),
       },
     ],
     []

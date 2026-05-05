@@ -1,14 +1,14 @@
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { Button } from "@work-holo/ui/components/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { useAppForm } from "@/components/ui/form/hooks";
-import { SelectItem } from "@/components/ui/select";
+} from "@work-holo/ui/components/dialog";
+import { useAppForm } from "@work-holo/ui/components/form/hooks";
+import { SelectItem } from "@work-holo/ui/components/select";
+import { toast } from "sonner";
 import { queryUtils } from "@/utils/orpc";
 
 type DidFormDialogProps = {

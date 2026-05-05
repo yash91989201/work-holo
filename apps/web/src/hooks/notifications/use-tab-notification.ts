@@ -389,11 +389,12 @@ export function useTabNotification({
     };
   }, []);
 
-  useEffect(() => {
-    return () => {
+  useEffect(
+    () => () => {
       clearAll();
-    };
-  }, [clearAll]);
+    },
+    [clearAll]
+  );
 
   return { notify, clearTitle, clearBadge, clearAll };
 }

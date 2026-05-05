@@ -151,7 +151,7 @@ export const TeamsTable = () => {
         to: new Date(search.endDate),
       };
     }
-    return undefined;
+    return;
   }, [search.startDate, search.endDate]);
 
   const {

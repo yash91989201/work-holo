@@ -43,10 +43,10 @@ function getCached<T>(
   key: string
 ): T | undefined {
   const entry = cache.get(key);
-  if (!entry) return undefined;
+  if (!entry) return;
   if (Date.now() > entry.expiresAt) {
     cache.delete(key);
-    return undefined;
+    return;
   }
   return entry.data;
 }

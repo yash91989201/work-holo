@@ -1,10 +1,13 @@
 import { ORPCError } from "@orpc/server";
 import type { db as dbClient } from "@work-holo/db";
 import {
+  agentDialerAccess,
   agentExtensions,
   dialerAuditLog,
   didInventory,
   organization,
+  orgDialerSettings,
+  sipProviders,
   sipTrunks,
   user,
 } from "@work-holo/db/schema/index";
@@ -37,7 +40,8 @@ async function writeAudit(
 
 const sipTrunkInput = z.object({
   name: z.string().min(1).max(100),
-  provider: z.enum(["cloudbharat", "telnyx", "twilio", "custom"]),
+  provider: z.enum(["cloudbharat", "telnyx", "twilio", "frejun", "custom"]),
+  sipProviderId: z.string().optional(),
   username: z.string().min(1),
   password: z.string().min(1),
   proxy: z.string().min(1),
@@ -84,6 +88,7 @@ export const dialerAdminRouter = {
           id: sipTrunks.id,
           name: sipTrunks.name,
           provider: sipTrunks.provider,
+          sipProviderId: sipTrunks.sipProviderId,
           proxy: sipTrunks.proxy,
           username: sipTrunks.username,
           register: sipTrunks.register,
@@ -100,7 +105,6 @@ export const dialerAdminRouter = {
         .where(conditions.length > 0 ? and(...conditions) : undefined)
         .orderBy(desc(sipTrunks.createdAt));
 
-      // Get DID count per trunk
       const trunkIds = trunks.map((t) => t.id);
       const didCounts =
         trunkIds.length > 0
@@ -132,7 +136,6 @@ export const dialerAdminRouter = {
       });
       if (!trunk)
         throw new ORPCError("NOT_FOUND", { message: "Trunk not found" });
-      // Mask password
       return { ...trunk, password: "••••••••" };
     }),
 
@@ -188,7 +191,6 @@ export const dialerAdminRouter = {
       if (!trunk)
         throw new ORPCError("NOT_FOUND", { message: "Trunk not found" });
 
-      // Check name uniqueness if changing name
       if (input.data.name && input.data.name !== trunk.name) {
         const nameConflict = await context.db.query.sipTrunks.findFirst({
           where: eq(sipTrunks.name, input.data.name),
@@ -243,6 +245,173 @@ export const dialerAdminRouter = {
       return { success: true };
     }),
 
+  // ── SIP Providers ─────────────────────────────────────────────────────────
+
+  listProviders: adminProcedure
+    .input(z.object({ search: z.string().optional() }).optional())
+    .handler(async ({ input, context }) => {
+      const conditions = [];
+      if (input?.search) {
+        conditions.push(
+          or(
+            ilike(sipProviders.name, `%${input.search}%`),
+            ilike(sipProviders.host, `%${input.search}%`)
+          )
+        );
+      }
+
+      const providers = await context.db
+        .select({
+          id: sipProviders.id,
+          name: sipProviders.name,
+          slug: sipProviders.slug,
+          host: sipProviders.host,
+          port: sipProviders.port,
+          transport: sipProviders.transport,
+          requiresRegistration: sipProviders.requiresRegistration,
+          isActive: sipProviders.isActive,
+          createdAt: sipProviders.createdAt,
+        })
+        .from(sipProviders)
+        .where(conditions.length > 0 ? and(...conditions) : undefined)
+        .orderBy(sipProviders.name);
+
+      const providerIds = providers.map((p) => p.id);
+      const trunkCounts =
+        providerIds.length > 0
+          ? await context.db
+              .select({
+                sipProviderId: sipTrunks.sipProviderId,
+                trunkCount: count(),
+              })
+              .from(sipTrunks)
+              .where(inArray(sipTrunks.sipProviderId, providerIds))
+              .groupBy(sipTrunks.sipProviderId)
+          : [];
+
+      const countMap = new Map(
+        trunkCounts.map((t) => [t.sipProviderId, t.trunkCount])
+      );
+      return providers.map((p) => ({
+        ...p,
+        trunkCount: countMap.get(p.id) ?? 0,
+      }));
+    }),
+
+  createProvider: adminProcedure
+    .input(
+      z.object({
+        name: z.string().min(1).max(100),
+        slug: z
+          .string()
+          .min(1)
+          .max(50)
+          .regex(/^[a-z0-9-]+$/),
+        host: z.string().min(1),
+        port: z.number().int().positive().default(5060),
+        transport: z.enum(["udp", "tcp", "tls"]).default("tcp"),
+        requiresRegistration: z.boolean().default(false),
+        isActive: z.boolean().default(true),
+      })
+    )
+    .handler(async ({ input, context }) => {
+      const existing = await context.db.query.sipProviders.findFirst({
+        where: eq(sipProviders.slug, input.slug),
+        columns: { id: true },
+      });
+      if (existing) {
+        throw new ORPCError("CONFLICT", {
+          message: "A provider with this slug already exists",
+        });
+      }
+
+      const [provider] = await context.db
+        .insert(sipProviders)
+        .values({ ...input, createdBy: context.session.user.id })
+        .returning({ id: sipProviders.id, name: sipProviders.name });
+
+      if (!provider)
+        throw new ORPCError("INTERNAL_SERVER_ERROR", {
+          message: "Failed to create provider",
+        });
+
+      await writeAudit(context.db, {
+        entityType: "sip_provider",
+        entityId: provider.id,
+        action: "created",
+        changes: { name: input.name, slug: input.slug },
+        performedBy: context.session.user.id,
+      });
+
+      return provider;
+    }),
+
+  updateProvider: adminProcedure
+    .input(
+      z.object({
+        providerId: z.string(),
+        data: z.object({
+          name: z.string().min(1).max(100).optional(),
+          host: z.string().min(1).optional(),
+          port: z.number().int().positive().optional(),
+          transport: z.enum(["udp", "tcp", "tls"]).optional(),
+          requiresRegistration: z.boolean().optional(),
+          isActive: z.boolean().optional(),
+        }),
+      })
+    )
+    .handler(async ({ input, context }) => {
+      const provider = await context.db.query.sipProviders.findFirst({
+        where: eq(sipProviders.id, input.providerId),
+        columns: { id: true },
+      });
+      if (!provider)
+        throw new ORPCError("NOT_FOUND", { message: "Provider not found" });
+
+      await context.db
+        .update(sipProviders)
+        .set(input.data)
+        .where(eq(sipProviders.id, input.providerId));
+
+      await writeAudit(context.db, {
+        entityType: "sip_provider",
+        entityId: input.providerId,
+        action: "updated",
+        changes: input.data,
+        performedBy: context.session.user.id,
+      });
+
+      return { success: true };
+    }),
+
+  deleteProvider: adminProcedure
+    .input(z.object({ providerId: z.string() }))
+    .handler(async ({ input, context }) => {
+      const [trunkCount] = await context.db
+        .select({ value: count() })
+        .from(sipTrunks)
+        .where(eq(sipTrunks.sipProviderId, input.providerId));
+
+      if ((trunkCount?.value ?? 0) > 0) {
+        throw new ORPCError("CONFLICT", {
+          message: `Cannot delete: ${trunkCount?.value} trunk(s) depend on this provider`,
+        });
+      }
+
+      await context.db
+        .delete(sipProviders)
+        .where(eq(sipProviders.id, input.providerId));
+
+      await writeAudit(context.db, {
+        entityType: "sip_provider",
+        entityId: input.providerId,
+        action: "deleted",
+        performedBy: context.session.user.id,
+      });
+
+      return { success: true };
+    }),
+
   // ── DID Inventory ─────────────────────────────────────────────────────────
 
   listDids: adminProcedure
@@ -273,7 +442,7 @@ export const dialerAdminRouter = {
       if (input.organizationId)
         conditions.push(eq(didInventory.organizationId, input.organizationId));
 
-      const dids = await context.db
+      return context.db
         .select({
           id: didInventory.id,
           number: didInventory.number,
@@ -299,8 +468,6 @@ export const dialerAdminRouter = {
         )
         .where(conditions.length > 0 ? and(...conditions) : undefined)
         .orderBy(desc(didInventory.createdAt));
-
-      return dids;
     }),
 
   getDid: adminProcedure
@@ -459,6 +626,8 @@ export const dialerAdminRouter = {
           organizationId: input.organizationId,
           status: "assigned",
           assignedAt: new Date(),
+          assignedToOrgAt: new Date(),
+          assignedToOrgBy: context.session.user.id,
         })
         .where(eq(didInventory.id, input.didId));
 
@@ -491,6 +660,11 @@ export const dialerAdminRouter = {
           organizationId: null,
           status: "available",
           assignedAt: null,
+          assignedToOrgAt: null,
+          assignedToOrgBy: null,
+          assignedToUserId: null,
+          assignedToUserAt: null,
+          assignedToUserBy: null,
           destinationType: null,
           destinationTarget: null,
           isActive: false,
@@ -524,6 +698,182 @@ export const dialerAdminRouter = {
       await writeAudit(context.db, {
         entityType: "did",
         entityId: input.didId,
+        action: "deleted",
+        performedBy: context.session.user.id,
+      });
+
+      return { success: true };
+    }),
+
+  // ── Org Dialer Settings & Assignments ────────────────────────────────────
+
+  listOrgAssignments: adminProcedure.handler(async ({ context }) => {
+    const orgs = await context.db
+      .select({
+        id: organization.id,
+        name: organization.name,
+        slug: organization.slug,
+        settingsId: orgDialerSettings.id,
+        isEnabled: orgDialerSettings.isEnabled,
+        canMakeOutboundCalls: orgDialerSettings.canMakeOutboundCalls,
+        canReceiveInboundCalls: orgDialerSettings.canReceiveInboundCalls,
+        maxConcurrentCalls: orgDialerSettings.maxConcurrentCalls,
+        recordAllCalls: orgDialerSettings.recordAllCalls,
+        defaultOutboundTrunkId: orgDialerSettings.defaultOutboundTrunkId,
+      })
+      .from(organization)
+      .leftJoin(
+        orgDialerSettings,
+        eq(organization.id, orgDialerSettings.organizationId)
+      )
+      .orderBy(organization.name);
+
+    const orgIds = orgs.map((o) => o.id);
+    const didCounts =
+      orgIds.length > 0
+        ? await context.db
+            .select({
+              organizationId: didInventory.organizationId,
+              didCount: count(),
+            })
+            .from(didInventory)
+            .where(inArray(didInventory.organizationId, orgIds))
+            .groupBy(didInventory.organizationId)
+        : [];
+
+    const didCountMap = new Map(
+      didCounts.map((d) => [d.organizationId, d.didCount])
+    );
+
+    return orgs.map((o) => ({
+      ...o,
+      didCount: didCountMap.get(o.id) ?? 0,
+    }));
+  }),
+
+  upsertOrgDialerSettings: adminProcedure
+    .input(
+      z.object({
+        organizationId: z.string(),
+        isEnabled: z.boolean(),
+        canMakeOutboundCalls: z.boolean(),
+        canReceiveInboundCalls: z.boolean(),
+        defaultOutboundTrunkId: z.string().nullable().optional(),
+        recordAllCalls: z.boolean(),
+        maxConcurrentCalls: z.number().int().positive().max(100),
+      })
+    )
+    .handler(async ({ input, context }) => {
+      const org = await context.db.query.organization.findFirst({
+        where: eq(organization.id, input.organizationId),
+        columns: { id: true },
+      });
+      if (!org)
+        throw new ORPCError("NOT_FOUND", { message: "Organization not found" });
+
+      const { organizationId, ...settings } = input;
+
+      await context.db
+        .insert(orgDialerSettings)
+        .values({
+          organizationId,
+          ...settings,
+          createdBy: context.session.user.id,
+        })
+        .onConflictDoUpdate({
+          target: orgDialerSettings.organizationId,
+          set: { ...settings, updatedAt: new Date() },
+        });
+
+      await writeAudit(context.db, {
+        entityType: "org_settings",
+        entityId: organizationId,
+        action: "updated",
+        changes: settings,
+        performedBy: context.session.user.id,
+      });
+
+      return { success: true };
+    }),
+
+  // ── Agent Dialer Access ───────────────────────────────────────────────────
+
+  listAgentAccess: adminProcedure
+    .input(z.object({ organizationId: z.string() }))
+    .handler(async ({ input, context }) =>
+      context.db
+        .select({
+          id: agentDialerAccess.id,
+          userId: agentDialerAccess.userId,
+          userName: user.name,
+          userEmail: user.email,
+          canMakeCalls: agentDialerAccess.canMakeCalls,
+          canReceiveCalls: agentDialerAccess.canReceiveCalls,
+          assignedDidId: agentDialerAccess.assignedDidId,
+          assignedDidNumber: didInventory.number,
+          assignedExtensionId: agentDialerAccess.assignedExtensionId,
+          isActive: agentDialerAccess.isActive,
+          grantedAt: agentDialerAccess.grantedAt,
+        })
+        .from(agentDialerAccess)
+        .leftJoin(user, eq(agentDialerAccess.userId, user.id))
+        .leftJoin(
+          didInventory,
+          eq(agentDialerAccess.assignedDidId, didInventory.id)
+        )
+        .where(eq(agentDialerAccess.organizationId, input.organizationId))
+        .orderBy(user.name)
+    ),
+
+  upsertAgentAccess: adminProcedure
+    .input(
+      z.object({
+        organizationId: z.string(),
+        userId: z.string(),
+        canMakeCalls: z.boolean(),
+        canReceiveCalls: z.boolean(),
+        assignedDidId: z.string().nullable().optional(),
+        assignedExtensionId: z.string().nullable().optional(),
+        isActive: z.boolean().default(true),
+      })
+    )
+    .handler(async ({ input, context }) => {
+      const { organizationId, userId, ...access } = input;
+
+      await context.db
+        .insert(agentDialerAccess)
+        .values({
+          organizationId,
+          userId,
+          ...access,
+          grantedBy: context.session.user.id,
+        })
+        .onConflictDoUpdate({
+          target: [agentDialerAccess.organizationId, agentDialerAccess.userId],
+          set: { ...access, updatedAt: new Date() },
+        });
+
+      await writeAudit(context.db, {
+        entityType: "agent_access",
+        entityId: `${organizationId}:${userId}`,
+        action: "updated",
+        changes: access,
+        performedBy: context.session.user.id,
+      });
+
+      return { success: true };
+    }),
+
+  revokeAgentAccess: adminProcedure
+    .input(z.object({ accessId: z.string() }))
+    .handler(async ({ input, context }) => {
+      await context.db
+        .delete(agentDialerAccess)
+        .where(eq(agentDialerAccess.id, input.accessId));
+
+      await writeAudit(context.db, {
+        entityType: "agent_access",
+        entityId: input.accessId,
         action: "deleted",
         performedBy: context.session.user.id,
       });
@@ -713,13 +1063,10 @@ export const dialerAdminRouter = {
   getServerStatus: adminProcedure.handler(async ({ context }) => {
     const VPS_IP = "135.181.31.20";
 
-    // Check if VPS is reachable via TCP on port 22 (SSH — always open on the server)
     const vpsReachable = await new Promise<boolean>((resolve) => {
       const net = require("node:net");
       const socket = new net.Socket();
-      const timeout = 3000;
-
-      socket.setTimeout(timeout);
+      socket.setTimeout(3000);
       socket.once("connect", () => {
         socket.destroy();
         resolve(true);
@@ -728,9 +1075,7 @@ export const dialerAdminRouter = {
         socket.destroy();
         resolve(false);
       });
-      socket.once("error", () => {
-        resolve(false);
-      });
+      socket.once("error", () => resolve(false));
       socket.connect(22, VPS_IP);
     });
 
@@ -751,7 +1096,7 @@ export const dialerAdminRouter = {
     return {
       vpsIp: VPS_IP,
       vpsReachable,
-      eslStatus: "not_connected" as const, // Will be "connected" once SIP Worker is wired (Phase 2)
+      eslStatus: "not_connected" as const,
       trunkCount: trunkCount?.value ?? 0,
       didCount: didCount?.value ?? 0,
       extensionCount: extensionCount?.value ?? 0,

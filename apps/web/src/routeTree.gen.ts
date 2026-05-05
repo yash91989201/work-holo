@@ -43,6 +43,8 @@ import { Route as authenticatedPlatformDashboardOrganizationsOrgIdRouteImport } 
 import { Route as authenticatedOrgSlugConsoleModulesRouteRouteImport } from './routes/(authenticated)/org/$slug/console/modules/route'
 import { Route as authenticatedPlatformDashboardDialerTrunksIndexRouteImport } from './routes/(authenticated)/platform/dashboard/dialer/trunks/index'
 import { Route as authenticatedPlatformDashboardDialerStatusIndexRouteImport } from './routes/(authenticated)/platform/dashboard/dialer/status/index'
+import { Route as authenticatedPlatformDashboardDialerProvidersIndexRouteImport } from './routes/(authenticated)/platform/dashboard/dialer/providers/index'
+import { Route as authenticatedPlatformDashboardDialerOrgAssignmentsIndexRouteImport } from './routes/(authenticated)/platform/dashboard/dialer/org-assignments/index'
 import { Route as authenticatedPlatformDashboardDialerExtensionsIndexRouteImport } from './routes/(authenticated)/platform/dashboard/dialer/extensions/index'
 import { Route as authenticatedPlatformDashboardDialerDidsIndexRouteImport } from './routes/(authenticated)/platform/dashboard/dialer/dids/index'
 import { Route as authenticatedOrgSlugWorkspaceTeamsIndexRouteImport } from './routes/(authenticated)/org/$slug/workspace/teams/index'
@@ -256,6 +258,18 @@ const authenticatedPlatformDashboardDialerStatusIndexRoute =
     path: '/dialer/status/',
     getParentRoute: () => authenticatedPlatformDashboardRouteRoute,
   } as any)
+const authenticatedPlatformDashboardDialerProvidersIndexRoute =
+  authenticatedPlatformDashboardDialerProvidersIndexRouteImport.update({
+    id: '/dialer/providers/',
+    path: '/dialer/providers/',
+    getParentRoute: () => authenticatedPlatformDashboardRouteRoute,
+  } as any)
+const authenticatedPlatformDashboardDialerOrgAssignmentsIndexRoute =
+  authenticatedPlatformDashboardDialerOrgAssignmentsIndexRouteImport.update({
+    id: '/dialer/org-assignments/',
+    path: '/dialer/org-assignments/',
+    getParentRoute: () => authenticatedPlatformDashboardRouteRoute,
+  } as any)
 const authenticatedPlatformDashboardDialerExtensionsIndexRoute =
   authenticatedPlatformDashboardDialerExtensionsIndexRouteImport.update({
     id: '/dialer/extensions/',
@@ -424,6 +438,8 @@ export interface FileRoutesByFullPath {
   '/org/$slug/workspace/teams/': typeof authenticatedOrgSlugWorkspaceTeamsIndexRoute
   '/platform/dashboard/dialer/dids/': typeof authenticatedPlatformDashboardDialerDidsIndexRoute
   '/platform/dashboard/dialer/extensions/': typeof authenticatedPlatformDashboardDialerExtensionsIndexRoute
+  '/platform/dashboard/dialer/org-assignments/': typeof authenticatedPlatformDashboardDialerOrgAssignmentsIndexRoute
+  '/platform/dashboard/dialer/providers/': typeof authenticatedPlatformDashboardDialerProvidersIndexRoute
   '/platform/dashboard/dialer/status/': typeof authenticatedPlatformDashboardDialerStatusIndexRoute
   '/platform/dashboard/dialer/trunks/': typeof authenticatedPlatformDashboardDialerTrunksIndexRoute
   '/org/$slug/workspace/communication/channels/$channelId': typeof authenticatedOrgSlugWorkspaceCommunicationChannelsChannelIdRouteRouteWithChildren
@@ -472,6 +488,8 @@ export interface FileRoutesByTo {
   '/org/$slug/workspace/teams': typeof authenticatedOrgSlugWorkspaceTeamsIndexRoute
   '/platform/dashboard/dialer/dids': typeof authenticatedPlatformDashboardDialerDidsIndexRoute
   '/platform/dashboard/dialer/extensions': typeof authenticatedPlatformDashboardDialerExtensionsIndexRoute
+  '/platform/dashboard/dialer/org-assignments': typeof authenticatedPlatformDashboardDialerOrgAssignmentsIndexRoute
+  '/platform/dashboard/dialer/providers': typeof authenticatedPlatformDashboardDialerProvidersIndexRoute
   '/platform/dashboard/dialer/status': typeof authenticatedPlatformDashboardDialerStatusIndexRoute
   '/platform/dashboard/dialer/trunks': typeof authenticatedPlatformDashboardDialerTrunksIndexRoute
   '/org/$slug/console/modules/communication': typeof authenticatedOrgSlugConsoleModulesCommunicationIndexRoute
@@ -526,6 +544,8 @@ export interface FileRoutesById {
   '/(authenticated)/org/$slug/workspace/teams/': typeof authenticatedOrgSlugWorkspaceTeamsIndexRoute
   '/(authenticated)/platform/dashboard/dialer/dids/': typeof authenticatedPlatformDashboardDialerDidsIndexRoute
   '/(authenticated)/platform/dashboard/dialer/extensions/': typeof authenticatedPlatformDashboardDialerExtensionsIndexRoute
+  '/(authenticated)/platform/dashboard/dialer/org-assignments/': typeof authenticatedPlatformDashboardDialerOrgAssignmentsIndexRoute
+  '/(authenticated)/platform/dashboard/dialer/providers/': typeof authenticatedPlatformDashboardDialerProvidersIndexRoute
   '/(authenticated)/platform/dashboard/dialer/status/': typeof authenticatedPlatformDashboardDialerStatusIndexRoute
   '/(authenticated)/platform/dashboard/dialer/trunks/': typeof authenticatedPlatformDashboardDialerTrunksIndexRoute
   '/(authenticated)/org/$slug/workspace/communication/channels/$channelId': typeof authenticatedOrgSlugWorkspaceCommunicationChannelsChannelIdRouteRouteWithChildren
@@ -580,6 +600,8 @@ export interface FileRouteTypes {
     | '/org/$slug/workspace/teams/'
     | '/platform/dashboard/dialer/dids/'
     | '/platform/dashboard/dialer/extensions/'
+    | '/platform/dashboard/dialer/org-assignments/'
+    | '/platform/dashboard/dialer/providers/'
     | '/platform/dashboard/dialer/status/'
     | '/platform/dashboard/dialer/trunks/'
     | '/org/$slug/workspace/communication/channels/$channelId'
@@ -628,6 +650,8 @@ export interface FileRouteTypes {
     | '/org/$slug/workspace/teams'
     | '/platform/dashboard/dialer/dids'
     | '/platform/dashboard/dialer/extensions'
+    | '/platform/dashboard/dialer/org-assignments'
+    | '/platform/dashboard/dialer/providers'
     | '/platform/dashboard/dialer/status'
     | '/platform/dashboard/dialer/trunks'
     | '/org/$slug/console/modules/communication'
@@ -681,6 +705,8 @@ export interface FileRouteTypes {
     | '/(authenticated)/org/$slug/workspace/teams/'
     | '/(authenticated)/platform/dashboard/dialer/dids/'
     | '/(authenticated)/platform/dashboard/dialer/extensions/'
+    | '/(authenticated)/platform/dashboard/dialer/org-assignments/'
+    | '/(authenticated)/platform/dashboard/dialer/providers/'
     | '/(authenticated)/platform/dashboard/dialer/status/'
     | '/(authenticated)/platform/dashboard/dialer/trunks/'
     | '/(authenticated)/org/$slug/workspace/communication/channels/$channelId'
@@ -939,6 +965,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authenticatedPlatformDashboardDialerStatusIndexRouteImport
       parentRoute: typeof authenticatedPlatformDashboardRouteRoute
     }
+    '/(authenticated)/platform/dashboard/dialer/providers/': {
+      id: '/(authenticated)/platform/dashboard/dialer/providers/'
+      path: '/dialer/providers'
+      fullPath: '/platform/dashboard/dialer/providers/'
+      preLoaderRoute: typeof authenticatedPlatformDashboardDialerProvidersIndexRouteImport
+      parentRoute: typeof authenticatedPlatformDashboardRouteRoute
+    }
+    '/(authenticated)/platform/dashboard/dialer/org-assignments/': {
+      id: '/(authenticated)/platform/dashboard/dialer/org-assignments/'
+      path: '/dialer/org-assignments'
+      fullPath: '/platform/dashboard/dialer/org-assignments/'
+      preLoaderRoute: typeof authenticatedPlatformDashboardDialerOrgAssignmentsIndexRouteImport
+      parentRoute: typeof authenticatedPlatformDashboardRouteRoute
+    }
     '/(authenticated)/platform/dashboard/dialer/extensions/': {
       id: '/(authenticated)/platform/dashboard/dialer/extensions/'
       path: '/dialer/extensions'
@@ -1102,6 +1142,8 @@ interface authenticatedPlatformDashboardRouteRouteChildren {
   authenticatedPlatformDashboardUsersIndexRoute: typeof authenticatedPlatformDashboardUsersIndexRoute
   authenticatedPlatformDashboardDialerDidsIndexRoute: typeof authenticatedPlatformDashboardDialerDidsIndexRoute
   authenticatedPlatformDashboardDialerExtensionsIndexRoute: typeof authenticatedPlatformDashboardDialerExtensionsIndexRoute
+  authenticatedPlatformDashboardDialerOrgAssignmentsIndexRoute: typeof authenticatedPlatformDashboardDialerOrgAssignmentsIndexRoute
+  authenticatedPlatformDashboardDialerProvidersIndexRoute: typeof authenticatedPlatformDashboardDialerProvidersIndexRoute
   authenticatedPlatformDashboardDialerStatusIndexRoute: typeof authenticatedPlatformDashboardDialerStatusIndexRoute
   authenticatedPlatformDashboardDialerTrunksIndexRoute: typeof authenticatedPlatformDashboardDialerTrunksIndexRoute
 }
@@ -1128,6 +1170,10 @@ const authenticatedPlatformDashboardRouteRouteChildren: authenticatedPlatformDas
       authenticatedPlatformDashboardDialerDidsIndexRoute,
     authenticatedPlatformDashboardDialerExtensionsIndexRoute:
       authenticatedPlatformDashboardDialerExtensionsIndexRoute,
+    authenticatedPlatformDashboardDialerOrgAssignmentsIndexRoute:
+      authenticatedPlatformDashboardDialerOrgAssignmentsIndexRoute,
+    authenticatedPlatformDashboardDialerProvidersIndexRoute:
+      authenticatedPlatformDashboardDialerProvidersIndexRoute,
     authenticatedPlatformDashboardDialerStatusIndexRoute:
       authenticatedPlatformDashboardDialerStatusIndexRoute,
     authenticatedPlatformDashboardDialerTrunksIndexRoute:

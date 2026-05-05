@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
 import { Suspense } from "react";
 import { ServerStatusCard } from "@/components/platform/dialer/status/server-status-card";
-import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute(
   "/(authenticated)/platform/dashboard/dialer/status/"

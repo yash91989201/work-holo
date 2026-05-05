@@ -1,4 +1,5 @@
 import { dashboardRouter } from "./dashboard";
+import { orgDialerRouter } from "./dialer";
 import { invitationRouter } from "./invitation";
 import { memberRouter } from "./member";
 import { moduleConfigRouter } from "./module-config";
@@ -12,4 +13,5 @@ export const orgRouter = {
   presence: presenceRouter,
   moduleConfig: moduleConfigRouter,
   role: roleRouter,
+  dialer: orgDialerRouter,
 };

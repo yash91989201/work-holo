@@ -36,6 +36,13 @@
       "when": 1776062980647,
       "tag": "0004_past_juggernaut",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1777870220690,
+      "tag": "0005_good_susan_delgado",
+      "breakpoints": true
     }
   ]
 }

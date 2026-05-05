@@ -12,24 +12,24 @@ export const storageRouter = {
   getUploadUrl: protectedProcedure
     .input(GetUploadUrlInput)
     .output(GetUploadUrlOutput)
-    .handler(({ input, context }) => {
-      return context.storage.getUploadUrl({
+    .handler(({ input, context }) =>
+      context.storage.getUploadUrl({
         bucket: input.bucket,
         fileName: input.fileName,
         contentType: input.contentType,
         fileSize: input.fileSize,
-      });
-    }),
+      })
+    ),
 
   delete: protectedProcedure
     .input(DeleteFileInput)
     .output(DeleteFileOutput)
-    .handler(({ input, context }) => {
-      return context.storage.deleteFile({
+    .handler(({ input, context }) =>
+      context.storage.deleteFile({
         bucket: input.bucket,
         filePath: input.filePath,
-      });
-    }),
+      })
+    ),
 
   deleteMany: protectedProcedure
     .input(DeleteFilesInput)

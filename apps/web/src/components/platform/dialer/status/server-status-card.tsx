@@ -7,15 +7,15 @@ import {
   IconUsers,
 } from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@work-holo/ui/components/badge";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+} from "@work-holo/ui/components/card";
+import { Separator } from "@work-holo/ui/components/separator";
 import { queryUtils } from "@/utils/orpc";
 
 function StatusBadge({

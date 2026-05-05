@@ -199,12 +199,10 @@ export function PlatformAccountDropdown() {
   );
 }
 
-const PlatformAccountDropdownSkeleton = () => {
-  return (
-    <div className="relative flex items-center justify-center">
-      <Skeleton className="h-9 w-9 rounded-full" />
-    </div>
-  );
-};
+const PlatformAccountDropdownSkeleton = () => (
+  <div className="relative flex items-center justify-center">
+    <Skeleton className="h-9 w-9 rounded-full" />
+  </div>
+);
 
 PlatformAccountDropdown.Fallback = PlatformAccountDropdownSkeleton;

@@ -101,6 +101,7 @@ services:
       RUSTFS_ACCESS_KEY: "GuzpNFteD5xLQ_aoBlUvyw"
       RUSTFS_SECRET_KEY: "zmvR18mhKg3hDlKfdtfp_g"
       RUSTFS_EXTERNAL_ADDRESS: ":9000"
+      RUSTFS_UNSAFE_BYPASS_DISK_CHECK: "true"
     volumes:
       - "~/data/volumes/storage:/data"
     healthcheck:

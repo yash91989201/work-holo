@@ -1,5 +1,6 @@
 import {
   IconBuilding,
+  IconBuildingSkyscraper,
   IconCrown,
   IconHeadphones,
   IconLayoutDashboard,
@@ -60,6 +61,11 @@ const platformNavItems = [
 
 const dialerNavItems = [
   {
+    to: "/platform/dashboard/dialer/providers",
+    label: "SIP Providers",
+    icon: IconBuildingSkyscraper,
+  },
+  {
     to: "/platform/dashboard/dialer/trunks",
     label: "SIP Trunks",
     icon: IconPhone,
@@ -73,6 +79,11 @@ const dialerNavItems = [
     to: "/platform/dashboard/dialer/extensions",
     label: "Agent Extensions",
     icon: IconUsers,
+  },
+  {
+    to: "/platform/dashboard/dialer/org-assignments",
+    label: "Org Assignments",
+    icon: IconBuilding,
   },
   {
     to: "/platform/dashboard/dialer/status",
@@ -103,15 +114,15 @@ export function NavMain({ adminRole }: NavMainProps) {
               return (
                 <SidebarMenuItem key={item.to}>
                   <SidebarMenuButton
-                    asChild
                     isActive={isActive}
+                    render={
+                      <Link to={item.to}>
+                        <item.icon />
+                        <span>{item.label}</span>
+                      </Link>
+                    }
                     tooltip={item.label}
-                  >
-                    <Link to={item.to}>
-                      <item.icon />
-                      <span>{item.label}</span>
-                    </Link>
-                  </SidebarMenuButton>
+                  />
                 </SidebarMenuItem>
               );
             })}
@@ -128,15 +139,15 @@ export function NavMain({ adminRole }: NavMainProps) {
               return (
                 <SidebarMenuItem key={item.to}>
                   <SidebarMenuButton
-                    asChild
                     isActive={isActive}
+                    render={
+                      <Link to={item.to as string}>
+                        <item.icon />
+                        <span>{item.label}</span>
+                      </Link>
+                    }
                     tooltip={item.label}
-                  >
-                    <Link to={item.to as string}>
-                      <item.icon />
-                      <span>{item.label}</span>
-                    </Link>
-                  </SidebarMenuButton>
+                  />
                 </SidebarMenuItem>
               );
             })}

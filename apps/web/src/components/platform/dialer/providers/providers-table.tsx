@@ -1,6 +1,6 @@
 import {
+  IconBuildingSkyscraper,
   IconDots,
-  IconPhoneCall,
   IconPlus,
   IconSearch,
   IconX,
@@ -42,27 +42,27 @@ import {
 import { useState } from "react";
 import { toast } from "sonner";
 import { queryUtils } from "@/utils/orpc";
-import { DidAssignDialog } from "./did-assign-dialog";
-import { DidFormDialog } from "./did-form-dialog";
+import { ProviderFormDialog } from "./provider-form-dialog";
 
-function statusBadge(status: string) {
-  if (status === "available")
-    return <Badge variant="secondary">Available</Badge>;
-  if (status === "assigned") return <Badge variant="default">Assigned</Badge>;
-  if (status === "retired") return <Badge variant="outline">Retired</Badge>;
-  if (status === "blocked") return <Badge variant="destructive">Blocked</Badge>;
-  return <Badge variant="outline">{status}</Badge>;
-}
+type Provider = {
+  id: string;
+  name: string;
+  slug: string;
+  host: string;
+  port: number;
+  transport: string;
+  requiresRegistration: boolean;
+  isActive: boolean;
+};
 
-export function DidsTable() {
+export function ProvidersTable() {
   const router = useRouter();
   const searchParams = new URLSearchParams(
     typeof window === "undefined" ? "" : window.location.search
   );
-
   const [query, setQuery] = useState(searchParams.get("search") ?? "");
   const [createOpen, setCreateOpen] = useState(false);
-  const [assignDidId, setAssignDidId] = useState<string | null>(null);
+  const [editProvider, setEditProvider] = useState<Provider | null>(null);
 
   const debouncedNavigate = useDebouncedCallback(
     (value: string) => {
@@ -74,33 +74,26 @@ export function DidsTable() {
     { wait: 300 }
   );
 
-  const { data: dids, refetch } = useSuspenseQuery(
-    queryUtils.admin.dialer.listDids.queryOptions({
-      input: {
-        search: query || undefined,
-      },
+  const { data: providers, refetch } = useSuspenseQuery(
+    queryUtils.admin.dialer.listProviders.queryOptions({
+      input: { search: query || undefined },
     })
   );
 
-  const retireMutation = useMutation(
-    queryUtils.admin.dialer.retireDid.mutationOptions({
+  const deleteMutation = useMutation(
+    queryUtils.admin.dialer.deleteProvider.mutationOptions({
       onSuccess: () => {
-        toast.success("DID retired");
+        toast.success("Provider deleted");
         refetch();
       },
       onError: (err) => toast.error(err.message),
     })
   );
 
-  const unassignMutation = useMutation(
-    queryUtils.admin.dialer.unassignDid.mutationOptions({
-      onSuccess: () => {
-        toast.success("DID unassigned");
-        refetch();
-      },
-      onError: (err) => toast.error(err.message),
-    })
-  );
+  const handleQueryChange = (value: string) => {
+    setQuery(value);
+    debouncedNavigate(value);
+  };
 
   return (
     <div className="space-y-4">
@@ -111,21 +104,15 @@ export function DidsTable() {
               <IconSearch className="size-4 text-muted-foreground" />
             </InputGroupAddon>
             <InputGroupInput
-              onChange={(e) => {
-                setQuery(e.target.value);
-                debouncedNavigate(e.target.value);
-              }}
-              placeholder="Search DIDs..."
+              onChange={(e) => handleQueryChange(e.target.value)}
+              placeholder="Search providers..."
               value={query}
             />
             {query && (
               <InputGroupAddon align="inline-end">
                 <InputGroupButton
                   aria-label="Clear search"
-                  onClick={() => {
-                    setQuery("");
-                    debouncedNavigate("");
-                  }}
+                  onClick={() => handleQueryChange("")}
                   size="icon-xs"
                 >
                   <IconX className="size-3" />
@@ -136,19 +123,19 @@ export function DidsTable() {
         </div>
         <Button onClick={() => setCreateOpen(true)} size="sm">
           <IconPlus className="size-4" />
-          Add DID
+          Add Provider
         </Button>
       </div>
 
-      {dids.length === 0 ? (
+      {providers.length === 0 ? (
         <Empty>
           <EmptyHeader>
             <EmptyMedia variant="icon">
-              <IconPhoneCall className="size-6" />
+              <IconBuildingSkyscraper className="size-6" />
             </EmptyMedia>
-            <EmptyTitle>No DIDs in inventory</EmptyTitle>
+            <EmptyTitle>No SIP providers</EmptyTitle>
             <EmptyDescription>
-              Add phone numbers to start assigning them to organizations.
+              Add a SIP provider like Frejun or CloudBharat to get started.
             </EmptyDescription>
           </EmptyHeader>
         </Empty>
@@ -156,32 +143,36 @@ export function DidsTable() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Number</TableHead>
-              <TableHead>Friendly Name</TableHead>
-              <TableHead>Trunk</TableHead>
-              <TableHead>Organization</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Slug</TableHead>
+              <TableHead>Host</TableHead>
+              <TableHead>Port</TableHead>
+              <TableHead>Transport</TableHead>
+              <TableHead>Trunks</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>Active</TableHead>
               <TableHead className="w-10" />
             </TableRow>
           </TableHeader>
           <TableBody>
-            {dids.map((did) => (
-              <TableRow key={did.id}>
-                <TableCell className="font-medium font-mono">
-                  {did.number}
+            {providers.map((provider) => (
+              <TableRow key={provider.id}>
+                <TableCell className="font-medium">{provider.name}</TableCell>
+                <TableCell className="font-mono text-muted-foreground text-sm">
+                  {provider.slug}
                 </TableCell>
-                <TableCell className="text-muted-foreground">
-                  {did.friendlyName ?? "—"}
+                <TableCell className="font-mono text-sm">
+                  {provider.host}
                 </TableCell>
-                <TableCell>{did.sipTrunkName ?? "—"}</TableCell>
-                <TableCell>{did.organizationName ?? "—"}</TableCell>
-                <TableCell>{statusBadge(did.status)}</TableCell>
+                <TableCell>{provider.port}</TableCell>
+                <TableCell className="uppercase">
+                  {provider.transport}
+                </TableCell>
+                <TableCell>{provider.trunkCount}</TableCell>
                 <TableCell>
-                  {did.isActive ? (
-                    <Badge variant="default">Yes</Badge>
+                  {provider.isActive ? (
+                    <Badge variant="default">Active</Badge>
                   ) : (
-                    <Badge variant="outline">No</Badge>
+                    <Badge variant="outline">Inactive</Badge>
                   )}
                 </TableCell>
                 <TableCell>
@@ -196,30 +187,20 @@ export function DidsTable() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      {did.status === "available" && (
-                        <DropdownMenuItem
-                          onClick={() => setAssignDidId(did.id)}
-                        >
-                          Assign to Org
-                        </DropdownMenuItem>
-                      )}
-                      {did.status === "assigned" && (
-                        <DropdownMenuItem
-                          disabled={unassignMutation.isPending}
-                          onClick={() =>
-                            unassignMutation.mutate({ didId: did.id })
-                          }
-                        >
-                          Unassign
-                        </DropdownMenuItem>
-                      )}
+                      <DropdownMenuItem
+                        onClick={() => setEditProvider(provider)}
+                      >
+                        Edit
+                      </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
                         className="text-destructive"
-                        disabled={retireMutation.isPending}
-                        onClick={() => retireMutation.mutate({ didId: did.id })}
+                        disabled={deleteMutation.isPending}
+                        onClick={() =>
+                          deleteMutation.mutate({ providerId: provider.id })
+                        }
                       >
-                        Retire
+                        Delete
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -230,30 +211,31 @@ export function DidsTable() {
         </Table>
       )}
 
-      <DidFormDialog
+      <ProviderFormDialog
         onOpenChange={setCreateOpen}
         onSuccess={() => refetch()}
         open={createOpen}
       />
 
-      {assignDidId && (
-        <DidAssignDialog
-          didId={assignDidId}
+      {editProvider && (
+        <ProviderFormDialog
+          defaultValues={editProvider}
           onOpenChange={(open) => {
-            if (!open) setAssignDidId(null);
+            if (!open) setEditProvider(null);
           }}
           onSuccess={() => {
-            setAssignDidId(null);
+            setEditProvider(null);
             refetch();
           }}
           open={true}
+          providerId={editProvider.id}
         />
       )}
     </div>
   );
 }
 
-DidsTable.Fallback = function DidsTableFallback() {
+ProvidersTable.Fallback = function ProvidersTableFallback() {
   return (
     <div className="space-y-4">
       <Skeleton className="h-9 w-64" />
