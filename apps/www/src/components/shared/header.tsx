@@ -131,7 +131,7 @@ const navItems: NavItem[] = [
           },
           {
             label: "Projects",
-            href: "/",
+            href: "/projects",
             hash: "projects",
             description: "Selected work",
           },
@@ -242,11 +242,12 @@ const navItems: NavItem[] = [
 
   {
     label: "Projects",
-    href: "/",
+    href: "/projects",
     dropdownItems: [
-      { label: "Mobile Apps", href: "/" },
-      { label: "Web Development", href: "/" },
-      { label: "Cloud Migration", href: "/" },
+      { label: "View All Projects", href: "/projects" },
+      { label: "AI & Automation", href: "/projects/ai-support-bot" },
+      { label: "Web Development", href: "/projects/finflow-dashboard" },
+      { label: "Cloud & DevOps", href: "/projects/cloud-sync-platform" },
     ],
   },
   {

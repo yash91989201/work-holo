@@ -7,6 +7,13 @@ import { motion } from "motion/react";
 import type { ContactFormType } from "@/lib/schemas/contact";
 import { ContactFormSchema } from "@/lib/schemas/contact";
 
+const serviceItems = [
+  { value: "managed-it", label: "Managed IT Services" },
+  { value: "cloud", label: "Cloud Computing" },
+  { value: "security", label: "Cybersecurity Solutions" },
+  { value: "consulting", label: "IT Consulting" },
+];
+
 export function ContactSection() {
   const form = useAppForm({
     defaultValues: {
@@ -138,7 +145,7 @@ export function ContactSection() {
                       <div className="grid gap-5 sm:grid-cols-2">
                         <form.AppField name="fullName">
                           {(field) => (
-                            <field.Input label="Full Name *" placeholder="" />
+                            <field.Input label="Full Name *" placeholder="John Doe" />
                           )}
                         </form.AppField>
 
@@ -146,7 +153,7 @@ export function ContactSection() {
                           {(field) => (
                             <field.Input
                               label="Email Address *"
-                              placeholder=""
+                              placeholder="john@example.com"
                               type="email"
                             />
                           )}
@@ -158,7 +165,7 @@ export function ContactSection() {
                           {(field) => (
                             <field.Input
                               label="Phone Number *"
-                              placeholder=""
+                              placeholder="+1 (555) 000-0000"
                               type="tel"
                             />
                           )}
@@ -169,6 +176,7 @@ export function ContactSection() {
                             <field.Select
                               label="Select Service *"
                               placeholder="Choose an Option"
+                              items={serviceItems}
                             >
                               <SelectItem value="managed-it">
                                 Managed IT Services
@@ -191,7 +199,7 @@ export function ContactSection() {
                         {(field) => (
                           <field.Textarea
                             label="Type Message"
-                            placeholder=""
+                            placeholder="Tell us about your project..."
                             rows={4}
                           />
                         )}

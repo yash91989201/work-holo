@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ContactUsRouteImport } from './routes/contact-us'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ServicesIndexRouteImport } from './routes/services/index'
+import { Route as ProjectsIndexRouteImport } from './routes/projects/index'
 import { Route as ServicesWebAppDevelopmentRouteImport } from './routes/services/web-app-development'
 import { Route as ServicesUxUiDesignRouteImport } from './routes/services/ux-ui-design'
 import { Route as ServicesQaTestAutomationRouteImport } from './routes/services/qa-test-automation'
@@ -22,6 +23,7 @@ import { Route as ServicesCloudEngineeringDevopsRouteImport } from './routes/ser
 import { Route as ServicesAwsRouteImport } from './routes/services/aws'
 import { Route as ServicesAiAgentsRouteImport } from './routes/services/ai-agents'
 import { Route as ServicesAgenticAiRouteImport } from './routes/services/agentic-ai'
+import { Route as ProjectsSlugRouteImport } from './routes/projects/$slug'
 import { Route as OurBpoServicesSolutionTechnicalSupportRouteImport } from './routes/our-bpo-services/solution/technical-support'
 import { Route as OurBpoServicesSolutionPaymentProcessingRouteImport } from './routes/our-bpo-services/solution/payment-processing'
 import { Route as OurBpoServicesSolutionOutboundServicesRouteImport } from './routes/our-bpo-services/solution/outbound-services'
@@ -59,6 +61,11 @@ const IndexRoute = IndexRouteImport.update({
 const ServicesIndexRoute = ServicesIndexRouteImport.update({
   id: '/services/',
   path: '/services/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsIndexRoute = ProjectsIndexRouteImport.update({
+  id: '/projects/',
+  path: '/projects/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicesWebAppDevelopmentRoute =
@@ -113,6 +120,11 @@ const ServicesAiAgentsRoute = ServicesAiAgentsRouteImport.update({
 const ServicesAgenticAiRoute = ServicesAgenticAiRouteImport.update({
   id: '/services/agentic-ai',
   path: '/services/agentic-ai',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsSlugRoute = ProjectsSlugRouteImport.update({
+  id: '/projects/$slug',
+  path: '/projects/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OurBpoServicesSolutionTechnicalSupportRoute =
@@ -257,6 +269,7 @@ const OurBpoServicesIndustriesEntertainmentRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/contact-us': typeof ContactUsRoute
+  '/projects/$slug': typeof ProjectsSlugRoute
   '/services/agentic-ai': typeof ServicesAgenticAiRoute
   '/services/ai-agents': typeof ServicesAiAgentsRoute
   '/services/aws': typeof ServicesAwsRoute
@@ -267,6 +280,7 @@ export interface FileRoutesByFullPath {
   '/services/qa-test-automation': typeof ServicesQaTestAutomationRoute
   '/services/ux-ui-design': typeof ServicesUxUiDesignRoute
   '/services/web-app-development': typeof ServicesWebAppDevelopmentRoute
+  '/projects/': typeof ProjectsIndexRoute
   '/services/': typeof ServicesIndexRoute
   '/our-bpo-services/industries/entertainment': typeof OurBpoServicesIndustriesEntertainmentRoute
   '/our-bpo-services/industries/financial': typeof OurBpoServicesIndustriesFinancialRoute
@@ -295,6 +309,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/contact-us': typeof ContactUsRoute
+  '/projects/$slug': typeof ProjectsSlugRoute
   '/services/agentic-ai': typeof ServicesAgenticAiRoute
   '/services/ai-agents': typeof ServicesAiAgentsRoute
   '/services/aws': typeof ServicesAwsRoute
@@ -305,6 +320,7 @@ export interface FileRoutesByTo {
   '/services/qa-test-automation': typeof ServicesQaTestAutomationRoute
   '/services/ux-ui-design': typeof ServicesUxUiDesignRoute
   '/services/web-app-development': typeof ServicesWebAppDevelopmentRoute
+  '/projects': typeof ProjectsIndexRoute
   '/services': typeof ServicesIndexRoute
   '/our-bpo-services/industries/entertainment': typeof OurBpoServicesIndustriesEntertainmentRoute
   '/our-bpo-services/industries/financial': typeof OurBpoServicesIndustriesFinancialRoute
@@ -334,6 +350,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/contact-us': typeof ContactUsRoute
+  '/projects/$slug': typeof ProjectsSlugRoute
   '/services/agentic-ai': typeof ServicesAgenticAiRoute
   '/services/ai-agents': typeof ServicesAiAgentsRoute
   '/services/aws': typeof ServicesAwsRoute
@@ -344,6 +361,7 @@ export interface FileRoutesById {
   '/services/qa-test-automation': typeof ServicesQaTestAutomationRoute
   '/services/ux-ui-design': typeof ServicesUxUiDesignRoute
   '/services/web-app-development': typeof ServicesWebAppDevelopmentRoute
+  '/projects/': typeof ProjectsIndexRoute
   '/services/': typeof ServicesIndexRoute
   '/our-bpo-services/industries/entertainment': typeof OurBpoServicesIndustriesEntertainmentRoute
   '/our-bpo-services/industries/financial': typeof OurBpoServicesIndustriesFinancialRoute
@@ -374,6 +392,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/contact-us'
+    | '/projects/$slug'
     | '/services/agentic-ai'
     | '/services/ai-agents'
     | '/services/aws'
@@ -384,6 +403,7 @@ export interface FileRouteTypes {
     | '/services/qa-test-automation'
     | '/services/ux-ui-design'
     | '/services/web-app-development'
+    | '/projects/'
     | '/services/'
     | '/our-bpo-services/industries/entertainment'
     | '/our-bpo-services/industries/financial'
@@ -412,6 +432,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/contact-us'
+    | '/projects/$slug'
     | '/services/agentic-ai'
     | '/services/ai-agents'
     | '/services/aws'
@@ -422,6 +443,7 @@ export interface FileRouteTypes {
     | '/services/qa-test-automation'
     | '/services/ux-ui-design'
     | '/services/web-app-development'
+    | '/projects'
     | '/services'
     | '/our-bpo-services/industries/entertainment'
     | '/our-bpo-services/industries/financial'
@@ -450,6 +472,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/contact-us'
+    | '/projects/$slug'
     | '/services/agentic-ai'
     | '/services/ai-agents'
     | '/services/aws'
@@ -460,6 +483,7 @@ export interface FileRouteTypes {
     | '/services/qa-test-automation'
     | '/services/ux-ui-design'
     | '/services/web-app-development'
+    | '/projects/'
     | '/services/'
     | '/our-bpo-services/industries/entertainment'
     | '/our-bpo-services/industries/financial'
@@ -489,6 +513,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ContactUsRoute: typeof ContactUsRoute
+  ProjectsSlugRoute: typeof ProjectsSlugRoute
   ServicesAgenticAiRoute: typeof ServicesAgenticAiRoute
   ServicesAiAgentsRoute: typeof ServicesAiAgentsRoute
   ServicesAwsRoute: typeof ServicesAwsRoute
@@ -499,6 +524,7 @@ export interface RootRouteChildren {
   ServicesQaTestAutomationRoute: typeof ServicesQaTestAutomationRoute
   ServicesUxUiDesignRoute: typeof ServicesUxUiDesignRoute
   ServicesWebAppDevelopmentRoute: typeof ServicesWebAppDevelopmentRoute
+  ProjectsIndexRoute: typeof ProjectsIndexRoute
   ServicesIndexRoute: typeof ServicesIndexRoute
   OurBpoServicesIndustriesEntertainmentRoute: typeof OurBpoServicesIndustriesEntertainmentRoute
   OurBpoServicesIndustriesFinancialRoute: typeof OurBpoServicesIndustriesFinancialRoute
@@ -546,6 +572,13 @@ declare module '@tanstack/react-router' {
       path: '/services'
       fullPath: '/services/'
       preLoaderRoute: typeof ServicesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects/': {
+      id: '/projects/'
+      path: '/projects'
+      fullPath: '/projects/'
+      preLoaderRoute: typeof ProjectsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/services/web-app-development': {
@@ -616,6 +649,13 @@ declare module '@tanstack/react-router' {
       path: '/services/agentic-ai'
       fullPath: '/services/agentic-ai'
       preLoaderRoute: typeof ServicesAgenticAiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects/$slug': {
+      id: '/projects/$slug'
+      path: '/projects/$slug'
+      fullPath: '/projects/$slug'
+      preLoaderRoute: typeof ProjectsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/our-bpo-services/solution/technical-support': {
@@ -785,6 +825,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ContactUsRoute: ContactUsRoute,
+  ProjectsSlugRoute: ProjectsSlugRoute,
   ServicesAgenticAiRoute: ServicesAgenticAiRoute,
   ServicesAiAgentsRoute: ServicesAiAgentsRoute,
   ServicesAwsRoute: ServicesAwsRoute,
@@ -795,6 +836,7 @@ const rootRouteChildren: RootRouteChildren = {
   ServicesQaTestAutomationRoute: ServicesQaTestAutomationRoute,
   ServicesUxUiDesignRoute: ServicesUxUiDesignRoute,
   ServicesWebAppDevelopmentRoute: ServicesWebAppDevelopmentRoute,
+  ProjectsIndexRoute: ProjectsIndexRoute,
   ServicesIndexRoute: ServicesIndexRoute,
   OurBpoServicesIndustriesEntertainmentRoute:
     OurBpoServicesIndustriesEntertainmentRoute,
