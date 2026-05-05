@@ -1,21 +1,29 @@
-import { useEffect, useState } from "react";
-import { motion, type Variants, useAnimationControls } from "motion/react";
 import {
-  IconThumbUp,
   IconBulb,
-  IconRocket,
   IconHeartHandshake,
+  IconRocket,
+  IconThumbUp,
 } from "@tabler/icons-react";
 import { CTAButton } from "@work-holo/ui/components/cta-button";
 import { cn } from "@work-holo/ui/lib/utils";
+import { motion, useAnimationControls, type Variants } from "motion/react";
+import { useEffect, useState } from "react";
 
 const logos = [
-  { name: "coudac", style: "tracking-tight font-bold text-lg" },
-  { name: "flomodia", style: "italic font-serif text-lg" },
-  { name: "WEGLOT", style: "font-bold tracking-widest text-lg" },
-  { name: "Influence", suffix: "4You", style: "font-medium text-lg" },
-  { name: "tse", sub: "ENERGIE DE CONFIANCE", style: "font-bold tracking-tight text-lg" },
-  { name: "monceau", prefix: "m", style: "font-medium text-lg" },
+  { name: "VitaCare Health", style: "font-bold text-base" },
+  { name: "Meridian Capital", style: "font-semibold text-base" },
+  { name: "LuxeCart", style: "font-medium text-base" },
+  { name: "NexaBridge Tech", style: "font-bold tracking-tight text-base" },
+  { name: "Urban Threads", style: "font-medium text-base" },
+  { name: "VantageMetrics", style: "font-bold text-base" },
+  { name: "Synapse Workspace", style: "font-semibold text-base" },
+  { name: "InsightFlow", style: "font-bold text-base" },
+  { name: "CareNet Health", style: "font-medium text-base" },
+  { name: "FlavorFleet", style: "font-semibold text-base" },
+  { name: "NovaPay", style: "font-bold text-base" },
+  { name: "PulseFit", style: "font-medium text-base" },
+  { name: "DriftLine", style: "font-bold text-base" },
+  { name: "SwiftBridge Cloud", style: "font-semibold text-base" },
 ];
 
 const features = [
@@ -77,7 +85,7 @@ function LogoMarquee() {
         x: "-50%",
         transition: {
           x: {
-            repeat: Infinity,
+            repeat: Number.POSITIVE_INFINITY,
             repeatType: "loop",
             duration: 25,
             ease: "linear",
@@ -96,42 +104,27 @@ function LogoMarquee() {
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Fade edges */}
-      <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
-      <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+      <div className="pointer-events-none absolute top-0 bottom-0 left-0 z-10 w-16 bg-gradient-to-r from-background to-transparent sm:w-24" />
+      <div className="pointer-events-none absolute top-0 right-0 bottom-0 z-10 w-16 bg-gradient-to-l from-background to-transparent sm:w-24" />
 
       <motion.div
         animate={controls}
+        className="flex w-max gap-5"
         initial={{ x: "0%" }}
-        className="flex gap-5 w-max"
       >
         {allLogos.map((logo, index) => (
           <div
+            className="flex min-w-[160px] items-center justify-center rounded-2xl border border-border/30 bg-card/40 px-6 py-5 transition-all duration-300 hover:border-border/60 hover:bg-card/70"
             key={`${logo.name}-${index}`}
-            className="flex items-center justify-center rounded-2xl bg-card/40 border border-border/30 px-10 py-7 min-w-[200px] hover:border-border/60 hover:bg-card/70 transition-all duration-300"
           >
-            {logo.prefix && (
-              <span className="flex items-center justify-center size-7 rounded-full bg-muted mr-1.5 text-xs font-bold text-muted-foreground">
-                {logo.prefix}
-              </span>
-            )}
             <span
               className={cn(
-                "text-muted-foreground/50 hover:text-muted-foreground transition-colors",
+                "text-muted-foreground/50 transition-colors hover:text-muted-foreground",
                 logo.style
               )}
             >
               {logo.name}
             </span>
-            {logo.suffix && (
-              <span className="text-xs font-bold text-muted-foreground/40 ml-1 align-top">
-                {logo.suffix}
-              </span>
-            )}
-            {logo.sub && (
-              <span className="text-[9px] text-muted-foreground/30 ml-1.5 leading-none uppercase tracking-wider">
-                {logo.sub}
-              </span>
-            )}
           </div>
         ))}
       </motion.div>
@@ -141,19 +134,22 @@ function LogoMarquee() {
 
 export function WhyChooseUs() {
   return (
-    <section id="why-choose-us" className="relative bg-background py-20 lg:py-28 overflow-hidden scroll-mt-28">
+    <section
+      className="relative scroll-mt-28 overflow-hidden bg-background py-20 lg:py-28"
+      id="why-choose-us"
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Top Badge */}
         <motion.div
+          className="mb-12 flex justify-center"
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="flex justify-center mb-12"
+          viewport={{ once: true }}
+          whileInView={{ opacity: 1, y: 0 }}
         >
           <div className="inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-card/50 px-5 py-2 text-sm">
             <span className="text-muted-foreground">Join Over</span>
-            <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-primary text-primary-foreground text-xs font-bold">
+            <span className="inline-flex items-center rounded-md bg-primary px-2 py-0.5 font-bold text-primary-foreground text-xs">
               1000+
             </span>
             <span className="text-muted-foreground">
@@ -164,42 +160,42 @@ export function WhyChooseUs() {
 
         {/* Logo Marquee */}
         <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1 }}
           className="mb-24"
+          initial={{ opacity: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          viewport={{ once: true }}
+          whileInView={{ opacity: 1 }}
         >
           <LogoMarquee />
         </motion.div>
 
         {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
           className="mb-14"
+          initial={{ opacity: 0, y: 30 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          whileInView={{ opacity: 1, y: 0 }}
         >
           {/* Tag */}
-          <p className="text-sm font-medium tracking-[0.2em] text-primary uppercase mb-6">
+          <p className="mb-6 font-medium text-primary text-sm uppercase tracking-[0.2em]">
             [ WHY CHOOSE US ]
           </p>
 
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
             {/* Headline */}
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground leading-[1.1] tracking-tight max-w-lg">
+            <h2 className="max-w-lg font-bold text-3xl text-foreground leading-[1.1] tracking-tight sm:text-4xl lg:text-5xl">
               Reliable IT Solution, for
               <br />
               Best Results.
             </h2>
 
             {/* Right side */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5 lg:gap-8">
-              <p className="text-sm text-muted-foreground leading-relaxed max-w-[220px]">
+            <div className="flex flex-col items-start gap-5 sm:flex-row sm:items-center lg:gap-8">
+              <p className="max-w-[220px] text-muted-foreground text-sm leading-relaxed">
                 Our services are customized to meet your unique.
               </p>
-              <CTAButton type="button" className="shrink-0">
+              <CTAButton className="shrink-0" type="button">
                 Learn More
               </CTAButton>
             </div>
@@ -208,25 +204,25 @@ export function WhyChooseUs() {
 
         {/* Feature Cards */}
         <motion.div
-          variants={containerVariants}
+          className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
           initial="hidden"
-          whileInView="visible"
+          variants={containerVariants}
           viewport={{ once: true, margin: "-50px" }}
-          className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5"
+          whileInView="visible"
         >
           {features.map((feature) => (
             <motion.div
+              className="group relative rounded-2xl border border-border/40 bg-card/60 p-7 transition-all duration-300 hover:border-border/70"
               key={feature.title}
+              transition={{ duration: 0.3 }}
               variants={itemVariants}
               whileHover={{ y: -4 }}
-              transition={{ duration: 0.3 }}
-              className="group relative p-7 rounded-2xl bg-card/60 border border-border/40 hover:border-border/70 transition-all duration-300"
             >
               {/* Icon */}
               <div className="relative mb-8 flex size-14 items-center justify-center overflow-hidden rounded-full border border-border/50 bg-background transition-colors group-hover:border-primary/30">
                 <motion.div
                   aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 rounded-full bg-primary opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:rotate-180"
+                  className="pointer-events-none absolute inset-0 rounded-full bg-primary opacity-0 transition-all duration-500 group-hover:rotate-180 group-hover:opacity-100"
                 />
                 <feature.icon
                   className="relative z-10 size-6 text-primary transition-colors duration-300 group-hover:text-white"
@@ -235,12 +231,12 @@ export function WhyChooseUs() {
               </div>
 
               {/* Title */}
-              <h3 className="text-lg font-semibold text-foreground mb-3">
+              <h3 className="mb-3 font-semibold text-foreground text-lg">
                 {feature.title}
               </h3>
 
               {/* Description */}
-              <p className="text-sm text-muted-foreground leading-relaxed">
+              <p className="text-muted-foreground text-sm leading-relaxed">
                 {feature.description}
               </p>
             </motion.div>

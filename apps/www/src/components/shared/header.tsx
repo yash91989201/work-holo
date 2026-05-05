@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { CTAButton } from "@work-holo/ui/components/cta-button";
 import { cn } from "@work-holo/ui/lib/utils";
-import { motion, useMotionValueEvent, useScroll } from "motion/react";
+import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/react";
 import { type ReactNode, useEffect, useState } from "react";
 import { Image } from "@/components/shared/image";
 
@@ -11,6 +11,7 @@ import {
   IconChevronDown,
   IconClock,
   IconSettings,
+  IconX,
 } from "@tabler/icons-react";
 import {
   NavigationMenu,
@@ -32,6 +33,86 @@ type NavGroup = {
   title: string;
   items: DropdownItem[];
 };
+
+type TabDropdownProps = {
+  groups: NavGroup[];
+};
+
+function TabDropdown({ groups }: TabDropdownProps) {
+  const [activeTab, setActiveTab] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <div
+      className="w-[32rem] max-h-[50vh] rounded-[1.5rem] border border-white/10 bg-background/80 shadow-[0_30px_80px_-15px_rgba(0,0,0,0.35)] backdrop-blur-2xl overflow-hidden flex"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div className="w-44 flex flex-col relative border-r border-white/5 p-2 bg-white/5 shrink-0">
+        {groups.map((group, idx) => (
+          <button
+            key={group.title}
+            className={cn(
+              "text-left px-4 py-3 text-[13px] font-medium tracking-wide transition-all duration-300 z-10 rounded-xl",
+              activeTab === idx
+                ? "text-foreground bg-white/10"
+                : "text-muted-foreground/60 hover:text-muted-foreground hover:bg-white/5"
+            )}
+            onClick={() => setActiveTab(idx)}
+            onMouseEnter={() => setActiveTab(idx)}
+          >
+            {group.title}
+          </button>
+        ))}
+      </div>
+      <div
+        className="flex-1 p-3 overflow-y-auto overscroll-contain"
+        onWheel={(e) => {
+          if (!isHovered) return;
+          e.stopPropagation();
+        }}
+      >
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, x: 8 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -8 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="space-y-1"
+          >
+            {groups[activeTab]?.items.map((item, idx) => (
+              <motion.div
+                key={item.label}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: idx * 0.05, duration: 0.2 }}
+              >
+                <MenuLink
+                  className="flex flex-col gap-1 rounded-xl px-4 py-3 transition-all duration-200 hover:bg-white/5 group/item"
+                  to={item.href}
+                  hash={item.hash}
+                >
+                  <div className="flex items-center justify-between w-full gap-3">
+                    <span className="text-[14px] font-medium text-foreground/90 group-hover/item:text-primary transition-colors">
+                      {item.label}
+                    </span>
+                    <IconArrowUpRight className="size-3.5 text-muted-foreground/40 group-hover/item:text-primary/60 transition-colors" />
+                  </div>
+                  {item.description && (
+                    <span className="w-full text-left text-[12px] text-muted-foreground/60 group-hover/item:text-muted-foreground/80 transition-colors">
+                      {item.description}
+                    </span>
+                  )}
+                </MenuLink>
+              </motion.div>
+            ))}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+}
 
 type MenuLinkProps = {
   children: ReactNode;
@@ -239,26 +320,36 @@ const navItems: NavItem[] = [
       },
     ],
   },
-
   {
     label: "Projects",
     href: "/projects",
-    dropdownItems: [
-      { label: "View All Projects", href: "/projects" },
-      { label: "AI & Automation", href: "/projects/ai-support-bot" },
-      { label: "Web Development", href: "/projects/finflow-dashboard" },
-      { label: "Cloud & DevOps", href: "/projects/cloud-sync-platform" },
+    groups: [
+      {
+        title: "AI & Automation",
+        items: [
+          { label: "AI Support Bot", href: "/projects/ai-support-bot" },
+          { label: "ML Pipeline", href: "/projects/ml-pipeline" },
+          { label: "Chatbot Platform", href: "/projects/chatbot-platform" },
+        ],
+      },
+      {
+        title: "Web Development",
+        items: [
+          { label: "Finflow Dashboard", href: "/projects/finflow-dashboard" },
+          { label: "E-commerce Suite", href: "/projects/ecommerce" },
+          { label: "SaaS Platform", href: "/projects/saas-platform" },
+        ],
+      },
+      {
+        title: "Cloud & DevOps",
+        items: [
+          { label: "Cloud Sync Platform", href: "/projects/cloud-sync-platform" },
+          { label: "CI/CD Pipeline", href: "/projects/cicd-pipeline" },
+          { label: "Infrastructure", href: "/projects/infrastructure" },
+        ],
+      },
     ],
   },
-  {
-    label: "Company",
-    href: "/",
-    dropdownItems: [
-      { label: "About Us", href: "/" },
-      { label: "Careers", href: "/" },
-    ],
-  },
-
   {
     label: "Our BPO Services",
     href: "/our-bpo-services",
@@ -390,10 +481,12 @@ const navItems: NavItem[] = [
       },
     ],
   },
-
   {
-    label: "Contact",
-    href: "/contact-us",
+    label: "Company",
+    dropdownItems: [
+      { label: "About Us", href: "/about-us" },
+      { label: "Contact", href: "/contact-us" },
+    ],
   },
 ];
 
@@ -533,58 +626,28 @@ export function Header() {
                   let menuContent: ReactNode = null;
 
                   if (hasGroups(item)) {
-                    menuContent = (
-                      <div
-                        className={cn(
-                          "grid w-160 grid-cols-3 gap-x-16 gap-y-6 p-5 items-start",
-                          item.label === "Our BPO Services" &&
-                            "max-h-130 overflow-y-auto overscroll-contain",
-                        )}
-                        onWheel={(e) => {
-                          if (item.label === "Our BPO Services") {
-                            e.stopPropagation();
-                          }
-                        }}
-                      >
-                        {item.groups.map((group) => (
-                          <div
-                            className="flex flex-col gap-3"
-                            key={group.title}
-                          >
-                            <h4 className="font-semibold text-foreground text-sm">
-                              {group.title}
-                            </h4>
-                            <div className="flex flex-col gap-0.5">
-                              {group.items.map((dropItem) => (
-                                <MenuLink
-                                  className="flex flex-col items-start gap-0.5 rounded-xl p-2.5 hover:bg-muted"
-                                  hash={dropItem.hash}
-                                  key={dropItem.label}
-                                  to={dropItem.href}
-                                >
-                                  <span className="font-medium text-foreground text-sm">
-                                    {dropItem.label}
-                                  </span>
-                                  {dropItem.description && (
-                                    <span className="text-muted-foreground text-xs leading-relaxed">
-                                      {dropItem.description}
-                                    </span>
-                                  )}
-                                </MenuLink>
-                              ))}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    );
+                    menuContent = <TabDropdown groups={item.groups} />;
                   } else if (hasDropdownItems(item)) {
+                    const hasMany = item.dropdownItems.length > 4;
                     menuContent = (
-                      <div className="grid w-50 gap-1 p-2">
-                        {item.dropdownItems.map((dropItem) => (
-                          <MenuLink key={dropItem.label} to={dropItem.href}>
-                            {dropItem.label}
-                          </MenuLink>
-                        ))}
+                      <div className={cn(
+                        "rounded-[1.5rem] border border-white/10 bg-background/80 shadow-[0_30px_80px_-15px_rgba(0,0,0,0.35)] backdrop-blur-2xl overflow-hidden",
+                        hasMany ? "w-72" : "w-52"
+                      )}>
+                        <div className="p-2">
+                          {item.dropdownItems.map((dropItem) => (
+                            <MenuLink
+                              className="flex items-center gap-3 rounded-xl px-4 py-3 text-[14px] font-medium text-foreground/90 transition-all duration-200 hover:bg-white/5 group/item"
+                              key={dropItem.label}
+                              to={dropItem.href}
+                            >
+                              <span className="group-hover/item:text-primary transition-colors">
+                                {dropItem.label}
+                              </span>
+                              <IconArrowUpRight className="size-3.5 text-muted-foreground/40 group-hover/item:text-primary/60 transition-colors" />
+                            </MenuLink>
+                          ))}
+                        </div>
                       </div>
                     );
                   }
@@ -670,151 +733,271 @@ export function Header() {
       </motion.div>
 
       {/* Mobile Menu */}
-      <motion.div
-        animate={{
-          height: mobileMenuOpen ? "auto" : 0,
-          opacity: mobileMenuOpen ? 1 : 0,
-        }}
-        className="mx-4 mt-3 overflow-hidden rounded-[1.75rem] border border-border/30 bg-card/95 shadow-[0_18px_50px_rgba(17,17,17,0.16)] backdrop-blur-md sm:mx-6 lg:hidden"
-        initial={false}
-        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <div className="max-h-[calc(100dvh-10rem)] space-y-2 overflow-y-auto overscroll-contain scroll-smooth px-4 py-4">
-          {navItems.map((item, index) => {
-            let mobileContent: ReactNode = null;
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed inset-0 z-[100] flex flex-col bg-background/95 backdrop-blur-3xl lg:hidden"
+          >
+            <div className="flex items-center justify-between px-6 py-5 border-b border-white/5">
+              <Link
+                className="flex shrink-0 items-center gap-3"
+                to="/"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <div className="relative h-10 w-14">
+                  <Image
+                    alt="Work Holo"
+                    className="object-contain"
+                    height={40}
+                    src="/logo.webp"
+                    unoptimized
+                    width={56}
+                  />
+                </div>
+                <span className="font-bold font-heading text-xl text-foreground">
+                  Workholo
+                </span>
+              </Link>
+              <motion.button
+                aria-label="Close menu"
+                className="flex size-10 items-center justify-center rounded-full bg-white/5 text-foreground transition-colors hover:bg-white/10"
+                onClick={() => setMobileMenuOpen(false)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <IconX className="size-5" />
+              </motion.button>
+            </div>
 
-            if (hasGroups(item)) {
-              mobileContent = (
-                <div className="rounded-2xl border border-border/40 bg-background/60">
-                  <div className="flex items-stretch">
-                    <Link
-                      className={cn(
-                        "flex flex-1 items-center justify-between rounded-l-2xl px-4 py-3.5 font-medium text-base transition-colors",
-                        item.active
-                          ? "bg-primary/10 text-primary"
-                          : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
-                      )}
-                      hash={item.hash}
-                      onClick={() => setMobileMenuOpen(false)}
-                      to={item.href}
-                    >
-                      {item.label}
-                    </Link>
-                    <button
-                      aria-expanded={openMobileItem === item.label}
-                      aria-label={`Toggle ${item.label} links`}
-                      className="flex size-12 items-center justify-center rounded-r-2xl border-border/40 border-l text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
-                      onClick={() =>
-                        setOpenMobileItem((current) =>
-                          current === item.label ? null : item.label,
-                        )
-                      }
-                      type="button"
-                    >
-                      <IconChevronDown
-                        className={cn(
-                          "size-4 transition-transform duration-300",
-                          openMobileItem === item.label && "rotate-180",
+            <div className="flex-1 overflow-y-auto overscroll-contain px-6 py-8">
+              {navItems.map((item, index) => {
+                let mobileContent: ReactNode = null;
+
+                if (hasGroups(item)) {
+                  const hasManyGroups = item.groups.length > 1;
+                  mobileContent = (
+                    <div className="rounded-2xl bg-white/[0.02] border border-white/5 overflow-hidden">
+                      <div className="flex items-stretch">
+                        <Link
+                          className={cn(
+                            "flex flex-1 items-center px-4 py-4 text-base font-medium transition-colors",
+                            item.active
+                              ? "text-primary"
+                              : "text-muted-foreground hover:text-foreground",
+                          )}
+                          hash={item.hash}
+                          onClick={() => setMobileMenuOpen(false)}
+                          to={item.href}
+                        >
+                          {item.label}
+                        </Link>
+                        {hasManyGroups && (
+                          <button
+                            aria-expanded={openMobileItem === item.label}
+                            aria-label={`Toggle ${item.label} links`}
+                            className="flex size-14 items-center justify-center border-l border-white/5 text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+                            onClick={() =>
+                              setOpenMobileItem((current) =>
+                                current === item.label ? null : item.label,
+                              )
+                            }
+                            type="button"
+                          >
+                            <motion.div
+                              animate={{ rotate: openMobileItem === item.label ? 180 : 0 }}
+                              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                            >
+                              <IconChevronDown className="size-5" />
+                            </motion.div>
+                          </button>
                         )}
-                      />
-                    </button>
-                  </div>
+                      </div>
 
-                  {openMobileItem === item.label && (
-                    <div className="border-border/40 border-t p-2">
-                      <div className="space-y-4">
-                        {item.groups.map((group) => (
-                          <div className="space-y-1.5" key={group.title}>
-                            <h4 className="px-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">
-                              {group.title}
-                            </h4>
-                            <div className="space-y-1">
-                              {group.items.map((dropItem) => (
-                                <Link
-                                  className="flex flex-col rounded-xl px-3 py-2.5 transition-colors hover:bg-muted/50"
-                                  hash={dropItem.hash}
-                                  key={dropItem.label}
-                                  onClick={() => setMobileMenuOpen(false)}
-                                  to={dropItem.href}
-                                >
-                                  <span className="font-medium text-foreground text-sm">
-                                    {dropItem.label}
-                                  </span>
-                                  {dropItem.description && (
-                                    <span className="text-muted-foreground text-xs leading-relaxed">
-                                      {dropItem.description}
-                                    </span>
-                                  )}
-                                </Link>
+                      <AnimatePresence initial={false}>
+                        {openMobileItem === item.label && hasManyGroups && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                            className="overflow-hidden bg-black/20"
+                          >
+                            <div className="p-4 space-y-6">
+                              {item.groups.map((group) => (
+                                <div key={group.title}>
+                                  <h4 className="mb-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground/60">
+                                    {group.title}
+                                  </h4>
+                                  <div className="space-y-2">
+                                    {group.items.map((dropItem, dropIdx) => (
+                                      <motion.div
+                                        key={dropItem.label}
+                                        initial={{ opacity: 0, y: 8 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{
+                                          delay: dropIdx * 0.04,
+                                          duration: 0.3,
+                                          ease: [0.22, 1, 0.36, 1],
+                                        }}
+                                        whileTap={{ scale: 0.98 }}
+                                      >
+                                        <Link
+                                          className="flex flex-col rounded-xl px-3 py-3 transition-all hover:bg-white/10"
+                                          hash={dropItem.hash}
+                                          onClick={() => setMobileMenuOpen(false)}
+                                          to={dropItem.href}
+                                        >
+                                          <span className="text-sm font-medium text-foreground">
+                                            {dropItem.label}
+                                          </span>
+                                          {dropItem.description && (
+                                            <span className="mt-1 text-xs text-muted-foreground/60 line-clamp-2">
+                                              {dropItem.description}
+                                            </span>
+                                          )}
+                                        </Link>
+                                      </motion.div>
+                                    ))}
+                                  </div>
+                                </div>
                               ))}
                             </div>
-                          </div>
-                        ))}
-                      </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
-                  )}
-                </div>
-              );
-            } else if (hasDropdownItems(item)) {
-              mobileContent = (
-                <Link
-                  className={cn(
-                    "flex items-center justify-between rounded-2xl px-4 py-3.5 font-medium text-base transition-colors",
-                    item.active
-                      ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
-                  )}
-                  key={item.label}
-                  onClick={() => setMobileMenuOpen(false)}
-                  to={item.href}
-                >
-                  {item.label}
-                </Link>
-              );
-            } else if (isSimpleLink(item)) {
-              mobileContent = (
-                <Link
-                  className={cn(
-                    "flex items-center justify-between rounded-2xl px-4 py-3.5 font-medium text-base transition-colors",
-                    item.active
-                      ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
-                  )}
-                  hash={item.hash}
-                  key={item.label}
-                  onClick={() => setMobileMenuOpen(false)}
-                  to={item.href}
-                >
-                  {item.label}
-                </Link>
-              );
-            }
+                  );
+                } else if (hasDropdownItems(item)) {
+                  mobileContent = (
+                    <div className="rounded-2xl bg-white/[0.02] border border-white/5 overflow-hidden">
+                      <div className="flex items-stretch">
+                        <Link
+                          className={cn(
+                            "flex flex-1 items-center px-4 py-4 text-base font-medium transition-colors",
+                            item.active
+                              ? "text-primary"
+                              : "text-muted-foreground hover:text-foreground",
+                          )}
+                          key={item.label}
+                          onClick={() => setMobileMenuOpen(false)}
+                          to={item.href}
+                        >
+                          {item.label}
+                        </Link>
+                        <button
+                          aria-expanded={openMobileItem === item.label}
+                          aria-label={`Toggle ${item.label} links`}
+                          className="flex size-14 items-center justify-center border-l border-white/5 text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+                          onClick={() =>
+                            setOpenMobileItem((current) =>
+                              current === item.label ? null : item.label,
+                            )
+                          }
+                          type="button"
+                        >
+                          <motion.div
+                            animate={{ rotate: openMobileItem === item.label ? 180 : 0 }}
+                            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                          >
+                            <IconChevronDown className="size-5" />
+                          </motion.div>
+                        </button>
+                      </div>
 
-            return (
-              <motion.div
-                animate={{
-                  opacity: mobileMenuOpen ? 1 : 0,
-                  x: mobileMenuOpen ? 0 : -20,
-                }}
-                initial={{ opacity: 0, x: -20 }}
-                key={item.label}
-                transition={{
-                  duration: 0.3,
-                  delay: mobileMenuOpen ? index * 0.05 : 0,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-              >
-                {mobileContent}
-              </motion.div>
-            );
-          })}
-          <div className="flex flex-col gap-2 pt-3">
-            <CTAButton className="w-full" href="#contact" to="/contact-us">
-              Get in touch
-            </CTAButton>
-          </div>
-        </div>
-      </motion.div>
+                      <AnimatePresence initial={false}>
+                        {openMobileItem === item.label && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                            className="overflow-hidden bg-black/20"
+                          >
+                            <div className="p-3 space-y-1">
+                              {item.dropdownItems.map((dropItem, dropIdx) => (
+                                <motion.div
+                                  key={dropItem.label}
+                                  initial={{ opacity: 0, x: -10 }}
+                                  animate={{ opacity: 1, x: 0 }}
+                                  transition={{
+                                    delay: dropIdx * 0.04,
+                                    duration: 0.3,
+                                    ease: [0.22, 1, 0.36, 1],
+                                  }}
+                                  whileTap={{ scale: 0.98 }}
+                                >
+                                  <Link
+                                    className="flex rounded-xl px-3 py-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    to={dropItem.href}
+                                  >
+                                    {dropItem.label}
+                                  </Link>
+                                </motion.div>
+                              ))}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  );
+                } else if (isSimpleLink(item)) {
+                  mobileContent = (
+                    <motion.div whileTap={{ scale: 0.98 }}>
+                      <Link
+                        className={cn(
+                          "flex items-center rounded-2xl px-4 py-4 text-base font-medium transition-all",
+                          item.active
+                            ? "bg-white/10 text-primary shadow-sm"
+                            : "bg-white/[0.02] border border-white/5 text-muted-foreground hover:bg-white/10 hover:text-foreground",
+                        )}
+                        hash={item.hash}
+                        key={item.label}
+                        onClick={() => setMobileMenuOpen(false)}
+                        to={item.href}
+                      >
+                        {item.label}
+                      </Link>
+                    </motion.div>
+                  );
+                }
+
+                return (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    transition={{
+                      duration: 0.5,
+                      delay: index * 0.08,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                    key={item.label}
+                    className="mb-3"
+                  >
+                    {mobileContent}
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: navItems.length * 0.08 + 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              className="border-t border-white/5 px-6 py-6 bg-background/50"
+            >
+              <CTAButton className="w-full" href="#contact" to="/contact-us">
+                Get in touch
+              </CTAButton>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.header>
   );
 }

@@ -145,7 +145,10 @@ export function ContactSection() {
                       <div className="grid gap-5 sm:grid-cols-2">
                         <form.AppField name="fullName">
                           {(field) => (
-                            <field.Input label="Full Name *" placeholder="John Doe" />
+                            <field.Input
+                              label="Full Name *"
+                              placeholder="John Doe"
+                            />
                           )}
                         </form.AppField>
 
@@ -176,14 +179,11 @@ export function ContactSection() {
                             <field.Select
                               label="Select Service *"
                               placeholder="Choose an Option"
-                              items={serviceItems}
                             >
                               <SelectItem value="managed-it">
                                 Managed IT Services
                               </SelectItem>
-                              <SelectItem value="cloud">
-                                Cloud Computing
-                              </SelectItem>
+                              <SelectItem value="cloud">Cloud Computing</SelectItem>
                               <SelectItem value="security">
                                 Cybersecurity Solutions
                               </SelectItem>
