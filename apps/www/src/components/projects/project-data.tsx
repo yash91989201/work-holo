@@ -1,14 +1,14 @@
 import {
   IconBrain,
-  IconBrandReact,
+  IconBrandAndroid,
   IconBrandFlutter,
+  IconBrandReact,
   IconBuildingBank,
-  IconCode,
   IconCloud,
   IconCloudComputing,
+  IconCode,
   IconDeviceMobile,
   IconRobot,
-  IconBrandAndroid,
 } from "@tabler/icons-react";
 
 export interface ProjectFAQ {
@@ -34,34 +34,34 @@ export interface TimelinePhase {
 }
 
 export interface ProjectPageData {
-  slug: string;
-  title: string;
-  subtitle: string;
   category: string;
-  client: string;
-  duration: string;
-  description: string;
-  heroImage: string;
-  overview: string;
   challenge: string;
-  solution: string;
-  galleryImages: string[];
+  client: string;
+  description: string;
+  duration: string;
+  faqs: ProjectFAQ[];
   features: string[];
+  galleryImages: string[];
+  heroImage: string;
   metrics: ProjectMetric[];
+  overview: string;
   results: ProjectResult[];
+  slug: string;
+  solution: string;
+  subtitle: string;
   techStack: string[];
   timeline: TimelinePhase[];
-  faqs: ProjectFAQ[];
+  title: string;
 }
 
 export interface ProjectListItem {
-  slug: string;
-  title: string;
   category: string;
   description: string;
   href: string;
-  isActive: boolean;
   icon: React.ReactNode;
+  isActive: boolean;
+  slug: string;
+  title: string;
 }
 
 const projectList = [
@@ -218,22 +218,26 @@ const projectsData: Record<string, ProjectPageData> = {
       {
         label: "Phase 1",
         title: "Discovery & Audit",
-        description: "Mapped legacy EHR systems, identified integration points, and established FHIR compliance requirements across 6 hospital networks.",
+        description:
+          "Mapped legacy EHR systems, identified integration points, and established FHIR compliance requirements across 6 hospital networks.",
       },
       {
         label: "Phase 2",
         title: "Architecture & Design",
-        description: "Designed offline-first architecture with real-time sync, built FHIR R4 API layer, and prototyped AI anomaly detection pipeline.",
+        description:
+          "Designed offline-first architecture with real-time sync, built FHIR R4 API layer, and prototyped AI anomaly detection pipeline.",
       },
       {
         label: "Phase 3",
         title: "Development & Testing",
-        description: "Built React Native app with TensorFlow Lite on-device inference. Ran HIPAA compliance audits and clinical user acceptance testing.",
+        description:
+          "Built React Native app with TensorFlow Lite on-device inference. Ran HIPAA compliance audits and clinical user acceptance testing.",
       },
       {
         label: "Phase 4",
         title: "Launch & Scale",
-        description: "Phased rollout across 6 hospitals. Achieved HIPAA compliance certification. Scaled to 8.5K+ active users within 2 months of launch.",
+        description:
+          "Phased rollout across 6 hospitals. Achieved HIPAA compliance certification. Scaled to 8.5K+ active users within 2 months of launch.",
       },
     ],
     faqs: [
@@ -334,22 +338,26 @@ const projectsData: Record<string, ProjectPageData> = {
       {
         label: "Phase 1",
         title: "Discovery & Audit",
-        description: "Analyzed legacy reporting workflows, identified data sources, and mapped regulatory requirements for MiFID II and Dodd-Frank.",
+        description:
+          "Analyzed legacy reporting workflows, identified data sources, and mapped regulatory requirements for MiFID II and Dodd-Frank.",
       },
       {
         label: "Phase 2",
         title: "Architecture & Design",
-        description: "Designed modular React + WebSocket architecture, built custom D3.js visualizations, and implemented zero-trust security model.",
+        description:
+          "Designed modular React + WebSocket architecture, built custom D3.js visualizations, and implemented zero-trust security model.",
       },
       {
         label: "Phase 3",
         title: "Development & Testing",
-        description: "Built Kafka-backed microservices, implemented column-level encryption, and ran performance tests for sub-100ms latency.",
+        description:
+          "Built Kafka-backed microservices, implemented column-level encryption, and ran performance tests for sub-100ms latency.",
       },
       {
         label: "Phase 4",
         title: "Launch & Scale",
-        description: "Phased rollout across trading desks. Achieved MiFID II compliance. Scaled to $2B+ daily volume with sub-100ms latency.",
+        description:
+          "Phased rollout across trading desks. Achieved MiFID II compliance. Scaled to $2B+ daily volume with sub-100ms latency.",
       },
     ],
     faqs: [
@@ -450,22 +458,26 @@ const projectsData: Record<string, ProjectPageData> = {
       {
         label: "Phase 1",
         title: "Discovery & Audit",
-        description: "Analyzed support ticket patterns, identified knowledge gaps, and mapped existing CRM and Zendesk data sources.",
+        description:
+          "Analyzed support ticket patterns, identified knowledge gaps, and mapped existing CRM and Zendesk data sources.",
       },
       {
         label: "Phase 2",
         title: "Architecture & Design",
-        description: "Designed multi-agent orchestration system, built RAG pipelines over existing data, and created human-in-the-loop escalation workflow.",
+        description:
+          "Designed multi-agent orchestration system, built RAG pipelines over existing data, and created human-in-the-loop escalation workflow.",
       },
       {
         label: "Phase 3",
         title: "Development & Testing",
-        description: "Built LLM-powered agents with intent detection and sentiment analysis. Ran A/B tests on response quality and resolution rates.",
+        description:
+          "Built LLM-powered agents with intent detection and sentiment analysis. Ran A/B tests on response quality and resolution rates.",
       },
       {
         label: "Phase 4",
         title: "Launch & Scale",
-        description: "Phased rollout across email, chat, and social channels. Achieved 89% first-contact resolution. Scaled to 100K+ daily conversations.",
+        description:
+          "Phased rollout across email, chat, and social channels. Achieved 89% first-contact resolution. Scaled to 100K+ daily conversations.",
       },
     ],
     faqs: [
@@ -566,22 +578,26 @@ const projectsData: Record<string, ProjectPageData> = {
       {
         label: "Phase 1",
         title: "Discovery & Audit",
-        description: "Analyzed legacy data sources, mapped governance requirements, and identified multi-cloud architecture constraints.",
+        description:
+          "Analyzed legacy data sources, mapped governance requirements, and identified multi-cloud architecture constraints.",
       },
       {
         label: "Phase 2",
         title: "Architecture & Design",
-        description: "Designed distributed sync engine using Apache Pulsar, built conflict resolution algorithms, and created blue-green migration strategy.",
+        description:
+          "Designed distributed sync engine using Apache Pulsar, built conflict resolution algorithms, and created blue-green migration strategy.",
       },
       {
         label: "Phase 3",
         title: "Development & Testing",
-        description: "Built sync engine with custom conflict resolution. Ran validation tests for data integrity and failover scenarios.",
+        description:
+          "Built sync engine with custom conflict resolution. Ran validation tests for data integrity and failover scenarios.",
       },
       {
         label: "Phase 4",
         title: "Launch & Scale",
-        description: "Phased rollout across AWS, GCP, and Azure. Achieved 99.999% data integrity. Scaled to 50TB+ daily transfers with zero downtime.",
+        description:
+          "Phased rollout across AWS, GCP, and Azure. Achieved 99.999% data integrity. Scaled to 50TB+ daily transfers with zero downtime.",
       },
     ],
     faqs: [
@@ -682,22 +698,26 @@ const projectsData: Record<string, ProjectPageData> = {
       {
         label: "Phase 1",
         title: "Discovery & Audit",
-        description: "Analyzed legacy Magento platform performance, identified traffic bottlenecks, and mapped inventory management requirements.",
+        description:
+          "Analyzed legacy Magento platform performance, identified traffic bottlenecks, and mapped inventory management requirements.",
       },
       {
         label: "Phase 2",
         title: "Architecture & Design",
-        description: "Designed Next.js + GraphQL headless architecture, built edge caching strategy, and created checkout flow optimization plan.",
+        description:
+          "Designed Next.js + GraphQL headless architecture, built edge caching strategy, and created checkout flow optimization plan.",
       },
       {
         label: "Phase 3",
         title: "Development & Testing",
-        description: "Built Next.js frontend with Cloudflare edge caching. Implemented Shopify backend integrations and ran load tests for peak traffic.",
+        description:
+          "Built Next.js frontend with Cloudflare edge caching. Implemented Shopify backend integrations and ran load tests for peak traffic.",
       },
       {
         label: "Phase 4",
         title: "Launch & Scale",
-        description: "Phased rollout across retail locations. Achieved 10x performance improvement. Scaled to 5M+ monthly visitors with sub-second page loads.",
+        description:
+          "Phased rollout across retail locations. Achieved 10x performance improvement. Scaled to 5M+ monthly visitors with sub-second page loads.",
       },
     ],
     faqs: [
@@ -798,22 +818,26 @@ const projectsData: Record<string, ProjectPageData> = {
       {
         label: "Phase 1",
         title: "Discovery & Audit",
-        description: "Analyzed existing models, identified production serving bottlenecks, and mapped real-time inference requirements.",
+        description:
+          "Analyzed existing models, identified production serving bottlenecks, and mapped real-time inference requirements.",
       },
       {
         label: "Phase 2",
         title: "Architecture & Design",
-        description: "Designed distributed inference system using NVIDIA Triton, built model versioning strategy, and created A/B testing infrastructure.",
+        description:
+          "Designed distributed inference system using NVIDIA Triton, built model versioning strategy, and created A/B testing infrastructure.",
       },
       {
         label: "Phase 3",
         title: "Development & Testing",
-        description: "Built model serving platform with custom batching strategies. Ran load tests for sub-10ms latency and availability.",
+        description:
+          "Built model serving platform with custom batching strategies. Ran load tests for sub-10ms latency and availability.",
       },
       {
         label: "Phase 4",
         title: "Launch & Scale",
-        description: "Phased rollout across 5 regions. Achieved 99.9% availability. Scaled to 100K+ requests/second with sub-10ms latency.",
+        description:
+          "Phased rollout across 5 regions. Achieved 99.9% availability. Scaled to 100K+ requests/second with sub-10ms latency.",
       },
     ],
     faqs: [
@@ -914,22 +938,26 @@ const projectsData: Record<string, ProjectPageData> = {
       {
         label: "Phase 1",
         title: "Discovery & Audit",
-        description: "Analyzed existing collaboration tools, identified scaling bottlenecks, and mapped enterprise deployment requirements.",
+        description:
+          "Analyzed existing collaboration tools, identified scaling bottlenecks, and mapped enterprise deployment requirements.",
       },
       {
         label: "Phase 2",
         title: "Architecture & Design",
-        description: "Designed CRDT-based architecture, built WebSocket presence infrastructure, and created end-to-end encryption workflow.",
+        description:
+          "Designed CRDT-based architecture, built WebSocket presence infrastructure, and created end-to-end encryption workflow.",
       },
       {
         label: "Phase 3",
         title: "Development & Testing",
-        description: "Built Yjs CRDT editor with WebSocket sync. Ran load tests for 50K+ concurrent users and SOC 2 compliance.",
+        description:
+          "Built Yjs CRDT editor with WebSocket sync. Ran load tests for 50K+ concurrent users and SOC 2 compliance.",
       },
       {
         label: "Phase 4",
         title: "Launch & Scale",
-        description: "Phased rollout across enterprise deployment. Achieved SOC 2 Type II certification. Scaled to 50K+ concurrent users with sub-100ms sync latency.",
+        description:
+          "Phased rollout across enterprise deployment. Achieved SOC 2 Type II certification. Scaled to 50K+ concurrent users with sub-100ms sync latency.",
       },
     ],
     faqs: [
@@ -1031,22 +1059,26 @@ const projectsData: Record<string, ProjectPageData> = {
       {
         label: "Phase 1",
         title: "Discovery & Audit",
-        description: "Analyzed data warehouse architecture, identified multi-tenancy requirements, and mapped security and branding needs for enterprise clients.",
+        description:
+          "Analyzed data warehouse architecture, identified multi-tenancy requirements, and mapped security and branding needs for enterprise clients.",
       },
       {
         label: "Phase 2",
         title: "Architecture & Design",
-        description: "Designed multi-tenant Postgres schema with row-level security, built GraphQL API layer, and created white-label theming engine.",
+        description:
+          "Designed multi-tenant Postgres schema with row-level security, built GraphQL API layer, and created white-label theming engine.",
       },
       {
         label: "Phase 3",
         title: "Development & Testing",
-        description: "Built React dashboard builder with drag-and-drop widgets. Implemented CDC pipelines with Debezium and Kafka. Ran multi-tenant load tests.",
+        description:
+          "Built React dashboard builder with drag-and-drop widgets. Implemented CDC pipelines with Debezium and Kafka. Ran multi-tenant load tests.",
       },
       {
         label: "Phase 4",
         title: "Launch & Scale",
-        description: "Phased rollout across 200+ enterprise clients. Achieved white-label certification. Scaled to 500K+ end users with 99.99% uptime.",
+        description:
+          "Phased rollout across 200+ enterprise clients. Achieved white-label certification. Scaled to 500K+ end users with 99.99% uptime.",
       },
     ],
     faqs: [
@@ -1148,22 +1180,26 @@ const projectsData: Record<string, ProjectPageData> = {
       {
         label: "Phase 1",
         title: "Discovery & Audit",
-        description: "Analyzed all 12 hospital EHR systems, mapped data flows, and identified FHIR compliance requirements for HIPAA and SOC 2.",
+        description:
+          "Analyzed all 12 hospital EHR systems, mapped data flows, and identified FHIR compliance requirements for HIPAA and SOC 2.",
       },
       {
         label: "Phase 2",
         title: "Architecture & Design",
-        description: "Designed FHIR R4 API gateway, built zero-trust security architecture, and created consent management and audit trail systems.",
+        description:
+          "Designed FHIR R4 API gateway, built zero-trust security architecture, and created consent management and audit trail systems.",
       },
       {
         label: "Phase 3",
         title: "Development & Testing",
-        description: "Built FHIR-compliant API layer for Epic, Cerner, and Allscripts. Implemented mTLS and Istio service mesh. Ran HIPAA compliance audits.",
+        description:
+          "Built FHIR-compliant API layer for Epic, Cerner, and Allscripts. Implemented mTLS and Istio service mesh. Ran HIPAA compliance audits.",
       },
       {
         label: "Phase 4",
         title: "Launch & Scale",
-        description: "Phased rollout across 12 hospital networks. Achieved SOC 2 Type II certification. Scaled to 3.2K+ active clinicians with 85K+ daily exchanges.",
+        description:
+          "Phased rollout across 12 hospital networks. Achieved SOC 2 Type II certification. Scaled to 3.2K+ active clinicians with 85K+ daily exchanges.",
       },
     ],
     faqs: [
@@ -1264,22 +1300,26 @@ const projectsData: Record<string, ProjectPageData> = {
       {
         label: "Phase 1",
         title: "Discovery & Audit",
-        description: "Analyzed competitor apps, identified multi-vendor cart requirements, and mapped real-time tracking and payment integration needs.",
+        description:
+          "Analyzed competitor apps, identified multi-vendor cart requirements, and mapped real-time tracking and payment integration needs.",
       },
       {
         label: "Phase 2",
         title: "Architecture & Design",
-        description: "Designed BLoC architecture for Flutter, built multi-vendor cart engine, and created real-time tracking pipeline with Firebase.",
+        description:
+          "Designed BLoC architecture for Flutter, built multi-vendor cart engine, and created real-time tracking pipeline with Firebase.",
       },
       {
         label: "Phase 3",
         title: "Development & Testing",
-        description: "Built Flutter app with real-time tracking and ML recommendations. Ran performance profiling for 60fps animations. Published to App Store and Play Store.",
+        description:
+          "Built Flutter app with real-time tracking and ML recommendations. Ran performance profiling for 60fps animations. Published to App Store and Play Store.",
       },
       {
         label: "Phase 4",
         title: "Launch & Scale",
-        description: "Phased rollout across 12 cities. Scaled to 2M+ MAU. Achieved 4.8/5 app store rating with 50K+ reviews in first 6 months.",
+        description:
+          "Phased rollout across 12 cities. Scaled to 2M+ MAU. Achieved 4.8/5 app store rating with 50K+ reviews in first 6 months.",
       },
     ],
     faqs: [
@@ -1310,7 +1350,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
     ],
   },
-"paymate-react-native": {
+  "paymate-react-native": {
     slug: "paymate-react-native",
     title: "PayMate",
     subtitle: "Mobile Banking App",
@@ -1381,22 +1421,26 @@ const projectsData: Record<string, ProjectPageData> = {
       {
         label: "Phase 1",
         title: "Discovery & Audit",
-        description: "Analyzed legacy app pain points, mapped regulatory requirements (PCI-DSS, PSD2), and identified security and UX improvement priorities.",
+        description:
+          "Analyzed legacy app pain points, mapped regulatory requirements (PCI-DSS, PSD2), and identified security and UX improvement priorities.",
       },
       {
         label: "Phase 2",
         title: "Architecture & Design",
-        description: "Designed clean architecture with domain-driven layers, built biometric auth pipeline with Secure Enclave, and created on-device ML fraud detection.",
+        description:
+          "Designed clean architecture with domain-driven layers, built biometric auth pipeline with Secure Enclave, and created on-device ML fraud detection.",
       },
       {
         label: "Phase 3",
         title: "Development & Testing",
-        description: "Built React Native app with streamlined UX and AI fraud detection. Ran PCI-DSS compliance testing and penetration testing with third-party security firm.",
+        description:
+          "Built React Native app with streamlined UX and AI fraud detection. Ran PCI-DSS compliance testing and penetration testing with third-party security firm.",
       },
       {
         label: "Phase 4",
         title: "Launch & Scale",
-        description: "Phased rollout with feature flags. Scaled to 5M+ users. Achieved 4.9/5 app store rating with zero critical security incidents.",
+        description:
+          "Phased rollout with feature flags. Scaled to 5M+ users. Achieved 4.9/5 app store rating with zero critical security incidents.",
       },
     ],
     faqs: [
@@ -1427,7 +1471,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
     ],
   },
-"fitforce-android": {
+  "fitforce-android": {
     slug: "fitforce-android",
     title: "FitForce",
     subtitle: "AI Fitness Platform",
@@ -1497,22 +1541,26 @@ const projectsData: Record<string, ProjectPageData> = {
       {
         label: "Phase 1",
         title: "Discovery & Audit",
-        description: "Analyzed existing fitness app pain points, identified AI pose detection requirements, and mapped social feature and gamification needs.",
+        description:
+          "Analyzed existing fitness app pain points, identified AI pose detection requirements, and mapped social feature and gamification needs.",
       },
       {
         label: "Phase 2",
         title: "Architecture & Design",
-        description: "Designed MVVM architecture with Jetpack Compose, built ML Kit pose detection pipeline, and created dynamic training plan engine.",
+        description:
+          "Designed MVVM architecture with Jetpack Compose, built ML Kit pose detection pipeline, and created dynamic training plan engine.",
       },
       {
         label: "Phase 3",
         title: "Development & Testing",
-        description: "Built native Android app with real-time pose detection. Ran user testing for form feedback accuracy. Published to Play Store with staged rollout.",
+        description:
+          "Built native Android app with real-time pose detection. Ran user testing for form feedback accuracy. Published to Play Store with staged rollout.",
       },
       {
         label: "Phase 4",
         title: "Launch & Scale",
-        description: "Achieved 1M+ downloads in 5 months. Maintained 4.7/5 rating with 80K+ reviews. Expanded to Wear OS integration for heart rate tracking.",
+        description:
+          "Achieved 1M+ downloads in 5 months. Maintained 4.7/5 rating with 80K+ reviews. Expanded to Wear OS integration for heart rate tracking.",
       },
     ],
     faqs: [
@@ -1543,7 +1591,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
     ],
   },
-"devops-pipeline-pro": {
+  "devops-pipeline-pro": {
     slug: "devops-pipeline-pro",
     title: "DevOps Pipeline Pro",
     subtitle: "CI/CD & DevOps Automation Platform",
@@ -1615,22 +1663,26 @@ const projectsData: Record<string, ProjectPageData> = {
       {
         label: "Phase 1",
         title: "Discovery & Audit",
-        description: "Audited 12 existing CI/CD tools, mapped 200+ microservice deployment patterns, and identified ML anomaly detection requirements.",
+        description:
+          "Audited 12 existing CI/CD tools, mapped 200+ microservice deployment patterns, and identified ML anomaly detection requirements.",
       },
       {
         label: "Phase 2",
         title: "Architecture & Design",
-        description: "Designed unified pipeline builder, built GitOps workflow engine with ArgoCD, and created ML anomaly detection pipeline using Prometheus metrics.",
+        description:
+          "Designed unified pipeline builder, built GitOps workflow engine with ArgoCD, and created ML anomaly detection pipeline using Prometheus metrics.",
       },
       {
         label: "Phase 3",
         title: "Development & Testing",
-        description: "Built visual pipeline builder with Go backend. Implemented blue-green and canary deployment strategies. Ran deployment stress tests across 200+ microservices.",
+        description:
+          "Built visual pipeline builder with Go backend. Implemented blue-green and canary deployment strategies. Ran deployment stress tests across 200+ microservices.",
       },
       {
         label: "Phase 4",
         title: "Launch & Scale",
-        description: "Phased rollout across 300+ engineering teams. Achieved 500+ daily deployments with 70% fewer failures. Saved $6M in annual infrastructure costs.",
+        description:
+          "Phased rollout across 300+ engineering teams. Achieved 500+ daily deployments with 70% fewer failures. Saved $6M in annual infrastructure costs.",
       },
     ],
     faqs: [
@@ -1733,22 +1785,26 @@ const projectsData: Record<string, ProjectPageData> = {
       {
         label: "Phase 1",
         title: "Discovery & Audit",
-        description: "Audited 8 existing monitoring tools, mapped alert noise patterns, and identified ML root cause analysis requirements across 40 engineering teams.",
+        description:
+          "Audited 8 existing monitoring tools, mapped alert noise patterns, and identified ML root cause analysis requirements across 40 engineering teams.",
       },
       {
         label: "Phase 2",
         title: "Architecture & Design",
-        description: "Designed OpenTelemetry ingestion pipeline, built ClickHouse + Elasticsearch storage layer, and created ML alert noise reduction engine.",
+        description:
+          "Designed OpenTelemetry ingestion pipeline, built ClickHouse + Elasticsearch storage layer, and created ML alert noise reduction engine.",
       },
       {
         label: "Phase 3",
         title: "Development & Testing",
-        description: "Built unified observability platform with trace correlation. Implemented ML root cause analysis. Ran false positive rate benchmarking against existing tools.",
+        description:
+          "Built unified observability platform with trace correlation. Implemented ML root cause analysis. Ran false positive rate benchmarking against existing tools.",
       },
       {
         label: "Phase 4",
         title: "Launch & Scale",
-        description: "Phased rollout across 40 teams. Scaled to 500GB+ daily ingest. Achieved 80% alert reduction with 100% real incident coverage.",
+        description:
+          "Phased rollout across 40 teams. Scaled to 500GB+ daily ingest. Achieved 80% alert reduction with 100% real incident coverage.",
       },
     ],
     faqs: [
@@ -1784,3 +1840,4 @@ const projectsData: Record<string, ProjectPageData> = {
 export function getProjectData(slug: string) {
   return projectsData[slug] ?? null;
 }
+
