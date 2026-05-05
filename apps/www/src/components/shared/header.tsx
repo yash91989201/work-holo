@@ -1,10 +1,3 @@
-import { Link } from "@tanstack/react-router";
-import { CTAButton } from "@work-holo/ui/components/cta-button";
-import { cn } from "@work-holo/ui/lib/utils";
-import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/react";
-import { type ReactNode, useEffect, useState } from "react";
-import { Image } from "@/components/shared/image";
-
 import {
   IconArrowUpRight,
   IconBolt,
@@ -13,6 +6,8 @@ import {
   IconSettings,
   IconX,
 } from "@tabler/icons-react";
+import { Link } from "@tanstack/react-router";
+import { CTAButton } from "@work-holo/ui/components/cta-button";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -21,6 +16,15 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@work-holo/ui/components/navigation-menu";
+import { cn } from "@work-holo/ui/lib/utils";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValueEvent,
+  useScroll,
+} from "motion/react";
+import { type ReactNode, useEffect, useState } from "react";
+import { Image } from "@/components/shared/image";
 
 type DropdownItem = {
   label: string;
@@ -44,20 +48,20 @@ function TabDropdown({ groups }: TabDropdownProps) {
 
   return (
     <div
-      className="w-[32rem] max-h-[50vh] rounded-[1.5rem] border border-white/10 bg-background/80 shadow-[0_30px_80px_-15px_rgba(0,0,0,0.35)] backdrop-blur-2xl overflow-hidden flex"
+      className="flex max-h-[50vh] w-[32rem] overflow-hidden rounded-[1.5rem] border border-white/10 bg-background/80 shadow-[0_30px_80px_-15px_rgba(0,0,0,0.35)] backdrop-blur-2xl"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="w-44 flex flex-col relative border-r border-white/5 p-2 bg-white/5 shrink-0">
+      <div className="relative flex w-44 shrink-0 flex-col border-white/5 border-r bg-white/5 p-2">
         {groups.map((group, idx) => (
           <button
-            key={group.title}
             className={cn(
-              "text-left px-4 py-3 text-[13px] font-medium tracking-wide transition-all duration-300 z-10 rounded-xl",
+              "z-10 rounded-xl px-4 py-3 text-left font-medium text-[13px] tracking-wide transition-all duration-300",
               activeTab === idx
-                ? "text-foreground bg-white/10"
-                : "text-muted-foreground/60 hover:text-muted-foreground hover:bg-white/5"
+                ? "bg-white/10 text-foreground"
+                : "text-muted-foreground/60 hover:bg-white/5 hover:text-muted-foreground"
             )}
+            key={group.title}
             onClick={() => setActiveTab(idx)}
             onMouseEnter={() => setActiveTab(idx)}
           >
@@ -66,7 +70,7 @@ function TabDropdown({ groups }: TabDropdownProps) {
         ))}
       </div>
       <div
-        className="flex-1 p-3 overflow-y-auto overscroll-contain"
+        className="flex-1 overflow-y-auto overscroll-contain p-3"
         onWheel={(e) => {
           if (!isHovered) return;
           e.stopPropagation();
@@ -74,33 +78,33 @@ function TabDropdown({ groups }: TabDropdownProps) {
       >
         <AnimatePresence mode="wait">
           <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, x: 8 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -8 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
             className="space-y-1"
+            exit={{ opacity: 0, x: -8 }}
+            initial={{ opacity: 0, x: 8 }}
+            key={activeTab}
+            transition={{ duration: 0.2, ease: "easeOut" }}
           >
             {groups[activeTab]?.items.map((item, idx) => (
               <motion.div
-                key={item.label}
-                initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, x: -10 }}
+                key={item.label}
                 transition={{ delay: idx * 0.05, duration: 0.2 }}
               >
                 <MenuLink
-                  className="flex flex-col gap-1 rounded-xl px-4 py-3 transition-all duration-200 hover:bg-white/5 group/item"
-                  to={item.href}
+                  className="group/item flex flex-col gap-1 rounded-xl px-4 py-3 transition-all duration-200 hover:bg-white/5"
                   hash={item.hash}
+                  to={item.href}
                 >
-                  <div className="flex items-center justify-between w-full gap-3">
-                    <span className="text-[14px] font-medium text-foreground/90 group-hover/item:text-primary transition-colors">
+                  <div className="flex w-full items-center justify-between gap-3">
+                    <span className="font-medium text-[14px] text-foreground/90 transition-colors group-hover/item:text-primary">
                       {item.label}
                     </span>
-                    <IconArrowUpRight className="size-3.5 text-muted-foreground/40 group-hover/item:text-primary/60 transition-colors" />
+                    <IconArrowUpRight className="size-3.5 text-muted-foreground/40 transition-colors group-hover/item:text-primary/60" />
                   </div>
                   {item.description && (
-                    <span className="w-full text-left text-[12px] text-muted-foreground/60 group-hover/item:text-muted-foreground/80 transition-colors">
+                    <span className="w-full text-left text-[12px] text-muted-foreground/60 transition-colors group-hover/item:text-muted-foreground/80">
                       {item.description}
                     </span>
                   )}
@@ -148,19 +152,19 @@ type NavItem =
     };
 
 function isSimpleLink(
-  item: NavItem,
+  item: NavItem
 ): item is Extract<NavItem, { dropdownItems?: never; groups?: never }> {
   return !("groups" in item || "dropdownItems" in item);
 }
 
 function hasGroups(
-  item: NavItem,
+  item: NavItem
 ): item is Extract<NavItem, { groups: NavGroup[] }> {
   return "groups" in item;
 }
 
 function hasDropdownItems(
-  item: NavItem,
+  item: NavItem
 ): item is Extract<NavItem, { dropdownItems: DropdownItem[] }> {
   return "dropdownItems" in item;
 }
@@ -328,24 +332,35 @@ const navItems: NavItem[] = [
         title: "AI & Automation",
         items: [
           { label: "AI Support Bot", href: "/projects/ai-support-bot" },
-          { label: "ML Pipeline", href: "/projects/ml-pipeline" },
-          { label: "Chatbot Platform", href: "/projects/chatbot-platform" },
+          {
+            label: "ML Prediction Engine",
+            href: "/projects/ml-prediction-engine",
+          },
         ],
       },
       {
         title: "Web Development",
         items: [
           { label: "Finflow Dashboard", href: "/projects/finflow-dashboard" },
-          { label: "E-commerce Suite", href: "/projects/ecommerce" },
-          { label: "SaaS Platform", href: "/projects/saas-platform" },
+          {
+            label: "E-commerce Replatform",
+            href: "/projects/ecommerce-replatform",
+          },
+          { label: "DataPulse SaaS", href: "/projects/datapulse-saas" },
         ],
       },
       {
         title: "Cloud & DevOps",
         items: [
-          { label: "Cloud Sync Platform", href: "/projects/cloud-sync-platform" },
-          { label: "CI/CD Pipeline", href: "/projects/cicd-pipeline" },
-          { label: "Infrastructure", href: "/projects/infrastructure" },
+          {
+            label: "Cloud Sync Platform",
+            href: "/projects/cloud-sync-platform",
+          },
+          {
+            label: "DevOps Pipeline Pro",
+            href: "/projects/devops-pipeline-pro",
+          },
+          { label: "CloudWatch Pro", href: "/projects/cloudwatch-pro" },
         ],
       },
     ],
@@ -510,7 +525,7 @@ export function Header() {
   useMotionValueEvent(scrollY, "change", (latest) => {
     const nextIsScrolled = latest > 20;
     setIsScrolled((current) =>
-      current === nextIsScrolled ? current : nextIsScrolled,
+      current === nextIsScrolled ? current : nextIsScrolled
     );
   });
 
@@ -535,7 +550,7 @@ export function Header() {
       animate={{ y: 0 }}
       className={cn(
         "fixed top-0 right-0 left-0 z-50",
-        isScrolled ? "bg-background/95 backdrop-blur-md" : "bg-transparent",
+        isScrolled ? "bg-background/95 backdrop-blur-md" : "bg-transparent"
       )}
       initial={{ y: -100 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
@@ -586,7 +601,7 @@ export function Header() {
           "w-full",
           isScrolled
             ? "max-w-none px-0 pt-0"
-            : "mx-auto max-w-7xl px-4 pt-3 sm:px-6 lg:px-8",
+            : "mx-auto max-w-7xl px-4 pt-3 sm:px-6 lg:px-8"
         )}
         layout
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
@@ -596,7 +611,7 @@ export function Header() {
             "relative flex items-center justify-between transition-all duration-500",
             isScrolled
               ? "min-h-20 bg-card/90 px-5 backdrop-blur-md sm:px-7 lg:px-8"
-              : "min-h-24 rounded-[1.75rem] border border-border/30 bg-muted/50 px-5 sm:px-7 lg:px-8",
+              : "min-h-24 rounded-[1.75rem] border border-border/30 bg-muted/50 px-5 sm:px-7 lg:px-8"
           )}
           layout
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
@@ -630,21 +645,23 @@ export function Header() {
                   } else if (hasDropdownItems(item)) {
                     const hasMany = item.dropdownItems.length > 4;
                     menuContent = (
-                      <div className={cn(
-                        "rounded-[1.5rem] border border-white/10 bg-background/80 shadow-[0_30px_80px_-15px_rgba(0,0,0,0.35)] backdrop-blur-2xl overflow-hidden",
-                        hasMany ? "w-72" : "w-52"
-                      )}>
+                      <div
+                        className={cn(
+                          "overflow-hidden rounded-[1.5rem] border border-white/10 bg-background/80 shadow-[0_30px_80px_-15px_rgba(0,0,0,0.35)] backdrop-blur-2xl",
+                          hasMany ? "w-72" : "w-52"
+                        )}
+                      >
                         <div className="p-2">
                           {item.dropdownItems.map((dropItem) => (
                             <MenuLink
-                              className="flex items-center gap-3 rounded-xl px-4 py-3 text-[14px] font-medium text-foreground/90 transition-all duration-200 hover:bg-white/5 group/item"
+                              className="group/item flex items-center gap-3 rounded-xl px-4 py-3 font-medium text-[14px] text-foreground/90 transition-all duration-200 hover:bg-white/5"
                               key={dropItem.label}
                               to={dropItem.href}
                             >
-                              <span className="group-hover/item:text-primary transition-colors">
+                              <span className="transition-colors group-hover/item:text-primary">
                                 {dropItem.label}
                               </span>
-                              <IconArrowUpRight className="size-3.5 text-muted-foreground/40 group-hover/item:text-primary/60 transition-colors" />
+                              <IconArrowUpRight className="size-3.5 text-muted-foreground/40 transition-colors group-hover/item:text-primary/60" />
                             </MenuLink>
                           ))}
                         </div>
@@ -660,7 +677,7 @@ export function Header() {
                             "font-semibold text-base",
                             item.active
                               ? "text-primary"
-                              : "text-muted-foreground hover:text-foreground",
+                              : "text-muted-foreground hover:text-foreground"
                           )}
                           hash={item.hash}
                           to={item.href}
@@ -678,7 +695,7 @@ export function Header() {
                           "font-semibold text-base",
                           item.active
                             ? "text-primary"
-                            : "text-muted-foreground hover:text-foreground",
+                            : "text-muted-foreground hover:text-foreground"
                         )}
                       >
                         {item.label}
@@ -711,19 +728,19 @@ export function Header() {
                 <span
                   className={cn(
                     "block h-0.5 w-4 bg-foreground transition-all duration-300",
-                    mobileMenuOpen && "translate-y-1.5 rotate-45",
+                    mobileMenuOpen && "translate-y-1.5 rotate-45"
                   )}
                 />
                 <span
                   className={cn(
                     "block h-0.5 w-4 bg-foreground transition-all duration-300",
-                    mobileMenuOpen && "opacity-0",
+                    mobileMenuOpen && "opacity-0"
                   )}
                 />
                 <span
                   className={cn(
                     "block h-0.5 w-4 bg-foreground transition-all duration-300",
-                    mobileMenuOpen && "-translate-y-1.5 -rotate-45",
+                    mobileMenuOpen && "-translate-y-1.5 -rotate-45"
                   )}
                 />
               </div>
@@ -736,17 +753,21 @@ export function Header() {
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             className="fixed inset-0 z-[100] flex flex-col bg-background/95 backdrop-blur-3xl lg:hidden"
+            exit={{
+              opacity: 0,
+              y: -10,
+              transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] },
+            }}
+            initial={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           >
-            <div className="flex items-center justify-between px-6 py-5 border-b border-white/5">
+            <div className="flex items-center justify-between border-white/5 border-b px-6 py-5">
               <Link
                 className="flex shrink-0 items-center gap-3"
-                to="/"
                 onClick={() => setMobileMenuOpen(false)}
+                to="/"
               >
                 <div className="relative h-10 w-14">
                   <Image
@@ -758,7 +779,7 @@ export function Header() {
                     width={56}
                   />
                 </div>
-                <span className="font-bold font-heading text-xl text-foreground">
+                <span className="font-bold font-heading text-foreground text-xl">
                   Workholo
                 </span>
               </Link>
@@ -780,14 +801,14 @@ export function Header() {
                 if (hasGroups(item)) {
                   const hasManyGroups = item.groups.length > 1;
                   mobileContent = (
-                    <div className="rounded-2xl bg-white/[0.02] border border-white/5 overflow-hidden">
+                    <div className="overflow-hidden rounded-2xl border border-white/5 bg-white/[0.02]">
                       <div className="flex items-stretch">
                         <Link
                           className={cn(
-                            "flex flex-1 items-center px-4 py-4 text-base font-medium transition-colors",
+                            "flex flex-1 items-center px-4 py-4 font-medium text-base transition-colors",
                             item.active
                               ? "text-primary"
-                              : "text-muted-foreground hover:text-foreground",
+                              : "text-muted-foreground hover:text-foreground"
                           )}
                           hash={item.hash}
                           onClick={() => setMobileMenuOpen(false)}
@@ -799,17 +820,22 @@ export function Header() {
                           <button
                             aria-expanded={openMobileItem === item.label}
                             aria-label={`Toggle ${item.label} links`}
-                            className="flex size-14 items-center justify-center border-l border-white/5 text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+                            className="flex size-14 items-center justify-center border-white/5 border-l text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
                             onClick={() =>
                               setOpenMobileItem((current) =>
-                                current === item.label ? null : item.label,
+                                current === item.label ? null : item.label
                               )
                             }
                             type="button"
                           >
                             <motion.div
-                              animate={{ rotate: openMobileItem === item.label ? 180 : 0 }}
-                              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                              animate={{
+                                rotate: openMobileItem === item.label ? 180 : 0,
+                              }}
+                              transition={{
+                                duration: 0.3,
+                                ease: [0.22, 1, 0.36, 1],
+                              }}
                             >
                               <IconChevronDown className="size-5" />
                             </motion.div>
@@ -820,24 +846,27 @@ export function Header() {
                       <AnimatePresence initial={false}>
                         {openMobileItem === item.label && hasManyGroups && (
                           <motion.div
-                            initial={{ opacity: 0, height: 0 }}
                             animate={{ opacity: 1, height: "auto" }}
-                            exit={{ opacity: 0, height: 0 }}
-                            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                             className="overflow-hidden bg-black/20"
+                            exit={{ opacity: 0, height: 0 }}
+                            initial={{ opacity: 0, height: 0 }}
+                            transition={{
+                              duration: 0.4,
+                              ease: [0.22, 1, 0.36, 1],
+                            }}
                           >
-                            <div className="p-4 space-y-6">
+                            <div className="space-y-6 p-4">
                               {item.groups.map((group) => (
                                 <div key={group.title}>
-                                  <h4 className="mb-3 font-semibold text-xs uppercase tracking-wider text-muted-foreground/60">
+                                  <h4 className="mb-3 font-semibold text-muted-foreground/60 text-xs uppercase tracking-wider">
                                     {group.title}
                                   </h4>
                                   <div className="space-y-2">
                                     {group.items.map((dropItem, dropIdx) => (
                                       <motion.div
-                                        key={dropItem.label}
-                                        initial={{ opacity: 0, y: 8 }}
                                         animate={{ opacity: 1, y: 0 }}
+                                        initial={{ opacity: 0, y: 8 }}
+                                        key={dropItem.label}
                                         transition={{
                                           delay: dropIdx * 0.04,
                                           duration: 0.3,
@@ -848,14 +877,16 @@ export function Header() {
                                         <Link
                                           className="flex flex-col rounded-xl px-3 py-3 transition-all hover:bg-white/10"
                                           hash={dropItem.hash}
-                                          onClick={() => setMobileMenuOpen(false)}
+                                          onClick={() =>
+                                            setMobileMenuOpen(false)
+                                          }
                                           to={dropItem.href}
                                         >
-                                          <span className="text-sm font-medium text-foreground">
+                                          <span className="font-medium text-foreground text-sm">
                                             {dropItem.label}
                                           </span>
                                           {dropItem.description && (
-                                            <span className="mt-1 text-xs text-muted-foreground/60 line-clamp-2">
+                                            <span className="mt-1 line-clamp-2 text-muted-foreground/60 text-xs">
                                               {dropItem.description}
                                             </span>
                                           )}
@@ -873,14 +904,14 @@ export function Header() {
                   );
                 } else if (hasDropdownItems(item)) {
                   mobileContent = (
-                    <div className="rounded-2xl bg-white/[0.02] border border-white/5 overflow-hidden">
+                    <div className="overflow-hidden rounded-2xl border border-white/5 bg-white/[0.02]">
                       <div className="flex items-stretch">
                         <Link
                           className={cn(
-                            "flex flex-1 items-center px-4 py-4 text-base font-medium transition-colors",
+                            "flex flex-1 items-center px-4 py-4 font-medium text-base transition-colors",
                             item.active
                               ? "text-primary"
-                              : "text-muted-foreground hover:text-foreground",
+                              : "text-muted-foreground hover:text-foreground"
                           )}
                           key={item.label}
                           onClick={() => setMobileMenuOpen(false)}
@@ -891,17 +922,22 @@ export function Header() {
                         <button
                           aria-expanded={openMobileItem === item.label}
                           aria-label={`Toggle ${item.label} links`}
-                          className="flex size-14 items-center justify-center border-l border-white/5 text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+                          className="flex size-14 items-center justify-center border-white/5 border-l text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
                           onClick={() =>
                             setOpenMobileItem((current) =>
-                              current === item.label ? null : item.label,
+                              current === item.label ? null : item.label
                             )
                           }
                           type="button"
                         >
                           <motion.div
-                            animate={{ rotate: openMobileItem === item.label ? 180 : 0 }}
-                            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                            animate={{
+                              rotate: openMobileItem === item.label ? 180 : 0,
+                            }}
+                            transition={{
+                              duration: 0.3,
+                              ease: [0.22, 1, 0.36, 1],
+                            }}
                           >
                             <IconChevronDown className="size-5" />
                           </motion.div>
@@ -911,18 +947,21 @@ export function Header() {
                       <AnimatePresence initial={false}>
                         {openMobileItem === item.label && (
                           <motion.div
-                            initial={{ opacity: 0, height: 0 }}
                             animate={{ opacity: 1, height: "auto" }}
-                            exit={{ opacity: 0, height: 0 }}
-                            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                             className="overflow-hidden bg-black/20"
+                            exit={{ opacity: 0, height: 0 }}
+                            initial={{ opacity: 0, height: 0 }}
+                            transition={{
+                              duration: 0.4,
+                              ease: [0.22, 1, 0.36, 1],
+                            }}
                           >
-                            <div className="p-3 space-y-1">
+                            <div className="space-y-1 p-3">
                               {item.dropdownItems.map((dropItem, dropIdx) => (
                                 <motion.div
-                                  key={dropItem.label}
-                                  initial={{ opacity: 0, x: -10 }}
                                   animate={{ opacity: 1, x: 0 }}
+                                  initial={{ opacity: 0, x: -10 }}
+                                  key={dropItem.label}
                                   transition={{
                                     delay: dropIdx * 0.04,
                                     duration: 0.3,
@@ -931,7 +970,7 @@ export function Header() {
                                   whileTap={{ scale: 0.98 }}
                                 >
                                   <Link
-                                    className="flex rounded-xl px-3 py-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground"
+                                    className="flex rounded-xl px-3 py-3 font-medium text-muted-foreground text-sm transition-colors hover:bg-white/10 hover:text-foreground"
                                     onClick={() => setMobileMenuOpen(false)}
                                     to={dropItem.href}
                                   >
@@ -950,10 +989,10 @@ export function Header() {
                     <motion.div whileTap={{ scale: 0.98 }}>
                       <Link
                         className={cn(
-                          "flex items-center rounded-2xl px-4 py-4 text-base font-medium transition-all",
+                          "flex items-center rounded-2xl px-4 py-4 font-medium text-base transition-all",
                           item.active
                             ? "bg-white/10 text-primary shadow-sm"
-                            : "bg-white/[0.02] border border-white/5 text-muted-foreground hover:bg-white/10 hover:text-foreground",
+                            : "border border-white/5 bg-white/[0.02] text-muted-foreground hover:bg-white/10 hover:text-foreground"
                         )}
                         hash={item.hash}
                         key={item.label}
@@ -968,16 +1007,16 @@ export function Header() {
 
                 return (
                   <motion.div
-                    initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
+                    className="mb-3"
                     exit={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    key={item.label}
                     transition={{
                       duration: 0.5,
                       delay: index * 0.08,
                       ease: [0.22, 1, 0.36, 1],
                     }}
-                    key={item.label}
-                    className="mb-3"
                   >
                     {mobileContent}
                   </motion.div>
@@ -985,11 +1024,15 @@ export function Header() {
               })}
             </div>
 
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
+            <motion.div
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: navItems.length * 0.08 + 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              className="border-t border-white/5 px-6 py-6 bg-background/50"
+              className="border-white/5 border-t bg-background/50 px-6 py-6"
+              initial={{ opacity: 0, y: 20 }}
+              transition={{
+                delay: navItems.length * 0.08 + 0.1,
+                duration: 0.5,
+                ease: [0.22, 1, 0.36, 1],
+              }}
             >
               <CTAButton className="w-full" href="#contact" to="/contact-us">
                 Get in touch
