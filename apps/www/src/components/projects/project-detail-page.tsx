@@ -3,18 +3,10 @@ import {
   IconCheck,
   IconChevronRight,
   IconClock,
-  IconDeviceMobile,
   IconPhone,
   IconUser,
 } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
-import { cn } from "@work-holo/ui/lib/utils";
-import { motion } from "motion/react";
-import { useState } from "react";
-import { getProjectList } from "./project-data";
-import type { ProjectPageData } from "./project-data";
-import { ProjectGalleryImage, ProjectImage } from "./project-image";
-
 import {
   Accordion,
   AccordionContent,
@@ -27,6 +19,12 @@ import {
   ItemContent,
   ItemTitle,
 } from "@work-holo/ui/components/item";
+import { cn } from "@work-holo/ui/lib/utils";
+import { motion } from "motion/react";
+import { useState } from "react";
+import type { ProjectPageData } from "./project-data";
+import { getProjectList } from "./project-data";
+import { ProjectGalleryImage, ProjectImage } from "./project-image";
 
 interface ProjectDetailPageProps {
   data: ProjectPageData;
@@ -95,7 +93,13 @@ function ProjectSidebar({ currentSlug }: { currentSlug: string }) {
               </div>
               <div>
                 <p className="text-primary-foreground/70 text-xs">Client</p>
-                <p className="font-semibold text-sm">{currentSlug ? getProjectList().find(p => p.slug === currentSlug)?.description.split('.')[0] : "Talk to us"}</p>
+                <p className="font-semibold text-sm">
+                  {currentSlug
+                    ? getProjectList()
+                        .find((p) => p.slug === currentSlug)
+                        ?.description.split(".")[0]
+                    : "Talk to us"}
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-3 rounded-xl bg-primary-foreground/10 p-4">
@@ -288,7 +292,7 @@ export function ProjectDetailPage({ data }: ProjectDetailPageProps) {
               </motion.div>
 
               <motion.div
-                className="mb-12 grid gap-6 lg:grid-cols-2 lg:mb-16"
+                className="mb-12 grid gap-6 lg:mb-16 lg:grid-cols-2"
                 initial={{ opacity: 0, y: 20 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
                 viewport={{ once: true }}
@@ -419,8 +423,8 @@ export function ProjectDetailPage({ data }: ProjectDetailPageProps) {
                 </h3>
                 <p className="mb-6 text-muted-foreground text-sm leading-relaxed sm:mb-8">
                   We&apos;d love to discuss how we can help bring your vision to
-                  life. Our team has extensive experience across AI, web, mobile,
-                  and cloud technologies.
+                  life. Our team has extensive experience across AI, web,
+                  mobile, and cloud technologies.
                 </p>
                 <Link
                   className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 font-medium text-primary-foreground text-sm transition-colors hover:bg-primary/90"
@@ -443,3 +447,4 @@ export function ProjectDetailPage({ data }: ProjectDetailPageProps) {
     </div>
   );
 }
+
