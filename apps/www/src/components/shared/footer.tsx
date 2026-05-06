@@ -1,3 +1,7 @@
+import { Link } from "@tanstack/react-router";
+import { motion } from "motion/react";
+import { useEffect, useState } from "react";
+
 import {
   IconArrowUp,
   IconBell,
@@ -7,9 +11,6 @@ import {
   IconBrandX,
   IconClock,
 } from "@tabler/icons-react";
-import { Link } from "@tanstack/react-router";
-import { motion } from "motion/react";
-import { useEffect, useState } from "react";
 
 const services = [
   "Agentic AI",
@@ -269,7 +270,7 @@ export function Footer() {
                 </div>
                 <div className="flex items-center gap-2 text-muted-foreground text-sm">
                   <IconClock className="size-4 text-primary" />
-                  <span>Mon-Fri 09am-06pm</span>
+                  <span>Mon-Fri 10am-07pm</span>
                 </div>
               </div>
             </motion.div>

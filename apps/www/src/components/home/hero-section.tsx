@@ -131,7 +131,7 @@ function scrollToServices() {
 export function HeroSection() {
   return (
     <section
-      className="page-gradient relative scroll-mt-28 overflow-hidden bg-background px-4 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-12"
+      className="page-gradient relative scroll-mt-28 overflow-hidden bg-background px-4 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-14"
       id="hero"
     >
       <div className="pointer-events-none absolute inset-0">

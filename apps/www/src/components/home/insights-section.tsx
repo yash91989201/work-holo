@@ -1,5 +1,5 @@
-import { motion } from "motion/react";
 import { IconChevronRight } from "@tabler/icons-react";
+import { motion } from "motion/react";
 
 const posts = [
   {

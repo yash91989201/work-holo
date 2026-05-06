@@ -1,8 +1,8 @@
 import { IconCheck, IconChevronRight, IconPhone } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
 import { cn } from "@work-holo/ui/lib/utils";
-import { motion } from "motion/react";
-import { useState } from "react";
+import { motion, useScroll, useTransform } from "motion/react";
+import { useRef, useState } from "react";
 import { getServiceList } from "./service-data";
 import type { ServicePageData } from "./service-data";
 import { ServiceGalleryImage, ServiceImage } from "./service-image";
@@ -23,6 +23,8 @@ import {
 interface ServiceDetailPageProps {
   data: ServicePageData;
 }
+
+const EASE = [0.22, 1, 0.36, 1] as const;
 
 function ServiceSidebar({ currentSlug }: { currentSlug: string }) {
   const services = getServiceList(currentSlug);
@@ -45,7 +47,7 @@ function ServiceSidebar({ currentSlug }: { currentSlug: string }) {
             <Item
               className={cn(
                 service.isActive &&
-                  "border-primary/20 bg-primary/5 text-primary"
+                  "border-primary/20 bg-primary/5 text-primary",
               )}
               key={service.slug}
               render={<Link to={service.href} />}
@@ -58,7 +60,7 @@ function ServiceSidebar({ currentSlug }: { currentSlug: string }) {
                 <IconChevronRight
                   className={cn(
                     "size-4 transition-transform group-hover/item:translate-x-1",
-                    service.isActive ? "text-primary" : "text-muted-foreground"
+                    service.isActive ? "text-primary" : "text-muted-foreground",
                   )}
                 />
               </ItemActions>
@@ -101,37 +103,97 @@ function ServiceSidebar({ currentSlug }: { currentSlug: string }) {
   );
 }
 
+function HeroSection({ data }: { data: ServicePageData }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"],
+  });
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+
+  return (
+    <section className="relative min-h-[70vh] overflow-hidden" ref={ref}>
+      {/* Background image with parallax */}
+      <motion.div className="absolute inset-0 z-0" style={{ y }}>
+        <img
+          src={data.heroImage}
+          alt={data.title}
+          className="h-screen w-full object-fill"
+          onError={(e) => {
+            e.currentTarget.src =
+              "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1600&auto=format&fit=crop";
+          }}
+        />
+        {/* Dark blur overlay */}
+        <div className="absolute inset-0 backdrop-blur-[5px]" />
+        {/* Dark tint */}
+        <div className="absolute inset-0 bg-black/30" />
+        {/* Gradient fade to page bg at bottom */}
+        <div className="absolute inset-0 bg-linear-to-t from-background via-background/40 to-transparent" />
+        {/* Edge vignette */}
+        <div className="absolute inset-0 bg-linear-to-r from-background/50 via-transparent to-background/50" />
+        {/* Top accent line */}
+        <div className="absolute top-0 right-0 left-0 h-px bg-linear-to-r from-transparent via-primary/30 to-transparent" />
+      </motion.div>
+
+      {/* Hero content pinned to bottom */}
+      <motion.div
+        className="relative z-10 flex min-h-[70vh] pt-32 items-end"
+        style={{ opacity }}
+      >
+        <div className="mx-auto w-full max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20 lg:px-8 lg:pb-24">
+          <motion.div
+            initial={{ opacity: 0, y: 60 }}
+            transition={{ duration: 0.9, ease: EASE }}
+            viewport={{ once: true }}
+            whileInView={{ opacity: 1, y: 0 }}
+          >
+            {/* Category badge */}
+            <div className="mb-4 flex flex-wrap items-center gap-3">
+              <span className="rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 font-mono font-semibold text-[11px] text-primary uppercase tracking-widest">
+                Our Services
+              </span>
+            </div>
+
+            {/* Title */}
+            <h1 className="mb-4 font-extrabold font-heading text-4xl text-white leading-[0.95] tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+              {data.title}
+              <br />
+              <span className="bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">
+                {data.subtitle}
+              </span>
+            </h1>
+
+            {/* Description */}
+            <p className="max-w-2xl text-base text-white/55 leading-relaxed sm:text-lg">
+              {data.description}
+            </p>
+          </motion.div>
+        </div>
+      </motion.div>
+
+      {/* Bottom accent line */}
+      <div className="absolute right-0 bottom-0 left-0 z-10 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+    </section>
+  );
+}
+
 export function ServiceDetailPage({ data }: ServiceDetailPageProps) {
   const [openFAQ, setOpenFAQ] = useState<string[]>(["item-0"]);
 
   const featuresLeft = data.features.slice(
     0,
-    Math.ceil(data.features.length / 2)
+    Math.ceil(data.features.length / 2),
   );
   const featuresRight = data.features.slice(
-    Math.ceil(data.features.length / 2)
+    Math.ceil(data.features.length / 2),
   );
 
   return (
     <div className="relative overflow-hidden bg-background">
-      {/* Hero Image */}
-      <section className="relative">
-        <motion.div
-          className="relative w-full overflow-hidden"
-          initial={{ opacity: 0, scale: 1.05 }}
-          style={{ aspectRatio: "21/9" }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          viewport={{ once: true }}
-          whileInView={{ opacity: 1, scale: 1 }}
-        >
-          <ServiceImage
-            aspectRatio="21/9"
-            className="h-full w-full"
-            title={data.title}
-          />
-          <div className="absolute inset-0 bg-linear-to-t from-background via-background/20 to-transparent" />
-        </motion.div>
-      </section>
+      {/* Hero with background image + overlaid text */}
+      <HeroSection data={data} />
 
       {/* Content + Sidebar */}
       <section className="py-8 sm:py-12 lg:py-16">
@@ -139,22 +201,6 @@ export function ServiceDetailPage({ data }: ServiceDetailPageProps) {
           <div className="grid gap-8 lg:grid-cols-12 lg:gap-8">
             {/* Main Content */}
             <div className="order-1 lg:col-span-8">
-              {/* Title & Description */}
-              <motion.div
-                className="mb-8 sm:mb-10"
-                initial={{ opacity: 0, y: 30 }}
-                transition={{ duration: 0.6 }}
-                viewport={{ once: true }}
-                whileInView={{ opacity: 1, y: 0 }}
-              >
-                <h1 className="mb-4 font-bold font-heading text-2xl text-foreground sm:text-3xl lg:text-4xl xl:text-5xl">
-                  {data.title}: {data.subtitle}
-                </h1>
-                <p className="text-muted-foreground text-sm leading-relaxed sm:text-base">
-                  {data.description}
-                </p>
-              </motion.div>
-
               {/* Features */}
               <motion.div
                 className="mb-10 grid gap-3 sm:grid-cols-2 sm:gap-4 lg:mb-12"
@@ -260,7 +306,7 @@ export function ServiceDetailPage({ data }: ServiceDetailPageProps) {
                 </div>
               </motion.div>
 
-              {/* FAQ with shadcn Accordion */}
+              {/* FAQ */}
               <motion.div
                 className="mb-10 lg:mb-12"
                 initial={{ opacity: 0, y: 20 }}

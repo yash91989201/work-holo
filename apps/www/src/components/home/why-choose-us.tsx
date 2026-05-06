@@ -1,29 +1,48 @@
+import { CTAButton } from "@work-holo/ui/components/cta-button";
+import { cn } from "@work-holo/ui/lib/utils";
+import { motion, type Variants, useAnimationControls } from "motion/react";
+import { useEffect, useState } from "react";
+
 import {
   IconBulb,
   IconHeartHandshake,
   IconRocket,
   IconThumbUp,
 } from "@tabler/icons-react";
-import { CTAButton } from "@work-holo/ui/components/cta-button";
-import { cn } from "@work-holo/ui/lib/utils";
-import { motion, useAnimationControls, type Variants } from "motion/react";
-import { useEffect, useState } from "react";
 
 const logos = [
-  { name: "VitaCare Health", style: "font-bold text-base" },
-  { name: "Meridian Capital", style: "font-semibold text-base" },
-  { name: "LuxeCart", style: "font-medium text-base" },
-  { name: "NexaBridge Tech", style: "font-bold tracking-tight text-base" },
-  { name: "Urban Threads", style: "font-medium text-base" },
-  { name: "VantageMetrics", style: "font-bold text-base" },
-  { name: "Synapse Workspace", style: "font-semibold text-base" },
-  { name: "InsightFlow", style: "font-bold text-base" },
-  { name: "CareNet Health", style: "font-medium text-base" },
-  { name: "FlavorFleet", style: "font-semibold text-base" },
-  { name: "NovaPay", style: "font-bold text-base" },
-  { name: "PulseFit", style: "font-medium text-base" },
-  { name: "DriftLine", style: "font-bold text-base" },
-  { name: "SwiftBridge Cloud", style: "font-semibold text-base" },
+  { name: "Axonify", style: "font-bold text-base" },
+  { name: "Trika Systems", style: "font-semibold text-base" },
+  { name: "Velaris", style: "font-medium text-base" },
+  { name: "Nuvolo", style: "font-bold tracking-tight text-base" },
+  { name: "Clarisights", style: "font-medium text-base" },
+  { name: "Spendflo", style: "font-bold text-base" },
+  { name: "Toplyne", style: "font-semibold text-base" },
+  { name: "Fyno", style: "font-bold text-base" },
+  { name: "Zamp", style: "font-medium text-base" },
+  { name: "Dezerv", style: "font-semibold text-base" },
+  { name: "Castler", style: "font-bold text-base" },
+  { name: "Recko", style: "font-medium text-base" },
+  { name: "Volopay", style: "font-bold text-base" },
+  { name: "Kredily", style: "font-semibold text-base" },
+  { name: "Zylu", style: "font-medium text-base" },
+  { name: "Bikayi", style: "font-bold tracking-tight text-base" },
+  { name: "Tortoise", style: "font-semibold text-base" },
+  { name: "Juspay", style: "font-bold text-base" },
+  { name: "Niro", style: "font-medium text-base" },
+  { name: "Finbox", style: "font-bold text-base" },
+  { name: "Tartan", style: "font-semibold text-base" },
+  { name: "Silverbullet", style: "font-medium text-base" },
+  { name: "Hyperface", style: "font-bold text-base" },
+  { name: "Vegapay", style: "font-semibold text-base" },
+  { name: "Syntizen", style: "font-medium text-base" },
+  { name: "Datacultr", style: "font-bold tracking-tight text-base" },
+  { name: "Progcap", style: "font-bold text-base" },
+  { name: "Moneyhop", style: "font-semibold text-base" },
+  { name: "Signzy", style: "font-medium text-base" },
+  { name: "Perfios", style: "font-bold text-base" },
+  { name: "Yap", style: "font-semibold text-base" },
+  { name: "Xpressbees", style: "font-medium text-base" },
 ];
 
 const features = [
@@ -150,7 +169,7 @@ export function WhyChooseUs() {
           <div className="inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-card/50 px-5 py-2 text-sm">
             <span className="text-muted-foreground">Join Over</span>
             <span className="inline-flex items-center rounded-md bg-primary px-2 py-0.5 font-bold text-primary-foreground text-xs">
-              1000+
+              32+
             </span>
             <span className="text-muted-foreground">
               Companies with Work Holo Here
@@ -191,14 +210,7 @@ export function WhyChooseUs() {
             </h2>
 
             {/* Right side */}
-            <div className="flex flex-col items-start gap-5 sm:flex-row sm:items-center lg:gap-8">
-              <p className="max-w-[220px] text-muted-foreground text-sm leading-relaxed">
-                Our services are customized to meet your unique.
-              </p>
-              <CTAButton className="shrink-0" type="button">
-                Learn More
-              </CTAButton>
-            </div>
+
           </div>
         </motion.div>
 

@@ -1,5 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion, useInView } from "motion/react";
+import { useEffect, useRef, useState } from "react";
+import { ContactCard } from "@/components/shared/contact-card";
+
 import {
   IconAward,
   IconBulb,
@@ -9,8 +12,6 @@ import {
   IconUsers,
   IconWorld,
 } from "@tabler/icons-react";
-import { useEffect, useRef, useState } from "react";
-import { ContactCard } from "@/components/shared/contact-card";
 
 export const Route = createFileRoute("/about-us")({
   component: RouteComponent,
@@ -86,7 +87,7 @@ const milestones = [
   { year: "2020", title: "First 50 Clients", description: "Rapid growth as businesses embraced our tailored solutions." },
   { year: "2022", title: "Global Expansion", description: "Extended operations to serve international markets." },
   { year: "2024", title: "AI & Cloud Leadership", description: "Pioneered agentic AI and cloud-native solutions." },
-  { year: "2025", title: "3K+ Projects", description: "Surpassed 3,000 successful project deliveries worldwide." },
+  { year: "2025", title: "100+ Projects", description: "Surpassed 100 successful project deliveries worldwide." },
 ];
 
 const team = [

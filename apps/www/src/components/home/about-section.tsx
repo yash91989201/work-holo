@@ -1,4 +1,5 @@
 import { IconAward } from "@tabler/icons-react";
+import { useNavigate } from "@tanstack/react-router";
 import { CTAButton } from "@work-holo/ui/components/cta-button";
 import { motion, useInView } from "motion/react";
 import { useEffect, useRef, useState } from "react";
@@ -92,6 +93,8 @@ function AwardBadge() {
 }
 
 export function AboutSection() {
+  const navigate = useNavigate(); // ✅ add this
+
   return (
     <section id="about" className="relative bg-background py-20 lg:py-28 overflow-hidden scroll-mt-28">
       {/* Background pattern */}
@@ -242,7 +245,7 @@ export function AboutSection() {
               >
                 <div>
                   <div className="text-4xl sm:text-5xl font-bold text-primary leading-none">
-                    <AnimatedCounter target={3} suffix="K" duration={2} />
+                    <AnimatedCounter target={100} suffix="" duration={2} />
                     <sup className="text-xl">+</sup>
                   </div>
                   <p className="text-sm text-muted-foreground mt-2">Successful Projects.</p>
@@ -250,7 +253,7 @@ export function AboutSection() {
                 <div className="w-px h-16 bg-border/50" />
                 <div>
                   <div className="text-4xl sm:text-5xl font-bold text-primary leading-none">
-                    <AnimatedCounter target={98} suffix="" duration={2} />
+                    <AnimatedCounter target={32} suffix="" duration={2} />
                     <sup className="text-xl">+</sup>
                   </div>
                   <p className="text-sm text-muted-foreground mt-2">IT Professionals.</p>
@@ -265,7 +268,7 @@ export function AboutSection() {
                 transition={{ duration: 0.5, delay: 0.7 }}
                 className="flex items-center justify-between"
               >
-                <CTAButton type="button">Learn More</CTAButton>
+                <CTAButton type="button" onClick={() => navigate({ to: "/about-us" })}>Learn More</CTAButton>
 
                 {/* Award Badge */}
                 <div className="hidden sm:block">

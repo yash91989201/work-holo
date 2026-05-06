@@ -19,15 +19,14 @@ export function ContactCard() {
       onSubmit: ContactFormSchema,
     },
     onSubmit: ({ value }) => {
-      // Handle form submission
       console.log("Form submitted:", value);
     },
   });
 
   return (
     <div className="w-full">
-      <div className="relative overflow-hidden rounded-3xl bg-[#1a1a1a] p-8 sm:p-12 lg:p-16">
-        {/* Background image overlay */}
+      <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-[#1a1a1a] p-6 sm:p-12 lg:p-16">
+        {/* Background SVG pattern */}
         <div
           className="absolute inset-0 opacity-[0.07]"
           style={{
@@ -38,44 +37,42 @@ export function ContactCard() {
         <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.03] via-transparent to-transparent" />
 
         <div className="relative z-10">
-          <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-16">
+          <div className="grid items-start gap-10 sm:gap-12 lg:grid-cols-2 lg:gap-16">
             {/* Left Column */}
             <motion.div
-              className="flex flex-col justify-between"
+              className="flex flex-col gap-8 lg:gap-0 lg:justify-between"
               initial={{ opacity: 0, x: -30 }}
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
               viewport={{ once: true }}
               whileInView={{ opacity: 1, x: 0 }}
             >
               <div>
-                <p className="mb-5 font-medium text-primary text-sm uppercase tracking-[0.2em]">
+                <p className="mb-4 sm:mb-5 font-medium text-primary text-xs sm:text-sm uppercase tracking-[0.2em]">
                   [ GET IN TOUCH ]
                 </p>
-                <h2 className="mb-8 font-bold text-3xl text-foreground leading-[1.1] tracking-tight sm:text-4xl lg:text-[2.75rem]">
-                  Have any Questions on
-                  <br />
-                  Mind? Get in Touch for
-                  <br />
-                  Market Experts.
+                <h2 className="mb-6 sm:mb-8 font-bold text-2xl sm:text-4xl lg:text-[2.75rem] text-foreground leading-[1.15] sm:leading-[1.1] tracking-tight">
+                  Have any Questions on Mind?{" "}
+                  <span className="block">Get in Touch for</span>
+                  <span className="block">Market Experts.</span>
                 </h2>
               </div>
 
               {/* Contact Info Grid */}
-              <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
+              <div className="grid grid-cols-1 gap-6 min-[480px]:grid-cols-3 sm:gap-8">
                 <div>
-                  <h4 className="mb-3 font-semibold text-foreground text-sm">
+                  <h4 className="mb-2 sm:mb-3 font-semibold text-foreground text-sm">
                     Contact Info:
                   </h4>
                   <p className="mb-1 text-muted-foreground text-sm">
                     +1 (009) 544-7818
                   </p>
-                  <p className="text-muted-foreground text-sm">
+                  <p className="text-muted-foreground text-sm break-all">
                     support@tekmino.com
                   </p>
                 </div>
 
                 <div>
-                  <h4 className="mb-3 font-semibold text-foreground text-sm">
+                  <h4 className="mb-2 sm:mb-3 font-semibold text-foreground text-sm">
                     Find Us:
                   </h4>
                   <p className="text-muted-foreground text-sm">
@@ -86,14 +83,14 @@ export function ContactCard() {
                 </div>
 
                 <div>
-                  <h4 className="mb-3 font-semibold text-foreground text-sm">
-                    Contact Info:
+                  <h4 className="mb-2 sm:mb-3 font-semibold text-foreground text-sm">
+                    Working Hours:
                   </h4>
                   <p className="mb-1 text-muted-foreground text-sm">
                     Mon - Fri <span className="text-primary">(Open)</span>
                   </p>
                   <p className="text-muted-foreground text-sm">
-                    09:00am - 06.00pm
+                    09:00am - 06:00pm
                   </p>
                 </div>
               </div>
@@ -110,20 +107,20 @@ export function ContactCard() {
               viewport={{ once: true }}
               whileInView={{ opacity: 1, x: 0 }}
             >
-              <div className="rounded-2xl border border-border/10 bg-[#111111]/80 p-6 backdrop-blur-sm sm:p-8 lg:p-10">
-                <h3 className="mb-8 font-bold text-2xl text-foreground">
+              <div className="rounded-xl sm:rounded-2xl border border-border/10 bg-[#111111]/80 p-5 sm:p-8 lg:p-10 backdrop-blur-sm">
+                <h3 className="mb-6 sm:mb-8 font-bold text-xl sm:text-2xl text-foreground">
                   Drop Us a <span className="text-primary">Line.</span>
                 </h3>
 
                 <form.AppForm>
                   <form
-                    className="space-y-5"
+                    className="space-y-4 sm:space-y-5"
                     onSubmit={(e) => {
                       e.preventDefault();
                       form.handleSubmit();
                     }}
                   >
-                    <div className="grid gap-5 sm:grid-cols-2">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
                       <form.AppField name="fullName">
                         {(field) => (
                           <field.Input label="Full Name *" placeholder="" />
@@ -141,7 +138,7 @@ export function ContactCard() {
                       </form.AppField>
                     </div>
 
-                    <div className="grid gap-5 sm:grid-cols-2">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
                       <form.AppField name="phone">
                         {(field) => (
                           <field.Input

@@ -1,3 +1,10 @@
+import { Link } from "@tanstack/react-router";
+import { motion, useScroll, useTransform } from "motion/react";
+import { useRef, useState } from "react";
+import type { ProjectPageData } from "./project-data";
+import { getProjectList } from "./project-data";
+import { ProjectGalleryImage, ProjectImage } from "./project-image";
+
 import {
   IconArrowRight,
   IconArrowUpRight,
@@ -6,18 +13,12 @@ import {
   IconLine,
   IconUser,
 } from "@tabler/icons-react";
-import { Link } from "@tanstack/react-router";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@work-holo/ui/components/accordion";
-import { motion, useScroll, useTransform } from "motion/react";
-import { useRef, useState } from "react";
-import type { ProjectPageData } from "./project-data";
-import { getProjectList } from "./project-data";
-import { ProjectGalleryImage, ProjectImage } from "./project-image";
 
 interface ProjectDetailPageProps {
   data: ProjectPageData;

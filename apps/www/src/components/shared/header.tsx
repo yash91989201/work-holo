@@ -1,3 +1,9 @@
+import { Link } from "@tanstack/react-router";
+import { CTAButton } from "@work-holo/ui/components/cta-button";
+import { cn } from "@work-holo/ui/lib/utils";
+import { type ReactNode, useEffect, useState } from "react";
+import { Image } from "@/components/shared/image";
+
 import {
   IconArrowUpRight,
   IconBolt,
@@ -6,8 +12,6 @@ import {
   IconSettings,
   IconX,
 } from "@tabler/icons-react";
-import { Link } from "@tanstack/react-router";
-import { CTAButton } from "@work-holo/ui/components/cta-button";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -16,15 +20,12 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@work-holo/ui/components/navigation-menu";
-import { cn } from "@work-holo/ui/lib/utils";
 import {
   AnimatePresence,
   motion,
   useMotionValueEvent,
   useScroll,
 } from "motion/react";
-import { type ReactNode, useEffect, useState } from "react";
-import { Image } from "@/components/shared/image";
 
 type DropdownItem = {
   label: string;
@@ -583,7 +584,7 @@ export function Header() {
             <div className="hidden items-center gap-4 text-muted-foreground md:flex">
               <div className="flex items-center gap-1.5">
                 <IconClock className="size-4.5 text-primary" />
-                <span>9 am to 6 pm [mon-sat]</span>
+                <span>10 am to 7 pm [mon-sat]</span>
               </div>
               <span className="text-border">|</span>
               <div className="flex items-center gap-1.5">
