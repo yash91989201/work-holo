@@ -547,210 +547,212 @@ export function Header() {
   }, [mobileMenuOpen]);
 
   return (
-    <motion.header
-      animate={{ y: 0 }}
-      className={cn(
-        "fixed top-0 right-0 left-0 z-50",
-        isScrolled ? "bg-background/95 backdrop-blur-md" : "bg-transparent"
-      )}
-      initial={{ y: -100 }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-    >
-      {/* Top Bar */}
-      <motion.div
-        animate={{
-          height: isScrolled ? 0 : "auto",
-          opacity: isScrolled ? 0 : 1,
-        }}
-        className="overflow-hidden"
-        initial={false}
-        transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+    <>
+      <motion.header
+        animate={{ y: 0 }}
+        className={cn(
+          "fixed top-0 right-0 left-0 z-50",
+          isScrolled ? "bg-background/95 backdrop-blur-md" : "bg-transparent"
+        )}
+        initial={{ y: -100 }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       >
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between py-3 text-[15px]">
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <IconBolt className="size-4.5 text-primary" fill="currentColor" />
-              <span className="hidden sm:inline">
-                Fast & Reliable IT Solutions.
-              </span>
-              <Link
-                className="inline-flex items-center gap-1 font-medium text-primary transition-colors hover:text-primary/80"
-                to="/"
-              >
-                Join Now
-                <IconArrowUpRight className="size-3.5" />
-              </Link>
-            </div>
-            <div className="hidden items-center gap-4 text-muted-foreground md:flex">
-              <div className="flex items-center gap-1.5">
-                <IconClock className="size-4.5 text-primary" />
-                <span>10 am to 7 pm [mon-sat]</span>
+        {/* Top Bar */}
+        <motion.div
+          animate={{
+            height: isScrolled ? 0 : "auto",
+            opacity: isScrolled ? 0 : 1,
+          }}
+          className="overflow-hidden"
+          initial={false}
+          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between py-3 text-[15px]">
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <IconBolt className="size-4.5 text-primary" fill="currentColor" />
+                <span className="hidden sm:inline">
+                  Fast & Reliable IT Solutions.
+                </span>
+                <Link
+                  className="inline-flex items-center gap-1 font-medium text-primary transition-colors hover:text-primary/80"
+                  to="/contact-us"
+                >
+                  Join Now
+                  <IconArrowUpRight className="size-3.5" />
+                </Link>
               </div>
-              <span className="text-border">|</span>
-              <div className="flex items-center gap-1.5">
-                <IconSettings className="size-4.5 text-primary" />
-                <span>Support</span>
+              <div className="hidden items-center gap-4 text-muted-foreground md:flex">
+                <div className="flex items-center gap-1.5">
+                  <IconClock className="size-4.5 text-primary" />
+                  <span>10 am to 7 pm [mon-sat]</span>
+                </div>
+                <span className="text-border">|</span>
+                <div className="flex items-center gap-1.5">
+                  <IconSettings className="size-4.5 text-primary" />
+                  <span>Support</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
 
-      {/* Main Navbar */}
-      <motion.div
-        className={cn(
-          "w-full",
-          isScrolled
-            ? "max-w-none px-0 pt-0"
-            : "mx-auto max-w-7xl px-4 pt-3 sm:px-6 lg:px-8"
-        )}
-        layout
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <motion.nav
+        {/* Main Navbar */}
+        <motion.div
           className={cn(
-            "relative flex items-center justify-between transition-all duration-500",
+            "w-full",
             isScrolled
-              ? "min-h-20 bg-card/90 px-5 backdrop-blur-md sm:px-7 lg:px-8"
-              : "min-h-24 rounded-[1.75rem] border border-border/30 bg-muted/50 px-5 sm:px-7 lg:px-8"
+              ? "max-w-none px-0 pt-0"
+              : "mx-auto max-w-7xl px-4 pt-3 sm:px-6 lg:px-8"
           )}
           layout
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
-          {/* Logo */}
-          <Link className="flex shrink-0 items-center gap-3" to="/">
-            <div className="relative h-12 w-16">
-              <Image
-                alt="Work Holo"
-                className="object-contain"
-                height={48}
-                src="/logo.webp"
-                unoptimized
-                width={64}
-              />
-            </div>
-            <span className="font-bold font-heading text-2xl text-foreground tracking-tight">
-              Workholo
-            </span>
-          </Link>
+          <motion.nav
+            className={cn(
+              "relative flex items-center justify-between transition-all duration-500",
+              isScrolled
+                ? "min-h-20 bg-card/90 px-5 backdrop-blur-md sm:px-7 lg:px-8"
+                : "min-h-24 rounded-[1.75rem] border border-border/30 bg-muted/50 px-5 sm:px-7 lg:px-8"
+            )}
+            layout
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          >
+            {/* Logo */}
+            <Link className="flex shrink-0 items-center gap-3" to="/">
+              <div className="relative h-12 w-16">
+                <Image
+                  alt="Work Holo"
+                  className="object-contain"
+                  height={48}
+                  src="/logo.webp"
+                  unoptimized
+                  width={64}
+                />
+              </div>
+              <span className="font-bold font-heading text-2xl text-foreground tracking-tight">
+                Workholo
+              </span>
+            </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden items-center lg:flex">
-            <NavigationMenu align="center">
-              <NavigationMenuList>
-                {navItems.map((item) => {
-                  let menuContent: ReactNode = null;
+            {/* Desktop Navigation */}
+            <div className="hidden items-center lg:flex">
+              <NavigationMenu align="center">
+                <NavigationMenuList>
+                  {navItems.map((item) => {
+                    let menuContent: ReactNode = null;
 
-                  if (hasGroups(item)) {
-                    menuContent = <TabDropdown groups={item.groups} />;
-                  } else if (hasDropdownItems(item)) {
-                    const hasMany = item.dropdownItems.length > 4;
-                    menuContent = (
-                      <div
-                        className={cn(
-                          "overflow-hidden rounded-[1.5rem] border border-white/10 bg-background/80 shadow-[0_30px_80px_-15px_rgba(0,0,0,0.35)] backdrop-blur-2xl",
-                          hasMany ? "w-72" : "w-52"
-                        )}
-                      >
-                        <div className="p-2">
-                          {item.dropdownItems.map((dropItem) => (
-                            <MenuLink
-                              className="group/item flex items-center gap-3 rounded-xl px-4 py-3 font-medium text-[14px] text-foreground/90 transition-all duration-200 hover:bg-white/5"
-                              key={dropItem.label}
-                              to={dropItem.href}
-                            >
-                              <span className="transition-colors group-hover/item:text-primary">
-                                {dropItem.label}
-                              </span>
-                              <IconArrowUpRight className="size-3.5 text-muted-foreground/40 transition-colors group-hover/item:text-primary/60" />
-                            </MenuLink>
-                          ))}
+                    if (hasGroups(item)) {
+                      menuContent = <TabDropdown groups={item.groups} />;
+                    } else if (hasDropdownItems(item)) {
+                      const hasMany = item.dropdownItems.length > 4;
+                      menuContent = (
+                        <div
+                          className={cn(
+                            "overflow-hidden rounded-[1.5rem] border border-white/10 bg-background/80 shadow-[0_30px_80px_-15px_rgba(0,0,0,0.35)] backdrop-blur-2xl",
+                            hasMany ? "w-72" : "w-52"
+                          )}
+                        >
+                          <div className="p-2">
+                            {item.dropdownItems.map((dropItem) => (
+                              <MenuLink
+                                className="group/item flex items-center gap-3 rounded-xl px-4 py-3 font-medium text-[14px] text-foreground/90 transition-all duration-200 hover:bg-white/5"
+                                key={dropItem.label}
+                                to={dropItem.href}
+                              >
+                                <span className="transition-colors group-hover/item:text-primary">
+                                  {dropItem.label}
+                                </span>
+                                <IconArrowUpRight className="size-3.5 text-muted-foreground/40 transition-colors group-hover/item:text-primary/60" />
+                              </MenuLink>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    );
-                  }
+                      );
+                    }
 
-                  if (isSimpleLink(item)) {
+                    if (isSimpleLink(item)) {
+                      return (
+                        <NavigationMenuItem key={item.label}>
+                          <MenuLink
+                            className={cn(
+                              "font-semibold text-base",
+                              item.active
+                                ? "text-primary"
+                                : "text-muted-foreground hover:text-foreground"
+                            )}
+                            hash={item.hash}
+                            to={item.href}
+                          >
+                            {item.label}
+                          </MenuLink>
+                        </NavigationMenuItem>
+                      );
+                    }
+
                     return (
                       <NavigationMenuItem key={item.label}>
-                        <MenuLink
+                        <NavigationMenuTrigger
                           className={cn(
                             "font-semibold text-base",
                             item.active
                               ? "text-primary"
                               : "text-muted-foreground hover:text-foreground"
                           )}
-                          hash={item.hash}
-                          to={item.href}
                         >
                           {item.label}
-                        </MenuLink>
+                        </NavigationMenuTrigger>
+                        <NavigationMenuContent>
+                          {menuContent}
+                        </NavigationMenuContent>
                       </NavigationMenuItem>
                     );
-                  }
+                  })}
+                </NavigationMenuList>
+              </NavigationMenu>
+            </div>
 
-                  return (
-                    <NavigationMenuItem key={item.label}>
-                      <NavigationMenuTrigger
-                        className={cn(
-                          "font-semibold text-base",
-                          item.active
-                            ? "text-primary"
-                            : "text-muted-foreground hover:text-foreground"
-                        )}
-                      >
-                        {item.label}
-                      </NavigationMenuTrigger>
-                      <NavigationMenuContent>
-                        {menuContent}
-                      </NavigationMenuContent>
-                    </NavigationMenuItem>
-                  );
-                })}
-              </NavigationMenuList>
-            </NavigationMenu>
-          </div>
+            {/* Right Actions */}
+            <div className="flex items-center gap-2.5">
+              <CTAButton className="hidden sm:inline-flex" href="#contact">
+                Get in touch
+              </CTAButton>
 
-          {/* Right Actions */}
-          <div className="flex items-center gap-2.5">
-            <CTAButton className="hidden sm:inline-flex" href="#contact">
-              Get in touch
-            </CTAButton>
+              {/* Mobile Menu Button */}
+              <motion.button
+                aria-label="Toggle menu"
+                className="flex size-11 items-center justify-center rounded-full border border-border/50 bg-background text-foreground lg:hidden"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <div className="flex flex-col gap-1">
+                  <span
+                    className={cn(
+                      "block h-0.5 w-4 bg-foreground transition-all duration-300",
+                      mobileMenuOpen && "translate-y-1.5 rotate-45"
+                    )}
+                  />
+                  <span
+                    className={cn(
+                      "block h-0.5 w-4 bg-foreground transition-all duration-300",
+                      mobileMenuOpen && "opacity-0"
+                    )}
+                  />
+                  <span
+                    className={cn(
+                      "block h-0.5 w-4 bg-foreground transition-all duration-300",
+                      mobileMenuOpen && "-translate-y-1.5 -rotate-45"
+                    )}
+                  />
+                </div>
+              </motion.button>
+            </div>
+          </motion.nav>
+        </motion.div>
+      </motion.header>
 
-            {/* Mobile Menu Button */}
-            <motion.button
-              aria-label="Toggle menu"
-              className="flex size-11 items-center justify-center rounded-full border border-border/50 bg-background text-foreground lg:hidden"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <div className="flex flex-col gap-1">
-                <span
-                  className={cn(
-                    "block h-0.5 w-4 bg-foreground transition-all duration-300",
-                    mobileMenuOpen && "translate-y-1.5 rotate-45"
-                  )}
-                />
-                <span
-                  className={cn(
-                    "block h-0.5 w-4 bg-foreground transition-all duration-300",
-                    mobileMenuOpen && "opacity-0"
-                  )}
-                />
-                <span
-                  className={cn(
-                    "block h-0.5 w-4 bg-foreground transition-all duration-300",
-                    mobileMenuOpen && "-translate-y-1.5 -rotate-45"
-                  )}
-                />
-              </div>
-            </motion.button>
-          </div>
-        </motion.nav>
-      </motion.div>
-
-      {/* Mobile Menu */}
+      {/* Mobile Menu — rendered outside motion.header so position:fixed is viewport-relative */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
@@ -1042,6 +1044,6 @@ export function Header() {
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.header>
+    </>
   );
 }

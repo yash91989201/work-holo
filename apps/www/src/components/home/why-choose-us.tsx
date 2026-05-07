@@ -105,7 +105,7 @@ function LogoMarquee() {
           x: {
             repeat: Number.POSITIVE_INFINITY,
             repeatType: "loop",
-            duration: 25,
+            duration: 120,
             ease: "linear",
           },
         },

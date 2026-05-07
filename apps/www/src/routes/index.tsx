@@ -15,7 +15,7 @@ export const Route = createFileRoute("/")({
 
 function RouteComponent() {
   return (
-    <div className="relative overflow-hidden bg-background pt-38.5 lg:pt-0">
+    <div className="relative overflow-hidden bg-background">
       <HeroSection />
       <WhyChooseUs />
       <AboutSection />
