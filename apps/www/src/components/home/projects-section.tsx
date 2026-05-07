@@ -68,7 +68,7 @@ export function ProjectsSection() {
             </h2>
           </div>
 
-          <div className="flex items-center gap-2 lg:pb-2">
+          <div className="hidden items-center gap-2 lg:flex lg:pb-2">
             <button
               aria-label="Previous project"
               className="flex h-10 w-10 items-center justify-center rounded-full border border-border/50 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-50"
