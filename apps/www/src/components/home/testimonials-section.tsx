@@ -226,7 +226,7 @@ export function TestimonialsSection() {
 
         <div className="relative w-full max-w-5xl mx-auto">
           <div
-            className="relative w-full h-[450px] md:h-[400px] flex justify-center items-center touch-pan-y"
+            className="relative w-full h-[450px] md:h-[400px] flex justify-center items-center touch-pan-y pb-16 md:pb-0"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             onTouchStart={handleTouchStart}
