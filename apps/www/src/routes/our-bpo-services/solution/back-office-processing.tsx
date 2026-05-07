@@ -152,7 +152,7 @@ const pageData: WebPageProps = {
 }
 ],
 "closingText": "Confie is the BPO provider you need!",
-"imageSrc": "https://picsum.photos/800/600?random=2",
+"imageSrc": "/assets/confie-bpo.webp",
 "imageAlt": "Agents working in office",
 "imagePosition": "left",
 "cta": {
