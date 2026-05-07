@@ -226,7 +226,7 @@ export function TestimonialsSection() {
 
         <div className="relative w-full max-w-5xl mx-auto">
           <div
-            className="relative w-full h-[450px] md:h-[400px] flex justify-center items-center touch-pan-y pb-16 md:pb-0"
+            className="relative w-full h-[450px] md:h-[400px] flex justify-center items-center touch-pan-y"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             onTouchStart={handleTouchStart}
@@ -235,7 +235,7 @@ export function TestimonialsSection() {
             {/* Controls */}
             <button
               onClick={prevSlide}
-              className="flex absolute bottom-4 left-4 md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:left-0 md:-left-4 lg:-left-12 z-20 size-10 md:size-12 items-center justify-center rounded-full bg-background/80 backdrop-blur-sm border border-border text-foreground shadow-sm hover:bg-muted transition-colors"
+              className="hidden md:flex absolute bottom-4 left-4 md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:left-0 md:-left-4 lg:-left-12 z-20 size-10 md:size-12 items-center justify-center rounded-full bg-background/80 backdrop-blur-sm border border-border text-foreground shadow-sm hover:bg-muted transition-colors"
               aria-label="Previous testimonial"
             >
               <IconChevronLeft className="size-5 md:size-6" />
@@ -243,7 +243,7 @@ export function TestimonialsSection() {
 
             <button
               onClick={nextSlide}
-              className="flex absolute bottom-4 right-4 md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:right-0 md:-right-4 lg:-right-12 z-20 size-10 md:size-12 items-center justify-center rounded-full bg-background/80 backdrop-blur-sm border border-border text-foreground shadow-sm hover:bg-muted transition-colors"
+              className="hidden md:flex absolute bottom-4 right-4 md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:right-0 md:-right-4 lg:-right-12 z-20 size-10 md:size-12 items-center justify-center rounded-full bg-background/80 backdrop-blur-sm border border-border text-foreground shadow-sm hover:bg-muted transition-colors"
               aria-label="Next testimonial"
             >
               <IconChevronRight className="size-5 md:size-6" />
