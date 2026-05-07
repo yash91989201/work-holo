@@ -6,6 +6,13 @@ import { motion } from "motion/react";
 import type { ContactFormType } from "@/lib/schemas/contact";
 import { ContactFormSchema } from "@/lib/schemas/contact";
 
+const serviceItems = [
+  { value: "managed-it", label: "Managed IT Services" },
+  { value: "cloud", label: "Cloud Computing" },
+  { value: "security", label: "Cybersecurity Solutions" },
+  { value: "consulting", label: "IT Consulting" },
+];
+
 export function ContactCard() {
   const form = useAppForm({
     defaultValues: {
@@ -25,7 +32,7 @@ export function ContactCard() {
 
   return (
     <div className="w-full">
-      <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-[#1a1a1a] p-6 sm:p-12 lg:p-16">
+      <div className="relative overflow-hidden rounded-2xl bg-[#1a1a1a] p-6 sm:rounded-3xl sm:p-12 lg:p-16">
         {/* Background SVG pattern */}
         <div
           className="absolute inset-0 opacity-[0.07]"
@@ -40,17 +47,17 @@ export function ContactCard() {
           <div className="grid items-start gap-10 sm:gap-12 lg:grid-cols-2 lg:gap-16">
             {/* Left Column */}
             <motion.div
-              className="flex flex-col gap-8 lg:gap-0 lg:justify-between"
+              className="flex flex-col gap-8 lg:justify-between lg:gap-0"
               initial={{ opacity: 0, x: -30 }}
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
               viewport={{ once: true }}
               whileInView={{ opacity: 1, x: 0 }}
             >
               <div>
-                <p className="mb-4 sm:mb-5 font-medium text-primary text-xs sm:text-sm uppercase tracking-[0.2em]">
+                <p className="mb-4 font-medium text-primary text-xs uppercase tracking-[0.2em] sm:mb-5 sm:text-sm">
                   [ GET IN TOUCH ]
                 </p>
-                <h2 className="mb-6 sm:mb-8 font-bold text-2xl sm:text-4xl lg:text-[2.75rem] text-foreground leading-[1.15] sm:leading-[1.1] tracking-tight">
+                <h2 className="mb-6 font-bold text-2xl text-foreground leading-[1.15] tracking-tight sm:mb-8 sm:text-4xl sm:leading-[1.1] lg:text-[2.75rem]">
                   Have any Questions on Mind?{" "}
                   <span className="block">Get in Touch for</span>
                   <span className="block">Market Experts.</span>
@@ -58,21 +65,21 @@ export function ContactCard() {
               </div>
 
               {/* Contact Info Grid */}
-              <div className="grid grid-cols-1 gap-6 min-[480px]:grid-cols-3 sm:gap-8">
+              <div className="grid grid-cols-1 gap-6 sm:gap-8 min-[480px]:grid-cols-3">
                 <div>
-                  <h4 className="mb-2 sm:mb-3 font-semibold text-foreground text-sm">
+                  <h4 className="mb-2 font-semibold text-foreground text-sm sm:mb-3">
                     Contact Info:
                   </h4>
                   <p className="mb-1 text-muted-foreground text-sm">
                     +1 (009) 544-7818
                   </p>
-                  <p className="text-muted-foreground text-sm break-all">
+                  <p className="break-all text-muted-foreground text-sm">
                     support@tekmino.com
                   </p>
                 </div>
 
                 <div>
-                  <h4 className="mb-2 sm:mb-3 font-semibold text-foreground text-sm">
+                  <h4 className="mb-2 font-semibold text-foreground text-sm sm:mb-3">
                     Find Us:
                   </h4>
                   <p className="text-muted-foreground text-sm">
@@ -83,7 +90,7 @@ export function ContactCard() {
                 </div>
 
                 <div>
-                  <h4 className="mb-2 sm:mb-3 font-semibold text-foreground text-sm">
+                  <h4 className="mb-2 font-semibold text-foreground text-sm sm:mb-3">
                     Working Hours:
                   </h4>
                   <p className="mb-1 text-muted-foreground text-sm">
@@ -107,8 +114,8 @@ export function ContactCard() {
               viewport={{ once: true }}
               whileInView={{ opacity: 1, x: 0 }}
             >
-              <div className="rounded-xl sm:rounded-2xl border border-border/10 bg-[#111111]/80 p-5 sm:p-8 lg:p-10 backdrop-blur-sm">
-                <h3 className="mb-6 sm:mb-8 font-bold text-xl sm:text-2xl text-foreground">
+              <div className="rounded-xl border border-border/10 bg-[#111111]/80 p-5 backdrop-blur-sm sm:rounded-2xl sm:p-8 lg:p-10">
+                <h3 className="mb-6 font-bold text-foreground text-xl sm:mb-8 sm:text-2xl">
                   Drop Us a <span className="text-primary">Line.</span>
                 </h3>
 
@@ -123,7 +130,10 @@ export function ContactCard() {
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
                       <form.AppField name="fullName">
                         {(field) => (
-                          <field.Input label="Full Name *" placeholder="" />
+                          <field.Input
+                            label="Full Name *"
+                            placeholder="Jane Doe"
+                          />
                         )}
                       </form.AppField>
 
@@ -131,7 +141,7 @@ export function ContactCard() {
                         {(field) => (
                           <field.Input
                             label="Email Address *"
-                            placeholder=""
+                            placeholder="example@gmail.com"
                             type="email"
                           />
                         )}
@@ -143,7 +153,7 @@ export function ContactCard() {
                         {(field) => (
                           <field.Input
                             label="Phone Number *"
-                            placeholder=""
+                            placeholder="+91 7989695939"
                             type="tel"
                           />
                         )}
@@ -152,21 +162,18 @@ export function ContactCard() {
                       <form.AppField name="service">
                         {(field) => (
                           <field.Select
+                            items={serviceItems}
                             label="Select Service *"
-                            placeholder="Choose an Option"
+                            placeholder="Choose a service"
                           >
-                            <SelectItem value="managed-it">
-                              Managed IT Services
-                            </SelectItem>
-                            <SelectItem value="cloud">
-                              Cloud Computing
-                            </SelectItem>
-                            <SelectItem value="security">
-                              Cybersecurity Solutions
-                            </SelectItem>
-                            <SelectItem value="consulting">
-                              IT Consulting
-                            </SelectItem>
+                            {serviceItems.map((item) => (
+                              <SelectItem
+                                key={item.value ?? "placeholder"}
+                                value={item.value}
+                              >
+                                {item.label}
+                              </SelectItem>
+                            ))}
                           </field.Select>
                         )}
                       </form.AppField>

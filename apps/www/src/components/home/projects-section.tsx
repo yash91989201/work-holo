@@ -1,147 +1,135 @@
-import { IconArrowLeft, IconArrowRight, IconArrowUpRight } from "@tabler/icons-react";
+import {
+  IconArrowUpRight,
+  IconChevronLeft,
+  IconChevronRight,
+} from "@tabler/icons-react";
+import {
+  Carousel,
+  type CarouselApi,
+  CarouselContent,
+  CarouselItem,
+} from "@work-holo/ui/components/carousel";
 import { motion } from "motion/react";
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { getProjectList } from "../projects/project-data";
 
-const projects = [
-   {
-    id: 1,
-    title: "Business Transformation",
-    tag: "Solution",
-    image: "/assets/business-transformation.webp",
-  },
-  {
-    id: 2,
-    title: "Digital Growth Strategy",
-    tag: "Solution",
-    image: "/assets/digital-transformation-solutions.webp",
-  },
-  {
-    id: 3,
-    title: "Mobile App Development",
-    tag: "Solution",
-    image: "/assets/mobile-app-development.webp",
-  },
-  {
-    id: 4,
-    title: "Cloud Migration System",
-    tag: "Solution",
-    image: "/assets/cloud-migration-system.png",
-  },
-  {
-    id: 5,
-    title: "Cybersecurity Audit",
-    tag: "Solution",
-    image: "/assets/cyber-security-audit.jpg",
-  },
-];
+const projects = getProjectList();
+
+const categoryImageMap: Record<string, string> = {
+  "Mobile Development": "/assets/mobile-app-development.webp",
+  "Web Development": "/assets/web-app-development.avif",
+  "AI & Automation": "/assets/ai-agents.webp",
+  "AI & Data": "/assets/agentic-ai.webp",
+  "Cloud & DevOps": "/assets/cloud-engineering-devops.jpg",
+};
+
+function getProjectImage(category: string) {
+  return categoryImageMap[category] ?? "/assets/data-engineering.webp";
+}
 
 export function ProjectsSection() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const carouselRef = useRef<HTMLDivElement>(null);
+  const [api, setApi] = useState<CarouselApi>();
+  const [current, setCurrent] = useState(0);
+  const [count, setCount] = useState(0);
 
-  const scrollTo = (direction: "left" | "right") => {
-    if (carouselRef.current) {
-      const scrollAmount = 340;
-      carouselRef.current.scrollBy({
-        left: direction === "left" ? -scrollAmount : scrollAmount,
-        behavior: "smooth",
-      });
-    }
-  };
+  useEffect(() => {
+    if (!api) return;
 
-  const handleScroll = () => {
-    if (carouselRef.current) {
-      const scrollLeft = carouselRef.current.scrollLeft;
-      const cardWidth = 340;
-      const newIndex = Math.round(scrollLeft / cardWidth);
-      setActiveIndex(Math.min(newIndex, projects.length - 1));
-    }
-  };
+    setCount(api.scrollSnapList().length);
+    setCurrent(api.selectedScrollSnap());
+
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap());
+    });
+  }, [api]);
 
   return (
-    <section id="projects" className="relative bg-background py-20 lg:py-28 overflow-hidden scroll-mt-28">
+    <section
+      className="relative scroll-mt-28 overflow-hidden bg-background py-20 lg:py-28"
+      id="projects"
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
+          className="mb-12 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between"
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
-          className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-12"
+          viewport={{ once: true }}
+          whileInView={{ opacity: 1, y: 0 }}
         >
           <div className="flex-1">
-            <p className="text-sm font-medium tracking-[0.2em] text-primary uppercase mb-5">
+            <p className="mb-5 font-medium text-primary text-sm uppercase tracking-[0.2em]">
               [ RECENT PROJECTS ]
             </p>
-            <h2 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold text-foreground leading-[1.1] tracking-tight">
+            <h2 className="font-bold text-3xl text-foreground leading-[1.1] tracking-tight sm:text-4xl lg:text-[2.75rem]">
               Breaking Boundaries,
               <br />
               Building Dreams.
             </h2>
           </div>
 
-          <div className="flex items-center gap-8 lg:pb-2">
-            <p className="text-sm text-muted-foreground max-w-[200px]">
-              Our projects are tailored to meet your unique business needs.
-            </p>
-            <div className="flex gap-2">
-              <button
-                onClick={() => scrollTo("left")}
-                className="flex size-10 items-center justify-center rounded-full border border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-                aria-label="Previous project"
-              >
-                <IconArrowLeft className="size-4" />
-              </button>
-              <button
-                onClick={() => scrollTo("right")}
-                className="flex size-10 items-center justify-center rounded-full border border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-                aria-label="Next project"
-              >
-                <IconArrowRight className="size-4" />
-              </button>
-            </div>
+          <div className="flex items-center gap-2 lg:pb-2">
+            <button
+              aria-label="Previous project"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-border/50 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-50"
+              disabled={!api?.canScrollPrev()}
+              onClick={() => api?.scrollPrev()}
+              type="button"
+            >
+              <IconChevronLeft className="size-4" />
+            </button>
+            <button
+              aria-label="Next project"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-border/50 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-50"
+              disabled={!api?.canScrollNext()}
+              onClick={() => api?.scrollNext()}
+              type="button"
+            >
+              <IconChevronRight className="size-4" />
+            </button>
           </div>
         </motion.div>
 
         {/* Carousel */}
         <motion.div
           initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
+          viewport={{ once: true }}
+          whileInView={{ opacity: 1 }}
         >
-          <div
-            ref={carouselRef}
-            onScroll={handleScroll}
-            className="flex gap-5 overflow-x-auto scrollbar-hide pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          <Carousel
+            className="w-full"
+            opts={{
+              align: "start",
+              loop: true,
+            }}
+            setApi={setApi}
           >
-            {projects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
-            ))}
-          </div>
+            <CarouselContent className="-ml-5">
+              {projects.map((project) => (
+                <CarouselItem
+                  className="basis-[320px] pl-5 sm:basis-[340px]"
+                  key={project.slug}
+                >
+                  <ProjectCard project={project} />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
         </motion.div>
 
         {/* Pagination */}
-        <div className="flex justify-center gap-2 mt-8">
-          {projects.map((_, index) => (
+        <div className="mt-8 flex justify-center gap-2">
+          {Array.from({ length: count }).map((_, index) => (
             <button
-              key={index}
-              onClick={() => {
-                if (carouselRef.current) {
-                  const cardWidth = 340;
-                  carouselRef.current.scrollTo({
-                    left: index * cardWidth,
-                    behavior: "smooth",
-                  });
-                }
-              }}
-              className={`transition-all duration-300 rounded-full ${
-                index === activeIndex
-                  ? "w-2 h-2 bg-primary"
-                  : "w-2 h-2 bg-muted-foreground/30 hover:bg-muted-foreground/50"
-              }`}
               aria-label={`Go to project ${index + 1}`}
+              className={`rounded-full transition-all duration-300 ${
+                index === current
+                  ? "h-2 w-2 bg-primary"
+                  : "h-2 w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50"
+              }`}
+              key={index}
+              onClick={() => api?.scrollTo(index)}
             />
           ))}
         </div>
@@ -153,33 +141,33 @@ export function ProjectsSection() {
 function ProjectCard({
   project,
 }: {
-  project: (typeof projects)[number];
+  project: ReturnType<typeof getProjectList>[number];
 }) {
   return (
-    <div className="group relative flex-shrink-0 w-[320px] sm:w-[340px]">
-      <div className="relative rounded-2xl overflow-hidden bg-card border border-border/40 hover:border-border/70 transition-all duration-300">
+    <div className="group relative block flex-shrink-0">
+      <div className="relative overflow-hidden rounded-2xl border border-border/40 bg-card transition-all duration-300 hover:border-border/70">
         {/* Image */}
         <div className="relative aspect-[4/3] overflow-hidden">
           <img
-            src={project.image}
             alt={project.title}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            src={getProjectImage(project.category)}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-background via-background/40 to-transparent" />
         </div>
 
         {/* Info Overlay */}
-        <div className="absolute bottom-0 left-0 right-0 p-5">
+        <div className="absolute right-0 bottom-0 left-0 p-5">
           <div className="flex items-end justify-between">
             <div>
-              <span className="inline-block text-[11px] font-medium text-primary uppercase tracking-wider mb-2">
-                {project.tag}
+              <span className="mb-2 inline-block font-medium text-[11px] text-primary uppercase tracking-wider">
+                {project.category}
               </span>
-              <h3 className="text-base font-semibold text-foreground">
+              <h3 className="font-semibold text-base text-foreground">
                 {project.title}
               </h3>
             </div>
-            <div className="flex size-10 items-center justify-center rounded-full bg-muted/80 backdrop-blur-sm cursor-pointer hover:bg-muted transition-colors">
+            <div className="flex size-10 cursor-pointer items-center justify-center rounded-full bg-muted/80 backdrop-blur-sm transition-colors hover:bg-muted">
               <IconArrowUpRight className="size-4 text-foreground" />
             </div>
           </div>
