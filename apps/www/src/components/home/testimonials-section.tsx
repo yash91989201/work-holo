@@ -1,4 +1,4 @@
-import { IconStarFilled, IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
+import { IconQuote, IconStarFilled, IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import { motion } from "motion/react";
 import React, { useState, useEffect, useRef } from "react";
 
