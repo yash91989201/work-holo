@@ -1,171 +1,140 @@
 # AGENTS.md
 
-> **Purpose:** This file defines mandatory tooling rules and workflow patterns for AI agents operating in this codebase.
-All rules are non-negotiable unless explicitly stated otherwise.
-
----
-
-## Table of Contents
-
-1. [Communication Style — Caveman Mode](#0-communication-style--caveman-mode)
-2. [Browser Automation — `agent-browser`](#1-browser-automation--agent-browser)
-3. [Frontend API — oRPC + TanStack Query](#2-frontend-api--orpc--tanstack-query)
-4. [Context-Mode — Mandatory Routing Rules](#3-context-mode--mandatory-routing-rules)
+> Mandatory tooling rules and workflow patterns. All rules non-negotiable unless stated otherwise.
 
 ---
 
 ## 0. Communication Style — Caveman Mode
 
-**Rule:** Always active. No exceptions. No revert after many turns. No filler drift.
+**Always active. No exceptions.**
 
-- Terse like caveman. Technical substance exact. Only fluff die.
-- Drop: articles, filler (`just` / `really` / `basically`), pleasantries, hedging.
-- Fragments OK. Short synonyms. Code unchanged.
-- Pattern: `[thing] [action] [reason]. [next step].`
+- Terse. Technical. No filler (`just`, `really`, `basically`), no pleasantries, no hedging.
+- Fragments OK. Short synonyms. Pattern: `[thing] [action] [reason]. [next step].`
 - Code / commits / PRs: write normally.
-- Off: user says `"stop caveman"` or `"normal mode"`.
+- Disable: user says `"stop caveman"` or `"normal mode"`.
 
 ---
 
 ## 1. Browser Automation — `agent-browser`
 
-Run `agent-browser --help` for the full reference.
-
-### Core Commands
-
 ```sh
-agent-browser open <url>       # Navigate to a URL
+agent-browser open <url>       # Navigate to URL
 agent-browser snapshot -i      # List interactive elements (refs: @e1, @e2, …)
-agent-browser click @e1        # Click an element by ref
-agent-browser fill @e2 "text"  # Fill an input by ref
+agent-browser click @e1        # Click element
+agent-browser fill @e2 "text"  # Fill input
 ```
 
-> **Important:** Re-snapshot after every page change before interacting with new elements.
+> Re-snapshot after every page change before interacting with new elements.
 
 ---
 
 ## 2. Frontend API — oRPC + TanStack Query
 
-All API calls **must** use the `queryUtils` + TanStack Query pattern. Never call procedures directly.
+**Never call procedures directly. Always use `queryUtils` + TanStack Query.**
 
-### Operation Patterns
-
-| Operation | Required Pattern |
-| --- | --- |
+| Operation | Pattern |
+|-----------|---------|
 | Reads | `useSuspenseQuery` (preferred) or `useQuery` |
 | Writes | `useMutation` |
-| Cache invalidation | Inside `onSuccess` only, via `invalidateQueries` |
+| Cache invalidation | `invalidateQueries` inside `onSuccess` only |
 
-### Rules
+**Never:**
+- Import or use raw `client` directly
+- Call RPC procedures outside React Query
+- Invalidate queries outside mutation lifecycle
+- Manually construct query keys
 
-- Always use `queryUtils` — **never** the raw `client`.
-- Never call RPC procedures directly inside components.
-- Inputs/outputs are type-safe and inferred from backend schemas.
-- Native TanStack options (`staleTime`, `enabled`, `onError`, etc.) are valid via `queryOptions` / `mutationOptions`.
-- Never manually construct query keys.
-
-### Common Mistakes to Avoid
-
-- Importing or using the raw `client` directly.
-- Calling RPC procedures outside React Query.
-- Invalidating queries outside the mutation lifecycle.
-- Manually constructing query keys.
-
-📖 Reference: [`docs/guides/api-client-usage.md`](docs/guides/api-client-usage.md)
+📖 Ref: [`docs/guides/api-client-usage.md`](docs/guides/api-client-usage.md)
 
 ---
 
 ## 3. Context-Mode — Mandatory Routing Rules
 
-> **Critical:** These rules are **not optional**. A single unrouted command can dump 56 KB into context and waste the entire session. Follow the routing rules exactly.
-
----
+> **Critical:** One unrouted command can dump 56 KB into context. Follow exactly.
 
 ### 3.1 Blocked Commands
 
-The following commands are **intercepted and blocked** by the context-mode plugin. Do not retry them in any form.
+| Blocked | Use Instead |
+|---------|-------------|
+| `curl` / `wget` | `context-mode_ctx_fetch_and_index(url, source)` or `context-mode_ctx_execute(language: "javascript", code: "const r = await fetch(...)")` |
+| Inline HTTP (`fetch('http`, `requests.get(`, `requests.post(`, `http.get(`, `http.request(`) | `context-mode_ctx_execute(language, code)` |
+| Direct URL fetching | `context-mode_ctx_fetch_and_index(url, source)` → `context-mode_ctx_search(queries)` |
 
-#### `curl` / `wget` — BLOCKED
+### 3.2 Redirected Tools
 
-**Do not use.** Use these instead:
+**Shell** — only permitted for short-output commands: `git`, `mkdir`, `rm`, `mv`, `cd`, `ls`, `npm install`, `pip install`
+- Multi-command / long output → `context-mode_ctx_batch_execute(commands, queries)`
+- Single sandbox run → `context-mode_ctx_execute(language: "shell", code: "...")`
 
-- `context-mode_ctx_fetch_and_index(url, source)` — fetch and index web pages.
-- `context-mode_ctx_execute(language: "javascript", code: "const r = await fetch(...)")` — run HTTP calls in sandbox.
-
-#### Inline HTTP calls — BLOCKED
-
-Shell commands containing `fetch('http`, `requests.get(`, `requests.post(`, `http.get(`, or `http.request(` are blocked.
-
-**Use instead:** `context-mode_ctx_execute(language, code)` to run HTTP calls in sandbox.
-
-#### Direct URL fetching — BLOCKED
-
-**Use instead:** `context-mode_ctx_fetch_and_index(url, source)` → then `context-mode_ctx_search(queries)`.
-
----
-
-### 3.2 Redirected Tools — Use Sandbox Equivalents
-
-#### Shell (output > 20 lines)
-
-Shell is **only** permitted for short-output commands:
-`git`, `mkdir`, `rm`, `mv`, `cd`, `ls`, `npm install`, `pip install`
-
-For everything else:
-
-- `context-mode_ctx_batch_execute(commands, queries)` — run multiple commands and search in one call.
-- `context-mode_ctx_execute(language: "shell", code: "...")` — only stdout enters context.
-
-#### File Reading
-
+**File Reading:**
 | Intent | Tool |
-| --- | --- |
-| Reading a file **to edit it** | Read directly (content must be in context) |
-| Reading a file **to analyse/summarise** | `context-mode_ctx_execute_file(path, language, code)` — only your printed summary enters context |
+|--------|------|
+| Edit (content needed in context) | Read directly |
+| Analyse / summarise | `context-mode_ctx_execute_file(path, language, code)` |
 
-#### `grep` / Search (large results)
-
-Search results can flood context.
-
-**Use:** `context-mode_ctx_execute(language: "shell", code: "grep ...")` — only your summary enters context.
-
----
+**grep / Search (large results):** `context-mode_ctx_execute(language: "shell", code: "grep ...")`
 
 ### 3.3 Tool Selection Hierarchy
 
-Use tools in this priority order:
-
-1. **GATHER** — `context-mode_ctx_batch_execute(commands, queries)`
-   Primary tool. Runs all commands, auto-indexes output, returns search results. One call replaces 30+ individual calls.
-
-2. **FOLLOW-UP** — `context-mode_ctx_search(queries: ["q1", "q2", ...])`
-   Query indexed content. Pass **all** questions as an array in one call.
-
-3. **PROCESSING** — `context-mode_ctx_execute(language, code)` or `context-mode_ctx_execute_file(path, language, code)`
-   Sandbox execution. Only stdout enters context.
-
-4. **WEB** — `context-mode_ctx_fetch_and_index(url, source)` → then `context-mode_ctx_search(queries)`
-   Fetch, chunk, index, query. Raw HTML never enters context.
-
-5. **INDEX** — `context-mode_ctx_index(content, source)`
-   Store content in FTS5 knowledge base for later search. Use descriptive `source` labels.
-
----
+1. **GATHER** — `context-mode_ctx_batch_execute(commands, queries)` — primary tool; replaces 30+ individual calls
+2. **FOLLOW-UP** — `context-mode_ctx_search(queries: ["q1", "q2", ...])` — query indexed content; all questions in one call
+3. **PROCESS** — `context-mode_ctx_execute(language, code)` or `context-mode_ctx_execute_file(path, language, code)`
+4. **WEB** — `context-mode_ctx_fetch_and_index(url, source)` → `context-mode_ctx_search(queries)`
+5. **INDEX** — `context-mode_ctx_index(content, source)` — use descriptive `source` labels
 
 ### 3.4 Output Constraints
 
-- Keep responses **under 500 words**.
-- Write all artifacts (code, configs, PRDs) to **files** — never return them as inline text. Return only: file path + one-line description.
-- Use descriptive source labels when indexing so content can be retrieved via `search(source: "label")`.
-
----
+- Responses: **≤ 500 words**
+- Artifacts (code, configs, PRDs): write to **files only** — return file path + one-line description, never inline text
+- Use descriptive source labels when indexing
 
 ### 3.5 `ctx` Utility Commands
 
 | Command | Action |
-| --- | --- |
-| `ctx stats` | Call the `stats` MCP tool and display full output verbatim |
-| `ctx doctor` | Call the `doctor` MCP tool, run returned shell command, display as checklist |
-| `ctx upgrade` | Call the `upgrade` MCP tool, run returned shell command, display as checklist |
+|---------|--------|
+| `ctx stats` | Call `stats` MCP tool; display output verbatim |
+| `ctx doctor` | Call `doctor` MCP tool; run returned shell command; display as checklist |
+| `ctx upgrade` | Call `upgrade` MCP tool; run returned shell command; display as checklist |
 
-📖 [API Client Usage Guide](docs/technical/api-client-usage.md)
+---
+
+## 4. GitNexus — Code Intelligence
+
+Project indexed as **work-holo** (9215 symbols, 15461 relationships, 300 execution flows).
+
+> If index is stale: run `npx gitnexus analyze` first.
+
+### Always Do
+
+- **Before editing any symbol:** run `gitnexus_impact({target: "symbolName", direction: "upstream"})` → report blast radius (direct callers, affected processes, risk level)
+- **Before committing:** run `gitnexus_detect_changes()` → verify only expected symbols/flows changed
+- **If impact returns HIGH or CRITICAL:** warn user before proceeding
+- Exploring unfamiliar code → `gitnexus_query({query: "concept"})` (not grep)
+- Full symbol context → `gitnexus_context({name: "symbolName"})`
+
+### Never Do
+
+- Edit any symbol without running `gitnexus_impact` first
+- Ignore HIGH or CRITICAL risk warnings
+- Rename symbols with find-and-replace — use `gitnexus_rename`
+- Commit without running `gitnexus_detect_changes()`
+
+### Resources
+
+| Resource | Use For |
+|----------|---------|
+| `gitnexus://repo/work-holo/context` | Codebase overview, index freshness |
+| `gitnexus://repo/work-holo/clusters` | All functional areas |
+| `gitnexus://repo/work-holo/processes` | All execution flows |
+| `gitnexus://repo/work-holo/process/{name}` | Step-by-step execution trace |
+
+### Skill Files
+
+| Task | Skill File |
+|------|-----------|
+| Architecture / "How does X work?" | `.claude/skills/gitnexus/gitnexus-exploring/SKILL.md` |
+| Blast radius / "What breaks if I change X?" | `.claude/skills/gitnexus/gitnexus-impact-analysis/SKILL.md` |
+| Trace bugs / "Why is X failing?" | `.claude/skills/gitnexus/gitnexus-debugging/SKILL.md` |
+| Rename / extract / split / refactor | `.claude/skills/gitnexus/gitnexus-refactoring/SKILL.md` |
+| Tools, resources, schema reference | `.claude/skills/gitnexus/gitnexus-guide/SKILL.md` |
+| Index, status, clean, wiki CLI | `.claude/skills/gitnexus/gitnexus-cli/SKILL.md` |
