@@ -1,6 +1,6 @@
-import { IconPlayerPlay, IconStarFilled } from "@tabler/icons-react";
-import { AnimatePresence, motion } from "motion/react";
-import { useState } from "react";
+import { IconStarFilled, IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
+import { motion } from "motion/react";
+import React, { useState, useEffect, useRef } from "react";
 
 const testimonials = [
   {
@@ -131,237 +131,218 @@ const testimonials = [
   },
 ];
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const },
-  },
-};
+const INTERVAL_MS = 4000;
+const TICK_MS = 50;
+const PAUSE_MS = 6000;
+const SWIPE_THRESHOLD = 50;
 
 export function TestimonialsSection() {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(1);
+  const [isHovered, setIsHovered] = useState(false);
 
-  const getCardIndex = (offset: number) => {
-    const len = testimonials.length;
-    return (activeIndex + offset + len) % len;
+  const isHoveredRef = useRef(false);
+  const pauseUntilRef = useRef(0);
+  const nextAdvanceRef = useRef(Date.now() + INTERVAL_MS);
+  const touchStartX = useRef<number | null>(null);
+
+  // Keep ref in sync with state so the timer always sees the latest value
+  useEffect(() => {
+    isHoveredRef.current = isHovered;
+  }, [isHovered]);
+
+  const pauseAutoScroll = () => {
+    pauseUntilRef.current = Date.now() + PAUSE_MS;
+    setTimeLeft(1);
+  };
+
+  const nextSlide = () => {
+    setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+    pauseAutoScroll();
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+    pauseAutoScroll();
+  };
+
+  const goToSlide = (index: number) => {
+    setCurrentIndex(index);
+    pauseAutoScroll();
+  };
+
+  // Timer effect — runs once, reads latest pause/hover state from refs
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const now = Date.now();
+
+      // Pause on hover or manual pause — push next advance forward
+      // so we get a full interval when interaction ends
+      if (isHoveredRef.current || now < pauseUntilRef.current) {
+        nextAdvanceRef.current = Math.max(
+          nextAdvanceRef.current,
+          now + INTERVAL_MS
+        );
+        return;
+      }
+
+      const remaining = nextAdvanceRef.current - now;
+      setTimeLeft(Math.max(0, remaining / INTERVAL_MS));
+
+      if (remaining <= 0) {
+        setCurrentIndex((idx) => (idx + 1) % testimonials.length);
+        nextAdvanceRef.current = now + INTERVAL_MS;
+      }
+    }, TICK_MS);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  // Swipe handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > SWIPE_THRESHOLD) {
+      diff > 0 ? nextSlide() : prevSlide();
+    }
+    touchStartX.current = null;
   };
 
   return (
-    <section id="testimonials" className="relative bg-background py-20 lg:py-28 overflow-hidden scroll-mt-28">
-      {/* Video Thumbnail */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
-        className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 mb-16"
-      >
-        <div className="relative rounded-2xl overflow-hidden aspect-video group cursor-pointer">
-          <img
-            src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1200&h=675&fit=crop"
-            alt="Team meeting"
-            className="w-full h-full object-cover"
-          />
-          {/* Yellow/Green overlay */}
-          <div className="absolute inset-0 bg-primary/40 mix-blend-multiply" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
-          
-          {/* Play button */}
-        
+    <section id="testimonials" className="py-24 lg:py-32 bg-background overflow-hidden scroll-mt-28">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16 md:mb-24">
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-foreground mb-6">
+            Loved by industry leaders
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            See how our platform is transforming businesses across the globe with unparalleled reliability and performance.
+          </p>
         </div>
-      </motion.div>
 
-      {/* Marquee Text */}
-      <div className="relative mb-16 overflow-hidden">
-        <div className="flex animate-marquee whitespace-nowrap">
-          {Array.from({ length: 10 }).map((_, i) => (
-            <span
-              key={i}
-              className="text-4xl sm:text-5xl lg:text-6xl font-bold text-muted-foreground/10 mx-4"
-            >
-              Clients Feedback /
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* Testimonials Carousel */}
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-80px" }}
-        className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
-      >
-        {/* Avatars */}
-        <motion.div variants={itemVariants} className="flex justify-center mb-8">
-          <div className="flex items-center gap-3">
-            {testimonials.map((testimonial, index) => (
-              <button
-                key={testimonial.id}
-                onClick={() => setActiveIndex(index)}
-                className={`relative transition-all duration-300 ${
-                  index === activeIndex
-                    ? "scale-110 z-10"
-                    : "scale-90 opacity-60 hover:opacity-80"
-                }`}
-              >
-                <div
-                  className={`size-14 rounded-full overflow-hidden border-2 transition-colors duration-300 ${
-                    index === activeIndex
-                      ? "border-primary"
-                      : "border-border/50"
-                  }`}
-                >
-                  <img
-                    src={testimonial.avatar}
-                    alt={testimonial.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              </button>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Name & Title */}
-        <motion.div variants={itemVariants} className="text-center mb-10">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeIndex}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
-            >
-              <h3 className="text-lg font-semibold text-foreground">
-                {testimonials[activeIndex].name}
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                {testimonials[activeIndex].title}
-              </p>
-            </motion.div>
-          </AnimatePresence>
-        </motion.div>
-
-        {/* Cards */}
-        <div className="relative flex items-center justify-center gap-4 lg:gap-6">
-          {/* Left Card */}
-          <motion.div
-            variants={itemVariants}
-            className="hidden lg:block w-[30%] shrink-0"
+        <div className="relative w-full max-w-5xl mx-auto">
+          <div
+            className="relative w-full h-[450px] md:h-[400px] flex justify-center items-center touch-pan-y"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
           >
-            <TestimonialCard
-              testimonial={testimonials[getCardIndex(-1)]}
-              variant="side"
-            />
-          </motion.div>
-
-          {/* Center Card */}
-          <motion.div variants={itemVariants} className="w-full lg:w-[40%] shrink-0">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeIndex}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] as const }}
-              >
-                <TestimonialCard
-                  testimonial={testimonials[activeIndex]}
-                  variant="center"
-                />
-              </motion.div>
-            </AnimatePresence>
-          </motion.div>
-
-          {/* Right Card */}
-          <motion.div
-            variants={itemVariants}
-            className="hidden lg:block w-[30%] shrink-0"
-          >
-            <TestimonialCard
-              testimonial={testimonials[getCardIndex(1)]}
-              variant="side"
-            />
-          </motion.div>
-        </div>
-
-        {/* Pagination Dots */}
-        <motion.div
-          variants={itemVariants}
-          className="flex justify-center gap-2 mt-10"
-        >
-          {testimonials.map((_, index) => (
+            {/* Controls */}
             <button
-              key={index}
-              onClick={() => setActiveIndex(index)}
-              className={`transition-all duration-300 rounded-full ${
-                index === activeIndex
-                  ? "w-6 h-2 bg-primary"
-                  : "w-2 h-2 bg-muted-foreground/30 hover:bg-muted-foreground/50"
-              }`}
-              aria-label={`Go to testimonial ${index + 1}`}
-            />
-          ))}
-        </motion.div>
-      </motion.div>
-    </section>
-  );
-}
+              onClick={prevSlide}
+              className="flex absolute bottom-4 left-4 md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:left-0 md:-left-4 lg:-left-12 z-20 size-10 md:size-12 items-center justify-center rounded-full bg-background/80 backdrop-blur-sm border border-border text-foreground shadow-sm hover:bg-muted transition-colors"
+              aria-label="Previous testimonial"
+            >
+              <IconChevronLeft className="size-5 md:size-6" />
+            </button>
 
-function TestimonialCard({
-  testimonial,
-  variant,
-}: {
-  testimonial: (typeof testimonials)[number];
-  variant: "center" | "side";
-}) {
-  const isCenter = variant === "center";
+            <button
+              onClick={nextSlide}
+              className="flex absolute bottom-4 right-4 md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:right-0 md:-right-4 lg:-right-12 z-20 size-10 md:size-12 items-center justify-center rounded-full bg-background/80 backdrop-blur-sm border border-border text-foreground shadow-sm hover:bg-muted transition-colors"
+              aria-label="Next testimonial"
+            >
+              <IconChevronRight className="size-5 md:size-6" />
+            </button>
 
-  return (
-    <div
-      className={`relative rounded-2xl p-6 lg:p-8 transition-all duration-300 ${
-        isCenter
-          ? "bg-card border border-border/50 shadow-lg"
-          : "bg-card/40 border border-border/20 opacity-40"
-      }`}
-    >
-      {/* Stars */}
-      <div className="flex justify-center gap-1 mb-4">
-        {Array.from({ length: testimonial.rating }).map((_, i) => (
-          <IconStarFilled
-            key={i}
-            className={`size-4 ${
-              isCenter ? "text-primary" : "text-primary/50"
-            }`}
-          />
-        ))}
+            {/* Cards */}
+            {testimonials.map((t, index) => {
+              let offset = index - currentIndex;
+              if (offset > testimonials.length / 2) offset -= testimonials.length;
+              if (offset < -testimonials.length / 2) offset += testimonials.length;
+
+              const isCenter = offset === 0;
+              const isLeft = offset === -1;
+              const isRight = offset === 1;
+
+              let x = "0%";
+              let scale = 0.5;
+              let opacity = 0;
+              let zIndex = 0;
+
+              if (isCenter) {
+                x = "0%";
+                scale = 1;
+                opacity = 1;
+                zIndex = 10;
+              } else if (isLeft) {
+                x = "-105%";
+                scale = 0.75;
+                opacity = 0.6;
+                zIndex = 5;
+              } else if (isRight) {
+                x = "105%";
+                scale = 0.75;
+                opacity = 0.6;
+                zIndex = 5;
+              } else {
+                x = offset > 0 ? "200%" : "-200%";
+                scale = 0.5;
+                opacity = 0;
+                zIndex = 0;
+              }
+
+              return (
+                <motion.div
+                  key={t.id}
+                  animate={{ x, scale, opacity, zIndex }}
+                  transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
+                  className="absolute w-[90%] sm:w-[80%] md:w-[400px] bg-card border border-border/50 rounded-3xl p-6 md:p-8 shadow-xl flex flex-col h-[320px]"
+                >
+                  <div className="flex gap-1 mb-4">
+                    {Array.from({ length: t.rating }).map((_, i) => (
+                      <IconStarFilled key={i} className="size-4 text-yellow-500 drop-shadow-sm" />
+                    ))}
+                  </div>
+                  <p className="text-foreground/90 text-sm md:text-base leading-relaxed mb-6 flex-1 overflow-hidden line-clamp-6">
+                    &ldquo;{t.quote}&rdquo;
+                  </p>
+                  <div className="flex items-center gap-4 mt-auto pt-4 border-t border-border/50">
+                    <img
+                      src={t.avatar}
+                      alt={t.name}
+                      className="size-12 rounded-full object-cover border border-border"
+                    />
+                    <div>
+                      <h4 className="font-semibold text-foreground text-sm">{t.name}</h4>
+                      <p className="text-xs text-muted-foreground">{t.title}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* Pill Indicators */}
+          <div className="flex justify-center items-center gap-2 mt-8">
+            {testimonials.map((_, i) => {
+              const isActive = i === currentIndex;
+              return (
+                <button
+                  key={i}
+                  onClick={() => goToSlide(i)}
+                  className={`relative h-2 rounded-full transition-all duration-500 ease-out ${
+                    isActive ? "w-10 bg-muted" : "w-2 bg-muted hover:bg-muted-foreground"
+                  }`}
+                  aria-label={`Go to slide ${i + 1}`}
+                >
+                  {isActive && (
+                    <motion.div
+                      className="absolute top-0 left-0 h-full rounded-full bg-foreground"
+                      animate={{ width: `${timeLeft * 100}%` }}
+                      transition={{ duration: 0.05 }}
+                    />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </div>
-
-      {/* Quote */}
-      <p
-        className={`text-center leading-relaxed ${
-          isCenter
-            ? "text-sm text-muted-foreground"
-            : "text-xs text-muted-foreground/60"
-        }`}
-      >
-        {testimonial.quote}
-      </p>
-    </div>
+    </section>
   );
 }
