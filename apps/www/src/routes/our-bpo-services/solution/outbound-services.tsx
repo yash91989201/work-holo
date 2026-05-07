@@ -110,7 +110,7 @@ const pageData: WebPageProps = {
       },
     ],
     showcaseImage: {
-      src: "https://picsum.photos/800/600?random=1",
+      src: "/assets/outbound-services-02.jpg",
       alt: "Outbound Call Center Services Showcase",
     },
     terminal: {
@@ -183,7 +183,7 @@ const pageData: WebPageProps = {
       ],
       closingText:
         "You'll receive key metrics and analytics to let you know what's working.",
-      imageSrc: "https://picsum.photos/800/600?random=2",
+      imageSrc: "/assets/outbound-services.jpeg",
       imageAlt: "Call Center Benefits",
       imagePosition: "right",
       cta: {
@@ -209,7 +209,7 @@ const pageData: WebPageProps = {
       ],
       closingText:
         "Reach out to the experts at Confie BPO for help and guidance.",
-      imageSrc: "https://picsum.photos/800/600?random=3",
+      imageSrc: "/assets/outbound-services-01.png",
       imageAlt: "Call Center Needs Analysis",
       imagePosition: "left",
     },

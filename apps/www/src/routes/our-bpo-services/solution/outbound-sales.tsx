@@ -83,7 +83,7 @@ const pageData : WebPageProps= {
 }
 ],
 "showcaseImage": {
-"src": "https://picsum.photos/800/600?random=1",
+"src": "/assets/outbound-sales-01.jpg",
 "alt": "Confie BPO Operations"
 },
 "terminal": {
@@ -159,7 +159,7 @@ const pageData : WebPageProps= {
 }
 ],
 "closingText": "Get nearshore specialists who are much more than a telemarketer.",
-"imageSrc": "https://picsum.photos/800/600?random=2",
+"imageSrc": "/assets/outbound-sales.webp",
 "imageAlt": "Professional Sales Environment",
 "imagePosition": "right",
 "cta": {

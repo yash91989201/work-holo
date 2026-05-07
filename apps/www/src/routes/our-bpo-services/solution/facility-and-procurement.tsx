@@ -79,7 +79,7 @@ const pageData : WebPageProps={
     }
   ],
   "showcaseImage": {
-    "src": "https://picsum.photos/800/600?random=1",
+    "src": "/assets/facility-and-procurement-01.jpg",
     "alt": "Facility and procurement workflow visualization"
   },
   "terminal": {
@@ -134,7 +134,7 @@ const pageData : WebPageProps={
 "description": "Confie BPO provides a team of agents who learn your business needs and become the subject matter experts you need. Our statistical knowledge and logistics experience means that we can provide a streamlined approach to management, upkeep, repair, and more.",
 "bullets": [],
 "closingText": "Ultimately, we bring technology, tools, and talent to the table. All of this means we are the optimal choice for all of your BPO provider needs!",
-"imageSrc": "https://picsum.photos/800/600?random=2",
+"imageSrc": "/assets/facility-and-procurement.webp",
 "imageAlt": "BPO team collaborating in a meeting",
 "imagePosition": "left",
 "cta": {
@@ -147,7 +147,7 @@ const pageData : WebPageProps={
 "description": "When you hire Confie BPO services, you get an expert team to help take care of your different facility and procurement management needs. On top of that, you get an opportunity to unlock your company’s full potential.",
 "bullets": [],
 "closingText": "With our BPO, you get additional human resources. We provide the tools and the talent, and we can take care of every aspect of facility and procurement management.",
-"imageSrc": "https://picsum.photos/800/600?random=3",
+"imageSrc": "/assets/facility-and-procurement-02.jpg",
 "imageAlt": "Dart hitting bullseye representing growth potential",
 "imagePosition": "right"
 },
@@ -156,7 +156,7 @@ const pageData : WebPageProps={
 "description": "The pulse of your company is facility and procurement management. When employees arrive at work, they are confident that their buildings will be in good condition and that they will have all of the supplies they need.",
 "bullets": [],
 "closingText": "That’s why you need Confie BPO. With our BPO, you can have qualified experts take care of all your facility and procurement needs, freeing up your time for more important things.",
-"imageSrc": "https://picsum.photos/800/600?random=4",
+"imageSrc": "/assets/facility-and-procurement-03.png",
 "imageAlt": "Modern office and building management environment",
 "imagePosition": "left"
 },
@@ -165,7 +165,7 @@ const pageData : WebPageProps={
 "description": "Unfortunately, taking care of all facility management and procurement needs eats into your time. If you’re not careful, you’ll spend all of your time and energy just keeping things going instead of finding ways to grow.",
 "bullets": [],
 "closingText": "We understand how to take care of all your facility and procurement needs effectively and efficiently. By saving your company both time and money, our BPO can help your business grow.",
-"imageSrc": "https://picsum.photos/800/600?random=5",
+"imageSrc": "/assets/facility-and-procurement-04.jpeg",
 "imageAlt": "Professionals in a meeting room environment",
 "imagePosition": "right"
 }

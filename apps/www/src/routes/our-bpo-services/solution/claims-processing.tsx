@@ -100,7 +100,7 @@ const pageData : WebPageProps={
 }
 ],
 "showcaseImage": {
-"src": "https://picsum.photos/800/600?random=1",
+"src": "/assets/claim-processing-01.webp",
 "alt": "Insurance industry experts working together"
 },
 "terminal": {
@@ -173,7 +173,7 @@ const pageData : WebPageProps={
 }
 ],
 "closingText": "We tirelessly work on the administrative tasks necessary to get their claims approved.",
-"imageSrc": "https://picsum.photos/800/600?random=2",
+"imageSrc": "/assets/claim-processing.png",
 "imageAlt": "Customer service agent processing insurance documents",
 "imagePosition": "right",
 "cta": {

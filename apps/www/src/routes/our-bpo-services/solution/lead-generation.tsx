@@ -91,7 +91,7 @@ const pageData : WebPageProps ={
 }
 ],
 "showcaseImage": {
-"src": "https://picsum.photos/800/600?random=1",
+"src": "/assets/lead-generation-01.jpg",
 "alt": "Team collaborating in a modern office environment"
 },
 "terminal": {
@@ -172,7 +172,7 @@ const pageData : WebPageProps ={
 }
 ],
 "closingText": "Maximize the impact of each and every prospecting call.",
-"imageSrc": "https://picsum.photos/800/600?random=2",
+"imageSrc": "/assets/lead-generation.webp",
 "imageAlt": "Professional overlooking sunset view",
 "imagePosition": "left",
 "cta": {
@@ -194,7 +194,7 @@ const pageData : WebPageProps ={
 }
 ],
 "closingText": "Review testimonials to learn about each provider's communication skills.",
-"imageSrc": "https://picsum.photos/800/600?random=3",
+"imageSrc": "/assets/lead-generation-02.jpg",
 "imageAlt": "Digital connectivity concept",
 "imagePosition": "right",
 "cta": {

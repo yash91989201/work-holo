@@ -95,7 +95,7 @@ const pageData : WebPageProps={
 }
 ],
 "showcaseImage": {
-"src": "https://picsum.photos/800/600?random=1",
+"src": "/assets/inbound-sales-01.jpeg",
 "alt": "Business analytics and strategy"
 },
 "terminal": {
@@ -165,7 +165,7 @@ const pageData : WebPageProps={
 }
 ],
 "closingText": "Confie BPO understands that reliable sales require constant time, attention, and effort.",
-"imageSrc": "https://picsum.photos/800/600?random=2",
+"imageSrc": "/assets/inbound-sales.jpg",
 "imageAlt": "Team collaborating during a sale",
 "imagePosition": "left",
 "cta": {

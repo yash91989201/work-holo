@@ -87,7 +87,7 @@ const pageData: WebPageProps = {
       },
     ],
     showcaseImage: {
-      src: "https://picsum.photos/800/600?random=1",
+      src: "/assets/customer-retention-01.jpg",
       alt: "BPO Call Center Workflow",
     },
     terminal: {
@@ -156,7 +156,7 @@ const pageData: WebPageProps = {
         },
       ],
       closingText: "We are here to make that revolution happen.",
-      imageSrc: "https://picsum.photos/800/600?random=2",
+      imageSrc: "/assets/customer-retention.webp",
       imageAlt: "Business meeting",
       imagePosition: "left",
       cta: {
@@ -180,7 +180,7 @@ const pageData: WebPageProps = {
         },
       ],
       closingText: "Expert agents at your service.",
-      imageSrc: "https://picsum.photos/800/600?random=3",
+      imageSrc: "/assets/customer-retention-02.jpg",
       imageAlt: "Customer service agent",
       imagePosition: "right",
       cta: {
@@ -207,7 +207,7 @@ const pageData: WebPageProps = {
         },
       ],
       closingText: "Protect your resource while making a difference.",
-      imageSrc: "https://picsum.photos/800/600?random=4",
+      imageSrc: "/assets/customer-retention-03.jpeg",
       imageAlt: "Team collaboration",
       imagePosition: "left",
       cta: {

@@ -92,7 +92,7 @@ const pageData : WebPageProps= {
 }
 ],
 "showcaseImage": {
-"src": "https://picsum.photos/800/600?random=1",
+"src": "/assets/customer-service-01.jpg",
 "alt": "Confie BPO Customer Service Agent"
 },
 "terminal": {
@@ -148,7 +148,7 @@ const pageData : WebPageProps= {
 }
 ],
 "closingText": "We elevate your client communications and ensure every interaction builds loyalty.",
-"imageSrc": "https://picsum.photos/800/600?random=2",
+"imageSrc": "/assets/customer-service.webp",
 "imageAlt": "BPO Operations",
 "imagePosition": "right",
 "cta": {

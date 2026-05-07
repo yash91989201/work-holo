@@ -86,7 +86,7 @@ const pageData : WebPageProps={
 }
 ],
 "showcaseImage": {
-"src": "https://picsum.photos/800/600?random=1",
+"src": "/assets/direct-response-marketing-01.webp",
 "alt": "Direct Response Marketing Visual"
 },
 "terminal": {
@@ -155,7 +155,7 @@ const pageData : WebPageProps={
 }
 ],
 "closingText": "Confie BPO is here to put your direct response marketing on the map!",
-"imageSrc": "https://picsum.photos/800/600?random=2",
+"imageSrc": "/assets/direct-response-marketing.jpg",
 "imageAlt": "Call Center Agents",
 "imagePosition": "left"
 },
@@ -173,7 +173,7 @@ const pageData : WebPageProps={
 }
 ],
 "closingText": "Innovate and elevate your business with Confie BPO.",
-"imageSrc": "https://picsum.photos/800/600?random=3",
+"imageSrc": "/assets/direct-response-marketing-02.jpg",
 "imageAlt": "Digital Hand Connection",
 "imagePosition": "right"
 }

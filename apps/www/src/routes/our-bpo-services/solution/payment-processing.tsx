@@ -79,7 +79,7 @@ const pageData : WebPageProps={
 }
 ],
 "showcaseImage": {
-"src": "https://picsum.photos/800/600?random=1",
+"src": "/assets/payment-processing-01.png",
 "alt": "Confie BPO Payment Processing Showcase"
 },
 "terminal": {
@@ -134,7 +134,7 @@ const pageData : WebPageProps={
 { "label": "Adaptability", "detail": "Our team can scale and adjust as your business grows." }
 ],
 "closingText": "Committed to your financial success.",
-"imageSrc": "https://picsum.photos/800/600?random=2",
+"imageSrc": "/assets/payment-processing.webp",
 "imageAlt": "Business analytics dashboard",
 "imagePosition": "right",
 "cta": {
@@ -150,7 +150,7 @@ const pageData : WebPageProps={
 { "label": "Travel", "detail": "High-volume booking transaction expertise." }
 ],
 "closingText": "Reliable support for every industry.",
-"imageSrc": "https://picsum.photos/800/600?random=3",
+"imageSrc": "/assets/payment-processing-02.png",
 "imageAlt": "Professional business meeting",
 "imagePosition": "left"
 }

@@ -83,7 +83,7 @@ const pageData: WebPageProps = {
 }
 ],
 "showcaseImage": {
-"src": "https://picsum.photos/800/600?random=1",
+"src": "/assets/back-office-processing-01.webp",
 "alt": "BPO Workflow Illustration"
 },
 "terminal": {
@@ -152,7 +152,7 @@ const pageData: WebPageProps = {
 }
 ],
 "closingText": "Confie is the BPO provider you need!",
-"imageSrc": "/assets/confie-bpo.webp",
+"imageSrc": "/assets/back-office-processing.webp",
 "imageAlt": "Agents working in office",
 "imagePosition": "left",
 "cta": {
@@ -170,7 +170,7 @@ const pageData: WebPageProps = {
 }
 ],
 "closingText": "Find out how Confie BPO can turn your company into a growth machine.",
-"imageSrc": "https://picsum.photos/800/600?random=3",
+"imageSrc": "/assets/back-office-processing-02.webp",
 "imageAlt": "Team analyzing business charts",
 "imagePosition": "right"
 }

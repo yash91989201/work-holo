@@ -101,7 +101,7 @@ const pagedata : WebPageProps={
 }
 ],
 "showcaseImage": {
-"src": "https://picsum.photos/800/600?random=1",
+"src": "/assets/account-and-collections-01.jpg",
 "alt": "Confie BPO Team"
 },
 "terminal": {
@@ -171,7 +171,7 @@ const pagedata : WebPageProps={
 }
 ],
 "closingText": "Confie BPO has the expertise you deserve.",
-"imageSrc": "/assets/confie-bpo.webp",
+"imageSrc": "/assets/account-and-collections.png",
 "imageAlt": "Financial Experts",
 "imagePosition": "right",
 "cta": {

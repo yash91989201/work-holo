@@ -139,7 +139,7 @@ const pageData : WebPageProps = {
 }
 ],
 "showcaseImage": {
-"src": "https://picsum.photos/800/600?random=1",
+"src": "/assets/inbound-services-01.jpg",
 "alt": "Confie BPO Inbound Operations"
 },
 "terminal": {
@@ -198,7 +198,7 @@ const pageData : WebPageProps = {
 }
 ],
 "closingText": "Save money by hiring an inbound call center in just facility and hardware costs alone.",
-"imageSrc": "https://picsum.photos/800/600?random=2",
+"imageSrc": "/assets/inbound-services.jpg",
 "imageAlt": "BPO Cost Statistics",
 "imagePosition": "right",
 "cta": {

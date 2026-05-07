@@ -91,7 +91,7 @@ const pageData : WebPageProps={
 }
 ],
 "showcaseImage": {
-"src": "https://picsum.photos/800/600?random=1",
+"src": "/assets/technical-support-02.jpg",
 "alt": "Technical support team at work"
 },
 "terminal": {
@@ -162,7 +162,7 @@ const pageData : WebPageProps={
 }
 ],
 "closingText": "Whether you need to reset a password or upgrade security, our agents can get you where you need to go.",
-"imageSrc": "https://picsum.photos/800/600?random=2",
+"imageSrc": "/assets/technical-support.jpg",
 "imageAlt": "Support agent helping customer",
 "imagePosition": "right",
 "cta": {
