@@ -117,7 +117,7 @@ export class CacheManager {
     const patterns = [
       `${this.DECISION_PREFIX}*:${orgId}:*`,
       `${this.BITSET_PREFIX}*:${orgId}:*`,
-      `${this.PERM_MAP_PREFIX}*:${orgId}`,
+      `${this.PERM_MAP_PREFIX}*:${orgId}:*`,
     ];
 
     const keys: string[] = [];
@@ -219,10 +219,11 @@ export class CacheManager {
   async getCachedPermissionMap(
     userId: string,
     orgId: string,
-    currentVersion: number
+    currentVersion: number,
+    scopeKey?: string
   ): Promise<PermissionMap | null> {
     const redis = await this.getRedisClient();
-    const cacheKey = `${this.PERM_MAP_PREFIX}${userId}:${orgId}`;
+    const cacheKey = `${this.PERM_MAP_PREFIX}${userId}:${orgId}:${this.buildScopeKey(scopeKey)}`;
     const raw = await redis.get(cacheKey);
 
     if (!raw) return null;
@@ -243,10 +244,11 @@ export class CacheManager {
   async setCachedPermissionMap(
     userId: string,
     orgId: string,
-    permissionMap: PermissionMap
+    permissionMap: PermissionMap,
+    scopeKey?: string
   ): Promise<void> {
     const redis = await this.getRedisClient();
-    const cacheKey = `${this.PERM_MAP_PREFIX}${userId}:${orgId}`;
+    const cacheKey = `${this.PERM_MAP_PREFIX}${userId}:${orgId}:${this.buildScopeKey(scopeKey)}`;
     await redis.send("SET", [
       cacheKey,
       JSON.stringify(permissionMap),
@@ -260,7 +262,25 @@ export class CacheManager {
    */
   async invalidatePermissionMap(userId: string, orgId: string): Promise<void> {
     const redis = await this.getRedisClient();
-    const cacheKey = `${this.PERM_MAP_PREFIX}${userId}:${orgId}`;
-    await redis.send("DEL", [cacheKey]);
+    const pattern = `${this.PERM_MAP_PREFIX}${userId}:${orgId}:*`;
+
+    const keys: string[] = [];
+    let cursor = "0";
+
+    do {
+      const result = (await redis.send("SCAN", [
+        cursor,
+        "MATCH",
+        pattern,
+        "COUNT",
+        "100",
+      ])) as [string, string[]];
+      cursor = result[0];
+      keys.push(...result[1]);
+    } while (cursor !== "0");
+
+    if (keys.length > 0) {
+      await redis.send("DEL", keys);
+    }
   }
 }

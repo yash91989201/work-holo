@@ -8,8 +8,12 @@ import {
 import { and, count, desc, eq, ilike, or } from "drizzle-orm";
 import { z } from "zod";
 import { adminProcedure, superAdminProcedure } from "../../index";
+import { callLogsAdminRouter } from "./call-logs";
+import { dialerAdminRouter } from "./dialer";
 
 export const adminRouter = {
+  dialer: dialerAdminRouter,
+  callLogs: callLogsAdminRouter,
   listUsers: adminProcedure
     .input(
       z.object({

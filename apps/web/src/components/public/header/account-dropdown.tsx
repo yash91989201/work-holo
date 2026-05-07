@@ -78,7 +78,7 @@ export function AccountDropdown() {
       <DropdownMenuTrigger
         nativeButton={false}
         render={
-          <Avatar className="h-9 w-9 ring-2 ring-border/50 ring-offset-2 ring-offset-background transition-all hover:ring-primary/50 cursor-pointer">
+          <Avatar className="h-9 w-9 cursor-pointer ring-2 ring-border/50 ring-offset-2 ring-offset-background transition-all hover:ring-primary/50">
             <AvatarImage
               alt={user.name ?? "User"}
               src={user.image ?? undefined}
@@ -101,7 +101,7 @@ export function AccountDropdown() {
                 alt={user.name ?? "User"}
                 src={user.image ?? undefined}
               />
-              <AvatarFallback className="bg-orange-500 font-semibold text-xl text-white">
+              <AvatarFallback className="bg-orange-500 font-semibold text-white text-xl">
                 {initials}
               </AvatarFallback>
             </Avatar>

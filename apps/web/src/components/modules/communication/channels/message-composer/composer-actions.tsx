@@ -61,34 +61,38 @@ export function ComposerActions({
     <div className="flex items-center gap-2">
       <TooltipProvider>
         <Tooltip>
-          <TooltipTrigger render={<InputGroupButton
-              aria-label={
-                isRecording ? "Stop recording" : "Start voice message"
-              }
-              className={cn(
-                "transition-all duration-200",
-                isRecording && "relative"
-              )}
-              disabled={isAudioDisabled}
-              onClick={onVoiceRecord}
-              size="icon-sm"
-              title={
-                isAudioDisabled
-                  ? "Clear text to record audio"
-                  : isRecording
-                    ? "Stop recording"
-                    : "Start voice message"
-              }
-              variant="ghost"
-            >
-              <IconMicrophone
+          <TooltipTrigger
+            render={
+              <InputGroupButton
+                aria-label={
+                  isRecording ? "Stop recording" : "Start voice message"
+                }
                 className={cn(
-                  "size-4",
-                  isAudioDisabled && "opacity-50",
-                  isRecording && "text-red-500"
+                  "transition-all duration-200",
+                  isRecording && "relative"
                 )}
-              />
-            </InputGroupButton>} />
+                disabled={isAudioDisabled}
+                onClick={onVoiceRecord}
+                size="icon-sm"
+                title={
+                  isAudioDisabled
+                    ? "Clear text to record audio"
+                    : isRecording
+                      ? "Stop recording"
+                      : "Start voice message"
+                }
+                variant="ghost"
+              >
+                <IconMicrophone
+                  className={cn(
+                    "size-4",
+                    isAudioDisabled && "opacity-50",
+                    isRecording && "text-red-500"
+                  )}
+                />
+              </InputGroupButton>
+            }
+          />
           {isAudioDisabled && (
             <TooltipContent>
               <p>Clear text to record audio</p>
@@ -98,15 +102,19 @@ export function ComposerActions({
       </TooltipProvider>
 
       <Popover>
-        <PopoverTrigger render={<InputGroupButton
-            className="transition-all duration-200"
-            disabled={isTextDisabled}
-            size="icon-sm"
-            title="Add emoji (⌘+E)"
-            variant="ghost"
-          >
-            <IconMoodSmile className={cn(isTextDisabled && "opacity-50")} />
-          </InputGroupButton>} />
+        <PopoverTrigger
+          render={
+            <InputGroupButton
+              className="transition-all duration-200"
+              disabled={isTextDisabled}
+              size="icon-sm"
+              title="Add emoji (⌘+E)"
+              variant="ghost"
+            >
+              <IconMoodSmile className={cn(isTextDisabled && "opacity-50")} />
+            </InputGroupButton>
+          }
+        />
         <PopoverContent align="start" className="w-80 p-0" side="top">
           <EmojiPicker onEmojiSelect={onEmojiSelect}>
             <EmojiPickerSearch className="h-6" placeholder="Search emoji..." />

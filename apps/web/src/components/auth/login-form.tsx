@@ -4,7 +4,10 @@ import { useNavigate } from "@tanstack/react-router";
 import { Button } from "@work-holo/ui/components/button";
 import { FieldGroup } from "@work-holo/ui/components/field";
 import { useAppForm } from "@work-holo/ui/components/form/hooks";
-import { InputGroupAddon, InputGroupButton } from "@work-holo/ui/components/input-group";
+import {
+  InputGroupAddon,
+  InputGroupButton,
+} from "@work-holo/ui/components/input-group";
 import { Spinner } from "@work-holo/ui/components/spinner";
 import { authClient } from "@/lib/auth-client";
 import { LogInFormSchema } from "@/lib/schemas/auth";

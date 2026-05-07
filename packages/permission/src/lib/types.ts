@@ -145,6 +145,7 @@ export type PermissionMapEntry = {
 export type PermissionMap = {
   userId: string;
   orgId: string;
+  teamId?: string;
   policyVersion: number;
   permissions: Record<string, boolean>;
   computedAt: number;
@@ -172,6 +173,7 @@ export type PermissionEvent = {
   actorId: string;
   payload: Record<string, unknown>;
   timestamp: number;
+  broadcastOrg?: boolean;
 };
 
 /**

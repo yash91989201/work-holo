@@ -1,9 +1,9 @@
 import { formOptions } from "@tanstack/react-form";
-import { toast } from "sonner";
 import { Button } from "@work-holo/ui/components/button";
 import { FieldGroup } from "@work-holo/ui/components/field";
 import { useAppForm } from "@work-holo/ui/components/form/hooks";
 import { Spinner } from "@work-holo/ui/components/spinner";
+import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 import { ChangePasswordFormSchema } from "@/lib/schemas/settings/security";
 import type { ChangePasswordFormType } from "@/lib/types";
@@ -61,7 +61,7 @@ export function ChangePasswordForm() {
               validators={{
                 onChange: ({ value }) => {
                   if (!value) return "Current password is required";
-                  return undefined;
+                  return;
                 },
               }}
             >
@@ -81,7 +81,7 @@ export function ChangePasswordForm() {
                   if (!value) return "New password is required";
                   if (value.length < 8)
                     return "Password must be at least 8 characters long";
-                  return undefined;
+                  return;
                 },
               }}
             >
@@ -104,7 +104,7 @@ export function ChangePasswordForm() {
                   const newPassword =
                     fieldApi.form.getFieldValue("newPassword");
                   if (value !== newPassword) return "Passwords do not match";
-                  return undefined;
+                  return;
                 },
               }}
             >

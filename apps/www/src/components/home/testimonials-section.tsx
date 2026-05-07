@@ -1,6 +1,6 @@
+import { IconPlayerPlay, IconStarFilled } from "@tabler/icons-react";
+import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
-import { IconStarFilled, IconPlayerPlay } from "@tabler/icons-react";
 
 const testimonials = [
   {
@@ -61,33 +61,36 @@ export function TestimonialsSection() {
   };
 
   return (
-    <section id="testimonials" className="relative bg-background py-20 lg:py-28 overflow-hidden scroll-mt-28">
+    <section
+      className="relative scroll-mt-28 overflow-hidden bg-background py-20 lg:py-28"
+      id="testimonials"
+    >
       {/* Video Thumbnail */}
       <motion.div
+        className="mx-auto mb-16 max-w-5xl px-4 sm:px-6 lg:px-8"
         initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
-        className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 mb-16"
+        viewport={{ once: true }}
+        whileInView={{ opacity: 1, y: 0 }}
       >
-        <div className="relative rounded-2xl overflow-hidden aspect-video group cursor-pointer">
+        <div className="group relative aspect-video cursor-pointer overflow-hidden rounded-2xl">
           <img
-            src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1200&h=675&fit=crop"
             alt="Team meeting"
-            className="w-full h-full object-cover"
+            className="h-full w-full object-cover"
+            src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1200&h=675&fit=crop"
           />
           {/* Yellow/Green overlay */}
           <div className="absolute inset-0 bg-primary/40 mix-blend-multiply" />
           <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
-          
+
           {/* Play button */}
           <div className="absolute inset-0 flex items-center justify-center">
             <motion.div
+              className="flex size-20 cursor-pointer items-center justify-center rounded-full bg-primary shadow-2xl"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
-              className="flex size-20 items-center justify-center rounded-full bg-primary shadow-2xl cursor-pointer"
             >
-              <IconPlayerPlay className="size-8 text-primary-foreground fill-primary-foreground ml-1" />
+              <IconPlayerPlay className="ml-1 size-8 fill-primary-foreground text-primary-foreground" />
             </motion.div>
           </div>
         </div>
@@ -98,8 +101,8 @@ export function TestimonialsSection() {
         <div className="flex animate-marquee whitespace-nowrap">
           {Array.from({ length: 10 }).map((_, i) => (
             <span
+              className="mx-4 font-bold text-4xl text-muted-foreground/10 sm:text-5xl lg:text-6xl"
               key={i}
-              className="text-4xl sm:text-5xl lg:text-6xl font-bold text-muted-foreground/10 mx-4"
             >
               Clients Feedback /
             </span>
@@ -109,36 +112,39 @@ export function TestimonialsSection() {
 
       {/* Testimonials Carousel */}
       <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-80px" }}
         className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
+        initial="hidden"
+        variants={containerVariants}
+        viewport={{ once: true, margin: "-80px" }}
+        whileInView="visible"
       >
         {/* Avatars */}
-        <motion.div variants={itemVariants} className="flex justify-center mb-8">
+        <motion.div
+          className="mb-8 flex justify-center"
+          variants={itemVariants}
+        >
           <div className="flex items-center gap-3">
             {testimonials.map((testimonial, index) => (
               <button
-                key={testimonial.id}
-                onClick={() => setActiveIndex(index)}
                 className={`relative transition-all duration-300 ${
                   index === activeIndex
-                    ? "scale-110 z-10"
+                    ? "z-10 scale-110"
                     : "scale-90 opacity-60 hover:opacity-80"
                 }`}
+                key={testimonial.id}
+                onClick={() => setActiveIndex(index)}
               >
                 <div
-                  className={`size-14 rounded-full overflow-hidden border-2 transition-colors duration-300 ${
+                  className={`size-14 overflow-hidden rounded-full border-2 transition-colors duration-300 ${
                     index === activeIndex
                       ? "border-primary"
                       : "border-border/50"
                   }`}
                 >
                   <img
-                    src={testimonial.avatar}
                     alt={testimonial.name}
-                    className="w-full h-full object-cover"
+                    className="h-full w-full object-cover"
+                    src={testimonial.avatar}
                   />
                 </div>
               </button>
@@ -147,19 +153,19 @@ export function TestimonialsSection() {
         </motion.div>
 
         {/* Name & Title */}
-        <motion.div variants={itemVariants} className="text-center mb-10">
+        <motion.div className="mb-10 text-center" variants={itemVariants}>
           <AnimatePresence mode="wait">
             <motion.div
-              key={activeIndex}
-              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
+              initial={{ opacity: 0, y: 10 }}
+              key={activeIndex}
               transition={{ duration: 0.3 }}
             >
-              <h3 className="text-lg font-semibold text-foreground">
+              <h3 className="font-semibold text-foreground text-lg">
                 {testimonials[activeIndex].name}
               </h3>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 {testimonials[activeIndex].title}
               </p>
             </motion.div>
@@ -170,8 +176,8 @@ export function TestimonialsSection() {
         <div className="relative flex items-center justify-center gap-4 lg:gap-6">
           {/* Left Card */}
           <motion.div
+            className="hidden w-[30%] shrink-0 lg:block"
             variants={itemVariants}
-            className="hidden lg:block w-[30%] shrink-0"
           >
             <TestimonialCard
               testimonial={testimonials[getCardIndex(-1)]}
@@ -180,14 +186,20 @@ export function TestimonialsSection() {
           </motion.div>
 
           {/* Center Card */}
-          <motion.div variants={itemVariants} className="w-full lg:w-[40%] shrink-0">
+          <motion.div
+            className="w-full shrink-0 lg:w-[40%]"
+            variants={itemVariants}
+          >
             <AnimatePresence mode="wait">
               <motion.div
-                key={activeIndex}
-                initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] as const }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                key={activeIndex}
+                transition={{
+                  duration: 0.4,
+                  ease: [0.22, 1, 0.36, 1] as const,
+                }}
               >
                 <TestimonialCard
                   testimonial={testimonials[activeIndex]}
@@ -199,8 +211,8 @@ export function TestimonialsSection() {
 
           {/* Right Card */}
           <motion.div
+            className="hidden w-[30%] shrink-0 lg:block"
             variants={itemVariants}
-            className="hidden lg:block w-[30%] shrink-0"
           >
             <TestimonialCard
               testimonial={testimonials[getCardIndex(1)]}
@@ -211,19 +223,19 @@ export function TestimonialsSection() {
 
         {/* Pagination Dots */}
         <motion.div
+          className="mt-10 flex justify-center gap-2"
           variants={itemVariants}
-          className="flex justify-center gap-2 mt-10"
         >
           {testimonials.map((_, index) => (
             <button
+              aria-label={`Go to testimonial ${index + 1}`}
+              className={`rounded-full transition-all duration-300 ${
+                index === activeIndex
+                  ? "h-2 w-6 bg-primary"
+                  : "h-2 w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50"
+              }`}
               key={index}
               onClick={() => setActiveIndex(index)}
-              className={`transition-all duration-300 rounded-full ${
-                index === activeIndex
-                  ? "w-6 h-2 bg-primary"
-                  : "w-2 h-2 bg-muted-foreground/30 hover:bg-muted-foreground/50"
-              }`}
-              aria-label={`Go to testimonial ${index + 1}`}
             />
           ))}
         </motion.div>
@@ -243,20 +255,20 @@ function TestimonialCard({
 
   return (
     <div
-      className={`relative rounded-2xl p-6 lg:p-8 transition-all duration-300 ${
+      className={`relative rounded-2xl p-6 transition-all duration-300 lg:p-8 ${
         isCenter
-          ? "bg-card border border-border/50 shadow-lg"
-          : "bg-card/40 border border-border/20 opacity-40"
+          ? "border border-border/50 bg-card shadow-lg"
+          : "border border-border/20 bg-card/40 opacity-40"
       }`}
     >
       {/* Stars */}
-      <div className="flex justify-center gap-1 mb-4">
+      <div className="mb-4 flex justify-center gap-1">
         {Array.from({ length: testimonial.rating }).map((_, i) => (
           <IconStarFilled
-            key={i}
             className={`size-4 ${
               isCenter ? "text-primary" : "text-primary/50"
             }`}
+            key={i}
           />
         ))}
       </div>
@@ -265,8 +277,8 @@ function TestimonialCard({
       <p
         className={`text-center leading-relaxed ${
           isCenter
-            ? "text-sm text-muted-foreground"
-            : "text-xs text-muted-foreground/60"
+            ? "text-muted-foreground text-sm"
+            : "text-muted-foreground/60 text-xs"
         }`}
       >
         {testimonial.quote}

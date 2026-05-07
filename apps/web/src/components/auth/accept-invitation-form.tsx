@@ -1,13 +1,15 @@
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate, useParams, useSearch } from "@tanstack/react-router";
-import { toast } from "sonner";
-
 import { Button } from "@work-holo/ui/components/button";
 import { FieldGroup } from "@work-holo/ui/components/field";
 import { useAppForm } from "@work-holo/ui/components/form/hooks";
-import { InputGroupAddon, InputGroupButton } from "@work-holo/ui/components/input-group";
+import {
+  InputGroupAddon,
+  InputGroupButton,
+} from "@work-holo/ui/components/input-group";
 import { Spinner } from "@work-holo/ui/components/spinner";
+import { toast } from "sonner";
 import { acceptOrgInvitation } from "@/lib/auth/invitation";
 import { authClient } from "@/lib/auth-client";
 import { AcceptInvitationFormSchema } from "@/lib/schemas/auth";

@@ -198,8 +198,8 @@ export class PermissionService {
   /**
    * Returns the full permission map for the current user.
    */
-  getPermissionMap(): Promise<PermissionMap> {
-    return this.introspection.getPermissionMap();
+  getPermissionMap(options?: { teamId?: string }): Promise<PermissionMap> {
+    return this.introspection.getPermissionMap(options?.teamId);
   }
 
   /**
@@ -259,7 +259,17 @@ export class PermissionService {
   /**
    * Recompiles organization policies and invalidates org-level cache.
    */
-  recompilePolicies(): Promise<void> {
-    return this.admin.recompilePolicies();
+  recompilePolicies(payload?: Record<string, unknown>): Promise<void> {
+    return this.admin.recompilePolicies(payload);
+  }
+
+  /**
+   * Sends targeted realtime permission refresh events to affected users.
+   */
+  notifyUsersPermissionUpdated(
+    targetUserIds: string[],
+    payload?: Record<string, unknown>
+  ): Promise<void> {
+    return this.admin.notifyUsersPermissionUpdated(targetUserIds, payload);
   }
 }

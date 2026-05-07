@@ -5,9 +5,11 @@ import {
   IconInfoCircle,
 } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
-import { toast } from "sonner";
-import { Alert, AlertDescription, AlertTitle } from "@work-holo/ui/components/alert";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@work-holo/ui/components/alert";
 import { Badge } from "@work-holo/ui/components/badge";
 import { Button } from "@work-holo/ui/components/button";
 import {
@@ -20,6 +22,8 @@ import {
 import { Separator } from "@work-holo/ui/components/separator";
 import { Spinner } from "@work-holo/ui/components/spinner";
 import { Switch } from "@work-holo/ui/components/switch";
+import { useState } from "react";
+import { toast } from "sonner";
 import { useNotificationPermission } from "@/hooks/use-notification-permission";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
 import { queryUtils } from "@/utils/orpc";

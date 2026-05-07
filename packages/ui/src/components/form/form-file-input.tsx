@@ -5,13 +5,9 @@ import {
 } from "@tabler/icons-react";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Button } from "../button";
-import {
-  Dropzone,
-  DropzoneEmptyState,
-  type DropzoneProps,
-} from "../dropzone";
 import { cn } from "../../lib/utils";
+import { Button } from "../button";
+import { Dropzone, DropzoneEmptyState, type DropzoneProps } from "../dropzone";
 import { FormBase, type FormControlProps } from "./form-base";
 import { useFieldContext } from "./hooks";
 

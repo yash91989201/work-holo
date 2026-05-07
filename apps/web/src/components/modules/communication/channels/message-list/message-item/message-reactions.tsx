@@ -1,11 +1,20 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@work-holo/ui/components/avatar";
 import { Badge } from "@work-holo/ui/components/badge";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from "@work-holo/ui/components/hover-card";
-import { Item, ItemContent, ItemMedia, ItemTitle } from "@work-holo/ui/components/item";
+import {
+  Item,
+  ItemContent,
+  ItemMedia,
+  ItemTitle,
+} from "@work-holo/ui/components/item";
 import { ScrollArea } from "@work-holo/ui/components/scroll-area";
 import { Separator } from "@work-holo/ui/components/separator";
 import { useMessageReactions } from "@/hooks/communications/use-message-reactions";
@@ -33,25 +42,33 @@ export function MessageReactions({
     <div className="flex flex-wrap gap-1.5">
       {reactions.map((reaction) => (
         <HoverCard key={reaction.emoji}>
-          <HoverCardTrigger delay={300} render={<Badge
-              className={cn(
-                "cursor-pointer gap-1 font-medium transition-colors",
-                reaction.hasCurrentUser
-                  ? "border-primary/40 bg-primary/10 text-primary hover:bg-primary/15"
-                  : "hover:bg-accent"
-              )}
-              onClick={() => {
-                if (reaction.hasCurrentUser && reaction.currentUserReactionId) {
-                  onRemoveReaction(reaction.currentUserReactionId);
-                } else {
-                  onAddReaction(reaction.emoji);
-                }
-              }}
-              variant="outline"
-            >
-              <span className="text-sm leading-none">{reaction.emoji}</span>
-              <span className="text-xs">{reaction.count}</span>
-            </Badge>} />
+          <HoverCardTrigger
+            delay={300}
+            render={
+              <Badge
+                className={cn(
+                  "cursor-pointer gap-1 font-medium transition-colors",
+                  reaction.hasCurrentUser
+                    ? "border-primary/40 bg-primary/10 text-primary hover:bg-primary/15"
+                    : "hover:bg-accent"
+                )}
+                onClick={() => {
+                  if (
+                    reaction.hasCurrentUser &&
+                    reaction.currentUserReactionId
+                  ) {
+                    onRemoveReaction(reaction.currentUserReactionId);
+                  } else {
+                    onAddReaction(reaction.emoji);
+                  }
+                }}
+                variant="outline"
+              >
+                <span className="text-sm leading-none">{reaction.emoji}</span>
+                <span className="text-xs">{reaction.count}</span>
+              </Badge>
+            }
+          />
           <HoverCardContent align="start" className="w-64 p-0">
             <Item>
               <ItemTitle>Reacted with {reaction.emoji}</ItemTitle>

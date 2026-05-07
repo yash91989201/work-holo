@@ -1,5 +1,9 @@
 import { IconChevronDown, IconRefresh, IconUsers } from "@tabler/icons-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@work-holo/ui/components/avatar";
 import { Badge } from "@work-holo/ui/components/badge";
 import { Button } from "@work-holo/ui/components/button";
 import { withForm } from "@work-holo/ui/components/form/hooks";

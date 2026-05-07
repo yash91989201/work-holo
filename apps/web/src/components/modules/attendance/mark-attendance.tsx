@@ -7,8 +7,6 @@ import {
   IconLogout,
 } from "@tabler/icons-react";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
 import { Button } from "@work-holo/ui/components/button";
 import {
   Card,
@@ -27,6 +25,8 @@ import {
 } from "@work-holo/ui/components/dialog";
 import { Skeleton } from "@work-holo/ui/components/skeleton";
 import { Spinner } from "@work-holo/ui/components/spinner";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { formatDuration } from "@/utils";
 import { queryUtils } from "@/utils/orpc";
 

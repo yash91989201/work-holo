@@ -1,8 +1,11 @@
 import { IconChecks } from "@tabler/icons-react";
 import { eq, inArray, useLiveQuery } from "@tanstack/react-db";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Suspense, useMemo } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@work-holo/ui/components/avatar";
 import { Button } from "@work-holo/ui/components/button";
 import {
   Dialog,
@@ -22,6 +25,7 @@ import {
 } from "@work-holo/ui/components/item";
 import { ScrollArea } from "@work-holo/ui/components/scroll-area";
 import { Skeleton } from "@work-holo/ui/components/skeleton";
+import { Suspense, useMemo } from "react";
 import {
   messageReadSummaryCollection,
   usersCollection,
@@ -148,9 +152,13 @@ function MessageReadersDialog({
 }) {
   return (
     <Dialog>
-      <DialogTrigger render={<Button size="icon-sm" variant="ghost">
-          <IconChecks className="size-3.5" />
-        </Button>} />
+      <DialogTrigger
+        render={
+          <Button size="icon-sm" variant="ghost">
+            <IconChecks className="size-3.5" />
+          </Button>
+        }
+      />
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Seen by {readCount}</DialogTitle>

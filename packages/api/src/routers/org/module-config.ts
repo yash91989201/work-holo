@@ -81,11 +81,7 @@ export const moduleConfigRouter = {
       })
     )
     .handler(async ({ context, input }) => {
-      if (!["owner", "admin"].includes(context.orgMembership.role)) {
-        throw new ORPCError("FORBIDDEN", {
-          message: "Only admins can update module config",
-        });
-      }
+      await context.permission.check(context.permission.org.update());
 
       const { db, orgId, session } = context;
       const userId = session.user.id;

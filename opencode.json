@@ -21,6 +21,10 @@
       "environment": {
         "TAVILY_API_KEY": "{env:TAVILY_API_KEY}"
       }
+    },
+    "gitnexus": {
+      "type": "local",
+      "command": ["gitnexus", "mcp"]
     }
   }
 }

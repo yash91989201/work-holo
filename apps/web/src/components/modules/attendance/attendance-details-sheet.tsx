@@ -8,7 +8,11 @@ import {
   IconUserCircle,
 } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
-import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@work-holo/ui/components/avatar";
 import { Badge } from "@work-holo/ui/components/badge";
 import { Separator } from "@work-holo/ui/components/separator";
 import {

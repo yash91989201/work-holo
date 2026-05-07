@@ -8,8 +8,6 @@ import {
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import type { MemberWithUserType } from "@work-holo/api/lib/types";
-import { Suspense, useState } from "react";
-import { toast } from "sonner";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,10 +18,19 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@work-holo/ui/components/alert-dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@work-holo/ui/components/avatar";
 import { Badge } from "@work-holo/ui/components/badge";
 import { Button } from "@work-holo/ui/components/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@work-holo/ui/components/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@work-holo/ui/components/card";
 import {
   Dialog,
   DialogContent,
@@ -38,9 +45,13 @@ import { SelectItem } from "@work-holo/ui/components/select";
 import { Separator } from "@work-holo/ui/components/separator";
 import { Skeleton } from "@work-holo/ui/components/skeleton";
 import { Spinner } from "@work-holo/ui/components/spinner";
+import { Suspense, useState } from "react";
+import { toast } from "sonner";
+import { MemberCustomRoles } from "@/components/console/members/member-custom-roles";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { authClient } from "@/lib/auth-client";
 import { getRoleBadgeVariant, getRoleIcon } from "@/lib/org";
+import { Can } from "@/lib/permission/components";
 import { UpdateMemberRoleSchema } from "@/lib/schemas/member";
 import type { UpdateMemberRoleType } from "@/lib/types";
 import { queryClient, queryUtils } from "@/utils/orpc";
@@ -78,6 +89,11 @@ function UpdateMemberRole({
         queryClient.invalidateQueries({
           queryKey: queryUtils.org.member.list.queryKey(),
         });
+        queryClient.invalidateQueries({
+          queryKey: queryUtils.org.member.get.queryKey({
+            input: { memberId: member.id },
+          }),
+        });
 
         toast.success(`Member role updated to ${data.role}`);
         onOpenChange(false);
@@ -92,9 +108,11 @@ function UpdateMemberRole({
     <Dialog onOpenChange={onOpenChange} open={open}>
       <DialogContent className="sm:max-w-105">
         <DialogHeader>
-          <DialogTitle>Update member role</DialogTitle>
+          <DialogTitle>Update organization role</DialogTitle>
           <DialogDescription>
-            Change the role for {member.user.name}
+            Change the base organization role for {member.user.name}. Custom
+            role templates are managed from the Roles page, and assignments are
+            managed below.
           </DialogDescription>
         </DialogHeader>
 
@@ -109,7 +127,10 @@ function UpdateMemberRole({
             <FieldGroup>
               <form.AppField name="role">
                 {(field) => (
-                  <field.Select label="Role" placeholder="Select a role">
+                  <field.Select
+                    label="Organization role"
+                    placeholder="Select a role"
+                  >
                     <SelectItem value="admin">
                       <div className="flex items-center gap-2">
                         <IconShieldFilled className="h-4 w-4" />
@@ -126,6 +147,11 @@ function UpdateMemberRole({
                 )}
               </form.AppField>
             </FieldGroup>
+
+            <p className="text-muted-foreground text-sm">
+              Create role templates from the Roles page, then use the custom
+              team roles section on this page for assignments.
+            </p>
 
             <DialogFooter>
               <Button
@@ -153,7 +179,7 @@ function UpdateMemberRole({
                         Updating...
                       </>
                     ) : (
-                      "Update Role"
+                      "Update organization role"
                     )}
                   </Button>
                 )}
@@ -188,6 +214,11 @@ function RemoveMember({
 
       queryClient.invalidateQueries({
         queryKey: queryUtils.org.member.list.queryKey(),
+      });
+      queryClient.invalidateQueries({
+        queryKey: queryUtils.org.member.get.queryKey({
+          input: { memberId: member.id },
+        }),
       });
 
       toast.success(
@@ -240,24 +271,27 @@ function MemberDetailContent() {
   const [isUpdateRoleOpen, setIsUpdateRoleOpen] = useState(false);
   const [isRemoveMemberOpen, setIsRemoveMemberOpen] = useState(false);
 
-  const {
-    data: { members },
-  } = useSuspenseQuery(
-    queryUtils.org.member.list.queryOptions({
+  const { data: member } = useSuspenseQuery(
+    queryUtils.org.member.get.queryOptions({
       input: {
-        page: 1,
-        perPage: 1000,
+        memberId,
       },
     })
   );
-
-  const member = members.find((m) => m.id === memberId);
 
   if (!member) {
     return (
       <div className="flex h-96 flex-col items-center justify-center gap-4">
         <p className="text-lg text-muted-foreground">Member not found</p>
-        <Button render={<Link params={{ slug }} to="/org/$slug/console/members"><IconArrowLeft className="mr-2 h-4 w-4" />Back to Members</Link>} variant="outline" />
+        <Button
+          render={
+            <Link params={{ slug }} to="/org/$slug/console/members">
+              <IconArrowLeft className="mr-2 h-4 w-4" />
+              Back to Members
+            </Link>
+          }
+          variant="outline"
+        />
       </div>
     );
   }
@@ -271,7 +305,15 @@ function MemberDetailContent() {
     <>
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <Button render={<Link params={{ slug }} to="/org/$slug/console/members"><IconArrowLeft className="h-4 w-4" /></Link>} size="icon" variant="outline" />
+          <Button
+            render={
+              <Link params={{ slug }} to="/org/$slug/console/members">
+                <IconArrowLeft className="h-4 w-4" />
+              </Link>
+            }
+            size="icon"
+            variant="outline"
+          />
           <div>
             <h1 className="font-bold text-2xl">Member Details</h1>
             <p className="text-muted-foreground text-sm">
@@ -353,6 +395,12 @@ function MemberDetailContent() {
           </CardContent>
         </Card>
 
+        <Can permission={(p) => p.org.role.read}>
+          <Suspense fallback={<MemberCustomRoles.Fallback />}>
+            <MemberCustomRoles canManage={canManage} userId={member.userId} />
+          </Suspense>
+        </Can>
+
         {canManage && (
           <Card>
             <CardHeader>
@@ -365,7 +413,7 @@ function MemberDetailContent() {
                 variant="outline"
               >
                 <IconShieldFilled className="mr-2 h-4 w-4" />
-                Update Role
+                Update organization role
               </Button>
               <Button
                 className="w-full justify-start text-destructive hover:text-destructive"

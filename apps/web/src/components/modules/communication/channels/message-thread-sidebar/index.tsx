@@ -5,10 +5,10 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { useParams } from "@tanstack/react-router";
+import { Button } from "@work-holo/ui/components/button";
 import { useCallback, useEffect, useState } from "react";
 import { MessageComposer } from "@/components/modules/communication/channels/message-composer";
 import { MessageItem } from "@/components/modules/communication/channels/message-list/message-item";
-import { Button } from "@work-holo/ui/components/button";
 import { useVirtualMessageThread } from "@/hooks/communications/use-message-thread";
 import { cn } from "@/lib/utils";
 import {

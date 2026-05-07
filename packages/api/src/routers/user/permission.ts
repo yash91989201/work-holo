@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { orgMemberProcedure } from "../../index";
 
 /**
@@ -11,8 +12,20 @@ import { orgMemberProcedure } from "../../index";
  * permission checks.
  */
 export const permissionRouter = {
-  get: orgMemberProcedure.handler(async ({ context }) => {
-    const permissionMap = await context.permission.getPermissionMap();
-    return permissionMap;
-  }),
+  get: orgMemberProcedure
+    .input(
+      z
+        .object({
+          teamId: z.string().optional(),
+        })
+        .optional()
+        .default({})
+    )
+    .handler(async ({ context, input }) => {
+      const permissionMap = await context.permission.getPermissionMap({
+        teamId:
+          input.teamId ?? context.session.session.activeTeamId ?? undefined,
+      });
+      return permissionMap;
+    }),
 };

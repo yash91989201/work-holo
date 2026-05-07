@@ -1,11 +1,12 @@
 import { ORPCError } from "@orpc/server";
 import type { db as Db } from "@work-holo/db";
+import { member, team, teamMember } from "@work-holo/db/schema/auth";
 import {
   policyOverrideTable,
   roleAssignmentTable,
   roleTemplateTable,
 } from "@work-holo/db/schema/authorization";
-import { and, eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 import type { PermissionEvent } from "../lib/types";
 import type { CacheManager } from "./cache-manager";
 import type { PermissionEventManager } from "./permission-event-manager";
@@ -53,24 +54,24 @@ export class PermissionAdmin {
     roleTemplateId: string,
     options?: { teamId?: string }
   ): Promise<void> {
-    const template = await this.db.query.roleTemplateTable.findFirst({
-      where: eq(roleTemplateTable.id, roleTemplateId),
-      columns: { id: true, name: true, scope: true },
-    });
+    const template = await this.getAssignableRoleTemplate(roleTemplateId);
+    await this.assertUserBelongsToOrganization(targetUserId);
+    await this.assertValidAssignmentScope(
+      template.scope,
+      options?.teamId,
+      targetUserId
+    );
 
-    if (!template) {
-      throw new ORPCError("NOT_FOUND", {
-        message: "Role template not found",
-      });
-    }
-
-    await this.db.insert(roleAssignmentTable).values({
-      userId: targetUserId,
-      roleTemplateId,
-      organizationId: this.orgId,
-      teamId: options?.teamId ?? null,
-      assignedBy: this.userId,
-    });
+    await this.db
+      .insert(roleAssignmentTable)
+      .values({
+        userId: targetUserId,
+        roleTemplateId,
+        organizationId: this.orgId,
+        teamId: options?.teamId ?? null,
+        assignedBy: this.userId,
+      })
+      .onConflictDoNothing();
 
     await this.recompileAndInvalidate(targetUserId);
 
@@ -97,32 +98,17 @@ export class PermissionAdmin {
     roleTemplateId: string,
     options?: { teamId?: string }
   ): Promise<void> {
-    const template = await this.db.query.roleTemplateTable.findFirst({
-      where: eq(roleTemplateTable.id, roleTemplateId),
-      columns: { id: true, scope: true },
-    });
-
-    if (!template) {
-      throw new ORPCError("NOT_FOUND", {
-        message: "Role template not found",
-      });
-    }
-
-    if (template.scope === "team" && !options?.teamId) {
-      throw new ORPCError("BAD_REQUEST", {
-        message: "teamId is required when revoking a team-scoped role",
-      });
-    }
+    const template = await this.getAssignableRoleTemplate(roleTemplateId);
+    await this.assertValidAssignmentScope(template.scope, options?.teamId);
 
     const conditions = [
       eq(roleAssignmentTable.userId, targetUserId),
       eq(roleAssignmentTable.roleTemplateId, roleTemplateId),
       eq(roleAssignmentTable.organizationId, this.orgId),
+      options?.teamId
+        ? eq(roleAssignmentTable.teamId, options.teamId)
+        : isNull(roleAssignmentTable.teamId),
     ];
-
-    if (options?.teamId) {
-      conditions.push(eq(roleAssignmentTable.teamId, options.teamId));
-    }
 
     await this.db.delete(roleAssignmentTable).where(and(...conditions));
 
@@ -213,7 +199,9 @@ export class PermissionAdmin {
   /**
    * Rebuilds organization policies and clears org-level decision cache.
    */
-  async recompilePolicies(): Promise<void> {
+  async recompilePolicies(
+    payload: Record<string, unknown> = {}
+  ): Promise<void> {
     await this.policyManager.compilePolicies(this.orgId, this.userId);
     await this.cacheManager.invalidateOrgCache(this.orgId);
 
@@ -221,9 +209,34 @@ export class PermissionAdmin {
       type: "policy_compiled",
       orgId: this.orgId,
       actorId: this.userId,
-      payload: {},
+      payload,
       timestamp: Date.now(),
     });
+  }
+
+  /**
+   * Sends targeted realtime permission refresh events to affected users.
+   */
+  async notifyUsersPermissionUpdated(
+    targetUserIds: string[],
+    payload: Record<string, unknown> = {}
+  ): Promise<void> {
+    const uniqueUserIds = [...new Set(targetUserIds)].filter(Boolean);
+
+    for (const targetUserId of uniqueUserIds) {
+      this.emitEvent({
+        type: "policy_compiled",
+        orgId: this.orgId,
+        userId: targetUserId,
+        actorId: this.userId,
+        payload: {
+          ...payload,
+          targetUserId,
+        },
+        timestamp: Date.now(),
+        broadcastOrg: false,
+      });
+    }
   }
 
   /**
@@ -239,6 +252,131 @@ export class PermissionAdmin {
         this.orgId
       ),
     ]);
+  }
+
+  /**
+   * Returns a non-system role template that belongs to the current organization.
+   */
+  private async getAssignableRoleTemplate(roleTemplateId: string): Promise<{
+    id: string;
+    name: string;
+    scope: "org" | "team";
+  }> {
+    const template = await this.db.query.roleTemplateTable.findFirst({
+      where: eq(roleTemplateTable.id, roleTemplateId),
+      columns: {
+        id: true,
+        name: true,
+        scope: true,
+        isSystem: true,
+        organizationId: true,
+      },
+    });
+
+    if (!template) {
+      throw new ORPCError("NOT_FOUND", {
+        message: "Role template not found",
+      });
+    }
+
+    if (template.isSystem) {
+      throw new ORPCError("BAD_REQUEST", {
+        message:
+          "System roles are controlled by organization membership and cannot be assigned here",
+      });
+    }
+
+    if (template.organizationId !== this.orgId) {
+      throw new ORPCError("FORBIDDEN", {
+        message: "Role template does not belong to this organization",
+      });
+    }
+
+    return template;
+  }
+
+  /**
+   * Validates team scoping rules for role assignment operations.
+   */
+  private async assertValidAssignmentScope(
+    scope: "org" | "team",
+    teamId?: string,
+    targetUserId?: string
+  ): Promise<void> {
+    if (scope === "team") {
+      if (!teamId) {
+        throw new ORPCError("BAD_REQUEST", {
+          message: "teamId is required for team-scoped role assignments",
+        });
+      }
+
+      await this.assertTeamBelongsToOrganization(teamId);
+
+      if (targetUserId) {
+        await this.assertUserBelongsToTeam(targetUserId, teamId);
+      }
+      return;
+    }
+
+    if (teamId) {
+      throw new ORPCError("BAD_REQUEST", {
+        message: "teamId is only valid for team-scoped role assignments",
+      });
+    }
+  }
+
+  /**
+   * Ensures the target user belongs to the current organization.
+   */
+  private async assertUserBelongsToOrganization(userId: string): Promise<void> {
+    const orgMember = await this.db.query.member.findFirst({
+      where: and(
+        eq(member.userId, userId),
+        eq(member.organizationId, this.orgId)
+      ),
+      columns: { id: true },
+    });
+
+    if (!orgMember) {
+      throw new ORPCError("BAD_REQUEST", {
+        message: "Target user is not a member of the current organization",
+      });
+    }
+  }
+
+  /**
+   * Ensures the referenced team belongs to the current organization.
+   */
+  private async assertTeamBelongsToOrganization(teamId: string): Promise<void> {
+    const orgTeam = await this.db.query.team.findFirst({
+      where: and(eq(team.id, teamId), eq(team.organizationId, this.orgId)),
+      columns: { id: true },
+    });
+
+    if (!orgTeam) {
+      throw new ORPCError("BAD_REQUEST", {
+        message: "teamId does not belong to the current organization",
+      });
+    }
+  }
+
+  /**
+   * Ensures the target user belongs to the referenced team.
+   */
+  private async assertUserBelongsToTeam(
+    userId: string,
+    teamId: string
+  ): Promise<void> {
+    const membership = await this.db.query.teamMember.findFirst({
+      where: and(eq(teamMember.userId, userId), eq(teamMember.teamId, teamId)),
+      columns: { id: true },
+    });
+
+    if (!membership) {
+      throw new ORPCError("BAD_REQUEST", {
+        message: "Target user must be a member of the selected team",
+      });
+    }
   }
 
   /**

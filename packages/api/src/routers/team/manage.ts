@@ -8,8 +8,19 @@ import {
   RemoveMemberOutput,
 } from "@work-holo/api/lib/schemas/team";
 import { auth } from "@work-holo/auth";
+import { roleAssignmentTable } from "@work-holo/db/schema/authorization";
 import { team } from "@work-holo/db/schema/index";
-import { and, asc, count, desc, eq, gte, like, lte } from "drizzle-orm";
+import {
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  gte,
+  inArray,
+  like,
+  lte,
+} from "drizzle-orm";
 import { orgMemberProcedure } from "../../index";
 
 export const manageRouter = {
@@ -136,6 +147,11 @@ export const manageRouter = {
             });
           }
 
+          await permission.recompilePolicies({
+            affectedUserIds: userIds,
+            reason: "team_membership_changed",
+          });
+
           return {
             success: true,
             message:
@@ -175,11 +191,12 @@ export const manageRouter = {
     .handler(
       async ({
         input: { teamId, userIds },
-        context: { headers, permission },
+        context: { db, headers, orgId, permission },
       }) => {
         await permission.check(permission.team(teamId).member.remove());
         try {
           let removedCount = 0;
+          const removedUserIds: string[] = [];
           const errors: string[] = [];
 
           for (const userId of userIds) {
@@ -192,6 +209,7 @@ export const manageRouter = {
                 headers,
               });
               removedCount++;
+              removedUserIds.push(userId);
             } catch (error) {
               errors.push(
                 `Failed to remove user ${userId}: ${
@@ -204,6 +222,23 @@ export const manageRouter = {
           if (removedCount === 0) {
             throw new ORPCError("INTERNAL_SERVER_ERROR", {
               message: `Failed to remove any members. Errors: ${errors.join(", ")}`,
+            });
+          }
+
+          if (removedUserIds.length > 0) {
+            await db
+              .delete(roleAssignmentTable)
+              .where(
+                and(
+                  eq(roleAssignmentTable.organizationId, orgId),
+                  eq(roleAssignmentTable.teamId, teamId),
+                  inArray(roleAssignmentTable.userId, removedUserIds)
+                )
+              );
+
+            await permission.recompilePolicies({
+              affectedUserIds: removedUserIds,
+              reason: "team_membership_changed",
             });
           }
 

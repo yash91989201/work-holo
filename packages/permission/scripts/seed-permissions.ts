@@ -4,7 +4,7 @@ import {
   rolePermissionTable,
   roleTemplateTable,
 } from "@work-holo/db/schema/authorization";
-import { eq, inArray } from "drizzle-orm";
+import { and, eq, inArray, isNull } from "drizzle-orm";
 import { SYSTEM_ROLE_PERMISSIONS } from "../src/lib/system-role-permissions";
 import { SYSTEM_ROLES } from "../src/lib/types";
 import { PERMISSIONS } from "../src/lib/vocabulary";
@@ -73,7 +73,13 @@ async function seedPermissions() {
     const [existing] = await db
       .select({ id: roleTemplateTable.id })
       .from(roleTemplateTable)
-      .where(eq(roleTemplateTable.name, roleDef.name))
+      .where(
+        and(
+          eq(roleTemplateTable.name, roleDef.name),
+          eq(roleTemplateTable.isSystem, true),
+          isNull(roleTemplateTable.organizationId)
+        )
+      )
       .limit(1);
 
     if (existing) {

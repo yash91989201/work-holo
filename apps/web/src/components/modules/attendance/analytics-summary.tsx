@@ -7,10 +7,15 @@ import {
   IconFlame,
 } from "@tabler/icons-react";
 import type { AttendanceAnalyticsOutput } from "@work-holo/api/lib/schemas/attendance";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@work-holo/ui/components/card";
+import { Progress } from "@work-holo/ui/components/progress";
 import type React from "react";
 import type { z } from "zod";
-import { Card, CardContent, CardHeader, CardTitle } from "@work-holo/ui/components/card";
-import { Progress } from "@work-holo/ui/components/progress";
 import { cn } from "@/lib/utils";
 
 type AttendanceAnalytics = z.infer<typeof AttendanceAnalyticsOutput>;

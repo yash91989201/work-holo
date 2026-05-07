@@ -12,11 +12,40 @@ import {
 } from "drizzle-orm";
 import { orgMemberProcedure } from "../../index";
 import {
+  GetMemberInput,
+  GetMemberOutput,
   ListMembersInput,
   ListMembersOutput,
 } from "../../lib/schemas/admin-member";
 
 export const memberRouter = {
+  get: orgMemberProcedure
+    .input(GetMemberInput)
+    .output(GetMemberOutput)
+    .handler(async ({ input, context: { db, orgId, permission } }) => {
+      await permission.check(permission.org.read());
+
+      const orgMember = await db
+        .select({
+          ...getTableColumns(member),
+          user: {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            image: user.image,
+            createdAt: user.createdAt,
+          },
+        })
+        .from(member)
+        .innerJoin(user, eq(member.userId, user.id))
+        .where(
+          and(eq(member.organizationId, orgId), eq(member.id, input.memberId))
+        )
+        .limit(1);
+
+      return orgMember[0] ?? null;
+    }),
+
   /**
    * Lists organization members with pagination, search by name/email,
    * role filtering, and configurable sort order.

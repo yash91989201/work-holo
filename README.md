@@ -183,6 +183,54 @@ work-holo/
 │   └── db/          # Database schema & queries
 ```
 
+## GitNexus Code Intelligence
+
+This project uses [GitNexus](https://github.com/gitnexus-org/gitnexus) to provide AI-powered code intelligence. GitNexus builds a knowledge graph of the codebase, enabling advanced exploration, impact analysis, and refactoring assistance.
+
+### Initial Setup
+
+Run from the project root:
+
+```bash
+npx gitnexus analyze
+```
+
+This parses all source files, builds the knowledge graph, and writes it to `.gitnexus/`. No global installation is required.
+
+### Common Commands
+
+| Command | Description |
+|---------|-------------|
+| `npx gitnexus analyze` | Build or refresh the index after major code changes |
+| `npx gitnexus analyze --force` | Force full re-index even if up to date |
+| `npx gitnexus status` | Check if the index is stale and view symbol counts |
+| `npx gitnexus clean` | Delete the local index |
+| `npx gitnexus wiki` | Generate documentation from the knowledge graph |
+
+**When to re-index:** After pulling major changes, before deep refactoring, or when `npx gitnexus status` reports the index is stale.
+
+### Available Skills
+
+The following GitNexus skill files are included in `.claude/skills/gitnexus/`:
+
+| Task | Skill |
+|------|-------|
+| Explore architecture / "How does X work?" | `gitnexus-exploring` |
+| Check blast radius before changes | `gitnexus-impact-analysis` |
+| Trace bugs / "Why is X failing?" | `gitnexus-debugging` |
+| Rename / extract / refactor safely | `gitnexus-refactoring` |
+| CLI commands reference | `gitnexus-cli` |
+| Tools & schema reference | `gitnexus-guide` |
+
+### Key Tools
+
+- **`query`** — Find execution flows related to a concept
+- **`context`** — 360-degree view of any symbol (callers, callees, processes)
+- **`impact`** — Blast radius analysis before making changes
+- **`detect_changes`** — See what your uncommitted changes affect
+- **`rename`** — Multi-file coordinated rename with confidence tagging
+- **`cypher`** — Raw graph queries against the codebase
+
 ## Available Scripts
 
 - `bun dev`: Start all applications in development mode

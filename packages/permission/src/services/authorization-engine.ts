@@ -1,9 +1,11 @@
 import type { db as Db } from "@work-holo/db";
+import { member, teamMember } from "@work-holo/db/schema/auth";
 import {
   permissionNodeTable,
   policyOverrideTable,
   roleAssignmentTable,
   rolePermissionTable,
+  roleTemplateTable,
 } from "@work-holo/db/schema/authorization";
 import { and, eq, gt, inArray, isNull, or } from "drizzle-orm";
 import {
@@ -325,30 +327,69 @@ export class AuthorizationEngine {
     orgId: string,
     scopeContext: ScopeContext
   ): Promise<string[]> {
-    const assignments = await this.db.query.roleAssignmentTable.findMany({
-      where: and(
-        eq(roleAssignmentTable.userId, userId),
-        eq(roleAssignmentTable.organizationId, orgId)
-      ),
-      columns: { roleTemplateId: true, teamId: true },
-      with: {
-        roleTemplate: {
-          columns: { id: true, scope: true },
+    const [assignments, membership, teamMemberships] = await Promise.all([
+      this.db.query.roleAssignmentTable.findMany({
+        where: and(
+          eq(roleAssignmentTable.userId, userId),
+          eq(roleAssignmentTable.organizationId, orgId)
+        ),
+        columns: { roleTemplateId: true, teamId: true },
+        with: {
+          roleTemplate: {
+            columns: { id: true, isSystem: true, scope: true },
+          },
         },
-      },
-    });
+      }),
+      this.db.query.member.findFirst({
+        where: and(eq(member.userId, userId), eq(member.organizationId, orgId)),
+        columns: { role: true },
+      }),
+      this.db.query.teamMember.findMany({
+        where: eq(teamMember.userId, userId),
+        columns: { teamId: true },
+      }),
+    ]);
 
-    return assignments
+    const membershipTeamIds = new Set(
+      teamMemberships.map((entry) => entry.teamId)
+    );
+
+    const applicableTemplateIds = assignments
       .filter((assignment) => {
+        if (assignment.roleTemplate.isSystem) {
+          return false;
+        }
+
         if (assignment.roleTemplate.scope === "org") {
           return true;
         }
 
         return Boolean(
-          scopeContext.teamId && assignment.teamId === scopeContext.teamId
+          scopeContext.teamId &&
+            assignment.teamId === scopeContext.teamId &&
+            assignment.teamId &&
+            membershipTeamIds.has(assignment.teamId)
         );
       })
       .map((assignment) => assignment.roleTemplateId);
+
+    if (membership?.role) {
+      const systemTemplate = await this.db.query.roleTemplateTable.findFirst({
+        where: and(
+          eq(roleTemplateTable.isSystem, true),
+          eq(roleTemplateTable.scope, "org"),
+          isNull(roleTemplateTable.organizationId),
+          eq(roleTemplateTable.name, membership.role)
+        ),
+        columns: { id: true },
+      });
+
+      if (systemTemplate?.id) {
+        applicableTemplateIds.unshift(systemTemplate.id);
+      }
+    }
+
+    return Array.from(new Set<string>(applicableTemplateIds));
   }
 
   /**

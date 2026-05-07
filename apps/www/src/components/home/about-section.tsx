@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
-import { motion, useInView } from "motion/react";
 import { IconAward } from "@tabler/icons-react";
 import { CTAButton } from "@work-holo/ui/components/cta-button";
+import { motion, useInView } from "motion/react";
+import { useEffect, useRef, useState } from "react";
 
 function AnimatedCounter({
   target,
@@ -23,7 +23,7 @@ function AnimatedCounter({
     const animate = (timestamp: number) => {
       if (!startTime) startTime = timestamp;
       const progress = Math.min((timestamp - startTime) / (duration * 1000), 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
+      const eased = 1 - (1 - progress) ** 3;
       setCount(Math.floor(eased * target));
       if (progress < 1) {
         animationFrame = requestAnimationFrame(animate);
@@ -44,22 +44,26 @@ function AnimatedCounter({
 function AwardBadge() {
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.8, rotate: -20 }}
-      whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.7, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
       className="relative size-28 sm:size-32"
+      initial={{ opacity: 0, scale: 0.8, rotate: -20 }}
+      transition={{ duration: 0.7, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      viewport={{ once: true }}
+      whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
     >
       <motion.svg
         animate={{ rotate: 360 }}
-        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-        viewBox="0 0 120 120"
         className="absolute inset-0 size-full"
+        transition={{
+          duration: 20,
+          repeat: Number.POSITIVE_INFINITY,
+          ease: "linear",
+        }}
+        viewBox="0 0 120 120"
       >
         <defs>
           <path
-            id="circlePath"
             d="M 60, 60 m -48, 0 a 48,48 0 1,1 96,0 a 48,48 0 1,1 -96,0"
+            id="circlePath"
           />
         </defs>
         <text
@@ -67,24 +71,24 @@ function AwardBadge() {
           style={{ fontSize: "9px" }}
         >
           <textPath href="#circlePath">
-            AWARD WINNING AGENCY - SINCE 2019 - AWARD WINNING AGENCY
-            - SINCE 2019 -
+            AWARD WINNING AGENCY - SINCE 2019 - AWARD WINNING AGENCY - SINCE
+            2019 -
           </textPath>
         </text>
         <circle
+          className="text-muted-foreground/20"
           cx="60"
           cy="60"
-          r="42"
           fill="none"
+          r="42"
           stroke="currentColor"
-          strokeWidth="0.5"
           strokeDasharray="2 3"
-          className="text-muted-foreground/20"
+          strokeWidth="0.5"
         />
       </motion.svg>
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="flex size-12 sm:size-14 items-center justify-center rounded-full bg-primary">
-          <IconAward className="size-6 sm:size-7 text-primary-foreground" />
+        <div className="flex size-12 items-center justify-center rounded-full bg-primary sm:size-14">
+          <IconAward className="size-6 text-primary-foreground sm:size-7" />
         </div>
       </div>
     </motion.div>
@@ -93,13 +97,16 @@ function AwardBadge() {
 
 export function AboutSection() {
   return (
-    <section id="about" className="relative bg-background py-20 lg:py-28 overflow-hidden scroll-mt-28">
+    <section
+      className="relative scroll-mt-28 overflow-hidden bg-background py-20 lg:py-28"
+      id="about"
+    >
       {/* Background pattern */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.02]">
+      <div className="pointer-events-none absolute inset-0 opacity-[0.02]">
         <svg
-          className="absolute top-0 left-0 w-full h-full"
-          viewBox="0 0 1200 800"
+          className="absolute top-0 left-0 h-full w-full"
           fill="none"
+          viewBox="0 0 1200 800"
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
@@ -121,45 +128,45 @@ export function AboutSection() {
       </div>
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+        <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
           {/* Left Column - Image with overlays */}
           <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             className="relative"
+            initial={{ opacity: 0, x: -40 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            viewport={{ once: true }}
+            whileInView={{ opacity: 1, x: 0 }}
           >
             {/* Main Image */}
-            <div className="relative rounded-3xl overflow-hidden aspect-[4/3]">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-3xl">
               <img
-                src="/assets/hero-img.png"
                 alt="Team collaborating"
-                className="w-full h-full object-cover"
+                className="h-full w-full object-cover"
+                src="/assets/hero-img.png"
               />
             </div>
 
             {/* Experience Card */}
             <motion.div
-              initial={{ opacity: 0, y: 20, scale: 0.95 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.3 }}
               className="absolute -bottom-6 -left-2 sm:left-4"
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              viewport={{ once: true }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
             >
-              <div className="relative bg-primary rounded-2xl p-5 sm:p-6 w-[180px] sm:w-[200px] overflow-hidden">
+              <div className="relative w-[180px] overflow-hidden rounded-2xl bg-primary p-5 sm:w-[200px] sm:p-6">
                 <div className="absolute -top-1 -right-8">
                   <div
-                    className="bg-background text-primary-foreground text-[9px] font-bold uppercase tracking-wider px-8 py-1"
+                    className="bg-background px-8 py-1 font-bold text-[9px] text-primary-foreground uppercase tracking-wider"
                     style={{ transform: "rotate(45deg)" }}
                   >
                     Experience
                   </div>
                 </div>
-                <div className="text-5xl sm:text-6xl font-bold text-primary-foreground leading-none mb-2">
+                <div className="mb-2 font-bold text-5xl text-primary-foreground leading-none sm:text-6xl">
                   20<sup className="text-2xl">+</sup>
                 </div>
-                <p className="text-sm text-primary-foreground/90 leading-snug">
+                <p className="text-primary-foreground/90 text-sm leading-snug">
                   Years of Excellence in IT Solutions Company.
                 </p>
               </div>
@@ -167,21 +174,23 @@ export function AboutSection() {
 
             {/* Founder Card */}
             <motion.div
+              className="absolute right-2 -bottom-6 sm:right-6"
               initial={{ opacity: 0, y: 20, scale: 0.95 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              className="absolute -bottom-6 right-2 sm:right-6"
+              viewport={{ once: true }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
             >
-              <div className="flex items-center gap-3 bg-card/95 backdrop-blur-md border border-border/50 rounded-2xl px-4 py-3 shadow-xl">
-                <div className="flex size-10 items-center justify-center rounded-full bg-muted text-sm font-bold text-foreground">
+              <div className="flex items-center gap-3 rounded-2xl border border-border/50 bg-card/95 px-4 py-3 shadow-xl backdrop-blur-md">
+                <div className="flex size-10 items-center justify-center rounded-full bg-muted font-bold text-foreground text-sm">
                   BN
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-foreground">Burdee Nicolas</p>
-                  <p className="text-xs text-muted-foreground">Co. Founder</p>
+                  <p className="font-semibold text-foreground text-sm">
+                    Burdee Nicolas
+                  </p>
+                  <p className="text-muted-foreground text-xs">Co. Founder</p>
                 </div>
-                <div className="ml-2 text-lg italic text-muted-foreground/40 font-serif">
+                <div className="ml-2 font-serif text-lg text-muted-foreground/40 italic">
                   Bn
                 </div>
               </div>
@@ -190,80 +199,85 @@ export function AboutSection() {
 
           {/* Right Column - Content */}
           <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
             className="relative"
+            initial={{ opacity: 0, x: 40 }}
+            transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            viewport={{ once: true }}
+            whileInView={{ opacity: 1, x: 0 }}
           >
-            <div className="relative bg-card/40 border border-border/30 rounded-3xl p-8 sm:p-10 lg:p-12">
+            <div className="relative rounded-3xl border border-border/30 bg-card/40 p-8 sm:p-10 lg:p-12">
               {/* Tag */}
               <motion.p
+                className="mb-5 font-medium text-primary text-sm uppercase tracking-[0.2em]"
                 initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: 0.3 }}
-                className="text-sm font-medium tracking-[0.2em] text-primary uppercase mb-5"
+                viewport={{ once: true }}
+                whileInView={{ opacity: 1, y: 0 }}
               >
                 [ ABOUT WORK HOLO ]
               </motion.p>
 
               {/* Headline */}
               <motion.h2
+                className="mb-6 font-bold text-3xl text-foreground leading-[1.1] tracking-tight sm:text-4xl"
                 initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.4 }}
-                className="text-3xl sm:text-4xl font-bold text-foreground leading-[1.1] tracking-tight mb-6"
+                viewport={{ once: true }}
+                whileInView={{ opacity: 1, y: 0 }}
               >
-                Delivering Solution That Drive Our Innovation &amp; Fast Success.
+                Delivering Solution That Drive Our Innovation &amp; Fast
+                Success.
               </motion.h2>
 
               {/* Description */}
               <motion.p
+                className="mb-8 text-muted-foreground text-sm leading-relaxed"
                 initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.5 }}
-                className="text-sm text-muted-foreground leading-relaxed mb-8"
+                viewport={{ once: true }}
+                whileInView={{ opacity: 1, y: 0 }}
               >
-                We are a team of passionate tech experts delivering innovative IT
-                solutions tailored to help businesses grow, adapt, and thrive in a
-                digital. Stay ahead of the competition.
+                We are a team of passionate tech experts delivering innovative
+                IT solutions tailored to help businesses grow, adapt, and thrive
+                in a digital. Stay ahead of the competition.
               </motion.p>
 
               {/* Stats */}
               <motion.div
+                className="mb-8 flex items-center gap-8"
                 initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.6 }}
-                className="flex items-center gap-8 mb-8"
+                viewport={{ once: true }}
+                whileInView={{ opacity: 1, y: 0 }}
               >
                 <div>
-                  <div className="text-4xl sm:text-5xl font-bold text-primary leading-none">
-                    <AnimatedCounter target={3} suffix="K" duration={2} />
+                  <div className="font-bold text-4xl text-primary leading-none sm:text-5xl">
+                    <AnimatedCounter duration={2} suffix="K" target={3} />
                     <sup className="text-xl">+</sup>
                   </div>
-                  <p className="text-sm text-muted-foreground mt-2">Successful Projects.</p>
+                  <p className="mt-2 text-muted-foreground text-sm">
+                    Successful Projects.
+                  </p>
                 </div>
-                <div className="w-px h-16 bg-border/50" />
+                <div className="h-16 w-px bg-border/50" />
                 <div>
-                  <div className="text-4xl sm:text-5xl font-bold text-primary leading-none">
-                    <AnimatedCounter target={98} suffix="" duration={2} />
+                  <div className="font-bold text-4xl text-primary leading-none sm:text-5xl">
+                    <AnimatedCounter duration={2} suffix="" target={98} />
                     <sup className="text-xl">+</sup>
                   </div>
-                  <p className="text-sm text-muted-foreground mt-2">IT Professionals.</p>
+                  <p className="mt-2 text-muted-foreground text-sm">
+                    IT Professionals.
+                  </p>
                 </div>
               </motion.div>
 
               {/* CTA Button */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.7 }}
                 className="flex items-center justify-between"
+                initial={{ opacity: 0, y: 20 }}
+                transition={{ duration: 0.5, delay: 0.7 }}
+                viewport={{ once: true }}
+                whileInView={{ opacity: 1, y: 0 }}
               >
                 <CTAButton type="button">Learn More</CTAButton>
 

@@ -1,14 +1,13 @@
 import {
   IconDeviceLaptop,
+  IconHistory,
   IconMailFilled,
+  IconPhone,
   IconPuzzle,
   IconSitemapFilled,
   IconUsers,
 } from "@tabler/icons-react";
 import { Link, useLocation, useParams } from "@tanstack/react-router";
-import type * as React from "react";
-import { Suspense } from "react";
-import { OrgSwitcher } from "@/components/org/org-switcher";
 import {
   Sidebar as BaseSidebar,
   SidebarContent,
@@ -21,6 +20,10 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@work-holo/ui/components/sidebar";
+import type * as React from "react";
+import { Suspense } from "react";
+import { OrgSwitcher } from "@/components/org/org-switcher";
+import { useCan } from "@/lib/permission/hooks";
 
 export function Sidebar({
   ...props
@@ -35,6 +38,14 @@ export function Sidebar({
   const isInvitationsActive =
     location.pathname === `/org/${slug}/console/members/invitations`;
   const isTeamsActive = location.pathname === `/org/${slug}/console/teams`;
+  const isRolesActive = location.pathname === `/org/${slug}/console/roles`;
+  const isDialerActive =
+    location.pathname.startsWith(`/org/${slug}/console/dialer`) &&
+    !location.pathname.includes("/calls");
+  const isCallLogsActive = location.pathname.startsWith(
+    `/org/${slug}/console/dialer/calls`
+  );
+  const canReadRoles = useCan((p) => p.org.role.list);
 
   return (
     <BaseSidebar collapsible="icon" {...props}>
@@ -50,10 +61,16 @@ export function Sidebar({
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton isActive={isConsoleActive} render={<Link params={{ slug }} to="/org/$slug/console">
-                  <IconDeviceLaptop />
-                  <span>Console</span>
-                </Link>} tooltip="Console" />
+                <SidebarMenuButton
+                  isActive={isConsoleActive}
+                  render={
+                    <Link params={{ slug }} to="/org/$slug/console">
+                      <IconDeviceLaptop />
+                      <span>Console</span>
+                    </Link>
+                  }
+                  tooltip="Console"
+                />
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
@@ -62,19 +79,31 @@ export function Sidebar({
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton isActive={isMembersActive} render={<Link params={{ slug }} to="/org/$slug/console/members">
-                  <IconUsers />
-                  <span>Members</span>
-                </Link>} tooltip="Members" />
+                <SidebarMenuButton
+                  isActive={isMembersActive}
+                  render={
+                    <Link params={{ slug }} to="/org/$slug/console/members">
+                      <IconUsers />
+                      <span>Members</span>
+                    </Link>
+                  }
+                  tooltip="Members"
+                />
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton isActive={isInvitationsActive} render={<Link
-                  params={{ slug }}
-                  to="/org/$slug/console/members/invitations"
-                >
-                  <IconMailFilled />
-                  <span>Invitations</span>
-                </Link>} tooltip="Invitations" />
+                <SidebarMenuButton
+                  isActive={isInvitationsActive}
+                  render={
+                    <Link
+                      params={{ slug }}
+                      to="/org/$slug/console/members/invitations"
+                    >
+                      <IconMailFilled />
+                      <span>Invitations</span>
+                    </Link>
+                  }
+                  tooltip="Invitations"
+                />
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
@@ -83,10 +112,43 @@ export function Sidebar({
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton isActive={isTeamsActive} render={<Link params={{ slug }} to="/org/$slug/console/teams">
-                  <IconSitemapFilled />
-                  <span>Teams</span>
-                </Link>} tooltip="Teams" />
+                <SidebarMenuButton
+                  isActive={isTeamsActive}
+                  render={
+                    <Link params={{ slug }} to="/org/$slug/console/teams">
+                      <IconSitemapFilled />
+                      <span>Teams</span>
+                    </Link>
+                  }
+                  tooltip="Teams"
+                />
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  isActive={isDialerActive}
+                  render={
+                    <Link params={{ slug }} to="/org/$slug/console/dialer">
+                      <IconPhone />
+                      <span>Dialer</span>
+                    </Link>
+                  }
+                  tooltip="Dialer"
+                />
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  isActive={isCallLogsActive}
+                  render={
+                    <Link
+                      params={{ slug }}
+                      to="/org/$slug/console/dialer/calls"
+                    >
+                      <IconHistory />
+                      <span>Call Logs</span>
+                    </Link>
+                  }
+                  tooltip="Call Logs"
+                />
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
@@ -96,15 +158,21 @@ export function Sidebar({
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton isActive={location.pathname.startsWith(
-                  `/org/${slug}/console/modules/communication`
-                )} render={<Link
-                  params={{ slug }}
-                  to="/org/$slug/console/modules/communication"
-                >
-                  <IconPuzzle />
-                  <span>Communication</span>
-                </Link>} tooltip="Communication" />
+                <SidebarMenuButton
+                  isActive={location.pathname.startsWith(
+                    `/org/${slug}/console/modules/communication`
+                  )}
+                  render={
+                    <Link
+                      params={{ slug }}
+                      to="/org/$slug/console/modules/communication"
+                    >
+                      <IconPuzzle />
+                      <span>Communication</span>
+                    </Link>
+                  }
+                  tooltip="Communication"
+                />
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>

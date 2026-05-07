@@ -3,6 +3,9 @@ import { authClient } from "@/lib/auth-client";
 import type { AcceptInvitationFormType } from "@/lib/types";
 
 interface AcceptedInvitation {
+  invitation?: {
+    teamId?: string | null;
+  } | null;
   member: {
     organizationId: string;
   };
@@ -15,6 +18,10 @@ export async function acceptOrgInvitation(params: AcceptInvitationFormType) {
   const slug = await resolveAndActivateOrganization(
     accepted?.member.organizationId ?? null
   );
+
+  if (slug) {
+    await syncActiveTeamFromInvitation(accepted);
+  }
 
   return slug;
 }
@@ -62,6 +69,35 @@ async function acceptOrganizationInvitation(invitationId: string) {
   }
 
   return data as AcceptedInvitation | null;
+}
+
+function getInvitationActiveTeamId(
+  accepted: AcceptedInvitation | null
+): string | null {
+  const rawTeamId = accepted?.invitation?.teamId;
+  if (!rawTeamId) {
+    return null;
+  }
+
+  const teamIds = rawTeamId
+    .split(",")
+    .map((teamId) => teamId.trim())
+    .filter(Boolean);
+
+  return teamIds.length === 1 ? teamIds[0] : null;
+}
+
+async function syncActiveTeamFromInvitation(
+  accepted: AcceptedInvitation | null
+): Promise<void> {
+  const teamId = getInvitationActiveTeamId(accepted);
+  const { error } = await authClient.organization.setActiveTeam({
+    teamId,
+  });
+
+  if (error !== null) {
+    throw new Error(error.message ?? "Failed to update active team");
+  }
 }
 
 async function resolveAndActivateOrganization(organizationId: string | null) {
