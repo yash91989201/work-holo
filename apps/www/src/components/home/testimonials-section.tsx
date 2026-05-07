@@ -301,6 +301,11 @@ export function TestimonialsSection() {
                   <p className="text-foreground/90 text-sm md:text-base leading-relaxed mb-6 flex-1 overflow-hidden line-clamp-6">
                     &ldquo;{t.quote}&rdquo;
                   </p>
+                  {isCenter && (
+                    <div className="absolute top-4 right-4 md:top-6 md:right-6">
+                      <IconQuote className="size-10 md:size-12 text-muted-foreground/10" />
+                    </div>
+                  )}
                   <div className="flex items-center gap-4 mt-auto pt-4 border-t border-border/50">
                     <img
                       src={t.avatar}
