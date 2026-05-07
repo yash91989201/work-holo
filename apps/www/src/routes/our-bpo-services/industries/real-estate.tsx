@@ -202,7 +202,7 @@ const pageData: WebPageProps = {
       ],
       closingText:
         "Being proactive about common issues helps you streamline your BPO transition.",
-      imageSrc: "https://picsum.photos/800/600?random=3",
+      imageSrc: "/assets/confie-bpo.webp",
       imageAlt: "Real Estate Business Challenges",
       imagePosition: "right",
     },

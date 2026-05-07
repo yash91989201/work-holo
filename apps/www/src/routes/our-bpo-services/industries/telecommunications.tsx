@@ -124,7 +124,7 @@ const pageData: WebPageProps = {
 }
 ],
 "closingText": "Confie BPO is here to provide the specialized solutions you've been looking for!",
-"imageSrc": "https://picsum.photos/800/600?random=2",
+"imageSrc": "/assets/confie-bpo.webp",
 "imageAlt": "BPO Solutions Representation",
 "imagePosition": "right",
 "cta": {

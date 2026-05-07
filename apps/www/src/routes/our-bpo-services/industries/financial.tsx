@@ -170,7 +170,7 @@ const pageData: WebPageProps = {
 }
 ],
 "closingText": "Guiding your business to success means navigating that fine line between risk and reward.",
-"imageSrc": "https://picsum.photos/800/600?random=3",
+"imageSrc": "/assets/confie-bpo.webp",
 "imageAlt": "Responsive customer support team",
 "imagePosition": "left"
 }

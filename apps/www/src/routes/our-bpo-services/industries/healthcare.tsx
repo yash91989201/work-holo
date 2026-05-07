@@ -175,7 +175,7 @@ const pageData: WebPageProps = {
       ],
       closingText:
         "Our mission is to drive your administrative and cost savings to the next level.",
-      imageSrc: "https://picsum.photos/800/600?random=2",
+      imageSrc: "/assets/confie-bpo.webp",
       imageAlt: "Streamlined medical services overview",
       imagePosition: "left",
       cta: {

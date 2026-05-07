@@ -171,7 +171,7 @@ const pagedata : WebPageProps={
 }
 ],
 "closingText": "Confie BPO has the expertise you deserve.",
-"imageSrc": "https://picsum.photos/800/600?random=2",
+"imageSrc": "/assets/confie-bpo.webp",
 "imageAlt": "Financial Experts",
 "imagePosition": "right",
 "cta": {

@@ -178,7 +178,7 @@ const pageData: WebPageProps = {
       ],
       closingText:
         "With Confie BPO services, crunch can finally be a thing of the past. We provide assistance during busy periods so your workers don’t feel the strain.",
-      imageSrc: "https://picsum.photos/800/600?random=2",
+      imageSrc: "/assets/confie-bpo.webp",
       imageAlt: "Agents working with headsets",
       imagePosition: "right",
       cta: {

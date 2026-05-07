@@ -76,7 +76,7 @@ const pageData: WebPageProps = {
       },
     ],
     showcaseImage: {
-      src: "https://picsum.photos/800/600?random=1",
+      src: "/assets/confie-bpo.webp",
       alt: "Confie BPO Office Setting",
     },
     terminal: {
