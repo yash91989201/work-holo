@@ -142,9 +142,9 @@ export function AboutSection() {
             {/* Main Image */}
             <div className="relative aspect-[4/3] overflow-hidden rounded-3xl">
               <img
-                alt="Team collaborating"
+                alt="Professional working on laptop"
                 className="h-full w-full object-cover"
-                src="/assets/diverse-team-planning-stockcake.webp"
+                src="/assets/hero-img.jpeg"
               />
             </div>
 

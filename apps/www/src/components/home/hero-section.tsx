@@ -180,11 +180,11 @@ export function HeroSection() {
             }}
           >
             <div className="relative overflow-hidden rounded-[2.25rem] border border-border/40 bg-card/50 p-4 shadow-[0_30px_90px_rgba(15,23,42,0.12)] backdrop-blur-sm sm:p-5">
-              <div className="relative aspect-4/5 overflow-hidden rounded-[1.75rem]">
+              <div className="relative aspect-square overflow-hidden rounded-[1.75rem]">
                 <img
-                  alt="Professional working on laptop"
+                  alt="Team collaborating"
                   className="h-full w-full object-cover"
-                  src="/assets/hero-img.jpeg"
+                  src="/assets/diverse-team-planning-stockcake.webp"
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-primary/12 via-transparent to-transparent" />
               </div>
