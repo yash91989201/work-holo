@@ -1,6 +1,7 @@
 export * from "./attendance";
 export * from "./auth";
 export * from "./authorization";
+export * from "./call-logs";
 export * from "./casbin";
 export * from "./channel";
 export * from "./dialer";

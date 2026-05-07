@@ -1,3 +1,4 @@
+import * as net from "node:net";
 import { ORPCError } from "@orpc/server";
 import type { db as dbClient } from "@work-holo/db";
 import {
@@ -173,6 +174,7 @@ export const dialerAdminRouter = {
         performedBy: context.session.user.id,
       });
 
+      void restartExternalProfile();
       return trunk;
     }),
 
@@ -216,6 +218,7 @@ export const dialerAdminRouter = {
         performedBy: context.session.user.id,
       });
 
+      void restartExternalProfile();
       return { success: true };
     }),
 
@@ -242,6 +245,7 @@ export const dialerAdminRouter = {
         performedBy: context.session.user.id,
       });
 
+      void restartExternalProfile();
       return { success: true };
     }),
 
@@ -996,6 +1000,7 @@ export const dialerAdminRouter = {
         performedBy: context.session.user.id,
       });
 
+      void reloadXml();
       return ext;
     }),
 
@@ -1038,6 +1043,7 @@ export const dialerAdminRouter = {
         performedBy: context.session.user.id,
       });
 
+      void reloadXml();
       return { success: true };
     }),
 
@@ -1055,29 +1061,45 @@ export const dialerAdminRouter = {
         performedBy: context.session.user.id,
       });
 
+      void reloadXml();
       return { success: true };
     }),
 
   // ── Server Status ─────────────────────────────────────────────────────────
 
   getServerStatus: adminProcedure.handler(async ({ context }) => {
-    const VPS_IP = "135.181.31.20";
+    const VPS_IP = process.env.FREESWITCH_ESL_HOST ?? "135.181.31.20";
 
-    const vpsReachable = await new Promise<boolean>((resolve) => {
-      const net = require("node:net");
-      const socket = new net.Socket();
-      socket.setTimeout(3000);
-      socket.once("connect", () => {
-        socket.destroy();
-        resolve(true);
-      });
-      socket.once("timeout", () => {
-        socket.destroy();
-        resolve(false);
-      });
-      socket.once("error", () => resolve(false));
-      socket.connect(22, VPS_IP);
-    });
+    const [vpsReachable, eslConnected] = await Promise.all([
+      new Promise<boolean>((resolve) => {
+        const socket = new net.Socket();
+        socket.setTimeout(3000);
+        socket.once("connect", () => {
+          socket.destroy();
+          resolve(true);
+        });
+        socket.once("timeout", () => {
+          socket.destroy();
+          resolve(false);
+        });
+        socket.once("error", () => resolve(false));
+        socket.connect(22, VPS_IP);
+      }),
+      new Promise<boolean>((resolve) => {
+        const socket = new net.Socket();
+        socket.setTimeout(3000);
+        socket.once("connect", () => {
+          socket.destroy();
+          resolve(true);
+        });
+        socket.once("timeout", () => {
+          socket.destroy();
+          resolve(false);
+        });
+        socket.once("error", () => resolve(false));
+        socket.connect(Number(process.env.FREESWITCH_ESL_PORT ?? 8021), VPS_IP);
+      }),
+    ]);
 
     const [trunkCount] = await context.db
       .select({ value: count() })
@@ -1096,7 +1118,9 @@ export const dialerAdminRouter = {
     return {
       vpsIp: VPS_IP,
       vpsReachable,
-      eslStatus: "not_connected" as const,
+      eslStatus: eslConnected
+        ? ("connected" as const)
+        : ("unreachable" as const),
       trunkCount: trunkCount?.value ?? 0,
       didCount: didCount?.value ?? 0,
       extensionCount: extensionCount?.value ?? 0,

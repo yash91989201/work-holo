@@ -3,6 +3,7 @@ import {
   IconBuildingSkyscraper,
   IconCrown,
   IconHeadphones,
+  IconHistory,
   IconLayoutDashboard,
   IconPhone,
   IconPhoneCall,
@@ -84,6 +85,11 @@ const dialerNavItems = [
     to: "/platform/dashboard/dialer/org-assignments",
     label: "Org Assignments",
     icon: IconBuilding,
+  },
+  {
+    to: "/platform/dashboard/dialer/calls",
+    label: "Call Logs",
+    icon: IconHistory,
   },
   {
     to: "/platform/dashboard/dialer/status",

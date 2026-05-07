@@ -1,6 +1,8 @@
 import {
   IconDeviceLaptop,
+  IconHistory,
   IconMailFilled,
+  IconPhone,
   IconPuzzle,
   IconSitemapFilled,
   IconUsers,
@@ -37,6 +39,12 @@ export function Sidebar({
     location.pathname === `/org/${slug}/console/members/invitations`;
   const isTeamsActive = location.pathname === `/org/${slug}/console/teams`;
   const isRolesActive = location.pathname === `/org/${slug}/console/roles`;
+  const isDialerActive =
+    location.pathname.startsWith(`/org/${slug}/console/dialer`) &&
+    !location.pathname.includes("/calls");
+  const isCallLogsActive = location.pathname.startsWith(
+    `/org/${slug}/console/dialer/calls`
+  );
   const canReadRoles = useCan((p) => p.org.role.list);
 
   return (
@@ -113,6 +121,33 @@ export function Sidebar({
                     </Link>
                   }
                   tooltip="Teams"
+                />
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  isActive={isDialerActive}
+                  render={
+                    <Link params={{ slug }} to="/org/$slug/console/dialer">
+                      <IconPhone />
+                      <span>Dialer</span>
+                    </Link>
+                  }
+                  tooltip="Dialer"
+                />
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  isActive={isCallLogsActive}
+                  render={
+                    <Link
+                      params={{ slug }}
+                      to="/org/$slug/console/dialer/calls"
+                    >
+                      <IconHistory />
+                      <span>Call Logs</span>
+                    </Link>
+                  }
+                  tooltip="Call Logs"
                 />
               </SidebarMenuItem>
             </SidebarMenu>
