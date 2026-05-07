@@ -1,37 +1,37 @@
-import { useState, useRef } from "react";
-import { motion } from "motion/react";
 import { IconArrowLeft, IconArrowRight, IconArrowUpRight } from "@tabler/icons-react";
+import { motion } from "motion/react";
+import { useRef, useState } from "react";
 
 const projects = [
-  {
+   {
     id: 1,
-    title: "Mobile App Development",
+    title: "Business Transformation",
     tag: "Solution",
-    image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&h=400&fit=crop",
+    image: "/assets/business-transformation.webp",
   },
   {
     id: 2,
-    title: "Business Transformation",
+    title: "Digital Growth Strategy",
     tag: "Solution",
-    image: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&h=400&fit=crop",
+    image: "/assets/digital-transformation-solutions.webp",
   },
   {
     id: 3,
-    title: "Cloud Migration System",
+    title: "Mobile App Development",
     tag: "Solution",
-    image: "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&h=400&fit=crop",
+    image: "/assets/mobile-app-development.webp",
   },
   {
     id: 4,
-    title: "Digital Growth Strategy",
+    title: "Cloud Migration System",
     tag: "Solution",
-    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop",
+    image: "/assets/cloud-migration-system.png",
   },
   {
     id: 5,
     title: "Cybersecurity Audit",
     tag: "Solution",
-    image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=600&h=400&fit=crop",
+    image: "/assets/cyber-security-audit.jpg",
   },
 ];
 

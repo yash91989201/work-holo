@@ -18,18 +18,20 @@ export const Route = createFileRoute("/")({
 
 function RouteComponent() {
   return (
-    <div className="relative overflow-hidden bg-background">
+    <div className="relative overflow-hidden bg-background pt-38.5 lg:pt-0">
       <HeroSection />
       <WhyChooseUs />
       <AboutSection />
       <ServicesSection />
       <TestimonialsSection />
-      {/* <TeamSection /> */}
       <TechnologiesSection />
       <ProcessSection />
       <ProjectsSection />
-      {/* <InsightsSection /> */}
-      <section className="relative scroll-mt-28 py-20 lg:py-28" id="contact">
+
+      <section
+        className="relative scroll-mt-28 py-20 lg:py-28"
+        id="contact"
+      >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <ContactCard />
         </div>

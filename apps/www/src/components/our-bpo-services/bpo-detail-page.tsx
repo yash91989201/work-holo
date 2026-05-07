@@ -1,3 +1,6 @@
+import type React from "react";
+import { useEffect, useRef, useState } from "react";
+
 import {
   IconArrowUpRight,
   IconBolt,
@@ -24,8 +27,6 @@ import {
   useSpring,
   useTransform,
 } from "motion/react";
-import type React from "react";
-import { useEffect, useRef, useState } from "react";
 
 // --- Constants & Types ---
 
@@ -325,13 +326,6 @@ const ServiceCard: React.FC<{ service: Service }> = ({ service }) => {
         ))}
       </ul>
 
-      <motion.a
-        className="group/link inline-flex items-center gap-2 font-bold text-brand-light text-sm transition-colors hover:text-white"
-        href="#"
-      >
-        Explore Platform
-        <IconArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover/link:translate-x-1 group-hover/link:-translate-y-1" />
-      </motion.a>
     </SpotlightCard>
   );
 };
