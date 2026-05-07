@@ -1,4 +1,3 @@
-import { CTAButton } from "@work-holo/ui/components/cta-button";
 import { cn } from "@work-holo/ui/lib/utils";
 import { motion, type Variants, useAnimationControls } from "motion/react";
 import { useEffect, useState } from "react";
@@ -169,7 +168,7 @@ export function WhyChooseUs() {
           <div className="inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-card/50 px-5 py-2 text-sm">
             <span className="text-muted-foreground">Join Over</span>
             <span className="inline-flex items-center rounded-md bg-primary px-2 py-0.5 font-bold text-primary-foreground text-xs">
-              32+
+              100+
             </span>
             <span className="text-muted-foreground">
               Companies with Work Holo Here
