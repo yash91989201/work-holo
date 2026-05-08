@@ -26,10 +26,10 @@ const services = [
 ];
 
 const resources = [
-  { label: "About Us", href: "/", hash: "about" },
+  { label: "About Us", href: "/about-us" },
   { label: "Careers", href: "/", badge: "NEW" },
   { label: "Projects", href: "/projects" },
-  { label: "Contact Us", href: "/", hash: "contact" },
+  { label: "Contact Us", href:"/contact-us" },
   { label: "Privacy Policy", href: "/" },
 ];
 
