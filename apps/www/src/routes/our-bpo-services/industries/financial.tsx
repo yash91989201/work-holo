@@ -87,7 +87,7 @@ const pageData: WebPageProps = {
 }
 ],
 "showcaseImage": {
-"src": "https://picsum.photos/800/600?random=1",
+"src": "/assets/financial-services-01.jpg",
 "alt": "Financial services team collaborating"
 },
 "terminal": {
@@ -148,7 +148,7 @@ const pageData: WebPageProps = {
 }
 ],
 "closingText": "Confie BPO has years of experience in the financial services call center industry.",
-"imageSrc": "https://picsum.photos/800/600?random=2",
+"imageSrc": "/assets/financial-services-02.webp",
 "imageAlt": "Security specialist at desk",
 "imagePosition": "right",
 "cta": {
@@ -170,7 +170,7 @@ const pageData: WebPageProps = {
 }
 ],
 "closingText": "Guiding your business to success means navigating that fine line between risk and reward.",
-"imageSrc": "/assets/confie-bpo.webp",
+"imageSrc": "/assets/financial.webp",
 "imageAlt": "Responsive customer support team",
 "imagePosition": "left"
 }

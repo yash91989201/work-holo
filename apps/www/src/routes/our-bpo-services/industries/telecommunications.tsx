@@ -81,7 +81,7 @@ const pageData: WebPageProps = {
 }
 ],
 "showcaseImage": {
-"src": "https://picsum.photos/800/600?random=1",
+"src": "/assets/telecommunication-01.webp",
 "alt": "BPO Display"
 },
 "terminal": {
@@ -124,7 +124,7 @@ const pageData: WebPageProps = {
 }
 ],
 "closingText": "Confie BPO is here to provide the specialized solutions you've been looking for!",
-"imageSrc": "/assets/confie-bpo.webp",
+"imageSrc": "/assets/telecommunication.jpg",
 "imageAlt": "BPO Solutions Representation",
 "imagePosition": "right",
 "cta": {
@@ -146,7 +146,7 @@ const pageData: WebPageProps = {
 }
 ],
 "closingText": "Increasing your customer acquisition and market share in no time.",
-"imageSrc": "https://picsum.photos/800/600?random=3",
+"imageSrc": "/assets/telecommunication-02.webp",
 "imageAlt": "Data Analytics Display",
 "imagePosition": "left"
 }

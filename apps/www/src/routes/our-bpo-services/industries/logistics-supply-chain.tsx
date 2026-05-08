@@ -119,7 +119,7 @@ const workflow: WorkflowProps = {
     },
   ],
   showcaseImage: {
-    src: "https://picsum.photos/1200/800?random=1",
+    src: "/assets/logistics-and-supply-chain.jpg",
     alt: "Logistics workflow",
   },
   terminal: {
@@ -180,7 +180,7 @@ const imageSections: ImageSectionProps[] = [
     ],
     closingText:
       "Prepare your logistics operations for the future with confidence.",
-    imageSrc: "https://picsum.photos/900/600?random=2",
+    imageSrc: "/assets/logistics-and-supply-chain-01.jpg",
     imageAlt: "Logistics warehouse",
     imagePosition: "right",
     cta: {
@@ -200,7 +200,7 @@ const imageSections: ImageSectionProps[] = [
     ],
     closingText:
       "Build a faster, more reliable logistics system with expert BPO support.",
-    imageSrc: "https://picsum.photos/900/600?random=3",
+    imageSrc: "/assets/logistics-and-supply-chain-02.jpg",
     imageAlt: "Logistics team",
     imagePosition: "left",
     cta: {

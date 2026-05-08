@@ -82,7 +82,7 @@ const pageData: WebPageProps = {
       },
     ],
     showcaseImage: {
-      src: "https://picsum.photos/800/600?random=1",
+      src: "/assets/technology.png",
       alt: "Global communication bridge",
     },
     terminal: {
@@ -178,7 +178,7 @@ const pageData: WebPageProps = {
       ],
       closingText:
         "With Confie BPO services, crunch can finally be a thing of the past. We provide assistance during busy periods so your workers don’t feel the strain.",
-      imageSrc: "/assets/confie-bpo.webp",
+      imageSrc: "/assets/technology-02.jpg",
       imageAlt: "Agents working with headsets",
       imagePosition: "right",
       cta: {
@@ -204,7 +204,7 @@ const pageData: WebPageProps = {
       ],
       closingText:
         "We integrate seamlessly into your current operation while communicating with your customers at the highest level.",
-      imageSrc: "https://picsum.photos/800/600?random=3",
+      imageSrc: "/assets/technology-01.webp",
       imageAlt: "Technical server room",
       imagePosition: "left",
     },

@@ -108,7 +108,7 @@ const pageData: WebPageProps = {
       },
     ],
     showcaseImage: {
-      src: "https://picsum.photos/800/600?random=1",
+      src: "/assets/healthcare-02.jpg",
       alt: "Healthcare professionals collaborating",
     },
     terminal: {
@@ -175,7 +175,7 @@ const pageData: WebPageProps = {
       ],
       closingText:
         "Our mission is to drive your administrative and cost savings to the next level.",
-      imageSrc: "/assets/confie-bpo.webp",
+      imageSrc: "/assets/healthcare.avif",
       imageAlt: "Streamlined medical services overview",
       imagePosition: "left",
       cta: {

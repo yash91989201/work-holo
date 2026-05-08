@@ -110,7 +110,7 @@ const workflow: WorkflowProps = {
     },
   ],
    showcaseImage: {
-    src: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1200&auto=format&fit=crop&q=80",
+    src: "/assets/insurance.jpg",
     alt: "Insurance BPO team at work",
   },
   terminal: {
@@ -194,7 +194,7 @@ const imageSections: ImageSectionProps[] = [
     closingText:
       "Paperwork and compliance are always the hardest parts of running an insurance operation. Imagine your team focused entirely on closing new business while a dedicated BPO partner handles the rest.",
     // Royalty-free Unsplash image of a professional call center / insurance office
-    imageSrc: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=900&auto=format&fit=crop&q=80",
+    imageSrc: "/assets/insurance-03.jpg",
     imageAlt: "Insurance BPO call center agents at work",
     imagePosition: "right",
     cta: {
@@ -226,7 +226,7 @@ const imageSections: ImageSectionProps[] = [
     closingText:
       "Once you've received quotes from targeted BPO partners, follow up with discovery calls to customize your package and select the one that fits your growth strategy.",
     // Royalty-free Unsplash image of a professional woman working at a laptop (similar to the Confie screenshot)
-    imageSrc: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=900&auto=format&fit=crop&q=80",
+    imageSrc: "/assets/insurance-02.jpg",
     imageAlt: "Insurance professional evaluating BPO options on laptop",
     imagePosition: "left",
     cta: {

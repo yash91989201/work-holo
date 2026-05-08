@@ -106,7 +106,7 @@ const pageData: WebPageProps = {
       },
     ],
     showcaseImage: {
-      src: "https://picsum.photos/800/600?random=1",
+      src: "/assets/real-estate-02.jpg",
       alt: "Real Estate Operations",
     },
     terminal: {
@@ -176,7 +176,7 @@ const pageData: WebPageProps = {
       ],
       closingText:
         "Keep up with this growth as BPO teams invest in the future of real estate services.",
-      imageSrc: "https://picsum.photos/800/600?random=2",
+      imageSrc: "/assets/real-estate-01.jpg",
       imageAlt: "Digital Real Estate Concepts",
       imagePosition: "left",
       cta: {
@@ -202,7 +202,7 @@ const pageData: WebPageProps = {
       ],
       closingText:
         "Being proactive about common issues helps you streamline your BPO transition.",
-      imageSrc: "/assets/confie-bpo.webp",
+      imageSrc: "/assets/real-estate.jpg",
       imageAlt: "Real Estate Business Challenges",
       imagePosition: "right",
     },

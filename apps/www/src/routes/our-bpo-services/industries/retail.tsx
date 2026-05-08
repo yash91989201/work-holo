@@ -92,7 +92,7 @@ const pageData: WebPageProps = {
       },
     ],
     showcaseImage: {
-      src: "/assets/confie-bpo.webp",
+      src: "/assets/retail.webp",
       alt: "Retail BPO Showcase",
     },
     terminal: {
@@ -156,7 +156,7 @@ const pageData: WebPageProps = {
         },
       ],
       closingText: "Achieve unprecedented success with the right BPO partner.",
-      imageSrc: "https://picsum.photos/800/600?random=2",
+      imageSrc: "/assets/retails-01.webp",
       imageAlt: "Digital Transition",
       imagePosition: "right",
       cta: {

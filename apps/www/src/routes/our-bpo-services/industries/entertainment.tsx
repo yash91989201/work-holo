@@ -76,7 +76,7 @@ const pageData: WebPageProps = {
       },
     ],
     showcaseImage: {
-      src: "/assets/confie-bpo.webp",
+      src: "/assets/entertainment.jpg",
       alt: "Confie BPO Office Setting",
     },
     terminal: {
@@ -159,7 +159,7 @@ const pageData: WebPageProps = {
       ],
       closingText:
         "Our seamless services are designed to cut your operational costs while helping to boost your bottom line.",
-      imageSrc: "https://picsum.photos/800/600?random=2",
+      imageSrc: "/assets/entertainment-01.jpg",
       imageAlt: "Team collaboration",
       imagePosition: "right",
       cta: {
@@ -180,7 +180,7 @@ const pageData: WebPageProps = {
       ],
       closingText:
         "Simply put, it can be difficult for your business to handle everything on its own.",
-      imageSrc: "https://picsum.photos/800/600?random=3",
+      imageSrc: "/assets/entertainment-02.jpg",
       imageAlt: "Marketing concept",
       imagePosition: "left",
     },
