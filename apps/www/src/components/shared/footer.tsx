@@ -13,16 +13,16 @@ import {
 } from "@tabler/icons-react";
 
 const services = [
-  "Agentic AI",
-  "AI Agents",
-  "MVP",
-  "Web App Development",
-  "Mobile App Development",
-  "QA & Test Automation",
-  "UX/UI Design",
-  "Data Engineering",
-  "AWS",
-  "Cloud Engineering & Devops",
+  { label: "Agentic AI", href: "/services/agentic-ai" },
+  { label: "AI Agents", href: "/services/ai-agents" },
+  { label: "MVP", href: "/services/mvp" },
+  { label: "Web App Development", href: "/services/web-app-development" },
+  { label: "Mobile App Development", href: "/services/mobile-app-development" },
+  { label: "QA & Test Automation", href: "/services/qa-test-automation" },
+  { label: "UX/UI Design", href: "/services/ux-ui-design" },
+  { label: "Data Engineering", href: "/services/data-engineering" },
+  { label: "AWS", href: "/services/aws" },
+  { label: "Cloud Engineering & Devops", href: "/services/cloud-engineering-devops" },
 ];
 
 const resources = [
@@ -191,10 +191,13 @@ export function Footer() {
               </h3>
               <ul className="space-y-3">
                 {services.map((service) => (
-                  <li key={service}>
-                    <span className="cursor-default text-muted-foreground text-sm">
-                      {service}
-                    </span>
+                  <li key={service.label}>
+                    <Link
+                      className="text-muted-foreground text-sm transition-colors duration-200 hover:text-primary"
+                      to={service.href}
+                    >
+                      {service.label}
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -216,7 +219,7 @@ export function Footer() {
                   <li className="flex items-center gap-2" key={resource.label}>
                     <Link
                       className="text-muted-foreground text-sm transition-colors duration-200 hover:text-primary"
-                      hash={resource.hash}
+                      {...(resource.hash ? { hash: resource.hash } : {})}
                       to={resource.href}
                     >
                       {resource.label}
@@ -282,13 +285,19 @@ export function Footer() {
               Work Holo © {new Date().getFullYear()}. All right reserved.
             </p>
             <div className="flex items-center gap-4 text-muted-foreground/60 text-sm">
-              <span className="cursor-default transition-colors hover:text-primary">
+              <Link
+                className="transition-colors hover:text-primary"
+                to="/"
+              >
                 Privacy & Policy
-              </span>
+              </Link>
               <span className="text-border">·</span>
-              <span className="cursor-default transition-colors hover:text-primary">
+              <Link
+                className="transition-colors hover:text-primary"
+                to="/"
+              >
                 Terms & Condition
-              </span>
+              </Link>
             </div>
           </div>
         </div>
