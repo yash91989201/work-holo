@@ -9,7 +9,6 @@ import {
   IconBrandFacebook,
   IconBrandInstagram,
   IconBrandLinkedin,
-  IconBrandX,
   IconClock,
   IconPhone,
   IconMail,
@@ -40,10 +39,9 @@ const resources = [
 ];
 
 const socialLinks = [
-  { icon: IconBrandFacebook, href: "#", label: "Facebook" },
-  { icon: IconBrandInstagram, href: "#", label: "Instagram" },
-  { icon: IconBrandLinkedin, href: "#", label: "LinkedIn" },
-  { icon: IconBrandX, href: "#", label: "X" },
+  { icon: IconBrandFacebook, href: "https://www.facebook.com/people/Work-Holo/61575462641337/", label: "Facebook" },
+  { icon: IconBrandInstagram, href: "https://www.instagram.com/workholo.dev/", label: "Instagram" },
+  { icon: IconBrandLinkedin, href: "https://www.linkedin.com/company/workholo/posts/?feedView=all", label: "LinkedIn" },
 ];
 
 function scrollToTop() {
@@ -144,6 +142,8 @@ export function Footer() {
                       className="flex size-8 items-center justify-center rounded-full border border-border bg-background text-primary transition-colors hover:bg-muted"
                       href={social.href}
                       key={social.label}
+                      rel="noopener noreferrer"
+                      target="_blank"
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.95 }}
                     >
