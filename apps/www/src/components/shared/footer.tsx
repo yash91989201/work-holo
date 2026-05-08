@@ -11,6 +11,8 @@ import {
   IconBrandLinkedin,
   IconBrandX,
   IconClock,
+  IconPhone,
+  IconMail,
 } from "@tabler/icons-react";
 
 const services = [
@@ -23,14 +25,17 @@ const services = [
   { label: "UX/UI Design", href: "/services/ux-ui-design" },
   { label: "Data Engineering", href: "/services/data-engineering" },
   { label: "AWS", href: "/services/aws" },
-  { label: "Cloud Engineering & Devops", href: "/services/cloud-engineering-devops" },
+  {
+    label: "Cloud Engineering & Devops",
+    href: "/services/cloud-engineering-devops",
+  },
 ];
 
 const resources = [
   { label: "About Us", href: "/about-us" },
   { label: "Careers", href: "/", badge: "NEW" },
   { label: "Projects", href: "/projects" },
-  { label: "Contact Us", href:"/contact-us" },
+  { label: "Contact Us", href: "/contact-us" },
   { label: "Privacy Policy", href: "/" },
 ];
 
@@ -164,21 +169,21 @@ export function Footer() {
               viewport={{ once: true }}
               whileInView={{ opacity: 1, y: 0 }}
             >
-            <Link className="flex shrink-0 items-center gap-3" to="/">
-                          <div className="relative h-12 w-16">
-                            <Image
-                              alt="Work Holo"
-                              className="object-contain"
-                              height={48}
-                              src="/logo.webp"
-                              unoptimized
-                              width={64}
-                            />
-                          </div>
-                          <span className="font-bold font-heading text-2xl text-foreground tracking-tight">
-                            Workholo
-                          </span>
-                        </Link>
+              <Link className="flex shrink-0 items-center gap-3" to="/">
+                <div className="relative h-12 w-16">
+                  <Image
+                    alt="Work Holo"
+                    className="object-contain"
+                    height={48}
+                    src="/logo.webp"
+                    unoptimized
+                    width={64}
+                  />
+                </div>
+                <span className="font-bold font-heading text-2xl text-foreground tracking-tight">
+                  Workholo
+                </span>
+              </Link>
               <p className="mt-4 max-w-xs text-muted-foreground text-sm leading-relaxed">
                 Every great solution start understand the time into learn about.
               </p>
@@ -253,33 +258,38 @@ export function Footer() {
               </h3>
               <div className="space-y-4">
                 <p className="text-muted-foreground text-sm leading-relaxed">
-                  993 Renner Burg, West Rond,
+                  Raj Nagar, Dwarka,
                   <br />
-                  MT 94251-030
+                  New Delhi- 1100XX, Delhi, India
                 </p>
-                <div className="space-y-2">
-                  <p className="text-sm">
-                    <span className="font-semibold text-foreground">P:</span>{" "}
+                <div className="space-y-3">
+                  {/* Phone */}
+                  <div className="flex items-center gap-2 text-sm">
+                    <IconPhone className="size-4 shrink-0 text-primary" />
+
                     <a
                       className="text-muted-foreground transition-colors hover:text-primary"
                       href="tel:+10095447818"
                     >
                       +1 (009) 544-7818
                     </a>
-                  </p>
-                  <p className="text-sm">
-                    <span className="font-semibold text-foreground">E:</span>{" "}
+                  </div>
+
+                  {/* Email */}
+                  <div className="flex items-center gap-2 text-sm">
+                    <IconMail className="size-4 shrink-0 text-primary" />
+
                     <a
                       className="text-muted-foreground transition-colors hover:text-primary"
-                      href="mailto:support@workholo.com"
+                      href="mailto:hr@workholo.com"
                     >
                       hr@workholo.com
                     </a>
-                  </p>
+                  </div>
                 </div>
                 <div className="flex items-center gap-2 text-muted-foreground text-sm">
                   <IconClock className="size-4 text-primary" />
-                  <span>Mon-Fri 10am-07pm</span>
+                  <span>Mon-Sat 10am- 07pm</span>
                 </div>
               </div>
             </motion.div>
@@ -291,17 +301,11 @@ export function Footer() {
               Work Holo © {new Date().getFullYear()}. All right reserved.
             </p>
             <div className="flex items-center gap-4 text-muted-foreground/60 text-sm">
-              <Link
-                className="transition-colors hover:text-primary"
-                to="/"
-              >
+              <Link className="transition-colors hover:text-primary" to="/">
                 Privacy & Policy
               </Link>
               <span className="text-border">·</span>
-              <Link
-                className="transition-colors hover:text-primary"
-                to="/"
-              >
+              <Link className="transition-colors hover:text-primary" to="/">
                 Terms & Condition
               </Link>
             </div>
