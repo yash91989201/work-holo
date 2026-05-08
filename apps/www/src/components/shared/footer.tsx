@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
+import { Image } from "@/components/shared/image";
 
 import {
   IconArrowUp,
@@ -163,16 +164,21 @@ export function Footer() {
               viewport={{ once: true }}
               whileInView={{ opacity: 1, y: 0 }}
             >
-              <Link className="flex items-center gap-2.5" to="/">
-                <div className="flex size-9 items-center justify-center rounded-full bg-primary">
-                  <span className="font-bold text-primary-foreground text-sm">
-                    WH
-                  </span>
-                </div>
-                <span className="font-semibold text-foreground text-xl tracking-tight">
-                  Work Holo
-                </span>
-              </Link>
+            <Link className="flex shrink-0 items-center gap-3" to="/">
+                          <div className="relative h-12 w-16">
+                            <Image
+                              alt="Work Holo"
+                              className="object-contain"
+                              height={48}
+                              src="/logo.webp"
+                              unoptimized
+                              width={64}
+                            />
+                          </div>
+                          <span className="font-bold font-heading text-2xl text-foreground tracking-tight">
+                            Workholo
+                          </span>
+                        </Link>
               <p className="mt-4 max-w-xs text-muted-foreground text-sm leading-relaxed">
                 Every great solution start understand the time into learn about.
               </p>
@@ -267,7 +273,7 @@ export function Footer() {
                       className="text-muted-foreground transition-colors hover:text-primary"
                       href="mailto:support@workholo.com"
                     >
-                      support@workholo.com
+                      hr@workholo.com
                     </a>
                   </p>
                 </div>

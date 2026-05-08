@@ -74,7 +74,7 @@ export function ContactCard() {
                     +1 (009) 544-7818
                   </p>
                   <p className="break-all text-muted-foreground text-sm">
-                    support@tekmino.com
+                    hr@workholo.com
                   </p>
                 </div>
 

@@ -88,7 +88,7 @@ export function ContactSection() {
                       +1 (009) 544-7818
                     </p>
                     <p className="text-muted-foreground text-sm break-all">
-                      support@tekmino.com
+                      hr@workholo.com
                     </p>
                   </div>
 
