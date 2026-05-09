@@ -7,56 +7,116 @@ export const Route = createFileRoute("/projects/")({
   component: RouteComponent,
 });
 
+const stats = [
+  { label: "Completed Projects", value: "100+" },
+  { label: "Global Clients", value: "100+" },
+  { label: "Professional Teams", value: "30+" },
+];
+
 function RouteComponent() {
   return (
-    <div className="relative overflow-hidden bg-background">
-      {/* Hero Section */}
-      <section className="relative">
-        <motion.div
-          className="relative w-full overflow-hidden"
-          initial={{ opacity: 0, scale: 1.05 }}
-          style={{ aspectRatio: "21/9" }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          viewport={{ once: true }}
-          whileInView={{ opacity: 1, scale: 1 }}
-        >
-          <ProjectImage
-            aspectRatio="21/9"
-            className="h-full w-full"
-            title="Our Work"
-          />
-          <div className="absolute inset-0 bg-linear-to-t from-background via-background/20 to-transparent" />
-        </motion.div>
-      </section>
+    <div className="relative min-h-screen bg-background selection:bg-primary/30 selection:text-primary">
+      {/* Ambient Background Gradients */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -top-[20%] -left-[10%] h-[50%] w-[50%] rounded-full bg-primary/5 opacity-50 blur-[120px]" />
+        <div className="absolute top-[20%] right-[0%] h-[40%] w-[40%] rounded-full bg-blue-500/5 opacity-50 blur-[120px]" />
+      </div>
 
-      {/* Intro + Grid */}
-      <section className="relative py-8 sm:py-12 lg:py-16">
+      {/* Hero Section */}
+      <section className="relative pt-44 pb-16 sm:pt-44 sm:pb-24 md:pt-48 lg:pt-48 lg:pb-32 xl:pt-56">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {/* Title & Description */}
-          <motion.div
-            className="mb-12 sm:mb-16"
-            initial={{ opacity: 0, y: 30 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            whileInView={{ opacity: 1, y: 0 }}
-          >
-            <span className="mb-4 inline-flex items-center gap-2 font-mono font-semibold text-[11px] text-primary uppercase tracking-[0.25em]">
-              Portfolio
-            </span>
-            <h1 className="mb-4 font-bold font-heading text-2xl text-foreground sm:text-3xl lg:text-4xl xl:text-5xl">
-              Selected Work
-            </h1>
-            <p className="max-w-2xl text-muted-foreground text-sm leading-relaxed sm:text-base">
-              From AI-powered platforms to enterprise cloud migrations — explore
-              our portfolio of impactful digital transformations that deliver
-              measurable results for clients across industries.
-            </p>
-          </motion.div>
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-8 items-center">
+            {/* Left Content */}
+            <motion.div
+              className="lg:col-span-5 flex flex-col justify-center"
+              initial={{ opacity: 0, x: -40 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <div className="mb-6 flex items-center gap-3">
+                <span className="flex h-px w-8 bg-primary/50"></span>
+                <span className="font-mono text-xs font-semibold uppercase tracking-[0.3em] text-primary">
+                  Our Portfolio
+                </span>
+              </div>
+              
+              <h1 className="mb-6 font-heading text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl xl:text-7xl">
+                Digital <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-500">
+                  Excellence.
+                </span>
+              </h1>
+              
+              <p className="mb-10 max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg">
+                We craft ambitious digital experiences. From AI-powered platforms to enterprise cloud migrations, explore our transformative work that delivers measurable impact.
+              </p>
+
+              {/* Stats Chips */}
+              <div className="flex flex-wrap gap-4 sm:gap-6">
+                {stats.map((stat, i) => (
+                  <motion.div 
+                    key={stat.label}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.4 + (i * 0.1) }}
+                    className="flex flex-col gap-1 border-l-2 border-primary/20 pl-4"
+                  >
+                    <span className="text-2xl font-bold text-foreground font-heading">{stat.value}</span>
+                    <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{stat.label}</span>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Right Image/Visual */}
+            <motion.div
+              className="lg:col-span-7 relative"
+              initial={{ opacity: 0, scale: 0.95, y: 40 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+            >
+              <div className="relative w-full overflow-hidden rounded-2xl border border-border/50 bg-muted/20 shadow-2xl shadow-black/10">
+                <div className="absolute inset-0 bg-gradient-to-tr from-background/80 via-transparent to-transparent z-10 mix-blend-overlay" />
+                <ProjectImage
+                  aspectRatio="16/10"
+                  className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+                  title="Hero Project Showcase"
+                />
+                
+                {/* Decorative Elements */}
+                <div className="absolute top-4 right-4 z-20 flex gap-2">
+                  <div className="h-2 w-2 rounded-full bg-primary/40 backdrop-blur-md" />
+                  <div className="h-2 w-2 rounded-full bg-primary/60 backdrop-blur-md" />
+                  <div className="h-2 w-2 rounded-full bg-primary backdrop-blur-md" />
+                </div>
+              </div>
+              
+              {/* Offset decorative background block */}
+              <div className="absolute -inset-4 -z-10 rounded-3xl border border-primary/10 bg-primary/5 opacity-50 blur-xl translate-x-4 translate-y-4" />
+            </motion.div>
+          </div>
         </div>
       </section>
 
-      <ProjectGrid />
+      {/* Grid Section */}
+      <section className="relative z-10 bg-background/50 backdrop-blur-xl border-t border-border/50 pt-16 pb-24 sm:pt-24 sm:pb-32">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-12 sm:mb-16">
+           <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6 }}
+            className="flex flex-col md:flex-row md:items-end justify-between gap-6"
+          >
+            <div>
+              <h2 className="text-3xl font-bold font-heading tracking-tight sm:text-4xl">Featured Projects</h2>
+              <p className="mt-4 text-muted-foreground max-w-xl">Dive into our latest case studies and see how we solve complex problems through design and technology.</p>
+            </div>
+          </motion.div>
+        </div>
+        
+        <ProjectGrid />
+      </section>
     </div>
   );
 }
-
