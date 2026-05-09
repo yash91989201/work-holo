@@ -1,132 +1,124 @@
-import { IconQuote, IconStarFilled, IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
+import {
+  IconChevronLeft,
+  IconChevronRight,
+  IconQuote,
+  IconStarFilled,
+} from "@tabler/icons-react";
 import { motion } from "motion/react";
-import React, { useState, useEffect, useRef } from "react";
+import type React from "react";
+import { useEffect, useRef, useState } from "react";
 
 const testimonials = [
   {
     id: 1,
     name: "Rohan Mehta",
     title: "CTO, VitaCare Health",
-    avatar: "https://i.pravatar.cc/150?u=rohan-mehta",
     quote:
-      "HealthTrack Pro completely transformed how our clinics monitor patients. The AI anomaly detection caught critical cases our staff would have missed, and the wearable integration worked seamlessly from day one. Missed follow-ups dropped by 22% within the first quarter alone.",
+      "Our nurses used to chase paper files between clinics. Now they get real-time alerts when a patient's vitals look off, and the wearable sync just works. We started with two pilot clinics and rolled it out to the rest in under six months. Missed follow-ups have dropped by about 20%, which at our scale means dozens of patients getting care on time every month.",
     rating: 5,
   },
   {
     id: 2,
     name: "Ananya Krishnan",
     title: "Managing Director, Meridian Capital Partners",
-    avatar: "https://i.pravatar.cc/150?u=ananya-krishnan",
     quote:
-      "Before FinFlow, our advisors were making decisions based on overnight Excel reports. Now they have real-time dashboards with sub-300ms data. Decision time dropped from 90 minutes to 25. The SEBI reporting alone saved us weeks of manual compliance work every quarter.",
+      "My advisors used to wait for overnight Excel dumps before they could advise clients. Now they pull up live numbers in under a second during meetings. Decisions that used to chew through 90 minutes now wrap up in 25. Even our compliance team stopped dreading audit season.",
     rating: 5,
   },
   {
     id: 3,
     name: "Priya Nair",
     title: "Head of Customer Experience, LuxeCart",
-    avatar: "https://i.pravatar.cc/150?u=priya-nair",
     quote:
-      "During our Diwali sale, ticket volume tripled overnight. Our AI Support Bot handled 70% of queries instantly with 90-second response times — our 3-person team would never have managed that alone. Customer satisfaction actually went up during our busiest period ever.",
+      "We were drowning in support tickets every time we ran a sale. The AI bot now handles about two-thirds of the repetitive stuff — order tracking, returns, sizing questions — so our 4-person team can actually focus on the tricky cases. Response time went from nearly 4 hours to under 10 minutes, and our CSAT scores climbed within the first month.",
     rating: 5,
   },
   {
     id: 4,
     name: "Vikram Iyer",
     title: "VP Engineering, NexaBridge Tech",
-    avatar: "https://i.pravatar.cc/150?u=vikram-iyer",
     quote:
-      "We had 8TB of legacy data to migrate with zero downtime tolerance. The CloudSync team completed it 5 days ahead of schedule with 99.97% data integrity. The automated failover has since saved us multiple times. I honestly didn't think it was possible at our budget.",
+      "We had years of messy legacy data scattered across three different systems — roughly 600 GB of it. The CloudSync team migrated everything over a long weekend with zero downtime. The best part? We haven't had a single data hiccup in the four months since we flipped the switch.",
     rating: 5,
   },
   {
     id: 5,
     name: "Meera Balasubramanian",
     title: "Co-Founder, Urban Threads Co",
-    avatar: "https://i.pravatar.cc/150?u=meera-bala",
     quote:
-      "Our old WooCommerce store would crash every sale. After the replatform, we sailed through Big Billion Days with sub-1.5 second loads and zero downtime. Conversion is up 25% and we're shipping features twice as fast. Worth every rupee.",
+      "Our old store used to buckle under flash sale traffic. Last season we handled our biggest sale yet without a single crash, and pages now load in under 2 seconds. Conversion is up roughly 18% and our dev team is shipping features twice as fast because they aren't firefighting server issues every weekend.",
     rating: 5,
   },
   {
     id: 6,
     name: "Arjun Desai",
     title: "Chief Data Officer, VantageMetrics",
-    avatar: "https://i.pravatar.cc/150?u=arjun-desai",
     quote:
-      "We had great ML models collecting dust because we couldn't serve them reliably. The ML Prediction Engine went from concept to 2,000 predictions per second in 4 months. Fraud detection now catches 89% of attacks in under 50ms. That's ₹12L saved monthly.",
+      "We had solid fraud models sitting idle because our old system couldn't serve them fast enough. Within three months we were flagging suspicious transactions in under 200 milliseconds. Chargebacks have dropped 35%, which for us is roughly ₹80,000 saved every month. The project paid for itself faster than we budgeted.",
     rating: 5,
   },
   {
     id: 7,
     name: "Kavitha Ranganathan",
     title: "Product Lead, Synapse Workspace",
-    avatar: "https://i.pravatar.cc/150?u=kavitha-ranganathan",
     quote:
-      "Our previous tool broke down with more than 20 simultaneous editors. Now 5,000+ users collaborate in real-time with zero sync conflicts in 6 months. Our enterprise clients specifically praised the reliability during their onboarding demos.",
+      "Before this, our doc editor would lag with more than 15 people online at once. Now our team of 200+ collaborates in real time with zero sync conflicts over the past 4 months. We stopped getting those 'who overwrote my section?' messages in Slack, which alone made the switch worth it.",
     rating: 5,
   },
   {
     id: 8,
     name: "Suresh Parthasarathy",
     title: "CEO, InsightFlow Analytics",
-    avatar: "https://i.pravatar.cc/150?u=suresh-partha",
     quote:
-      "DataPulse unlocked our entire enterprise tier. White-label branding meant each client saw their own product. We closed 8 new enterprise deals worth ₹38L in ARR within the first year without adding a single salesperson. The ROI was immediate.",
+      "White-labelling let us offer a branded dashboard to each client, which immediately made us look bigger than we are. We landed our first three enterprise contracts worth about ₹6 lakh in ARR within eight months, and we didn't have to hire a single salesperson to do it. Clients keep renewing because the product genuinely looks like theirs.",
     rating: 5,
   },
   {
     id: 9,
     name: "Dr. Lakshmi Venkataraman",
     title: "Director of Operations, CareNet Health Systems",
-    avatar: "https://i.pravatar.cc/150?u=lakshmi-venkat",
     quote:
-      "Our doctors were sharing patient records over WhatsApp. HealthConnect gave us a secure, compliant portal across all 12 hospitals in 5 months. Care coordination delays dropped 55%. Zero data breaches since launch. It's been genuinely life-changing for our patients.",
+      "Doctors were sharing patient updates over WhatsApp groups, which kept our compliance officer up at night. We now have a secure portal across our 4-hospital network, and care teams actually talk to each other. Handoffs that used to drag on for 2–3 days now finish the same afternoon, and care coordination delays are down by about a third.",
     rating: 5,
   },
   {
     id: 10,
     name: "Rahul Chakraborty",
     title: "Founder, FlavorFleet",
-    avatar: "https://i.pravatar.cc/150?u=rahul-chakra",
     quote:
-      "We launched FoodDash across 4 cities in 4 months and hit 320,000 monthly active users. The multi-vendor cart and real-time tracking work flawlessly even at peak hours. A 4.6 rating from 15,000+ reviews speaks for itself — our users genuinely love the app.",
+      "We launched in four cities with a tiny team and no idea if the tech would hold up. Four months in we're processing 40,000+ orders a month, and the multi-vendor cart and real-time tracking still work flawlessly at peak dinner rush. Our Play Store rating climbed to 4.5 stars, and customers regularly tell us the live tracking is their favourite part.",
     rating: 5,
   },
   {
     id: 11,
     name: "Deepa Srinivasan",
     title: "CPO, NovaPay",
-    avatar: "https://i.pravatar.cc/150?u=deepa-srini",
     quote:
-      "PayMate went from a 2.8-star embarrassment to a 4.7-star category leader in 3 months. The biometric auth and on-device fraud detection gave our users confidence. Monthly transaction volume nearly doubled and we've had zero critical security incidents since launch.",
+      "Our app was getting torn apart in reviews for clunky logins and random crashes. After the rebuild, our rating jumped from 3.2 to 4.6 stars in three months. Monthly transaction volume is up 40%, and we haven't had a critical security incident since launch. For the first time in a year, security isn't the first topic in every investor meeting.",
     rating: 5,
   },
   {
     id: 12,
     name: "Karthik Nambiar",
     title: "CEO, PulseFit",
-    avatar: "https://i.pravatar.cc/150?u=karthik-nambiar",
     quote:
-      "65% of our users used to quit within 30 days. FitForce's AI pose detection and personalised plans changed that — we're now at 58% 30-day retention, one of the best in the Indian fitness category. The injury reduction feedback alone has become our biggest differentiator.",
+      "Most fitness apps lose people after the first week. Our AI coaching gives users real feedback on their form, so they stick around because they see results. Our 30-day retention has climbed from 22% to 38% in six months, and the injury-prevention tips have become the feature people actually message us about.",
     rating: 5,
   },
   {
     id: 13,
     name: "Aditya Bose",
     title: "VP Infrastructure, DriftLine",
-    avatar: "https://i.pravatar.cc/150?u=aditya-bose",
     quote:
-      "We went from 5 disconnected CI/CD tools and 2-hour deployments to one visual platform and 15-minute deployments. Failed deployments dropped 65%. The ML anomaly detection catches issues before they become incidents. Our on-call engineers finally sleep on weekends.",
+      "We were juggling five different tools just to push code, and deployments were a Friday-afternoon stress ritual that often stretched past 90 minutes. Now the whole pipeline lives in one visual platform and we ship in about 15 minutes. Failed deployments have dropped by half, and our on-call engineers are finally getting full weekends again.",
     rating: 5,
   },
   {
     id: 14,
     name: "Neha Kulkarni",
     title: "Head of Engineering, SwiftBridge Cloud",
-    avatar: "https://i.pravatar.cc/150?u=neha-kulkarni",
     quote:
-      "1,200 alerts a day with 80% false positives was destroying team morale. CloudWatch Pro cut that to under 300 with zero missed real incidents. MTTR dropped from 38 minutes to 17. For the first time in years, customers stopped reporting issues before we did.",
+      "Our on-call rotation was brutal — 200+ alerts a day, most of them noise. CloudWatch Pro cut that down to about 40 meaningful alerts with zero missed real incidents. Our mean time to recover dropped from 38 minutes to around 15. For the first time in two years, our customer success team stopped getting those 2 a.m. 'is the site down?' messages.",
     rating: 5,
   },
 ];
@@ -140,6 +132,9 @@ export function TestimonialsSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState(1);
   const [isHovered, setIsHovered] = useState(false);
+  const [expandedTestimonialId, setExpandedTestimonialId] = useState<
+    number | null
+  >(null);
 
   const isHoveredRef = useRef(false);
   const pauseUntilRef = useRef(0);
@@ -156,17 +151,22 @@ export function TestimonialsSection() {
     setTimeLeft(1);
   };
 
-  const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+  const showSlide = (getNextIndex: (prev: number) => number) => {
+    setExpandedTestimonialId(null);
+    setCurrentIndex(getNextIndex);
     pauseAutoScroll();
+  };
+
+  const nextSlide = () => {
+    showSlide((prev) => (prev + 1) % testimonials.length);
   };
 
   const prevSlide = () => {
-    setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-    pauseAutoScroll();
+    showSlide((prev) => (prev - 1 + testimonials.length) % testimonials.length);
   };
 
   const goToSlide = (index: number) => {
+    setExpandedTestimonialId(null);
     setCurrentIndex(index);
     pauseAutoScroll();
   };
@@ -213,38 +213,42 @@ export function TestimonialsSection() {
   };
 
   return (
-    <section id="testimonials" className="py-24 lg:py-32 bg-background overflow-hidden scroll-mt-28">
+    <section
+      className="scroll-mt-28 overflow-hidden bg-background py-24 lg:py-32"
+      id="testimonials"
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16 md:mb-24">
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-foreground mb-6">
+        <div className="mb-16 text-center md:mb-24">
+          <h2 className="mb-6 font-bold text-3xl text-foreground tracking-tight md:text-5xl">
             Loved by industry leaders
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            See how our platform is transforming businesses across the globe with unparalleled reliability and performance.
+          <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
+            See how our platform is transforming businesses across the globe
+            with unparalleled reliability and performance.
           </p>
         </div>
 
-        <div className="relative w-full max-w-5xl mx-auto">
+        <div className="relative mx-auto w-full max-w-5xl">
           <div
-            className="relative w-full h-[450px] md:h-[400px] flex justify-center items-center touch-pan-y"
+            className="relative flex h-[450px] w-full touch-pan-y items-center justify-center md:h-[400px]"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
+            onTouchStart={handleTouchStart}
           >
             {/* Controls */}
             <button
-              onClick={prevSlide}
-              className="hidden md:flex absolute bottom-4 left-4 md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:left-0 md:-left-4 lg:-left-12 z-20 size-10 md:size-12 items-center justify-center rounded-full bg-background/80 backdrop-blur-sm border border-border text-foreground shadow-sm hover:bg-muted transition-colors"
               aria-label="Previous testimonial"
+              className="absolute bottom-4 left-4 z-20 hidden size-10 items-center justify-center rounded-full border border-border bg-background/80 text-foreground shadow-sm backdrop-blur-sm transition-colors hover:bg-muted md:top-1/2 md:bottom-auto md:-left-4 md:left-0 md:flex md:size-12 md:-translate-y-1/2 lg:-left-12"
+              onClick={prevSlide}
             >
               <IconChevronLeft className="size-5 md:size-6" />
             </button>
 
             <button
-              onClick={nextSlide}
-              className="hidden md:flex absolute bottom-4 right-4 md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:right-0 md:-right-4 lg:-right-12 z-20 size-10 md:size-12 items-center justify-center rounded-full bg-background/80 backdrop-blur-sm border border-border text-foreground shadow-sm hover:bg-muted transition-colors"
               aria-label="Next testimonial"
+              className="absolute right-4 bottom-4 z-20 hidden size-10 items-center justify-center rounded-full border border-border bg-background/80 text-foreground shadow-sm backdrop-blur-sm transition-colors hover:bg-muted md:top-1/2 md:-right-4 md:right-0 md:bottom-auto md:flex md:size-12 md:-translate-y-1/2 lg:-right-12"
+              onClick={nextSlide}
             >
               <IconChevronRight className="size-5 md:size-6" />
             </button>
@@ -252,12 +256,18 @@ export function TestimonialsSection() {
             {/* Cards */}
             {testimonials.map((t, index) => {
               let offset = index - currentIndex;
-              if (offset > testimonials.length / 2) offset -= testimonials.length;
-              if (offset < -testimonials.length / 2) offset += testimonials.length;
+              if (offset > testimonials.length / 2)
+                offset -= testimonials.length;
+              if (offset < -testimonials.length / 2)
+                offset += testimonials.length;
 
               const isCenter = offset === 0;
               const isLeft = offset === -1;
               const isRight = offset === 1;
+              const isExpanded = expandedTestimonialId === t.id;
+              const revealOnDesktopHover = isCenter
+                ? "md:group-hover:max-h-64 md:group-focus:max-h-64"
+                : "";
 
               let x = "0%";
               let scale = 0.5;
@@ -288,33 +298,76 @@ export function TestimonialsSection() {
 
               return (
                 <motion.div
+                  animate={{
+                    x,
+                    scale,
+                    opacity,
+                    zIndex,
+                    height: isExpanded && isCenter ? 410 : 320,
+                  }}
+                  className={`group absolute flex w-[90%] flex-col rounded-3xl border border-border/50 bg-card p-6 shadow-xl outline-none transition-shadow duration-300 focus-visible:ring-2 focus-visible:ring-foreground/20 sm:w-[80%] md:w-[400px] md:p-8 ${
+                    isCenter ? "hover:shadow-2xl" : ""
+                  }`}
                   key={t.id}
-                  animate={{ x, scale, opacity, zIndex }}
+                  tabIndex={isCenter ? 0 : -1}
                   transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
-                  className="absolute w-[90%] sm:w-[80%] md:w-[400px] bg-card border border-border/50 rounded-3xl p-6 md:p-8 shadow-xl flex flex-col h-[320px]"
+                  whileFocus={
+                    isCenter
+                      ? {
+                          height: 390,
+                          scale: 1.07,
+                          zIndex: 30,
+                        }
+                      : undefined
+                  }
+                  whileHover={
+                    isCenter
+                      ? {
+                          height: 390,
+                          scale: 1.07,
+                          zIndex: 30,
+                        }
+                      : undefined
+                  }
                 >
-                  <div className="flex gap-1 mb-4">
+                  <div className="mb-4 flex gap-1">
                     {Array.from({ length: t.rating }).map((_, i) => (
-                      <IconStarFilled key={i} className="size-4 text-yellow-500 drop-shadow-sm" />
+                      <IconStarFilled
+                        className="size-4 text-yellow-500 drop-shadow-sm"
+                        key={i}
+                      />
                     ))}
                   </div>
-                  <p className="text-foreground/90 text-sm md:text-base leading-relaxed mb-6 flex-1 overflow-hidden line-clamp-6">
+                  <p
+                    className={`mb-4 max-h-36 flex-1 overflow-hidden text-foreground/90 text-sm leading-relaxed transition-[max-height] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] md:mb-6 md:max-h-36 md:text-base ${revealOnDesktopHover} ${
+                      isExpanded && isCenter ? "max-h-64" : ""
+                    }`}
+                  >
                     &ldquo;{t.quote}&rdquo;
                   </p>
                   {isCenter && (
+                    <button
+                      aria-expanded={isExpanded}
+                      className="mb-5 self-start rounded-full border border-border/60 px-4 py-2 font-medium text-foreground text-xs transition-colors hover:bg-muted md:hidden"
+                      onClick={() =>
+                        setExpandedTestimonialId(isExpanded ? null : t.id)
+                      }
+                      type="button"
+                    >
+                      {isExpanded ? "Show less" : "Read more"}
+                    </button>
+                  )}
+                  {isCenter && (
                     <div className="absolute top-4 right-4 md:top-6 md:right-6">
-                      <IconQuote className="size-10 md:size-12 text-muted-foreground/10" />
+                      <IconQuote className="size-10 text-muted-foreground/10 md:size-12" />
                     </div>
                   )}
-                  <div className="flex items-center gap-4 mt-auto pt-4 border-t border-border/50">
-                    <img
-                      src={t.avatar}
-                      alt={t.name}
-                      className="size-12 rounded-full object-cover border border-border"
-                    />
+                  <div className="mt-auto border-border/50 border-t pt-4">
                     <div>
-                      <h4 className="font-semibold text-foreground text-sm">{t.name}</h4>
-                      <p className="text-xs text-muted-foreground">{t.title}</p>
+                      <h4 className="font-semibold text-foreground text-sm">
+                        {t.name}
+                      </h4>
+                      <p className="text-muted-foreground text-xs">{t.title}</p>
                     </div>
                   </div>
                 </motion.div>
@@ -323,22 +376,24 @@ export function TestimonialsSection() {
           </div>
 
           {/* Pill Indicators */}
-          <div className="flex justify-center items-center gap-2 mt-8">
+          <div className="mt-8 flex items-center justify-center gap-2">
             {testimonials.map((_, i) => {
               const isActive = i === currentIndex;
               return (
                 <button
+                  aria-label={`Go to slide ${i + 1}`}
+                  className={`relative h-2 rounded-full transition-all duration-500 ease-out ${
+                    isActive
+                      ? "w-10 bg-muted"
+                      : "w-2 bg-muted hover:bg-muted-foreground"
+                  }`}
                   key={i}
                   onClick={() => goToSlide(i)}
-                  className={`relative h-2 rounded-full transition-all duration-500 ease-out ${
-                    isActive ? "w-10 bg-muted" : "w-2 bg-muted hover:bg-muted-foreground"
-                  }`}
-                  aria-label={`Go to slide ${i + 1}`}
                 >
                   {isActive && (
                     <motion.div
-                      className="absolute top-0 left-0 h-full rounded-full bg-foreground"
                       animate={{ width: `${timeLeft * 100}%` }}
+                      className="absolute top-0 left-0 h-full rounded-full bg-foreground"
                       transition={{ duration: 0.05 }}
                     />
                   )}
