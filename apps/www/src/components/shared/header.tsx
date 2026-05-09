@@ -1,9 +1,3 @@
-import { Link } from "@tanstack/react-router";
-import { CTAButton } from "@work-holo/ui/components/cta-button";
-import { cn } from "@work-holo/ui/lib/utils";
-import { type ReactNode, useEffect, useState } from "react";
-import { Image } from "@/components/shared/image";
-
 import {
   IconArrowUpRight,
   IconBolt,
@@ -12,6 +6,8 @@ import {
   IconSettings,
   IconX,
 } from "@tabler/icons-react";
+import { Link } from "@tanstack/react-router";
+import { CTAButton } from "@work-holo/ui/components/cta-button";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -20,12 +16,15 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@work-holo/ui/components/navigation-menu";
+import { cn } from "@work-holo/ui/lib/utils";
 import {
   AnimatePresence,
   motion,
   useMotionValueEvent,
   useScroll,
 } from "motion/react";
+import { type ReactNode, useEffect, useState } from "react";
+import { Image } from "@/components/shared/image";
 
 type DropdownItem = {
   label: string;
@@ -574,7 +573,10 @@ export function Header() {
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between py-3 text-[15px]">
               <div className="flex items-center gap-2 text-muted-foreground">
-                <IconBolt className="size-4.5 text-primary" fill="currentColor" />
+                <IconBolt
+                  className="size-4.5 text-primary"
+                  fill="currentColor"
+                />
                 <span className="hidden sm:inline">
                   Fast & Reliable IT Solutions.
                 </span>
@@ -634,7 +636,10 @@ export function Header() {
                   width={64}
                 />
               </div>
-              <span className="font-bold text-lg text-foreground tracking-tight uppercase" style={{ fontFamily: "'Michroma', sans-serif" }}>
+              <span
+                className="font-bold text-foreground text-lg uppercase tracking-tight"
+                style={{ fontFamily: "'Michroma', sans-serif" }}
+              >
                 WORKHOLO
               </span>
             </Link>
@@ -780,7 +785,10 @@ export function Header() {
                     width={56}
                   />
                 </div>
-                <span className="font-bold text-lg text-foreground uppercase" style={{ fontFamily: "'Michroma', sans-serif" }}>
+                <span
+                  className="font-bold text-foreground text-lg uppercase"
+                  style={{ fontFamily: "'Michroma', sans-serif" }}
+                >
                   WORKHOLO
                 </span>
               </Link>
