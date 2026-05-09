@@ -326,6 +326,10 @@ const navItems: NavItem[] = [
     ],
   },
   {
+    label: "Portfolio",
+    href: "/projects",
+  },
+  {
     label: "Projects",
     href: "/projects",
     groups: [
@@ -619,7 +623,7 @@ export function Header() {
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           >
             {/* Logo */}
-            <Link className="flex shrink-0 items-center gap-3" to="/">
+            <Link className="flex shrink-0 items-center gap-1.5" to="/">
               <div className="relative h-12 w-16">
                 <Image
                   alt="Work Holo"
@@ -630,8 +634,8 @@ export function Header() {
                   width={64}
                 />
               </div>
-              <span className="font-bold font-heading text-2xl text-foreground tracking-tight">
-                Workholo
+              <span className="font-bold text-lg text-foreground tracking-tight uppercase" style={{ fontFamily: "'Michroma', sans-serif" }}>
+                WORKHOLO
               </span>
             </Link>
 
@@ -676,10 +680,7 @@ export function Header() {
                         <NavigationMenuItem key={item.label}>
                           <MenuLink
                             className={cn(
-                              "font-semibold text-base",
-                              item.active
-                                ? "text-primary"
-                                : "text-muted-foreground hover:text-foreground"
+                              "font-semibold text-base text-muted-foreground hover:text-foreground"
                             )}
                             hash={item.hash}
                             to={item.href}
@@ -694,10 +695,7 @@ export function Header() {
                       <NavigationMenuItem key={item.label}>
                         <NavigationMenuTrigger
                           className={cn(
-                            "font-semibold text-base",
-                            item.active
-                              ? "text-primary"
-                              : "text-muted-foreground hover:text-foreground"
+                            "font-semibold text-base text-muted-foreground hover:text-foreground"
                           )}
                         >
                           {item.label}
@@ -768,7 +766,7 @@ export function Header() {
           >
             <div className="flex items-center justify-between border-white/5 border-b px-6 py-5">
               <Link
-                className="flex shrink-0 items-center gap-3"
+                className="flex shrink-0 items-center gap-1.5"
                 onClick={() => setMobileMenuOpen(false)}
                 to="/"
               >
@@ -782,8 +780,8 @@ export function Header() {
                     width={56}
                   />
                 </div>
-                <span className="font-bold font-heading text-foreground text-xl">
-                  Workholo
+                <span className="font-bold text-lg text-foreground uppercase" style={{ fontFamily: "'Michroma', sans-serif" }}>
+                  WORKHOLO
                 </span>
               </Link>
               <motion.button
@@ -808,10 +806,7 @@ export function Header() {
                       <div className="flex items-stretch">
                         <Link
                           className={cn(
-                            "flex flex-1 items-center px-4 py-4 font-medium text-base transition-colors",
-                            item.active
-                              ? "text-primary"
-                              : "text-muted-foreground hover:text-foreground"
+                            "flex flex-1 items-center px-4 py-4 font-medium text-base text-muted-foreground transition-colors hover:text-foreground"
                           )}
                           hash={item.hash}
                           onClick={() => setMobileMenuOpen(false)}
@@ -911,10 +906,7 @@ export function Header() {
                       <div className="flex items-stretch">
                         <Link
                           className={cn(
-                            "flex flex-1 items-center px-4 py-4 font-medium text-base transition-colors",
-                            item.active
-                              ? "text-primary"
-                              : "text-muted-foreground hover:text-foreground"
+                            "flex flex-1 items-center px-4 py-4 font-medium text-base text-muted-foreground transition-colors hover:text-foreground"
                           )}
                           key={item.label}
                           onClick={() => setMobileMenuOpen(false)}
@@ -992,10 +984,7 @@ export function Header() {
                     <motion.div whileTap={{ scale: 0.98 }}>
                       <Link
                         className={cn(
-                          "flex items-center rounded-2xl px-4 py-4 font-medium text-base transition-all",
-                          item.active
-                            ? "bg-white/10 text-primary shadow-sm"
-                            : "border border-white/5 bg-white/[0.02] text-muted-foreground hover:bg-white/10 hover:text-foreground"
+                          "flex items-center rounded-2xl border border-white/5 bg-white/[0.02] px-4 py-4 font-medium text-base text-muted-foreground transition-all hover:bg-white/10 hover:text-foreground"
                         )}
                         hash={item.hash}
                         key={item.label}

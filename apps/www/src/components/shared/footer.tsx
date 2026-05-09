@@ -169,7 +169,7 @@ export function Footer() {
               viewport={{ once: true }}
               whileInView={{ opacity: 1, y: 0 }}
             >
-              <Link className="flex shrink-0 items-center gap-3" to="/">
+              <Link className="flex shrink-0 items-center gap-1.5" to="/">
                 <div className="relative h-12 w-16">
                   <Image
                     alt="Work Holo"
@@ -180,8 +180,8 @@ export function Footer() {
                     width={64}
                   />
                 </div>
-                <span className="font-bold font-heading text-2xl text-foreground tracking-tight">
-                  Workholo
+                <span className="font-bold text-lg text-foreground tracking-tight uppercase" style={{ fontFamily: "'Michroma', sans-serif" }}>
+                  WORKHOLO
                 </span>
               </Link>
               <p className="mt-4 max-w-xs text-muted-foreground text-sm leading-relaxed">
