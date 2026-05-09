@@ -68,7 +68,6 @@ const pageData : WebPageProps={
 "icon": "shield"
 }
 ],
-"viewAllLabel": "See All"
 },
 "workflow": {
 "subtitle": "Process",

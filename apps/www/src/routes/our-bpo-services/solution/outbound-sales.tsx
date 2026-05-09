@@ -65,7 +65,6 @@ const pageData : WebPageProps= {
 "icon": "globe"
 }
 ],
-"viewAllLabel": "See All Solutions"
 },
 "workflow": {
 "subtitle": "Our Process",
@@ -162,10 +161,6 @@ const pageData : WebPageProps= {
 "imageSrc": "/assets/outbound-sales.webp",
 "imageAlt": "Professional Sales Environment",
 "imagePosition": "right",
-"cta": {
-"label": "Learn More",
-"href": "#"
-}
 }
 ]
 }

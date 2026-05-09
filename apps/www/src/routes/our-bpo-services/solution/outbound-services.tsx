@@ -18,8 +18,8 @@ const pageData: WebPageProps = {
     description:
       "To have a successful business, you need to reach new and existing customers on a regular basis. A nearshore BPO call center provides you customized solutions with measurable outcomes.",
     primaryCta: {
-      label: "Improve your ROI",
-      href: "#",
+      label: "Book your Consultation",
+      href: "/contact-us",
     },
     terminalCommand: "npm run ROI --optimize",
     terminalMessage: "Connecting with global customers...",
@@ -84,7 +84,6 @@ const pageData: WebPageProps = {
         icon: "chart",
       },
     ],
-    viewAllLabel: "See All Solutions",
   },
   workflow: {
     subtitle: "Execution Strategy",
@@ -186,10 +185,6 @@ const pageData: WebPageProps = {
       imageSrc: "/assets/outbound-services.jpeg",
       imageAlt: "Call Center Benefits",
       imagePosition: "right",
-      cta: {
-        label: "Improve ROI",
-        href: "#",
-      },
     },
     {
       title: "Do You Need a Call Center?",

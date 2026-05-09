@@ -68,7 +68,7 @@ const pageData : WebPageProps={
 "icon": "shield"
 }
 ],
-"viewAllLabel": "See All Solutions"
+
 },
 "workflow": {
 "subtitle": "Key Advantages",
@@ -165,10 +165,6 @@ const pageData : WebPageProps={
 "imageSrc": "/assets/technical-support.jpg",
 "imageAlt": "Support agent helping customer",
 "imagePosition": "right",
-"cta": {
-"label": "Explore Solutions",
-"href": "#"
-}
 }
 ]
 }

@@ -56,7 +56,6 @@ const pageData : WebPageProps={
       "icon": "zap"
     }
   ],
-  "viewAllLabel": "Explore All Services"
 },
 "workflow": {
   "subtitle": "Operational Flow",
@@ -137,10 +136,6 @@ const pageData : WebPageProps={
 "imageSrc": "/assets/facility-and-procurement.webp",
 "imageAlt": "BPO team collaborating in a meeting",
 "imagePosition": "left",
-"cta": {
-"label": "Improve your ROI",
-"href": "#"
-}
 },
 {
 "title": "Unlock Your Company’s Full Potential",

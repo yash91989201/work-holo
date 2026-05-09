@@ -83,7 +83,6 @@ const services: ServicesProps = {
       icon: "infinity",
     },
   ],
-  viewAllLabel: "View All Services",
 };
 
 const workflow: WorkflowProps = {
@@ -197,10 +196,6 @@ const imageSections: ImageSectionProps[] = [
     imageSrc: "/assets/insurance-03.jpg",
     imageAlt: "Insurance BPO call center agents at work",
     imagePosition: "right",
-    cta: {
-      label: "Explore Our Capabilities",
-      href: "#solutions",
-    },
   },
   {
     title: "How to Choose the Right Insurance BPO Partner",
@@ -231,7 +226,7 @@ const imageSections: ImageSectionProps[] = [
     imagePosition: "left",
     cta: {
       label: "Book a Free Consultation",
-      href: "#consultation",
+      href: "/contact-us",
     },
   },
 ];

@@ -77,7 +77,7 @@ const pageData : WebPageProps={
 "icon": "shield"
 }
 ],
-"viewAllLabel": "See All Solutions"
+
 },
 "workflow": {
 "subtitle": "Assess & Inquire",
@@ -176,10 +176,6 @@ const pageData : WebPageProps={
 "imageSrc": "/assets/claim-processing.png",
 "imageAlt": "Customer service agent processing insurance documents",
 "imagePosition": "right",
-"cta": {
-"label": "Calculate your Cost",
-"href": "#"
-}
 }
 ]
 }

@@ -90,7 +90,6 @@ const services: ServicesProps = {
       icon: "infinity",
     },
   ],
-  viewAllLabel: "See All Solutions",
 };
 
 
@@ -183,10 +182,6 @@ const imageSections: ImageSectionProps[] = [
     imageSrc: "/assets/logistics-and-supply-chain-01.jpg",
     imageAlt: "Logistics warehouse",
     imagePosition: "right",
-    cta: {
-      label: "Get Ready",
-      href: "#",
-    },
   },
   {
     title: "Efficiency is Everything",
@@ -203,10 +198,6 @@ const imageSections: ImageSectionProps[] = [
     imageSrc: "/assets/logistics-and-supply-chain-02.jpg",
     imageAlt: "Logistics team",
     imagePosition: "left",
-    cta: {
-      label: "Learn More",
-      href: "#",
-    },
   },
 ];
 

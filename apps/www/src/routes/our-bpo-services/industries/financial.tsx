@@ -59,7 +59,7 @@ const pageData: WebPageProps = {
 "icon": "zap"
 },
 ],
-"viewAllLabel": "See All Solutions"
+
 },
 "workflow": {
 "subtitle": "Efficiency in Financial Services",
@@ -151,10 +151,6 @@ const pageData: WebPageProps = {
 "imageSrc": "/assets/financial-services-02.webp",
 "imageAlt": "Security specialist at desk",
 "imagePosition": "right",
-"cta": {
-"label": "Learn More",
-"href": "#"
-}
 },
 {
 "title": "Why is Confie BPO Different?",

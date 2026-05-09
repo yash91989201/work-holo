@@ -62,7 +62,6 @@ const pageData: WebPageProps = {
         icon: "chart",
       },
     ],
-    viewAllLabel: "See All Solutions",
   },
   workflow: {
     subtitle: "Communication",
@@ -181,10 +180,6 @@ const pageData: WebPageProps = {
       imageSrc: "/assets/technology-02.jpg",
       imageAlt: "Agents working with headsets",
       imagePosition: "right",
-      cta: {
-        label: "Calculate your Cost",
-        href: "#",
-      },
     },
     {
       title: "Fellow Technological Experts",

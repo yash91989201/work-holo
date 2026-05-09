@@ -114,7 +114,6 @@ export interface ServicesProps {
   items: Service[];
   subtitle: string;
   title: string;
-  viewAllLabel: string;
 }
 
 export interface FAQProps {

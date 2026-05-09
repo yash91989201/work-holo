@@ -69,7 +69,7 @@ const pageData : WebPageProps= {
 "icon": "chart"
 }
 ],
-"viewAllLabel": "See All Solutions"
+
 },
 "workflow": {
 "subtitle": "Selection Guide",

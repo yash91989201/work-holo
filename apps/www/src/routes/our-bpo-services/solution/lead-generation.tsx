@@ -68,7 +68,6 @@ const pageData : WebPageProps ={
 "icon": "zap"
 }
 ],
-"viewAllLabel": "See All"
 },
 "workflow": {
 "subtitle": "Main Benefits",
@@ -175,10 +174,6 @@ const pageData : WebPageProps ={
 "imageSrc": "/assets/lead-generation.webp",
 "imageAlt": "Professional overlooking sunset view",
 "imagePosition": "left",
-"cta": {
-"label": "Improve your ROI",
-"href": "#"
-}
 },
 {
 "title": "How To Choose a Lead Generation Call Center",

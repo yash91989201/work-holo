@@ -63,7 +63,7 @@ const pageData: WebPageProps = {
   "icon": "infinity"
 },
 ],
-"viewAllLabel": "See All Solutions"
+
 },
 "workflow": {
 "subtitle": "Process",
@@ -129,7 +129,7 @@ const pageData: WebPageProps = {
 "imagePosition": "right",
 "cta": {
 "label": "Book Consultation",
-"href": "#"
+"href": "/contact-us"
 }
 },
 {

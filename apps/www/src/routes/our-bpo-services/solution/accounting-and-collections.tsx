@@ -68,7 +68,6 @@ const pagedata : WebPageProps={
 "icon": "chart"
 }
 ],
-"viewAllLabel": "See All"
 },
 "workflow": {
 "subtitle": "The Confie BPO Difference",
@@ -174,10 +173,6 @@ const pagedata : WebPageProps={
 "imageSrc": "/assets/account-and-collections.png",
 "imageAlt": "Financial Experts",
 "imagePosition": "right",
-"cta": {
-"label": "See Our FAQ",
-"href": "#"
-}
 }
 ]
 }

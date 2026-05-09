@@ -80,7 +80,6 @@ const pageData: WebPageProps = {
         icon: "zap",
       },
     ],
-    viewAllLabel: "See All Solutions",
   },
   workflow: {
     subtitle: "Steps to Success",
@@ -179,10 +178,6 @@ const pageData: WebPageProps = {
       imageSrc: "/assets/real-estate-01.jpg",
       imageAlt: "Digital Real Estate Concepts",
       imagePosition: "left",
-      cta: {
-        label: "Learn More",
-        href: "#",
-      },
     },
     {
       title: "Challenges of BPO in Real Estate",

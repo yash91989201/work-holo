@@ -56,7 +56,6 @@ const pageData: WebPageProps = {
         icon: "chart",
       },
     ],
-    viewAllLabel: "See All",
   },
   workflow: {
     subtitle: "Strategy",
@@ -162,10 +161,6 @@ const pageData: WebPageProps = {
       imageSrc: "/assets/entertainment-01.jpg",
       imageAlt: "Team collaboration",
       imagePosition: "right",
-      cta: {
-        label: "Learn More",
-        href: "#",
-      },
     },
     {
       title: "Advertisement at the Speed of “Lights!”",

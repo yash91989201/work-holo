@@ -72,7 +72,7 @@ const pageData : WebPageProps={
   "icon": "chart"
 }
 ],
-"viewAllLabel": "See All Solutions"
+
 },
 "workflow": {
 "subtitle": "Driving Your Company Forward",
@@ -168,10 +168,6 @@ const pageData : WebPageProps={
 "imageSrc": "/assets/inbound-sales.jpg",
 "imageAlt": "Team collaborating during a sale",
 "imagePosition": "left",
-"cta": {
-"label": "Improve Your ROI",
-"href": "#"
-}
 }
 ]
 }

@@ -66,7 +66,6 @@ const pageData: WebPageProps = {
         icon: "chart",
       },
     ],
-    viewAllLabel: "See All",
   },
   workflow: {
     subtitle: "Why Confie BPO",
@@ -161,7 +160,7 @@ const pageData: WebPageProps = {
       imagePosition: "right",
       cta: {
         label: "Talk to Our Experts",
-        href: "#",
+        href: "/contact-us",
       },
     },
   ],

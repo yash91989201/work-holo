@@ -82,7 +82,6 @@ const pageData: WebPageProps = {
         icon: "users",
       },
     ],
-    viewAllLabel: "See All Solutions",
   },
   workflow: {
     subtitle: "Process Guide",
@@ -178,10 +177,6 @@ const pageData: WebPageProps = {
       imageSrc: "/assets/healthcare.avif",
       imageAlt: "Streamlined medical services overview",
       imagePosition: "left",
-      cta: {
-        label: "Calculate your Cost",
-        href: "#",
-      },
     },
   ],
 };

@@ -61,7 +61,6 @@ const pageData: WebPageProps = {
         icon: "users",
       },
     ],
-    viewAllLabel: "See All Solutions",
   },
   workflow: {
     subtitle: "The Secret Weapon",
@@ -159,10 +158,6 @@ const pageData: WebPageProps = {
       imageSrc: "/assets/customer-retention.webp",
       imageAlt: "Business meeting",
       imagePosition: "left",
-      cta: {
-        label: "Learn More",
-        href: "#",
-      },
     },
     {
       title: "Making a Difference for Your Customers",
@@ -183,10 +178,6 @@ const pageData: WebPageProps = {
       imageSrc: "/assets/customer-retention-02.jpg",
       imageAlt: "Customer service agent",
       imagePosition: "right",
-      cta: {
-        label: "View Techniques",
-        href: "#",
-      },
     },
     {
       title: "BPO Services Provide The Strategies You Need",
@@ -210,10 +201,6 @@ const pageData: WebPageProps = {
       imageSrc: "/assets/customer-retention-03.jpeg",
       imageAlt: "Team collaboration",
       imagePosition: "left",
-      cta: {
-        label: "Start Now",
-        href: "#",
-      },
     },
   ],
 };

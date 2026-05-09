@@ -65,7 +65,7 @@ const pageData: WebPageProps = {
 "icon": "chart"
 }
 ],
-"viewAllLabel": "See All Solutions"
+
 },
 "workflow": {
 "subtitle": "Better BPO",
@@ -155,10 +155,6 @@ const pageData: WebPageProps = {
 "imageSrc": "/assets/back-office-processing.webp",
 "imageAlt": "Agents working in office",
 "imagePosition": "left",
-"cta": {
-"label": "Improve your ROI",
-"href": "#"
-}
 },
 {
 "title": "Simple Secrets to Business Growth",

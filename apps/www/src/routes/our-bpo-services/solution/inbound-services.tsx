@@ -116,7 +116,6 @@ const pageData : WebPageProps = {
 "icon": "infinity"
 }
 ],
-"viewAllLabel": "See All Services"
 },
 "workflow": {
 "subtitle": "Tips for Success",
@@ -201,10 +200,6 @@ const pageData : WebPageProps = {
 "imageSrc": "/assets/inbound-services.jpg",
 "imageAlt": "BPO Cost Statistics",
 "imagePosition": "right",
-"cta": {
-"label": "See Detailed Costs",
-"href": "#"
-}
 }
 ]
 }

@@ -51,7 +51,7 @@ const pageData : WebPageProps={
 "icon": "shield"
 }
 ],
-"viewAllLabel": "See All Solutions"
+
 },
 "workflow": {
 "subtitle": "Let's break down the key advantages",
@@ -137,10 +137,6 @@ const pageData : WebPageProps={
 "imageSrc": "/assets/payment-processing.webp",
 "imageAlt": "Business analytics dashboard",
 "imagePosition": "right",
-"cta": {
-"label": "Learn More",
-"href": "#"
-}
 },
 {
 "title": "Companies That Benefit",
