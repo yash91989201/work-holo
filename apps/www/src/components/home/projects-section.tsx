@@ -1,3 +1,7 @@
+import { motion } from "motion/react";
+import { useEffect, useState } from "react";
+import { getProjectList } from "../projects/project-data";
+
 import {
   IconArrowUpRight,
   IconChevronLeft,
@@ -9,22 +13,28 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@work-holo/ui/components/carousel";
-import { motion } from "motion/react";
-import { useEffect, useState } from "react";
-import { getProjectList } from "../projects/project-data";
 
 const projects = getProjectList();
 
-const categoryImageMap: Record<string, string> = {
-  "Mobile Development": "/assets/mobile-app-development.webp",
-  "Web Development": "/assets/web-app-development.avif",
-  "AI & Automation": "/assets/ai-agents.webp",
-  "AI & Data": "/assets/agentic-ai.webp",
-  "Cloud & DevOps": "/assets/cloud-engineering-devops.jpg",
+const projectImageMap: Record<string, string> = {
+  "health-track-pro": "/assets/health-track-pro.png",
+  "finflow-dashboard": "/assets/finflow.webp",
+  "ai-support-bot": "/assets/ai-support-bot.jpg",
+  "cloud-sync-platform": "/assets/cloudsync-platform.webp",
+  "ecommerce-replatform": "/assets/e-commerce-platform.png",
+  "ml-prediction-engine": "/assets/ml-prediction-engine.jpg",
+  "real-time-collaboration": "/assets/real-time-collaboration.png",
+  "datapulse-saas": "/assets/data-pulse.png",
+  "healthconnect-enterprise-portal": "/assets/health-connect-portal.png",
+  "fooddash-flutter": "/assets/food-dash.webp",
+  "paymate-react-native": "/assets/paymate.avif",
+  "fitforce-android": "/assets/fit-force.png",
+  "devops-pipeline-pro": "/assets/devops-pipeline.webp",
+  "cloudwatch-pro": "/assets/amazon-cloudwatch.png",
 };
 
-function getProjectImage(category: string) {
-  return categoryImageMap[category] ?? "/assets/data-engineering.webp";
+function getProjectImage(slug: any) {
+  return projectImageMap[slug] ?? "/assets/data-engineering.webp";
 }
 
 export function ProjectsSection() {
@@ -151,7 +161,7 @@ function ProjectCard({
           <img
             alt={project.title}
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-            src={getProjectImage(project.category)}
+            src={getProjectImage(project.slug)}
           />
           <div className="absolute inset-0 bg-linear-to-t from-background via-background/40 to-transparent" />
         </div>
@@ -160,9 +170,9 @@ function ProjectCard({
         <div className="absolute right-0 bottom-0 left-0 p-5">
           <div className="flex items-end justify-between">
             <div>
-              <span className="mb-2 inline-block font-medium text-[11px] text-primary uppercase tracking-wider">
+              {/* <span className="mb-2 inline-block font-medium text-[11px] text-primary uppercase tracking-wider">
                 {project.category}
-              </span>
+              </span> */}
               <h3 className="font-semibold text-base text-foreground">
                 {project.title}
               </h3>

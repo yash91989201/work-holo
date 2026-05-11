@@ -61,6 +61,7 @@ export interface ProjectListItem {
   icon: React.ReactNode;
   isActive: boolean;
   slug: string;
+  subtitle: string;
   title: string;
 }
 
@@ -143,6 +144,7 @@ export function getProjectList(currentSlug?: string) {
     href: `/projects/${p.slug}`,
     isActive: p.slug === currentSlug,
     category: getProjectData(p.slug)?.category ?? "",
+    subtitle: getProjectData(p.slug)?.subtitle ?? "",
     description: getProjectData(p.slug)?.description ?? "",
   }));
 }
