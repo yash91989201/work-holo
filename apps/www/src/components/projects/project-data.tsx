@@ -59,6 +59,7 @@ export interface ProjectListItem {
   description: string;
   href: string;
   icon: React.ReactNode;
+  image?: string;
   isActive: boolean;
   slug: string;
   subtitle: string;
@@ -146,6 +147,7 @@ export function getProjectList(currentSlug?: string) {
     category: getProjectData(p.slug)?.category ?? "",
     subtitle: getProjectData(p.slug)?.subtitle ?? "",
     description: getProjectData(p.slug)?.description ?? "",
+    image: getProjectData(p.slug)?.heroImage ?? "",
   }));
 }
 
