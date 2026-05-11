@@ -158,7 +158,7 @@ export function AboutSection() {
             >
               <div className="relative w-45 overflow-hidden rounded-2xl bg-primary p-5 sm:w-50 sm:p-6">
                 <div className="mb-2 font-bold text-5xl text-primary-foreground leading-none sm:text-6xl">
-                  5<sup className="text-2xl">+</sup>
+                  20<sup className="text-2xl">+</sup>
                 </div>
                 <p className="text-primary-foreground/90 text-sm leading-snug">
                   Years of Excellence in IT Solutions Company.
