@@ -161,7 +161,7 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "4 months",
     description:
       "A HIPAA-inspired mobile platform enabling real-time health monitoring, wearable device integration, and AI-powered health insights for clinics and diagnostic centres across Tier 1 Indian cities.",
-    heroImage: "/images/projects/health-track-pro-hero.jpg",
+    heroImage: "/assets/health-track-pro.png",
     overview:
       "HealthTrack Pro is a health monitoring platform designed for mid-sized healthcare providers in India. It integrates with common wearables, provides real-time health metrics, and uses AI to flag anomalies early. The platform currently serves 1,200+ patients across 3 clinic networks in Bengaluru and Hyderabad.",
     challenge:
@@ -169,8 +169,8 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Built a React Native cross-platform app with a Node.js backend. Implemented end-to-end encryption, OAuth 2.0 for authentication, and a FHIR-inspired API layer for clinic EHR integration. The AI engine processes 18,000+ data points daily using TensorFlow Lite on-device inference.",
     galleryImages: [
-      "/images/projects/health-track-pro-1.jpg",
-      "/images/projects/health-track-pro-2.jpg",
+      "/assets/health-track-pro.png",
+      "/assets/health-track-pro.png",
     ],
     features: [
       "Real-time wearable integration (Apple Watch, Mi Band, boAt)",
@@ -280,7 +280,7 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "5 months",
     description:
       "A financial analytics dashboard processing ₹45L+ in daily transactions, featuring real-time charts, risk scoring, and automated reporting for a Bengaluru-based investment advisory firm.",
-    heroImage: "/images/projects/finflow-dashboard-hero.jpg",
+    heroImage: "/assets/finflow.webp",
     overview:
       "FinFlow Dashboard replaced manual Excel-based reporting for a growing Bengaluru investment advisory firm. It processes ₹45L+ in daily transactions, delivers sub-300ms latency, and provides portfolio managers with real-time visibility across domestic equity and debt instruments.",
     challenge:
@@ -288,8 +288,8 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Designed a modular React + WebSocket architecture streaming data from a Node.js backend. Built custom Recharts visualisations optimised for 1,000+ data points. Implemented role-based access and audit trails for regulatory alignment, achieving sub-300ms end-to-end latency.",
     galleryImages: [
-      "/images/projects/finflow-dashboard-1.jpg",
-      "/images/projects/finflow-dashboard-2.jpg",
+      "/assets/finflow.webp",
+      "/assets/finflow.webp",
     ],
     features: [
       "Real-time data streaming via WebSocket (sub-300ms latency)",
@@ -400,7 +400,7 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "3 months",
     description:
       "An LLM-powered customer service platform handling 500+ daily conversations with 84% resolution rate, integrating with existing CRM and knowledge bases for seamless human handoff.",
-    heroImage: "/images/projects/ai-support-bot-hero.jpg",
+    heroImage: "/assets/ai-support-bot.jpg",
     overview:
       "LuxeCart, a growing D2C fashion brand in India, needed to scale customer support without adding headcount. We built an AI agent platform that handles 500+ daily conversations across WhatsApp, email, and live chat. The system achieves 84% first-contact resolution while maintaining a 4.3/5 customer satisfaction score.",
     challenge:
@@ -408,8 +408,8 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Built a multi-agent system with LLMs for intent detection, response generation, and sentiment analysis. Implemented RAG pipelines over their existing Freshdesk and Shopify data. Designed a human-in-the-loop escalation system with full conversation context transfer.",
     galleryImages: [
-      "/images/projects/ai-support-bot-1.jpg",
-      "/images/projects/ai-support-bot-2.jpg",
+      "/assets/ai-support-bot.jpg",
+      "/assets/ai-support-bot.jpg",
     ],
     features: [
       "Multi-channel support (Email, WhatsApp, Live Chat)",
@@ -520,7 +520,7 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "4 months",
     description:
       "A cloud sync platform enabling real-time data synchronisation across hybrid cloud environments with conflict resolution, monitoring, and automated failover for an Indian SaaS company.",
-    heroImage: "/images/projects/cloud-sync-platform-hero.jpg",
+    heroImage: "/assets/cloudsync-platform.webp",
     overview:
       "CloudSync Platform is a migration and synchronisation solution built for a mid-sized Indian SaaS company managing data across AWS and on-premise infrastructure. It handles 500GB+ daily data transfers with real-time conflict detection, automated failover, and monitoring dashboards.",
     challenge:
@@ -528,8 +528,8 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Built a distributed sync engine with custom conflict resolution algorithms. Implemented a blue-green migration strategy with automated rollback. Created a real-time monitoring system using Prometheus and Grafana with SLA tracking dashboards.",
     galleryImages: [
-      "/images/projects/cloud-sync-platform-1.jpg",
-      "/images/projects/cloud-sync-platform-2.jpg",
+      "/assets/cloudsync-platform.webp",
+      "/assets/cloudsync-platform.webp",
     ],
     features: [
       "Real-time sync between AWS and on-premise infrastructure",
@@ -639,7 +639,7 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "5 months",
     description:
       "A headless commerce platform delivering 4x faster page loads and improved conversion rates for an Indian D2C fashion brand processing 80,000+ monthly visitors.",
-    heroImage: "/images/projects/ecommerce-replatform-hero.jpg",
+    heroImage: "/assets/e-commerce-platform.png",
     overview:
       "Urban Threads Co migrated from a slow WooCommerce setup to a modern headless architecture. The new platform delivers 4x faster page loads through edge caching, 25% higher conversion rates through an optimised checkout flow, and unified inventory across 4 retail locations and a 3PL partner.",
     challenge:
@@ -647,8 +647,8 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Built a Next.js + REST API headless frontend with Cloudflare edge caching, achieving sub-1.5s page loads. Integrated Shopify backend for inventory and orders with custom POS and 3PL sync. Optimised checkout flow reduced steps from 6 to 3, increasing completion rates by 22%.",
     galleryImages: [
-      "/images/projects/ecommerce-replatform-1.jpg",
-      "/images/projects/ecommerce-replatform-2.jpg",
+      "/assets/e-commerce-platform.png",
+      "/assets/e-commerce-platform.png",
     ],
     features: [
       "Sub-1.5s page loads via edge caching and ISR",
@@ -758,7 +758,7 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "4 months",
     description:
       "A real-time ML inference platform enabling sub-50ms predictions at 2,000 requests/second, powering demand forecasting and fraud detection for a Pune-based fintech startup.",
-    heroImage: "/images/projects/ml-prediction-engine-hero.jpg",
+    heroImage: "/assets/ml-prediction-engine.jpg",
     overview:
       "VantageMetrics had excellent ML models but no reliable way to serve them in production. We built a distributed inference system that processes 2,000 predictions per second with sub-50ms latency, achieving 99.5% availability across their fraud detection and demand forecasting use cases.",
     challenge:
@@ -766,8 +766,8 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Built a model serving platform using FastAPI with custom batching strategies. Deployed models on AWS with automatic load balancing. Implemented model versioning and A/B testing infrastructure for continuous improvement.",
     galleryImages: [
-      "/images/projects/ml-prediction-engine-1.jpg",
-      "/images/projects/ml-prediction-engine-2.jpg",
+      "/assets/ml-prediction-engine.jpg",
+      "/assets/ml-prediction-engine.jpg",
     ],
     features: [
       "Sub-50ms inference latency at 2K requests/second",
@@ -878,7 +878,7 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "4 months",
     description:
       "A real-time collaborative workspace enabling 5,000+ concurrent users to co-edit documents and manage projects simultaneously, built for a Chennai-based SaaS startup.",
-    heroImage: "/images/projects/real-time-collaboration-hero.jpg",
+    heroImage: "/assets/real-time-collaboration.png",
     overview:
       "Synapse Workspace needed a real-time collaboration platform for distributed Indian teams. The platform supports 5,000+ concurrent users with CRDT-based conflict resolution, sub-200ms sync latency, and enterprise SSO — all delivered within a lean startup timeline.",
     challenge:
@@ -886,8 +886,8 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Implemented Yjs CRDT for conflict-free real-time editing. Built a WebSocket-based presence and sync infrastructure. Used JWT-based auth with Google Workspace SSO integration, keeping infrastructure costs low by deploying on AWS Mumbai.",
     galleryImages: [
-      "/images/projects/real-time-collaboration-1.jpg",
-      "/images/projects/real-time-collaboration-2.jpg",
+      "/assets/real-time-collaboration.png",
+      "/assets/real-time-collaboration.png",
     ],
     features: [
       "CRDT-based real-time document editing (5K+ concurrent users)",
@@ -997,7 +997,7 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "6 months",
     description:
       "A multi-tenant SaaS analytics platform enabling 32+ enterprise clients to unify, visualise, and share business data across teams with real-time dashboards and white-label reporting.",
-    heroImage: "/images/projects/datapulse-saas-hero.jpg",
+    heroImage: "/assets/data-pulse.png",
     overview:
       "DataPulse SaaS is a white-label business intelligence platform for Indian SaaS companies and SMEs. It supports 32+ concurrent tenants with row-level security, custom branding, and embedded analytics. The platform processes 120M+ events daily and serves insights to 8,000+ end users across finance, sales, and operations teams.",
     challenge:
@@ -1005,8 +1005,8 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Built a React + TypeScript frontend with a REST API over PostgreSQL + ClickHouse. Implemented row-level security and tenant isolation at the database level. Created a white-label theming engine with CSS variable injection and custom domain support. Used materialized views and intelligent caching for sub-2s queries on large datasets.",
     galleryImages: [
-      "/images/projects/datapulse-saas-1.jpg",
-      "/images/projects/datapulse-saas-2.jpg",
+      "/assets/data-pulse.png",
+      "/assets/data-pulse.png",
     ],
     features: [
       "Multi-tenant architecture with complete data isolation",
@@ -1118,7 +1118,7 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "5 months",
     description:
       "A secure provider portal enabling 3,200+ doctors, nurses, and administrators to share patient records and coordinate care across 12 hospital networks in South India.",
-    heroImage: "/images/projects/healthconnect-enterprise-portal-hero.jpg",
+    heroImage: "/assets/health-connect-portal.png",
     overview:
       "HealthConnect Portal is a secure web platform for a South Indian hospital network. It enables real-time patient record sharing, care coordination, and referral management across 12 hospitals serving 3,200+ clinicians. Built with zero-trust security and designed for Indian healthcare compliance, the platform handles 85,000+ daily clinical document exchanges.",
     challenge:
@@ -1126,8 +1126,8 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Built a secure API gateway that normalises data from existing clinic systems. Implemented role-based access with mTLS and continuous re-authentication. Created a document sharing system with full audit trails and consent management.",
     galleryImages: [
-      "/images/projects/healthconnect-enterprise-portal-1.jpg",
-      "/images/projects/healthconnect-enterprise-portal-2.jpg",
+      "/assets/health-connect-portal.png",
+      "/assets/health-connect-portal.png",
     ],
     features: [
       "Secure API gateway for existing hospital systems",
@@ -1237,7 +1237,7 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "4 months",
     description:
       "A Flutter-powered food delivery app connecting 320,000+ users with 2,800+ restaurants, featuring real-time order tracking, smart recommendations, and multi-vendor cart support across iOS and Android.",
-    heroImage: "/images/projects/fooddash-flutter-hero.jpg",
+    heroImage: "/assets/food-dash.webp",
     overview:
       "FoodDash is a Flutter cross-platform app for a growing food delivery startup operating across 4 Tier 2 Indian cities. It serves 320K+ monthly active users ordering from 2,800+ restaurant partners. Key features include real-time driver tracking with live map, group ordering with multi-vendor cart, and ML-powered recommendations that increase average order value by 22%.",
     challenge:
@@ -1245,8 +1245,8 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Built a Flutter app with BLoC architecture. Implemented real-time order tracking using Firebase Realtime Database. Created a multi-vendor cart engine with split delivery options. Used Cloud Functions for order processing and Razorpay for Indian payment methods.",
     galleryImages: [
-      "/images/projects/fooddash-flutter-1.jpg",
-      "/images/projects/fooddash-flutter-2.jpg",
+      "/assets/food-dash.webp",
+      "/assets/food-dash.webp",
     ],
     features: [
       "Real-time driver tracking with live map and ETA",
@@ -1357,7 +1357,7 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "5 months",
     description:
       "A React Native mobile banking app serving 850,000+ users with instant UPI transfers, biometric authentication, AI-powered fraud detection, and real-time spend analytics across iOS and Android.",
-    heroImage: "/images/projects/paymate-react-native-hero.jpg",
+    heroImage: "/assets/paymate.avif",
     overview:
       "PayMate is a modern mobile banking app built for NovaPay, a Hyderabad-based fintech startup. It serves 850K+ users with instant UPI and P2P transfers, biometric authentication, AI-powered fraud detection, and real-time spend analytics. The app achieved a 4.7/5 rating with zero critical security incidents since launch.",
     challenge:
@@ -1365,8 +1365,8 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Built a React Native app with clean architecture. Implemented biometric authentication (Face ID, fingerprint, PIN fallback) with device-bound key storage. Created an ML fraud detection engine running on-device for privacy. Streamlined UX reduced transfer flow to 5 steps.",
     galleryImages: [
-      "/images/projects/paymate-react-native-1.jpg",
-      "/images/projects/paymate-react-native-2.jpg",
+      "/assets/paymate.avif",
+      "/assets/paymate.avif",
     ],
     features: [
       "Biometric authentication (Face ID, fingerprint, PIN)",
@@ -1478,7 +1478,7 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "4 months",
     description:
       "A Jetpack Compose Android app with 180,000+ downloads, featuring AI pose detection for real-time workout feedback, personalised training plans, and social challenges with leaderboards.",
-    heroImage: "/images/projects/fitforce-android-hero.jpg",
+    heroImage: "/assets/fit-force.png",
     overview:
       "FitForce is a native Android fitness app built with Jetpack Compose for PulseFit, a Pune-based health startup. It uses ML Kit for real-time pose detection, generates personalised training plans, and gamifies fitness with social challenges and leaderboards. The app has 180K+ downloads with a 4.6/5 Play Store rating.",
     challenge:
@@ -1486,8 +1486,8 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Built a native Android app with Jetpack Compose and MVVM architecture. Integrated ML Kit for real-time pose detection with fast inference providing visual form corrections. Created a dynamic training plan engine adapting to user progress. Designed social features with group challenges and streak-based gamification.",
     galleryImages: [
-      "/images/projects/fitforce-android-1.jpg",
-      "/images/projects/fitforce-android-2.jpg",
+      "/assets/fit-force.png",
+      "/assets/fit-force.png",
     ],
     features: [
       "Real-time AI pose detection with form feedback",
@@ -1597,7 +1597,7 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "5 months",
     description:
       "A DevOps platform automating 85+ daily deployments across 45+ microservices, with a visual pipeline builder, GitOps deployment, and intelligent rollback with ML-powered anomaly detection.",
-    heroImage: "/images/projects/devops-pipeline-pro-hero.jpg",
+    heroImage: "/assets/devops-pipeline.webp",
     overview:
       "DevOps Pipeline Pro is an internal developer platform built for DriftLine's 50+ engineering team. It automates 85+ daily deployments across 45+ microservices with zero-downtime blue-green deployments. The platform includes a visual pipeline builder, GitOps workflow management, and ML-powered anomaly detection that reduces failed deployments by 65%.",
     challenge:
@@ -1605,8 +1605,8 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Built a unified DevOps platform with a visual pipeline builder (React + Go backend), GitOps workflow engine using ArgoCD, and blue-green/canary deployment strategies. Implemented ML-powered anomaly detection on Prometheus metrics. Reduced deployment time from 2 hours to 15 minutes.",
     galleryImages: [
-      "/images/projects/devops-pipeline-pro-1.jpg",
-      "/images/projects/devops-pipeline-pro-2.jpg",
+      "/assets/devops-pipeline.webp",
+      "/assets/devops-pipeline.webp",
     ],
     features: [
       "Visual CI/CD pipeline builder with 30+ pre-built steps",
@@ -1718,7 +1718,7 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "4 months",
     description:
       "A unified observability platform ingesting 85GB/day of metrics, logs, and traces across AWS and on-premise infrastructure, with ML-powered root cause analysis and intelligent alerting that reduced alert fatigue by 75%.",
-    heroImage: "/images/projects/cloudwatch-pro-hero.jpg",
+    heroImage: "/assets/amazon-cloudwatch.png",
     overview:
       "CloudWatch Pro is a centralised observability platform built for SwiftBridge Cloud, a Bengaluru-based SaaS company. It ingests 85GB/day of metrics, logs, and traces, providing unified dashboards, ML-powered root cause analysis, and intelligent alerting. The platform serves 320+ engineers across 8 teams, reducing alert fatigue by 75%.",
     challenge:
@@ -1726,8 +1726,8 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Built a unified observability platform with OpenTelemetry-native ingestion, storing data in ClickHouse for high-cardinality metrics and Elasticsearch for log analysis. Implemented ML-powered root cause analysis using distributed trace correlation. Created an intelligent alert engine with dynamic thresholds and noise reduction.",
     galleryImages: [
-      "/images/projects/cloudwatch-pro-1.jpg",
-      "/images/projects/cloudwatch-pro-2.jpg",
+      "/assets/amazon-cloudwatch.png",
+      "/assets/amazon-cloudwatch.png",
     ],
     features: [
       "Unified metrics, logs, and traces across AWS and on-premise",
