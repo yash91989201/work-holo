@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ContactUsRouteImport } from './routes/contact-us'
+import { Route as CareerRouteImport } from './routes/career'
 import { Route as AboutUsRouteImport } from './routes/about-us'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ServicesIndexRouteImport } from './routes/services/index'
@@ -52,6 +53,11 @@ import { Route as OurBpoServicesIndustriesEntertainmentRouteImport } from './rou
 const ContactUsRoute = ContactUsRouteImport.update({
   id: '/contact-us',
   path: '/contact-us',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CareerRoute = CareerRouteImport.update({
+  id: '/career',
+  path: '/career',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutUsRoute = AboutUsRouteImport.update({
@@ -275,6 +281,7 @@ const OurBpoServicesIndustriesEntertainmentRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about-us': typeof AboutUsRoute
+  '/career': typeof CareerRoute
   '/contact-us': typeof ContactUsRoute
   '/projects/$slug': typeof ProjectsSlugRoute
   '/services/agentic-ai': typeof ServicesAgenticAiRoute
@@ -316,6 +323,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about-us': typeof AboutUsRoute
+  '/career': typeof CareerRoute
   '/contact-us': typeof ContactUsRoute
   '/projects/$slug': typeof ProjectsSlugRoute
   '/services/agentic-ai': typeof ServicesAgenticAiRoute
@@ -358,6 +366,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about-us': typeof AboutUsRoute
+  '/career': typeof CareerRoute
   '/contact-us': typeof ContactUsRoute
   '/projects/$slug': typeof ProjectsSlugRoute
   '/services/agentic-ai': typeof ServicesAgenticAiRoute
@@ -401,6 +410,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about-us'
+    | '/career'
     | '/contact-us'
     | '/projects/$slug'
     | '/services/agentic-ai'
@@ -442,6 +452,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about-us'
+    | '/career'
     | '/contact-us'
     | '/projects/$slug'
     | '/services/agentic-ai'
@@ -483,6 +494,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about-us'
+    | '/career'
     | '/contact-us'
     | '/projects/$slug'
     | '/services/agentic-ai'
@@ -525,6 +537,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutUsRoute: typeof AboutUsRoute
+  CareerRoute: typeof CareerRoute
   ContactUsRoute: typeof ContactUsRoute
   ProjectsSlugRoute: typeof ProjectsSlugRoute
   ServicesAgenticAiRoute: typeof ServicesAgenticAiRoute
@@ -571,6 +584,13 @@ declare module '@tanstack/react-router' {
       path: '/contact-us'
       fullPath: '/contact-us'
       preLoaderRoute: typeof ContactUsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/career': {
+      id: '/career'
+      path: '/career'
+      fullPath: '/career'
+      preLoaderRoute: typeof CareerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about-us': {
@@ -845,6 +865,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutUsRoute: AboutUsRoute,
+  CareerRoute: CareerRoute,
   ContactUsRoute: ContactUsRoute,
   ProjectsSlugRoute: ProjectsSlugRoute,
   ServicesAgenticAiRoute: ServicesAgenticAiRoute,
