@@ -287,10 +287,7 @@ const projectsData: Record<string, ProjectPageData> = {
       "The client relied on nightly Excel reports, causing advisors to miss critical intraday movements. Fragmented data sources and the need for SEBI-aligned reporting made modernisation complex on a startup-friendly budget.",
     solution:
       "Designed a modular React + WebSocket architecture streaming data from a Node.js backend. Built custom Recharts visualisations optimised for 1,000+ data points. Implemented role-based access and audit trails for regulatory alignment, achieving sub-300ms end-to-end latency.",
-    galleryImages: [
-      "/assets/finflow.webp",
-      "/assets/finflow.webp",
-    ],
+    galleryImages: ["/assets/finflow.webp", "/assets/finflow.webp"],
     features: [
       "Real-time data streaming via WebSocket (sub-300ms latency)",
       "Interactive charts with 1,000+ point rendering",
@@ -407,10 +404,7 @@ const projectsData: Record<string, ProjectPageData> = {
       "LuxeCart faced rapid support ticket growth during festive season sales. Their small team couldn't scale, response times exceeded 18 hours, and customer satisfaction dropped. They needed AI that could understand context, maintain brand voice, and escalate gracefully to human agents.",
     solution:
       "Built a multi-agent system with LLMs for intent detection, response generation, and sentiment analysis. Implemented RAG pipelines over their existing Freshdesk and Shopify data. Designed a human-in-the-loop escalation system with full conversation context transfer.",
-    galleryImages: [
-      "/assets/ai-support-bot.jpg",
-      "/assets/ai-support-bot.jpg",
-    ],
+    galleryImages: ["/assets/ai-support-bot.jpg", "/assets/ai-support-bot.jpg"],
     features: [
       "Multi-channel support (Email, WhatsApp, Live Chat)",
       "RAG-powered responses from CRM and knowledge bases",
@@ -1004,10 +998,7 @@ const projectsData: Record<string, ProjectPageData> = {
       "InsightFlow Analytics needed to replace fragmented reporting tools with a unified platform that could handle growing data volumes while allowing each client to maintain data isolation and custom branding — all within a competitive per-seat pricing model.",
     solution:
       "Built a React + TypeScript frontend with a REST API over PostgreSQL + ClickHouse. Implemented row-level security and tenant isolation at the database level. Created a white-label theming engine with CSS variable injection and custom domain support. Used materialized views and intelligent caching for sub-2s queries on large datasets.",
-    galleryImages: [
-      "/assets/data-pulse.png",
-      "/assets/data-pulse.png",
-    ],
+    galleryImages: ["/assets/data-pulse.png", "/assets/data-pulse.png"],
     features: [
       "Multi-tenant architecture with complete data isolation",
       "White-label branding engine with custom CSS injection",
@@ -1244,10 +1235,7 @@ const projectsData: Record<string, ProjectPageData> = {
       "FlavorFleet needed to launch a multi-vendor delivery platform and compete in their cities within 4 months. They needed iOS and Android coverage while supporting real-time tracking and multi-vendor carts. Their earlier React Native prototype had performance issues during peak hours.",
     solution:
       "Built a Flutter app with BLoC architecture. Implemented real-time order tracking using Firebase Realtime Database. Created a multi-vendor cart engine with split delivery options. Used Cloud Functions for order processing and Razorpay for Indian payment methods.",
-    galleryImages: [
-      "/assets/food-dash.webp",
-      "/assets/food-dash.webp",
-    ],
+    galleryImages: ["/assets/food-dash.webp", "/assets/food-dash.webp"],
     features: [
       "Real-time driver tracking with live map and ETA",
       "Multi-vendor cart with split delivery options",
@@ -1364,10 +1352,7 @@ const projectsData: Record<string, ProjectPageData> = {
       "NovaPay's initial app had a 2.8/5 rating and was losing users to competitors. Security relied only on OTP, the UX required 18 steps to complete a transfer, and technical debt slowed new feature development to a crawl. They needed a complete rewrite aligned with RBI guidelines.",
     solution:
       "Built a React Native app with clean architecture. Implemented biometric authentication (Face ID, fingerprint, PIN fallback) with device-bound key storage. Created an ML fraud detection engine running on-device for privacy. Streamlined UX reduced transfer flow to 5 steps.",
-    galleryImages: [
-      "/assets/paymate.avif",
-      "/assets/paymate.avif",
-    ],
+    galleryImages: ["/assets/paymate.avif", "/assets/paymate.avif"],
     features: [
       "Biometric authentication (Face ID, fingerprint, PIN)",
       "Instant UPI and P2P transfers",
@@ -1485,10 +1470,7 @@ const projectsData: Record<string, ProjectPageData> = {
       "PulseFit's existing app had high churn — 65% of users stopped exercising within 30 days. Generic workout plans, no form feedback, and no social accountability were the primary culprits. They needed a smarter, more engaging experience built natively for Android.",
     solution:
       "Built a native Android app with Jetpack Compose and MVVM architecture. Integrated ML Kit for real-time pose detection with fast inference providing visual form corrections. Created a dynamic training plan engine adapting to user progress. Designed social features with group challenges and streak-based gamification.",
-    galleryImages: [
-      "/assets/fit-force.png",
-      "/assets/fit-force.png",
-    ],
+    galleryImages: ["/assets/fit-force.png", "/assets/fit-force.png"],
     features: [
       "Real-time AI pose detection with form feedback",
       "Dynamic workout plans that adapt to user progress",
@@ -1830,6 +1812,1974 @@ const projectsData: Record<string, ProjectPageData> = {
       },
     ],
   },
+  "bpifrance-emergency-funding": {
+    slug: "bpifrance-emergency-funding",
+    title: "Bpifrance: National Crisis Response Platform",
+    subtitle: "Deploying €115B in critical state-backed funding in 5 days.",
+    category: "Web Development",
+    client: "Bpifrance",
+    duration: "5 Days",
+    description:
+      "In the wake of the global economic crisis, Bpifrance required a high-capacity platform to distribute emergency state-guaranteed loans. Theodo architected and launched the entire system in under a week, saving thousands of businesses from insolvency.",
+    heroImage: "/assets/bpifrance-hero.png",
+    overview:
+      "When the French government announced an unprecedented economic relief package, Bpifrance faced the monumental task of processing loan applications for over 100,000 SMEs simultaneously. Traditional systems would have buckled under the load, requiring a ground-up rebuild of the application and approval workflow using modern, resilient cloud technology.",
+    challenge:
+      "The primary obstacle was the absolute non-negotiable deadline of 5 days, combined with the requirement for bank-grade security and the ability to scale from zero to millions of requests instantly. The system also had to integrate seamlessly with existing legacy government databases to verify business eligibility in real-time.",
+    solution:
+      "We deployed an elite squad of engineers to build a Serverless architecture on AWS. By utilizing Lambda functions and DynamoDB, we ensured the platform could scale horizontally without manual intervention. Our team utilized a custom UI component library to accelerate development while ensuring full accessibility and mobile responsiveness.",
+    galleryImages: [
+      "/assets/bpifrance-dashboard.png",
+      "/assets/bpifrance-architecture.png",
+    ],
+    features: [
+      "Automated Eligibility Verification",
+      "Serverless Cloud Infrastructure",
+      "Bank-Grade Data Encryption",
+      "High-Concurrency Load Balancing",
+      "Real-time Application Tracking",
+      "Secure Document Upload Portal",
+      "Automated Decision Engine",
+      "Multi-Agency Integration Layer",
+    ],
+    metrics: [
+      {
+        label: "Total Capital Deployed",
+        value: "€115B",
+      },
+      {
+        label: "Launch Lead Time",
+        value: "5 Days",
+      },
+      {
+        label: "Successful Applications",
+        value: "50k+",
+      },
+      {
+        label: "Platform Uptime",
+        value: "99.99%",
+      },
+    ],
+    results: [
+      {
+        stat: "€115B+",
+        title: "Total Impact",
+        description:
+          "Successfully facilitated the largest economic relief package in French history without a single second of downtime.",
+      },
+      {
+        stat: "100%",
+        title: "Security Accuracy",
+        description:
+          "Zero data breaches or fraudulent applications despite high-profile target status during a national emergency.",
+      },
+      {
+        stat: "85%",
+        title: "Efficiency Gain",
+        description:
+          "Reduced average loan processing time from weeks to under 24 hours through intelligent automation.",
+      },
+    ],
+    techStack: [
+      "AWS Lambda",
+      "Node.js",
+      "React",
+      "DynamoDB",
+      "Terraform",
+      "TypeScript",
+      "Python",
+    ],
+    timeline: [
+      {
+        label: "Phase 1",
+        title: "Strategic Discovery",
+        description:
+          "Identified core requirements and mapped integration points with government datasets within 6 hours.",
+      },
+      {
+        label: "Phase 2",
+        title: "Architecture Design",
+        description:
+          "Finalised serverless blueprint to ensure infinite scalability and absolute data security.",
+      },
+      {
+        label: "Phase 3",
+        title: "Sprint Delivery",
+        description:
+          "Continuous deployment over 72 hours, building the engine, UI, and verification APIs in parallel.",
+      },
+      {
+        label: "Phase 4",
+        title: "National Launch",
+        description:
+          "Successful production deployment with live monitoring and real-time scaling adjustments.",
+      },
+    ],
+    faqs: [
+      {
+        question: "How did you manage a 5-day deadline for a national project?",
+        answer:
+          "We used a Serverless-first approach and parallelized work between infrastructure, frontend, and backend squads, utilizing pre-vetted security modules.",
+      },
+      {
+        question: "Can the system handle future peak traffic events?",
+        answer:
+          "Yes, the AWS-based architecture is designed to scale horizontally to handle millions of simultaneous users without performance degradation.",
+      },
+      {
+        question: "How was data security maintained during rapid deployment?",
+        answer:
+          "We implemented automated security scans and utilized peer-reviewed encryption protocols from the first line of code.",
+      },
+      {
+        question: "What happens if external government APIs fail?",
+        answer:
+          "The platform includes a robust queuing system (SQS) that stores applications and retries verification when external systems are back online.",
+      },
+      {
+        question: "Is the platform adaptable for other financial products?",
+        answer:
+          "The modular architecture allows Bpifrance to add new loan types and financial instruments with minimal development overhead.",
+      },
+    ],
+  },
+  "healthhero-scaling-telehealth": {
+    slug: "healthhero-scaling-telehealth",
+    title: "HealthHero: Global Telemedicine Ecosystem",
+    subtitle:
+      "Modernising legacy infrastructure for a multi-million user healthcare provider.",
+    category: "Web Development",
+    client: "HealthHero",
+    duration: "6 Months",
+    description:
+      "HealthHero needed to unify multiple acquired legacy platforms into a cohesive, high-performance microservices architecture. We led the digital transformation that enabled them to scale across Europe and handle millions of patient consultations.",
+    heroImage: "/assets/healthhero-hero.png",
+    overview:
+      "As Europe's leading telehealth provider, HealthHero faced significant 'technical debt' from several acquisitions. Each entity used different technologies and data structures. We were tasked with creating a unified Practice Management System (PMS) that could support rapid international expansion and varying medical regulations.",
+    challenge:
+      "The core challenge was migrating live patient data and critical consultation workflows from monolithic legacy systems to a modern microservices architecture without any service interruption. We had to ensure 100% compliance with GDPR and local medical data residency laws in multiple countries.",
+    solution:
+      "We designed a GraphQL-driven federated architecture that allows different teams to manage specific domains (e.g., prescriptions, scheduling, billing) independently. This transition decoupled the frontend from the legacy backends, allowing for a phased migration and immediate improvements in user experience.",
+    galleryImages: [
+      "/assets/healthhero-app.png",
+      "/assets/healthhero-microservices.png",
+    ],
+    features: [
+      "Federated GraphQL API",
+      "Microservices Architecture",
+      "HIPAA & GDPR Compliance",
+      "Cross-Platform Video Consulting",
+      "Automated Doctor Scheduling",
+      "e-Prescription Management",
+      "Multi-Language Support",
+      "Unified Patient Health Records",
+    ],
+    metrics: [
+      {
+        label: "Total Patient Reach",
+        value: "5M+",
+      },
+      {
+        label: "Infrastructure Savings",
+        value: "40%",
+      },
+      {
+        label: "Deployment Velocity",
+        value: "5x",
+      },
+      {
+        label: "System Latency",
+        value: "<120ms",
+      },
+    ],
+    results: [
+      {
+        stat: "5x",
+        title: "Release Frequency",
+        description:
+          "Teams can now deploy features independently, increasing the overall speed of innovation five-fold.",
+      },
+      {
+        stat: "40%",
+        title: "Operational Savings",
+        description:
+          "Reduced hosting and maintenance costs by consolidating legacy infrastructure into efficient cloud-native services.",
+      },
+      {
+        stat: "100%",
+        title: "Zero Downtime",
+        description:
+          "Successfully migrated over 1 million patient records to the new architecture without a single minute of service loss.",
+      },
+    ],
+    techStack: [
+      "NestJS",
+      "React",
+      "GraphQL",
+      "AWS",
+      "Kubernetes",
+      "PostgreSQL",
+      "Docker",
+    ],
+    timeline: [
+      {
+        label: "Phase 1",
+        title: "Audit & Blueprinting",
+        description:
+          "Mapped every legacy system and defined the microservices boundary map for the new ecosystem.",
+      },
+      {
+        label: "Phase 2",
+        title: "Core Infrastructure",
+        description:
+          "Established the Kubernetes cluster and GraphQL gateway to begin service decoupling.",
+      },
+      {
+        label: "Phase 3",
+        title: "Domain Migration",
+        description:
+          "Migrated high-impact services like scheduling and patient records using a 'strangler' pattern.",
+      },
+      {
+        label: "Phase 4",
+        title: "Global Optimisation",
+        description:
+          "Rolled out the unified platform to all European regions with localized compliance modules.",
+      },
+    ],
+    faqs: [
+      {
+        question: "How did you handle medical data privacy?",
+        answer:
+          "We implemented strict data-at-rest encryption and utilized region-specific cloud nodes to ensure data residency compliance.",
+      },
+      {
+        question: "What is the benefit of the GraphQL gateway?",
+        answer:
+          "It allows the frontend to fetch precisely the data it needs from multiple microservices in a single, efficient request.",
+      },
+      {
+        question: "Did you use any specific patient intake algorithm?",
+        answer:
+          "Yes, we implemented a custom triage engine that automatically prioritizes emergency cases for immediate doctor attention.",
+      },
+      {
+        question: "How long can the system scale up during pandemics?",
+        answer:
+          "The Kubernetes-based infrastructure auto-scales horizontally, capable of handling a 10x surge in traffic within minutes.",
+      },
+      {
+        question: "Can new healthcare partners be integrated easily?",
+        answer:
+          "The modular microservices design allows for new API integrations in weeks rather than months.",
+      },
+    ],
+  },
+  "vueling-serverless-transformation": {
+    slug: "vueling-serverless-transformation",
+    title: "Vueling: Cloud-Native Airline Platform",
+    subtitle:
+      "Revolutionising the booking experience with Serverless technology.",
+    category: "Cloud & DevOps",
+    client: "Vueling",
+    duration: "4 Months",
+    description:
+      "Vueling, a leading European airline, needed to modernize its digital heart to handle massive surges during flight booking windows. We transitioned their core booking APIs to a Serverless architecture, significantly reducing costs and improving performance.",
+    heroImage: "/assets/vueling-hero.png",
+    overview:
+      "Commercial airlines face extremely spiky traffic patterns—low at night and massive during summer sales. Vueling's traditional server-based infrastructure was expensive to maintain and slow to scale. We implemented a cloud-native strategy to ensure their platform was always available, regardless of sudden traffic bursts.",
+    challenge:
+      "The challenge was to migrate high-traffic booking paths from a restrictive, on-premise environment to AWS. This required re-architecting legacy logic into event-driven functions while ensuring absolute consistency for flight availability and pricing during high-concurrency events.",
+    solution:
+      "We adopted a Serverless-first approach using AWS Lambda and API Gateway. This allowed the infrastructure to scale automatically based on request volume. We also optimized the frontend with a modern React framework to provide a faster, more intuitive booking flow for over 12 million monthly users.",
+    galleryImages: ["/assets/vueling-mobile.png", "/assets/vueling-cloud.png"],
+    features: [
+      "Auto-Scaling Booking Engine",
+      "Event-Driven Architecture",
+      "Infrastructure as Code (CDK)",
+      "High-Performance API Gateway",
+      "Real-time Fare Monitoring",
+      "Serverless Side Rendering",
+      "Deterministic Scaling Logic",
+      "Multi-Region Failover",
+    ],
+    metrics: [
+      {
+        label: "Feature Velocity",
+        value: "3x Faster",
+      },
+      {
+        label: "Peak Capacity",
+        value: "Infinite",
+      },
+      {
+        label: "Operational Costs",
+        value: "-50%",
+      },
+      {
+        label: "Customer Users",
+        value: "12M/Mo",
+      },
+    ],
+    results: [
+      {
+        stat: "50%",
+        title: "Cost Reduction",
+        description:
+          "Switched to a pay-per-request model, eliminating the cost of idle servers during low-traffic periods.",
+      },
+      {
+        stat: "0",
+        title: "Service Outages",
+        description:
+          "Achieved zero downtime during the highest traffic booking events in the company's history.",
+      },
+      {
+        stat: "300%",
+        title: "Developer Speed",
+        description:
+          "Reduced development and deployment cycles from weeks to days using automated cloud-native pipelines.",
+      },
+    ],
+    techStack: [
+      "AWS Lambda",
+      "TypeScript",
+      "React",
+      "CDK",
+      "DynamoDB",
+      "S3",
+      "CloudFront",
+    ],
+    timeline: [
+      {
+        label: "Phase 1",
+        title: "Legacy Audit",
+        description:
+          "Performance profiling of existing booking APIs to identify bottlenecks and migration targets.",
+      },
+      {
+        label: "Phase 2",
+        title: "POC Validation",
+        description:
+          "Developing a Serverless Proof of Concept to prove low-latency booking at scale.",
+      },
+      {
+        label: "Phase 3",
+        title: "Full Migration",
+        description:
+          "Rolling out the serverless booking path to millions of users in production.",
+      },
+      {
+        label: "Phase 4",
+        title: "CI/CD Automation",
+        description:
+          "Implementing advanced automated testing and deployment pipelines for continuous innovation.",
+      },
+    ],
+    faqs: [
+      {
+        question: "Why choose Serverless for an airline?",
+        answer:
+          "Airlines have highly variable traffic. Serverless allows them to pay only for what they use while scaling instantly to meet demand.",
+      },
+      {
+        question: "How do you handle long-running transactions?",
+        answer:
+          "We use Step Functions to manage state across multiple Lambda calls, ensuring booking integrity even for complex itineraries.",
+      },
+      {
+        question: "What about 'Cold Starts' in Lambda?",
+        answer:
+          "We use Provisioned Concurrency and optimized bundles to ensure sub-second response times for every user.",
+      },
+      {
+        question: "Is the system secure?",
+        answer:
+          "Yes, we follow the AWS Well-Architected Framework and implement strict IAM roles for every individual function.",
+      },
+      {
+        question: "Can legacy systems still communicate with the new platform?",
+        answer:
+          "Yes, we built custom bridge APIs to ensure the new cloud-native services could sync with on-premise flight databases.",
+      },
+    ],
+  },
+  "colas-logistics-optimisation": {
+    slug: "colas-logistics-optimisation",
+    title: "Colas: Smart Logistics Framework",
+    subtitle:
+      "Optimising global construction supply chains through real-time tracking.",
+    category: "Mobile Development",
+    client: "Colas",
+    duration: "5 Months",
+    description:
+      "Colas, a world leader in transport infrastructure, needed a way to manage material logistics across thousands of global sites. We built a mission-critical mobile application that reduced waste and significantly increased site manager efficiency.",
+    heroImage: "/assets/colas-hero.png",
+    overview:
+      "Site managers at Colas previously relied on manual paperwork and radio calls to coordinate the delivery of materials like asphalt. This led to significant idle time and material wastage. We developed a robust mobile solution that provides real-time GPS tracking and automated delivery scheduling across their fleet.",
+    challenge:
+      "The application had to work flawlessly in harsh construction environments with intermittent internet connectivity and on a wide range of ruggedized and consumer mobile devices. It also needed to process complex data from thousands of vehicles simultaneously without lag.",
+    solution:
+      "We developed a React Native mobile application with sophisticated offline-first capabilities. Utilizing an Azure IoT-driven backend, the system synchronizes data as soon as a connection is established. A high-performance Mapbox-based UI ensures managers can see every vehicle in their sector in real-time.",
+    galleryImages: [
+      "/assets/colas-tablet-ui.png",
+      "/assets/colas-site-manager.png",
+    ],
+    features: [
+      "Offline-First Data Sync",
+      "Real-time GPS Fleet Tracking",
+      "Automated Delivery Queueing",
+      "IoT Device Integration",
+      "Custom Mapbox Visualisation",
+      "Material Temperature Monitoring",
+      "Dynamic Rerouting Engine",
+      "Automated Shift Reporting",
+    ],
+    metrics: [
+      {
+        label: "Active Vehicles Tracked",
+        value: "10k+",
+      },
+      {
+        label: "Waste Reduction",
+        value: "15%",
+      },
+      {
+        label: "Site Manager Efficiency",
+        value: "+25%",
+      },
+      {
+        label: "Active Daily Sites",
+        value: "2,000+",
+      },
+    ],
+    results: [
+      {
+        stat: "25%",
+        title: "Productivity Increase",
+        description:
+          "Site managers can now coordinate 25% more deliveries per day through automated queueing and real-time alerts.",
+      },
+      {
+        stat: "15%",
+        title: "Material Savings",
+        description:
+          "Reduced material waste by optimizing delivery times to ensure materials like asphalt stay at the required temperatures.",
+      },
+      {
+        stat: "100%",
+        title: "Paperless Operation",
+        description:
+          "Completely digitised the site's logistical records, saving thousands of hours in administrative overhead.",
+      },
+    ],
+    techStack: [
+      "React Native",
+      "Node.js",
+      "Azure IoT Hub",
+      "CosmosDB",
+      "Redis",
+      "Mapbox",
+      "Docker",
+    ],
+    timeline: [
+      {
+        label: "Phase 1",
+        title: "Field Research",
+        description:
+          "Shadowing site managers on active construction projects to understand real-world workflows.",
+      },
+      {
+        label: "Phase 2",
+        title: "Prototype Testing",
+        description:
+          "Developing and testing an offline-capable MVP with a small cohort of drivers and managers.",
+      },
+      {
+        label: "Phase 3",
+        title: "Back-end Integration",
+        description:
+          "Connecting the mobile app with massive Azure IoT streams and legacy ERP systems.",
+      },
+      {
+        label: "Phase 4",
+        title: "Global Fleet Rollout",
+        description:
+          "Phased deployment to 10,000+ vehicles across multiple countries with localized fleet settings.",
+      },
+    ],
+    faqs: [
+      {
+        question: "How does the app work without a signal?",
+        answer:
+          "All data is stored locally in a high-performance SQLite database and synchronized with the cloud using a custom 'Replay-Log' logic once signal returns.",
+      },
+      {
+        question: "Can it integrate with existing truck hardware?",
+        answer:
+          "Yes, it connects via Bluetooth or Azure IoT Hub to a wide variety of existing vehicle telemetry units.",
+      },
+      {
+        question: "How complex is the map interface?",
+        answer:
+          "Highly optimized; it can display 1,000+ moving items in a single view with sub-second position updates.",
+      },
+      {
+        question: "Is training required for workers?",
+        answer:
+          "The UI was designed for extreme simplicity, requiring less than 15 minutes of training for new site managers.",
+      },
+      {
+        question: "What IoT insights are provided?",
+        answer:
+          "Beyond location, we track engine health, fuel consumption, and the internal temperature of transported materials.",
+      },
+    ],
+  },
+  "simon-kucher-partners": {
+    slug: "simon-kucher-partners",
+    title: "Global Profit & Pricing Intelligence Engine",
+    subtitle: "Enterprise Decision-Support Platform for Strategic Pricing",
+    category: "AI & Data",
+    client: "Simon-Kucher & Partners",
+    duration: "18 Months",
+    description:
+      "Limeup developed a sophisticated, scalable pricing optimization software for Simon-Kucher, a global leading strategy and marketing consulting firm, enabling real-time margin simulations and unified data analysis.",
+    heroImage: "/assets/simon-kucher-partners.png",
+    overview:
+      "The project involved building a mission-critical platform for consultants to analyze complex market data and optimize pricing strategies for Fortune 500 clients. The goal was to replace legacy spreadsheet models with a robust, cloud-native enterprise application.",
+    challenge:
+      "Simon-Kucher needed to unify hundreds of disparate data sources and modeling techniques into a single, high-performance environment that could be accessed by consultants across 25+ global offices without compromising on speed or security.",
+    solution:
+      "A custom-built analytics engine utilizing React and a distributed Node.js backend. We implemented advanced data visualization layers and a high-concurrency simulation engine that allows for instant 'what-if' pricing scenario testing.",
+    galleryImages: [
+      "/assets/simon-kucher-dashboard.png",
+      "/assets/simon-kucher-analytics.png",
+    ],
+    features: [
+      "Real-time margin impact simulator",
+      "Dynamic price elasticity modeling",
+      "Customizable consultant dashboards",
+      "Global multi-currency support",
+      "Automated reporting and PPT export",
+      "Enterprise-grade role-based access",
+      "Cross-regional data synchronization",
+      "Legacy ERP data connectors",
+    ],
+    metrics: [
+      {
+        label: "Analysis Speed",
+        value: "40% Increase",
+      },
+      {
+        label: "Global Users",
+        value: "2,500+",
+      },
+      {
+        label: "Daily Data Points",
+        value: "1B+",
+      },
+      {
+        label: "Margin Impact",
+        value: "+15% Avg",
+      },
+    ],
+    results: [
+      {
+        stat: "25+",
+        title: "Offices Connected",
+        description:
+          "Successfully deployed across all global consulting hubs with zero downtime during migration.",
+      },
+      {
+        stat: "99.9%",
+        title: "Uptime Reliability",
+        description:
+          "Maintained enterprise-standard availability for critical strategy sessions.",
+      },
+      {
+        stat: "2x",
+        title: "Consultant Efficiency",
+        description:
+          "Reduced manual data preparation time from days to minutes through automation.",
+      },
+    ],
+    techStack: [
+      "React",
+      "TypeScript",
+      "Node.js",
+      "AWS",
+      "PostgreSQL",
+      "Redis",
+      "Python",
+    ],
+    timeline: [
+      {
+        label: "Phase 1",
+        title: "Discovery & Architecture",
+        description:
+          "Extensive deep-dive into existing financial models and definition of the technical blueprint.",
+      },
+      {
+        label: "Phase 2",
+        title: "Engine Development",
+        description:
+          "Core logic implementation for simulation and large-scale data processing.",
+      },
+      {
+        label: "Phase 3",
+        title: "UI/UX & Visualization",
+        description:
+          "Perfecting the interface for high-stakes professional environments.",
+      },
+      {
+        label: "Phase 4",
+        title: "Scale & Deployment",
+        description:
+          "Global rollout and integration with legacy reporting systems.",
+      },
+    ],
+    faqs: [
+      {
+        question: "How does the real-time simulation work?",
+        answer:
+          "It uses advanced financial modelling algorithms to calculate margin impacts instantly based on price changes.",
+      },
+      {
+        question: "Is the data secure across global offices?",
+        answer:
+          "Yes, we implemented SOC2-compliant enterprise security and end-to-end data encryption.",
+      },
+      {
+        question: "Can it handle extremely large datasets?",
+        answer:
+          "The architecture was built to process billions of data points using distributed compute clusters.",
+      },
+      {
+        question: "Was it integrated with existing ERPs?",
+        answer:
+          "Yes, we developed custom connectors for SAP, Oracle, and proprietary consultant databases.",
+      },
+      {
+        question: "Does it support offline working sessions?",
+        answer:
+          "The platform features a robust sync mechanism for consultants working on-site without reliable internet.",
+      },
+    ],
+  },
+  "connecterra": {
+    slug: "connecterra",
+    title: "Ida: AI-Powered Agricultural Intelligence",
+    subtitle: "Revolutionizing Dairy Farming with Predictive Insights",
+    category: "AI & Data",
+    client: "Connecterra",
+    duration: "24 Months",
+    description:
+      "Limeup partnered with Connecterra to develop 'Ida', building a highly scalable cloud infrastructure and mobile platform that processes sensor data to provide predictive health alerts for livestock.",
+    heroImage: "/assets/connecterra.png",
+    overview:
+      "Agriculture is undergoing a digital revolution. Connecterra aimed to empower farmers with 'Ida'—an AI companion that turns sensor data into actionable insights to increase yield and improve animal welfare.",
+    challenge:
+      "Processing massive streams of real-time sensor data from thousands of farms and converting irregular biological patterns into 95%+ accurate health and fertility predictions.",
+    solution:
+      "A multi-platform ecosystem powered by a robust microservices backend. We utilized machine learning to identify behavioral anomalies and delivered those insights through an intuitive mobile-first experience.",
+    galleryImages: [
+      "/assets/connecterra-app.png",
+      "/assets/connecterra-insights.png",
+    ],
+    features: [
+      "Automated heat detection alerts",
+      "Health and welfare monitoring",
+      "Herd behavior analysis",
+      "Milk yield prediction engine",
+      "Bluetooth sensor integration",
+      "Multi-farm management dashboard",
+      "Localized climate adaptation",
+      "Predictive veterinary scheduling",
+    ],
+    metrics: [
+      {
+        label: "Milk Yield",
+        value: "10% Increase",
+      },
+      {
+        label: "Antibiotic Use",
+        value: "30% Decrease",
+      },
+      {
+        label: "Accuracy Rate",
+        value: "96%",
+      },
+      {
+        label: "Global Deployment",
+        value: "15+ Countries",
+      },
+    ],
+    results: [
+      {
+        stat: "24/7",
+        title: "Autonomous Monitoring",
+        description:
+          "Eliminated the need for constant manual observation through automated alert systems.",
+      },
+      {
+        stat: "15%",
+        title: "ROI Increase",
+        description:
+          "Farmers saw an immediate return on investment through optimized breeding and health management.",
+      },
+      {
+        stat: "1M+",
+        title: "Cows Monitored",
+        description:
+          "Scaled the infrastructure to handle data from over a million active sensors globally.",
+      },
+    ],
+    techStack: [
+      "React Native",
+      "Node.js",
+      "TensorFlow",
+      "Google Cloud",
+      "BigQuery",
+      "BLE",
+      "Go",
+    ],
+    timeline: [
+      {
+        label: "Phase 1",
+        title: "Hardware Integration",
+        description:
+          "Bridging the gap between physical neck-sensors and cloud-based data ingestion.",
+      },
+      {
+        label: "Phase 2",
+        title: "ML Model Training",
+        description:
+          "Aggregating historical farm data to train the predictive AI behavior clusters.",
+      },
+      {
+        label: "Phase 3",
+        title: "Mobile App Development",
+        description:
+          "Craftive a rugged, accessible UX for farmers working in demanding field environments.",
+      },
+      {
+        label: "Phase 4",
+        title: "Cloud Scalability",
+        description:
+          "Optimizing the backend to handle global traffic spikes and automated data cleaning.",
+      },
+    ],
+    faqs: [
+      {
+        question: "What hardware sensors are required?",
+        answer:
+          "The platform integrates with proprietary wearable neck tags that track movement and rumination.",
+      },
+      {
+        question: "How does the AI detect illness?",
+        answer:
+          "It identifies subtle deviations in activity that precede clinical symptoms of illness.",
+      },
+      {
+        question: "Is it compatible with multiple cow breeds?",
+        answer:
+          "Yes, the AI models were trained on global datasets to account for breed and climate variations.",
+      },
+      {
+        question: "Can farmers access data in low-signal areas?",
+        answer:
+          "The mobile app features local caching to ensure data is accessible even in remote farm locations.",
+      },
+      {
+        question: "How accurate is the heat detection?",
+        answer:
+          "The heat detection system maintains a verified accuracy of over 95% in real-world conditions.",
+      },
+    ],
+  },
+  "raccoon-recovery": {
+    slug: "raccoon-recovery",
+    title: "Digital Physical Therapy Platform",
+    subtitle: "Gamified Post-Operative Recovery with Motion Tracking",
+    category: "Healthcare",
+    client: "Raccoon Recovery",
+    duration: "12 Months",
+    description:
+      "Limeup built a groundbreaking telerehabilitation platform that combines physical sensors with a gamified digital experience to accelerate patient recovery after orthopedic surgeries.",
+    heroImage: "/assets/raccoon-recovery.png",
+    overview:
+      "Patient adherence to at-home physical therapy is notoriously low. Raccoon Recovery transforms boring exercises into an engaging game that tracks every movement with medical-grade precision.",
+    challenge:
+      "Mapping subtle physical movements from wearable sensors to digital actions in real-time with zero latency, while providing clinically valid data to medical professionals.",
+    solution:
+      "We developed a cross-platform application that uses Unity and React to create a gamified recovery environment. A secure healthcare portal allows therapists to remotely adjust programs based on motion data.",
+    galleryImages: [
+      "/assets/raccoon-patient-ui.png",
+      "/assets/raccoon-therapist-portal.png",
+    ],
+    features: [
+      "Real-time motion tracking",
+      "Gamified exercise protocols",
+      "Clinical progress reports",
+      "Remote treatment adjustment",
+      "Video consultation module",
+      "Patient compliance tracking",
+      "Wearable sensor sync",
+      "Personalized rehab pathways",
+    ],
+    metrics: [
+      {
+        label: "Recovery Speed",
+        value: "50% Faster",
+      },
+      {
+        label: "Patient Adherence",
+        value: "90%",
+      },
+      {
+        label: "Active Patients",
+        value: "12,000+",
+      },
+      {
+        label: "CSAT Score",
+        value: "4.8/5",
+      },
+    ],
+    results: [
+      {
+        stat: "60%",
+        title: "Clinic Time Saved",
+        description:
+          "Reduced the frequency of in-person visits required by providing high-fidelity remote data.",
+      },
+      {
+        stat: "HIPAA",
+        title: "Fully Compliant",
+        description:
+          "Architected a zero-trust security model ensuring absolute patient data privacy.",
+      },
+      {
+        stat: "100%",
+        title: "Data Precision",
+        description:
+          "Achieved sub-millimeter tracking accuracy for joint angle and range of motion.",
+      },
+    ],
+    techStack: [
+      "React",
+      "Unity",
+      "C#",
+      "Node.js",
+      "MongoDB",
+      "Azure",
+      "Bluetooth SDK",
+    ],
+    timeline: [
+      {
+        label: "Phase 1",
+        title: "Medical Validation",
+        description:
+          "Working with orthopedic surgeons to define accurate range-of-motion benchmarks.",
+      },
+      {
+        label: "Phase 2",
+        title: "Game Engine Build",
+        description:
+          "Developing the physics-based exercise games that respond to sensor input.",
+      },
+      {
+        label: "Phase 3",
+        title: "Therapist Dashboard",
+        description:
+          "Building the clinical visualization tools for data monitoring and analysis.",
+      },
+      {
+        label: "Phase 4",
+        title: "Pilot Launch",
+        description:
+          "Deployment in selected rehabilitation clinics to gather real-world patient feedback.",
+      },
+    ],
+    faqs: [
+      {
+        question: "Does it replace an actual therapist?",
+        answer:
+          "No, it acts as a digital bridge between clinical visits, helping therapists monitor home progress.",
+      },
+      {
+        question: "What sensors are needed?",
+        answer:
+          "The platform uses lightweight, wearable IMU sensors provided by Raccoon Recovery.",
+      },
+      {
+        question: "How is patient privacy handled?",
+        answer:
+          "We use hospital-grade encryption and satisfy all HIPAA and GDPR health data requirements.",
+      },
+      {
+        question: "Can it be used for any injury?",
+        answer:
+          "It is currently optimized for knee, hip, and shoulder recovery post-surgery.",
+      },
+      {
+        question: "Does it work on mobile devices?",
+        answer:
+          "Yes, the ecosystem supports iOS, Android, and web-based therapist portals.",
+      },
+    ],
+  },
+  "apotka-pharmacy": {
+    slug: "apotka-pharmacy",
+    title: "Enterprise Healthcare Retail Ecosystem",
+    subtitle: "Digital Transformation for a Major Pharmacy Network",
+    category: "Web Development",
+    client: "Apotka",
+    duration: "10 Months",
+    description:
+      "Limeup executed a complete digital overhaul of a major pharmacy chain's e-commerce presence, integrating complex inventory systems and prescription management across 450+ physical stores.",
+    heroImage: "/assets/apotka-pharmacy.png",
+    overview:
+      "Transitioning a traditional pharmacy network to a digital leader. The goal was to create a seamless omnichannel experience where patients could easily find and order medications with professional guidance.",
+    challenge:
+      "Managing a catalogue of 50,000+ SKUs with strict regulatory requirements, real-time local store stock levels, and a complex prescription-verified checkout process.",
+    solution:
+      "A high-performance Next.js frontend integrated with an ElasticSearch-powered search engine and a custom GraphQL layer that bridges multiple legacy ERP and logistics systems.",
+    galleryImages: [
+      "/assets/apotka-storefront.png",
+      "/assets/apotka-checkout.png",
+    ],
+    features: [
+      "Intelligent medicine search",
+      "E-prescription upload & verify",
+      "Omnichannel loyalty program",
+      "Real-time store stock locator",
+      "Automated medication reminders",
+      "Pharmacist chat integration",
+      "B2B hospital supply portal",
+      "Click & Collect logistics",
+    ],
+    metrics: [
+      {
+        label: "Online Sales",
+        value: "200% Growth",
+      },
+      {
+        label: "Monthly Users",
+        value: "1M+",
+      },
+      {
+        label: "Load Time",
+        value: "<1.2s",
+      },
+      {
+        label: "Store Sync",
+        value: "<60s",
+      },
+    ],
+    results: [
+      {
+        stat: "450+",
+        title: "Stores Integrated",
+        description:
+          "Successfully unified the inventory of every physical location into a single digital platform.",
+      },
+      {
+        stat: "35%",
+        title: "Basket Value",
+        description:
+          "Increased average order value through intelligent AI-driven product recommendations.",
+      },
+      {
+        stat: "92%",
+        title: "Mobile Traffic",
+        description:
+          "The mobile-first design led to a massive shift in how customers interact with the brand.",
+      },
+    ],
+    techStack: [
+      "Next.js",
+      "TypeScript",
+      "GraphQL",
+      "NestJS",
+      "ElasticSearch",
+      "Docker",
+      "Kubernetes",
+    ],
+    timeline: [
+      {
+        label: "Phase 1",
+        title: "System Mapping",
+        description:
+          "Analyzing legacy ERP systems and planning the data migration strategy.",
+      },
+      {
+        label: "Phase 2",
+        title: "Core Platform Build",
+        description:
+          "Development of the high-speed catalog engine and checkout infrastructure.",
+      },
+      {
+        label: "Phase 3",
+        title: "Third-Party Integrations",
+        description:
+          "Connecting payment gateways, loyalty providers, and e-prescription databases.",
+      },
+      {
+        label: "Phase 4",
+        title: "Performance Tuning",
+        description:
+          "Optimizing for peak traffic loads and implementing global edge caching.",
+      },
+    ],
+    faqs: [
+      {
+        question: "Is prescription data handled securely?",
+        answer:
+          "Absolutely, we use multi-layered encryption and meet all local health regulatory standards.",
+      },
+      {
+        question: "Can customers return orders at physical stores?",
+        answer:
+          "Yes, the system enables 'Buy Online, Return In-Store' (BORIS) workflows via unified data.",
+      },
+      {
+        question: "How accurate is the 'In Stock' indicators?",
+        answer:
+          "Our system syncs with the central ERP every 60 seconds to ensure near-live accuracy.",
+      },
+      {
+        question: "Is there a B2B hospital portal?",
+        answer:
+          "Yes, a separate interface was developed specifically for bulk procurement and institutional billing.",
+      },
+      {
+        question: "How fast is same-day delivery?",
+        answer:
+          "Orders are algorithmically routed to the nearest store to enable delivery within 2-4 hours.",
+      },
+    ],
+  },
+  "costa-express": {
+slug: "costa-express",
+title: "Costa Express",
+subtitle: "Agile Development for the World’s Leading Coffee Brand",
+category: "IoT & Automation",
+client: "Costa Coffee",
+duration: "Ongoing Partnership",
+description: "One Beyond provides dedicated Continuous Development Teams to fuel Costa Express’s rapid innovation cycle for their global network of 13,000+ self-service coffee bars.",
+heroImage: "/assets/costa-express.png",
+overview: "Costa Express needed to scale their digital infrastructure and kiosk software but faced challenges in recruiting high-level tech talent to match their growth. One Beyond stepped in to provide a Continuous Development Team model, ensuring a constant flow of innovation and technical excellence.",
+challenge: "The primary challenge was the speed of recruitment versus the speed of business growth. Costa needed to modernize their legacy kiosk systems, integrate real-time IoT monitoring, and expand their cloud footprint while maintaining 100% system reliability for customers worldwide.",
+solution: "We established a multi-disciplinary augmented team of senior engineers who integrated directly into Costa's internal processes. This team focused on re-architecting the kiosk software, enhancing the IoT data pipeline, and building robust API layers for remote diagnostics and stock management.",
+galleryImages: [
+"/assets/costa-express-gallery-1.png",
+"/assets/costa-express-gallery-2.png",
+],
+features: [
+"Real-time IoT Telemetry Tracking",
+"Predictive Maintenance Algorithms",
+"Automated Inventory Management",
+"Global Cloud Sync Architecture",
+"Secure Payment Gateway Integration",
+"Remote Diagnostic Dashboard",
+"Multi-language Deployment Engine",
+"Onyx Operating System Optimization",
+],
+metrics: [
+{
+label: "Global Units",
+value: "13,000+",
+},
+{
+label: "Dev Velocity",
+value: "+45%",
+},
+{
+label: "System Uptime",
+value: "99.98%",
+},
+{
+label: "Scale Capacity",
+value: "10x",
+},
+],
+results: [
+{
+stat: "40%",
+title: "Increased Throughput",
+description: "Successfully accelerated the deployment of new software features across the entire global estate.",
+},
+{
+stat: "£250k",
+title: "Recruitment Savings",
+description: "Significant reduction in overhead costs by utilizing One Beyond’s flexible team augmentation model.",
+},
+{
+stat: "Intelligent",
+title: "Stock Control",
+description: "Reduced waste and stock-outs via automated real-time monitoring and reporting systems.",
+},
+],
+techStack: [
+".NET 8",
+"Azure IoT Hub",
+"React",
+"TypeScript",
+"Docker",
+"Redis",
+"Azure Cosmos DB",
+],
+timeline: [
+{
+label: "Phase 1",
+title: "Discovery & Integration",
+description: "Deep dive into existing kiosk architecture and alignment with Costa's internal development standards.",
+},
+{
+label: "Phase 2",
+title: "Cloud Infrastructure Setup",
+description: "establishing a secure, scalable Azure environment capable of handling millions of daily IoT events.",
+},
+{
+label: "Phase 3",
+title: "Feature Sprints",
+description: "Iterative development cycles focusing on payment security, remote diagnostics, and UI/UX enhancements.",
+},
+{
+label: "Phase 4",
+title: "Global Rollout",
+description: "Over-the-air (OTA) deployment of new software components to the global coffee bar network.",
+},
+],
+faqs: [
+{
+question: "How did the teams collaborate?",
+answer: "The teams worked as a single unit using Agile methodologies, participating in joint sprints and daily standups.",
+},
+{
+question: "What was the biggest technical hurdle?",
+answer: "Ensuring synchronization across thousands of kiosks with varying connectivity strengths in different global regions.",
+},
+{
+question: "Was recruitment speed improved?",
+answer: "Yes, One Beyond provided senior engineers within weeks, compared to the months-long traditional hiring cycle.",
+},
+{
+question: "How is security handled?",
+answer: "All systems use enterprise-grade encryption and comply with global payment security standards (PCI-DSS).",
+},
+{
+question: "Is the partnership ongoing?",
+answer: "Yes, we continue to provide support and new feature development as Costa expands into new markets.",
+},
+],
+},
+"smith-nephew": {
+slug: "smith-nephew",
+title: "Smith+Nephew",
+subtitle: "Digital Healthcare & Surgical Data Visualization",
+category: "AI & Data",
+client: "Smith & Nephew PLC",
+duration: "12 Months",
+description: "A complex surgical procedural data dashboard designed to provide clinical staff and administrators with deep insights into hospital workspace performance.",
+heroImage: "/assets/smith-nephew.png",
+overview: "Smith+Nephew needed a way to translate massive amounts of surgical procedural data into actionable insights. One Beyond built an intuitive dashboard system that helps healthcare providers optimize surgical outcomes and improve operational efficiencies across hospitals.",
+challenge: "The complexity lay in the fragmentation of surgical data. The client required a system that could aggregate multi-source data, maintain strict HIPAA compliance, and present high-level KPIs in a format that surgeons could interpret instantly in high-pressure environments.",
+solution: "We developed a suite of high-performance analytics dashboards using .NET and Power BI embedded, featuring advanced data anonymization and real-time processing capabilities for surgical procedural tracking and cost-analysis.",
+galleryImages: [
+"/assets/smith-nephew-gallery-1.png",
+"/assets/smith-nephew-gallery-2.png",
+],
+features: [
+"Surgical KPI Tracking",
+"Clinical Outcome Analytics",
+"Advanced Data Anonymization",
+"Multi-hospital Data Sync",
+"Regulatory Compliance Filter",
+"Dynamic Reporting Engine",
+"Role-based Access Control",
+"Mobile Responsive View",
+],
+metrics: [
+{
+label: "Data Points",
+value: "50M+",
+},
+{
+label: "Load Time",
+value: "<2s",
+},
+{
+label: "Compliance",
+value: "SOC2/GDPR",
+},
+{
+label: "ROI Period",
+value: "18 Mo",
+},
+],
+results: [
+{
+stat: "30%",
+title: "Clinical Efficiency",
+description: "Significant improvements in procedural planning through better data visualization.",
+},
+{
+stat: "Real-time",
+title: "Cost Insights",
+description: "Administrators now have instant access to cost-per-procedure metrics for budgeting.",
+},
+{
+stat: "Grant",
+title: "Innovation Funding",
+description: "The project's success helped secure additional government R&D grants for digital healthcare.",
+},
+],
+techStack: [
+"Power BI",
+".NET Core",
+"Azure SQL",
+"React",
+"Azure Data Factory",
+"TypeScript",
+"D3.js",
+],
+timeline: [
+{
+label: "Phase 1",
+title: "Regulatory Audit",
+description: "Comprehensive review of medical data security requirements and privacy lockdowns.",
+},
+{
+label: "Phase 2",
+title: "Data Architecture",
+description: "Building the backend ETL processes to clean and aggregate hospital data streams.",
+},
+{
+label: "Phase 3",
+title: "UI/UX Modeling",
+description: "Collaborating with clinicians to design intuitive, high-contrast dashboards for fast interpretation.",
+},
+{
+label: "Phase 4",
+title: "Production Launch",
+description: "Deployment to the global cloud infrastructure with multi-hospital pilot testing.",
+},
+],
+faqs: [
+{
+question: "Is the data HIPAA compliant?",
+answer: "Yes, the system employs military-grade encryption and strict anonymization protocols.",
+},
+{
+question: "Can it handle real-time data?",
+answer: "The platform supports near real-time updates for active surgical procedural tracking.",
+},
+{
+question: "Who are the primary users?",
+answer: "Hospital administrators, unit managers, and specialized surgical teams.",
+},
+{
+question: "Does it integrate with EMRs?",
+answer: "It features a flexible API layer designed to securely interface with major electronic medical record systems.",
+},
+{
+question: "How scalable is the system?",
+answer: "The Azure-based architecture allows for the addition of hundreds of new hospital sites with minimal latency.",
+},
+],
+},
+"infinitas-learning": {
+slug: "infinitas-learning",
+title: "Infinitas Learning",
+subtitle: "Massive Team Augmentation for EdTech Transformation",
+category: "Web Development",
+client: "Infinitas Learning",
+duration: "18 Months",
+description: "One Beyond helped Infinitas Learning transform the landscape of education by launching three landmark digital projects simultaneously through large-scale team augmentation.",
+heroImage: "/assets/infinitas-learning.png",
+overview: "Infinitas Learning needed to launch a central Learning Management System, a new E-commerce engine, and an integrated payments platform all at once. One Beyond scaled a team of 40+ engineers to meet this critical academic deadline.",
+challenge: "The challenge was the scale and the deadline. Infinitas needed to migrate decades of legacy learning content while building a modern, cloud-native ecosystem that could support over 500,000 concurrent students and educators across multiple countries.",
+solution: "We deployed a dedicated team of engineers, testers, and architects who worked as 'one team' with Infinitas. We utilized a microservices architecture to build a scalable LMS and integrated a high-performance e-commerce engine with multi-currency payment support.",
+galleryImages: [
+"/assets/infinitas-gallery-1.png",
+"/assets/infinitas-gallery-2.png",
+],
+features: [
+"Enterprise Learning Management (LMS)",
+"Omni-channel E-commerce",
+"Integrated Multi-currency Payments",
+"Student Progress Analytics",
+"Classroom Management Tools",
+"Content Authoring Pipeline",
+"Legacy Data Migration Engine",
+"Single Sign-On (SSO)",
+],
+metrics: [
+{
+label: "Student Users",
+value: "500k+",
+},
+{
+label: "Team Size",
+value: "40+ Eng.",
+},
+{
+label: "Uptime",
+value: "99.95%",
+},
+{
+label: "Platform Count",
+value: "3 Major",
+},
+],
+results: [
+{
+stat: "100%",
+title: "On-time Delivery",
+description: "All platforms were live and tested ahead of the new academic year start date.",
+},
+{
+stat: "Unified",
+title: "Data Ecosystem",
+description: "Created a single source of truth for student data and content across three countries.",
+},
+{
+stat: "Scalable",
+title: "Revenue Engine",
+description: "The new E-commerce platform dramatically improved the digital sales conversion rate.",
+},
+],
+techStack: [
+".NET Core 8",
+"React",
+"TypeScript",
+"Kubernetes",
+"Stripe API",
+"ElasticSearch",
+"Azure DevOps",
+],
+timeline: [
+{
+label: "Phase 1",
+title: "Strategic Scaling",
+description: "Rapid onboarding of 40+ engineers to create a cohesive delivery engine.",
+},
+{
+label: "Phase 2",
+title: "Architecture Design",
+description: "Designing a microservices-based API layer to connect the LMS and Commerce platforms.",
+},
+{
+label: "Phase 3",
+title: "Parallel Sprints",
+description: "Concurrent development of the primary learning tools and the payment gateway.",
+},
+{
+label: "Phase 4",
+title: "Academic Go-Live",
+description: "Stress testing and final deployment before the high-traffic back-to-school period.",
+},
+],
+faqs: [
+{
+question: "How was such a large team managed?",
+answer: "Using a Pod-based structure where small, cross-functional teams focused on specific value streams.",
+},
+{
+question: "What happened to the legacy data?",
+answer: "We built custom migration scripts that successfully transitioned over 15 years of learning content.",
+},
+{
+question: "Can it handle 500k students?",
+answer: "Yes, the Kubernetes-based infrastructure auto-scales during peak exam and enrollment periods.",
+},
+{
+question: "Is the system multi-lingual?",
+answer: "Absolutely, it supports multiple European languages and localized curricula.",
+},
+{
+question: "How are payments secured?",
+answer: "Through fully integrated Stripe and specialized European payment providers (Adyen).",
+},
+],
+},
+"fine-rare": {
+slug: "fine-rare",
+title: "Fine+Rare",
+subtitle: "Luxury E-commerce Platform for Rare Wine & Spirits",
+category: "Web Development",
+client: "Fine+Rare Wines Ltd",
+duration: "14 Months",
+description: "Modernization of a legacy platform for a specialist luxury retailer, enabling massive scalability and a premium user experience for high-net-worth collectors.",
+heroImage: "/assets/fine-rare.png",
+overview: "Fine+Rare needed to replace an aging, restrictive tech stack to unlock their growth potential. One Beyond delivered a brand-new, high-performance platform that resulted in an online sales increase of over 400%.",
+challenge: "The primary challenge was modernizing a complex business logic layer that handles high-value transactions, auctions, and global logistics for rare assets. The old system was slow, difficult to update, and couldn't support modern SEO or mobile experiences.",
+solution: "We designed a bespoke headless e-commerce architecture using Node.js and React. The solution included a high-speed search engine, real-time inventory synchronization with global warehouses, and a personalized member portal for collectors.",
+galleryImages: [
+"/assets/fine-rare-gallery-1.png",
+"/assets/fine-rare-gallery-2.png",
+],
+features: [
+"Headless E-commerce Engine",
+"Real-time Inventory Sync",
+"Personalized Member Portal",
+"Advanced ElasticSearch",
+"Auction Management System",
+"Secure Payment Vault",
+"Logistics & CRM Integration",
+"Optimized SEO Architecture",
+],
+metrics: [
+{
+label: "Growth",
+value: "403%",
+},
+{
+label: "Conversions",
+value: "+65%",
+},
+{
+label: "Page Load",
+value: "-1.2s",
+},
+{
+label: "Mobile Traffic",
+value: "+80%",
+},
+],
+results: [
+{
+stat: "400%+",
+title: "Revenue Increase",
+description: "Direct online growth result within months of the new platform launch.",
+},
+{
+stat: "Premium",
+title: "User Experience",
+description: "Enhanced brand perception through a luxury-focused, high-performance UI.",
+},
+{
+stat: "Scalable",
+title: "Tech Stack",
+description: "Reduced technical debt and enabled the internal marketing team to execute campaigns faster.",
+},
+],
+techStack: [
+"Node.js",
+"React",
+"Next.js",
+"AWS",
+"PostgreSQL",
+"Redis",
+"ElasticSearch",
+],
+timeline: [
+{
+label: "Phase 1",
+title: "Brand Strategy",
+description: "Defining the premium digital experience and luxury visual language.",
+},
+{
+label: "Phase 2",
+title: "Core Development",
+description: "Building the bespoke e-commerce engine and inventory logic.",
+},
+{
+label: "Phase 3",
+title: "Search & UI",
+description: "Implementing high-speed ElasticSearch and the responsive frontend portals.",
+},
+{
+label: "Phase 4",
+title: "Migration & Launch",
+description: "Securely transferring high-value customer records and opening the new storefront.",
+},
+],
+faqs: [
+{
+question: "Is it integrated with logistics?",
+answer: "Yes, it is fully synced with worldwide bonded warehouses for real-time availability.",
+},
+{
+question: "Does it support auctions?",
+answer: "Yes, we built custom auction modules for live and timed bidding on rare spirits.",
+},
+{
+question: "What tech stack was used?",
+answer: "A modern headless stack using Node.js, React, and AWS for maximum scalability.",
+},
+{
+question: "How did it impact SEO?",
+answer: "Search rankings improved significantly due to the high-speed Next.js architecture.",
+},
+{
+question: "Who manages the platform now?",
+answer: "The platform was built for easy maintenance by its internal team with ongoing One Beyond support.",
+},
+],
+},
+"david-lloyd-leisure": {
+slug: "david-lloyd-leisure",
+title: "David Lloyd Leisure Mobile App",
+subtitle: "Transforming the fitness experience for over 600,000 members.",
+category: "Mobile Development",
+client: "David Lloyd Leisure",
+duration: "12 Months",
+description: "Softwire partnered with David Lloyd to rebuild their mobile presence from the ground up, focusing on booking efficiency and high-performance member engagement across their European clubs.",
+heroImage: "/assets/david-lloyd-leisure.png",
+overview: "David Lloyd required a unified, high-performance mobile application to replace a fragmented legacy system. The goal was to provide a seamless booking experience for gym slots, classes, and courts, while integrating loyalty features and personalized workout tracking.",
+challenge: "The existing legacy infrastructure struggled with peak-time traffic spikes during class release windows, leading to frequent app crashes and member frustration. Additionally, the UI felt outdated compared to premium boutique fitness offerings.",
+solution: "We implemented a scalable React Native application backed by a Node.js microservices architecture on AWS. By utilizing GraphQL, we optimized data fetching, ensuring the UI remains responsive even under heavy load during 'booking rushes'.",
+galleryImages: [
+"/assets/dl-app-interface.png",
+"/assets/dl-class-booking.png",
+],
+features: [
+"One-tap class and court booking system",
+"Real-time gym capacity monitoring",
+"Personalized workout recommendations",
+"Integrated loyalty and rewards hub",
+"In-app QR code for contactless club entry",
+"Seamless Apple Health and Google Fit sync",
+"Push notification engine for class reminders",
+"Secure guest pass management",
+],
+metrics: [
+{
+label: "App Store Rating",
+value: "4.8/5",
+},
+{
+label: "Member Adoption",
+value: "85%",
+},
+{
+label: "Booking Speed",
+value: "50% faster",
+},
+{
+label: "Monthly Sessions",
+value: "2M+",
+},
+],
+results: [
+{
+stat: "99.99%",
+title: "Uptime During Peak",
+description: "Successfully handled 100x traffic spikes during weekly class releases.",
+},
+{
+stat: "220k",
+title: "Active Daily Users",
+description: "Significant increase in daily digital interaction compared to the previous app.",
+},
+{
+stat: "£1.2M",
+title: "Operational Savings",
+description: "Reduced pressure on club reception staff via automated self-service tools.",
+}
+],
+techStack: [
+"React Native",
+"Node.js",
+"AWS Lambda",
+"GraphQL",
+"Terraform",
+"PostgreSQL",
+"Redis",
+],
+timeline: [
+{
+label: "Phase 1",
+title: "Strategic Discovery",
+description: "Comprehensive member journey mapping and legacy system audit.",
+},
+{
+label: "Phase 2",
+title: "Architecture Design",
+description: "Designing a high-availability cloud infrastructure and API layer.",
+},
+{
+label: "Phase 3",
+title: "Agile Development",
+description: "Sprints focused on core booking engines and UI/UX refinement.",
+},
+{
+label: "Phase 4",
+title: "Beta & Launch",
+description: "Club-by-club rollout and final performance optimization.",
+},
+],
+faqs: [
+{
+question: "How did you handle the booking spikes?",
+answer: "We utilized AWS serverless technologies and Redis caching to ensure consistent performance during high-demand windows.",
+},
+{
+question: "Is the app available in multiple languages?",
+answer: "Yes, we implemented a robust localization framework supporting English, French, and Spanish markets.",
+},
+{
+question: "Did you integrate with on-site club hardware?",
+answer: "Yes, the app integrates with club turnstiles via encrypted QR codes generated in real-time.",
+},
+{
+question: "How was member data secured?",
+answer: "We implemented enterprise-grade OAuth2 and AES-256 encryption for all PII and payment data.",
+},
+{
+question: "Can members track their progress visually?",
+answer: "The app features interactive charts using D3 to visualize workout consistency and health metrics.",
+},
+],
+},
+"rspb-digital-transformation": {
+slug: "rspb-digital-transformation",
+title: "RSPB Nature on Your Doorstep",
+subtitle: "Engaging a new generation of conservationists via digital innovation.",
+category: "Web Development",
+client: "RSPB",
+duration: "18 Months",
+description: "Softwire lead a large-scale digital transformation to modernize the RSPB’s online presence, creating an interactive platform to encourage biodiversity in UK gardens.",
+heroImage: "/assets/rspb-digital-transformation.png",
+overview: "The RSPB needed to move beyond traditional donor management into a mission-driven digital platform. 'Nature on Your Doorstep' was designed to provide personalized, localized advice to millions of UK citizens.",
+challenge: "The organization had multiple siloed databases and an aging CMS that made personalization impossible and data management inefficient.",
+solution: "We built a centralized data platform and a modern web experience using Python/Django and React. The system utilizes geolocation to provide weather-dependent gardening tips tailored to the user's specific region.",
+galleryImages: [
+"/assets/rspb-dashboard.png",
+"/assets/rspb-activity-tracker.png",
+],
+features: [
+"Localized biodiversity activity engine",
+"Personalized impact dashboard for members",
+"Interactive wildlife tracking tools",
+"Centralized CRM and data lake integration",
+"Automated outreach and email campaigns",
+"Mobile-first responsive design",
+"Secure donation and subscription portal",
+"User-generated content hub for nature photos",
+],
+metrics: [
+{
+label: "User Signups",
+value: "1M+",
+},
+{
+label: "Engagement",
+value: "+40%",
+},
+{
+label: "Activity Completion",
+value: "150k+",
+},
+{
+label: "Platform Uptime",
+value: "99.9%",
+},
+],
+results: [
+{
+stat: "2.5M",
+title: "Unique Page Views",
+description: "Massive reach for the seasonal 'Big Garden Birdwatch' campaigns.",
+},
+{
+stat: "65%",
+title: "Donor Retention",
+description: "Improved retention through personalized digital storytelling.",
+},
+{
+stat: "£800k",
+title: "Cost Reduction",
+description: "Savings achieved through cloud migration and automated data processing.",
+}
+],
+techStack: [
+"Python",
+"Django",
+"React",
+"AWS",
+"PostgreSQL",
+"Elasticsearch",
+"Docker",
+],
+timeline: [
+{
+label: "Phase 1",
+title: "Data Audit",
+description: "Identifying and consolidating fragmented member data sources.",
+},
+{
+label: "Phase 2",
+title: "Platform MVP",
+description: "Building the core advocacy engine and personalized activity algorithm.",
+},
+{
+label: "Phase 3",
+title: "Scaling & CRM",
+description: "Integrating the web platform with the central RSPB CRM system.",
+},
+{
+label: "Phase 4",
+title: "Nationwide Launch",
+description: "Rolling out the platform ahead of peak spring conservation season.",
+},
+],
+faqs: [
+{
+question: "How does the localization work?",
+answer: "The platform uses IP-based geolocation and postcode lookup to fetch local environmental data.",
+},
+{
+question: "Is the platform accessible to all users?",
+answer: "Absolutely, it was built to meet WCAG 2.1 AA standards for maximum inclusion.",
+},
+{
+question: "Can users upload their own data?",
+answer: "Yes, members can record sightings and activity completion which contributes to national research.",
+},
+{
+question: "How is donor privacy handled?",
+answer: "All data is managed in accordance with GDPR and Cyber Essentials Plus certifications.",
+},
+{
+question: "Is the tech stack scalable for TV campaigns?",
+answer: "Yes, the AWS infrastructure auto-scales to handle massive spikes during live broadcasts.",
+},
+],
+},
+"bbc-academy-platform": {
+slug: "bbc-academy-platform",
+title: "BBC Academy Learning Platform",
+subtitle: "A professional educational ecosystem for global content creators.",
+category: "Web Development",
+client: "BBC",
+duration: "10 Months",
+description: "Softwire engineered a scalable, highly accessible learning management system to host the BBC's internal and partner training content across video, text, and interactive assessments.",
+heroImage: "/assets/bbc-academy-platform.png",
+overview: "The BBC Academy required a modern digital hub to deliver training to staff and external partners. The platform needed to be robust enough to serve thousands of concurrent users while maintaining strict accessibility standards.",
+challenge: "The previous system was difficult to navigate on mobile devices and struggled with high-bitrate video delivery across disparate global networks.",
+solution: "We developed a serverless architecture using AWS and a React-based frontend. We leveraged AWS CloudFront and Elemental MediaConvert to ensure smooth video delivery regardless of user location or bandwidth.",
+galleryImages: [
+"/assets/bbc-learning-portal.png",
+"/assets/bbc-video-player.png",
+],
+features: [
+"Adaptive bitrate video streaming",
+"Interactive quiz and assessment engine",
+"SCORM and xAPI content compatibility",
+"Multilingual support for global partners",
+"Detailed learning analytics for management",
+"Fully WCAG 2.2 compliant interface",
+"Offline-first mobile learning capabilities",
+"Social learning and discussion forums",
+],
+metrics: [
+{
+label: "Active Learners",
+value: "50k+",
+},
+{
+label: "Courses Hosted",
+value: "200+",
+},
+{
+label: "Load Times",
+value: "30% faster",
+},
+{
+label: "Accessibility",
+value: "100%",
+},
+],
+results: [
+{
+stat: "15k",
+title: "Monthly Certifications",
+description: "Significant throughput of staff completing regulated training.",
+},
+{
+stat: "78%",
+title: "Mobile Engagement",
+description: "Drastic increase in training completed on mobile devices via the new UI.",
+},
+{
+stat: "Zero",
+title: "Downtime Incidents",
+description: "Maintained perfect availability since the migration to serverless.",
+}
+],
+techStack: [
+"React",
+"Java",
+"Spring Boot",
+"AWS Lambda",
+"Elemental Media",
+"CloudFront",
+"S3",
+],
+timeline: [
+{
+label: "Phase 1",
+title: "User Research",
+description: "In-depth workshops with BBC trainers and global staff members.",
+},
+{
+label: "Phase 2",
+title: "UI Implementation",
+description: "Developing an accessible, high-performance frontend components library.",
+},
+{
+label: "Phase 3",
+title: "Media Backend",
+description: "Engineering the video transcoding and delivery pipeline on AWS.",
+},
+{
+label: "Phase 4",
+title: "Content Migration",
+description: "Migrating over 10 years of training content into the new system.",
+},
+],
+faqs: [
+{
+question: "How do you handle high-definition video?",
+answer: "We use AWS Elemental to transcode video into multiple formats, serving the best one for the user's connection.",
+},
+{
+question: "Is the platform accessible to screen readers?",
+answer: "Yes, the entire platform is optimized for AT users and adheres to triple-A accessibility standards where possible.",
+},
+{
+question: "Can external partners access the training?",
+answer: "Yes, we implemented a tiered authentication system for internal and external users.",
+},
+{
+question: "How is progress tracked?",
+answer: "We use a custom xAPI implementation to track granular learning actions across the site.",
+},
+{
+question: "Does it support live webinars?",
+answer: "The platform integrates with major live-streaming tools for real-time educational events.",
+},
+],
+},
+"moj-claims-digitisation": {
+slug: "moj-claims-digitisation",
+title: "Ministry of Justice Claims Portal",
+subtitle: "Digitising the UK justice system for efficient, secure public service.",
+category: "Cloud & DevOps",
+client: "Ministry of Justice",
+duration: "24 Months",
+description: "Softwire spearheaded the digital transformation of a critical legal claims portal, replacing legacy paper processes with a secure, user-centric cloud platform.",
+heroImage: "/assets/moj-claims-digitisation.png",
+overview: "The Ministry of Justice (MoJ) sought to modernize the way legal claims are submitted and processed. The goal was to reduce administrative overhead and increase transparency for both citizens and legal professionals.",
+challenge: "The system required extreme security due to the sensitive nature of legal data, along with strict adherence to GDS (Government Digital Service) standards.",
+solution: "We deployed a Ruby on Rails application using a robust microservices architecture. By implementing Infrastructure as Code (IaC) with Terraform, we created a repeatable, highly secure environment across several AWS regions.",
+galleryImages: [
+"/assets/moj-portal-ui.png",
+"/assets/moj-data-security.png",
+],
+features: [
+"GDS-compliant web interface",
+"Secure document upload and encryption",
+"Real-time case status tracking",
+"Automated legal rule-engine validation",
+"Multi-factor authentication for legal pros",
+"Integrated digital signature support",
+"Comprehensive audit logging and reporting",
+"High-availability multi-region active/active setup",
+],
+metrics: [
+{
+label: "Cases Processed",
+value: "200k+",
+},
+{
+label: "Processing Speed",
+value: "60% faster",
+},
+{
+label: "Admin Savings",
+value: "£10M+",
+},
+{
+label: "Security Level",
+value: "Highest",
+},
+],
+results: [
+{
+stat: "4.5/5",
+title: "Citizen Feedback Score",
+description: "Record-high satisfaction ratings for a UK government digital service.",
+},
+{
+stat: "£3.5M",
+title: "Annual Cloud Tech Savings",
+description: "Significant reduction in infrastructure costs via optimized cloud usage.",
+},
+{
+stat: "90%",
+title: "Reduced Error Rate",
+description: "Validation engines significantly reduced the number of invalid claim submissions.",
+}
+],
+techStack: [
+"Ruby on Rails",
+"Terraform",
+"AWS",
+"Docker",
+"Kubernetes",
+"Redis",
+"Sidekiq",
+],
+timeline: [
+{
+label: "Phase 1",
+title: "Alpha Phase",
+description: "Prototyping and testing core concepts with real users and legal experts.",
+},
+{
+label: "Phase 2",
+title: "Beta Development",
+description: "Building the full claims engine and implementing Gov.UK Design System.",
+},
+{
+label: "Phase 3",
+title: "Security Hardening",
+description: "Rigorous penetration testing and compliance auditing for legal data.",
+},
+{
+label: "Phase 4",
+title: "National Launch",
+description: "Successfully transitioning all live claims to the new digital platform.",
+},
+],
+faqs: [
+{
+question: "How is the sensitive legal data secured?",
+answer: "We use field-level encryption and strict IAM policies combined with continuous automated scanning.",
+},
+{
+question: "Does it follow GDS design standards?",
+answer: "Yes, every component is mapped directly to the Gov.UK design patterns for consistency.",
+},
+{
+question: "How do legal pros verify their identity?",
+answer: "The platform integrates with several identity providers including secure government gateways.",
+},
+{
+question: "Can the system handle surges in litigation?",
+answer: "The Kubernetes-based infrastructure scales automatically based on queue depth and CPU usage.",
+},
+{
+question: "Is there an API for law firms?",
+answer: "Yes, we provide a RESTful API with automated documentation for large-scale legal integrations.",
+},
+],
+}
 };
 
 export function getProjectData(slug: string) {
