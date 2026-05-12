@@ -269,9 +269,9 @@ export function Footer() {
 
                     <a
                       className="text-muted-foreground transition-colors hover:text-primary"
-                      href="tel:+10095447818"
+                      href="tel:+9780970564"
                     >
-                      +1 (009) 544-7818
+                      +97809 70564
                     </a>
                   </div>
 
@@ -284,6 +284,8 @@ export function Footer() {
                       href="mailto:hr@workholo.com"
                     >
                       hr@workholo.com
+                      <br/>
+                      sales@workholo.com
                     </a>
                   </div>
                 </div>
