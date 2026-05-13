@@ -149,7 +149,7 @@ export function HeroSection() {
                 href="tel:+18883338181"
               >
                 <IconPhone className="size-5 text-primary" />
-                +1 (888) 333-8181
+                +91-9780970564
               </a>
             </motion.div>
 

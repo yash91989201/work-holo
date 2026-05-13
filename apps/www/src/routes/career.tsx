@@ -154,7 +154,7 @@ const perks: Perk[] = [
 ];
 
 const stats: Stat[] = [
-  { number: "30+", label: "Team Members" },
+  { number: "35+", label: "Team Members" },
   { number: "100+", label: "Projects Delivered" },
   { number: "20+", label: "Years of Excellence" },
   { number: "15+", label: "Countries Served" },
