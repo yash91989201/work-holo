@@ -42,55 +42,79 @@ function HeroSection({ data }: { data: ProjectPageData }) {
     offset: ["start start", "end start"],
   });
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+  const opacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
 
   return (
-    <section className="relative min-h-[85vh] overflow-hidden" ref={ref}>
-      <motion.div className="absolute inset-0" style={{ y }}>
+    /* pt-16 or pt-20 offsets the fixed navbar height so hero content is never hidden behind it */
+    <section
+      className="relative min-h-[100svh] overflow-hidden pt-16 lg:pt-"
+      ref={ref}
+    >
+      {/* Parallax background */}
+      {/* <motion.div className="absolute inset-0" style={{ y }}>
         <ProjectImage
           aspectRatio="auto"
-          className="h-[120vh] w-full"
+          className="h-[115%] w-full object-cover"
           title={data.title}
-        />
-        <div className="absolute inset-0 bg-background/70 backdrop-blur-[2px]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/40 via-transparent to-background/40" />
-      </motion.div>
+        /> */}
+        {/* Layered overlays for legibility */}
+        {/* <div className="absolute inset-0 bg-background/75 backdrop-blur-[3px]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/50 via-transparent to-background/50" />
+      </motion.div> */}
 
+      {/* Decorative grid lines */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right, currentColor 1px, transparent 1px), linear-gradient(to bottom, currentColor 1px, transparent 1px)",
+          backgroundSize: "80px 80px",
+        }}
+      />
+
+      {/* Subtle bottom glow on mobile only */}
+      <div className="pointer-events-none absolute bottom-0 left-0 h-1/2 w-full bg-gradient-to-t from-primary/[0.07] to-transparent sm:hidden" />
+
+      {/* Hero content */}
       <motion.div
-        className="relative flex min-h-[85vh] items-end"
+        className="relative"
         style={{ opacity }}
       >
-        <div className="mx-auto w-full max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20 lg:px-8 lg:pb-28">
+        <div className="py-12 sm:py-20 lg:py-28">
           <motion.div
-            initial={{ opacity: 0, y: 60 }}
-            transition={{ duration: 0.9, ease: EASE }}
+            initial={{ opacity: 0, y: 40 }}
+            transition={{ duration: 0.85, ease: EASE }}
             viewport={{ once: true }}
             whileInView={{ opacity: 1, y: 0 }}
           >
-            <div className="mb-6 flex flex-wrap items-center gap-3">
-              <span className="rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 font-mono font-semibold text-[11px] text-primary uppercase tracking-widest">
+            {/* Meta badges — compact on mobile */}
+            <div className="mb-4 flex flex-wrap items-center gap-2 sm:mb-6 sm:gap-2.5">
+              <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 font-mono font-semibold text-[9px] text-primary uppercase tracking-widest sm:px-3.5 sm:text-[10px]">
                 {data.category}
               </span>
-              <span className="flex items-center gap-1.5 font-mono text-[11px] text-foreground/50 uppercase tracking-widest">
-                <IconClock className="size-3" />
+              <span className="flex items-center gap-1 font-mono text-[9px] text-foreground/40 uppercase tracking-widest sm:gap-1.5 sm:text-[10px]">
+                <IconClock className="size-2.5 sm:size-3" />
                 {data.duration}
               </span>
-              <span className="flex items-center gap-1.5 font-mono text-[11px] text-foreground/50 uppercase tracking-widest">
-                <IconUser className="size-3" />
+              <span className="flex items-center gap-1 font-mono text-[9px] text-foreground/40 uppercase tracking-widest sm:gap-1.5 sm:text-[10px]">
+                <IconUser className="size-2.5 sm:size-3" />
                 {data.client}
               </span>
             </div>
 
-            <h1 className="mb-6 font-extrabold font-heading text-4xl text-foreground leading-[0.95] tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+            {/* Title — mobile: text-2xl, scales up gracefully */}
+            <h1 className="mb-3 max-w-4xl font-extrabold font-heading text-[1.65rem] text-foreground leading-[1.08] tracking-tight sm:mb-5 sm:text-4xl md:text-5xl lg:text-6xl">
               {data.title}
-              <br />
-              <span className="bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">
-                {data.subtitle}
-              </span>
             </h1>
 
-            <p className="max-w-2xl text-base text-foreground/60 leading-relaxed sm:text-lg">
+            {/* Subtitle — mobile: text-base/lg, keeps gradient accent */}
+            <p className="mb-3 max-w-3xl bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text font-heading font-bold text-lg text-transparent leading-snug sm:mb-6 sm:text-2xl md:text-3xl">
+              {data.subtitle}
+            </p>
+
+            {/* Description — clamp to 3 lines on mobile so it doesn't dominate */}
+            <p className="line-clamp-3 max-w-2xl text-sm text-foreground/50 leading-relaxed sm:line-clamp-none sm:text-base sm:text-foreground/55">
               {data.description}
             </p>
           </motion.div>
@@ -117,7 +141,7 @@ function MetricsStrip({ data }: { data: ProjectPageData }) {
               viewport={{ once: true }}
               whileInView={{ opacity: 1, y: 0 }}
             >
-              <div className="mb-1 font-extrabold font-heading text-3xl text-primary tracking-tight sm:text-4xl lg:text-5xl">
+              <div className="mb-1 font-extrabold font-heading text-3xl text-primary tracking-tight sm:text-4xl">
                 {metric.value}
               </div>
               <div className="font-medium font-mono text-[10px] text-foreground/40 uppercase tracking-[0.2em]">
@@ -144,7 +168,7 @@ function OverviewSection({ data }: { data: ProjectPageData }) {
               whileInView={{ opacity: 1, x: 0 }}
             >
               <SectionLabel>Overview</SectionLabel>
-              <h2 className="font-bold font-heading text-3xl text-foreground tracking-tight sm:text-4xl">
+              <h2 className="font-bold font-heading text-2xl text-foreground tracking-tight sm:text-3xl">
                 The story behind
                 <br />
                 <span className="text-primary">{data.title}</span>
@@ -184,12 +208,10 @@ function ChallengeSolutionSection({ data }: { data: ProjectPageData }) {
             <div className="pointer-events-none absolute -top-20 -right-20 size-60 rounded-full bg-red-500/5 blur-3xl" />
             <div className="relative">
               <SectionLabel>The Challenge</SectionLabel>
-              <h3 className="mb-6 font-bold font-heading text-2xl text-foreground sm:text-3xl">
-                What stood
-                <br />
-                in the way
+              <h3 className="mb-6 font-bold font-heading text-xl text-foreground sm:text-2xl">
+                What stood in the way
               </h3>
-              <p className="text-foreground/60 leading-relaxed">
+              <p className="text-foreground/60 text-sm leading-relaxed sm:text-base">
                 {data.challenge}
               </p>
             </div>
@@ -205,12 +227,10 @@ function ChallengeSolutionSection({ data }: { data: ProjectPageData }) {
             <div className="pointer-events-none absolute -bottom-20 -left-20 size-60 rounded-full bg-primary/10 blur-3xl" />
             <div className="relative">
               <SectionLabel>Our Solution</SectionLabel>
-              <h3 className="mb-6 font-bold font-heading text-2xl text-foreground sm:text-3xl">
-                How we made
-                <br />
-                it happen
+              <h3 className="mb-6 font-bold font-heading text-xl text-foreground sm:text-2xl">
+                How we made it happen
               </h3>
-              <p className="text-foreground/60 leading-relaxed">
+              <p className="text-foreground/60 text-sm leading-relaxed sm:text-base">
                 {data.solution}
               </p>
             </div>
@@ -234,7 +254,7 @@ function ResultsSection({ data }: { data: ProjectPageData }) {
           whileInView={{ opacity: 1, y: 0 }}
         >
           <SectionLabel>Key Results</SectionLabel>
-          <h2 className="font-bold font-heading text-3xl text-foreground tracking-tight sm:text-4xl">
+          <h2 className="font-bold font-heading text-2xl text-foreground tracking-tight sm:text-3xl">
             Impact that speaks
           </h2>
         </motion.div>
@@ -250,15 +270,14 @@ function ResultsSection({ data }: { data: ProjectPageData }) {
               whileInView={{ opacity: 1, y: 0 }}
             >
               <div className="pointer-events-none absolute -top-8 -right-8 size-32 rounded-full bg-primary/5 blur-2xl transition-all duration-500 group-hover:size-40 group-hover:bg-primary/10" />
-
               <div className="relative">
-                <div className="mb-4 font-extrabold font-heading text-5xl text-primary sm:text-6xl">
+                <div className="mb-3 font-extrabold font-heading text-4xl text-primary sm:text-5xl">
                   {result.stat}
                 </div>
-                <h4 className="mb-3 font-heading font-semibold text-foreground text-lg">
+                <h4 className="mb-2 font-heading font-semibold text-foreground text-base">
                   {result.title}
                 </h4>
-                <p className="text-foreground/50 text-sm leading-relaxed">
+                <p className="text-foreground/50 text-xs leading-relaxed sm:text-sm">
                   {result.description}
                 </p>
               </div>
@@ -282,7 +301,7 @@ function GallerySection({ data }: { data: ProjectPageData }) {
           whileInView={{ opacity: 1, y: 0 }}
         >
           <SectionLabel>Gallery</SectionLabel>
-          <h2 className="font-bold font-heading text-3xl text-foreground tracking-tight sm:text-4xl">
+          <h2 className="font-bold font-heading text-2xl text-foreground tracking-tight sm:text-3xl">
             A closer look
           </h2>
         </motion.div>
@@ -321,7 +340,7 @@ function FeaturesSection({ data }: { data: ProjectPageData }) {
               whileInView={{ opacity: 1, y: 0 }}
             >
               <SectionLabel>Features</SectionLabel>
-              <h2 className="font-bold font-heading text-3xl text-foreground tracking-tight sm:text-4xl">
+              <h2 className="font-bold font-heading text-2xl text-foreground tracking-tight sm:text-3xl">
                 What we
                 <br />
                 delivered
@@ -329,7 +348,7 @@ function FeaturesSection({ data }: { data: ProjectPageData }) {
             </motion.div>
           </div>
           <div className="lg:col-span-8">
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-3 sm:grid-cols-2">
               {data.features.map((feature, index) => (
                 <motion.div
                   className="flex items-start gap-3 rounded-xl border border-border/5 bg-card/20 p-4 transition-colors hover:border-primary/10 hover:bg-card/40"
@@ -371,7 +390,7 @@ function TechStackSection({ data }: { data: ProjectPageData }) {
           whileInView={{ opacity: 1, y: 0 }}
         >
           <SectionLabel>Tech Stack</SectionLabel>
-          <h2 className="font-bold font-heading text-2xl text-foreground tracking-tight sm:text-3xl">
+          <h2 className="font-bold font-heading text-xl text-foreground tracking-tight sm:text-2xl">
             Tools & technologies
           </h2>
         </motion.div>
@@ -412,7 +431,7 @@ function TimelineSection({ data }: { data: ProjectPageData }) {
           whileInView={{ opacity: 1, y: 0 }}
         >
           <SectionLabel>Timeline</SectionLabel>
-          <h2 className="font-bold font-heading text-3xl text-foreground tracking-tight sm:text-4xl">
+          <h2 className="font-bold font-heading text-2xl text-foreground tracking-tight sm:text-3xl">
             From concept to launch
           </h2>
         </motion.div>
@@ -442,7 +461,7 @@ function TimelineSection({ data }: { data: ProjectPageData }) {
                     <span className="font-bold font-mono text-[10px] text-primary uppercase tracking-[0.2em]">
                       {phase.label}
                     </span>
-                    <h4 className="mt-1 font-bold font-heading text-foreground text-lg">
+                    <h4 className="mt-1 font-bold font-heading text-foreground text-base">
                       {phase.title}
                     </h4>
                   </div>
@@ -481,7 +500,7 @@ function FAQSection({ data }: { data: ProjectPageData }) {
           whileInView={{ opacity: 1, y: 0 }}
         >
           <SectionLabel>FAQ</SectionLabel>
-          <h2 className="font-bold font-heading text-3xl text-foreground tracking-tight sm:text-4xl">
+          <h2 className="font-bold font-heading text-2xl text-foreground tracking-tight sm:text-3xl">
             Common questions
           </h2>
         </motion.div>
@@ -535,16 +554,16 @@ function CTASection() {
             <span className="mb-4 inline-block font-mono font-semibold text-[11px] text-primary-foreground/50 uppercase tracking-[0.25em]">
               Ready to start?
             </span>
-            <h2 className="mx-auto mb-6 max-w-2xl font-bold font-heading text-3xl text-primary-foreground sm:text-4xl lg:text-5xl">
+            <h2 className="mx-auto mb-5 max-w-2xl font-bold font-heading text-2xl text-primary-foreground sm:text-3xl lg:text-4xl">
               Let&apos;s build something remarkable together
             </h2>
-            <p className="mx-auto mb-10 max-w-lg text-primary-foreground/60 leading-relaxed">
+            <p className="mx-auto mb-10 max-w-lg text-primary-foreground/60 text-sm leading-relaxed sm:text-base">
               We&apos;d love to discuss how we can help bring your vision to
               life. Our team has extensive experience across AI, web, mobile,
               and cloud technologies.
             </p>
             <Link
-              className="inline-flex items-center gap-2 rounded-full bg-primary-foreground px-8 py-3.5 font-bold font-heading text-primary transition-all duration-300 hover:gap-3 hover:bg-primary-foreground/90"
+              className="inline-flex items-center gap-2 rounded-full bg-primary-foreground px-8 py-3.5 font-bold font-heading text-primary text-sm transition-all duration-300 hover:gap-3 hover:bg-primary-foreground/90"
               to="/contact-us"
             >
               Start a conversation
@@ -571,7 +590,7 @@ function MoreProjectsSection({ currentSlug }: { currentSlug: string }) {
             whileInView={{ opacity: 1, y: 0 }}
           >
             <SectionLabel>Explore</SectionLabel>
-            <h2 className="font-bold font-heading text-2xl text-foreground tracking-tight sm:text-3xl">
+            <h2 className="font-bold font-heading text-xl text-foreground tracking-tight sm:text-2xl">
               More projects
             </h2>
           </motion.div>
@@ -637,4 +656,3 @@ export function ProjectDetailPage({ data }: ProjectDetailPageProps) {
     </div>
   );
 }
-
