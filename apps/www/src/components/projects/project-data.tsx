@@ -40,6 +40,7 @@ export interface ProjectPageData {
   description: string;
   duration: string;
   faqs: ProjectFAQ[];
+  heroPaddingY?: string;
   features: string[];
   galleryImages: string[];
   heroImage: string;
@@ -206,7 +207,7 @@ const projectsData: Record<string, ProjectPageData> = {
     },
     {
       label: "Monitoring Latency",
-      value: "<2 Seconds",
+      value: "<2 Sec",
     },
   ],
 
@@ -3431,6 +3432,7 @@ answer: "The web application is fully responsive, tailored for engineers using t
 slug: "hillingdon-council",
 title: "Hillingdon Council",
 subtitle: "Digital Transformation for Public Services",
+heroPaddingY: "",
 category: "Web Development",
 client: "London Borough of Hillingdon",
 duration: "15 Months",

@@ -79,10 +79,12 @@ export function ProjectImage({
 export function ProjectGalleryImage({
   title,
   index,
+  src, 
   className = "",
 }: {
   title: string;
   index: number;
+  src?: string; 
   className?: string;
 }) {
   const [imageError, setImageError] = useState(false);

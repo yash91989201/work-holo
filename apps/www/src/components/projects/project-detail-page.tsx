@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { motion, useScroll, useTransform } from "motion/react";
+import { cn } from "@work-holo/ui/lib/utils";
+import { motion, useScroll, useSpring, useTransform } from "motion/react";
 import { useRef, useState } from "react";
 import type { ProjectPageData } from "./project-data";
 import { getProjectList } from "./project-data";
@@ -10,8 +11,13 @@ import {
   IconArrowUpRight,
   IconCheck,
   IconClock,
-  IconLine,
   IconUser,
+  IconSparkles,
+  IconCode,
+  IconBulb,
+  IconRocket,
+  IconChevronDown,
+  IconExternalLink,
 } from "@tabler/icons-react";
 import {
   Accordion,
@@ -24,16 +30,43 @@ interface ProjectDetailPageProps {
   data: ProjectPageData;
 }
 
-const EASE = [0.22, 1, 0.36, 1] as const;
+const EASE = [0.16, 1, 0.3, 1] as const;
+const EASE_SPRING = { type: "spring", stiffness: 80, damping: 20 };
+
+/* ─── Reusable atoms ─────────────────────────────────────── */
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <span className="mb-4 inline-flex items-center gap-2 font-mono font-semibold text-[11px] text-primary uppercase tracking-[0.25em]">
-      <IconLine className="size-3" />
-      {children}
-    </span>
+    <div className="mb-5 flex items-center gap-3">
+      <div className="h-px w-8 bg-primary/50" />
+      <span className="font-mono font-semibold text-[10px] text-primary/70 uppercase tracking-[0.3em]">
+        {children}
+      </span>
+    </div>
   );
 }
+
+function GradientOrb({
+  className,
+  color = "primary",
+}: {
+  className: string;
+  color?: string;
+}) {
+  return (
+    <div
+      className={`pointer-events-none absolute rounded-full blur-[120px] opacity-30 ${className}`}
+      style={{
+        background:
+          color === "primary"
+            ? "radial-gradient(circle, hsl(var(--primary)) 0%, transparent 70%)"
+            : `radial-gradient(circle, ${color} 0%, transparent 70%)`,
+      }}
+    />
+  );
+}
+
+/* ─── HERO ────────────────────────────────────────────────── */
 
 function HeroSection({ data }: { data: ProjectPageData }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -41,110 +74,153 @@ function HeroSection({ data }: { data: ProjectPageData }) {
     target: ref,
     offset: ["start start", "end start"],
   });
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-  const opacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "28%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.6], [1, 0.96]);
 
   return (
-    /* pt-16 or pt-20 offsets the fixed navbar height so hero content is never hidden behind it */
     <section
-      className="relative min-h-[100svh] overflow-hidden pt-16 lg:pt-"
+      className="relative flex min-h-svh flex-col justify-center overflow-hidden"
       ref={ref}
     >
-      {/* Parallax background */}
-      {/* <motion.div className="absolute inset-0" style={{ y }}>
-        <ProjectImage
-          aspectRatio="auto"
-          className="h-[115%] w-full object-cover"
-          title={data.title}
-        /> */}
-        {/* Layered overlays for legibility */}
-        {/* <div className="absolute inset-0 bg-background/75 backdrop-blur-[3px]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/50 via-transparent to-background/50" />
-      </motion.div> */}
+      {/* Atmospheric background */}
+      <GradientOrb className="-top-40 -left-40 size-150" />
+      <GradientOrb
+        className="-right-60 top-20 size-125"
+        color="hsl(var(--primary) / 0.4)"
+      />
 
-      {/* Decorative grid lines */}
+      {/* Noise overlay */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.03]"
+        className="pointer-events-none absolute inset-0 opacity-[0.018]"
         style={{
-          backgroundImage:
-            "linear-gradient(to right, currentColor 1px, transparent 1px), linear-gradient(to bottom, currentColor 1px, transparent 1px)",
-          backgroundSize: "80px 80px",
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+          backgroundRepeat: "repeat",
+          backgroundSize: "128px 128px",
         }}
       />
 
-      {/* Subtle bottom glow on mobile only */}
-      <div className="pointer-events-none absolute bottom-0 left-0 h-1/2 w-full bg-gradient-to-t from-primary/[0.07] to-transparent sm:hidden" />
+      {/* Subtle grid */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.025]"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right, currentColor 1px, transparent 1px), linear-gradient(to bottom, currentColor 1px, transparent 1px)",
+          backgroundSize: "64px 64px",
+        }}
+      />
 
-      {/* Hero content */}
+      {/* Content — zero bottom padding so hero ends flush */}
       <motion.div
-        className="relative"
-        style={{ opacity }}
+        className={cn(
+          "relative",
+          data.heroPaddingY || "pt-0 pb-0 sm:-mt-30 sm:pb-0 lg:pt-0 lg:pb-0",
+        )}
+        style={{ opacity, scale }}
       >
-        <div className="py-12 sm:py-20 lg:py-28">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12 lg:py-12">
+          {/* Category + meta row */}
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            transition={{ duration: 0.85, ease: EASE }}
-            viewport={{ once: true }}
-            whileInView={{ opacity: 1, y: 0 }}
+            className="mb-8 flex flex-wrap items-center gap-3"
+            initial={{ opacity: 0, y: 44 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: EASE }}
           >
-            {/* Meta badges — compact on mobile */}
-            <div className="mb-4 flex flex-wrap items-center gap-2 sm:mb-6 sm:gap-2.5">
-              <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 font-mono font-semibold text-[9px] text-primary uppercase tracking-widest sm:px-3.5 sm:text-[10px]">
-                {data.category}
-              </span>
-              <span className="flex items-center gap-1 font-mono text-[9px] text-foreground/40 uppercase tracking-widest sm:gap-1.5 sm:text-[10px]">
-                <IconClock className="size-2.5 sm:size-3" />
-                {data.duration}
-              </span>
-              <span className="flex items-center gap-1 font-mono text-[9px] text-foreground/40 uppercase tracking-widest sm:gap-1.5 sm:text-[10px]">
-                <IconUser className="size-2.5 sm:size-3" />
-                {data.client}
-              </span>
-            </div>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/25 bg-primary/8 px-3.5 py-1.5 font-mono font-semibold text-[10px] text-primary uppercase tracking-[0.22em]">
+              <IconSparkles className="size-2.5" />
+              {data.category}
+            </span>
 
-            {/* Title — mobile: text-2xl, scales up gracefully */}
-            <h1 className="mb-3 max-w-4xl font-extrabold font-heading text-[1.65rem] text-foreground leading-[1.08] tracking-tight sm:mb-5 sm:text-4xl md:text-5xl lg:text-6xl">
-              {data.title}
-            </h1>
+            <span className="hidden h-4 w-px bg-border/40 sm:block" />
 
-            {/* Subtitle — mobile: text-base/lg, keeps gradient accent */}
-            <p className="mb-3 max-w-3xl bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text font-heading font-bold text-lg text-transparent leading-snug sm:mb-6 sm:text-2xl md:text-3xl">
-              {data.subtitle}
-            </p>
-
-            {/* Description — clamp to 3 lines on mobile so it doesn't dominate */}
-            <p className="line-clamp-3 max-w-2xl text-sm text-foreground/50 leading-relaxed sm:line-clamp-none sm:text-base sm:text-foreground/55">
-              {data.description}
-            </p>
+            <span className="flex items-center gap-1.5 font-mono text-[10px] text-foreground/35 uppercase tracking-wider">
+              <IconClock className="size-3" />
+              {data.duration}
+            </span>
+            <span className="flex items-center gap-1.5 font-mono text-[10px] text-foreground/35 uppercase tracking-wider">
+              <IconUser className="size-3" />
+              {data.client}
+            </span>
           </motion.div>
+
+          {/* Title */}
+          <motion.h1
+            className="mb-6 max-w-5xl font-extrabold font-heading leading-[1.04] tracking-[-0.03em]"
+            style={{ fontSize: "clamp(2rem, 5.5vw, 5rem)" }}
+            initial={{ opacity: 0, y: 32 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.08, ease: EASE }}
+          >
+            <span className="bg-linear-to-r from-blue-400 via-blue-450 to-purple-500 bg-clip-text text-transparent">
+              {data.title}
+            </span>
+          </motion.h1>
+
+          {/* Subtitle with gradient */}
+          {/* <motion.p
+            className="mb-8 max-w-3xl font-heading font-semibold leading-[1.3] tracking-[-0.01em]"
+            style={{
+              fontSize: "clamp(1.1rem, 2.2vw, 1.75rem)",
+              background:
+                "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.55) 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.75, delay: 0.16, ease: EASE }}
+          >
+            {data.subtitle}
+          </motion.p> */}
+
+          {/* Description */}
+          <motion.p
+            className="max-w-2xl text-base h-10 text-foreground/50 leading-[1.85] sm:text-lg"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.24, ease: EASE }}
+          >
+            {data.description}
+          </motion.p>
+
+          {/* CTA row */}
         </div>
       </motion.div>
 
-      <div className="absolute right-0 bottom-0 left-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+      {/* Bottom border glow */}
+      <div className="absolute right-0 bottom-0 left-0 h-px bg-linear-to-r from-transparent via-primary/30 to-transparent" />
+      <div className="absolute right-0 bottom-0 left-0 h-12 bg-linear-to-t from-background to-transparent" />
     </section>
   );
 }
 
+/* ─── METRICS ─────────────────────────────────────────────── */
+
 function MetricsStrip({ data }: { data: ProjectPageData }) {
   return (
-    <section className="relative border-border/10 border-y bg-card/50">
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/[0.02] via-transparent to-primary/[0.02]" />
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="relative border-border/8 border-y">
+      {/* Tinted stripe */}
+      <div className="absolute inset-0 bg-linear-to-r from-primary/[0.03] via-primary/[0.06] to-primary/[0.03]" />
+
+      <div className="relative mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
         <div className="grid grid-cols-2 divide-x divide-border/10 sm:grid-cols-4">
           {data.metrics.map((metric, index) => (
             <motion.div
-              className="px-4 py-8 text-center sm:px-6 sm:py-10 lg:py-12"
-              initial={{ opacity: 0, y: 20 }}
               key={metric.label}
-              transition={{ duration: 0.6, delay: index * 0.1, ease: EASE }}
-              viewport={{ once: true }}
+              className="group px-6 py-10 text-center sm:px-8 sm:py-12 lg:py-20"
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.55, delay: index * 0.09, ease: EASE }}
             >
-              <div className="mb-1 font-extrabold font-heading text-3xl text-primary tracking-tight sm:text-4xl">
+              <div
+                className="mb-2 font-extrabold font-heading text-primary tracking-[-0.03em] transition-colors"
+                style={{ fontSize: "clamp(1.75rem, 4vw, 3rem)" }}
+              >
                 {metric.value}
               </div>
-              <div className="font-medium font-mono text-[10px] text-foreground/40 uppercase tracking-[0.2em]">
+              <div className="font-mono text-[9.5px] text-foreground/35 uppercase tracking-[0.25em]">
                 {metric.label}
               </div>
             </motion.div>
@@ -155,82 +231,111 @@ function MetricsStrip({ data }: { data: ProjectPageData }) {
   );
 }
 
+/* ─── OVERVIEW ────────────────────────────────────────────── */
+
 function OverviewSection({ data }: { data: ProjectPageData }) {
   return (
-    <section className="relative py-20 sm:py-28">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
-          <div className="lg:col-span-5">
+    <section className="relative pt-7.5 pb-12 sm:pb-16 lg:pb-32">
+      <GradientOrb className="right-0 top-0 size-100 translate-x-1/2 -translate-y-1/4 opacity-20" />
+
+      <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
+        <div className="grid gap-8 lg:grid-cols-12 lg:gap-14">
+          {/* Sticky label column */}
+          <div className="lg:col-span-4 lg:sticky lg:top-28 lg:self-start">
             <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              transition={{ duration: 0.7, ease: EASE }}
-              viewport={{ once: true }}
+              initial={{ opacity: 0, x: -28 }}
               whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, ease: EASE }}
             >
               <SectionLabel>Overview</SectionLabel>
-              <h2 className="font-bold font-heading text-2xl text-foreground tracking-tight sm:text-3xl">
-                The story behind
+              <h2
+                className="font-bold font-heading text-foreground leading-[1.1] tracking-tight"
+                style={{ fontSize: "clamp(1.5rem, 3vw, 2.5rem)" }}
+              >
+                The story
                 <br />
-                <span className="text-primary">{data.title}</span>
+                <span className="text-primary">behind it</span>
               </h2>
             </motion.div>
           </div>
-          <div className="lg:col-span-7">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              transition={{ duration: 0.7, delay: 0.15, ease: EASE }}
-              viewport={{ once: true }}
-              whileInView={{ opacity: 1, y: 0 }}
-            >
-              <p className="text-base text-foreground/70 leading-[1.8] sm:text-lg sm:leading-[1.9]">
-                {data.overview}
-              </p>
-            </motion.div>
-          </div>
+
+          {/* Body */}
+          <motion.div
+            className="lg:col-span-8"
+            initial={{ opacity: 0, y: 28 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.14, ease: EASE }}
+          >
+            <p className="text-base text-foreground/60 leading-[1.95] sm:text-[1.0625rem] sm:leading-loose">
+              {data.overview}
+            </p>
+          </motion.div>
         </div>
       </div>
     </section>
   );
 }
 
+/* ─── CHALLENGE / SOLUTION ────────────────────────────────── */
+
 function ChallengeSolutionSection({ data }: { data: ProjectPageData }) {
   return (
     <section className="relative">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid gap-0 divide-y divide-border/10 lg:grid-cols-2 lg:divide-x lg:divide-y-0">
+      {/* Full-bleed divider lines */}
+      <div className="absolute top-0 right-0 left-0 h-px bg-linear-to-r from-transparent via-border/20 to-transparent" />
+      <div className="absolute right-0 bottom-0 left-0 h-px bg-linear-to-r from-transparent via-border/20 to-transparent" />
+
+      <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
+        <div className="grid gap-0 lg:grid-cols-2 lg:divide-x lg:divide-border/10">
+          {/* Challenge */}
           <motion.div
-            className="relative overflow-hidden p-8 sm:p-12 lg:p-16"
-            initial={{ opacity: 0, x: -40 }}
-            transition={{ duration: 0.8, ease: EASE }}
-            viewport={{ once: true }}
+            className="relative overflow-hidden py-12 sm:py-14 lg:py-16 lg:pr-16"
+            initial={{ opacity: 0, x: -36 }}
             whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.75, ease: EASE }}
           >
-            <div className="pointer-events-none absolute -top-20 -right-20 size-60 rounded-full bg-red-500/5 blur-3xl" />
+            <div className="pointer-events-none absolute -top-24 -right-24 size-72 rounded-full bg-red-500/6 blur-3xl" />
             <div className="relative">
               <SectionLabel>The Challenge</SectionLabel>
-              <h3 className="mb-6 font-bold font-heading text-xl text-foreground sm:text-2xl">
+              <div className="mb-4 inline-flex size-10 items-center justify-center rounded-2xl border border-red-500/15 bg-red-500/8">
+                <IconBulb className="size-5 text-red-400" />
+              </div>
+              <h3
+                className="mb-6 font-bold font-heading text-foreground leading-tight tracking-tight"
+                style={{ fontSize: "clamp(1.2rem, 2.2vw, 1.6rem)" }}
+              >
                 What stood in the way
               </h3>
-              <p className="text-foreground/60 text-sm leading-relaxed sm:text-base">
+              <p className="text-sm text-foreground/55 leading-[1.9] sm:text-[0.9375rem]">
                 {data.challenge}
               </p>
             </div>
           </motion.div>
 
+          {/* Solution */}
           <motion.div
-            className="relative overflow-hidden bg-primary/[0.02] p-8 sm:p-12 lg:p-16"
-            initial={{ opacity: 0, x: 40 }}
-            transition={{ duration: 0.8, ease: EASE }}
-            viewport={{ once: true }}
+            className="relative overflow-hidden py-12 sm:py-14 lg:py-16 lg:pl-16"
+            initial={{ opacity: 0, x: 36 }}
             whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.75, ease: EASE }}
           >
-            <div className="pointer-events-none absolute -bottom-20 -left-20 size-60 rounded-full bg-primary/10 blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-24 -left-24 size-72 rounded-full bg-primary/10 blur-3xl" />
             <div className="relative">
               <SectionLabel>Our Solution</SectionLabel>
-              <h3 className="mb-6 font-bold font-heading text-xl text-foreground sm:text-2xl">
+              <div className="mb-4 inline-flex size-10 items-center justify-center rounded-2xl border border-primary/20 bg-primary/8">
+                <IconRocket className="size-5 text-primary" />
+              </div>
+              <h3
+                className="mb-6 font-bold font-heading text-foreground leading-tight tracking-tight"
+                style={{ fontSize: "clamp(1.2rem, 2.2vw, 1.6rem)" }}
+              >
                 How we made it happen
               </h3>
-              <p className="text-foreground/60 text-sm leading-relaxed sm:text-base">
+              <p className="text-sm text-foreground/55 leading-[1.9] sm:text-[0.9375rem]">
                 {data.solution}
               </p>
             </div>
@@ -241,43 +346,59 @@ function ChallengeSolutionSection({ data }: { data: ProjectPageData }) {
   );
 }
 
+/* ─── RESULTS ─────────────────────────────────────────────── */
+
 function ResultsSection({ data }: { data: ProjectPageData }) {
   return (
-    <section className="relative py-20 sm:py-28">
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.02] to-transparent" />
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="relative py-12 sm:py-16 lg:py-20">
+      <div className="absolute inset-0 bg-linear-to-b from-transparent via-primary/[0.025] to-transparent" />
+      <GradientOrb className="-left-40 top-1/2 size-125 -translate-y-1/2 opacity-15" />
+
+      <div className="relative mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
         <motion.div
-          className="mb-14 text-center"
+          className="mb-10 sm:mb-12"
           initial={{ opacity: 0, y: 20 }}
-          transition={{ duration: 0.6, ease: EASE }}
-          viewport={{ once: true }}
           whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, ease: EASE }}
         >
           <SectionLabel>Key Results</SectionLabel>
-          <h2 className="font-bold font-heading text-2xl text-foreground tracking-tight sm:text-3xl">
+          <h2
+            className="font-bold font-heading text-foreground tracking-tight"
+            style={{ fontSize: "clamp(1.5rem, 3vw, 2.5rem)" }}
+          >
             Impact that speaks
           </h2>
         </motion.div>
 
-        <div className="grid gap-5 sm:grid-cols-3 sm:gap-6">
+        <div className="grid gap-5 sm:grid-cols-3 sm:gap-6 lg:gap-8">
           {data.results.map((result, index) => (
             <motion.div
-              className="group relative overflow-hidden rounded-3xl border border-border/10 bg-card/30 p-6 transition-all duration-500 hover:border-primary/20 hover:bg-card/60 sm:p-8"
-              initial={{ opacity: 0, y: 30 }}
               key={result.title}
-              transition={{ duration: 0.6, delay: index * 0.12, ease: EASE }}
-              viewport={{ once: true }}
+              className="group relative overflow-hidden rounded-[28px] border border-border/8 bg-card/25 p-8 transition-all duration-500 hover:border-primary/20 hover:bg-card/50 sm:p-10"
+              initial={{ opacity: 0, y: 32 }}
               whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: index * 0.12, ease: EASE }}
+              whileHover={{ y: -4 }}
             >
-              <div className="pointer-events-none absolute -top-8 -right-8 size-32 rounded-full bg-primary/5 blur-2xl transition-all duration-500 group-hover:size-40 group-hover:bg-primary/10" />
+              {/* Hover glow */}
+              <div className="pointer-events-none absolute -top-10 -right-10 size-40 rounded-full bg-primary/6 blur-2xl transition-all duration-500 group-hover:size-56 group-hover:bg-primary/12" />
+
+              {/* Number line accent */}
+              <div className="relative mb-4 h-px bg-linear-to-r from-primary/40 to-transparent" />
+
               <div className="relative">
-                <div className="mb-3 font-extrabold font-heading text-4xl text-primary sm:text-5xl">
+                <div
+                  className="mb-3 font-extrabold font-heading text-primary leading-none tracking-[-0.04em]"
+                  style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)" }}
+                >
                   {result.stat}
                 </div>
-                <h4 className="mb-2 font-heading font-semibold text-foreground text-base">
+                <h4 className="mb-3 font-heading font-semibold text-foreground text-base leading-snug tracking-tight">
                   {result.title}
                 </h4>
-                <p className="text-foreground/50 text-xs leading-relaxed sm:text-sm">
+                <p className="text-foreground/45 text-xs leading-[1.85] sm:text-[0.8125rem]">
                   {result.description}
                 </p>
               </div>
@@ -289,36 +410,52 @@ function ResultsSection({ data }: { data: ProjectPageData }) {
   );
 }
 
+/* ─── GALLERY ─────────────────────────────────────────────── */
+
 function GallerySection({ data }: { data: ProjectPageData }) {
   return (
-    <section className="relative py-16 sm:py-20">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="relative py-12 sm:py-16 lg:py-20">
+      {/* Top separator */}
+      <div className="absolute top-0 right-0 left-0 h-px bg-linear-to-r from-transparent via-border/20 to-transparent" />
+
+      <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
         <motion.div
-          className="mb-10"
+          className="mb-8 sm:mb-10"
           initial={{ opacity: 0, y: 20 }}
-          transition={{ duration: 0.6, ease: EASE }}
-          viewport={{ once: true }}
           whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, ease: EASE }}
         >
           <SectionLabel>Gallery</SectionLabel>
-          <h2 className="font-bold font-heading text-2xl text-foreground tracking-tight sm:text-3xl">
+          <h2
+            className="font-bold font-heading text-foreground tracking-tight"
+            style={{ fontSize: "clamp(1.5rem, 3vw, 2.5rem)" }}
+          >
             A closer look
           </h2>
         </motion.div>
 
-        <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
+        {/* Uniform equal-height grid — all cards identical size */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:gap-6">
           {data.galleryImages.map((_, index) => (
             <motion.div
-              className="group overflow-hidden rounded-2xl"
               key={index}
-              transition={{ duration: 0.4, ease: EASE }}
-              whileHover={{ scale: 1.02 }}
+              className="group relative overflow-hidden rounded-2xl"
+              style={{ aspectRatio: "16/10" }}
+              initial={{ opacity: 0, scale: 0.97 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: index * 0.08, ease: EASE }}
+              whileHover={{ scale: 1.012 }}
             >
               <ProjectGalleryImage
-                className="aspect-4/3 w-full transition-transform duration-700 group-hover:scale-105"
+                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 index={index}
+                src={data.galleryImages[index]}
                 title={data.title}
               />
+              {/* Hover overlay */}
+              <div className="absolute inset-0 bg-linear-to-t from-black/30 to-transparent opacity-0 transition-opacity duration-400 group-hover:opacity-100" />
             </motion.div>
           ))}
         </div>
@@ -327,45 +464,58 @@ function GallerySection({ data }: { data: ProjectPageData }) {
   );
 }
 
+/* ─── FEATURES ────────────────────────────────────────────── */
+
 function FeaturesSection({ data }: { data: ProjectPageData }) {
   return (
-    <section className="relative py-20 sm:py-28">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
-          <div className="lg:col-span-4">
+    <section className="relative py-12 sm:py-16 lg:py-20">
+      <div className="absolute top-0 right-0 left-0 h-px bg-linear-to-r from-transparent via-border/20 to-transparent" />
+      <GradientOrb className="-right-40 top-1/2 size-112.5 -translate-y-1/2 opacity-15" />
+
+      <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
+        <div className="grid gap-8 lg:grid-cols-12 lg:gap-14">
+          <div className="lg:col-span-4 lg:sticky lg:top-28 lg:self-start">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
-              transition={{ duration: 0.6, ease: EASE }}
-              viewport={{ once: true }}
               whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: EASE }}
             >
               <SectionLabel>Features</SectionLabel>
-              <h2 className="font-bold font-heading text-2xl text-foreground tracking-tight sm:text-3xl">
+              <h2
+                className="font-bold font-heading text-foreground leading-tight tracking-tight"
+                style={{ fontSize: "clamp(1.5rem, 3vw, 2.5rem)" }}
+              >
                 What we
                 <br />
-                delivered
+                <span className="text-primary">delivered</span>
               </h2>
+              <p className="mt-4 text-sm text-foreground/40 leading-relaxed">
+                Every feature was built with purpose, performance, and user
+                experience at its core.
+              </p>
             </motion.div>
           </div>
+
           <div className="lg:col-span-8">
             <div className="grid gap-3 sm:grid-cols-2">
               {data.features.map((feature, index) => (
                 <motion.div
-                  className="flex items-start gap-3 rounded-xl border border-border/5 bg-card/20 p-4 transition-colors hover:border-primary/10 hover:bg-card/40"
-                  initial={{ opacity: 0, y: 15 }}
                   key={feature}
+                  className="group flex items-start gap-3.5 rounded-2xl border border-border/6 bg-card/15 p-5 transition-all duration-300 hover:border-primary/15 hover:bg-card/35"
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
                   transition={{
                     duration: 0.4,
-                    delay: index * 0.05,
+                    delay: index * 0.045,
                     ease: EASE,
                   }}
-                  viewport={{ once: true }}
-                  whileInView={{ opacity: 1, y: 0 }}
                 >
-                  <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-md bg-primary/10">
-                    <IconCheck className="size-3 text-primary" />
+                  <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-lg bg-primary/12 transition-colors group-hover:bg-primary/20">
+                    <IconCheck className="size-3.5 text-primary" />
                   </span>
-                  <span className="text-foreground/80 text-sm leading-relaxed">
+                  <span className="text-sm text-foreground/70 leading-[1.75]">
                     {feature}
                   </span>
                 </motion.div>
@@ -378,38 +528,42 @@ function FeaturesSection({ data }: { data: ProjectPageData }) {
   );
 }
 
+/* ─── TECH STACK ──────────────────────────────────────────── */
+
 function TechStackSection({ data }: { data: ProjectPageData }) {
   return (
-    <section className="relative border-border/10 border-y bg-card/30 py-16 sm:py-20">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="relative border-border/8 border-y py-12 sm:py-16">
+      <div className="absolute inset-0 bg-card/20" />
+
+      <div className="relative mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
         <motion.div
-          className="mb-10"
+          className="mb-8"
           initial={{ opacity: 0, y: 20 }}
-          transition={{ duration: 0.6, ease: EASE }}
-          viewport={{ once: true }}
           whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, ease: EASE }}
         >
           <SectionLabel>Tech Stack</SectionLabel>
-          <h2 className="font-bold font-heading text-xl text-foreground tracking-tight sm:text-2xl">
+          <h2
+            className="font-bold font-heading text-foreground tracking-tight"
+            style={{ fontSize: "clamp(1.25rem, 2.5vw, 2rem)" }}
+          >
             Tools & technologies
           </h2>
         </motion.div>
 
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-2.5 sm:gap-3">
           {data.techStack.map((tech, index) => (
             <motion.span
-              className="inline-flex items-center gap-2 rounded-xl border border-border/15 bg-background/60 px-4 py-2.5 font-mono text-foreground/70 text-sm transition-all duration-300 hover:border-primary/20 hover:bg-primary/5 hover:text-primary"
-              initial={{ opacity: 0, scale: 0.9 }}
               key={tech}
-              transition={{
-                duration: 0.3,
-                delay: index * 0.04,
-                ease: EASE,
-              }}
-              viewport={{ once: true }}
+              className="inline-flex cursor-default items-center gap-2 rounded-xl border border-border/12 bg-background/50 px-4 py-2.5 font-mono text-foreground/60 text-[0.8125rem] transition-all duration-300 hover:border-primary/25 hover:bg-primary/6 hover:text-primary"
+              initial={{ opacity: 0, scale: 0.88 }}
               whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.3, delay: index * 0.038, ease: EASE }}
+              whileHover={{ y: -2 }}
             >
-              <IconCheck className="size-3.5 text-primary/60" />
+              <span className="size-1.5 rounded-full bg-primary/50" />
               {tech}
             </motion.span>
           ))}
@@ -419,66 +573,89 @@ function TechStackSection({ data }: { data: ProjectPageData }) {
   );
 }
 
+/* ─── TIMELINE ────────────────────────────────────────────── */
+
 function TimelineSection({ data }: { data: ProjectPageData }) {
   return (
-    <section className="relative py-20 sm:py-28">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="relative py-12 sm:py-16 lg:py-20">
+      <GradientOrb className="-left-32 top-1/3 size-100 opacity-15" />
+
+      <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
         <motion.div
-          className="mb-14"
+          className="mb-10 sm:mb-12"
           initial={{ opacity: 0, y: 20 }}
-          transition={{ duration: 0.6, ease: EASE }}
-          viewport={{ once: true }}
           whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, ease: EASE }}
         >
           <SectionLabel>Timeline</SectionLabel>
-          <h2 className="font-bold font-heading text-2xl text-foreground tracking-tight sm:text-3xl">
+          <h2
+            className="font-bold font-heading text-foreground tracking-tight"
+            style={{ fontSize: "clamp(1.5rem, 3vw, 2.5rem)" }}
+          >
             From concept to launch
           </h2>
         </motion.div>
 
-        <div className="relative">
-          <div className="absolute top-0 bottom-0 left-[18px] w-px bg-border/20 sm:left-1/2 sm:-translate-x-px" />
+        {/* Centered vertical timeline */}
+        <div className="relative mx-auto max-w-3xl">
+          {/* Vertical spine */}
+          <div className="absolute top-2 bottom-2 left-5.5 w-px bg-linear-to-b from-primary/40 via-primary/20 to-transparent sm:left-1/2 sm:-translate-x-px" />
 
-          <div className="space-y-12">
-            {data.timeline.map((phase, index) => (
-              <motion.div
-                className="relative grid gap-6 sm:grid-cols-2 sm:gap-12"
-                initial={{ opacity: 0, y: 30 }}
-                key={phase.title}
-                transition={{ duration: 0.6, delay: index * 0.15, ease: EASE }}
-                viewport={{ once: true }}
-                whileInView={{ opacity: 1, y: 0 }}
-              >
-                <div
-                  className={`flex items-start gap-4 sm:flex-row-reverse sm:text-right ${
-                    index % 2 === 0 ? "" : "sm:flex-row"
+          <div className="space-y-10 sm:space-y-0">
+            {data.timeline.map((phase, index) => {
+              const isEven = index % 2 === 0;
+              return (
+                <motion.div
+                  key={phase.title}
+                  className={`relative sm:grid sm:grid-cols-2 sm:gap-8 sm:py-8 ${
+                    !isEven ? "sm:direction-rtl" : ""
                   }`}
+                  initial={{ opacity: 0, y: 28 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{
+                    duration: 0.6,
+                    delay: index * 0.12,
+                    ease: EASE,
+                  }}
                 >
-                  <div className="relative z-10 flex size-9 shrink-0 items-center justify-center rounded-full border-2 border-primary/30 bg-background">
-                    <div className="size-3 rounded-full bg-primary" />
+                  {/* Center dot */}
+                  <div className="absolute left-3.5 top-0 z-10 flex size-4.25 items-center justify-center rounded-full border-2 border-primary/50 bg-background sm:left-1/2 sm:top-1/2 sm:-translate-x-[8.5px] sm:-translate-y-[8.5px]">
+                    <div className="size-2 rounded-full bg-primary" />
                   </div>
-                  <div className={index % 2 === 0 ? "sm:text-right" : ""}>
-                    <span className="font-bold font-mono text-[10px] text-primary uppercase tracking-[0.2em]">
+
+                  {/* Left col (label) */}
+                  <div
+                    className={`pl-12 pb-1 sm:pl-0 sm:pb-0 ${
+                      isEven
+                        ? "sm:pr-12 sm:text-right"
+                        : "sm:col-start-2 sm:pl-12"
+                    }`}
+                  >
+                    <span className="font-bold font-mono text-[9px] text-primary uppercase tracking-[0.25em]">
                       {phase.label}
                     </span>
-                    <h4 className="mt-1 font-bold font-heading text-foreground text-base">
+                    <h4 className="mt-1 font-bold font-heading text-foreground text-base tracking-tight">
                       {phase.title}
                     </h4>
                   </div>
-                </div>
-                <div
-                  className={`pl-13 sm:pl-0 ${
-                    index % 2 === 0
-                      ? "sm:col-start-2"
-                      : "sm:col-start-1 sm:text-right"
-                  }`}
-                >
-                  <p className="text-foreground/50 text-sm leading-relaxed">
-                    {phase.description}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
+
+                  {/* Right col (description) */}
+                  <div
+                    className={`pl-12 sm:pl-0 ${
+                      isEven
+                        ? "sm:col-start-2 sm:pl-12"
+                        : "sm:col-start-1 sm:row-start-1 sm:pr-12 sm:text-right"
+                    }`}
+                  >
+                    <p className="text-foreground/45 text-sm leading-[1.85]">
+                      {phase.description}
+                    </p>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -486,43 +663,51 @@ function TimelineSection({ data }: { data: ProjectPageData }) {
   );
 }
 
+/* ─── FAQ ─────────────────────────────────────────────────── */
+
 function FAQSection({ data }: { data: ProjectPageData }) {
   const [openFAQ, setOpenFAQ] = useState<string[]>(["item-0"]);
 
   return (
-    <section className="relative border-border/10 border-t py-20 sm:py-28">
-      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+    <section className="relative border-border/8 border-t py-12 sm:py-16 lg:py-20">
+      <div className="absolute inset-0 bg-linear-to-b from-transparent via-card/30 to-transparent" />
+      <GradientOrb className="-right-32 bottom-0 size-100 opacity-15" />
+
+      <div className="relative mx-auto max-w-2xl px-5 sm:px-8">
         <motion.div
-          className="mb-12 text-center"
+          className="mb-10 text-center"
           initial={{ opacity: 0, y: 20 }}
-          transition={{ duration: 0.6, ease: EASE }}
-          viewport={{ once: true }}
           whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, ease: EASE }}
         >
           <SectionLabel>FAQ</SectionLabel>
-          <h2 className="font-bold font-heading text-2xl text-foreground tracking-tight sm:text-3xl">
+          <h2
+            className="font-bold font-heading text-foreground tracking-tight"
+            style={{ fontSize: "clamp(1.5rem, 3vw, 2.25rem)" }}
+          >
             Common questions
           </h2>
         </motion.div>
 
-        <Accordion onValueChange={(value) => setOpenFAQ(value)} value={openFAQ}>
+        <Accordion type="multiple" value={openFAQ} onValueChange={setOpenFAQ}>
           {data.faqs.map((faq, index) => (
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
               key={index}
-              transition={{ duration: 0.4, delay: index * 0.08, ease: EASE }}
-              viewport={{ once: true }}
+              initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: index * 0.07, ease: EASE }}
             >
               <AccordionItem
-                className="border-border/10 border-b last:border-b-0"
                 value={`item-${index}`}
+                className="border-border/10 border-b last:border-0"
               >
-                <AccordionTrigger className="py-5 pr-4 text-left font-heading font-semibold text-foreground text-sm hover:no-underline sm:text-base">
-                  <span className="pr-4">{faq.question}</span>
+                <AccordionTrigger className="py-5 pr-4 text-left font-heading font-semibold text-sm text-foreground hover:text-primary hover:no-underline sm:text-[0.9375rem]">
+                  <span className="pr-6">{faq.question}</span>
                 </AccordionTrigger>
-                <AccordionContent className="pb-5">
-                  <p className="text-foreground/50 text-sm leading-relaxed">
+                <AccordionContent className="pb-6">
+                  <p className="text-foreground/50 text-sm leading-[1.9]">
                     {faq.answer}
                   </p>
                 </AccordionContent>
@@ -535,39 +720,55 @@ function FAQSection({ data }: { data: ProjectPageData }) {
   );
 }
 
+/* ─── CTA ─────────────────────────────────────────────────── */
+
 function CTASection() {
   return (
-    <section className="relative py-20 sm:py-28">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="relative py-12 sm:py-16 lg:py-20">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
         <motion.div
-          className="relative overflow-hidden rounded-3xl bg-primary px-8 py-16 text-center sm:px-16 sm:py-20"
-          initial={{ opacity: 0, y: 30 }}
-          transition={{ duration: 0.7, ease: EASE }}
-          viewport={{ once: true }}
+          className="relative overflow-hidden rounded-[36px] bg-primary px-8 py-16 sm:px-16 sm:py-20 lg:px-24 lg:py-20"
+          initial={{ opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.75, ease: EASE }}
         >
-          <div className="pointer-events-none absolute -top-32 -left-32 size-64 rounded-full bg-primary-foreground/5" />
-          <div className="pointer-events-none absolute -right-24 -bottom-24 size-80 rounded-full bg-primary-foreground/5" />
-          <div className="pointer-events-none absolute top-1/3 left-1/2 size-96 -translate-x-1/2 rounded-full bg-primary-foreground/5 blur-3xl" />
+          {/* Decorative orbs inside CTA */}
+          <div className="pointer-events-none absolute -top-20 -left-20 size-64 rounded-full bg-primary-foreground/6 blur-2xl" />
+          <div className="pointer-events-none absolute -right-16 -bottom-16 size-80 rounded-full bg-primary-foreground/6 blur-2xl" />
+          <div className="pointer-events-none absolute top-1/2 left-1/2 size-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-foreground/4 blur-3xl" />
 
-          <div className="relative">
-            <span className="mb-4 inline-block font-mono font-semibold text-[11px] text-primary-foreground/50 uppercase tracking-[0.25em]">
+          {/* Grid pattern overlay */}
+          <div
+            className="pointer-events-none absolute inset-0 opacity-[0.04]"
+            style={{
+              backgroundImage:
+                "linear-gradient(to right, hsl(0 0% 100%) 1px, transparent 1px), linear-gradient(to bottom, hsl(0 0% 100%) 1px, transparent 1px)",
+              backgroundSize: "60px 60px",
+            }}
+          />
+
+          <div className="relative text-center">
+            <span className="mb-5 inline-block font-mono font-semibold text-[10px] text-primary-foreground/40 uppercase tracking-[0.3em]">
               Ready to start?
             </span>
-            <h2 className="mx-auto mb-5 max-w-2xl font-bold font-heading text-2xl text-primary-foreground sm:text-3xl lg:text-4xl">
-              Let&apos;s build something remarkable together
+            <h2
+              className="mx-auto mb-5 max-w-2xl font-bold font-heading text-primary-foreground leading-tight tracking-[-0.02em]"
+              style={{ fontSize: "clamp(1.5rem, 3.5vw, 2.75rem)" }}
+            >
+              Let's build something remarkable together
             </h2>
-            <p className="mx-auto mb-10 max-w-lg text-primary-foreground/60 text-sm leading-relaxed sm:text-base">
-              We&apos;d love to discuss how we can help bring your vision to
-              life. Our team has extensive experience across AI, web, mobile,
-              and cloud technologies.
+            <p className="mx-auto mb-10 max-w-lg text-primary-foreground/55 text-sm leading-[1.85] sm:text-base">
+              We'd love to discuss how we can help bring your vision to life.
+              Our team has extensive experience across AI, web, mobile, and
+              cloud technologies.
             </p>
             <Link
-              className="inline-flex items-center gap-2 rounded-full bg-primary-foreground px-8 py-3.5 font-bold font-heading text-primary text-sm transition-all duration-300 hover:gap-3 hover:bg-primary-foreground/90"
               to="/contact-us"
+              className="group inline-flex items-center gap-2.5 rounded-full bg-primary-foreground px-8 py-3.5 font-bold font-heading text-primary text-sm transition-all duration-300 hover:gap-4 hover:bg-primary-foreground/92 hover:shadow-[0_12px_40px_rgba(0,0,0,0.25)]"
             >
               Start a conversation
-              <IconArrowRight className="size-4" />
+              <IconArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5" />
             </Link>
           </div>
         </motion.div>
@@ -576,56 +777,68 @@ function CTASection() {
   );
 }
 
+/* ─── MORE PROJECTS ───────────────────────────────────────── */
+
 function MoreProjectsSection({ currentSlug }: { currentSlug: string }) {
   const projects = getProjectList(currentSlug).filter((p) => !p.isActive);
 
   return (
-    <section className="relative border-border/10 border-t py-16 sm:py-20">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-10 flex items-end justify-between">
+    <section className="relative border-border/8 border-t py-12 sm:py-16 lg:py-20">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
+        {/* Header row */}
+        <div className="mb-8 flex items-end justify-between">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            transition={{ duration: 0.6, ease: EASE }}
-            viewport={{ once: true }}
             whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: EASE }}
           >
             <SectionLabel>Explore</SectionLabel>
-            <h2 className="font-bold font-heading text-xl text-foreground tracking-tight sm:text-2xl">
+            <h2
+              className="font-bold font-heading text-foreground tracking-tight"
+              style={{ fontSize: "clamp(1.25rem, 2.5vw, 2rem)" }}
+            >
               More projects
             </h2>
           </motion.div>
+
           <Link
-            className="hidden items-center gap-1.5 font-medium text-foreground/60 text-sm transition-colors hover:text-primary sm:inline-flex"
             to="/projects"
+            className="hidden items-center gap-1.5 font-mono text-[10px] text-foreground/40 uppercase tracking-widest transition-colors hover:text-primary sm:inline-flex"
           >
             View all
             <IconArrowUpRight className="size-3.5" />
           </Link>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Project cards */}
+        <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
           {projects.slice(0, 3).map((project, index) => (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
               key={project.slug}
-              transition={{ duration: 0.5, delay: index * 0.1, ease: EASE }}
-              viewport={{ once: true }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.09, ease: EASE }}
             >
               <Link
-                className="group block overflow-hidden rounded-2xl border border-border/10 bg-card/30 p-5 transition-all duration-300 hover:border-primary/15 hover:bg-card/60"
                 to={project.href}
+                className="group block overflow-hidden rounded-2xl border border-border/8 bg-card/20 p-6 transition-all duration-350 hover:border-primary/15 hover:bg-card/50 hover:shadow-[0_8px_40px_hsl(var(--primary)/0.08)]"
               >
-                <span className="mb-2 inline-block font-mono font-semibold text-[10px] text-primary/60 uppercase tracking-[0.2em]">
+                {/* Top accent line */}
+                <div className="mb-5 h-px bg-linear-to-r from-primary/40 via-primary/20 to-transparent transition-all duration-350 group-hover:from-primary/70" />
+
+                <span className="mb-3 inline-block font-mono font-semibold text-[9.5px] text-primary/55 uppercase tracking-[0.22em]">
                   {project.category}
                 </span>
-                <h3 className="mb-2 font-heading font-semibold text-base text-foreground transition-colors group-hover:text-primary">
+                <h3 className="mb-3 font-heading font-semibold text-base text-foreground leading-snug tracking-tight transition-colors group-hover:text-primary">
                   {project.title}
                 </h3>
-                <p className="line-clamp-2 text-foreground/40 text-xs leading-relaxed">
+                <p className="line-clamp-2 text-foreground/38 text-xs leading-[1.8]">
                   {project.description}
                 </p>
-                <div className="mt-4 flex items-center gap-1 font-medium text-primary/60 text-xs transition-all duration-300 group-hover:gap-2 group-hover:text-primary">
+
+                <div className="mt-6 flex items-center gap-1.5 font-medium text-primary/50 text-xs transition-all duration-300 group-hover:gap-2.5 group-hover:text-primary">
                   View case study
                   <IconArrowRight className="size-3" />
                 </div>
@@ -638,12 +851,14 @@ function MoreProjectsSection({ currentSlug }: { currentSlug: string }) {
   );
 }
 
+/* ─── ROOT EXPORT ─────────────────────────────────────────── */
+
 export function ProjectDetailPage({ data }: ProjectDetailPageProps) {
   return (
-    <div className="relative overflow-hidden bg-background">
+    <div className="relative overflow-x-hidden bg-background">
       <HeroSection data={data} />
-      <MetricsStrip data={data} />
       <OverviewSection data={data} />
+      <MetricsStrip data={data} />
       <ChallengeSolutionSection data={data} />
       <ResultsSection data={data} />
       <GallerySection data={data} />
