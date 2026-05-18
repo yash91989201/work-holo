@@ -1,38 +1,10 @@
-import {
-  IconCircleCheck,
-  IconPhone,
-  IconStarFilled,
-} from "@tabler/icons-react";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@work-holo/ui/components/avatar";
 import { CTAButton } from "@work-holo/ui/components/cta-button";
 import { motion } from "motion/react";
 
-const avatarData = [
-  {
-    initials: "JD",
-    color: "bg-primary/80",
-    src: "https://i.pravatar.cc/150?u=jd",
-  },
-  {
-    initials: "MK",
-    color: "bg-primary/60",
-    src: "https://i.pravatar.cc/150?u=mk",
-  },
-  {
-    initials: "AL",
-    color: "bg-primary/40",
-    src: "https://i.pravatar.cc/150?u=al",
-  },
-  {
-    initials: "RK",
-    color: "bg-primary/20",
-    src: "https://i.pravatar.cc/150?u=rk",
-  },
-];
+import {
+  IconCircleCheck,
+  IconPhone,
+} from "@tabler/icons-react";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -130,7 +102,7 @@ function scrollToServices() {
 export function HeroSection() {
   return (
     <section
-      className="page-gradient relative scroll-mt-28 overflow-hidden bg-background px-4 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-12"
+      className="page-gradient relative scroll-mt-28 overflow-hidden bg-background px-4 pt-44 pb-8 sm:px-6 sm:pt-44 sm:pb-10 lg:px-8 lg:pt-40 lg:pb-14"
       id="hero"
     >
       <div className="pointer-events-none absolute inset-0">
@@ -177,7 +149,7 @@ export function HeroSection() {
                 href="tel:+18883338181"
               >
                 <IconPhone className="size-5 text-primary" />
-                +1 (888) 333-8181
+                +91-9780970564
               </a>
             </motion.div>
 
@@ -208,11 +180,11 @@ export function HeroSection() {
             }}
           >
             <div className="relative overflow-hidden rounded-[2.25rem] border border-border/40 bg-card/50 p-4 shadow-[0_30px_90px_rgba(15,23,42,0.12)] backdrop-blur-sm sm:p-5">
-              <div className="relative aspect-4/5 overflow-hidden rounded-[1.75rem]">
+              <div className="relative aspect-square overflow-hidden rounded-[1.75rem]">
                 <img
-                  alt="Professional working on laptop"
+                  alt="Team collaborating"
                   className="h-full w-full object-cover"
-                  src="/assets/hero-img.png"
+                  src="/assets/diverse-team-planning-stockcake.webp"
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-primary/12 via-transparent to-transparent" />
               </div>
@@ -237,39 +209,6 @@ export function HeroSection() {
                 </div>
               </div>
             </motion.div>
-
-            <div className="absolute -right-5 -bottom-5 z-20 sm:-right-3 lg:-right-6 lg:bottom-6">
-              <div className="w-[20rem] rounded-[1.75rem] border border-slate-800/80 bg-slate-950/95 px-6 py-5 text-white shadow-[0_30px_70px_rgba(15,23,42,0.28)] backdrop-blur-md">
-                <div className="mb-4 flex -space-x-2.5">
-                  {avatarData.map((avatar, i) => (
-                    <Avatar
-                      className={`size-10 border-2 border-slate-950 ${avatar.color}`}
-                      key={i}
-                    >
-                      <AvatarImage alt={avatar.initials} src={avatar.src} />
-                      <AvatarFallback className="bg-transparent font-bold text-primary-foreground text-xs">
-                        {avatar.initials}
-                      </AvatarFallback>
-                    </Avatar>
-                  ))}
-                </div>
-
-                <div className="mb-1.5 flex items-end gap-2">
-                  <span className="font-bold text-5xl text-white leading-none">
-                    4.9
-                  </span>
-                  <div className="flex items-center gap-0.5 pb-2">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <IconStarFilled className="size-4 text-primary" key={i} />
-                    ))}
-                  </div>
-                </div>
-
-                <p className="text-slate-300 text-sm">
-                  Based on 600+ Google Reviews.
-                </p>
-              </div>
-            </div>
           </motion.div>
         </div>
       </div>

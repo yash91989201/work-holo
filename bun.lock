@@ -5,7 +5,10 @@
     "": {
       "name": "work-holo",
       "dependencies": {
+        "@fontsource/michroma": "^5.2.8",
+        "@tabler/icons-react": "^3.41.1",
         "dotenv": "^17.4.2",
+        "framer-motion": "^12.38.0",
         "zod": "^4.3.6",
       },
       "devDependencies": {
@@ -403,6 +406,7 @@
         "@base-ui/react": "^1.4.1",
         "@fontsource-variable/manrope": "^5.2.8",
         "@fontsource-variable/outfit": "^5.2.8",
+        "@fontsource/michroma": "^5.2.8",
         "@tabler/icons-react": "^3.41.1",
         "@tanstack/react-form": "^1.29.1",
         "@tanstack/react-table": "^8.21.3",
@@ -909,6 +913,8 @@
     "@fontsource-variable/manrope": ["@fontsource-variable/manrope@5.2.8", "", {}, "sha512-nc9lOuCRz73UHnovDE2bwXUdghE2SEOc7Aii0qGe3CLyE03W1a7VnY5Z6euRiapiKbCkGS+eXbY3s/kvWeGeSw=="],
 
     "@fontsource-variable/outfit": ["@fontsource-variable/outfit@5.2.8", "", {}, "sha512-4oUDCZx/Tcz6HZP423w/niqEH31Gks5IsqHV2ZZz1qKHaVIZdj2f0/S1IK2n8jl6Xo0o3N+3RjNHlV9R73ozQA=="],
+
+    "@fontsource/michroma": ["@fontsource/michroma@5.2.8", "", {}, "sha512-52Ml9TU/yC5YluqHxXqLK/AVUWbIeI3lCTZcTRnIkvfKHPZ0GSvSFi49ti872oCdo+YAMUk8RIfxVxXa6Cjigw=="],
 
     "@gorhom/bottom-sheet": ["@gorhom/bottom-sheet@5.2.10", "", { "dependencies": { "@gorhom/portal": "1.0.14", "invariant": "^2.2.4" }, "peerDependencies": { "@types/react": "*", "@types/react-native": "*", "react": "*", "react-native": "*", "react-native-gesture-handler": ">=2.16.1", "react-native-reanimated": ">=3.16.0 || >=4.0.0-" }, "optionalPeers": ["@types/react", "@types/react-native"] }, "sha512-MnFddmVOlaoash0d9g1ClqFqX+32h/sV3PNEFz9A8XCvUbZGQM9OG6HHAzTb+eQfUGA8DkaurI+wfpNFyzj5Yw=="],
 

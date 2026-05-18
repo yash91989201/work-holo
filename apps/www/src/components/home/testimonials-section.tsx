@@ -1,276 +1,408 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
-import { IconStarFilled, IconPlayerPlay } from "@tabler/icons-react";
+import {
+  IconChevronLeft,
+  IconChevronRight,
+  IconQuote,
+  IconStarFilled,
+} from "@tabler/icons-react";
+import { motion } from "motion/react";
+import type React from "react";
+import { useEffect, useRef, useState } from "react";
 
 const testimonials = [
   {
     id: 1,
-    name: "Mevon Lane",
-    title: "Co. Founder",
-    avatar: "https://i.pravatar.cc/150?u=mevon",
+    name: "Rohan Mehta",
+    title: "CTO, VitaCare Health",
     quote:
-      "Working with Tkmino has been a game-changer for our business. Their team's professionalism, attention to detail, and innovative solutions have helped us streamline operations and achieve our goals faster than we imagined. We truly feel like a valued partner. The results we've seen after to be our compnay partnering.",
+      "Our nurses used to chase paper files between clinics. Now they get real-time alerts when a patient's vitals look off, and the wearable sync just works. We started with two pilot clinics and rolled it out to the rest in under six months. Missed follow-ups have dropped by about 20%, which at our scale means dozens of patients getting care on time every month.",
     rating: 5,
   },
   {
     id: 2,
-    name: "Sarah Johnson",
-    title: "CEO, TechStart",
-    avatar: "https://i.pravatar.cc/150?u=sarah",
+    name: "Ananya Krishnan",
+    title: "Managing Director, Meridian Capital Partners",
     quote:
-      "The level of expertise and dedication brought to our project was exceptional. They transformed our outdated infrastructure into a modern, scalable system that has significantly improved our team's productivity and customer satisfaction.",
+      "My advisors used to wait for overnight Excel dumps before they could advise clients. Now they pull up live numbers in under a second during meetings. Decisions that used to chew through 90 minutes now wrap up in 25. Even our compliance team stopped dreading audit season.",
     rating: 5,
   },
   {
     id: 3,
-    name: "David Chen",
-    title: "CTO, InnovateCorp",
-    avatar: "https://i.pravatar.cc/150?u=david",
+    name: "Priya Nair",
+    title: "Head of Customer Experience, LuxeCart",
     quote:
-      "Exceptional service from start to finish. Their cybersecurity solutions gave us peace of mind, and their cloud migration strategy was flawless. I highly recommend their services to any business looking to modernize their IT infrastructure.",
+      "We were drowning in support tickets every time we ran a sale. The AI bot now handles about two-thirds of the repetitive stuff — order tracking, returns, sizing questions — so our 4-person team can actually focus on the tricky cases. Response time went from nearly 4 hours to under 10 minutes, and our CSAT scores climbed within the first month.",
+    rating: 5,
+  },
+  {
+    id: 4,
+    name: "Vikram Iyer",
+    title: "VP Engineering, NexaBridge Tech",
+    quote:
+      "We had years of messy legacy data scattered across three different systems — roughly 600 GB of it. The CloudSync team migrated everything over a long weekend with zero downtime. The best part? We haven't had a single data hiccup in the four months since we flipped the switch.",
+    rating: 5,
+  },
+  {
+    id: 5,
+    name: "Meera Balasubramanian",
+    title: "Co-Founder, Urban Threads Co",
+    quote:
+      "Our old store used to buckle under flash sale traffic. Last season we handled our biggest sale yet without a single crash, and pages now load in under 2 seconds. Conversion is up roughly 18% and our dev team is shipping features twice as fast because they aren't firefighting server issues every weekend.",
+    rating: 5,
+  },
+  {
+    id: 6,
+    name: "Arjun Desai",
+    title: "Chief Data Officer, VantageMetrics",
+    quote:
+      "We had solid fraud models sitting idle because our old system couldn't serve them fast enough. Within three months we were flagging suspicious transactions in under 200 milliseconds. Chargebacks have dropped 35%, which for us is roughly ₹80,000 saved every month. The project paid for itself faster than we budgeted.",
+    rating: 5,
+  },
+  {
+    id: 7,
+    name: "Kavitha Ranganathan",
+    title: "Product Lead, Synapse Workspace",
+    quote:
+      "Before this, our doc editor would lag with more than 15 people online at once. Now our team of 200+ collaborates in real time with zero sync conflicts over the past 4 months. We stopped getting those 'who overwrote my section?' messages in Slack, which alone made the switch worth it.",
+    rating: 5,
+  },
+  {
+    id: 8,
+    name: "Suresh Parthasarathy",
+    title: "CEO, InsightFlow Analytics",
+    quote:
+      "White-labelling let us offer a branded dashboard to each client, which immediately made us look bigger than we are. We landed our first three enterprise contracts worth about ₹6 lakh in ARR within eight months, and we didn't have to hire a single salesperson to do it. Clients keep renewing because the product genuinely looks like theirs.",
+    rating: 5,
+  },
+  {
+    id: 9,
+    name: "Dr. Lakshmi Venkataraman",
+    title: "Director of Operations, CareNet Health Systems",
+    quote:
+      "Doctors were sharing patient updates over WhatsApp groups, which kept our compliance officer up at night. We now have a secure portal across our 4-hospital network, and care teams actually talk to each other. Handoffs that used to drag on for 2–3 days now finish the same afternoon, and care coordination delays are down by about a third.",
+    rating: 5,
+  },
+  {
+    id: 10,
+    name: "Rahul Chakraborty",
+    title: "Founder, FlavorFleet",
+    quote:
+      "We launched in four cities with a tiny team and no idea if the tech would hold up. Four months in we're processing 40,000+ orders a month, and the multi-vendor cart and real-time tracking still work flawlessly at peak dinner rush. Our Play Store rating climbed to 4.5 stars, and customers regularly tell us the live tracking is their favourite part.",
+    rating: 5,
+  },
+  {
+    id: 11,
+    name: "Deepa Srinivasan",
+    title: "CPO, NovaPay",
+    quote:
+      "Our app was getting torn apart in reviews for clunky logins and random crashes. After the rebuild, our rating jumped from 3.2 to 4.6 stars in three months. Monthly transaction volume is up 40%, and we haven't had a critical security incident since launch. For the first time in a year, security isn't the first topic in every investor meeting.",
+    rating: 5,
+  },
+  {
+    id: 12,
+    name: "Karthik Nambiar",
+    title: "CEO, PulseFit",
+    quote:
+      "Most fitness apps lose people after the first week. Our AI coaching gives users real feedback on their form, so they stick around because they see results. Our 30-day retention has climbed from 22% to 38% in six months, and the injury-prevention tips have become the feature people actually message us about.",
+    rating: 5,
+  },
+  {
+    id: 13,
+    name: "Aditya Bose",
+    title: "VP Infrastructure, DriftLine",
+    quote:
+      "We were juggling five different tools just to push code, and deployments were a Friday-afternoon stress ritual that often stretched past 90 minutes. Now the whole pipeline lives in one visual platform and we ship in about 15 minutes. Failed deployments have dropped by half, and our on-call engineers are finally getting full weekends again.",
+    rating: 5,
+  },
+  {
+    id: 14,
+    name: "Neha Kulkarni",
+    title: "Head of Engineering, SwiftBridge Cloud",
+    quote:
+      "Our on-call rotation was brutal — 200+ alerts a day, most of them noise. CloudWatch Pro cut that down to about 40 meaningful alerts with zero missed real incidents. Our mean time to recover dropped from 38 minutes to around 15. For the first time in two years, our customer success team stopped getting those 2 a.m. 'is the site down?' messages.",
     rating: 5,
   },
 ];
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const },
-  },
-};
+const INTERVAL_MS = 4000;
+const TICK_MS = 50;
+const PAUSE_MS = 6000;
+const SWIPE_THRESHOLD = 50;
 
 export function TestimonialsSection() {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(1);
+  const [isHovered, setIsHovered] = useState(false);
+  const [expandedTestimonialId, setExpandedTestimonialId] = useState<
+    number | null
+  >(null);
 
-  const getCardIndex = (offset: number) => {
-    const len = testimonials.length;
-    return (activeIndex + offset + len) % len;
+  const isHoveredRef = useRef(false);
+  const pauseUntilRef = useRef(0);
+  const nextAdvanceRef = useRef(Date.now() + INTERVAL_MS);
+  const touchStartX = useRef<number | null>(null);
+
+  // Keep ref in sync with state so the timer always sees the latest value
+  useEffect(() => {
+    isHoveredRef.current = isHovered;
+  }, [isHovered]);
+
+  const pauseAutoScroll = () => {
+    pauseUntilRef.current = Date.now() + PAUSE_MS;
+    setTimeLeft(1);
+  };
+
+  const showSlide = (getNextIndex: (prev: number) => number) => {
+    setExpandedTestimonialId(null);
+    setCurrentIndex(getNextIndex);
+    pauseAutoScroll();
+  };
+
+  const nextSlide = () => {
+    showSlide((prev) => (prev + 1) % testimonials.length);
+  };
+
+  const prevSlide = () => {
+    showSlide((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+  };
+
+  const goToSlide = (index: number) => {
+    setExpandedTestimonialId(null);
+    setCurrentIndex(index);
+    pauseAutoScroll();
+  };
+
+  // Timer effect — runs once, reads latest pause/hover state from refs
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const now = Date.now();
+
+      // Pause on hover or manual pause — push next advance forward
+      // so we get a full interval when interaction ends
+      if (isHoveredRef.current || now < pauseUntilRef.current) {
+        nextAdvanceRef.current = Math.max(
+          nextAdvanceRef.current,
+          now + INTERVAL_MS
+        );
+        return;
+      }
+
+      const remaining = nextAdvanceRef.current - now;
+      setTimeLeft(Math.max(0, remaining / INTERVAL_MS));
+
+      if (remaining <= 0) {
+        setCurrentIndex((idx) => (idx + 1) % testimonials.length);
+        nextAdvanceRef.current = now + INTERVAL_MS;
+      }
+    }, TICK_MS);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  // Swipe handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > SWIPE_THRESHOLD) {
+      diff > 0 ? nextSlide() : prevSlide();
+    }
+    touchStartX.current = null;
   };
 
   return (
-    <section id="testimonials" className="relative bg-background py-20 lg:py-28 overflow-hidden scroll-mt-28">
-      {/* Video Thumbnail */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
-        className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 mb-16"
-      >
-        <div className="relative rounded-2xl overflow-hidden aspect-video group cursor-pointer">
-          <img
-            src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1200&h=675&fit=crop"
-            alt="Team meeting"
-            className="w-full h-full object-cover"
-          />
-          {/* Yellow/Green overlay */}
-          <div className="absolute inset-0 bg-primary/40 mix-blend-multiply" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
-          
-          {/* Play button */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <motion.div
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex size-20 items-center justify-center rounded-full bg-primary shadow-2xl cursor-pointer"
-            >
-              <IconPlayerPlay className="size-8 text-primary-foreground fill-primary-foreground ml-1" />
-            </motion.div>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Marquee Text */}
-      <div className="relative mb-16 overflow-hidden">
-        <div className="flex animate-marquee whitespace-nowrap">
-          {Array.from({ length: 10 }).map((_, i) => (
-            <span
-              key={i}
-              className="text-4xl sm:text-5xl lg:text-6xl font-bold text-muted-foreground/10 mx-4"
-            >
-              Clients Feedback /
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* Testimonials Carousel */}
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-80px" }}
-        className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
-      >
-        {/* Avatars */}
-        <motion.div variants={itemVariants} className="flex justify-center mb-8">
-          <div className="flex items-center gap-3">
-            {testimonials.map((testimonial, index) => (
-              <button
-                key={testimonial.id}
-                onClick={() => setActiveIndex(index)}
-                className={`relative transition-all duration-300 ${
-                  index === activeIndex
-                    ? "scale-110 z-10"
-                    : "scale-90 opacity-60 hover:opacity-80"
-                }`}
-              >
-                <div
-                  className={`size-14 rounded-full overflow-hidden border-2 transition-colors duration-300 ${
-                    index === activeIndex
-                      ? "border-primary"
-                      : "border-border/50"
-                  }`}
-                >
-                  <img
-                    src={testimonial.avatar}
-                    alt={testimonial.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              </button>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Name & Title */}
-        <motion.div variants={itemVariants} className="text-center mb-10">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeIndex}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
-            >
-              <h3 className="text-lg font-semibold text-foreground">
-                {testimonials[activeIndex].name}
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                {testimonials[activeIndex].title}
-              </p>
-            </motion.div>
-          </AnimatePresence>
-        </motion.div>
-
-        {/* Cards */}
-        <div className="relative flex items-center justify-center gap-4 lg:gap-6">
-          {/* Left Card */}
-          <motion.div
-            variants={itemVariants}
-            className="hidden lg:block w-[30%] shrink-0"
-          >
-            <TestimonialCard
-              testimonial={testimonials[getCardIndex(-1)]}
-              variant="side"
-            />
-          </motion.div>
-
-          {/* Center Card */}
-          <motion.div variants={itemVariants} className="w-full lg:w-[40%] shrink-0">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeIndex}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] as const }}
-              >
-                <TestimonialCard
-                  testimonial={testimonials[activeIndex]}
-                  variant="center"
-                />
-              </motion.div>
-            </AnimatePresence>
-          </motion.div>
-
-          {/* Right Card */}
-          <motion.div
-            variants={itemVariants}
-            className="hidden lg:block w-[30%] shrink-0"
-          >
-            <TestimonialCard
-              testimonial={testimonials[getCardIndex(1)]}
-              variant="side"
-            />
-          </motion.div>
-        </div>
-
-        {/* Pagination Dots */}
-        <motion.div
-          variants={itemVariants}
-          className="flex justify-center gap-2 mt-10"
-        >
-          {testimonials.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setActiveIndex(index)}
-              className={`transition-all duration-300 rounded-full ${
-                index === activeIndex
-                  ? "w-6 h-2 bg-primary"
-                  : "w-2 h-2 bg-muted-foreground/30 hover:bg-muted-foreground/50"
-              }`}
-              aria-label={`Go to testimonial ${index + 1}`}
-            />
-          ))}
-        </motion.div>
-      </motion.div>
-    </section>
-  );
-}
-
-function TestimonialCard({
-  testimonial,
-  variant,
-}: {
-  testimonial: (typeof testimonials)[number];
-  variant: "center" | "side";
-}) {
-  const isCenter = variant === "center";
-
-  return (
-    <div
-      className={`relative rounded-2xl p-6 lg:p-8 transition-all duration-300 ${
-        isCenter
-          ? "bg-card border border-border/50 shadow-lg"
-          : "bg-card/40 border border-border/20 opacity-40"
-      }`}
+    <section
+      className="scroll-mt-28 overflow-hidden bg-background py-24 lg:py-32"
+      id="testimonials"
     >
-      {/* Stars */}
-      <div className="flex justify-center gap-1 mb-4">
-        {Array.from({ length: testimonial.rating }).map((_, i) => (
-          <IconStarFilled
-            key={i}
-            className={`size-4 ${
-              isCenter ? "text-primary" : "text-primary/50"
-            }`}
-          />
-        ))}
-      </div>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-16 text-center md:mb-24">
+          <h2 className="mb-6 font-bold text-3xl text-foreground tracking-tight md:text-5xl">
+            Loved by industry leaders
+          </h2>
+          <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
+            See how our platform is transforming businesses across the globe
+            with unparalleled reliability and performance.
+          </p>
+        </div>
 
-      {/* Quote */}
-      <p
-        className={`text-center leading-relaxed ${
-          isCenter
-            ? "text-sm text-muted-foreground"
-            : "text-xs text-muted-foreground/60"
-        }`}
-      >
-        {testimonial.quote}
-      </p>
-    </div>
+        <div className="relative mx-auto w-full max-w-5xl">
+          <div
+            className="relative flex h-[450px] w-full touch-pan-y items-center justify-center md:h-[400px]"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            onTouchEnd={handleTouchEnd}
+            onTouchStart={handleTouchStart}
+          >
+            {/* Controls */}
+            <button
+              aria-label="Previous testimonial"
+              className="absolute bottom-4 left-4 z-20 hidden size-10 items-center justify-center rounded-full border border-border bg-background/80 text-foreground shadow-sm backdrop-blur-sm transition-colors hover:bg-muted md:top-1/2 md:bottom-auto md:-left-4 md:left-0 md:flex md:size-12 md:-translate-y-1/2 lg:-left-12"
+              onClick={prevSlide}
+            >
+              <IconChevronLeft className="size-5 md:size-6" />
+            </button>
+
+            <button
+              aria-label="Next testimonial"
+              className="absolute right-4 bottom-4 z-20 hidden size-10 items-center justify-center rounded-full border border-border bg-background/80 text-foreground shadow-sm backdrop-blur-sm transition-colors hover:bg-muted md:top-1/2 md:-right-4 md:right-0 md:bottom-auto md:flex md:size-12 md:-translate-y-1/2 lg:-right-12"
+              onClick={nextSlide}
+            >
+              <IconChevronRight className="size-5 md:size-6" />
+            </button>
+
+            {/* Cards */}
+            {testimonials.map((t, index) => {
+              let offset = index - currentIndex;
+              if (offset > testimonials.length / 2)
+                offset -= testimonials.length;
+              if (offset < -testimonials.length / 2)
+                offset += testimonials.length;
+
+              const isCenter = offset === 0;
+              const isLeft = offset === -1;
+              const isRight = offset === 1;
+              const isExpanded = expandedTestimonialId === t.id;
+              const revealOnDesktopHover = isCenter
+                ? "md:group-hover:max-h-64 md:group-focus:max-h-64"
+                : "";
+
+              let x = "0%";
+              let scale = 0.5;
+              let opacity = 0;
+              let zIndex = 0;
+
+              if (isCenter) {
+                x = "0%";
+                scale = 1;
+                opacity = 1;
+                zIndex = 10;
+              } else if (isLeft) {
+                x = "-105%";
+                scale = 0.75;
+                opacity = 0.6;
+                zIndex = 5;
+              } else if (isRight) {
+                x = "105%";
+                scale = 0.75;
+                opacity = 0.6;
+                zIndex = 5;
+              } else {
+                x = offset > 0 ? "200%" : "-200%";
+                scale = 0.5;
+                opacity = 0;
+                zIndex = 0;
+              }
+
+              return (
+                <motion.div
+                  animate={{
+                    x,
+                    scale,
+                    opacity,
+                    zIndex,
+                    height: isExpanded && isCenter ? 410 : 320,
+                  }}
+                  className={`group absolute flex w-[90%] flex-col rounded-3xl border border-border/50 bg-card p-6 shadow-xl outline-none transition-shadow duration-300 focus-visible:ring-2 focus-visible:ring-foreground/20 sm:w-[80%] md:w-[400px] md:p-8 ${
+                    isCenter ? "hover:shadow-2xl" : ""
+                  }`}
+                  key={t.id}
+                  tabIndex={isCenter ? 0 : -1}
+                  transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
+                  whileFocus={
+                    isCenter
+                      ? {
+                          height: 390,
+                          scale: 1.07,
+                          zIndex: 30,
+                        }
+                      : undefined
+                  }
+                  whileHover={
+                    isCenter
+                      ? {
+                          height: 390,
+                          scale: 1.07,
+                          zIndex: 30,
+                        }
+                      : undefined
+                  }
+                >
+                  <div className="mb-4 flex gap-1">
+                    {Array.from({ length: t.rating }).map((_, i) => (
+                      <IconStarFilled
+                        className="size-4 text-yellow-500 drop-shadow-sm"
+                        key={i}
+                      />
+                    ))}
+                  </div>
+                  <p
+                    className={`mb-4 max-h-36 flex-1 overflow-hidden text-foreground/90 text-sm leading-relaxed transition-[max-height] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] md:mb-6 md:max-h-36 md:text-base ${revealOnDesktopHover} ${
+                      isExpanded && isCenter ? "max-h-64" : ""
+                    }`}
+                  >
+                    &ldquo;{t.quote}&rdquo;
+                  </p>
+                  {isCenter && (
+                    <button
+                      aria-expanded={isExpanded}
+                      className="mb-5 self-start rounded-full border border-border/60 px-4 py-2 font-medium text-foreground text-xs transition-colors hover:bg-muted md:hidden"
+                      onClick={() =>
+                        setExpandedTestimonialId(isExpanded ? null : t.id)
+                      }
+                      type="button"
+                    >
+                      {isExpanded ? "Show less" : "Read more"}
+                    </button>
+                  )}
+                  {isCenter && (
+                    <div className="absolute top-4 right-4 md:top-6 md:right-6">
+                      <IconQuote className="size-10 text-muted-foreground/10 md:size-12" />
+                    </div>
+                  )}
+                  <div className="mt-auto border-border/50 border-t pt-4">
+                    <div>
+                      <h4 className="font-semibold text-foreground text-sm">
+                        {t.name}
+                      </h4>
+                      <p className="text-muted-foreground text-xs">{t.title}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* Pill Indicators */}
+          <div className="mt-8 flex items-center justify-center gap-2">
+            {testimonials.map((_, i) => {
+              const isActive = i === currentIndex;
+              return (
+                <button
+                  aria-label={`Go to slide ${i + 1}`}
+                  className={`relative h-2 rounded-full transition-all duration-500 ease-out ${
+                    isActive
+                      ? "w-10 bg-muted"
+                      : "w-2 bg-muted hover:bg-muted-foreground"
+                  }`}
+                  key={i}
+                  onClick={() => goToSlide(i)}
+                >
+                  {isActive && (
+                    <motion.div
+                      animate={{ width: `${timeLeft * 100}%` }}
+                      className="absolute top-0 left-0 h-full rounded-full bg-foreground"
+                      transition={{ duration: 0.05 }}
+                    />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }

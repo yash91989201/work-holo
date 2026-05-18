@@ -1,3 +1,7 @@
+import { Link } from "@tanstack/react-router";
+import { CTAButton } from "@work-holo/ui/components/cta-button";
+import { motion, type Variants } from "motion/react";
+
 import {
   IconBrain,
   IconChevronRight,
@@ -6,9 +10,6 @@ import {
   IconRobot,
   IconRocket,
 } from "@tabler/icons-react";
-import { Link } from "@tanstack/react-router";
-import { CTAButton } from "@work-holo/ui/components/cta-button";
-import { motion, type Variants } from "motion/react";
 
 const services = [
   {
@@ -262,7 +263,7 @@ function ServiceCard({ service }: { service: (typeof services)[number] }) {
       />
       <motion.span
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-6 top-0 h-px origin-left bg-gradient-to-r from-primary/70 via-primary/30 to-transparent"
+        className="pointer-events-none absolute inset-x-6 top-0 h-px origin-left bg-linear-to-r from-primary/70 via-primary/30 to-transparent"
         variants={accentBarVariants}
       />
 

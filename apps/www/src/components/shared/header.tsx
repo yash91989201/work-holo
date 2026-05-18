@@ -1,12 +1,17 @@
+import { Link } from "@tanstack/react-router";
+import { CTAButton } from "@work-holo/ui/components/cta-button";
+import { cn } from "@work-holo/ui/lib/utils";
+import { type ReactNode, useEffect, useState } from "react";
+import { Image } from "@/components/shared/image";
+
 import {
   IconArrowUpRight,
   IconBolt,
   IconChevronDown,
   IconClock,
   IconSettings,
+  IconX,
 } from "@tabler/icons-react";
-import { Link } from "@tanstack/react-router";
-import { CTAButton } from "@work-holo/ui/components/cta-button";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -15,10 +20,12 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@work-holo/ui/components/navigation-menu";
-import { cn } from "@work-holo/ui/lib/utils";
-import { motion, useMotionValueEvent, useScroll } from "motion/react";
-import { type ReactNode, useEffect, useState } from "react";
-import { Image } from "@/components/shared/image";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValueEvent,
+  useScroll,
+} from "motion/react";
 
 type DropdownItem = {
   label: string;
@@ -31,6 +38,86 @@ type NavGroup = {
   title: string;
   items: DropdownItem[];
 };
+
+type TabDropdownProps = {
+  groups: NavGroup[];
+};
+
+function TabDropdown({ groups }: TabDropdownProps) {
+  const [activeTab, setActiveTab] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <div
+      className="flex max-h-[50vh] w-[32rem] overflow-hidden rounded-[1.5rem] border border-white/10 bg-background/80 shadow-[0_30px_80px_-15px_rgba(0,0,0,0.35)] backdrop-blur-2xl"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div className="relative flex w-44 shrink-0 flex-col border-white/5 border-r bg-white/5 p-2">
+        {groups.map((group, idx) => (
+          <button
+            className={cn(
+              "z-10 rounded-xl px-4 py-3 text-left font-medium text-[13px] tracking-wide transition-all duration-300",
+              activeTab === idx
+                ? "bg-white/10 text-foreground"
+                : "text-muted-foreground/60 hover:bg-white/5 hover:text-muted-foreground"
+            )}
+            key={group.title}
+            onClick={() => setActiveTab(idx)}
+            onMouseEnter={() => setActiveTab(idx)}
+          >
+            {group.title}
+          </button>
+        ))}
+      </div>
+      <div
+        className="flex-1 overflow-y-auto overscroll-contain p-3"
+        onWheel={(e) => {
+          if (!isHovered) return;
+          e.stopPropagation();
+        }}
+      >
+        <AnimatePresence mode="wait">
+          <motion.div
+            animate={{ opacity: 1, x: 0 }}
+            className="space-y-1"
+            exit={{ opacity: 0, x: -8 }}
+            initial={{ opacity: 0, x: 8 }}
+            key={activeTab}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+          >
+            {groups[activeTab]?.items.map((item, idx) => (
+              <motion.div
+                animate={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, x: -10 }}
+                key={item.label}
+                transition={{ delay: idx * 0.05, duration: 0.2 }}
+              >
+                <MenuLink
+                  className="group/item flex flex-col gap-1 rounded-xl px-4 py-3 transition-all duration-200 hover:bg-white/5"
+                  hash={item.hash}
+                  to={item.href}
+                >
+                  <div className="flex w-full items-center justify-between gap-3">
+                    <span className="font-medium text-[14px] text-foreground/90 transition-colors group-hover/item:text-primary">
+                      {item.label}
+                    </span>
+                    <IconArrowUpRight className="size-3.5 text-muted-foreground/40 transition-colors group-hover/item:text-primary/60" />
+                  </div>
+                  {item.description && (
+                    <span className="w-full text-left text-[12px] text-muted-foreground/60 transition-colors group-hover/item:text-muted-foreground/80">
+                      {item.description}
+                    </span>
+                  )}
+                </MenuLink>
+              </motion.div>
+            ))}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+}
 
 type MenuLinkProps = {
   children: ReactNode;
@@ -130,7 +217,7 @@ const navItems: NavItem[] = [
           },
           {
             label: "Projects",
-            href: "/",
+            href: "/projects",
             hash: "projects",
             description: "Selected work",
           },
@@ -239,25 +326,685 @@ const navItems: NavItem[] = [
     ],
   },
   {
+    label: "Portfolio",
+    href: "/projects",
+  },
+ // REPLACE only the "Projects" entry in your navItems array (label: "Projects")
+// with this updated version. Do NOT change anything else.
+
+  {
     label: "Projects",
-    href: "/",
-    dropdownItems: [
-      { label: "Mobile Apps", href: "/" },
-      { label: "Web Development", href: "/" },
-      { label: "Cloud Migration", href: "/" },
+    href: "/projects",
+    groups: [
+      {
+        title: "AI & Data",
+        items: [
+          {
+            label: "CloudWatch Pro",
+            href: "/projects/cloudwatch-pro",
+            description: "Cloud monitoring & observability",
+          },
+          {
+            label: "Global Consultant AI",
+            href: "/projects/global-consultant-ai",
+            description: "AI-powered consulting platform",
+          },
+          {
+            label: "Enterprise AI Assistant",
+            href: "/projects/enterprise-ai-assistant",
+            description: "Intelligent enterprise automation",
+          },
+          {
+            label: "MedTech AI Patient Care",
+            href: "/projects/medtech-ai-patient-care",
+            description: "AI diagnostics for healthcare",
+          },
+          {
+            label: "BCA Intelligent Auction",
+            href: "/projects/bca-intelligent-auction-platform",
+            description: "Smart auction bidding engine",
+          },
+          {
+            label: "Data Platform Modernization",
+            href: "/projects/data-platform-modernization",
+            description: "Unified data infrastructure",
+          },
+          {
+            label: "Retail Personalization Engine",
+            href: "/projects/retail-personalization-engine",
+            description: "AI-driven customer experiences",
+          },
+          {
+            label: "Coursera AI Learning Optimization",
+            href: "/projects/coursera-ai-learning-optimization",
+            description: "Adaptive learning at scale",
+          },
+          {
+            label: "Trust Stamp",
+            href: "/projects/trust-stamp",
+            description: "Biometric identity verification",
+          },
+          {
+            label: "GoSeqit",
+            href: "/projects/goseqit",
+            description: "Genomic sequencing platform",
+          },
+          {
+            label: "Connecterra",
+            href: "/projects/connecterra",
+            description: "AI livestock monitoring",
+          },
+          {
+            label: "Smart IoT Diagnostic",
+            href: "/projects/smart-iot-diagnostic",
+            description: "IoT device intelligence layer",
+          },
+          {
+            label: "Energo IoT",
+            href: "/projects/energo-iot",
+            description: "Energy IoT management platform",
+          },
+          {
+            label: "Odexa",
+            href: "/projects/odexa",
+            description: "Data intelligence platform",
+          },
+          {
+            label: "Influence Flow",
+            href: "/projects/influence-flow",
+            description: "Influencer analytics platform",
+          },
+        ],
+      },
+      {
+        title: "FinTech & Banking",
+        items: [
+          {
+            label: "Mastercard Global Fintech Infrastructure",
+            href: "/projects/mastercard-global-fintech-infrastructure",
+            description: "Global payments backbone",
+          },
+          {
+            label: "Western Union Digital Transformation",
+            href: "/projects/western-union-digital-transformation",
+            description: "Digital remittance platform",
+          },
+          {
+            label: "Fintech Cloud Migration",
+            href: "/projects/fintech-cloud-migration",
+            description: "Core banking to cloud",
+          },
+          {
+            label: "Digital Banking Modernization",
+            href: "/projects/digital-banking-modernization",
+            description: "Next-gen banking UX",
+          },
+          {
+            label: "OneBank Sterling",
+            href: "/projects/onebank-sterling",
+            description: "Unified banking platform",
+          },
+          {
+            label: "Kash Fintech",
+            href: "/projects/kash-fintech",
+            description: "Mobile-first fintech app",
+          },
+          {
+            label: "Microfinance Field Digitization",
+            href: "/projects/microfinance-field-digitization",
+            description: "Rural lending digitization",
+          },
+          {
+            label: "Tax Automation System",
+            href: "/projects/tax-automation-system",
+            description: "Automated tax compliance",
+          },
+          {
+            label: "Insurance Digital Transformation",
+            href: "/projects/insurance-digital-transformation",
+            description: "End-to-end insurance platform",
+          },
+          {
+            label: "Africa Prudential",
+            href: "/projects/africa-prudential",
+            description: "African capital markets registry",
+          },
+          {
+            label: "Virgin Money Pulse",
+            href: "/projects/virgin-money-pulse",
+            description: "Digital banking experience",
+          },
+          {
+            label: "Royal London Pensions",
+            href: "/projects/royal-london-pensions",
+            description: "Pension management platform",
+          },
+          {
+            label: "GC Business Finance",
+            href: "/projects/gc-business-finance",
+            description: "SME lending & finance portal",
+          },
+          {
+            label: "Insurance Claims Automation",
+            href: "/projects/insurance-claims-automation",
+            description: "AI claims processing",
+          },
+          {
+            label: "I-Invest",
+            href: "/projects/i-invest",
+            description: "Investment management platform",
+          },
+          {
+            label: "Pawn Management Modernization",
+            href: "/projects/pawn-management-modernization",
+            description: "Lending operations platform",
+          },
+          {
+            label: "Crescent",
+            href: "/projects/crescent",
+            description: "Islamic finance platform",
+          },
+        ],
+      },
+      {
+        title: "Enterprise & B2B",
+        items: [
+          {
+            label: "Salesforce Cloud Integration",
+            href: "/projects/salesforce-cloud-integration",
+            description: "CRM cloud transformation",
+          },
+          {
+            label: "Xerox Enterprise Document Cloud",
+            href: "/projects/xerox-enterprise-document-cloud",
+            description: "Digital document management",
+          },
+          {
+            label: "Steelcase B2B Portal",
+            href: "/projects/steelcase-b2b-portal",
+            description: "Furniture enterprise commerce",
+          },
+          {
+            label: "MillerCoors B2B Portal",
+            href: "/projects/millercoors-b2b-portal",
+            description: "Beverage trade portal",
+          },
+          {
+            label: "Lockheed Martin Propel",
+            href: "/projects/lockheed-martin-propel",
+            description: "Aerospace supply chain platform",
+          },
+          {
+            label: "Lockheed Martin Mission Control",
+            href: "/projects/lockheed-martin-mission-control",
+            description: "Aerospace operations platform",
+          },
+          {
+            label: "Decisiv SRM Platform",
+            href: "/projects/decisiv-srm-platform",
+            description: "Service relationship management",
+          },
+          {
+            label: "Simon Kucher Partners",
+            href: "/projects/simon-kucher-partners",
+            description: "Pricing strategy platform",
+          },
+          {
+            label: "Unilever Subscription Engine",
+            href: "/projects/unilever-subscription-engine",
+            description: "Global B2B subscription platform",
+          },
+          {
+            label: "Enterprise Cloud Transformation",
+            href: "/projects/enterprise-cloud-transformation",
+            description: "Large-scale cloud migration",
+          },
+          {
+            label: "Enterprise Logistics Modernization",
+            href: "/projects/enterprise-logistics-modernization",
+            description: "Supply chain modernization",
+          },
+          {
+            label: "GitHub Scaling Engineering Acceleration",
+            href: "/projects/github-scaling-engineering-acceleration",
+            description: "Dev platform at hyper-scale",
+          },
+          {
+            label: "Bento Payroll HR",
+            href: "/projects/bento-payroll-hr",
+            description: "Unified payroll & HR platform",
+          },
+          {
+            label: "ViacomCBS Paramount Plus Transformation",
+            href: "/projects/viacomcbs-paramount-plus-transformation",
+            description: "Streaming platform migration",
+          },
+        ],
+      },
+      {
+        title: "Healthcare & Life Sciences",
+        items: [
+          {
+            label: "HealthHero Scaling Telehealth",
+            href: "/projects/healthhero-scaling-telehealth",
+            description: "Telehealth infrastructure",
+          },
+          {
+            label: "JNJ VR Surgical Training",
+            href: "/projects/jnj-vr-surgical-training",
+            description: "VR-based surgical simulation",
+          },
+          {
+            label: "Smith & Nephew Orthopaedics",
+            href: "/projects/smith-nephew-orthopaedics",
+            description: "Orthopaedic device platform",
+          },
+          {
+            label: "Smith & Nephew",
+            href: "/projects/smith-nephew",
+            description: "Medical device commerce",
+          },
+          {
+            label: "NHS Professionals",
+            href: "/projects/nhs-professionals",
+            description: "Healthcare workforce platform",
+          },
+          {
+            label: "Deluxe Care HMS",
+            href: "/projects/deluxe-care-hms",
+            description: "Hospital management system",
+          },
+          {
+            label: "Skyline HMS",
+            href: "/projects/skyline-hms",
+            description: "Healthcare facility management",
+          },
+          {
+            label: "Healthcare Data Interoperability",
+            href: "/projects/healthcare-data-interoperability",
+            description: "Cross-system health data exchange",
+          },
+          {
+            label: "Raccoon Recovery",
+            href: "/projects/raccoon-recovery",
+            description: "Mental wellness & recovery app",
+          },
+          {
+            label: "Apotka Pharmacy",
+            href: "/projects/apotka-pharmacy",
+            description: "Digital pharmacy platform",
+          },
+          {
+            label: "WeightWins",
+            href: "/projects/weightwins",
+            description: "Health & weight management",
+          },
+          {
+            label: "MTN BioSmart Registration",
+            href: "/projects/mtn-biosmart-registration",
+            description: "Biometric health enrollment",
+          },
+        ],
+      },
+      {
+        title: "Retail & eCommerce",
+        items: [
+          {
+            label: "eBay Marketplace Optimization",
+            href: "/projects/ebay-marketplace-optimization",
+            description: "Marketplace seller tooling",
+          },
+          {
+            label: "Adobe Creative Cloud Innovation",
+            href: "/projects/adobe-creative-cloud-innovation",
+            description: "Creative tooling platform",
+          },
+          {
+            label: "Costa Express",
+            href: "/projects/costa-express",
+            description: "Self-serve coffee retail tech",
+          },
+          {
+            label: "Expedia Global Inventory Sync",
+            href: "/projects/expedia-global-inventory-sync",
+            description: "Travel inventory management",
+          },
+          {
+            label: "Drinkworks IoT eCommerce",
+            href: "/projects/drinkworks-iot-ecommerce",
+            description: "Connected beverage commerce",
+          },
+          {
+            label: "Fine & Rare",
+            href: "/projects/fine-rare",
+            description: "Luxury wine marketplace",
+          },
+          {
+            label: "Printing.com",
+            href: "/projects/printing-com",
+            description: "Online print & design platform",
+          },
+          {
+            label: "First Choice Group",
+            href: "/projects/first-choice-group",
+            description: "Travel retail platform",
+          },
+          {
+            label: "AltMall eCommerce",
+            href: "/projects/altmall-ecommerce",
+            description: "Alternative commerce marketplace",
+          },
+          {
+            label: "Grecha Delivery",
+            href: "/projects/grecha-delivery",
+            description: "On-demand food delivery",
+          },
+          {
+            label: "Swiggy Web3 Loyalty",
+            href: "/projects/swiggy-web3-loyalty",
+            description: "Blockchain loyalty rewards",
+          },
+          {
+            label: "Push Chain",
+            href: "/projects/push-chain",
+            description: "Web3 communication layer",
+          },
+          {
+            label: "Baza Real Estate",
+            href: "/projects/baza-real-estate",
+            description: "PropTech marketplace platform",
+          },
+        ],
+      },
+      {
+        title: "Public Sector & Education",
+        items: [
+          {
+            label: "RSPB Digital Transformation",
+            href: "/projects/rspb-digital-transformation",
+            description: "Conservation digital platform",
+          },
+          {
+            label: "BBC Academy Platform",
+            href: "/projects/bbc-academy-platform",
+            description: "Media learning & training",
+          },
+          {
+            label: "Winchester College",
+            href: "/projects/winchester-college",
+            description: "Independent school digital hub",
+          },
+          {
+            label: "Hillingdon Council",
+            href: "/projects/hillingdon-council",
+            description: "Local government services",
+          },
+          {
+            label: "MOJ Claims Digitisation",
+            href: "/projects/moj-claims-digitisation",
+            description: "Government claims platform",
+          },
+          {
+            label: "Sudan Civil Registry Digitization",
+            href: "/projects/sudan-civil-registry-digitization",
+            description: "National identity system",
+          },
+          {
+            label: "NIMC National ID Enrollment",
+            href: "/projects/nimc-national-id-enrollment",
+            description: "National ID card platform",
+          },
+          {
+            label: "Infinitas Learning",
+            href: "/projects/infinitas-learning",
+            description: "EdTech publishing platform",
+          },
+          {
+            label: "Module Academy",
+            href: "/projects/module-academy",
+            description: "Online skills academy",
+          },
+          {
+            label: "Swile",
+            href: "/projects/swile",
+            description: "Employee benefits platform",
+          },
+          {
+            label: "AARP Rewards Gamification",
+            href: "/projects/aarp-rewards-gamification",
+            description: "Senior engagement platform",
+          },
+        ],
+      },
+      {
+        title: "Logistics, Telco & Industry",
+        items: [
+          {
+            label: "Vueling Serverless Transformation",
+            href: "/projects/vueling-serverless-transformation",
+            description: "Airline serverless migration",
+          },
+          {
+            label: "Colas Logistics Optimisation",
+            href: "/projects/colas-logistics-optimisation",
+            description: "Road construction logistics",
+          },
+          {
+            label: "Transportation Legacy Modernization",
+            href: "/projects/transportation-legacy-modernization",
+            description: "Transit infrastructure overhaul",
+          },
+          {
+            label: "ScottishPower YouEnergy",
+            href: "/projects/scottishpower-yourenergy",
+            description: "Energy customer portal",
+          },
+          {
+            label: "HughesNet Digital Evolution",
+            href: "/projects/hughesnet-digital-evolution",
+            description: "Satellite internet platform",
+          },
+          {
+            label: "Dish Network Self-Service",
+            href: "/projects/dish-network-self-service",
+            description: "Telecom self-service portal",
+          },
+          {
+            label: "Dish Network Dish Anywhere",
+            href: "/projects/dish-network-dish-anywhere",
+            description: "Streaming on any device",
+          },
+          {
+            label: "TomTom Digital Cockpit",
+            href: "/projects/tomtom-digital-cockpit",
+            description: "In-vehicle navigation UX",
+          },
+          {
+            label: "TomTom Navigation Redesign",
+            href: "/projects/tomtom-navigation-redesign",
+            description: "Consumer maps reimagined",
+          },
+          {
+            label: "Terawatt EV Infrastructure",
+            href: "/projects/terawatt-ev-infrastructure",
+            description: "EV charging network intelligence",
+          },
+          {
+            label: "David Lloyd Leisure",
+            href: "/projects/david-lloyd-leisure",
+            description: "Fitness club digital platform",
+          },
+          {
+            label: "The Gym Group",
+            href: "/projects/the-gym-group",
+            description: "Budget fitness digital journey",
+          },
+          {
+            label: "FIH International Hockey",
+            href: "/projects/fih-international-hockey",
+            description: "Sports federation platform",
+          },
+          {
+            label: "Zego Resident Experience",
+            href: "/projects/zego-resident-experience",
+            description: "PropTech resident portal",
+          },
+          {
+            label: "Pinterest Mobile Engineering",
+            href: "/projects/pinterest-mobile-engineering",
+            description: "Mobile app performance",
+          },
+          {
+            label: "GLO Digital Gateway",
+            href: "/projects/glo-digital-gateway",
+            description: "Telecom digital services portal",
+          },
+          {
+            label: "Verified KYC Verification",
+            href: "/projects/verified-kyc-verification",
+            description: "Automated identity compliance",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    label: "Our BPO Services",
+    href: "/our-bpo-services",
+    groups: [
+      {
+        title: "Solution",
+        items: [
+          {
+            label: "Outbound Services",
+            href: "/our-bpo-services/solution/outbound-services",
+            description: "Autonomous AI for smarter workflows",
+          },
+          {
+            label: "Customer Retention",
+            href: "/our-bpo-services/solution/customer-retention",
+            description: "AI agents for product teams",
+          },
+          {
+            label: "Outbound Sales",
+            href: "/our-bpo-services/solution/outbound-sales",
+            description: "Autonomous AI for smarter workflows",
+          },
+          {
+            label: "Lead Generation",
+            href: "/our-bpo-services/solution/lead-generation",
+            description: "AI agents for product teams",
+          },
+          {
+            label: "Inbound Services",
+            href: "/our-bpo-services/solution/inbound-services",
+            description: "Autonomous AI for smarter workflows",
+          },
+          {
+            label: "Customer-Service",
+            href: "/our-bpo-services/solution/customer-service",
+            description: "AI agents for product teams",
+          },
+          {
+            label: "Technical Support",
+            href: "/our-bpo-services/solution/technical-support",
+            description: "Autonomous AI for smarter workflows",
+          },
+          {
+            label: "Payment Processing",
+            href: "/our-bpo-services/solution/payment-processing",
+            description: "AI agents for product teams",
+          },
+          {
+            label: "Account and Collections",
+            href: "/our-bpo-services/solution/accounting-and-collections",
+            description: "Autonomous AI for smarter workflows",
+          },
+          {
+            label: "Inbound Sales",
+            href: "/our-bpo-services/solution/inbound-sales",
+            description: "AI agents for product teams",
+          },
+          {
+            label: "Facility and Procurement",
+            href: "/our-bpo-services/solution/facility-and-procurement",
+            description: "Autonomous AI for smarter workflows",
+          },
+          {
+            label: "Direct Response Marketing",
+            href: "/our-bpo-services/solution/direct-response-marketing",
+            description: "AI agents for product teams",
+          },
+          {
+            label: "Back Office Processing",
+            href: "/our-bpo-services/solution/back-office-processing",
+            description: "Autonomous AI for smarter workflows",
+          },
+          {
+            label: "Claims Processing",
+            href: "/our-bpo-services/solution/claims-processing",
+            description: "AI agents for product teams",
+          },
+        ],
+      },
+      {
+        title: "Industries",
+        items: [
+          {
+            label: "Insurance",
+            href: "/our-bpo-services/industries/insurance",
+            description: "Launch fast, scale with confidence",
+          },
+          {
+            label: "Healthcare",
+            href: "/our-bpo-services/industries/healthcare",
+            description: "High-performance, scalable web apps",
+          },
+          {
+            label: "Financial",
+            href: "/our-bpo-services/industries/financial",
+            description: "Seamless iOS & Android experiences",
+          },
+          {
+            label: "Logistics and Supply Chain",
+            href: "/our-bpo-services/industries/logistics-supply-chain",
+            description: "Faster releases, zero-bug quality",
+          },
+          {
+            label: "Retail",
+            href: "/our-bpo-services/industries/retail",
+            description: "User-first design that drives adoption",
+          },
+          {
+            label: "Telecommunication",
+            href: "/our-bpo-services/industries/telecommunications",
+            description: "AI-ready data foundations for growth",
+          },
+          {
+            label: "Entertainment",
+            href: "/our-bpo-services/industries/entertainment",
+            description: "Faster releases, zero-bug quality",
+          },
+          {
+            label: "Real Estate",
+            href: "/our-bpo-services/industries/real-estate",
+            description: "User-first design that drives adoption",
+          },
+          {
+            label: "Technology",
+            href: "/our-bpo-services/industries/technology",
+            description: "AI-ready data foundations for growth",
+          },
+        ],
+      },
     ],
   },
   {
     label: "Company",
-    href: "/",
     dropdownItems: [
-      { label: "About Us", href: "/" },
-      { label: "Careers", href: "/" },
+      { label: "About Us", href: "/about-us" },
+      { label: "Contact", href: "/contact-us" },
     ],
-  },
-  {
-    label: "Contact",
-    href: "/contact-us",
   },
 ];
 
@@ -302,372 +1049,497 @@ export function Header() {
   }, [mobileMenuOpen]);
 
   return (
-    <motion.header
-      animate={{ y: 0 }}
-      className={cn(
-        "fixed top-0 right-0 left-0 z-50",
-        isScrolled ? "bg-background/95 backdrop-blur-md" : "bg-transparent"
-      )}
-      initial={{ y: -100 }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-    >
-      {/* Top Bar */}
-      <motion.div
-        animate={{
-          height: isScrolled ? 0 : "auto",
-          opacity: isScrolled ? 0 : 1,
-        }}
-        className="overflow-hidden"
-        initial={false}
-        transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+    <>
+      <motion.header
+        animate={{ y: 0 }}
+        className={cn(
+          "fixed top-0 right-0 left-0 z-50",
+          isScrolled ? "bg-background/95 backdrop-blur-md" : "bg-transparent"
+        )}
+        initial={{ y: -100 }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       >
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between py-3 text-[15px]">
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <IconBolt className="size-4.5 text-primary" fill="currentColor" />
-              <span className="hidden sm:inline">
-                Fast & Reliable IT Solutions.
-              </span>
-              <Link
-                className="inline-flex items-center gap-1 font-medium text-primary transition-colors hover:text-primary/80"
-                to="/"
-              >
-                Join Now
-                <IconArrowUpRight className="size-3.5" />
-              </Link>
-            </div>
-            <div className="hidden items-center gap-4 text-muted-foreground md:flex">
-              <div className="flex items-center gap-1.5">
-                <IconClock className="size-4.5 text-primary" />
-                <span>9 am to 6 pm [mon-sat]</span>
+        {/* Top Bar */}
+        <motion.div
+          animate={{
+            height: isScrolled ? 0 : "auto",
+            opacity: isScrolled ? 0 : 1,
+          }}
+          className="overflow-hidden"
+          initial={false}
+          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between py-3 text-[15px]">
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <IconBolt
+                  className="size-4.5 text-primary"
+                  fill="currentColor"
+                />
+                <span className="hidden sm:inline">
+                  Fast & Reliable IT Solutions.
+                </span>
+                <Link
+                  className="inline-flex items-center gap-1 font-medium text-primary transition-colors hover:text-primary/80"
+                  to="/contact-us"
+                >
+                  Join Now
+                  <IconArrowUpRight className="size-3.5" />
+                </Link>
               </div>
-              <span className="text-border">|</span>
-              <div className="flex items-center gap-1.5">
-                <IconSettings className="size-4.5 text-primary" />
-                <span>Support</span>
+              <div className="hidden items-center gap-4 text-muted-foreground md:flex">
+                <div className="flex items-center gap-1.5">
+                  <IconClock className="size-4.5 text-primary" />
+                  <span>10 am to 7 pm [mon-sat]</span>
+                </div>
+                <span className="text-border">|</span>
+                <div className="flex items-center gap-1.5">
+                  <IconSettings className="size-4.5 text-primary" />
+                  <span>Support</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
 
-      {/* Main Navbar */}
-      <motion.div
-        className={cn(
-          "w-full",
-          isScrolled
-            ? "max-w-none px-0 pt-0"
-            : "mx-auto max-w-7xl px-4 pt-3 sm:px-6 lg:px-8"
-        )}
-        layout
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <motion.nav
+        {/* Main Navbar */}
+        <motion.div
           className={cn(
-            "relative flex items-center justify-between transition-all duration-500",
+            "w-full",
             isScrolled
-              ? "min-h-20 bg-card/90 px-5 backdrop-blur-md sm:px-7 lg:px-8"
-              : "min-h-24 rounded-[1.75rem] border border-border/30 bg-muted/50 px-5 sm:px-7 lg:px-8"
+              ? "max-w-none px-0 pt-0"
+              : "mx-auto max-w-7xl px-4 pt-3 sm:px-6 lg:px-8"
           )}
           layout
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
-          {/* Logo */}
-          <Link className="flex shrink-0 items-center gap-3" to="/">
-            <div className="relative h-12 w-16">
-              <Image
-                alt="Work Holo"
-                className="object-contain"
-                height={48}
-                src="/logo.webp"
-                unoptimized
-                width={64}
-              />
-            </div>
-            <span className="font-bold font-heading text-2xl text-foreground tracking-tight">
-              Workholo
-            </span>
-          </Link>
+          <motion.nav
+            className={cn(
+              "relative flex items-center justify-between transition-all duration-500",
+              isScrolled
+                ? "min-h-20 bg-card/90 px-5 backdrop-blur-md sm:px-7 lg:px-8"
+                : "min-h-24 rounded-[1.75rem] border border-border/30 bg-muted/50 px-5 sm:px-7 lg:px-8"
+            )}
+            layout
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          >
+            {/* Logo */}
+            <Link className="flex shrink-0 items-center gap-1.5" to="/">
+              <div className="relative h-12 w-16">
+                <Image
+                  alt="Work Holo"
+                  className="object-contain"
+                  height={48}
+                  src="/logo.webp"
+                  unoptimized
+                  width={64}
+                />
+              </div>
+              <span
+                className="font-bold text-foreground text-lg uppercase tracking-tight"
+                style={{ fontFamily: "'Michroma', sans-serif" }}
+              >
+                WORKHOLO
+              </span>
+            </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden items-center lg:flex">
-            <NavigationMenu align="center">
-              <NavigationMenuList>
-                {navItems.map((item) => {
-                  let menuContent: ReactNode = null;
+            {/* Desktop Navigation */}
+            <div className="hidden items-center lg:flex">
+              <NavigationMenu align="center">
+                <NavigationMenuList>
+                  {navItems.map((item) => {
+                    let menuContent: ReactNode = null;
 
-                  if (hasGroups(item)) {
-                    menuContent = (
-                      <div className="grid w-160 grid-cols-3 gap-6 p-5">
-                        {item.groups.map((group) => (
-                          <div
-                            className="flex flex-col gap-3"
-                            key={group.title}
-                          >
-                            <h4 className="font-semibold text-foreground text-sm">
-                              {group.title}
-                            </h4>
-                            <div className="flex flex-col gap-0.5">
-                              {group.items.map((dropItem) => (
-                                <MenuLink
-                                  className="flex flex-col items-start gap-0.5 rounded-xl p-2.5 hover:bg-muted"
-                                  hash={dropItem.hash}
-                                  key={dropItem.label}
-                                  to={dropItem.href}
-                                >
-                                  <span className="font-medium text-foreground text-sm">
-                                    {dropItem.label}
-                                  </span>
-                                  {dropItem.description && (
-                                    <span className="text-muted-foreground text-xs leading-relaxed">
-                                      {dropItem.description}
-                                    </span>
-                                  )}
-                                </MenuLink>
-                              ))}
-                            </div>
+                    if (hasGroups(item)) {
+                      menuContent = <TabDropdown groups={item.groups} />;
+                    } else if (hasDropdownItems(item)) {
+                      const hasMany = item.dropdownItems.length > 4;
+                      menuContent = (
+                        <div
+                          className={cn(
+                            "overflow-hidden rounded-[1.5rem] border border-white/10 bg-background/80 shadow-[0_30px_80px_-15px_rgba(0,0,0,0.35)] backdrop-blur-2xl",
+                            hasMany ? "w-72" : "w-52"
+                          )}
+                        >
+                          <div className="p-2">
+                            {item.dropdownItems.map((dropItem) => (
+                              <MenuLink
+                                className="group/item flex items-center gap-3 rounded-xl px-4 py-3 font-medium text-[14px] text-foreground/90 transition-all duration-200 hover:bg-white/5"
+                                key={dropItem.label}
+                                to={dropItem.href}
+                              >
+                                <span className="transition-colors group-hover/item:text-primary">
+                                  {dropItem.label}
+                                </span>
+                                <IconArrowUpRight className="size-3.5 text-muted-foreground/40 transition-colors group-hover/item:text-primary/60" />
+                              </MenuLink>
+                            ))}
                           </div>
-                        ))}
-                      </div>
-                    );
-                  } else if (hasDropdownItems(item)) {
-                    menuContent = (
-                      <div className="grid w-50 gap-1 p-2">
-                        {item.dropdownItems.map((dropItem) => (
-                          <MenuLink key={dropItem.label} to={dropItem.href}>
-                            {dropItem.label}
-                          </MenuLink>
-                        ))}
-                      </div>
-                    );
-                  }
+                        </div>
+                      );
+                    }
 
-                  if (isSimpleLink(item)) {
+                    if (isSimpleLink(item)) {
+                      return (
+                        <NavigationMenuItem key={item.label}>
+                          <MenuLink
+                            className={cn(
+                              "font-semibold text-base text-muted-foreground hover:text-foreground"
+                            )}
+                            hash={item.hash}
+                            to={item.href}
+                          >
+                            {item.label}
+                          </MenuLink>
+                        </NavigationMenuItem>
+                      );
+                    }
+
                     return (
                       <NavigationMenuItem key={item.label}>
-                        <MenuLink
+                        <NavigationMenuTrigger
                           className={cn(
-                            "font-semibold text-base",
-                            item.active
-                              ? "text-primary"
-                              : "text-muted-foreground hover:text-foreground"
+                            "font-semibold text-base text-muted-foreground hover:text-foreground"
+                          )}
+                        >
+                          {item.label}
+                        </NavigationMenuTrigger>
+                        <NavigationMenuContent>
+                          {menuContent}
+                        </NavigationMenuContent>
+                      </NavigationMenuItem>
+                    );
+                  })}
+                </NavigationMenuList>
+              </NavigationMenu>
+            </div>
+
+            {/* Right Actions */}
+            <div className="flex items-center gap-2.5">
+              <CTAButton className="hidden sm:inline-flex" href="#contact">
+                Get in touch
+              </CTAButton>
+
+              {/* Mobile Menu Button */}
+              <motion.button
+                aria-label="Toggle menu"
+                className="flex size-11 items-center justify-center rounded-full border border-border/50 bg-background text-foreground lg:hidden"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <div className="flex flex-col gap-1">
+                  <span
+                    className={cn(
+                      "block h-0.5 w-4 bg-foreground transition-all duration-300",
+                      mobileMenuOpen && "translate-y-1.5 rotate-45"
+                    )}
+                  />
+                  <span
+                    className={cn(
+                      "block h-0.5 w-4 bg-foreground transition-all duration-300",
+                      mobileMenuOpen && "opacity-0"
+                    )}
+                  />
+                  <span
+                    className={cn(
+                      "block h-0.5 w-4 bg-foreground transition-all duration-300",
+                      mobileMenuOpen && "-translate-y-1.5 -rotate-45"
+                    )}
+                  />
+                </div>
+              </motion.button>
+            </div>
+          </motion.nav>
+        </motion.div>
+      </motion.header>
+
+      {/* Mobile Menu — rendered outside motion.header so position:fixed is viewport-relative */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            animate={{ opacity: 1, y: 0 }}
+            className="fixed inset-0 z-[100] flex flex-col bg-background/95 backdrop-blur-3xl lg:hidden"
+            exit={{
+              opacity: 0,
+              y: -10,
+              transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] },
+            }}
+            initial={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div className="flex items-center justify-between border-white/5 border-b px-6 py-5">
+              <Link
+                className="flex shrink-0 items-center gap-1.5"
+                onClick={() => setMobileMenuOpen(false)}
+                to="/"
+              >
+                <div className="relative h-10 w-14">
+                  <Image
+                    alt="Work Holo"
+                    className="object-contain"
+                    height={40}
+                    src="/logo.webp"
+                    unoptimized
+                    width={56}
+                  />
+                </div>
+                <span
+                  className="font-bold text-foreground text-lg uppercase"
+                  style={{ fontFamily: "'Michroma', sans-serif" }}
+                >
+                  WORKHOLO
+                </span>
+              </Link>
+              <motion.button
+                aria-label="Close menu"
+                className="flex size-10 items-center justify-center rounded-full bg-white/5 text-foreground transition-colors hover:bg-white/10"
+                onClick={() => setMobileMenuOpen(false)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <IconX className="size-5" />
+              </motion.button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto overscroll-contain px-6 py-8">
+              {navItems.map((item, index) => {
+                let mobileContent: ReactNode = null;
+
+                if (hasGroups(item)) {
+                  const hasManyGroups = item.groups.length > 1;
+                  mobileContent = (
+                    <div className="overflow-hidden rounded-2xl border border-white/5 bg-white/[0.02]">
+                      <div className="flex items-stretch">
+                        <Link
+                          className={cn(
+                            "flex flex-1 items-center px-4 py-4 font-medium text-base text-muted-foreground transition-colors hover:text-foreground"
                           )}
                           hash={item.hash}
+                          onClick={() => setMobileMenuOpen(false)}
                           to={item.href}
                         >
                           {item.label}
-                        </MenuLink>
-                      </NavigationMenuItem>
-                    );
-                  }
-
-                  return (
-                    <NavigationMenuItem key={item.label}>
-                      <NavigationMenuTrigger
-                        className={cn(
-                          "font-semibold text-base",
-                          item.active
-                            ? "text-primary"
-                            : "text-muted-foreground hover:text-foreground"
+                        </Link>
+                        {hasManyGroups && (
+                          <button
+                            aria-expanded={openMobileItem === item.label}
+                            aria-label={`Toggle ${item.label} links`}
+                            className="flex size-14 items-center justify-center border-white/5 border-l text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+                            onClick={() =>
+                              setOpenMobileItem((current) =>
+                                current === item.label ? null : item.label
+                              )
+                            }
+                            type="button"
+                          >
+                            <motion.div
+                              animate={{
+                                rotate: openMobileItem === item.label ? 180 : 0,
+                              }}
+                              transition={{
+                                duration: 0.3,
+                                ease: [0.22, 1, 0.36, 1],
+                              }}
+                            >
+                              <IconChevronDown className="size-5" />
+                            </motion.div>
+                          </button>
                         )}
-                      >
-                        {item.label}
-                      </NavigationMenuTrigger>
-                      <NavigationMenuContent>
-                        {menuContent}
-                      </NavigationMenuContent>
-                    </NavigationMenuItem>
-                  );
-                })}
-              </NavigationMenuList>
-            </NavigationMenu>
-          </div>
+                      </div>
 
-          {/* Right Actions */}
-          <div className="flex items-center gap-2.5">
-            <CTAButton className="hidden sm:inline-flex" href="#contact">
-              Get in touch
-            </CTAButton>
-
-            {/* Mobile Menu Button */}
-            <motion.button
-              aria-label="Toggle menu"
-              className="flex size-11 items-center justify-center rounded-full border border-border/50 bg-background text-foreground lg:hidden"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <div className="flex flex-col gap-1">
-                <span
-                  className={cn(
-                    "block h-0.5 w-4 bg-foreground transition-all duration-300",
-                    mobileMenuOpen && "translate-y-1.5 rotate-45"
-                  )}
-                />
-                <span
-                  className={cn(
-                    "block h-0.5 w-4 bg-foreground transition-all duration-300",
-                    mobileMenuOpen && "opacity-0"
-                  )}
-                />
-                <span
-                  className={cn(
-                    "block h-0.5 w-4 bg-foreground transition-all duration-300",
-                    mobileMenuOpen && "-translate-y-1.5 -rotate-45"
-                  )}
-                />
-              </div>
-            </motion.button>
-          </div>
-        </motion.nav>
-      </motion.div>
-
-      {/* Mobile Menu */}
-      <motion.div
-        animate={{
-          height: mobileMenuOpen ? "auto" : 0,
-          opacity: mobileMenuOpen ? 1 : 0,
-        }}
-        className="mx-4 mt-3 overflow-hidden rounded-[1.75rem] border border-border/30 bg-card/95 shadow-[0_18px_50px_rgba(17,17,17,0.16)] backdrop-blur-md sm:mx-6 lg:hidden"
-        initial={false}
-        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <div className="max-h-[calc(100dvh-10rem)] space-y-2 overflow-y-auto overscroll-contain scroll-smooth px-4 py-4">
-          {navItems.map((item, index) => {
-            let mobileContent: ReactNode = null;
-
-            if (hasGroups(item)) {
-              mobileContent = (
-                <div className="rounded-2xl border border-border/40 bg-background/60">
-                  <div className="flex items-stretch">
-                    <Link
-                      className={cn(
-                        "flex flex-1 items-center justify-between rounded-l-2xl px-4 py-3.5 font-medium text-base transition-colors",
-                        item.active
-                          ? "bg-primary/10 text-primary"
-                          : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-                      )}
-                      hash={item.hash}
-                      onClick={() => setMobileMenuOpen(false)}
-                      to={item.href}
-                    >
-                      {item.label}
-                    </Link>
-                    <button
-                      aria-expanded={openMobileItem === item.label}
-                      aria-label={`Toggle ${item.label} links`}
-                      className="flex size-12 items-center justify-center rounded-r-2xl border-border/40 border-l text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
-                      onClick={() =>
-                        setOpenMobileItem((current) =>
-                          current === item.label ? null : item.label
-                        )
-                      }
-                      type="button"
-                    >
-                      <IconChevronDown
-                        className={cn(
-                          "size-4 transition-transform duration-300",
-                          openMobileItem === item.label && "rotate-180"
-                        )}
-                      />
-                    </button>
-                  </div>
-
-                  {openMobileItem === item.label && (
-                    <div className="border-border/40 border-t p-2">
-                      <div className="space-y-4">
-                        {item.groups.map((group) => (
-                          <div className="space-y-1.5" key={group.title}>
-                            <h4 className="px-3 font-semibold text-muted-foreground text-xs uppercase tracking-wider">
-                              {group.title}
-                            </h4>
-                            <div className="space-y-1">
-                              {group.items.map((dropItem) => (
-                                <Link
-                                  className="flex flex-col rounded-xl px-3 py-2.5 transition-colors hover:bg-muted/50"
-                                  hash={dropItem.hash}
-                                  key={dropItem.label}
-                                  onClick={() => setMobileMenuOpen(false)}
-                                  to={dropItem.href}
-                                >
-                                  <span className="font-medium text-foreground text-sm">
-                                    {dropItem.label}
-                                  </span>
-                                  {dropItem.description && (
-                                    <span className="text-muted-foreground text-xs leading-relaxed">
-                                      {dropItem.description}
-                                    </span>
-                                  )}
-                                </Link>
+                      <AnimatePresence initial={false}>
+                        {openMobileItem === item.label && hasManyGroups && (
+                          <motion.div
+                            animate={{ opacity: 1, height: "auto" }}
+                            className="overflow-hidden bg-black/20"
+                            exit={{ opacity: 0, height: 0 }}
+                            initial={{ opacity: 0, height: 0 }}
+                            transition={{
+                              duration: 0.4,
+                              ease: [0.22, 1, 0.36, 1],
+                            }}
+                          >
+                            <div className="space-y-6 p-4">
+                              {item.groups.map((group) => (
+                                <div key={group.title}>
+                                  <h4 className="mb-3 font-semibold text-muted-foreground/60 text-xs uppercase tracking-wider">
+                                    {group.title}
+                                  </h4>
+                                  <div className="space-y-2">
+                                    {group.items.map((dropItem, dropIdx) => (
+                                      <motion.div
+                                        animate={{ opacity: 1, y: 0 }}
+                                        initial={{ opacity: 0, y: 8 }}
+                                        key={dropItem.label}
+                                        transition={{
+                                          delay: dropIdx * 0.04,
+                                          duration: 0.3,
+                                          ease: [0.22, 1, 0.36, 1],
+                                        }}
+                                        whileTap={{ scale: 0.98 }}
+                                      >
+                                        <Link
+                                          className="flex flex-col rounded-xl px-3 py-3 transition-all hover:bg-white/10"
+                                          hash={dropItem.hash}
+                                          onClick={() =>
+                                            setMobileMenuOpen(false)
+                                          }
+                                          to={dropItem.href}
+                                        >
+                                          <span className="font-medium text-foreground text-sm">
+                                            {dropItem.label}
+                                          </span>
+                                          {dropItem.description && (
+                                            <span className="mt-1 line-clamp-2 text-muted-foreground/60 text-xs">
+                                              {dropItem.description}
+                                            </span>
+                                          )}
+                                        </Link>
+                                      </motion.div>
+                                    ))}
+                                  </div>
+                                </div>
                               ))}
                             </div>
-                          </div>
-                        ))}
-                      </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
-                  )}
-                </div>
-              );
-            } else if (hasDropdownItems(item)) {
-              mobileContent = (
-                <Link
-                  className={cn(
-                    "flex items-center justify-between rounded-2xl px-4 py-3.5 font-medium text-base transition-colors",
-                    item.active
-                      ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-                  )}
-                  key={item.label}
-                  onClick={() => setMobileMenuOpen(false)}
-                  to={item.href}
-                >
-                  {item.label}
-                </Link>
-              );
-            } else if (isSimpleLink(item)) {
-              mobileContent = (
-                <Link
-                  className={cn(
-                    "flex items-center justify-between rounded-2xl px-4 py-3.5 font-medium text-base transition-colors",
-                    item.active
-                      ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-                  )}
-                  hash={item.hash}
-                  key={item.label}
-                  onClick={() => setMobileMenuOpen(false)}
-                  to={item.href}
-                >
-                  {item.label}
-                </Link>
-              );
-            }
+                  );
+                } else if (hasDropdownItems(item)) {
+                  mobileContent = (
+                    <div className="overflow-hidden rounded-2xl border border-white/5 bg-white/[0.02]">
+                      <div className="flex items-stretch">
+                        <Link
+                          className={cn(
+                            "flex flex-1 items-center px-4 py-4 font-medium text-base text-muted-foreground transition-colors hover:text-foreground"
+                          )}
+                          key={item.label}
+                          onClick={() => setMobileMenuOpen(false)}
+                          to={item.href}
+                        >
+                          {item.label}
+                        </Link>
+                        <button
+                          aria-expanded={openMobileItem === item.label}
+                          aria-label={`Toggle ${item.label} links`}
+                          className="flex size-14 items-center justify-center border-white/5 border-l text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+                          onClick={() =>
+                            setOpenMobileItem((current) =>
+                              current === item.label ? null : item.label
+                            )
+                          }
+                          type="button"
+                        >
+                          <motion.div
+                            animate={{
+                              rotate: openMobileItem === item.label ? 180 : 0,
+                            }}
+                            transition={{
+                              duration: 0.3,
+                              ease: [0.22, 1, 0.36, 1],
+                            }}
+                          >
+                            <IconChevronDown className="size-5" />
+                          </motion.div>
+                        </button>
+                      </div>
 
-            return (
-              <motion.div
-                animate={{
-                  opacity: mobileMenuOpen ? 1 : 0,
-                  x: mobileMenuOpen ? 0 : -20,
-                }}
-                initial={{ opacity: 0, x: -20 }}
-                key={item.label}
-                transition={{
-                  duration: 0.3,
-                  delay: mobileMenuOpen ? index * 0.05 : 0,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-              >
-                {mobileContent}
-              </motion.div>
-            );
-          })}
-          <div className="flex flex-col gap-2 pt-3">
-            <CTAButton className="w-full" href="#contact" to="/contact-us">
-              Get in touch
-            </CTAButton>
-          </div>
-        </div>
-      </motion.div>
-    </motion.header>
+                      <AnimatePresence initial={false}>
+                        {openMobileItem === item.label && (
+                          <motion.div
+                            animate={{ opacity: 1, height: "auto" }}
+                            className="overflow-hidden bg-black/20"
+                            exit={{ opacity: 0, height: 0 }}
+                            initial={{ opacity: 0, height: 0 }}
+                            transition={{
+                              duration: 0.4,
+                              ease: [0.22, 1, 0.36, 1],
+                            }}
+                          >
+                            <div className="space-y-1 p-3">
+                              {item.dropdownItems.map((dropItem, dropIdx) => (
+                                <motion.div
+                                  animate={{ opacity: 1, x: 0 }}
+                                  initial={{ opacity: 0, x: -10 }}
+                                  key={dropItem.label}
+                                  transition={{
+                                    delay: dropIdx * 0.04,
+                                    duration: 0.3,
+                                    ease: [0.22, 1, 0.36, 1],
+                                  }}
+                                  whileTap={{ scale: 0.98 }}
+                                >
+                                  <Link
+                                    className="flex rounded-xl px-3 py-3 font-medium text-muted-foreground text-sm transition-colors hover:bg-white/10 hover:text-foreground"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    to={dropItem.href}
+                                  >
+                                    {dropItem.label}
+                                  </Link>
+                                </motion.div>
+                              ))}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  );
+                } else if (isSimpleLink(item)) {
+                  mobileContent = (
+                    <motion.div whileTap={{ scale: 0.98 }}>
+                      <Link
+                        className={cn(
+                          "flex items-center rounded-2xl border border-white/5 bg-white/[0.02] px-4 py-4 font-medium text-base text-muted-foreground transition-all hover:bg-white/10 hover:text-foreground"
+                        )}
+                        hash={item.hash}
+                        key={item.label}
+                        onClick={() => setMobileMenuOpen(false)}
+                        to={item.href}
+                      >
+                        {item.label}
+                      </Link>
+                    </motion.div>
+                  );
+                }
+
+                return (
+                  <motion.div
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mb-3"
+                    exit={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    key={item.label}
+                    transition={{
+                      duration: 0.5,
+                      delay: index * 0.08,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                  >
+                    {mobileContent}
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            <motion.div
+              animate={{ opacity: 1, y: 0 }}
+              className="border-white/5 border-t bg-background/50 px-6 py-6"
+              initial={{ opacity: 0, y: 20 }}
+              transition={{
+                delay: navItems.length * 0.08 + 0.1,
+                duration: 0.5,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+            >
+              <CTAButton className="w-full" href="#contact" to="/contact-us">
+                Get in touch
+              </CTAButton>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }

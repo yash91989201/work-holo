@@ -74,7 +74,7 @@ export const servicesData: Record<string, ServicePageData> = {
     subtitle: "Autonomous AI for Smarter Workflows",
     description:
       "Agentic AI represents the next evolution in artificial intelligence, enabling systems to autonomously plan, reason, and execute complex tasks without constant human oversight. Our solutions help businesses automate decision-making processes, optimize operations, and unlock new levels of efficiency.",
-    heroImage: "/images/services/agentic-ai-hero.jpg",
+    heroImage: "/assets/agentic-ai.webp",
     features: [
       "Autonomous task execution",
       "Multi-step reasoning & planning",
@@ -146,7 +146,7 @@ export const servicesData: Record<string, ServicePageData> = {
     subtitle: "AI Agents for Product Teams",
     description:
       "Deploy intelligent AI agents that work alongside your product teams to accelerate development, improve quality, and deliver exceptional user experiences. Our AI agents integrate into your existing workflows to augment human capabilities.",
-    heroImage: "/images/services/ai-agents-hero.jpg",
+    heroImage: "/assets/ai-agents.webp",
     features: [
       "Natural language processing",
       "Context-aware responses",
@@ -218,7 +218,7 @@ export const servicesData: Record<string, ServicePageData> = {
     subtitle: "Launch Fast, Scale with Confidence",
     description:
       "Transform your ideas into market-ready products with our rapid MVP development services. We help startups and enterprises validate concepts, reduce time-to-market, and build foundations for scalable growth.",
-    heroImage: "/images/services/mvp-hero.jpg",
+    heroImage: "/assets/mvp-developement.webp",
     features: [
       "Rapid prototyping",
       "Lean methodology",
@@ -287,7 +287,7 @@ export const servicesData: Record<string, ServicePageData> = {
     subtitle: "High-Performance, Scalable Web Apps",
     description:
       "Build modern, responsive web applications that deliver exceptional user experiences. Our development team combines cutting-edge technologies with proven methodologies to create web apps that scale with your business.",
-    heroImage: "/images/services/web-app-hero.jpg",
+    heroImage: "/assets/web-app-development.avif",
     features: [
       "Progressive Web Apps",
       "Single Page Applications",
@@ -359,7 +359,7 @@ export const servicesData: Record<string, ServicePageData> = {
     subtitle: "Seamless iOS & Android Experiences",
     description:
       "Create native and cross-platform mobile applications that users love. From concept to App Store deployment, we handle every aspect of mobile development with precision and creativity.",
-    heroImage: "/images/services/mobile-app-hero.jpg",
+    heroImage: "/assets/mobile-app-development.webp",
     features: [
       "Native iOS & Android",
       "Cross-platform development",
@@ -431,7 +431,7 @@ export const servicesData: Record<string, ServicePageData> = {
     subtitle: "Faster Releases, Zero-Bug Quality",
     description:
       "Implement comprehensive testing strategies that catch bugs early, reduce manual effort, and ensure consistent quality across releases. Our automation frameworks accelerate your delivery pipeline without compromising quality.",
-    heroImage: "/images/services/qa-hero.jpg",
+    heroImage: "/assets/qa-testing.png",
     features: [
       "Automated test suites",
       "CI/CD integration",
@@ -500,7 +500,7 @@ export const servicesData: Record<string, ServicePageData> = {
     subtitle: "User-First Design That Drives Adoption",
     description:
       "Create intuitive, beautiful interfaces that users love. Our design process combines research-driven insights with creative excellence to deliver experiences that drive engagement, satisfaction, and business results.",
-    heroImage: "/images/services/ux-ui-hero.jpg",
+    heroImage: "ux-ui-design.jpg",
     features: [
       "User research & testing",
       "Wireframing & prototyping",
@@ -572,7 +572,7 @@ export const servicesData: Record<string, ServicePageData> = {
     subtitle: "AI-Ready Data Foundations for Growth",
     description:
       "Build robust data pipelines and infrastructure that power analytics, machine learning, and business intelligence. We help organizations transform raw data into strategic assets that drive informed decision-making.",
-    heroImage: "/images/services/data-engineering-hero.jpg",
+    heroImage: "/assets/data-engineering.webp",
     features: [
       "Data pipeline architecture",
       "ETL/ELT processes",
@@ -644,7 +644,7 @@ export const servicesData: Record<string, ServicePageData> = {
     subtitle: "Optimize Cost, Security & Scalability",
     description:
       "Leverage the full power of Amazon Web Services with our expert cloud solutions. We help businesses architect, migrate, and optimize AWS infrastructure for performance, security, and cost efficiency.",
-    heroImage: "/images/services/aws-hero.jpg",
+    heroImage: "/assets/aws.webp",
     features: [
       "Cloud architecture design",
       "Migration & modernization",
@@ -713,7 +713,7 @@ export const servicesData: Record<string, ServicePageData> = {
     subtitle: "Automated Pipelines, Reliable Deployments",
     description:
       "Streamline your development and operations with modern DevOps practices. We build automated CI/CD pipelines, infrastructure as code, and monitoring solutions that accelerate delivery while maintaining reliability.",
-    heroImage: "/images/services/cloud-devops-hero.jpg",
+    heroImage: "/assets/cloud-engineering-devops.jpg",
     features: [
       "CI/CD pipeline automation",
       "Infrastructure as Code",

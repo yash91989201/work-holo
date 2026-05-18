@@ -1,42 +1,47 @@
+import { Link } from "@tanstack/react-router";
+import { motion } from "motion/react";
+import { useEffect, useState } from "react";
+import { Image } from "@/components/shared/image";
+
 import {
   IconArrowUp,
   IconBell,
   IconBrandFacebook,
   IconBrandInstagram,
   IconBrandLinkedin,
-  IconBrandX,
   IconClock,
+  IconPhone,
+  IconMail,
 } from "@tabler/icons-react";
-import { Link } from "@tanstack/react-router";
-import { motion } from "motion/react";
-import { useEffect, useState } from "react";
 
 const services = [
-  "Agentic AI",
-  "AI Agents",
-  "MVP",
-  "Web App Development",
-  "Mobile App Development",
-  "QA & Test Automation",
-  "UX/UI Design",
-  "Data Engineering",
-  "AWS",
-  "Cloud Engineering & Devops",
+  { label: "Agentic AI", href: "/services/agentic-ai" },
+  { label: "AI Agents", href: "/services/ai-agents" },
+  { label: "MVP", href: "/services/mvp" },
+  { label: "Web App Development", href: "/services/web-app-development" },
+  { label: "Mobile App Development", href: "/services/mobile-app-development" },
+  { label: "QA & Test Automation", href: "/services/qa-test-automation" },
+  { label: "UX/UI Design", href: "/services/ux-ui-design" },
+  { label: "Data Engineering", href: "/services/data-engineering" },
+  { label: "AWS", href: "/services/aws" },
+  {
+    label: "Cloud Engineering & Devops",
+    href: "/services/cloud-engineering-devops",
+  },
 ];
 
 const resources = [
-  { label: "About Us", href: "/", hash: "about" },
-  { label: "Careers", href: "/", badge: "NEW" },
-  { label: "Projects", href: "/", hash: "projects" },
-  { label: "Contact Us", href: "/", hash: "contact" },
+  { label: "About Us", href: "/about-us" },
+  { label: "Careers", href: "/career" },
+  { label: "Projects", href: "/projects" },
+  { label: "Contact Us", href: "/contact-us" },
   { label: "Privacy Policy", href: "/" },
 ];
 
 const socialLinks = [
-  { icon: IconBrandFacebook, href: "#", label: "Facebook" },
-  { icon: IconBrandInstagram, href: "#", label: "Instagram" },
-  { icon: IconBrandLinkedin, href: "#", label: "LinkedIn" },
-  { icon: IconBrandX, href: "#", label: "X" },
+  { icon: IconBrandFacebook, href: "https://www.facebook.com/people/Work-Holo/61575462641337/", label: "Facebook" },
+  { icon: IconBrandInstagram, href: "https://www.instagram.com/workholo.dev/", label: "Instagram" },
+  { icon: IconBrandLinkedin, href: "https://www.linkedin.com/company/workholo/posts/?feedView=all", label: "LinkedIn" },
 ];
 
 function scrollToTop() {
@@ -137,6 +142,8 @@ export function Footer() {
                       className="flex size-8 items-center justify-center rounded-full border border-border bg-background text-primary transition-colors hover:bg-muted"
                       href={social.href}
                       key={social.label}
+                      rel="noopener noreferrer"
+                      target="_blank"
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.95 }}
                     >
@@ -162,14 +169,19 @@ export function Footer() {
               viewport={{ once: true }}
               whileInView={{ opacity: 1, y: 0 }}
             >
-              <Link className="flex items-center gap-2.5" to="/">
-                <div className="flex size-9 items-center justify-center rounded-full bg-primary">
-                  <span className="font-bold text-primary-foreground text-sm">
-                    WH
-                  </span>
+              <Link className="flex shrink-0 items-center gap-1.5" to="/">
+                <div className="relative h-12 w-16">
+                  <Image
+                    alt="Work Holo"
+                    className="object-contain"
+                    height={48}
+                    src="/logo.webp"
+                    unoptimized
+                    width={64}
+                  />
                 </div>
-                <span className="font-semibold text-foreground text-xl tracking-tight">
-                  Work Holo
+                <span className="font-bold text-lg text-foreground tracking-tight uppercase" style={{ fontFamily: "'Michroma', sans-serif" }}>
+                  WORKHOLO
                 </span>
               </Link>
               <p className="mt-4 max-w-xs text-muted-foreground text-sm leading-relaxed">
@@ -190,10 +202,13 @@ export function Footer() {
               </h3>
               <ul className="space-y-3">
                 {services.map((service) => (
-                  <li key={service}>
-                    <span className="cursor-default text-muted-foreground text-sm">
-                      {service}
-                    </span>
+                  <li key={service.label}>
+                    <Link
+                      className="text-muted-foreground text-sm transition-colors duration-200 hover:text-primary"
+                      to={service.href}
+                    >
+                      {service.label}
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -215,7 +230,7 @@ export function Footer() {
                   <li className="flex items-center gap-2" key={resource.label}>
                     <Link
                       className="text-muted-foreground text-sm transition-colors duration-200 hover:text-primary"
-                      hash={resource.hash}
+                      {...(resource.hash ? { hash: resource.hash } : {})}
                       to={resource.href}
                     >
                       {resource.label}
@@ -243,33 +258,40 @@ export function Footer() {
               </h3>
               <div className="space-y-4">
                 <p className="text-muted-foreground text-sm leading-relaxed">
-                  993 Renner Burg, West Rond,
+                  Raj Nagar, Dwarka,
                   <br />
-                  MT 94251-030
+                  New Delhi- 1100XX, Delhi, India
                 </p>
-                <div className="space-y-2">
-                  <p className="text-sm">
-                    <span className="font-semibold text-foreground">P:</span>{" "}
+                <div className="space-y-3">
+                  {/* Phone */}
+                  <div className="flex items-center gap-2 text-sm">
+                    <IconPhone className="size-4 shrink-0 text-primary" />
+
                     <a
                       className="text-muted-foreground transition-colors hover:text-primary"
-                      href="tel:+10095447818"
+                      href="tel:++91-9780970564"
                     >
-                      +1 (009) 544-7818
+                      +97809 70564
                     </a>
-                  </p>
-                  <p className="text-sm">
-                    <span className="font-semibold text-foreground">E:</span>{" "}
+                  </div>
+
+                  {/* Email */}
+                  <div className="flex items-center gap-2 text-sm">
+                    <IconMail className="size-4 shrink-0 text-primary" />
+
                     <a
                       className="text-muted-foreground transition-colors hover:text-primary"
-                      href="mailto:support@workholo.com"
+                      href="mailto:hr@workholo.com"
                     >
-                      support@workholo.com
+                      hr@workholo.com
+                      <br/>
+                      sales@workholo.com
                     </a>
-                  </p>
+                  </div>
                 </div>
                 <div className="flex items-center gap-2 text-muted-foreground text-sm">
                   <IconClock className="size-4 text-primary" />
-                  <span>Mon-Fri 09am-06pm</span>
+                  <span>Mon-Sat 10am- 07pm</span>
                 </div>
               </div>
             </motion.div>
@@ -281,13 +303,13 @@ export function Footer() {
               Work Holo © {new Date().getFullYear()}. All right reserved.
             </p>
             <div className="flex items-center gap-4 text-muted-foreground/60 text-sm">
-              <span className="cursor-default transition-colors hover:text-primary">
+              <Link className="transition-colors hover:text-primary" to="/">
                 Privacy & Policy
-              </span>
+              </Link>
               <span className="text-border">·</span>
-              <span className="cursor-default transition-colors hover:text-primary">
+              <Link className="transition-colors hover:text-primary" to="/">
                 Terms & Condition
-              </span>
+              </Link>
             </div>
           </div>
         </div>
