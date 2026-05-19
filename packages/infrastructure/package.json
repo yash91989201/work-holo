@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@opensearch-project/opensearch": "^3.6.0",
-    "amqplib": "^1.0.3",
+    "amqplib": "^2.0.1",
     "pusher": "^5.3.3"
   },
   "devDependencies": {

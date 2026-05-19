@@ -30,19 +30,18 @@
   },
   "dependencies": {
     "@fontsource/michroma": "^5.2.8",
-    "@tabler/icons-react": "^3.41.1",
+    "@tabler/icons-react": "^3.44.0",
     "dotenv": "^17.4.2",
-    "framer-motion": "^12.38.0",
-    "zod": "^4.3.6"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.13",
-    "@types/bun": "^1.3.13",
+    "@biomejs/biome": "2.4.15",
+    "@types/bun": "^1.3.14",
     "husky": "^9.1.7",
-    "lint-staged": "^16.4.0",
-    "oxlint": "^1.62.0",
-    "turbo": "^2.9.6",
-    "ultracite": "^7.6.2",
+    "lint-staged": "^17.0.5",
+    "oxlint": "^1.66.0",
+    "turbo": "^2.9.14",
+    "ultracite": "^7.7.0",
     "web-push": "^3.6.7"
   },
   "lint-staged": {
