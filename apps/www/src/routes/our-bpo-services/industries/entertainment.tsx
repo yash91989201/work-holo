@@ -1,11 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import BPOPage, {
-  WebPageProps,
+  type WebPageProps,
 } from "@/components/our-bpo-services/bpo-detail-page";
 
 export const Route = createFileRoute(
-  "/our-bpo-services/industries/entertainment",
+  "/our-bpo-services/industries/entertainment"
 )({
   component: RouteComponent,
 });
@@ -89,53 +89,54 @@ const pageData: WebPageProps = {
     },
   },
   faq: {
-  subtitle: "Support",
-  title: "If You Have Questions, We Have Answers",
-  items: [
-    {
-      id: 1,
-      question: "Do you disrupt my brand image?",
-      answer:
-        "No. Our teams are trained to fully align with your brand voice, tone, and customer experience standards, ensuring seamless integration without disruption.",
-    },
-    {
-      id: 2,
-      question: "How do you handle high call volumes during campaigns or releases?",
-      answer:
-        "We provide scalable support that can quickly expand during peak periods like launches, promotions, or live events, ensuring no opportunity is missed.",
-    },
-    {
-      id: 3,
-      question: "Can your agents handle entertainment-specific audiences?",
-      answer:
-        "Yes. Our agents are trained to manage diverse audiences, including fans, subscribers, and event participants, while maintaining a high-quality experience.",
-    },
-    {
-      id: 4,
-      question: "What channels do you support?",
-      answer:
-        "We support multiple channels including phone, email, live chat, and social media, allowing you to engage your audience wherever they are.",
-    },
-    {
-      id: 5,
-      question: "How quickly can we get started?",
-      answer:
-        "Onboarding is fast and efficient. Depending on your requirements, we can deploy a trained team within days to start handling operations.",
-    },
-    {
-      id: 6,
-      question: "Do you provide performance tracking and reporting?",
-      answer:
-        "Yes. We offer real-time reporting and analytics so you can track performance, customer satisfaction, and campaign effectiveness.",
-    },
-    {
-      id: 7,
-      question: "Is your service secure and compliant?",
-      answer:
-        "Absolutely. We follow strict security protocols and compliance standards to ensure your data and customer interactions are fully protected.",
-    },
-  ],
-},
+    subtitle: "Support",
+    title: "If You Have Questions, We Have Answers",
+    items: [
+      {
+        id: 1,
+        question: "Do you disrupt my brand image?",
+        answer:
+          "No. Our teams are trained to fully align with your brand voice, tone, and customer experience standards, ensuring seamless integration without disruption.",
+      },
+      {
+        id: 2,
+        question:
+          "How do you handle high call volumes during campaigns or releases?",
+        answer:
+          "We provide scalable support that can quickly expand during peak periods like launches, promotions, or live events, ensuring no opportunity is missed.",
+      },
+      {
+        id: 3,
+        question: "Can your agents handle entertainment-specific audiences?",
+        answer:
+          "Yes. Our agents are trained to manage diverse audiences, including fans, subscribers, and event participants, while maintaining a high-quality experience.",
+      },
+      {
+        id: 4,
+        question: "What channels do you support?",
+        answer:
+          "We support multiple channels including phone, email, live chat, and social media, allowing you to engage your audience wherever they are.",
+      },
+      {
+        id: 5,
+        question: "How quickly can we get started?",
+        answer:
+          "Onboarding is fast and efficient. Depending on your requirements, we can deploy a trained team within days to start handling operations.",
+      },
+      {
+        id: 6,
+        question: "Do you provide performance tracking and reporting?",
+        answer:
+          "Yes. We offer real-time reporting and analytics so you can track performance, customer satisfaction, and campaign effectiveness.",
+      },
+      {
+        id: 7,
+        question: "Is your service secure and compliant?",
+        answer:
+          "Absolutely. We follow strict security protocols and compliance standards to ensure your data and customer interactions are fully protected.",
+      },
+    ],
+  },
   cta: {
     headlineLine1: "Unleash Your Hidden Potential Today with",
     headlineAccent: "One Simple Click",

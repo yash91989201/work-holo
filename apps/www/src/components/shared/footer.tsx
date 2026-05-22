@@ -1,8 +1,3 @@
-import { Link } from "@tanstack/react-router";
-import { motion } from "motion/react";
-import { useEffect, useState } from "react";
-import { Image } from "@/components/shared/image";
-
 import {
   IconArrowUp,
   IconBell,
@@ -10,9 +5,13 @@ import {
   IconBrandInstagram,
   IconBrandLinkedin,
   IconClock,
-  IconPhone,
   IconMail,
+  IconPhone,
 } from "@tabler/icons-react";
+import { Link } from "@tanstack/react-router";
+import { motion } from "motion/react";
+import { useEffect, useState } from "react";
+import { Image } from "@/components/shared/image";
 
 const services = [
   { label: "Agentic AI", href: "/services/agentic-ai" },
@@ -39,9 +38,21 @@ const resources = [
 ];
 
 const socialLinks = [
-  { icon: IconBrandFacebook, href: "https://www.facebook.com/people/Work-Holo/61575462641337/", label: "Facebook" },
-  { icon: IconBrandInstagram, href: "https://www.instagram.com/workholo.dev/", label: "Instagram" },
-  { icon: IconBrandLinkedin, href: "https://www.linkedin.com/company/workholo/posts/?feedView=all", label: "LinkedIn" },
+  {
+    icon: IconBrandFacebook,
+    href: "https://www.facebook.com/people/Work-Holo/61575462641337/",
+    label: "Facebook",
+  },
+  {
+    icon: IconBrandInstagram,
+    href: "https://www.instagram.com/workholo.dev/",
+    label: "Instagram",
+  },
+  {
+    icon: IconBrandLinkedin,
+    href: "https://www.linkedin.com/company/workholo/posts/?feedView=all",
+    label: "LinkedIn",
+  },
 ];
 
 function scrollToTop() {
@@ -180,7 +191,10 @@ export function Footer() {
                     width={64}
                   />
                 </div>
-                <span className="font-bold text-lg text-foreground tracking-tight uppercase" style={{ fontFamily: "'Michroma', sans-serif" }}>
+                <span
+                  className="font-bold text-foreground text-lg uppercase tracking-tight"
+                  style={{ fontFamily: "'Michroma', sans-serif" }}
+                >
                   WORKHOLO
                 </span>
               </Link>
@@ -284,7 +298,7 @@ export function Footer() {
                       href="mailto:hr@workholo.com"
                     >
                       hr@workholo.com
-                      <br/>
+                      <br />
                       sales@workholo.com
                     </a>
                   </div>

@@ -2,12 +2,15 @@ import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import { formOptions } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { toast } from "sonner";
 import { Button } from "@work-holo/ui/components/button";
 import { FieldGroup } from "@work-holo/ui/components/field";
 import { useAppForm } from "@work-holo/ui/components/form/hooks";
-import { InputGroupAddon, InputGroupButton } from "@work-holo/ui/components/input-group";
+import {
+  InputGroupAddon,
+  InputGroupButton,
+} from "@work-holo/ui/components/input-group";
 import { Spinner } from "@work-holo/ui/components/spinner";
+import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 import { SignUpFormSchema } from "@/lib/schemas/auth";
 import type { SignUpFormType } from "@/lib/types";

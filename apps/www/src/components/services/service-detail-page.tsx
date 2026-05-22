@@ -1,12 +1,5 @@
 import { IconCheck, IconChevronRight, IconPhone } from "@tabler/icons-react";
 import { Link } from "@tanstack/react-router";
-import { cn } from "@work-holo/ui/lib/utils";
-import { motion, useScroll, useTransform } from "motion/react";
-import { useRef, useState } from "react";
-import { getServiceList } from "./service-data";
-import type { ServicePageData } from "./service-data";
-import { ServiceGalleryImage, ServiceImage } from "./service-image";
-
 import {
   Accordion,
   AccordionContent,
@@ -19,6 +12,12 @@ import {
   ItemContent,
   ItemTitle,
 } from "@work-holo/ui/components/item";
+import { cn } from "@work-holo/ui/lib/utils";
+import { motion, useScroll, useTransform } from "motion/react";
+import { useRef, useState } from "react";
+import type { ServicePageData } from "./service-data";
+import { getServiceList } from "./service-data";
+import { ServiceGalleryImage } from "./service-image";
 
 interface ServiceDetailPageProps {
   data: ServicePageData;
@@ -47,7 +46,7 @@ function ServiceSidebar({ currentSlug }: { currentSlug: string }) {
             <Item
               className={cn(
                 service.isActive &&
-                  "border-primary/20 bg-primary/5 text-primary",
+                  "border-primary/20 bg-primary/5 text-primary"
               )}
               key={service.slug}
               render={<Link to={service.href} />}
@@ -60,7 +59,7 @@ function ServiceSidebar({ currentSlug }: { currentSlug: string }) {
                 <IconChevronRight
                   className={cn(
                     "size-4 transition-transform group-hover/item:translate-x-1",
-                    service.isActive ? "text-primary" : "text-muted-foreground",
+                    service.isActive ? "text-primary" : "text-muted-foreground"
                   )}
                 />
               </ItemActions>
@@ -117,13 +116,13 @@ function HeroSection({ data }: { data: ServicePageData }) {
       {/* Background image with parallax */}
       <motion.div className="absolute inset-0 z-0" style={{ y }}>
         <img
-          src={data.heroImage}
           alt={data.title}
           className="h-screen w-full object-fill"
           onError={(e) => {
             e.currentTarget.src =
               "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1600&auto=format&fit=crop";
           }}
+          src={data.heroImage}
         />
         {/* Dark blur overlay */}
         <div className="absolute inset-0 backdrop-blur-[5px]" />
@@ -139,7 +138,7 @@ function HeroSection({ data }: { data: ServicePageData }) {
 
       {/* Hero content pinned to bottom */}
       <motion.div
-        className="relative z-10 flex min-h-[70vh] pt-32 items-end"
+        className="relative z-10 flex min-h-[70vh] items-end pt-32"
         style={{ opacity }}
       >
         <div className="mx-auto w-full max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20 lg:px-8 lg:pb-24">
@@ -184,10 +183,10 @@ export function ServiceDetailPage({ data }: ServiceDetailPageProps) {
 
   const featuresLeft = data.features.slice(
     0,
-    Math.ceil(data.features.length / 2),
+    Math.ceil(data.features.length / 2)
   );
   const featuresRight = data.features.slice(
-    Math.ceil(data.features.length / 2),
+    Math.ceil(data.features.length / 2)
   );
 
   return (

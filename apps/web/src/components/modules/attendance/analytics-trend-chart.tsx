@@ -4,9 +4,6 @@ import {
   IconDownload,
 } from "@tabler/icons-react";
 import type { AttendanceAnalyticsOutput } from "@work-holo/api/lib/schemas/attendance";
-import { format, getDay } from "date-fns";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
-import type { z } from "zod";
 import { Button } from "@work-holo/ui/components/button";
 import { Card } from "@work-holo/ui/components/card";
 import {
@@ -15,6 +12,9 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@work-holo/ui/components/chart";
+import { format, getDay } from "date-fns";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import type { z } from "zod";
 
 type AttendanceAnalytics = z.infer<typeof AttendanceAnalyticsOutput>;
 

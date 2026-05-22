@@ -126,7 +126,7 @@ const buildSrcSet = (options: {
     options;
 
   if (!canOptimizeImage(src, Boolean(unoptimized))) {
-    return undefined;
+    return;
   }
 
   const hasWidth = hasValidDimension(width);
@@ -150,7 +150,7 @@ const buildSrcSet = (options: {
     : DEFAULT_SRCSET_WIDTHS.slice(0, 8);
 
   if (candidateWidths.length === 0) {
-    return undefined;
+    return;
   }
 
   return candidateWidths
@@ -232,7 +232,7 @@ const getComputedHeight = (
     return Math.round(width / aspectRatio);
   }
 
-  return undefined;
+  return;
 };
 
 const getPlaceholderSource = (options: {
@@ -255,7 +255,7 @@ const getPlaceholderSource = (options: {
   } = options;
 
   if (!placeholder) {
-    return undefined;
+    return;
   }
 
   const hasWidth = hasValidDimension(width);

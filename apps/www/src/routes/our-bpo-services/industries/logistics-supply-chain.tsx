@@ -1,19 +1,18 @@
-import BPOPage from "@/components/our-bpo-services/bpo-detail-page";
 import { createFileRoute } from "@tanstack/react-router";
-
 import type {
-  WebPageProps,
-  HeroProps,
-  StatItem,
-  ServicesProps,
-  WorkflowProps,
-  FAQProps,
   CTAProps,
+  FAQProps,
+  HeroProps,
   ImageSectionProps,
+  ServicesProps,
+  StatItem,
+  WebPageProps,
+  WorkflowProps,
 } from "@/components/our-bpo-services/bpo-detail-page";
+import BPOPage from "@/components/our-bpo-services/bpo-detail-page";
 
 export const Route = createFileRoute(
-  "/our-bpo-services/industries/logistics-supply-chain",
+  "/our-bpo-services/industries/logistics-supply-chain"
 )({
   component: RouteComponent,
 });
@@ -33,7 +32,6 @@ const hero: HeroProps = {
   terminalMessage: "Optimizing Supply Chain...",
 };
 
-
 // ✅ STATS
 const stats: StatItem[] = [
   { label: "Daily Support", value: "24/7" },
@@ -41,7 +39,6 @@ const stats: StatItem[] = [
   { label: "Faster Processing", value: "3x" },
   { label: "Global Clients", value: "120+" },
 ];
-
 
 // ✅ SERVICES
 const services: ServicesProps = {
@@ -69,11 +66,7 @@ const services: ServicesProps = {
       title: "Back Office Services",
       description:
         "Reduce operational burden by outsourcing administrative workflows.",
-      features: [
-        "Cost reduction",
-        "Faster turnaround",
-        "Process optimization",
-      ],
+      features: ["Cost reduction", "Faster turnaround", "Process optimization"],
       icon: "users",
     },
     {
@@ -82,16 +75,11 @@ const services: ServicesProps = {
       title: "Customer Support",
       description:
         "Highly trained agents to manage logistics-related customer queries.",
-      features: [
-        "24/7 support",
-        "Issue resolution",
-        "Client satisfaction",
-      ],
+      features: ["24/7 support", "Issue resolution", "Client satisfaction"],
       icon: "infinity",
     },
   ],
 };
-
 
 // ✅ WORKFLOW
 const workflow: WorkflowProps = {
@@ -107,8 +95,7 @@ const workflow: WorkflowProps = {
     {
       icon: "users",
       title: "Streamline Operations",
-      description:
-        "Improve coordination across teams and logistics systems.",
+      description: "Improve coordination across teams and logistics systems.",
     },
     {
       icon: "zap",
@@ -132,7 +119,6 @@ const workflow: WorkflowProps = {
   },
 };
 
-
 // ✅ FAQ
 const faq: FAQProps = {
   subtitle: "FAQ",
@@ -153,7 +139,6 @@ const faq: FAQProps = {
   ],
 };
 
-
 // ✅ CTA
 const cta: CTAProps = {
   headlineLine1: "Unleash Your Logistics Potential",
@@ -162,7 +147,6 @@ const cta: CTAProps = {
   secondaryLabel: "Improve your ROI",
   footnote: "© 2026 Confie Holding II Co. All rights reserved.",
 };
-
 
 // ✅ IMAGE SECTIONS
 const imageSections: ImageSectionProps[] = [
@@ -173,8 +157,7 @@ const imageSections: ImageSectionProps[] = [
     bullets: [
       {
         label: "Preparedness",
-        detail:
-          "Stay future-ready with scalable logistics support solutions.",
+        detail: "Stay future-ready with scalable logistics support solutions.",
       },
     ],
     closingText:
@@ -201,7 +184,6 @@ const imageSections: ImageSectionProps[] = [
   },
 ];
 
-
 // ✅ FINAL PAGE OBJECT
 export const bpoPageProps: WebPageProps = {
   hero,
@@ -212,7 +194,6 @@ export const bpoPageProps: WebPageProps = {
   cta,
   imageSections,
 };
-
 
 // ✅ ROUTE COMPONENT
 function RouteComponent() {

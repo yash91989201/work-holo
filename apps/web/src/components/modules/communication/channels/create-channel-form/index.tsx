@@ -1,8 +1,5 @@
 import { IconPlus } from "@tabler/icons-react";
 import { useMutation } from "@tanstack/react-query";
-import type { ReactNode } from "react";
-import { Suspense, useState } from "react";
-import { toast } from "sonner";
 import { Button } from "@work-holo/ui/components/button";
 import {
   Dialog,
@@ -17,6 +14,9 @@ import { FieldGroup } from "@work-holo/ui/components/field";
 import { useAppForm } from "@work-holo/ui/components/form/hooks";
 import { SelectItem } from "@work-holo/ui/components/select";
 import { Spinner } from "@work-holo/ui/components/spinner";
+import type { ReactNode } from "react";
+import { Suspense, useState } from "react";
+import { toast } from "sonner";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { CreateChannelFormSchema } from "@/lib/schemas/communication/channel";
 import { queryClient, queryUtils } from "@/utils/orpc";
@@ -72,7 +72,11 @@ export const CreateChannelForm = ({ trigger }: CreateChannelFormProps) => {
   return (
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
       <DialogTrigger>
-        {trigger ?? <Button aria-label="Create channel" size="icon" variant="link"><IconPlus /></Button>}
+        {trigger ?? (
+          <Button aria-label="Create channel" size="icon" variant="link">
+            <IconPlus />
+          </Button>
+        )}
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-106">

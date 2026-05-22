@@ -23,10 +23,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import type { MemberWithUserType } from "@work-holo/api/lib/types";
-import { format } from "date-fns";
-import { useMemo, useState } from "react";
-import type { DateRange } from "react-day-picker";
-import { toast } from "sonner";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -37,7 +33,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@work-holo/ui/components/alert-dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@work-holo/ui/components/avatar";
 import { Badge } from "@work-holo/ui/components/badge";
 import { Button } from "@work-holo/ui/components/button";
 import { Calendar } from "@work-holo/ui/components/calendar";
@@ -92,6 +92,10 @@ import {
   TableHeader,
   TableRow,
 } from "@work-holo/ui/components/table";
+import { format } from "date-fns";
+import { useMemo, useState } from "react";
+import type { DateRange } from "react-day-picker";
+import { toast } from "sonner";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { authClient } from "@/lib/auth-client";
 import { getRoleBadgeVariant, getRoleIcon } from "@/lib/org";
@@ -321,7 +325,7 @@ export const MembersTable = () => {
         to: new Date(search.endDate),
       };
     }
-    return undefined;
+    return;
   }, [search.startDate, search.endDate]);
 
   const [updateRoleMember, setUpdateRoleMember] =
@@ -590,22 +594,26 @@ export const MembersTable = () => {
               </SelectContent>
             </Select>
             <Popover>
-              <PopoverTrigger render={<Button
-                className={dateRange ? "" : "text-muted-foreground"}
-                variant="outline"
-              >
-                <IconCalendarEventFilled className="mr-2 h-4 w-4" />
-                {!dateRange?.from && <span>Filter by date</span>}
-                {dateRange?.from &&
-                  !dateRange.to &&
-                  format(dateRange.from, "LLL dd, y")}
-                {dateRange?.from && dateRange.to && (
-                  <>
-                    {format(dateRange.from, "LLL dd, y")} -{" "}
-                    {format(dateRange.to, "LLL dd, y")}
-                  </>
-                )}
-              </Button>} />
+              <PopoverTrigger
+                render={
+                  <Button
+                    className={dateRange ? "" : "text-muted-foreground"}
+                    variant="outline"
+                  >
+                    <IconCalendarEventFilled className="mr-2 h-4 w-4" />
+                    {!dateRange?.from && <span>Filter by date</span>}
+                    {dateRange?.from &&
+                      !dateRange.to &&
+                      format(dateRange.from, "LLL dd, y")}
+                    {dateRange?.from && dateRange.to && (
+                      <>
+                        {format(dateRange.from, "LLL dd, y")} -{" "}
+                        {format(dateRange.to, "LLL dd, y")}
+                      </>
+                    )}
+                  </Button>
+                }
+              />
               <PopoverContent align="start" className="w-auto p-0">
                 <Calendar
                   defaultMonth={dateRange?.from}

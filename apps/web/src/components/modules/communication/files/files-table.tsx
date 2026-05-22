@@ -15,10 +15,11 @@ import {
   type SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { format } from "date-fns";
-import { useEffect, useMemo, useState } from "react";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@work-holo/ui/components/avatar";
 import { Badge } from "@work-holo/ui/components/badge";
 import { Button } from "@work-holo/ui/components/button";
 import { Card, CardContent, CardFooter } from "@work-holo/ui/components/card";
@@ -38,6 +39,8 @@ import {
   TableHeader,
   TableRow,
 } from "@work-holo/ui/components/table";
+import { format } from "date-fns";
+import { useEffect, useMemo, useState } from "react";
 import { queryUtils } from "@/utils/orpc";
 import { FileActions } from "./file-actions";
 import {
@@ -255,13 +258,11 @@ export const FilesTable = () => {
       {
         id: "actions",
         header: () => <div className="text-right">Actions</div>,
-        cell: ({ row }) => {
-          return (
-            <div className="text-right">
-              <FileActions file={row.original} />
-            </div>
-          );
-        },
+        cell: ({ row }) => (
+          <div className="text-right">
+            <FileActions file={row.original} />
+          </div>
+        ),
       },
     ],
     []

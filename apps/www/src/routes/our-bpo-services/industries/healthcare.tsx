@@ -1,11 +1,12 @@
-import BPOPage from "@/components/our-bpo-services/bpo-detail-page";
 import { createFileRoute } from "@tanstack/react-router";
-import { WebPageProps } from "@/components/our-bpo-services/bpo-detail-page";
+import BPOPage, {
+  type WebPageProps,
+} from "@/components/our-bpo-services/bpo-detail-page";
 
 export const Route = createFileRoute("/our-bpo-services/industries/healthcare")(
   {
     component: RouteComponent,
-  },
+  }
 );
 
 const pageData: WebPageProps = {
@@ -22,24 +23,24 @@ const pageData: WebPageProps = {
     terminalCommand: "Talk to Our Experts",
     terminalMessage: "Improve your ROI",
   },
-"stats": [
-  {
-    "label": "Years Experience",
-    "value": "10+"
-  },
-  {
-    "label": "HIPAA Compliance",
-    "value": "100%"
-  },
-  {
-    "label": "Medical Accuracy",
-    "value": "99.9%"
-  },
-  {
-    "label": "Patients Supported",
-    "value": "1M+"
-  }
-],
+  stats: [
+    {
+      label: "Years Experience",
+      value: "10+",
+    },
+    {
+      label: "HIPAA Compliance",
+      value: "100%",
+    },
+    {
+      label: "Medical Accuracy",
+      value: "99.9%",
+    },
+    {
+      label: "Patients Supported",
+      value: "1M+",
+    },
+  ],
   services: {
     subtitle: "BPO Functions",
     title: "BPO Functions in the Healthcare Industry",

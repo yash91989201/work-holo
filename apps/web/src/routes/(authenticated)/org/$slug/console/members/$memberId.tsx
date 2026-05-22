@@ -8,8 +8,6 @@ import {
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import type { MemberWithUserType } from "@work-holo/api/lib/types";
-import { Suspense, useState } from "react";
-import { toast } from "sonner";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,10 +18,19 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@work-holo/ui/components/alert-dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@work-holo/ui/components/avatar";
 import { Badge } from "@work-holo/ui/components/badge";
 import { Button } from "@work-holo/ui/components/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@work-holo/ui/components/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@work-holo/ui/components/card";
 import {
   Dialog,
   DialogContent,
@@ -38,6 +45,8 @@ import { SelectItem } from "@work-holo/ui/components/select";
 import { Separator } from "@work-holo/ui/components/separator";
 import { Skeleton } from "@work-holo/ui/components/skeleton";
 import { Spinner } from "@work-holo/ui/components/spinner";
+import { Suspense, useState } from "react";
+import { toast } from "sonner";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { authClient } from "@/lib/auth-client";
 import { getRoleBadgeVariant, getRoleIcon } from "@/lib/org";
@@ -257,7 +266,15 @@ function MemberDetailContent() {
     return (
       <div className="flex h-96 flex-col items-center justify-center gap-4">
         <p className="text-lg text-muted-foreground">Member not found</p>
-        <Button render={<Link params={{ slug }} to="/org/$slug/console/members"><IconArrowLeft className="mr-2 h-4 w-4" />Back to Members</Link>} variant="outline" />
+        <Button
+          render={
+            <Link params={{ slug }} to="/org/$slug/console/members">
+              <IconArrowLeft className="mr-2 h-4 w-4" />
+              Back to Members
+            </Link>
+          }
+          variant="outline"
+        />
       </div>
     );
   }
@@ -271,7 +288,15 @@ function MemberDetailContent() {
     <>
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <Button render={<Link params={{ slug }} to="/org/$slug/console/members"><IconArrowLeft className="h-4 w-4" /></Link>} size="icon" variant="outline" />
+          <Button
+            render={
+              <Link params={{ slug }} to="/org/$slug/console/members">
+                <IconArrowLeft className="h-4 w-4" />
+              </Link>
+            }
+            size="icon"
+            variant="outline"
+          />
           <div>
             <h1 className="font-bold text-2xl">Member Details</h1>
             <p className="text-muted-foreground text-sm">

@@ -151,7 +151,7 @@ export const TeamsTable = () => {
         to: new Date(search.endDate),
       };
     }
-    return undefined;
+    return;
   }, [search.startDate, search.endDate]);
 
   const {
@@ -286,17 +286,29 @@ export const TeamsTable = () => {
           return (
             <div className="flex justify-end">
               <DropdownMenu>
-                <DropdownMenuTrigger render={<Button className="h-8 w-8 p-0" variant="ghost">
-                  <span className="sr-only">Open menu</span>
-                  <IconDots className="h-4 w-4" />
-                </Button>} />
+                <DropdownMenuTrigger
+                  render={
+                    <Button className="h-8 w-8 p-0" variant="ghost">
+                      <span className="sr-only">Open menu</span>
+                      <IconDots className="h-4 w-4" />
+                    </Button>
+                  }
+                />
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem render={<Suspense fallback={<AddTeamMemberDialog.Fallback />}>
-                    <AddTeamMemberDialog teamId={team.id} />
-                  </Suspense>} />
-                  <DropdownMenuItem render={<Suspense fallback={<RemoveTeamMemberDialog.Fallback />}>
-                    <RemoveTeamMemberDialog teamId={team.id} />
-                  </Suspense>} />
+                  <DropdownMenuItem
+                    render={
+                      <Suspense fallback={<AddTeamMemberDialog.Fallback />}>
+                        <AddTeamMemberDialog teamId={team.id} />
+                      </Suspense>
+                    }
+                  />
+                  <DropdownMenuItem
+                    render={
+                      <Suspense fallback={<RemoveTeamMemberDialog.Fallback />}>
+                        <RemoveTeamMemberDialog teamId={team.id} />
+                      </Suspense>
+                    }
+                  />
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     className="text-destructive focus:text-destructive"
@@ -383,16 +395,20 @@ export const TeamsTable = () => {
           </InputGroup>
 
           <Popover>
-            <PopoverTrigger render={<Button
-              className={cn(
-                "max-w-72 justify-start text-left font-normal",
-                !dateRange && "text-muted-foreground"
-              )}
-              variant={"outline"}
-            >
-              <IconCalendarEventFilled className="mr-2 h-4 w-4" />
-              {getDateRangeDisplay(dateRange)}
-            </Button>} />
+            <PopoverTrigger
+              render={
+                <Button
+                  className={cn(
+                    "max-w-72 justify-start text-left font-normal",
+                    !dateRange && "text-muted-foreground"
+                  )}
+                  variant={"outline"}
+                >
+                  <IconCalendarEventFilled className="mr-2 h-4 w-4" />
+                  {getDateRangeDisplay(dateRange)}
+                </Button>
+              }
+            />
             <PopoverContent align="start" className="w-auto p-0">
               <Calendar
                 defaultMonth={dateRange?.from}

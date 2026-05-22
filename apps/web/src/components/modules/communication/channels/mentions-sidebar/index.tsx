@@ -1,7 +1,7 @@
 import { IconAt, IconLoader2, IconX } from "@tabler/icons-react";
-import { useMemo } from "react";
 import { Button } from "@work-holo/ui/components/button";
 import { Tabs, TabsList, TabsTrigger } from "@work-holo/ui/components/tabs";
+import { useMemo } from "react";
 import { useChannelMentions } from "@/hooks/communications/use-channel-mentions";
 import { insertDateSeparators } from "@/lib/communications/message";
 import { cn } from "@/lib/utils";

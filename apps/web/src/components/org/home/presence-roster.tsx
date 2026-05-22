@@ -8,8 +8,11 @@ import {
   IconUsers,
   IconWifiOff,
 } from "@tabler/icons-react";
-import { useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@work-holo/ui/components/avatar";
 import { Badge } from "@work-holo/ui/components/badge";
 import {
   Card,
@@ -29,6 +32,7 @@ import {
 } from "@work-holo/ui/components/select";
 import { Separator } from "@work-holo/ui/components/separator";
 import { Skeleton } from "@work-holo/ui/components/skeleton";
+import { useState } from "react";
 import { useListOrgMembers } from "@/hooks/use-list-org-members";
 import type { PresenceStatus } from "@/hooks/use-presence";
 import { useOrgPresence } from "@/hooks/use-presence";

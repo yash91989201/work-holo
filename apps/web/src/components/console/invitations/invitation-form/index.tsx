@@ -4,8 +4,6 @@ import {
   IconUserFilled,
 } from "@tabler/icons-react";
 import { useSearch } from "@tanstack/react-router";
-import { Suspense, useState } from "react";
-import { toast } from "sonner";
 import { Button } from "@work-holo/ui/components/button";
 import {
   Dialog,
@@ -19,6 +17,8 @@ import { FieldGroup } from "@work-holo/ui/components/field";
 import { useAppForm } from "@work-holo/ui/components/form/hooks";
 import { SelectItem } from "@work-holo/ui/components/select";
 import { Spinner } from "@work-holo/ui/components/spinner";
+import { Suspense, useState } from "react";
+import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 import { InvitationFormSchema } from "@/lib/schemas/member";
 import { queryClient, queryUtils } from "@/utils/orpc";
@@ -70,10 +70,14 @@ export const InvitationForm = () => {
 
   return (
     <Dialog onOpenChange={setIsOpen} open={isOpen}>
-      <DialogTrigger render={<Button>
-        <IconPlus className="mr-2 h-4 w-4" />
-        Invite Member
-      </Button>} />
+      <DialogTrigger
+        render={
+          <Button>
+            <IconPlus className="mr-2 h-4 w-4" />
+            Invite Member
+          </Button>
+        }
+      />
 
       <DialogContent>
         <DialogHeader>

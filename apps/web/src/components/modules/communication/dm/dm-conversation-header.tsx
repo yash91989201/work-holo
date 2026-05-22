@@ -5,10 +5,11 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { useNavigate, useParams } from "@tanstack/react-router";
-import DOMPurify from "dompurify";
-import parse from "html-react-parser";
-import { type ReactNode, useEffect, useRef, useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@work-holo/ui/components/avatar";
 import { Badge } from "@work-holo/ui/components/badge";
 import { Button } from "@work-holo/ui/components/button";
 import {
@@ -26,10 +27,7 @@ import {
   InputGroupText,
 } from "@work-holo/ui/components/input-group";
 import { Kbd } from "@work-holo/ui/components/kbd";
-import {
-  Popover,
-  PopoverContent,
-} from "@work-holo/ui/components/popover";
+import { Popover, PopoverContent } from "@work-holo/ui/components/popover";
 import { ScrollArea } from "@work-holo/ui/components/scroll-area";
 import { Skeleton } from "@work-holo/ui/components/skeleton";
 import { Spinner } from "@work-holo/ui/components/spinner";
@@ -38,6 +36,9 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@work-holo/ui/components/tooltip";
+import DOMPurify from "dompurify";
+import parse from "html-react-parser";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { useDmConversations } from "@/hooks/communications/dm/use-dm-conversations";
 import { useDmMessageSearch } from "@/hooks/communications/dm/use-dm-message-search";
 import { useVirtualDmMessages } from "@/hooks/communications/dm/use-dm-messages";
@@ -282,57 +283,54 @@ export function DmConversationHeader() {
         {/* Actions */}
         <div className="ml-auto flex items-center gap-2">
           <Popover open={hasQuery}>
-            <div ref={anchorRef} className="w-44 sm:w-60 md:w-72">
+            <div className="w-44 sm:w-60 md:w-72" ref={anchorRef}>
               <InputGroup className="h-8 rounded-full bg-background">
-                    <InputGroupAddon>
-                      <InputGroupText>
-                        {isLoading ? <Spinner /> : <IconSearch />}
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <InputGroupInput
-                      aria-label="Search messages"
-                      onChange={(event) => {
-                        setQuery(event.target.value);
-                      }}
-                      onKeyDown={(event) => {
-                        const isSearchShortcut =
-                          (event.metaKey || event.ctrlKey) &&
-                          event.key.toLowerCase() === "k" &&
-                          !event.shiftKey;
+                <InputGroupAddon>
+                  <InputGroupText>
+                    {isLoading ? <Spinner /> : <IconSearch />}
+                  </InputGroupText>
+                </InputGroupAddon>
+                <InputGroupInput
+                  aria-label="Search messages"
+                  onChange={(event) => {
+                    setQuery(event.target.value);
+                  }}
+                  onKeyDown={(event) => {
+                    const isSearchShortcut =
+                      (event.metaKey || event.ctrlKey) &&
+                      event.key.toLowerCase() === "k" &&
+                      !event.shiftKey;
 
-                        if (isSearchShortcut) {
-                          event.preventDefault();
-                          inputRef.current?.select();
-                          return;
-                        }
+                    if (isSearchShortcut) {
+                      event.preventDefault();
+                      inputRef.current?.select();
+                      return;
+                    }
 
-                        if (event.key === "Escape") {
-                          setQuery("");
-                          inputRef.current?.blur();
-                        }
-                      }}
-                      placeholder="Search messages..."
-                      ref={inputRef}
-                      value={query}
-                    />
-                    <InputGroupAddon
-                      align="inline-end"
-                      className="hidden md:flex"
+                    if (event.key === "Escape") {
+                      setQuery("");
+                      inputRef.current?.blur();
+                    }
+                  }}
+                  placeholder="Search messages..."
+                  ref={inputRef}
+                  value={query}
+                />
+                <InputGroupAddon align="inline-end" className="hidden md:flex">
+                  {hasQuery ? (
+                    <InputGroupButton
+                      aria-label="Clear search"
+                      onClick={() => setQuery("")}
+                      size="icon-xs"
                     >
-                      {hasQuery ? (
-                        <InputGroupButton
-                          aria-label="Clear search"
-                          onClick={() => setQuery("")}
-                          size="icon-xs"
-                        >
-                          <IconX className="size-3" />
-                        </InputGroupButton>
-                      ) : (
-                        <Kbd>Ctrl/Cmd K</Kbd>
-                      )}
-                    </InputGroupAddon>
-                  </InputGroup>
-                </div>
+                      <IconX className="size-3" />
+                    </InputGroupButton>
+                  ) : (
+                    <Kbd>Ctrl/Cmd K</Kbd>
+                  )}
+                </InputGroupAddon>
+              </InputGroup>
+            </div>
 
             <PopoverContent
               align="end"

@@ -7,9 +7,11 @@ import {
   IconTrashFilled,
   IconX,
 } from "@tabler/icons-react";
-import { useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
-import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@work-holo/ui/components/avatar";
 import { Button } from "@work-holo/ui/components/button";
 import {
   Dialog,
@@ -44,6 +46,8 @@ import {
 import { Separator } from "@work-holo/ui/components/separator";
 import { Skeleton } from "@work-holo/ui/components/skeleton";
 import { Spinner } from "@work-holo/ui/components/spinner";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { useProfileMutation } from "@/hooks/use-profile-mutation";
 import { useSession } from "@/hooks/use-session";
 import { authClient } from "@/lib/auth-client";

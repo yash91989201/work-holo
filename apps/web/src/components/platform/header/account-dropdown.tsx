@@ -7,8 +7,11 @@ import {
   IconUserFilled,
 } from "@tabler/icons-react";
 import { Link, useNavigate, useRouter } from "@tanstack/react-router";
-import { toast } from "sonner";
-import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@work-holo/ui/components/avatar";
 import { Button } from "@work-holo/ui/components/button";
 import {
   DropdownMenu,
@@ -23,6 +26,7 @@ import {
   DropdownMenuTrigger,
 } from "@work-holo/ui/components/dropdown-menu";
 import { Skeleton } from "@work-holo/ui/components/skeleton";
+import { toast } from "sonner";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { authClient } from "@/lib/auth-client";
 import { useTheme } from "@/providers/theme-provider";
@@ -83,7 +87,7 @@ export function PlatformAccountDropdown() {
                 alt={user.name ?? "User"}
                 src={user.image ?? undefined}
               />
-              <AvatarFallback className="bg-orange-500 font-semibold text-xl text-white">
+              <AvatarFallback className="bg-orange-500 font-semibold text-white text-xl">
                 {initials}
               </AvatarFallback>
             </Avatar>
@@ -195,12 +199,10 @@ export function PlatformAccountDropdown() {
   );
 }
 
-const PlatformAccountDropdownSkeleton = () => {
-  return (
-    <div className="relative flex items-center justify-center">
-      <Skeleton className="h-9 w-9 rounded-full" />
-    </div>
-  );
-};
+const PlatformAccountDropdownSkeleton = () => (
+  <div className="relative flex items-center justify-center">
+    <Skeleton className="h-9 w-9 rounded-full" />
+  </div>
+);
 
 PlatformAccountDropdown.Fallback = PlatformAccountDropdownSkeleton;

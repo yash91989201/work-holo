@@ -1,5 +1,7 @@
-import BPOPage, { WebPageProps } from "@/components/our-bpo-services/bpo-detail-page";
 import { createFileRoute } from "@tanstack/react-router";
+import BPOPage, {
+  type WebPageProps,
+} from "@/components/our-bpo-services/bpo-detail-page";
 
 export const Route = createFileRoute("/our-bpo-services/industries/retail")({
   component: RouteComponent,

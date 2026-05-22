@@ -1,10 +1,6 @@
+import { IconCircleCheck, IconPhone } from "@tabler/icons-react";
 import { CTAButton } from "@work-holo/ui/components/cta-button";
 import { motion } from "motion/react";
-
-import {
-  IconCircleCheck,
-  IconPhone,
-} from "@tabler/icons-react";
 
 const containerVariants = {
   hidden: { opacity: 0 },

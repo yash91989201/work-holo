@@ -1,13 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import BPOPage, {
-  WebPageProps,
+  type WebPageProps,
 } from "@/components/our-bpo-services/bpo-detail-page";
 
 export const Route = createFileRoute("/our-bpo-services/industries/technology")(
   {
     component: RouteComponent,
-  },
+  }
 );
 
 const pageData: WebPageProps = {

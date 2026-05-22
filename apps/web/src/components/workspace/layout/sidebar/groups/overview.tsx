@@ -20,7 +20,16 @@ export function OverviewGroup() {
       <SidebarGroupContent>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton isActive={isActive} render={<Link params={{ slug }} to="/org/$slug/workspace"><IconHomeFilled /><span>Workspace</span></Link>} tooltip="Home" />
+            <SidebarMenuButton
+              isActive={isActive}
+              render={
+                <Link params={{ slug }} to="/org/$slug/workspace">
+                  <IconHomeFilled />
+                  <span>Workspace</span>
+                </Link>
+              }
+              tooltip="Home"
+            />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarGroupContent>

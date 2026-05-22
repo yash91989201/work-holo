@@ -1,8 +1,8 @@
 import { createRouter as createTanStackRouter } from "@tanstack/react-router";
+import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
 import { FullScreenLoader } from "@/components/shared/full-screen-loader";
 import { routeTree } from "@/routeTree.gen";
 import { orpcClient, queryClient, queryUtils } from "@/utils/orpc";
-import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
 import "@/styles/index.css";
 
 export const getRouter = () => {

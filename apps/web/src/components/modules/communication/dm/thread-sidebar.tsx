@@ -5,8 +5,8 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { useParams } from "@tanstack/react-router";
-import { useCallback, useEffect, useState } from "react";
 import { Button } from "@work-holo/ui/components/button";
+import { useCallback, useEffect, useState } from "react";
 // Import the thread hook - we'll create this
 import { useVirtualDmMessageThread } from "@/hooks/communications/dm/use-dm-message-thread";
 import { cn } from "@/lib/utils";

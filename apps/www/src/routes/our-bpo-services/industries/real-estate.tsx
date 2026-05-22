@@ -1,11 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import BPOPage, {
-  WebPageProps,
+  type WebPageProps,
 } from "@/components/our-bpo-services/bpo-detail-page";
 
 export const Route = createFileRoute(
-  "/our-bpo-services/industries/real-estate",
+  "/our-bpo-services/industries/real-estate"
 )({
   component: RouteComponent,
 });
@@ -24,24 +24,24 @@ const pageData: WebPageProps = {
     terminalCommand: "npm run start",
     terminalMessage: "Talk to Our Experts",
   },
- stats: [
-  {
-    label: "Agent Network",
-    value: "Hundreds",
-  },
-  {
-    label: "Calls Handled",
-    value: "Millions",
-  },
-  {
-    label: "Customer Satisfaction",
-    value: "98%",
-  },
-  {
-    label: "Response Time",
-    value: "< 30s",
-  },
-],
+  stats: [
+    {
+      label: "Agent Network",
+      value: "Hundreds",
+    },
+    {
+      label: "Calls Handled",
+      value: "Millions",
+    },
+    {
+      label: "Customer Satisfaction",
+      value: "98%",
+    },
+    {
+      label: "Response Time",
+      value: "< 30s",
+    },
+  ],
   services: {
     subtitle: "Expert Support",
     title: "Call Center Services in Real Estate",

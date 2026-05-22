@@ -7,8 +7,6 @@ import {
 } from "@tabler/icons-react";
 import { useDebouncedValue } from "@tanstack/react-pacer";
 import { Link, useParams } from "@tanstack/react-router";
-import { useState } from "react";
-import { CreateChannelForm } from "@/components/modules/communication/channels/create-channel-form";
 import { Badge } from "@work-holo/ui/components/badge";
 import { Button } from "@work-holo/ui/components/button";
 import {
@@ -35,6 +33,8 @@ import {
   useSidebar,
 } from "@work-holo/ui/components/sidebar";
 import { Spinner } from "@work-holo/ui/components/spinner";
+import { useState } from "react";
+import { CreateChannelForm } from "@/components/modules/communication/channels/create-channel-form";
 import { useChannelUnreadCounts } from "@/hooks/communications/use-channel-unread-counts";
 import { useUserChannels } from "@/hooks/communications/use-user-channels";
 import { Can } from "@/lib/permission";
@@ -111,7 +111,14 @@ const ChannelGroup = () => {
         <SidebarGroupLabel>Channels</SidebarGroupLabel>
         <SidebarGroupContent>
           <HoverCard>
-            <HoverCardTrigger render={<SidebarMenuButton aria-label="Channels"><IconBroadcast /><span className="sr-only">Channels</span></SidebarMenuButton>} />
+            <HoverCardTrigger
+              render={
+                <SidebarMenuButton aria-label="Channels">
+                  <IconBroadcast />
+                  <span className="sr-only">Channels</span>
+                </SidebarMenuButton>
+              }
+            />
             <HoverCardContent
               align="start"
               className="w-fit min-w-56 p-0"
@@ -218,7 +225,10 @@ const ChannelGroup = () => {
             </Button>
           )}
           <Can permission={(p) => p.channel.create}>
-            <SidebarGroupAction className="static translate-y-0" render={<CreateChannelForm />} />
+            <SidebarGroupAction
+              className="static translate-y-0"
+              render={<CreateChannelForm />}
+            />
           </Can>
         </div>
       </div>
@@ -250,7 +260,26 @@ const ChannelGroup = () => {
             const unreadCount = getUnreadCount(channel.id);
             return (
               <SidebarMenuItem key={channel.id}>
-                <SidebarMenuButton isActive={channel.id === params?.channelId} render={<Link params={{ slug, channelId: channel.id }} to="/org/$slug/workspace/communication/channels/$channelId"><IconHash /><span className="flex-1">{channel.name}</span>{unreadCount > 0 && (<Badge className="ml-auto h-5 w-5 shrink-0 items-center justify-center rounded-full p-0" variant="default">{unreadCount}</Badge>)}</Link>} />
+                <SidebarMenuButton
+                  isActive={channel.id === params?.channelId}
+                  render={
+                    <Link
+                      params={{ slug, channelId: channel.id }}
+                      to="/org/$slug/workspace/communication/channels/$channelId"
+                    >
+                      <IconHash />
+                      <span className="flex-1">{channel.name}</span>
+                      {unreadCount > 0 && (
+                        <Badge
+                          className="ml-auto h-5 w-5 shrink-0 items-center justify-center rounded-full p-0"
+                          variant="default"
+                        >
+                          {unreadCount}
+                        </Badge>
+                      )}
+                    </Link>
+                  }
+                />
               </SidebarMenuItem>
             );
           })

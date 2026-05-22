@@ -1,30 +1,26 @@
-import { Link } from "@tanstack/react-router";
-import { cn } from "@work-holo/ui/lib/utils";
-import { motion, useScroll, useSpring, useTransform } from "motion/react";
-import { useRef, useState } from "react";
-import type { ProjectPageData } from "./project-data";
-import { getProjectList } from "./project-data";
-import { ProjectGalleryImage, ProjectImage } from "./project-image";
-
 import {
   IconArrowRight,
   IconArrowUpRight,
+  IconBulb,
   IconCheck,
   IconClock,
-  IconUser,
-  IconSparkles,
-  IconCode,
-  IconBulb,
   IconRocket,
-  IconChevronDown,
-  IconExternalLink,
+  IconSparkles,
+  IconUser,
 } from "@tabler/icons-react";
+import { Link } from "@tanstack/react-router";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@work-holo/ui/components/accordion";
+import { cn } from "@work-holo/ui/lib/utils";
+import { motion, useScroll, useTransform } from "motion/react";
+import { useRef, useState } from "react";
+import type { ProjectPageData } from "./project-data";
+import { getProjectList } from "./project-data";
+import { ProjectGalleryImage } from "./project-image";
 
 interface ProjectDetailPageProps {
   data: ProjectPageData;
@@ -55,7 +51,7 @@ function GradientOrb({
 }) {
   return (
     <div
-      className={`pointer-events-none absolute rounded-full blur-[120px] opacity-30 ${className}`}
+      className={`pointer-events-none absolute rounded-full opacity-30 blur-[120px] ${className}`}
       style={{
         background:
           color === "primary"
@@ -86,7 +82,7 @@ function HeroSection({ data }: { data: ProjectPageData }) {
       {/* Atmospheric background */}
       <GradientOrb className="-top-40 -left-40 size-150" />
       <GradientOrb
-        className="-right-60 top-20 size-125"
+        className="top-20 -right-60 size-125"
         color="hsl(var(--primary) / 0.4)"
       />
 
@@ -114,16 +110,16 @@ function HeroSection({ data }: { data: ProjectPageData }) {
       <motion.div
         className={cn(
           "relative",
-          data.heroPaddingY || "pt-0 pb-0 sm:-mt-30 sm:pb-0 lg:pt-0 lg:pb-0",
+          data.heroPaddingY || "pt-0 pb-0 sm:-mt-30 sm:pb-0 lg:pt-0 lg:pb-0"
         )}
         style={{ opacity, scale }}
       >
         <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12 lg:py-12">
           {/* Category + meta row */}
           <motion.div
+            animate={{ opacity: 1, y: 0 }}
             className="mb-8 flex flex-wrap items-center gap-3"
             initial={{ opacity: 0, y: 44 }}
-            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: EASE }}
           >
             <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/25 bg-primary/8 px-3.5 py-1.5 font-mono font-semibold text-[10px] text-primary uppercase tracking-[0.22em]">
@@ -145,10 +141,10 @@ function HeroSection({ data }: { data: ProjectPageData }) {
 
           {/* Title */}
           <motion.h1
-            className="mb-6 max-w-5xl font-extrabold font-heading leading-[1.04] tracking-[-0.03em]"
-            style={{ fontSize: "clamp(2rem, 5.5vw, 5rem)" }}
-            initial={{ opacity: 0, y: 32 }}
             animate={{ opacity: 1, y: 0 }}
+            className="mb-6 max-w-5xl font-extrabold font-heading leading-[1.04] tracking-[-0.03em]"
+            initial={{ opacity: 0, y: 32 }}
+            style={{ fontSize: "clamp(2rem, 5.5vw, 5rem)" }}
             transition={{ duration: 0.8, delay: 0.08, ease: EASE }}
           >
             <span className="bg-linear-to-r from-blue-400 via-blue-450 to-purple-500 bg-clip-text text-transparent">
@@ -176,9 +172,9 @@ function HeroSection({ data }: { data: ProjectPageData }) {
 
           {/* Description */}
           <motion.p
-            className="max-w-2xl text-base h-10 text-foreground/50 leading-[1.85] sm:text-lg"
-            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
+            className="h-10 max-w-2xl text-base text-foreground/50 leading-[1.85] sm:text-lg"
+            initial={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.7, delay: 0.24, ease: EASE }}
           >
             {data.description}
@@ -207,12 +203,12 @@ function MetricsStrip({ data }: { data: ProjectPageData }) {
         <div className="grid grid-cols-2 divide-x divide-border/10 sm:grid-cols-4">
           {data.metrics.map((metric, index) => (
             <motion.div
-              key={metric.label}
               className="group px-6 py-10 text-center sm:px-8 sm:py-12 lg:py-20"
               initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              key={metric.label}
               transition={{ duration: 0.55, delay: index * 0.09, ease: EASE }}
+              viewport={{ once: true }}
+              whileInView={{ opacity: 1, y: 0 }}
             >
               <div
                 className="mb-2 font-extrabold font-heading text-primary tracking-[-0.03em] transition-colors"
@@ -236,17 +232,17 @@ function MetricsStrip({ data }: { data: ProjectPageData }) {
 function OverviewSection({ data }: { data: ProjectPageData }) {
   return (
     <section className="relative pt-7.5 pb-12 sm:pb-16 lg:pb-32">
-      <GradientOrb className="right-0 top-0 size-100 translate-x-1/2 -translate-y-1/4 opacity-20" />
+      <GradientOrb className="top-0 right-0 size-100 translate-x-1/2 -translate-y-1/4 opacity-20" />
 
       <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
         <div className="grid gap-8 lg:grid-cols-12 lg:gap-14">
           {/* Sticky label column */}
-          <div className="lg:col-span-4 lg:sticky lg:top-28 lg:self-start">
+          <div className="lg:sticky lg:top-28 lg:col-span-4 lg:self-start">
             <motion.div
               initial={{ opacity: 0, x: -28 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
               transition={{ duration: 0.7, ease: EASE }}
+              viewport={{ once: true }}
+              whileInView={{ opacity: 1, x: 0 }}
             >
               <SectionLabel>Overview</SectionLabel>
               <h2
@@ -264,9 +260,9 @@ function OverviewSection({ data }: { data: ProjectPageData }) {
           <motion.div
             className="lg:col-span-8"
             initial={{ opacity: 0, y: 28 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.14, ease: EASE }}
+            viewport={{ once: true }}
+            whileInView={{ opacity: 1, y: 0 }}
           >
             <p className="text-base text-foreground/60 leading-[1.95] sm:text-[1.0625rem] sm:leading-loose">
               {data.overview}
@@ -293,9 +289,9 @@ function ChallengeSolutionSection({ data }: { data: ProjectPageData }) {
           <motion.div
             className="relative overflow-hidden py-12 sm:py-14 lg:py-16 lg:pr-16"
             initial={{ opacity: 0, x: -36 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
             transition={{ duration: 0.75, ease: EASE }}
+            viewport={{ once: true }}
+            whileInView={{ opacity: 1, x: 0 }}
           >
             <div className="pointer-events-none absolute -top-24 -right-24 size-72 rounded-full bg-red-500/6 blur-3xl" />
             <div className="relative">
@@ -309,7 +305,7 @@ function ChallengeSolutionSection({ data }: { data: ProjectPageData }) {
               >
                 What stood in the way
               </h3>
-              <p className="text-sm text-foreground/55 leading-[1.9] sm:text-[0.9375rem]">
+              <p className="text-foreground/55 text-sm leading-[1.9] sm:text-[0.9375rem]">
                 {data.challenge}
               </p>
             </div>
@@ -319,9 +315,9 @@ function ChallengeSolutionSection({ data }: { data: ProjectPageData }) {
           <motion.div
             className="relative overflow-hidden py-12 sm:py-14 lg:py-16 lg:pl-16"
             initial={{ opacity: 0, x: 36 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
             transition={{ duration: 0.75, ease: EASE }}
+            viewport={{ once: true }}
+            whileInView={{ opacity: 1, x: 0 }}
           >
             <div className="pointer-events-none absolute -bottom-24 -left-24 size-72 rounded-full bg-primary/10 blur-3xl" />
             <div className="relative">
@@ -335,7 +331,7 @@ function ChallengeSolutionSection({ data }: { data: ProjectPageData }) {
               >
                 How we made it happen
               </h3>
-              <p className="text-sm text-foreground/55 leading-[1.9] sm:text-[0.9375rem]">
+              <p className="text-foreground/55 text-sm leading-[1.9] sm:text-[0.9375rem]">
                 {data.solution}
               </p>
             </div>
@@ -352,15 +348,15 @@ function ResultsSection({ data }: { data: ProjectPageData }) {
   return (
     <section className="relative py-12 sm:py-16 lg:py-20">
       <div className="absolute inset-0 bg-linear-to-b from-transparent via-primary/[0.025] to-transparent" />
-      <GradientOrb className="-left-40 top-1/2 size-125 -translate-y-1/2 opacity-15" />
+      <GradientOrb className="top-1/2 -left-40 size-125 -translate-y-1/2 opacity-15" />
 
       <div className="relative mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
         <motion.div
           className="mb-10 sm:mb-12"
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
           transition={{ duration: 0.6, ease: EASE }}
+          viewport={{ once: true }}
+          whileInView={{ opacity: 1, y: 0 }}
         >
           <SectionLabel>Key Results</SectionLabel>
           <h2
@@ -374,13 +370,13 @@ function ResultsSection({ data }: { data: ProjectPageData }) {
         <div className="grid gap-5 sm:grid-cols-3 sm:gap-6 lg:gap-8">
           {data.results.map((result, index) => (
             <motion.div
-              key={result.title}
               className="group relative overflow-hidden rounded-[28px] border border-border/8 bg-card/25 p-8 transition-all duration-500 hover:border-primary/20 hover:bg-card/50 sm:p-10"
               initial={{ opacity: 0, y: 32 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              key={result.title}
               transition={{ duration: 0.6, delay: index * 0.12, ease: EASE }}
+              viewport={{ once: true }}
               whileHover={{ y: -4 }}
+              whileInView={{ opacity: 1, y: 0 }}
             >
               {/* Hover glow */}
               <div className="pointer-events-none absolute -top-10 -right-10 size-40 rounded-full bg-primary/6 blur-2xl transition-all duration-500 group-hover:size-56 group-hover:bg-primary/12" />
@@ -395,7 +391,7 @@ function ResultsSection({ data }: { data: ProjectPageData }) {
                 >
                   {result.stat}
                 </div>
-                <h4 className="mb-3 font-heading font-semibold text-foreground text-base leading-snug tracking-tight">
+                <h4 className="mb-3 font-heading font-semibold text-base text-foreground leading-snug tracking-tight">
                   {result.title}
                 </h4>
                 <p className="text-foreground/45 text-xs leading-[1.85] sm:text-[0.8125rem]">
@@ -422,9 +418,9 @@ function GallerySection({ data }: { data: ProjectPageData }) {
         <motion.div
           className="mb-8 sm:mb-10"
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
           transition={{ duration: 0.6, ease: EASE }}
+          viewport={{ once: true }}
+          whileInView={{ opacity: 1, y: 0 }}
         >
           <SectionLabel>Gallery</SectionLabel>
           <h2
@@ -439,14 +435,14 @@ function GallerySection({ data }: { data: ProjectPageData }) {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:gap-6">
           {data.galleryImages.map((_, index) => (
             <motion.div
-              key={index}
               className="group relative overflow-hidden rounded-2xl"
-              style={{ aspectRatio: "16/10" }}
               initial={{ opacity: 0, scale: 0.97 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
+              key={index}
+              style={{ aspectRatio: "16/10" }}
               transition={{ duration: 0.6, delay: index * 0.08, ease: EASE }}
+              viewport={{ once: true }}
               whileHover={{ scale: 1.012 }}
+              whileInView={{ opacity: 1, scale: 1 }}
             >
               <ProjectGalleryImage
                 className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
@@ -470,16 +466,16 @@ function FeaturesSection({ data }: { data: ProjectPageData }) {
   return (
     <section className="relative py-12 sm:py-16 lg:py-20">
       <div className="absolute top-0 right-0 left-0 h-px bg-linear-to-r from-transparent via-border/20 to-transparent" />
-      <GradientOrb className="-right-40 top-1/2 size-112.5 -translate-y-1/2 opacity-15" />
+      <GradientOrb className="top-1/2 -right-40 size-112.5 -translate-y-1/2 opacity-15" />
 
       <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
         <div className="grid gap-8 lg:grid-cols-12 lg:gap-14">
-          <div className="lg:col-span-4 lg:sticky lg:top-28 lg:self-start">
+          <div className="lg:sticky lg:top-28 lg:col-span-4 lg:self-start">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
               transition={{ duration: 0.6, ease: EASE }}
+              viewport={{ once: true }}
+              whileInView={{ opacity: 1, y: 0 }}
             >
               <SectionLabel>Features</SectionLabel>
               <h2
@@ -490,7 +486,7 @@ function FeaturesSection({ data }: { data: ProjectPageData }) {
                 <br />
                 <span className="text-primary">delivered</span>
               </h2>
-              <p className="mt-4 text-sm text-foreground/40 leading-relaxed">
+              <p className="mt-4 text-foreground/40 text-sm leading-relaxed">
                 Every feature was built with purpose, performance, and user
                 experience at its core.
               </p>
@@ -501,21 +497,21 @@ function FeaturesSection({ data }: { data: ProjectPageData }) {
             <div className="grid gap-3 sm:grid-cols-2">
               {data.features.map((feature, index) => (
                 <motion.div
-                  key={feature}
                   className="group flex items-start gap-3.5 rounded-2xl border border-border/6 bg-card/15 p-5 transition-all duration-300 hover:border-primary/15 hover:bg-card/35"
                   initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
+                  key={feature}
                   transition={{
                     duration: 0.4,
                     delay: index * 0.045,
                     ease: EASE,
                   }}
+                  viewport={{ once: true }}
+                  whileInView={{ opacity: 1, y: 0 }}
                 >
                   <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-lg bg-primary/12 transition-colors group-hover:bg-primary/20">
                     <IconCheck className="size-3.5 text-primary" />
                   </span>
-                  <span className="text-sm text-foreground/70 leading-[1.75]">
+                  <span className="text-foreground/70 text-sm leading-[1.75]">
                     {feature}
                   </span>
                 </motion.div>
@@ -539,9 +535,9 @@ function TechStackSection({ data }: { data: ProjectPageData }) {
         <motion.div
           className="mb-8"
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
           transition={{ duration: 0.6, ease: EASE }}
+          viewport={{ once: true }}
+          whileInView={{ opacity: 1, y: 0 }}
         >
           <SectionLabel>Tech Stack</SectionLabel>
           <h2
@@ -555,13 +551,13 @@ function TechStackSection({ data }: { data: ProjectPageData }) {
         <div className="flex flex-wrap gap-2.5 sm:gap-3">
           {data.techStack.map((tech, index) => (
             <motion.span
-              key={tech}
-              className="inline-flex cursor-default items-center gap-2 rounded-xl border border-border/12 bg-background/50 px-4 py-2.5 font-mono text-foreground/60 text-[0.8125rem] transition-all duration-300 hover:border-primary/25 hover:bg-primary/6 hover:text-primary"
+              className="inline-flex cursor-default items-center gap-2 rounded-xl border border-border/12 bg-background/50 px-4 py-2.5 font-mono text-[0.8125rem] text-foreground/60 transition-all duration-300 hover:border-primary/25 hover:bg-primary/6 hover:text-primary"
               initial={{ opacity: 0, scale: 0.88 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
+              key={tech}
               transition={{ duration: 0.3, delay: index * 0.038, ease: EASE }}
+              viewport={{ once: true }}
               whileHover={{ y: -2 }}
+              whileInView={{ opacity: 1, scale: 1 }}
             >
               <span className="size-1.5 rounded-full bg-primary/50" />
               {tech}
@@ -578,15 +574,15 @@ function TechStackSection({ data }: { data: ProjectPageData }) {
 function TimelineSection({ data }: { data: ProjectPageData }) {
   return (
     <section className="relative py-12 sm:py-16 lg:py-20">
-      <GradientOrb className="-left-32 top-1/3 size-100 opacity-15" />
+      <GradientOrb className="top-1/3 -left-32 size-100 opacity-15" />
 
       <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
         <motion.div
           className="mb-10 sm:mb-12"
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
           transition={{ duration: 0.6, ease: EASE }}
+          viewport={{ once: true }}
+          whileInView={{ opacity: 1, y: 0 }}
         >
           <SectionLabel>Timeline</SectionLabel>
           <h2
@@ -607,27 +603,27 @@ function TimelineSection({ data }: { data: ProjectPageData }) {
               const isEven = index % 2 === 0;
               return (
                 <motion.div
-                  key={phase.title}
                   className={`relative sm:grid sm:grid-cols-2 sm:gap-8 sm:py-8 ${
-                    !isEven ? "sm:direction-rtl" : ""
+                    isEven ? "" : "sm:direction-rtl"
                   }`}
                   initial={{ opacity: 0, y: 28 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
+                  key={phase.title}
                   transition={{
                     duration: 0.6,
                     delay: index * 0.12,
                     ease: EASE,
                   }}
+                  viewport={{ once: true }}
+                  whileInView={{ opacity: 1, y: 0 }}
                 >
                   {/* Center dot */}
-                  <div className="absolute left-3.5 top-0 z-10 flex size-4.25 items-center justify-center rounded-full border-2 border-primary/50 bg-background sm:left-1/2 sm:top-1/2 sm:-translate-x-[8.5px] sm:-translate-y-[8.5px]">
+                  <div className="absolute top-0 left-3.5 z-10 flex size-4.25 items-center justify-center rounded-full border-2 border-primary/50 bg-background sm:top-1/2 sm:left-1/2 sm:-translate-x-[8.5px] sm:-translate-y-[8.5px]">
                     <div className="size-2 rounded-full bg-primary" />
                   </div>
 
                   {/* Left col (label) */}
                   <div
-                    className={`pl-12 pb-1 sm:pl-0 sm:pb-0 ${
+                    className={`pb-1 pl-12 sm:pb-0 sm:pl-0 ${
                       isEven
                         ? "sm:pr-12 sm:text-right"
                         : "sm:col-start-2 sm:pl-12"
@@ -636,7 +632,7 @@ function TimelineSection({ data }: { data: ProjectPageData }) {
                     <span className="font-bold font-mono text-[9px] text-primary uppercase tracking-[0.25em]">
                       {phase.label}
                     </span>
-                    <h4 className="mt-1 font-bold font-heading text-foreground text-base tracking-tight">
+                    <h4 className="mt-1 font-bold font-heading text-base text-foreground tracking-tight">
                       {phase.title}
                     </h4>
                   </div>
@@ -677,9 +673,9 @@ function FAQSection({ data }: { data: ProjectPageData }) {
         <motion.div
           className="mb-10 text-center"
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
           transition={{ duration: 0.6, ease: EASE }}
+          viewport={{ once: true }}
+          whileInView={{ opacity: 1, y: 0 }}
         >
           <SectionLabel>FAQ</SectionLabel>
           <h2
@@ -690,20 +686,20 @@ function FAQSection({ data }: { data: ProjectPageData }) {
           </h2>
         </motion.div>
 
-        <Accordion type="multiple" value={openFAQ} onValueChange={setOpenFAQ}>
+        <Accordion onValueChange={setOpenFAQ} type="multiple" value={openFAQ}>
           {data.faqs.map((faq, index) => (
             <motion.div
-              key={index}
               initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              key={index}
               transition={{ duration: 0.4, delay: index * 0.07, ease: EASE }}
+              viewport={{ once: true }}
+              whileInView={{ opacity: 1, y: 0 }}
             >
               <AccordionItem
-                value={`item-${index}`}
                 className="border-border/10 border-b last:border-0"
+                value={`item-${index}`}
               >
-                <AccordionTrigger className="py-5 pr-4 text-left font-heading font-semibold text-sm text-foreground hover:text-primary hover:no-underline sm:text-[0.9375rem]">
+                <AccordionTrigger className="py-5 pr-4 text-left font-heading font-semibold text-foreground text-sm hover:text-primary hover:no-underline sm:text-[0.9375rem]">
                   <span className="pr-6">{faq.question}</span>
                 </AccordionTrigger>
                 <AccordionContent className="pb-6">
@@ -729,9 +725,9 @@ function CTASection() {
         <motion.div
           className="relative overflow-hidden rounded-[36px] bg-primary px-8 py-16 sm:px-16 sm:py-20 lg:px-24 lg:py-20"
           initial={{ opacity: 0, y: 32 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
           transition={{ duration: 0.75, ease: EASE }}
+          viewport={{ once: true }}
+          whileInView={{ opacity: 1, y: 0 }}
         >
           {/* Decorative orbs inside CTA */}
           <div className="pointer-events-none absolute -top-20 -left-20 size-64 rounded-full bg-primary-foreground/6 blur-2xl" />
@@ -764,8 +760,8 @@ function CTASection() {
               cloud technologies.
             </p>
             <Link
-              to="/contact-us"
               className="group inline-flex items-center gap-2.5 rounded-full bg-primary-foreground px-8 py-3.5 font-bold font-heading text-primary text-sm transition-all duration-300 hover:gap-4 hover:bg-primary-foreground/92 hover:shadow-[0_12px_40px_rgba(0,0,0,0.25)]"
+              to="/contact-us"
             >
               Start a conversation
               <IconArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5" />
@@ -789,9 +785,9 @@ function MoreProjectsSection({ currentSlug }: { currentSlug: string }) {
         <div className="mb-8 flex items-end justify-between">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
             transition={{ duration: 0.6, ease: EASE }}
+            viewport={{ once: true }}
+            whileInView={{ opacity: 1, y: 0 }}
           >
             <SectionLabel>Explore</SectionLabel>
             <h2
@@ -803,8 +799,8 @@ function MoreProjectsSection({ currentSlug }: { currentSlug: string }) {
           </motion.div>
 
           <Link
-            to="/projects"
             className="hidden items-center gap-1.5 font-mono text-[10px] text-foreground/40 uppercase tracking-widest transition-colors hover:text-primary sm:inline-flex"
+            to="/projects"
           >
             View all
             <IconArrowUpRight className="size-3.5" />
@@ -815,15 +811,15 @@ function MoreProjectsSection({ currentSlug }: { currentSlug: string }) {
         <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
           {projects.slice(0, 3).map((project, index) => (
             <motion.div
-              key={project.slug}
               initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              key={project.slug}
               transition={{ duration: 0.5, delay: index * 0.09, ease: EASE }}
+              viewport={{ once: true }}
+              whileInView={{ opacity: 1, y: 0 }}
             >
               <Link
-                to={project.href}
                 className="group block overflow-hidden rounded-2xl border border-border/8 bg-card/20 p-6 transition-all duration-350 hover:border-primary/15 hover:bg-card/50 hover:shadow-[0_8px_40px_hsl(var(--primary)/0.08)]"
+                to={project.href}
               >
                 {/* Top accent line */}
                 <div className="mb-5 h-px bg-linear-to-r from-primary/40 via-primary/20 to-transparent transition-all duration-350 group-hover:from-primary/70" />

@@ -1,7 +1,7 @@
 import { IconFileText, IconVideo, IconX } from "@tabler/icons-react";
-import { useMemo } from "react";
 import { Button } from "@work-holo/ui/components/button";
 import { ScrollArea, ScrollBar } from "@work-holo/ui/components/scroll-area";
+import { useMemo } from "react";
 import { formatFileSize } from "@/lib/utils";
 
 interface AttachmentPreview {

@@ -1,7 +1,10 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
+import {
+  SidebarInset,
+  SidebarProvider,
+} from "@work-holo/ui/components/sidebar";
 import { PlatformHeader } from "@/components/platform/header";
 import { PlatformSidebar } from "@/components/platform/sidebar";
-import { SidebarInset, SidebarProvider } from "@work-holo/ui/components/sidebar";
 
 export const Route = createFileRoute("/(authenticated)/platform/dashboard")({
   component: RouteComponent,

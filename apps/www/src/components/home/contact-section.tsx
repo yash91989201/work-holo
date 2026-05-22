@@ -37,8 +37,7 @@ export function ContactSection() {
       id="contact"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-[#1a1a1a] p-6 sm:p-10 lg:p-16">
-
+        <div className="relative overflow-hidden rounded-2xl bg-[#1a1a1a] p-6 sm:rounded-3xl sm:p-10 lg:p-16">
           {/* Background SVG pattern */}
           <div
             className="absolute inset-0 opacity-[0.07]"
@@ -51,27 +50,29 @@ export function ContactSection() {
 
           <div className="relative z-10">
             <div className="grid items-start gap-10 sm:gap-12 lg:grid-cols-2 lg:gap-16">
-
               {/* Left Column */}
               <motion.div
-                className="flex flex-col gap-8 lg:gap-0 lg:justify-between"
+                className="flex flex-col gap-8 lg:justify-between lg:gap-0"
                 initial={{ opacity: 0, x: -30 }}
-                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
+                transition={{
+                  duration: 0.6,
+                  ease: [0.22, 1, 0.36, 1] as const,
+                }}
                 viewport={{ once: true }}
                 whileInView={{ opacity: 1, x: 0 }}
               >
                 <div>
-                  <p className="mb-4 sm:mb-5 font-medium text-primary text-xs sm:text-sm uppercase tracking-[0.2em]">
+                  <p className="mb-4 font-medium text-primary text-xs uppercase tracking-[0.2em] sm:mb-5 sm:text-sm">
                     [ GET IN TOUCH ]
                   </p>
-                  <h2 className="mb-6 sm:mb-8 font-bold text-2xl sm:text-3xl lg:text-[2.75rem] text-foreground leading-[1.15] sm:leading-[1.1] tracking-tight">
+                  <h2 className="mb-6 font-bold text-2xl text-foreground leading-[1.15] tracking-tight sm:mb-8 sm:text-3xl sm:leading-[1.1] lg:text-[2.75rem]">
                     Have any Questions on Mind?{" "}
                     <span className="block">Get in Touch for</span>
                     <span className="block">Market Experts.</span>
                   </h2>
 
                   <CTAButton
-                    className="w-full sm:w-auto mb-8 lg:mb-16"
+                    className="mb-8 w-full sm:w-auto lg:mb-16"
                     type="button"
                   >
                     Contact Us Now
@@ -79,21 +80,21 @@ export function ContactSection() {
                 </div>
 
                 {/* Contact Info Grid */}
-                <div className="grid grid-cols-1 gap-6 min-[480px]:grid-cols-3 sm:gap-8">
+                <div className="grid grid-cols-1 gap-6 sm:gap-8 min-[480px]:grid-cols-3">
                   <div>
-                    <h4 className="mb-2 sm:mb-3 font-semibold text-foreground text-sm">
+                    <h4 className="mb-2 font-semibold text-foreground text-sm sm:mb-3">
                       Contact Info:
                     </h4>
                     <p className="mb-1 text-muted-foreground text-sm">
                       +1 (009) 544-7818
                     </p>
-                    <p className="text-muted-foreground text-sm break-all">
+                    <p className="break-all text-muted-foreground text-sm">
                       hr@workholo.com
                     </p>
                   </div>
 
                   <div>
-                    <h4 className="mb-2 sm:mb-3 font-semibold text-foreground text-sm">
+                    <h4 className="mb-2 font-semibold text-foreground text-sm sm:mb-3">
                       Find Us:
                     </h4>
                     <p className="text-muted-foreground text-sm">
@@ -104,7 +105,7 @@ export function ContactSection() {
                   </div>
 
                   <div>
-                    <h4 className="mb-2 sm:mb-3 font-semibold text-foreground text-sm">
+                    <h4 className="mb-2 font-semibold text-foreground text-sm sm:mb-3">
                       Working Hours:
                     </h4>
                     <p className="mb-1 text-muted-foreground text-sm">
@@ -120,12 +121,16 @@ export function ContactSection() {
               {/* Right Column - Form */}
               <motion.div
                 initial={{ opacity: 0, x: 30 }}
-                transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] as const }}
+                transition={{
+                  duration: 0.6,
+                  delay: 0.2,
+                  ease: [0.22, 1, 0.36, 1] as const,
+                }}
                 viewport={{ once: true }}
                 whileInView={{ opacity: 1, x: 0 }}
               >
-                <div className="rounded-xl sm:rounded-2xl border border-border/10 bg-[#111111]/80 p-5 sm:p-8 lg:p-10 backdrop-blur-sm">
-                  <h3 className="mb-6 sm:mb-8 font-bold text-xl sm:text-2xl text-foreground">
+                <div className="rounded-xl border border-border/10 bg-[#111111]/80 p-5 backdrop-blur-sm sm:rounded-2xl sm:p-8 lg:p-10">
+                  <h3 className="mb-6 font-bold text-foreground text-xl sm:mb-8 sm:text-2xl">
                     Drop Us a <span className="text-primary">Line.</span>
                   </h3>
 
@@ -212,7 +217,9 @@ export function ContactSection() {
                         {([canSubmit, isValidating, isSubmitting]) => (
                           <CTAButton
                             className="w-full justify-center"
-                            disabled={!canSubmit || isValidating || isSubmitting}
+                            disabled={
+                              !canSubmit || isValidating || isSubmitting
+                            }
                             type="submit"
                           >
                             {isSubmitting ? (
@@ -233,7 +240,6 @@ export function ContactSection() {
                   </form.AppForm>
                 </div>
               </motion.div>
-
             </div>
           </div>
         </div>

@@ -21,8 +21,8 @@ export function useRecentMessages() {
   const userId = user.id;
 
   const { data, isLoading } = useLiveQuery(
-    (q) => {
-      return q
+    (q) =>
+      q
         .from({ message: messagesCollection })
         .innerJoin({ sender: usersCollection }, ({ message, sender }) =>
           eq(message.senderId, sender.id)
@@ -47,8 +47,7 @@ export function useRecentMessages() {
           message,
           sender,
           channel,
-        }));
-    },
+        })),
     [userId]
   );
 
@@ -81,9 +80,10 @@ export function useRecentMessages() {
     })
   );
 
-  const totalUnreadCount = useMemo(() => {
-    return unreadCounts.reduce((sum, item) => sum + item.unreadCount, 0);
-  }, [unreadCounts]);
+  const totalUnreadCount = useMemo(
+    () => unreadCounts.reduce((sum, item) => sum + item.unreadCount, 0),
+    [unreadCounts]
+  );
 
   return {
     messages,

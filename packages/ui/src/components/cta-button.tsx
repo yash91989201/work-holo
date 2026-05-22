@@ -5,11 +5,18 @@ import { cn } from "../lib/utils";
 
 interface CTAButtonProps extends HTMLMotionProps<"button"> {
   children: React.ReactNode;
-  icon?: React.ReactNode;
   href?: string;
+  icon?: React.ReactNode;
 }
 
-function CTAButton({ className, children, icon, href, type, ...props }: CTAButtonProps) {
+function CTAButton({
+  className,
+  children,
+  icon,
+  href,
+  type,
+  ...props
+}: CTAButtonProps) {
   const baseClass = cn(
     "group relative inline-flex items-center overflow-hidden rounded-full bg-primary px-2 py-2 font-medium text-black text-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
     className
@@ -46,9 +53,7 @@ function CTAButton({ className, children, icon, href, type, ...props }: CTAButto
       </motion.span>
 
       {/* Icon container — absolutely positioned at the right edge */}
-      <motion.div
-        className="absolute top-1/2 right-1 z-10 flex size-8 -translate-y-1/2 items-center justify-center rounded-full bg-black text-white"
-      >
+      <motion.div className="absolute top-1/2 right-1 z-10 flex size-8 -translate-y-1/2 items-center justify-center rounded-full bg-black text-white">
         <motion.div
           variants={{
             initial: { x: 0, y: 0, rotate: 0 },
