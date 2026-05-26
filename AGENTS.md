@@ -1,213 +1,146 @@
 # AGENTS.md
 
-> **Purpose:** This file defines mandatory tooling rules and workflow patterns for AI agents operating in this codebase.
-All rules are non-negotiable unless explicitly stated otherwise.
+> **Purpose:** This file defines workflow patterns and mandatory tooling rules for AI agents operating in this codebase.
+> All rules are non-negotiable unless explicitly stated otherwise.
 
 ---
 
 ## Table of Contents
 
-1. [Communication Style — Caveman Mode](#0-communication-style--caveman-mode)
-2. [Browser Automation — `agent-browser`](#1-browser-automation--agent-browser)
-3. [Frontend API — oRPC + TanStack Query](#2-frontend-api--orpc--tanstack-query)
-4. [Context-Mode — Mandatory Routing Rules](#3-context-mode--mandatory-routing-rules)
+1. [Frontend API — oRPC + TanStack Query](#1-frontend-api--orpc--tanstack-query)
+2. [UI and Design System](#2-ui-and-design-system)
+3. [Schemas and Generated Types](#3-schemas-and-generated-types)
+4. [Forms — TanStack Form + Zod](#4-forms--tanstack-form--zod)
+5. [Suspense Fallbacks](#5-suspense-fallbacks)
+6. [Images](#6-images)
+7. [Permission System](#7-permission-system)
+8. [GitNexus — Code Intelligence](#8-gitnexus--code-intelligence)
 
 ---
 
-## 0. Communication Style — Caveman Mode
+## 1. Frontend API — oRPC + TanStack Query
 
-**Rule:** Always active. No exceptions. No revert after many turns. No filler drift.
+All API calls must use `queryUtils` with TanStack Query. Never call procedures directly from components.
 
-- Terse like caveman. Technical substance exact. Only fluff die.
-- Drop: articles, filler (`just` / `really` / `basically`), pleasantries, hedging.
-- Fragments OK. Short synonyms. Code unchanged.
-- Pattern: `[thing] [action] [reason]. [next step].`
-- Code / commits / PRs: write normally.
-- Off: user says `"stop caveman"` or `"normal mode"`.
+| Pattern | Rule |
+|---|---|
+| Reads | `useSuspenseQuery` preferred; `useQuery` when suspense is inappropriate |
+| Writes | `useMutation(queryUtils.*.mutationOptions(...))` |
+| Invalidation | Only inside mutation callbacks |
+| Query keys | `queryUtils.*.queryKey(...)` — never hand-roll keys |
+| Auth | Cookie-backed by default; TanStack options supported |
 
----
-
-## 1. Browser Automation — `agent-browser`
-
-Run `agent-browser --help` for the full reference.
-
-### Core Commands
-
-```sh
-agent-browser open <url>       # Navigate to a URL
-agent-browser snapshot -i      # List interactive elements (refs: @e1, @e2, …)
-agent-browser click @e1        # Click an element by ref
-agent-browser fill @e2 "text"  # Fill an input by ref
-```
-
-> **Important:** Re-snapshot after every page change before interacting with new elements.
+Docs: [`api-client-usage.md`](docs/guides/api-client-usage.md)
 
 ---
 
-## 2. Frontend API — oRPC + TanStack Query
+## 2. UI and Design System
 
-All API calls **must** use the `queryUtils` + TanStack Query pattern. Never call procedures directly.
+All frontend UI must use the project theme and shadcn primitives. Use **theme tokens** (colors, spacing, radius, typography) from `src/styles/index.css` / Tailwind. No invented hex values, arbitrary pixels, one-off radii, or inline style drift. Extend existing shadcn component tokens/primitives; inspect component code when needed.
 
-### Operation Patterns
+Docs: [`ui.md`](docs/conventions/ui.md)
 
-| Operation | Required Pattern |
-| --- | --- |
-| Reads | `useSuspenseQuery` (preferred) or `useQuery` |
-| Writes | `useMutation` |
-| Cache invalidation | Inside `onSuccess` only, via `invalidateQueries` |
+---
+
+## 3. Schemas and Generated Types
+
+| | |
+|---|---|
+| Schema tool | Zod — defined outside components |
+| Frontend location | `apps/web/src/lib/schemas/` |
+| Generated types | Import from `@/lib/types`; never manually edit generated files |
+| Form naming | `*FormSchema` / `*FormType` |
+| Monorepo boundaries | Frontend: `@/lib/*` · Server shared: `@server/lib/*` |
+
+Docs: [`schema.md`](docs/conventions/schema.md), [`form-schema.md`](docs/guides/forms/form-schema.md)
+
+---
+
+## 4. Forms — TanStack Form + Zod
+
+| Step | Rule |
+|---|---|
+| Setup | Schema/type first → `useAppForm` + `validators.onSubmit` |
+| Fields | Use project `field.*` controls for labels, descriptions, errors |
+| Submission | `useMutation(queryUtils.*.mutationOptions())` — side effects in callbacks |
+| Buttons | Explicit type on non-submit buttons; submit state via `form.Subscribe` |
+| Complex forms | Nested paths, `FieldGroup`/`FieldSet`, TanStack array APIs |
+| Validation | Async and cross-field validation in Zod refinements |
+
+Docs: [`simple-form.md`](docs/guides/forms/simple-form.md), [`complex-form.md`](docs/guides/forms/complex-form.md), [`form-schema.md`](docs/guides/forms/form-schema.md)
+
+---
+
+## 5. Suspense Fallbacks
+
+Fallbacks must mirror the final UI, skeletonizing only dynamic data. Create `ComponentNameSkeleton` and assign to `ComponentName.Fallback`. Keep wrappers, hierarchy, headers, labels, and icons identical. Replace API-sourced values with sized `<Skeleton />`; keep all static content visible.
+
+Docs: [`suspense-fallback.md`](docs/guides/suspense-fallback.md)
+
+---
+
+## 6. Images
+
+Use `Image` from `@/components/shared/image` for all images.
+
+| Concern | Rule |
+|---|---|
+| Layout | Reserve space with dimensions/aspect ratio; `layout="fill"` requires a positioned, sized parent |
+| Priority | `priority` for above-the-fold only; `unoptimized` only when intentional |
+| Accessibility | Use `decorative`, `fallbackSrc`, `fallback`, `blurDataURL` as appropriate |
+| URL helpers | `getImageProps`, `buildImageUrl`, `buildSrcSet` — outside render paths |
+
+Docs: [`image-component.md`](docs/guides/image-component.md)
+
+---
+
+## 7. Permission System
+
+| Concern | Rule |
+|---|---|
+| Backend checks | Prefer DSL permission checks/resource guards over raw role checks |
+| Runtime flow | Understand managers, owner bypass, cache, bitset, Casbin fallback |
+| Frontend gating | Use `PermissionProvider`, `useCan`, `<Can>`, and realtime sync |
+| Caching | Decision, bitset, and permission-map caches are versioned and scope-invalidated |
+| Policy compilation | Role grants, overrides, deny precedence, Casbin rules |
+| DSL/codegen | Vocabulary is canonical; generated keys/descriptors/bit indexes derive from it |
+| Adding permissions | Follow action/sub-resource/resource decision tree, then regenerate code |
+
+Docs: [`README`](docs/guides/permission-system/README.md) · [`backend-integration`](docs/guides/permission-system/backend-integration.md) · [`architecture-runtime-flow`](docs/guides/permission-system/architecture-runtime-flow.md) · [`frontend-integration`](docs/guides/permission-system/frontend-integration.md) · [`frontend-permissions`](docs/guides/permission-system/frontend-permissions.md) · [`caching-consistency`](docs/guides/permission-system/caching-consistency.md) · [`policy-compilation-casbin`](docs/guides/permission-system/policy-compilation-casbin.md) · [`dsl-vocabulary-codegen`](docs/guides/permission-system/dsl-vocabulary-codegen.md) · [`adding-permissions`](docs/guides/permission-system/adding-permissions.md) · [`extension-guide`](docs/guides/permission-system/extension-guide.md) · [`operations-troubleshooting`](docs/guides/permission-system/operations-troubleshooting.md)
+
+---
+
+## 8. GitNexus — Code Intelligence
+
+Index: **work-holo** (9326 symbols, 17896 relationships, 241 execution flows). If any tool warns the index is stale, run `npx gitnexus analyze` first.
 
 ### Rules
 
-- Always use `queryUtils` — **never** the raw `client`.
-- Never call RPC procedures directly inside components.
-- Inputs/outputs are type-safe and inferred from backend schemas.
-- Native TanStack options (`staleTime`, `enabled`, `onError`, etc.) are valid via `queryOptions` / `mutationOptions`.
-- Never manually construct query keys.
+| When | Action |
+|---|---|
+| Before editing any symbol | `gitnexus_impact({target: "symbolName", direction: "upstream"})` — report blast radius (callers, processes, risk) |
+| Before committing | `gitnexus_detect_changes()` — verify only expected symbols/flows are affected |
+| HIGH or CRITICAL risk | Warn the user before proceeding |
+| Exploring unfamiliar code | `gitnexus_query({query: "concept"})` — process-grouped results, ranked by relevance |
+| Full symbol context | `gitnexus_context({name: "symbolName"})` — callers, callees, execution flow membership |
+| Renaming symbols | `gitnexus_rename` only — never find-and-replace (not call-graph-aware) |
 
-### Common Mistakes to Avoid
-
-- Importing or using the raw `client` directly.
-- Calling RPC procedures outside React Query.
-- Invalidating queries outside the mutation lifecycle.
-- Manually constructing query keys.
-
-📖 Reference: [`docs/technical/api-client-usage.md`](docs/technical/api-client-usage.md)
-
----
-
-## 3. Context-Mode — Mandatory Routing Rules
-
-> **Critical:** These rules are **not optional**. A single unrouted command can dump 56 KB into context and waste the entire session. Follow the routing rules exactly.
-
----
-
-### 3.1 Blocked Commands
-
-The following commands are **intercepted and blocked** by the context-mode plugin. Do not retry them in any form.
-
-#### `curl` / `wget` — BLOCKED
-
-**Do not use.** Use these instead:
-
-- `context-mode_ctx_fetch_and_index(url, source)` — fetch and index web pages.
-- `context-mode_ctx_execute(language: "javascript", code: "const r = await fetch(...)")` — run HTTP calls in sandbox.
-
-#### Inline HTTP calls — BLOCKED
-
-Shell commands containing `fetch('http`, `requests.get(`, `requests.post(`, `http.get(`, or `http.request(` are blocked.
-
-**Use instead:** `context-mode_ctx_execute(language, code)` to run HTTP calls in sandbox.
-
-#### Direct URL fetching — BLOCKED
-
-**Use instead:** `context-mode_ctx_fetch_and_index(url, source)` → then `context-mode_ctx_search(queries)`.
-
----
-
-### 3.2 Redirected Tools — Use Sandbox Equivalents
-
-#### Shell (output > 20 lines)
-
-Shell is **only** permitted for short-output commands:
-`git`, `mkdir`, `rm`, `mv`, `cd`, `ls`, `npm install`, `pip install`
-
-For everything else:
-
-- `context-mode_ctx_batch_execute(commands, queries)` — run multiple commands and search in one call.
-- `context-mode_ctx_execute(language: "shell", code: "...")` — only stdout enters context.
-
-#### File Reading
-
-| Intent | Tool |
-| --- | --- |
-| Reading a file **to edit it** | Read directly (content must be in context) |
-| Reading a file **to analyse/summarise** | `context-mode_ctx_execute_file(path, language, code)` — only your printed summary enters context |
-
-#### `grep` / Search (large results)
-
-Search results can flood context.
-
-**Use:** `context-mode_ctx_execute(language: "shell", code: "grep ...")` — only your summary enters context.
-
----
-
-### 3.3 Tool Selection Hierarchy
-
-Use tools in this priority order:
-
-1. **GATHER** — `context-mode_ctx_batch_execute(commands, queries)`
-   Primary tool. Runs all commands, auto-indexes output, returns search results. One call replaces 30+ individual calls.
-
-2. **FOLLOW-UP** — `context-mode_ctx_search(queries: ["q1", "q2", ...])`
-   Query indexed content. Pass **all** questions as an array in one call.
-
-3. **PROCESSING** — `context-mode_ctx_execute(language, code)` or `context-mode_ctx_execute_file(path, language, code)`
-   Sandbox execution. Only stdout enters context.
-
-4. **WEB** — `context-mode_ctx_fetch_and_index(url, source)` → then `context-mode_ctx_search(queries)`
-   Fetch, chunk, index, query. Raw HTML never enters context.
-
-5. **INDEX** — `context-mode_ctx_index(content, source)`
-   Store content in FTS5 knowledge base for later search. Use descriptive `source` labels.
-
----
-
-### 3.4 Output Constraints
-
-- Keep responses **under 500 words**.
-- Write all artifacts (code, configs, PRDs) to **files** — never return them as inline text. Return only: file path + one-line description.
-- Use descriptive source labels when indexing so content can be retrieved via `search(source: "label")`.
-
----
-
-### 3.5 `ctx` Utility Commands
-
-| Command | Action |
-| --- | --- |
-| `ctx stats` | Call the `stats` MCP tool and display full output verbatim |
-| `ctx doctor` | Call the `doctor` MCP tool, run returned shell command, display as checklist |
-| `ctx upgrade` | Call the `upgrade` MCP tool, run returned shell command, display as checklist |
-
-<!-- gitnexus:start -->
-# GitNexus — Code Intelligence
-
-This project is indexed by GitNexus as **work-holo** (9326 symbols, 17896 relationships, 241 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
-
-> If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
-
-## Always Do
-
-- **MUST run impact analysis before editing any symbol.** Before modifying a function, class, or method, run `gitnexus_impact({target: "symbolName", direction: "upstream"})` and report the blast radius (direct callers, affected processes, risk level) to the user.
-- **MUST run `gitnexus_detect_changes()` before committing** to verify your changes only affect expected symbols and execution flows.
-- **MUST warn the user** if impact analysis returns HIGH or CRITICAL risk before proceeding with edits.
-- When exploring unfamiliar code, use `gitnexus_query({query: "concept"})` to find execution flows instead of grepping. It returns process-grouped results ranked by relevance.
-- When you need full context on a specific symbol — callers, callees, which execution flows it participates in — use `gitnexus_context({name: "symbolName"})`.
-
-## Never Do
-
-- NEVER edit a function, class, or method without first running `gitnexus_impact` on it.
-- NEVER ignore HIGH or CRITICAL risk warnings from impact analysis.
-- NEVER rename symbols with find-and-replace — use `gitnexus_rename` which understands the call graph.
-- NEVER commit changes without running `gitnexus_detect_changes()` to check affected scope.
-
-## Resources
+### Resources
 
 | Resource | Use for |
-|----------|---------|
-| `gitnexus://repo/work-holo/context` | Codebase overview, check index freshness |
+|---|---|
+| `gitnexus://repo/work-holo/context` | Codebase overview, index freshness |
 | `gitnexus://repo/work-holo/clusters` | All functional areas |
 | `gitnexus://repo/work-holo/processes` | All execution flows |
 | `gitnexus://repo/work-holo/process/{name}` | Step-by-step execution trace |
 
-## CLI
+### Skill Files
 
-| Task | Read this skill file |
-|------|---------------------|
-| Understand architecture / "How does X work?" | `.claude/skills/gitnexus/gitnexus-exploring/SKILL.md` |
-| Blast radius / "What breaks if I change X?" | `.claude/skills/gitnexus/gitnexus-impact-analysis/SKILL.md` |
-| Trace bugs / "Why is X failing?" | `.claude/skills/gitnexus/gitnexus-debugging/SKILL.md` |
-| Rename / extract / split / refactor | `.claude/skills/gitnexus/gitnexus-refactoring/SKILL.md` |
-| Tools, resources, schema reference | `.claude/skills/gitnexus/gitnexus-guide/SKILL.md` |
-| Index, status, clean, wiki CLI commands | `.claude/skills/gitnexus/gitnexus-cli/SKILL.md` |
-
-<!-- gitnexus:end -->
+| Task | Skill |
+|---|---|
+| Understand architecture | `.claude/skills/gitnexus/gitnexus-exploring/SKILL.md` |
+| Blast radius analysis | `.claude/skills/gitnexus/gitnexus-impact-analysis/SKILL.md` |
+| Trace bugs | `.claude/skills/gitnexus/gitnexus-debugging/SKILL.md` |
+| Rename / refactor | `.claude/skills/gitnexus/gitnexus-refactoring/SKILL.md` |
+| Tools / schema reference | `.claude/skills/gitnexus/gitnexus-guide/SKILL.md` |
+| Index / CLI commands | `.claude/skills/gitnexus/gitnexus-cli/SKILL.md` |

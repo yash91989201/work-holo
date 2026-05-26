@@ -25,7 +25,9 @@ Provide a **fluent API** for constructing permission descriptors on the backend.
 The `permissionKey` object provides **type-safe string literals** for the frontend. It uses TypeScript's `as const` to infer a union of all valid permission keys — no manual type maintenance needed.
 
 ### Seed Script (`seed-permissions.ts`)
-Defines **default role permissions** — which permissions each system role (owner, admin, member) gets by default.
+Defines **default system-role permissions** — which Better Auth base org roles (`owner`, `admin`, `member`) get by default.
+
+These seeded templates are system org roles (`isSystem = true`, `organizationId = null`). Runtime authorization derives the active system role from `member.role`, then maps that to the seeded system `roleTemplate` during compilation.
 
 ---
 
@@ -232,7 +234,7 @@ export { Project, type ProjectDSL } from "./lib/dsl/project";
 
 **File:** `packages/permission/scripts/seed-permissions.ts`
 
-Add default role mappings. This determines what permissions each system role gets when the database is seeded.
+Add default role mappings. This determines what permissions each base system org role gets when the database is seeded.
 
 ```ts
 const DEFAULT_ROLE_PERMISSIONS: Record<string, string[]> = {
@@ -278,6 +280,8 @@ const DEFAULT_ROLE_PERMISSIONS: Record<string, string[]> = {
 | **owner** | Full access — all CRUD actions on all resources |
 | **admin** | Most CRUD — can manage others but can't delete org |
 | **member** | Read/list + limited create — no management actions |
+
+> These mappings define the permission envelope for the three Better Auth base org roles. They are not a substitute for custom role assignment APIs.
 
 ---
 
@@ -362,4 +366,7 @@ Two permissions have the same `bitIndex`. Check `vocabulary.ts` — each must be
 
 ### Permission check returns `false` unexpectedly
 
-The role doesn't have that permission in the seed script. Check `DEFAULT_ROLE_PERMISSIONS` in the seed file.
+Check the correct source of truth:
+
+- for base org access, the relevant system role may not have that permission in the seed script, or the user's `member.role` may not be what you expect
+- for custom access, verify the user has the expected non-system role assignment in the correct org/team scope

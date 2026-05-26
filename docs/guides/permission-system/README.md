@@ -28,6 +28,25 @@ This guide documents the real implementation in `packages/permission` and how it
 - Service bootstrapping: `apps/server/src/index.ts`
 - Web usage: `apps/web/src/lib/permission` and `apps/web/src/hooks/use-permission-sync.ts`
 
+## Role model and source of truth
+
+The system now distinguishes between **base organization roles** and **custom assignable roles**:
+
+- **Base org roles**: `owner`, `admin`, `member`
+  - stored in Better Auth on `member.role`
+  - treated as the source of truth for organization-level system access
+  - represented in the permission system by system `roleTemplate` rows during policy compilation
+- **Custom roles**:
+  - stored as non-system `roleTemplate` rows
+  - intended to be assigned through `roleAssignment`
+  - team-specific custom access should use `scope = "team"` plus `roleAssignment.teamId`
+
+Important constraints:
+
+- do **not** treat `roleAssignment` as the source of truth for Better Auth system roles
+- do **not** hardcode backend authorization from raw role strings when a permission check exists
+- system roles and custom roles can share human-readable names in the future, so runtime identity uses stable `roleTemplate.id`
+
 ## Legacy docs moved
 
 - `docs/technical/adding-permissions.md` -> `docs/technical/permission-system/adding-permissions.md`
