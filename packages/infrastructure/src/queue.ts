@@ -52,122 +52,75 @@ export interface QueueConfig {
   url: string;
 }
 
+let connection: ChannelModel | null = null;
+let channel: Channel | null = null;
+
+async function setupQueues(): Promise<void> {
+  if (!channel) {
+    throw new Error("Channel not initialized");
+  }
+
+  await channel.assertQueue(QUEUES.READ_RECEIPTS, {
+    durable: true,
+    arguments: {
+      "x-message-ttl": 3_600_000,
+      "x-max-length": 10_000,
+    },
+  });
+
+  await channel.assertQueue(QUEUES.NOTIFICATIONS, {
+    durable: true,
+    arguments: {
+      "x-message-ttl": 3_600_000,
+      "x-max-length": 50_000,
+    },
+  });
+
+  await channel.assertQueue(QUEUES.SEARCH_INDEXING, {
+    durable: true,
+    arguments: {
+      "x-max-length": 50_000,
+    },
+  });
+}
+
 // biome-ignore lint/complexity/noStaticOnlyClass: Singleton pattern with encapsulated state
 export class Queue {
-  private static connection: ChannelModel | null = null;
-  private static channel: Channel | null = null;
-  private static reconnectTimeout: NodeJS.Timeout | null = null;
-  private static isConnecting = false;
-  private static connectionUrl = "";
-
-  private static async setupQueues(): Promise<void> {
-    if (!Queue.channel) {
-      throw new Error("Channel not initialized");
-    }
-
-    await Queue.channel.assertQueue(QUEUES.READ_RECEIPTS, {
-      durable: true,
-      arguments: {
-        "x-message-ttl": 3_600_000,
-        "x-max-length": 10_000,
-      },
-    });
-
-    await Queue.channel.assertQueue(QUEUES.NOTIFICATIONS, {
-      durable: true,
-      arguments: {
-        "x-message-ttl": 3_600_000,
-        "x-max-length": 50_000,
-      },
-    });
-
-    await Queue.channel.assertQueue(QUEUES.SEARCH_INDEXING, {
-      durable: true,
-      arguments: {
-        "x-max-length": 50_000,
-      },
-    });
-
-    console.log("RabbitMQ queues setup completed");
-  }
-
-  private static handleConnectionError(): void {
-    Queue.connection = null;
-    Queue.channel = null;
-
-    if (Queue.reconnectTimeout) {
-      clearTimeout(Queue.reconnectTimeout);
-    }
-
-    console.log("Attempting to reconnect to RabbitMQ in 5 seconds...");
-    Queue.reconnectTimeout = setTimeout(() => {
-      Queue.connect({ url: Queue.connectionUrl }).catch((err) => {
-        console.error("Reconnection failed:", err);
-      });
-    }, 5000);
-  }
-
   static async connect(config: QueueConfig): Promise<void> {
-    if (Queue.isConnecting) {
-      console.log("Already connecting to RabbitMQ, skipping...");
+    if (connection && channel) {
       return;
     }
 
-    if (Queue.connection && Queue.channel) {
-      console.log("Already connected to RabbitMQ");
-      return;
-    }
+    connection = await amqp.connect(config.url);
 
-    Queue.isConnecting = true;
-    Queue.connectionUrl = config.url;
+    connection.on("error", (err) => {
+      console.error("RabbitMQ connection error:", err);
+    });
 
-    try {
-      console.log("Connecting to RabbitMQ...");
-      Queue.connection = await amqp.connect(config.url, {
-        tls: {
-          rejectUnauthorized: false,
-        },
-      });
+    connection.on("close", () => {
+      console.log("RabbitMQ connection closed");
+      connection = null;
+      channel = null;
+    });
 
-      Queue.connection.on("error", (err) => {
-        console.error("RabbitMQ connection error:", err);
-        Queue.handleConnectionError();
-      });
+    channel = await connection.createChannel();
+    console.log("Connected to RabbitMQ successfully");
 
-      Queue.connection.on("close", () => {
-        console.log("RabbitMQ connection closed");
-        Queue.handleConnectionError();
-      });
-
-      Queue.channel = await Queue.connection.createChannel();
-      console.log("Connected to RabbitMQ successfully");
-
-      await Queue.setupQueues();
-
-      Queue.isConnecting = false;
-    } catch (error) {
-      Queue.isConnecting = false;
-      console.error("Failed to connect to RabbitMQ:", error);
-      Queue.handleConnectionError();
-      throw error;
-    }
+    await setupQueues();
   }
 
   static getClient(): Channel {
-    if (!Queue.channel) {
+    if (!channel) {
       throw new Error(
         "Queue client not initialized. Call Queue.connect() first."
       );
     }
-    return Queue.channel;
+    return channel;
   }
 
   static publish(queue: keyof typeof QUEUES, message: QueueMessage): boolean {
-    if (!Queue.channel) {
+    if (!channel) {
       console.error("Cannot publish: Channel not initialized");
-      Queue.connect({ url: Queue.connectionUrl }).catch((error) => {
-        console.error("Failed to reconnect before publishing:", error);
-      });
       return false;
     }
 
@@ -175,7 +128,7 @@ export class Queue {
       const queueName = QUEUES[queue];
       const messageBuffer = Buffer.from(JSON.stringify(message));
 
-      const sent = Queue.channel.sendToQueue(queueName, messageBuffer, {
+      const sent = channel.sendToQueue(queueName, messageBuffer, {
         persistent: true,
         timestamp: Date.now(),
       });
@@ -193,39 +146,19 @@ export class Queue {
     }
   }
 
-  static isConnected(): boolean {
-    return Queue.connection !== null && Queue.channel !== null;
-  }
-
   static async close(): Promise<void> {
-    if (Queue.reconnectTimeout) {
-      clearTimeout(Queue.reconnectTimeout);
-      Queue.reconnectTimeout = null;
-    }
-
     try {
-      if (Queue.channel) {
-        await Queue.channel.close();
-        Queue.channel = null;
+      if (channel) {
+        await channel.close();
+        channel = null;
       }
-      if (Queue.connection) {
-        await Queue.connection.close();
-        Queue.connection = null;
+      if (connection) {
+        await connection.close();
+        connection = null;
       }
       console.log("RabbitMQ connection closed successfully");
     } catch (error) {
       console.error("Error closing RabbitMQ connection:", error);
-    }
-  }
-
-  static reset(): void {
-    Queue.connection = null;
-    Queue.channel = null;
-    Queue.isConnecting = false;
-    Queue.connectionUrl = "";
-    if (Queue.reconnectTimeout) {
-      clearTimeout(Queue.reconnectTimeout);
-      Queue.reconnectTimeout = null;
     }
   }
 }
