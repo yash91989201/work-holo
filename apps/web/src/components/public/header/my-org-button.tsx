@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { buttonVariants } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
+import { buttonVariants } from "@work-holo/ui/components/button";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
 import { useActiveMemberRole } from "@/hooks/use-active-member-role";
 import { useActiveOrgSlug } from "@/hooks/use-active-org-slug";
 import { useSession } from "@/hooks/use-session";

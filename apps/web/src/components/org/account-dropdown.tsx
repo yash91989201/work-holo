@@ -20,9 +20,12 @@ import {
   useParams,
   useRouter,
 } from "@tanstack/react-router";
-import { toast } from "sonner";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@work-holo/ui/components/avatar";
+import { Badge } from "@work-holo/ui/components/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,8 +37,9 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@work-holo/ui/components/dropdown-menu";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
+import { toast } from "sonner";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { useMemberRole } from "@/hooks/use-member-role";
 import { useOrgPresence, useSetManualStatus } from "@/hooks/use-presence";
@@ -152,11 +156,9 @@ export function AccountDropdown() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button
-          className="relative flex cursor-pointer items-center justify-center rounded-full transition-opacity hover:opacity-80"
-          type="button"
-        >
+      <DropdownMenuTrigger
+        nativeButton={false}
+        render={
           <Avatar className="h-9 w-9">
             <AvatarImage
               alt={user.name ?? "User"}
@@ -166,39 +168,26 @@ export function AccountDropdown() {
               {initials}
             </AvatarFallback>
           </Avatar>
-          <span
-            className={`absolute right-0 bottom-0 block h-2.5 w-2.5 rounded-full border-2 border-background ${current.dotColor} ring-2 ring-background`}
-          />
-        </button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-80">
-        <div className="relative h-24 w-full overflow-hidden rounded-t-lg bg-linear-to-br from-violet-500 via-purple-500 to-pink-500" />
-
-        <div className="relative -mt-12 px-4 pb-4">
-          <Avatar className="h-20 w-20 border-4 border-background">
-            <AvatarImage
-              alt={user.name ?? "User"}
-              src={user.image ?? undefined}
-            />
-            <AvatarFallback className="bg-orange-500 font-semibold text-2xl text-white">
-              {initials}
-            </AvatarFallback>
-          </Avatar>
-          <div className="mt-2">
-            <h3 className="font-semibold text-lg">{user.name || "User"}</h3>
-            <p className="text-muted-foreground text-sm">{user.email}</p>
-            <Badge className="mt-1.5 h-5 rounded-sm bg-violet-600 px-2 font-bold text-[10px] text-white uppercase hover:bg-violet-600">
+        }
+      />
+      <DropdownMenuContent align="end" className="w-72">
+        <div className="px-4 py-3">
+          <div className="flex flex-col gap-0.5">
+            <span className="font-semibold text-sm">{user.name || "User"}</span>
+            <span className="text-muted-foreground text-xs">{user.email}</span>
+            <Badge className="mt-1 h-5 w-fit rounded-sm bg-violet-600 px-2 font-bold text-[10px] text-white uppercase hover:bg-violet-600">
               {role}
             </Badge>
           </div>
         </div>
 
+        <DropdownMenuSeparator />
+
         {role !== "member" && (
-          <>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuLabel>Organization</DropdownMenuLabel>
-              <DropdownMenuItem asChild>
+          <DropdownMenuGroup>
+            <DropdownMenuLabel>Organization</DropdownMenuLabel>
+            <DropdownMenuItem
+              render={
                 <Link
                   className="cursor-pointer"
                   params={{ slug }}
@@ -207,8 +196,10 @@ export function AccountDropdown() {
                   <IconBriefcase />
                   Workspace
                 </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
+              }
+            />
+            <DropdownMenuItem
+              render={
                 <Link
                   className="cursor-pointer"
                   params={{ slug }}
@@ -217,9 +208,11 @@ export function AccountDropdown() {
                   <IconUserFilled />
                   Console
                 </Link>
-              </DropdownMenuItem>
-              {role === "owner" && (
-                <DropdownMenuItem asChild>
+              }
+            />
+            {role === "owner" && (
+              <DropdownMenuItem
+                render={
                   <Link
                     className="cursor-pointer"
                     params={{ slug }}
@@ -228,41 +221,53 @@ export function AccountDropdown() {
                     <IconLayoutDashboardFilled />
                     Manage
                   </Link>
-                </DropdownMenuItem>
-              )}
-            </DropdownMenuGroup>
-          </>
+                }
+              />
+            )}
+          </DropdownMenuGroup>
         )}
 
+        <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuLabel>Account</DropdownMenuLabel>
-          <DropdownMenuItem asChild>
-            <Link className="cursor-pointer" to="/settings/account/profile">
-              <IconUserFilled />
-              Profile
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link className="cursor-pointer" to="/settings/account/preferences">
-              <IconSettingsFilled />
-              Preferences
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link
-              className="cursor-pointer"
-              to="/settings/account/notifications"
-            >
-              <IconBellFilled />
-              Notifications
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link className="cursor-pointer" to="/settings/account/security">
-              <IconShieldFilled />
-              Security & Access
-            </Link>
-          </DropdownMenuItem>
+          <DropdownMenuItem
+            render={
+              <Link className="cursor-pointer" to="/settings/account/profile">
+                <IconUserFilled />
+                Profile
+              </Link>
+            }
+          />
+          <DropdownMenuItem
+            render={
+              <Link
+                className="cursor-pointer"
+                to="/settings/account/preferences"
+              >
+                <IconSettingsFilled />
+                Preferences
+              </Link>
+            }
+          />
+          <DropdownMenuItem
+            render={
+              <Link
+                className="cursor-pointer"
+                to="/settings/account/notifications"
+              >
+                <IconBellFilled />
+                Notifications
+              </Link>
+            }
+          />
+          <DropdownMenuItem
+            render={
+              <Link className="cursor-pointer" to="/settings/account/security">
+                <IconShieldFilled />
+                Security & Access
+              </Link>
+            }
+          />
           <DropdownMenuSub>
             <DropdownMenuSubTrigger className="gap-2">
               {theme === "dark" ? (
@@ -338,13 +343,11 @@ export function AccountDropdown() {
   );
 }
 
-const AccountDropdownSkeleton = () => {
-  return (
-    <div className="relative flex items-center justify-center">
-      <Skeleton className="h-9 w-9 rounded-full" />
-      <span className="absolute right-0 bottom-0 block h-2.5 w-2.5 rounded-full border-2 border-background bg-muted" />
-    </div>
-  );
-};
+const AccountDropdownSkeleton = () => (
+  <div className="relative flex items-center justify-center">
+    <Skeleton className="h-9 w-9 rounded-full" />
+    <span className="absolute right-0 bottom-0 block h-2.5 w-2.5 rounded-full border-2 border-background bg-muted" />
+  </div>
+);
 
 AccountDropdown.Fallback = AccountDropdownSkeleton;

@@ -5,9 +5,8 @@ import {
   IconUsers,
 } from "@tabler/icons-react";
 import { useNavigate, useParams } from "@tanstack/react-router";
-import { useState } from "react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback } from "@work-holo/ui/components/avatar";
+import { Button } from "@work-holo/ui/components/button";
 import {
   Command,
   CommandEmpty,
@@ -15,13 +14,14 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
+} from "@work-holo/ui/components/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@work-holo/ui/components/popover";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
+import { useState } from "react";
 import { useActiveMemberRole } from "@/hooks/use-active-member-role";
 import { useMyTeams } from "@/hooks/use-my-teams";
 import { useSession } from "@/hooks/use-session";
@@ -127,24 +127,26 @@ export function TeamSwitcher() {
 
   return (
     <Popover onOpenChange={setOpen} open={open}>
-      <PopoverTrigger asChild>
-        <Button
-          aria-expanded={open}
-          disabled={isSwitching || isRefetching}
-          role="combobox"
-          variant="outline"
-        >
-          <div className="flex items-center gap-2">
-            <Avatar>
-              <AvatarFallback>
-                <IconUsers className="size-3" />
-              </AvatarFallback>
-            </Avatar>
-            <span className="truncate">{displayName}</span>
-          </div>
-          <IconChevronDown className="ml-2 size-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
+      <PopoverTrigger
+        render={
+          <Button
+            aria-expanded={open}
+            disabled={isSwitching || isRefetching}
+            role="combobox"
+            variant="outline"
+          >
+            <div className="flex items-center gap-2">
+              <Avatar>
+                <AvatarFallback>
+                  <IconUsers className="size-3" />
+                </AvatarFallback>
+              </Avatar>
+              <span className="truncate">{displayName}</span>
+            </div>
+            <IconChevronDown className="ml-2 size-4 shrink-0 opacity-50" />
+          </Button>
+        }
+      />
       <PopoverContent align="start" className="w-64 p-0">
         <Command>
           <CommandInput placeholder="Search teams..." />

@@ -4,7 +4,7 @@ import {
   IconPinFilled,
   IconX,
 } from "@tabler/icons-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@work-holo/ui/components/button";
 import { useVirtualPinnedMessages } from "@/hooks/communications/use-pinned-messages";
 import { cn } from "@/lib/utils";
 import { usePinnedMessagesSidebar } from "@/stores/channel-store";

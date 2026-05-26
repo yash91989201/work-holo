@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ChannelSkeleton } from "@/components/modules/communication/channels/channel-skeleton";
 import { MessageComposer } from "@/components/modules/communication/channels/message-composer";
 import { MaximizedMessageComposer } from "@/components/modules/communication/channels/message-composer/maximized-message-composer";
 import { MessageList } from "@/components/modules/communication/channels/message-list";
@@ -18,7 +17,6 @@ export const Route = createFileRoute(
       })
     );
   },
-  pendingComponent: ChannelSkeleton,
   component: RouteComponent,
 });
 

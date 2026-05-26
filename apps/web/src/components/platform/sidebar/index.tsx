@@ -1,4 +1,3 @@
-import { Image } from "@/components/shared/image";
 import {
   Sidebar as BaseSidebar,
   SidebarContent,
@@ -7,7 +6,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-} from "@/components/ui/sidebar";
+} from "@work-holo/ui/components/sidebar";
+import { Image } from "@/components/shared/image";
 import { NavMain } from "./nav-main";
 
 type PlatformSidebarProps = React.ComponentProps<typeof BaseSidebar> & {

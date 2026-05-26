@@ -1,5 +1,4 @@
 import { Link, useMatches } from "@tanstack/react-router";
-import { Fragment } from "react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,7 +6,8 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+} from "@work-holo/ui/components/breadcrumb";
+import { Fragment } from "react";
 
 type BreadcrumbEntry = {
   label: string;
@@ -54,9 +54,9 @@ export function Navigator() {
                 {isLast ? (
                   <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
                 ) : (
-                  <BreadcrumbLink asChild>
-                    <Link to={crumb.path}>{crumb.label}</Link>
-                  </BreadcrumbLink>
+                  <BreadcrumbLink
+                    render={<Link to={crumb.path}>{crumb.label}</Link>}
+                  />
                 )}
               </BreadcrumbItem>
             </Fragment>

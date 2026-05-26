@@ -4,15 +4,15 @@ import {
   IconUserFilled,
 } from "@tabler/icons-react";
 import { createFileRoute } from "@tanstack/react-router";
-import { z } from "zod";
-import { AcceptInvitationForm } from "@/components/auth/accept-invitation-form";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@work-holo/ui/components/card";
+import { z } from "zod";
+import { AcceptInvitationForm } from "@/components/auth/accept-invitation-form";
 
 const RouteSearchSchema = z.object({
   email: z.email(),

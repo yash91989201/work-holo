@@ -1,5 +1,5 @@
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
+import { Badge } from "@work-holo/ui/components/badge";
+import { Separator } from "@work-holo/ui/components/separator";
 
 interface DateSeparatorProps {
   displayDate: string;

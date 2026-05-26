@@ -5,7 +5,7 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@/components/ui/empty";
+} from "@work-holo/ui/components/empty";
 
 type DmBlockedReason = "org_disabled" | "team_restricted" | "user_restricted";
 

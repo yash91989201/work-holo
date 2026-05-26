@@ -1,6 +1,9 @@
 import { IconLayoutGrid, IconTable } from "@tabler/icons-react";
 import { useNavigate, useSearch } from "@tanstack/react-router";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@work-holo/ui/components/toggle-group";
 import { cn } from "@/lib/utils";
 
 type ViewType = "table" | "grid";
@@ -13,13 +16,14 @@ export function FilesViewToggle() {
 
   const currentView = (search.view as ViewType) || "table";
 
-  const handleViewChange = (value: string) => {
-    if (!value) return;
+  const handleViewChange = (value: string[]) => {
+    const selected = value[0];
+    if (!selected) return;
     navigate({
       to: ".",
       search: (prev) => ({
         ...prev,
-        view: value as ViewType,
+        view: selected as ViewType,
       }),
     });
   };
@@ -28,8 +32,7 @@ export function FilesViewToggle() {
     <ToggleGroup
       className="justify-end"
       onValueChange={handleViewChange}
-      type="single"
-      value={currentView}
+      value={currentView ? [currentView] : []}
     >
       <ToggleGroupItem
         aria-label="Table view"

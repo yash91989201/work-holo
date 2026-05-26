@@ -1,12 +1,12 @@
 import { useParams } from "@tanstack/react-router";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@work-holo/ui/components/dialog";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { useMessageMutations } from "@/hooks/communications/use-message-mutations";
 import { useTypingIndicator } from "@/hooks/communications/use-typing-indicator";
 import { useAuthedSession } from "@/hooks/use-authed-session";
@@ -254,14 +254,17 @@ export function MaximizedMessageComposer() {
   dialogTitle = isReplying ? "Reply to Message" : dialogTitle;
 
   return (
-    <Dialog onOpenChange={handleOpenChange} open={isOpen}>
+    <Dialog
+      disablePointerDismissal
+      onOpenChange={handleOpenChange}
+      open={isOpen}
+    >
       <DialogContent
         className={cn("flex flex-col overflow-y-auto p-0", {
           "h-screen w-screen max-w-none rounded-none": isMobile,
           "max-h-[90vh] sm:max-w-[90vw]": isTablet,
           "h-[90vh] sm:max-w-[90vw] lg:h-[80vh] lg:max-w-[80vw]": isDesktop,
         })}
-        onInteractOutside={(e) => e.preventDefault()}
         showCloseButton={false}
       >
         <DialogHeader className="shrink-0 border-b px-4 py-3 sm:px-6 sm:py-4">

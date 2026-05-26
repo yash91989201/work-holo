@@ -1,7 +1,10 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
+import {
+  SidebarInset,
+  SidebarProvider,
+} from "@work-holo/ui/components/sidebar";
 import { Suspense } from "react";
 import { PresenceHeartbeat } from "@/components/org/presence-heartbeat";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Header } from "@/components/workspace/layout/header";
 import { Sidebar } from "@/components/workspace/layout/sidebar";
 

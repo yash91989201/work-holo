@@ -7,22 +7,21 @@ import {
 import { useDebouncedCallback } from "@tanstack/react-pacer";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
-import { useState } from "react";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@work-holo/ui/components/badge";
 import {
   Empty,
   EmptyDescription,
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@/components/ui/empty";
+} from "@work-holo/ui/components/empty";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from "@/components/ui/input-group";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@work-holo/ui/components/input-group";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
 import {
   Table,
   TableBody,
@@ -30,7 +29,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@work-holo/ui/components/table";
+import { useState } from "react";
 import { queryUtils } from "@/utils/orpc";
 
 export function OwnersTable() {

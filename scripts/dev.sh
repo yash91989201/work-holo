@@ -30,6 +30,7 @@ DEV_S3_ENDPOINT="http://127.0.0.1:9000"
 
 ENV_SERVER="apps/server/.env"
 ENV_WEB="apps/web/.env"
+ENV_WWW="apps/www/.env"
 ENV_NOTIFICATION="workers/notification/.env"
 ENV_SEARCH="workers/message-search/.env"
 ENV_READ_RECEIPT="workers/read-receipt/.env"
@@ -136,6 +137,14 @@ env_value_is_empty() {
   [[ -z "$value" || "$value" == '""' || "$value" == "''" ]]
 }
 
+trim_whitespace() {
+  local value="$1"
+  value="${value#"${value%%[![:space:]]*}"}"
+  value="${value%"${value##*[![:space:]]}"}"
+  printf '%s' "$value"
+}
+
+
 ensure_env_default() {
   local target="$1"
   local key="$2"
@@ -179,6 +188,72 @@ ensure_env_default() {
   [[ "$changed" == "true" ]]
 }
 
+ensure_env_csv_contains() {
+  local target="$1"
+  local key="$2"
+  local value="$3"
+  local tmp=""
+  local line=""
+  local found="false"
+  local changed="false"
+
+  tmp="$(mktemp)"
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    if [[ "$line" == "$key="* ]]; then
+      found="true"
+      local current_value="${line#"$key="}"
+
+      if env_value_is_empty "$current_value"; then
+        printf '%s=%s\n' "$key" "$value" >>"$tmp"
+        changed="true"
+        continue
+      fi
+
+      local -a origins=()
+      local has_value="false"
+      local -a raw_origins=()
+      local origin=""
+      IFS=',' read -r -a raw_origins <<<"$current_value"
+      for origin in "${raw_origins[@]}"; do
+        local trimmed=""
+        trimmed="$(trim_whitespace "$origin")"
+        [[ -z "$trimmed" ]] && continue
+        if [[ "$trimmed" == "$value" ]]; then
+          has_value="true"
+        fi
+        origins+=("$trimmed")
+      done
+
+      if [[ "$has_value" == "false" ]]; then
+        origins+=("$value")
+      fi
+
+      local next_value=""
+      next_value="$(IFS=,; printf '%s' "${origins[*]}")"
+      if [[ "$next_value" != "$current_value" ]]; then
+        changed="true"
+      fi
+      printf '%s=%s\n' "$key" "$next_value" >>"$tmp"
+      continue
+    fi
+    printf '%s\n' "$line" >>"$tmp"
+  done <"$target"
+
+  if [[ "$found" == "false" ]]; then
+    printf '%s=%s\n' "$key" "$value" >>"$tmp"
+    changed="true"
+  fi
+
+  if [[ "$changed" == "true" ]]; then
+    mv "$tmp" "$target"
+  else
+    rm -f "$tmp"
+  fi
+
+  [[ "$changed" == "true" ]]
+}
+
+
 write_env_defaults() {
   local target="$1"
   local rel_target="${target#"$ROOT_DIR"/}"
@@ -216,7 +291,7 @@ create_env_server() {
   write_env_defaults "$ROOT_DIR/$ENV_SERVER" <<EOF
 BETTER_AUTH_SECRET=$secret
 BETTER_AUTH_URL=http://localhost:3000
-CORS_ORIGIN=http://localhost:3001
+CORS_ORIGIN=http://localhost:3001,http://localhost:5100
 DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
 REDIS_URL=redis://localhost:6379
 RABBITMQ_URL=amqp://admin:admin@localhost:5672
@@ -239,6 +314,10 @@ PUSHER_PORT=6001
 CASBIN_ENFORCE=false
 OPENSEARCH_URL=http://localhost:9200
 EOF
+  if ensure_env_csv_contains "$ROOT_DIR/$ENV_SERVER" "CORS_ORIGIN" "http://localhost:5100"; then
+    log_success "Ensured CORS_ORIGIN includes http://localhost:5100 in $ENV_SERVER"
+  fi
+
 }
 
 create_env_web() {
@@ -255,6 +334,16 @@ VITE_PUSHER_HOST=localhost
 VITE_PUSHER_PORT=6001
 EOF
 }
+
+create_env_www() {
+  write_env_defaults "$ROOT_DIR/$ENV_WWW" <<EOF
+VITE_ENV=development
+VITE_WWW_URL=http://localhost:5100
+VITE_SERVER_URL=http://localhost:3000
+VITE_IMAGE_TRANSFORMATION_URL=http://localhost:8080
+EOF
+}
+
 
 create_env_notification() {
   write_env_defaults "$ROOT_DIR/$ENV_NOTIFICATION" <<EOF
@@ -300,6 +389,7 @@ create_env_files() {
   generate_vapid_keys
   create_env_server "$secret"
   create_env_web
+  create_env_www
   create_env_notification
   create_env_search
   create_env_read_receipt
@@ -818,6 +908,7 @@ cmd_doctor() {
   check_deps || failed=1
   check_env_exists "$ENV_SERVER" || failed=1
   check_env_exists "$ENV_WEB" || failed=1
+  check_env_exists "$ENV_WWW" || failed=1
   check_env_exists "$ENV_NOTIFICATION" || failed=1
   check_env_exists "$ENV_SEARCH" || failed=1
   check_env_exists "$ENV_READ_RECEIPT" || failed=1
@@ -877,6 +968,7 @@ cmd_status() {
   log_info "Environment Files"
   check_env_exists "$ENV_SERVER" || true
   check_env_exists "$ENV_WEB" || true
+  check_env_exists "$ENV_WWW" || true
   check_env_exists "$ENV_NOTIFICATION" || true
   check_env_exists "$ENV_SEARCH" || true
   check_env_exists "$ENV_READ_RECEIPT" || true
@@ -976,6 +1068,7 @@ Command behavior:
 Managed env files:
   apps/server/.env
   apps/web/.env
+  apps/www/.env
   workers/notification/.env
   workers/message-search/.env
   workers/read-receipt/.env

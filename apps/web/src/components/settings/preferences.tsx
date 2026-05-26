@@ -4,8 +4,7 @@ import {
   IconRotateClockwise,
   IconSunFilled,
 } from "@tabler/icons-react";
-import { useTheme } from "next-themes";
-import { Button } from "@/components/ui/button";
+import { Button } from "@work-holo/ui/components/button";
 import {
   Item,
   ItemActions,
@@ -13,7 +12,7 @@ import {
   ItemDescription,
   ItemHeader,
   ItemTitle,
-} from "@/components/ui/item";
+} from "@work-holo/ui/components/item";
 import {
   Select,
   SelectContent,
@@ -22,9 +21,10 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { Switch } from "@/components/ui/switch";
+} from "@work-holo/ui/components/select";
+import { Separator } from "@work-holo/ui/components/separator";
+import { Switch } from "@work-holo/ui/components/switch";
+import { useTheme } from "next-themes";
 import {
   type FontFamily,
   type FontSize,
@@ -215,7 +215,13 @@ export function Interface() {
             <ItemDescription>Customize your interface theme.</ItemDescription>
           </ItemContent>
           <ItemActions>
-            <Select onValueChange={setTheme} value={theme || "system"}>
+            <Select
+              onValueChange={(value) => {
+                if (value === null) return;
+                setTheme(value);
+              }}
+              value={theme || "system"}
+            >
               <SelectTrigger className="w-32" id="theme">
                 <SelectValue placeholder="Select theme" />
               </SelectTrigger>
@@ -241,7 +247,13 @@ export function Interface() {
             </ItemDescription>
           </ItemContent>
           <ItemActions>
-            <Select onValueChange={setFontFamily} value={fontFamily}>
+            <Select
+              onValueChange={(value) => {
+                if (value === null) return;
+                setFontFamily(value as FontFamily);
+              }}
+              value={fontFamily}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select font family" />
               </SelectTrigger>
@@ -264,7 +276,13 @@ export function Interface() {
             </ItemDescription>
           </ItemContent>
           <ItemActions>
-            <Select onValueChange={setFontSize} value={fontSize}>
+            <Select
+              onValueChange={(value) => {
+                if (value === null) return;
+                setFontSize(value as FontSize);
+              }}
+              value={fontSize}
+            >
               <SelectTrigger id="font-size">
                 <SelectValue placeholder="Select font size" />
               </SelectTrigger>
@@ -287,7 +305,13 @@ export function Interface() {
             </ItemDescription>
           </ItemContent>
           <ItemActions>
-            <Select onValueChange={setLetterSpacing} value={letterSpacing}>
+            <Select
+              onValueChange={(value) => {
+                if (value === null) return;
+                setLetterSpacing(value as LetterSpacing);
+              }}
+              value={letterSpacing}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select letter spacing" />
               </SelectTrigger>
@@ -308,7 +332,13 @@ export function Interface() {
             <ItemDescription>Set the gap between ui elements</ItemDescription>
           </ItemContent>
           <ItemActions>
-            <Select onValueChange={setSpacing} value={spacing}>
+            <Select
+              onValueChange={(value) => {
+                if (value === null) return;
+                setSpacing(value as Spacing);
+              }}
+              value={spacing}
+            >
               <SelectTrigger id="spacing">
                 <SelectValue placeholder="Select spacing" />
               </SelectTrigger>
@@ -331,7 +361,13 @@ export function Interface() {
             </ItemDescription>
           </ItemContent>
           <ItemActions>
-            <Select onValueChange={setRadius} value={radius}>
+            <Select
+              onValueChange={(value) => {
+                if (value === null) return;
+                setRadius(value as Radius);
+              }}
+              value={radius}
+            >
               <SelectTrigger id="radius">
                 <SelectValue placeholder="Select radius" />
               </SelectTrigger>

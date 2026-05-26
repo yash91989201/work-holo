@@ -1,11 +1,12 @@
 import { IconPlus } from "@tabler/icons-react";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
-import { Suspense, useMemo, useState } from "react";
-import { toast } from "sonner";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@work-holo/ui/components/avatar";
+import { Button } from "@work-holo/ui/components/button";
 import {
   CommandDialog,
   CommandEmpty,
@@ -13,9 +14,11 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Spinner } from "@/components/ui/spinner";
+} from "@work-holo/ui/components/command";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
+import { Spinner } from "@work-holo/ui/components/spinner";
+import { Suspense, useMemo, useState } from "react";
+import { toast } from "sonner";
 
 import { useDmConversations } from "@/hooks/communications/dm/use-dm-conversations";
 import { useAuthedSession } from "@/hooks/use-authed-session";

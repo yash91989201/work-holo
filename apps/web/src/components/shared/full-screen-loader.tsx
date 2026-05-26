@@ -19,7 +19,7 @@ export function FullScreenLoader({ className }: FullScreenLoaderProps) {
             alt="Work Holo logo"
             height={240}
             src="/logo.webp"
-            width={240}
+            width={360}
           />
         </picture>
         <h1 className="font-bold text-2xl text-foreground lg:text-3xl">

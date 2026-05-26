@@ -1,9 +1,9 @@
-import { Item, ItemContent, ItemTitle } from "@/components/ui/item";
+import { Item, ItemContent, ItemTitle } from "@work-holo/ui/components/item";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@work-holo/ui/components/popover";
 
 interface TypingIndicatorProps {
   typingUsers: { userId: string; userName: string }[];
@@ -31,11 +31,13 @@ export function TypingIndicator({ typingUsers }: TypingIndicatorProps) {
 
   return (
     <Popover>
-      <PopoverTrigger asChild>
-        <div className="cursor-pointer text-muted-foreground text-sm transition-colors hover:text-foreground">
-          {typingText}
-        </div>
-      </PopoverTrigger>
+      <PopoverTrigger
+        render={
+          <div className="cursor-pointer text-muted-foreground text-sm transition-colors hover:text-foreground">
+            {typingText}
+          </div>
+        }
+      />
       <PopoverContent className="w-48 p-1.5" side="top">
         <div className="space-y-1.5">
           <p className="font-medium text-sm">Currently typing:</p>

@@ -11,33 +11,36 @@ import {
   IconMoodSmile,
 } from "@tabler/icons-react";
 import { useNavigate, useParams } from "@tanstack/react-router";
-import DOMPurify from "dompurify";
-import parse from "html-react-parser";
-import type React from "react";
-import { useCallback, useMemo, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { ButtonGroup } from "@/components/ui/button-group";
+import { Button } from "@work-holo/ui/components/button";
+import { ButtonGroup } from "@work-holo/ui/components/button-group";
 import {
   Empty,
   EmptyDescription,
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@/components/ui/empty";
+} from "@work-holo/ui/components/empty";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Skeleton } from "@/components/ui/skeleton";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+} from "@work-holo/ui/components/popover";
+import { ScrollArea } from "@work-holo/ui/components/scroll-area";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@work-holo/ui/components/toggle-group";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@work-holo/ui/components/tooltip";
+import DOMPurify from "dompurify";
+import parse from "html-react-parser";
+import type React from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   dmMessagesCollection,
   messagesCollection,
@@ -238,34 +241,38 @@ export function NotificationDropdown() {
     <TooltipProvider>
       <Popover onOpenChange={setOpen} open={open}>
         <Tooltip>
-          <TooltipTrigger asChild>
-            <PopoverTrigger asChild>
-              <Button
-                className="group relative size-9 rounded-full transition-all duration-300 hover:bg-primary/5"
-                size="icon"
-                variant="ghost"
-              >
-                <div
-                  className={cn(
-                    "relative transition-transform duration-300",
-                    open && "rotate-12"
-                  )}
-                >
-                  {unreadCount > 0 ? (
-                    <IconBellFilled className="h-5 w-5 text-primary transition-transform group-hover:scale-110" />
-                  ) : (
-                    <IconBell className="h-5 w-5 text-foreground/70 transition-transform group-hover:scale-110 group-hover:text-foreground" />
-                  )}
-                </div>
-                <div className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 font-bold text-[10px] text-primary-foreground shadow-sm ring-2 ring-background">
-                  {unreadCount > 99 ? "99+" : unreadCount}
-                  {unreadCount > 0 && (
-                    <span className="absolute inset-0 -z-10 animate-ping rounded-full bg-primary opacity-50" />
-                  )}
-                </div>
-              </Button>
-            </PopoverTrigger>
-          </TooltipTrigger>
+          <TooltipTrigger
+            render={
+              <PopoverTrigger
+                render={
+                  <Button
+                    className="group relative size-9 rounded-full transition-all duration-300 hover:bg-primary/5"
+                    size="icon"
+                    variant="ghost"
+                  >
+                    <div
+                      className={cn(
+                        "relative transition-transform duration-300",
+                        open && "rotate-12"
+                      )}
+                    >
+                      {unreadCount > 0 ? (
+                        <IconBellFilled className="h-5 w-5 text-primary transition-transform group-hover:scale-110" />
+                      ) : (
+                        <IconBell className="h-5 w-5 text-foreground/70 transition-transform group-hover:scale-110 group-hover:text-foreground" />
+                      )}
+                    </div>
+                    <div className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 font-bold text-[10px] text-primary-foreground shadow-sm ring-2 ring-background">
+                      {unreadCount > 99 ? "99+" : unreadCount}
+                      {unreadCount > 0 && (
+                        <span className="absolute inset-0 -z-10 animate-ping rounded-full bg-primary opacity-50" />
+                      )}
+                    </div>
+                  </Button>
+                }
+              />
+            }
+          />
           <TooltipContent className="font-medium" side="bottom">
             <p>
               Notifications
@@ -286,11 +293,9 @@ export function NotificationDropdown() {
             <ToggleGroup
               className="rounded-lg bg-muted/50 p-0.5"
               onValueChange={(value) => {
-                if (value) setFilter(value as FilterType);
+                if (value.length) setFilter(value[0] as FilterType);
               }}
-              spacing={0}
-              type="single"
-              value={filter}
+              value={filter ? [filter] : []}
               variant="outline"
             >
               <ToggleGroupItem value="all">All</ToggleGroupItem>
@@ -306,7 +311,7 @@ export function NotificationDropdown() {
             </ToggleGroup>
           </div>
 
-          <ScrollArea className="h-140" type="always">
+          <ScrollArea className="h-140">
             <NotificationContent
               filter={filter}
               groupedNotifications={groupedNotifications}

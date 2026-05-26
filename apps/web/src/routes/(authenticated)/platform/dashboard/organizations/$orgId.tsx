@@ -1,8 +1,8 @@
 import { IconArrowLeft } from "@tabler/icons-react";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Button } from "@work-holo/ui/components/button";
 import { Suspense, useState } from "react";
 import { OrgDetail } from "@/components/platform/organizations/org-detail";
-import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute(
   "/(authenticated)/platform/dashboard/organizations/$orgId"

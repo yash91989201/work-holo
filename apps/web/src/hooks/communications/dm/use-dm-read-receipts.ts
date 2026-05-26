@@ -1,9 +1,6 @@
 import { and, eq, useLiveQuery } from "@tanstack/react-db";
 import { useCallback, useMemo } from "react";
-import {
-  dmConversationReadsCollection,
-  dmMessagesCollection,
-} from "@/db/collections";
+import { dmConversationReadsCollection } from "@/db/collections";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { orpcClient, queryClient, queryUtils } from "@/utils/orpc";
 
@@ -33,24 +30,6 @@ export function useDmReadReceipts(conversationId: string | null) {
         )
         .select(({ read }) => read),
     [conversationId, user.id]
-  );
-
-  // Get all messages to determine read status
-  const { data: messages = [] } = useLiveQuery(
-    (q) =>
-      q
-        .from({ message: dmMessagesCollection })
-        .where(({ message }) =>
-          and(
-            eq(message.conversationId, conversationId ?? ""),
-            eq(message.isDeleted, false)
-          )
-        )
-        .select(({ message }) => ({
-          id: message.id,
-          createdAt: message.createdAt,
-        })),
-    [conversationId]
   );
 
   const readReceipts = useMemo(() => {

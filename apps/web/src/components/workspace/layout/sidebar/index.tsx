@@ -1,12 +1,12 @@
-import { Suspense } from "react";
-import { OrgSwitcher } from "@/components/org/org-switcher";
 import {
   Sidebar as BaseSidebar,
   SidebarContent,
   SidebarHeader,
   SidebarMenu,
   SidebarRail,
-} from "@/components/ui/sidebar";
+} from "@work-holo/ui/components/sidebar";
+import { Suspense } from "react";
+import { OrgSwitcher } from "@/components/org/org-switcher";
 import { AttendanceGroup } from "./groups/attendance";
 import { ChannelGroup } from "./groups/channel";
 import { DmGroup } from "./groups/dm";

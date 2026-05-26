@@ -1,13 +1,11 @@
 import { IconArrowLeft } from "@tabler/icons-react";
 import { Link, useCanGoBack, useRouter } from "@tanstack/react-router";
-import type * as React from "react";
-import { Suspense } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@work-holo/ui/components/dropdown-menu";
 import {
   Sidebar,
   SidebarContent,
@@ -16,8 +14,10 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-} from "@/components/ui/sidebar";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@work-holo/ui/components/sidebar";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
+import type * as React from "react";
+import { Suspense } from "react";
 import { useActiveMemberRole } from "@/hooks/use-active-member-role";
 import { useActiveOrgSlug } from "@/hooks/use-active-org-slug";
 import { getOrgRouteByRole } from "@/utils";
@@ -62,18 +62,22 @@ function BackToOrgDropdown() {
   return (
     <SidebarMenuItem>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <SidebarMenuButton>
-            <IconArrowLeft />
-            <span>Back to Org</span>
-          </SidebarMenuButton>
-        </DropdownMenuTrigger>
+        <DropdownMenuTrigger
+          render={
+            <SidebarMenuButton>
+              <IconArrowLeft />
+              <span>Back to Org</span>
+            </SidebarMenuButton>
+          }
+        />
         <DropdownMenuContent align="start" sideOffset={4}>
-          <DropdownMenuItem asChild>
-            <Link {...orgRoute}>
-              <span>Go to Organization</span>
-            </Link>
-          </DropdownMenuItem>
+          <DropdownMenuItem
+            render={
+              <Link {...orgRoute}>
+                <span>Go to Organization</span>
+              </Link>
+            }
+          />
           {canGoBack && (
             <DropdownMenuItem onClick={handleGoBack}>
               <span>Go Back</span>

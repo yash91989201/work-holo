@@ -6,9 +6,7 @@ import {
   IconPlayerPlay,
 } from "@tabler/icons-react";
 import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
-import { Suspense, useEffect, useState } from "react";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { Button } from "@work-holo/ui/components/button";
 import {
   Dialog,
   DialogContent,
@@ -16,8 +14,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-
+} from "@work-holo/ui/components/dialog";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -25,9 +22,11 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Spinner } from "@/components/ui/spinner";
+} from "@work-holo/ui/components/sidebar";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
+import { Spinner } from "@work-holo/ui/components/spinner";
+import { Suspense, useEffect, useState } from "react";
+import { toast } from "sonner";
 import { useSetManualStatus } from "@/hooks/use-presence";
 import { queryClient, queryUtils } from "@/utils/orpc";
 
@@ -175,14 +174,12 @@ const WorkBlockToggle = () => {
   );
 };
 
-WorkBlockToggle.Fallback = () => {
-  return (
-    <SidebarMenuButton disabled>
-      <Skeleton className="h-4 w-4 rounded-sm" />
-      <Skeleton className="h-4 w-20" />
-    </SidebarMenuButton>
-  );
-};
+WorkBlockToggle.Fallback = () => (
+  <SidebarMenuButton disabled>
+    <Skeleton className="h-4 w-4 rounded-sm" />
+    <Skeleton className="h-4 w-20" />
+  </SidebarMenuButton>
+);
 
 const MarkAttendanceButton = () => {
   const { data: attendance, refetch } = useSuspenseQuery(
@@ -330,11 +327,9 @@ const MarkAttendanceButton = () => {
   );
 };
 
-MarkAttendanceButton.Fallback = () => {
-  return (
-    <SidebarMenuButton disabled>
-      <Skeleton className="h-4 w-4 rounded-sm" />
-      <Skeleton className="h-4 w-24" />
-    </SidebarMenuButton>
-  );
-};
+MarkAttendanceButton.Fallback = () => (
+  <SidebarMenuButton disabled>
+    <Skeleton className="h-4 w-4 rounded-sm" />
+    <Skeleton className="h-4 w-24" />
+  </SidebarMenuButton>
+);

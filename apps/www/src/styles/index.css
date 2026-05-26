@@ -1,0 +1,5 @@
+@import "@work-holo/ui/globals.css";
+
+html {
+  scroll-behavior: smooth;
+}

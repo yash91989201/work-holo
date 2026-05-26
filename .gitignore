@@ -51,6 +51,8 @@ coverage
 .cache
 tmp
 temp
+.temp
 .agent
 
 node-compile-cache
+.gitnexus

@@ -107,9 +107,8 @@ export function stripHtmlToPlainText(html: string): string {
 
   const withMentions = html.replace(
     MENTION_SPAN_REGEX,
-    (_match, attributes: string, innerHtml: string) => {
-      return extractMentionDisplayName(attributes, innerHtml);
-    }
+    (_match, attributes: string, innerHtml: string) =>
+      extractMentionDisplayName(attributes, innerHtml)
   );
 
   const withoutTags = withMentions

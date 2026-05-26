@@ -7,10 +7,12 @@ import {
   IconTrashFilled,
   IconX,
 } from "@tabler/icons-react";
-import { useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@work-holo/ui/components/avatar";
+import { Button } from "@work-holo/ui/components/button";
 import {
   Dialog,
   DialogContent,
@@ -19,31 +21,33 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@work-holo/ui/components/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { FieldGroup } from "@/components/ui/field";
-import { useAppForm } from "@/components/ui/form/hooks";
+} from "@work-holo/ui/components/dropdown-menu";
+import { FieldGroup } from "@work-holo/ui/components/field";
+import { useAppForm } from "@work-holo/ui/components/form/hooks";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from "@/components/ui/input-group";
+} from "@work-holo/ui/components/input-group";
 import {
   Item,
   ItemActions,
   ItemContent,
   ItemDescription,
   ItemTitle,
-} from "@/components/ui/item";
-import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Spinner } from "@/components/ui/spinner";
+} from "@work-holo/ui/components/item";
+import { Separator } from "@work-holo/ui/components/separator";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
+import { Spinner } from "@work-holo/ui/components/spinner";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { useProfileMutation } from "@/hooks/use-profile-mutation";
 import { useSession } from "@/hooks/use-session";
 import { authClient } from "@/lib/auth-client";
@@ -147,31 +151,34 @@ function ProfileImageSection({
       </ItemContent>
       <ItemActions>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild disabled={isUploadingImage}>
-            <button
-              className="relative cursor-pointer rounded-full focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-              type="button"
-            >
-              <Avatar className="size-9">
-                <AvatarImage alt={userName} src={imageUrl || undefined} />
-                <AvatarFallback>
-                  {userName
-                    ?.split(" ")
-                    .map((n) => n[0])
-                    .join("")
-                    .toUpperCase()
-                    .slice(0, 2)}
-                </AvatarFallback>
-              </Avatar>
-              <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/50 opacity-0 transition-opacity hover:opacity-100">
-                {isUploadingImage ? (
-                  <IconLoader2 className="size-5 animate-spin text-white" />
-                ) : (
-                  <IconCamera className="size-5 text-white" />
-                )}
-              </div>
-            </button>
-          </DropdownMenuTrigger>
+          <DropdownMenuTrigger
+            disabled={isUploadingImage}
+            render={
+              <button
+                className="relative cursor-pointer rounded-full focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                type="button"
+              >
+                <Avatar className="size-9">
+                  <AvatarImage alt={userName} src={imageUrl || undefined} />
+                  <AvatarFallback>
+                    {userName
+                      ?.split(" ")
+                      .map((n) => n[0])
+                      .join("")
+                      .toUpperCase()
+                      .slice(0, 2)}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/50 opacity-0 transition-opacity hover:opacity-100">
+                  {isUploadingImage ? (
+                    <IconLoader2 className="size-5 animate-spin text-white" />
+                  ) : (
+                    <IconCamera className="size-5 text-white" />
+                  )}
+                </div>
+              </button>
+            }
+          />
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={triggerFileInput}>
               <IconCamera className="size-4" />
@@ -249,11 +256,13 @@ function EmailUpdateDialog({
 
   return (
     <Dialog onOpenChange={onOpenChange} open={isOpen}>
-      <DialogTrigger asChild>
-        <Button size="sm" variant="ghost">
-          <IconPencil className="size-4" />
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger
+        render={
+          <Button size="sm" variant="ghost">
+            <IconPencil className="size-4" />
+          </Button>
+        }
+      />
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Update Email Address</DialogTitle>

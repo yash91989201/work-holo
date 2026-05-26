@@ -16,20 +16,20 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { ButtonGroup } from "@/components/ui/button-group";
+} from "@work-holo/ui/components/alert-dialog";
+import { Button } from "@work-holo/ui/components/button";
+import { ButtonGroup } from "@work-holo/ui/components/button-group";
 import {
   EmojiPicker,
   EmojiPickerContent,
   EmojiPickerFooter,
   EmojiPickerSearch,
-} from "@/components/ui/emoji-picker";
+} from "@work-holo/ui/components/emoji-picker";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@work-holo/ui/components/popover";
 import { cn } from "@/lib/utils";
 
 const QUICK_REACTIONS = ["👍", "😂", "🎉", "👀"] as const;
@@ -74,17 +74,19 @@ export function MessageActions({
         )}
       >
         <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              size="icon-sm"
-              title="Add reaction"
-              type="button"
-              variant="ghost"
-            >
-              <IconMoodPlus className="h-3.5 w-3.5" />
-              <span className="sr-only">Add reaction</span>
-            </Button>
-          </PopoverTrigger>
+          <PopoverTrigger
+            render={
+              <Button
+                size="icon-sm"
+                title="Add reaction"
+                type="button"
+                variant="ghost"
+              >
+                <IconMoodPlus className="h-3.5 w-3.5" />
+                <span className="sr-only">Add reaction</span>
+              </Button>
+            }
+          />
           <PopoverContent align="center" side="left" sideOffset={8}>
             <EmojiPicker
               onEmojiSelect={(emoji) => {
@@ -171,17 +173,19 @@ export function MessageActions({
 function DeleteMessage({ onDelete }: { onDelete: () => void }) {
   return (
     <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button
-          aria-label="Delete message"
-          className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-          size="icon-sm"
-          title="Delete message"
-          variant="ghost"
-        >
-          <IconTrashFilled className="h-3.5 w-3.5" />
-        </Button>
-      </AlertDialogTrigger>
+      <AlertDialogTrigger
+        render={
+          <Button
+            aria-label="Delete message"
+            className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+            size="icon-sm"
+            title="Delete message"
+            variant="ghost"
+          >
+            <IconTrashFilled className="h-3.5 w-3.5" />
+          </Button>
+        }
+      />
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Delete Message</AlertDialogTitle>

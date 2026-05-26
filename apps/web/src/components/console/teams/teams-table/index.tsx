@@ -48,41 +48,41 @@ function getDateRangeDisplay(
   return format(dateRange.from, "LLL dd, y");
 }
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+import { Badge } from "@work-holo/ui/components/badge";
+import { Button } from "@work-holo/ui/components/button";
+import { Calendar } from "@work-holo/ui/components/calendar";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
-} from "@/components/ui/card";
+} from "@work-holo/ui/components/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@work-holo/ui/components/dropdown-menu";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from "@/components/ui/input-group";
+} from "@work-holo/ui/components/input-group";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@work-holo/ui/components/popover";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@work-holo/ui/components/select";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
 import {
   Table,
   TableBody,
@@ -90,7 +90,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@work-holo/ui/components/table";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { queryClient, queryUtils } from "@/utils/orpc";
@@ -151,7 +151,7 @@ export const TeamsTable = () => {
         to: new Date(search.endDate),
       };
     }
-    return undefined;
+    return;
   }, [search.startDate, search.endDate]);
 
   const {
@@ -286,23 +286,29 @@ export const TeamsTable = () => {
           return (
             <div className="flex justify-end">
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button className="h-8 w-8 p-0" variant="ghost">
-                    <span className="sr-only">Open menu</span>
-                    <IconDots className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
+                <DropdownMenuTrigger
+                  render={
+                    <Button className="h-8 w-8 p-0" variant="ghost">
+                      <span className="sr-only">Open menu</span>
+                      <IconDots className="h-4 w-4" />
+                    </Button>
+                  }
+                />
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem asChild>
-                    <Suspense fallback={<AddTeamMemberDialog.Fallback />}>
-                      <AddTeamMemberDialog teamId={team.id} />
-                    </Suspense>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Suspense fallback={<RemoveTeamMemberDialog.Fallback />}>
-                      <RemoveTeamMemberDialog teamId={team.id} />
-                    </Suspense>
-                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    render={
+                      <Suspense fallback={<AddTeamMemberDialog.Fallback />}>
+                        <AddTeamMemberDialog teamId={team.id} />
+                      </Suspense>
+                    }
+                  />
+                  <DropdownMenuItem
+                    render={
+                      <Suspense fallback={<RemoveTeamMemberDialog.Fallback />}>
+                        <RemoveTeamMemberDialog teamId={team.id} />
+                      </Suspense>
+                    }
+                  />
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     className="text-destructive focus:text-destructive"
@@ -389,18 +395,20 @@ export const TeamsTable = () => {
           </InputGroup>
 
           <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                className={cn(
-                  "max-w-72 justify-start text-left font-normal",
-                  !dateRange && "text-muted-foreground"
-                )}
-                variant={"outline"}
-              >
-                <IconCalendarEventFilled className="mr-2 h-4 w-4" />
-                {getDateRangeDisplay(dateRange)}
-              </Button>
-            </PopoverTrigger>
+            <PopoverTrigger
+              render={
+                <Button
+                  className={cn(
+                    "max-w-72 justify-start text-left font-normal",
+                    !dateRange && "text-muted-foreground"
+                  )}
+                  variant={"outline"}
+                >
+                  <IconCalendarEventFilled className="mr-2 h-4 w-4" />
+                  {getDateRangeDisplay(dateRange)}
+                </Button>
+              }
+            />
             <PopoverContent align="start" className="w-auto p-0">
               <Calendar
                 defaultMonth={dateRange?.from}

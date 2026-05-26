@@ -1,25 +1,32 @@
 import {
+  IconCheck,
   IconLogout,
   IconMoonFilled,
   IconSettingsFilled,
   IconSunFilled,
+  IconUserFilled,
 } from "@tabler/icons-react";
-import { useNavigate, useRouter } from "@tanstack/react-router";
-import { toast } from "sonner";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Link, useNavigate, useRouter } from "@tanstack/react-router";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@work-holo/ui/components/avatar";
+import { Button } from "@work-holo/ui/components/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@work-holo/ui/components/dropdown-menu";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
+import { toast } from "sonner";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { authClient } from "@/lib/auth-client";
 import { useTheme } from "@/providers/theme-provider";
@@ -49,66 +56,128 @@ export function PlatformAccountDropdown() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          className="relative flex h-auto cursor-pointer items-center justify-center rounded-full bg-transparent p-0 transition-opacity hover:bg-transparent hover:opacity-80"
-          type="button"
-          variant="ghost"
-        >
-          <Avatar className="h-9 w-9">
-            <AvatarImage
-              alt={user.name ?? "User"}
-              src={user.image ?? undefined}
-            />
-            <AvatarFallback className="bg-orange-500 font-semibold text-sm text-white">
-              {initials}
-            </AvatarFallback>
-          </Avatar>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-80">
-        <div className="relative h-24 w-full overflow-hidden rounded-t-lg bg-linear-to-br from-violet-500 via-purple-500 to-pink-500" />
+      <DropdownMenuTrigger
+        render={
+          <Button
+            className="relative flex h-auto cursor-pointer items-center justify-center rounded-full bg-transparent p-0 transition-opacity hover:bg-transparent hover:opacity-80"
+            type="button"
+            variant="ghost"
+          >
+            <Avatar className="h-9 w-9 ring-2 ring-border/50 ring-offset-2 ring-offset-background transition-all hover:ring-primary/50">
+              <AvatarImage
+                alt={user.name ?? "User"}
+                src={user.image ?? undefined}
+              />
+              <AvatarFallback className="bg-orange-500 font-semibold text-sm text-white">
+                {initials}
+              </AvatarFallback>
+            </Avatar>
+          </Button>
+        }
+      />
+      <DropdownMenuContent align="end" className="w-80 p-0">
+        <div className="relative h-28 w-full overflow-hidden rounded-t-lg bg-linear-to-br from-violet-500 via-purple-500 to-pink-500">
+          <div className="absolute inset-0 bg-black/10" />
+        </div>
 
-        <div className="relative -mt-12 px-4 pb-4">
-          <Avatar className="h-20 w-20 border-4 border-background">
-            <AvatarImage
-              alt={user.name ?? "User"}
-              src={user.image ?? undefined}
-            />
-            <AvatarFallback className="bg-orange-500 font-semibold text-2xl text-white">
-              {initials}
-            </AvatarFallback>
-          </Avatar>
-          <div className="mt-2">
-            <h3 className="font-semibold text-lg">{user.name || "User"}</h3>
+        <div className="relative -mt-10 px-4 pb-3">
+          <div className="flex items-end gap-3">
+            <Avatar className="h-16 w-16 border-4 border-background shadow-lg">
+              <AvatarImage
+                alt={user.name ?? "User"}
+                src={user.image ?? undefined}
+              />
+              <AvatarFallback className="bg-orange-500 font-semibold text-white text-xl">
+                {initials}
+              </AvatarFallback>
+            </Avatar>
+          </div>
+          <div className="mt-3">
+            <h3 className="font-semibold text-base">{user.name || "User"}</h3>
             <p className="text-muted-foreground text-sm">{user.email}</p>
           </div>
         </div>
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuGroup>
+        <DropdownMenuGroup className="px-1 py-1">
+          <DropdownMenuLabel className="px-2 py-1.5 font-semibold text-muted-foreground text-xs uppercase tracking-wider">
+            Account
+          </DropdownMenuLabel>
+          <DropdownMenuItem
+            render={
+              <Link className="cursor-pointer" to="/settings/account/profile">
+                <IconUserFilled className="h-4 w-4" />
+                Profile
+              </Link>
+            }
+          />
+          <DropdownMenuItem
+            render={
+              <Link
+                className="cursor-pointer"
+                to="/settings/account/preferences"
+              >
+                <IconSettingsFilled className="h-4 w-4" />
+                Preferences
+              </Link>
+            }
+          />
+        </DropdownMenuGroup>
+
+        <DropdownMenuSeparator />
+
+        <DropdownMenuGroup className="px-1 py-1">
+          <DropdownMenuLabel className="px-2 py-1.5 font-semibold text-muted-foreground text-xs uppercase tracking-wider">
+            Appearance
+          </DropdownMenuLabel>
           <DropdownMenuSub>
             <DropdownMenuSubTrigger className="gap-2">
               {theme === "dark" ? (
                 <IconMoonFilled className="h-4 w-4" />
-              ) : (
+              ) : theme === "light" ? (
                 <IconSunFilled className="h-4 w-4" />
+              ) : (
+                <IconSettingsFilled className="h-4 w-4" />
               )}
               <span>Theme</span>
             </DropdownMenuSubTrigger>
-            <DropdownMenuSubContent className="min-w-32" sideOffset={8}>
-              <DropdownMenuItem onClick={() => setTheme("light")}>
-                <IconSunFilled className="mr-2 h-4 w-4" />
-                Light
+            <DropdownMenuSubContent className="min-w-40" sideOffset={8}>
+              <DropdownMenuItem
+                className="justify-between"
+                onClick={() => setTheme("light")}
+              >
+                <div className="flex items-center gap-2">
+                  <IconSunFilled className="h-4 w-4" />
+                  Light
+                </div>
+                {theme === "light" && (
+                  <IconCheck className="h-4 w-4 text-primary" />
+                )}
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme("dark")}>
-                <IconMoonFilled className="mr-2 h-4 w-4" />
-                Dark
+              <DropdownMenuItem
+                className="justify-between"
+                onClick={() => setTheme("dark")}
+              >
+                <div className="flex items-center gap-2">
+                  <IconMoonFilled className="h-4 w-4" />
+                  Dark
+                </div>
+                {theme === "dark" && (
+                  <IconCheck className="h-4 w-4 text-primary" />
+                )}
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme("system")}>
-                <IconSettingsFilled className="mr-2 h-4 w-4" />
-                System
+              <DropdownMenuItem
+                className="justify-between"
+                onClick={() => setTheme("system")}
+              >
+                <div className="flex items-center gap-2">
+                  <IconSettingsFilled className="h-4 w-4" />
+                  System
+                </div>
+                {theme === "system" && (
+                  <IconCheck className="h-4 w-4 text-primary" />
+                )}
               </DropdownMenuItem>
             </DropdownMenuSubContent>
           </DropdownMenuSub>
@@ -116,24 +185,24 @@ export function PlatformAccountDropdown() {
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem
-          className="text-destructive focus:bg-destructive/10 focus:text-destructive"
-          onClick={logout}
-        >
-          <IconLogout className="mr-2 h-4 w-4" />
-          Log out
-        </DropdownMenuItem>
+        <div className="p-1">
+          <DropdownMenuItem
+            className="text-destructive focus:bg-destructive/10 focus:text-destructive"
+            onClick={logout}
+          >
+            <IconLogout className="mr-2 h-4 w-4" />
+            Log out
+          </DropdownMenuItem>
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );
 }
 
-const PlatformAccountDropdownSkeleton = () => {
-  return (
-    <div className="relative flex items-center justify-center">
-      <Skeleton className="h-9 w-9 rounded-full" />
-    </div>
-  );
-};
+const PlatformAccountDropdownSkeleton = () => (
+  <div className="relative flex items-center justify-center">
+    <Skeleton className="h-9 w-9 rounded-full" />
+  </div>
+);
 
 PlatformAccountDropdown.Fallback = PlatformAccountDropdownSkeleton;

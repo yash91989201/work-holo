@@ -1,8 +1,5 @@
 import { IconBuildingCommunity } from "@tabler/icons-react";
 import { Link, useLocation, useParams } from "@tanstack/react-router";
-import type * as React from "react";
-import { Suspense } from "react";
-import { OrgSwitcher } from "@/components/org/org-switcher";
 import {
   Sidebar as BaseSidebar,
   SidebarContent,
@@ -14,7 +11,10 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-} from "@/components/ui/sidebar";
+} from "@work-holo/ui/components/sidebar";
+import type * as React from "react";
+import { Suspense } from "react";
+import { OrgSwitcher } from "@/components/org/org-switcher";
 
 export function Sidebar({
   ...props
@@ -42,15 +42,15 @@ export function Sidebar({
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton
-                  asChild
                   isActive={isActive}
+                  render={
+                    <Link params={{ slug }} to="/org/$slug/manage">
+                      <IconBuildingCommunity />
+                      <span>Overview</span>
+                    </Link>
+                  }
                   tooltip="Organization Overview"
-                >
-                  <Link params={{ slug }} to="/org/$slug/manage">
-                    <IconBuildingCommunity />
-                    <span>Overview</span>
-                  </Link>
-                </SidebarMenuButton>
+                />
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>

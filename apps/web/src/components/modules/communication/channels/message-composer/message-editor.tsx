@@ -22,37 +22,40 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { EditorContent } from "@tiptap/react";
-import type { KeyboardEvent } from "react";
-import { useCallback, useEffect, useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ButtonGroup } from "@/components/ui/button-group";
+import { Badge } from "@work-holo/ui/components/badge";
+import { Button } from "@work-holo/ui/components/button";
+import { ButtonGroup } from "@work-holo/ui/components/button-group";
 import {
   EmojiPicker,
   EmojiPickerContent,
   EmojiPickerFooter,
   EmojiPickerSearch,
-} from "@/components/ui/emoji-picker";
+} from "@work-holo/ui/components/emoji-picker";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from "@/components/ui/input-group";
+} from "@work-holo/ui/components/input-group";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { Separator } from "@/components/ui/separator";
-import { Spinner } from "@/components/ui/spinner";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+} from "@work-holo/ui/components/popover";
+import { Separator } from "@work-holo/ui/components/separator";
+import { Spinner } from "@work-holo/ui/components/spinner";
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@work-holo/ui/components/toggle-group";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@work-holo/ui/components/tooltip";
+import type { KeyboardEvent } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useMessageEditor } from "@/hooks/communications/use-message-editor";
 import { cn } from "@/lib/utils";
 import { AutoLinkPreview } from "./auto-link-preview";
@@ -231,7 +234,7 @@ export function MessageEditor({
         {isFormattingBarOpen && (
           <div className="flex shrink-0 flex-wrap items-center gap-3 border-b bg-muted/20 px-2 py-1">
             {/* Formatting Group */}
-            <ToggleGroup type="multiple" variant="default">
+            <ToggleGroup multiple variant="default">
               <ToggleGroupItem
                 aria-label="Toggle bold"
                 onClick={() => editor.chain().focus().toggleBold().run()}
@@ -269,7 +272,7 @@ export function MessageEditor({
             <Separator orientation="vertical" />
 
             {/* Lists Group */}
-            <ToggleGroup type="multiple" variant="default">
+            <ToggleGroup multiple variant="default">
               <ToggleGroupItem
                 aria-label="Toggle bullet list"
                 onClick={() => editor.chain().focus().toggleBulletList().run()}
@@ -296,17 +299,19 @@ export function MessageEditor({
                 onOpenChange={setIsLinkPopoverOpen}
                 open={isLinkPopoverOpen}
               >
-                <PopoverTrigger asChild>
-                  <Button
-                    aria-label="Add a link"
-                    onClick={handleAddLink}
-                    size="icon"
-                    title="Insert Link (Ctrl+K)"
-                    variant="ghost"
-                  >
-                    <IconLink />
-                  </Button>
-                </PopoverTrigger>
+                <PopoverTrigger
+                  render={
+                    <Button
+                      aria-label="Add a link"
+                      onClick={handleAddLink}
+                      size="icon"
+                      title="Insert Link (Ctrl+K)"
+                      variant="ghost"
+                    >
+                      <IconLink />
+                    </Button>
+                  }
+                />
                 <PopoverContent
                   align="start"
                   className="w-96 p-0"
@@ -423,16 +428,18 @@ export function MessageEditor({
           <div className="flex items-center gap-3">
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    aria-label="Toggle formatting toolbar"
-                    onClick={() => setIsFormattingBarOpen((v) => !v)}
-                    size="sm"
-                    variant={isFormattingBarOpen ? "default" : "ghost"}
-                  >
-                    <IconMarkdown />
-                  </Button>
-                </TooltipTrigger>
+                <TooltipTrigger
+                  render={
+                    <Button
+                      aria-label="Toggle formatting toolbar"
+                      onClick={() => setIsFormattingBarOpen((v) => !v)}
+                      size="sm"
+                      variant={isFormattingBarOpen ? "default" : "ghost"}
+                    >
+                      <IconMarkdown />
+                    </Button>
+                  }
+                />
                 <TooltipContent>
                   <p>
                     {isFormattingBarOpen ? "Hide" : "Show"} formatting toolbar
@@ -480,29 +487,31 @@ export function MessageEditor({
             <ButtonGroup>
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      aria-label={
-                        isRecording ? "Stop recording" : "Start voice message"
-                      }
-                      className={cn(
-                        "transition-all duration-200",
-                        isRecording && "relative"
-                      )}
-                      disabled={!onVoiceRecord || content.trim().length > 0}
-                      onClick={onVoiceRecord}
-                      size="icon"
-                      title={voiceRecordTitle}
-                      variant="ghost"
-                    >
-                      <IconMicrophone
+                  <TooltipTrigger
+                    render={
+                      <Button
+                        aria-label={
+                          isRecording ? "Stop recording" : "Start voice message"
+                        }
                         className={cn(
-                          content.trim().length > 0 && "opacity-50",
-                          isRecording && "text-red-500"
+                          "transition-all duration-200",
+                          isRecording && "relative"
                         )}
-                      />
-                    </Button>
-                  </TooltipTrigger>
+                        disabled={!onVoiceRecord || content.trim().length > 0}
+                        onClick={onVoiceRecord}
+                        size="icon"
+                        title={voiceRecordTitle}
+                        variant="ghost"
+                      >
+                        <IconMicrophone
+                          className={cn(
+                            content.trim().length > 0 && "opacity-50",
+                            isRecording && "text-red-500"
+                          )}
+                        />
+                      </Button>
+                    }
+                  />
                   {content.trim().length > 0 && (
                     <TooltipContent>
                       <p>Clear text to record audio</p>
@@ -511,17 +520,19 @@ export function MessageEditor({
                 </Tooltip>
               </TooltipProvider>
               <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    className="transition-all duration-200"
-                    disabled={!onEmojiSelect || hasAudio}
-                    size="icon"
-                    title="Add emoji"
-                    variant="ghost"
-                  >
-                    <IconMoodPlus className={cn(hasAudio && "opacity-50")} />
-                  </Button>
-                </PopoverTrigger>
+                <PopoverTrigger
+                  render={
+                    <Button
+                      className="transition-all duration-200"
+                      disabled={!onEmojiSelect || hasAudio}
+                      size="icon"
+                      title="Add emoji"
+                      variant="ghost"
+                    >
+                      <IconMoodPlus className={cn(hasAudio && "opacity-50")} />
+                    </Button>
+                  }
+                />
                 <PopoverContent align="end" side="top">
                   <EmojiPicker
                     onEmojiSelect={onEmojiSelect ?? (() => undefined)}

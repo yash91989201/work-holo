@@ -1,14 +1,19 @@
 import { IconHash, IconLockFilled } from "@tabler/icons-react";
 import { useParams } from "@tanstack/react-router";
-import { Suspense } from "react";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@work-holo/ui/components/badge";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
-} from "@/components/ui/sheet";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+} from "@work-holo/ui/components/sheet";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@work-holo/ui/components/tabs";
+import { Suspense } from "react";
 import { useChannel, useChannelInfoSidebar } from "@/stores/channel-store";
 import { ChannelInfo } from "./channel-info";
 import { ChannelMembers } from "./channel-members";

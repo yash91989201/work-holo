@@ -1,6 +1,11 @@
 import { IconCheck, IconUsers } from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@work-holo/ui/components/card";
 import { queryUtils } from "@/utils/orpc";
 
 export function AttendanceStats() {

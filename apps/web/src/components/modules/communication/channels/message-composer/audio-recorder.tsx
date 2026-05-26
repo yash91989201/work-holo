@@ -4,8 +4,8 @@ import {
   IconTrash,
   IconX,
 } from "@tabler/icons-react";
+import { Button } from "@work-holo/ui/components/button";
 import { useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
 
 interface AudioRecorderProps {
   audioUrl: string | null;

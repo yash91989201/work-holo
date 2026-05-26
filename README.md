@@ -127,6 +127,7 @@ If you prefer not to use `scripts/dev.sh`:
 2. Set up environment files in:
    - `apps/server/.env`
    - `apps/web/.env`
+   - `apps/www/.env`
    - `workers/notification/.env`
    - `workers/message-search/.env`
    - `workers/read-receipt/.env`
@@ -161,7 +162,8 @@ If you prefer not to use `scripts/dev.sh`:
    bun dev
    ```
 
-Open [http://localhost:3001](http://localhost:3001) in your browser to see the web application.
+Open [http://localhost:3001](http://localhost:3001) in your browser to see the main web application.
+Open [http://localhost:5100](http://localhost:5100) to view the marketing site.
 Use the Expo Go app to run the mobile application.
 The API is running at [http://localhost:3000](http://localhost:3000).
 
@@ -171,6 +173,7 @@ The API is running at [http://localhost:3000](http://localhost:3000).
 work-holo/
 ├── apps/
 │   ├── web/         # Frontend application (React + TanStack Router)
+│   ├── www/         # Marketing site (Vite)
 │   ├── native/      # Mobile application (React Native, Expo)
 │   ├── docs/        # Documentation site (Astro Starlight)
 │   └── server/      # Backend API (Hono, ORPC)
@@ -185,6 +188,7 @@ work-holo/
 - `bun dev`: Start all applications in development mode
 - `bun build`: Build all applications
 - `bun dev:web`: Start only the web application
+- `bun dev:www`: Start only the marketing site
 - `bun dev:server`: Start only the server
 - `bun check-types`: Check TypeScript types across all apps
 - `bun dev:native`: Start the React Native/Expo development server

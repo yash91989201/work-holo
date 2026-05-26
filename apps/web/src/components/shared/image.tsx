@@ -16,7 +16,7 @@ type ImageProps = {
   quality?: number;
   className?: string;
   wrapperClassName?: string;
-  effect?: "blur" | "opacity" | "black-and-white";
+  effect?: "blur" | "opacity" | "black-and-white" | "none";
   visibleByDefault?: boolean;
   aspectRatio?: number;
   placeholder?: boolean;
@@ -126,7 +126,7 @@ const buildSrcSet = (options: {
     options;
 
   if (!canOptimizeImage(src, Boolean(unoptimized))) {
-    return undefined;
+    return;
   }
 
   const hasWidth = hasValidDimension(width);
@@ -150,7 +150,7 @@ const buildSrcSet = (options: {
     : DEFAULT_SRCSET_WIDTHS.slice(0, 8);
 
   if (candidateWidths.length === 0) {
-    return undefined;
+    return;
   }
 
   return candidateWidths
@@ -176,7 +176,7 @@ const buildSrcSet = (options: {
 };
 
 const getLoadingEffectStyles = (
-  effect: "blur" | "opacity" | "black-and-white",
+  effect: "blur" | "opacity" | "black-and-white" | "none",
   loaded: boolean,
   reduceMotion: boolean
 ): CSSProperties => {
@@ -188,11 +188,12 @@ const getLoadingEffectStyles = (
     };
   }
 
-  if (loaded) {
+  if (effect === "none" || loaded) {
     return {
       filter: "none",
       opacity: 1,
-      transition: "opacity 220ms ease, filter 300ms ease",
+      transition:
+        effect === "none" ? "none" : "opacity 220ms ease, filter 300ms ease",
     };
   }
 
@@ -231,7 +232,7 @@ const getComputedHeight = (
     return Math.round(width / aspectRatio);
   }
 
-  return undefined;
+  return;
 };
 
 const getPlaceholderSource = (options: {
@@ -254,7 +255,7 @@ const getPlaceholderSource = (options: {
   } = options;
 
   if (!placeholder) {
-    return undefined;
+    return;
   }
 
   const hasWidth = hasValidDimension(width);
@@ -394,7 +395,7 @@ export function Image({
   quality = 75,
   className = "",
   wrapperClassName = "",
-  effect = "blur",
+  effect = "none",
   visibleByDefault = false,
   aspectRatio,
   placeholder = true,

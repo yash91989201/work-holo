@@ -6,40 +6,40 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { Link, useParams } from "@tanstack/react-router";
-import DOMPurify from "dompurify";
-import parse from "html-react-parser";
-import { useEffect, useId, useRef, useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button, buttonVariants } from "@/components/ui/button";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@work-holo/ui/components/avatar";
+import { Badge } from "@work-holo/ui/components/badge";
+import { Button, buttonVariants } from "@work-holo/ui/components/button";
 import {
   Empty,
   EmptyDescription,
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@/components/ui/empty";
+} from "@work-holo/ui/components/empty";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
   InputGroupText,
-} from "@/components/ui/input-group";
-import { Kbd } from "@/components/ui/kbd";
-import {
-  Popover,
-  PopoverAnchor,
-  PopoverContent,
-} from "@/components/ui/popover";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Spinner } from "@/components/ui/spinner";
+} from "@work-holo/ui/components/input-group";
+import { Kbd } from "@work-holo/ui/components/kbd";
+import { Popover, PopoverContent } from "@work-holo/ui/components/popover";
+import { ScrollArea } from "@work-holo/ui/components/scroll-area";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
+import { Spinner } from "@work-holo/ui/components/spinner";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@work-holo/ui/components/tooltip";
+import DOMPurify from "dompurify";
+import parse from "html-react-parser";
+import { useEffect, useId, useRef, useState } from "react";
 import { useChannelMentions } from "@/hooks/communications/use-channel-mentions";
 import { useMessageSearch } from "@/hooks/communications/use-message-search";
 import { formatMessageTimestamp } from "@/lib/utils";
@@ -53,6 +53,7 @@ import {
 
 export function ChannelHeader() {
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const anchorRef = useRef<HTMLDivElement | null>(null);
 
   const { slug } = useParams({
     from: "/(authenticated)/org/$slug",
@@ -222,90 +223,85 @@ export function ChannelHeader() {
       <div className="flex w-full items-center gap-1 px-3 lg:gap-2">
         <div className="ml-auto flex items-center gap-2">
           <Popover open={isSearchPopoverOpen}>
-            <PopoverAnchor asChild>
-              <div className="w-48 sm:w-64 md:w-80">
-                <InputGroup className="h-8 rounded-full bg-background">
-                  <InputGroupAddon>
-                    <InputGroupText>
-                      {isLoading ? <Spinner /> : <IconSearch />}
-                    </InputGroupText>
-                  </InputGroupAddon>
-                  <InputGroupInput
-                    aria-activedescendant={activeOptionId}
-                    aria-autocomplete="list"
-                    aria-controls={searchResultsListboxId}
-                    aria-expanded={isSearchPopoverOpen}
-                    aria-haspopup="listbox"
-                    aria-label="Search messages"
-                    onChange={(event) => {
-                      setQuery(event.target.value);
-                    }}
-                    onKeyDown={(event) => {
-                      const isSearchShortcut =
-                        (event.metaKey || event.ctrlKey) &&
-                        event.key.toLowerCase() === "k" &&
-                        !event.shiftKey;
+            <div className="w-48 sm:w-64 md:w-80" ref={anchorRef}>
+              <InputGroup className="h-8 rounded-full bg-background">
+                <InputGroupAddon>
+                  <InputGroupText>
+                    {isLoading ? <Spinner /> : <IconSearch />}
+                  </InputGroupText>
+                </InputGroupAddon>
+                <InputGroupInput
+                  aria-activedescendant={activeOptionId}
+                  aria-autocomplete="list"
+                  aria-controls={searchResultsListboxId}
+                  aria-expanded={isSearchPopoverOpen}
+                  aria-haspopup="listbox"
+                  aria-label="Search messages"
+                  onChange={(event) => {
+                    setQuery(event.target.value);
+                  }}
+                  onKeyDown={(event) => {
+                    const isSearchShortcut =
+                      (event.metaKey || event.ctrlKey) &&
+                      event.key.toLowerCase() === "k" &&
+                      !event.shiftKey;
 
-                      if (isSearchShortcut) {
-                        event.preventDefault();
-                        inputRef.current?.select();
-                        return;
-                      }
+                    if (isSearchShortcut) {
+                      event.preventDefault();
+                      inputRef.current?.select();
+                      return;
+                    }
 
-                      if (isSearchPopoverOpen && event.key === "ArrowDown") {
-                        event.preventDefault();
-                        moveActiveOption("next");
-                        return;
-                      }
+                    if (isSearchPopoverOpen && event.key === "ArrowDown") {
+                      event.preventDefault();
+                      moveActiveOption("next");
+                      return;
+                    }
 
-                      if (isSearchPopoverOpen && event.key === "ArrowUp") {
-                        event.preventDefault();
-                        moveActiveOption("prev");
-                        return;
-                      }
+                    if (isSearchPopoverOpen && event.key === "ArrowUp") {
+                      event.preventDefault();
+                      moveActiveOption("prev");
+                      return;
+                    }
 
-                      if (isSearchPopoverOpen && event.key === "Enter") {
-                        event.preventDefault();
-                        handleActiveOptionSelect();
-                        return;
-                      }
+                    if (isSearchPopoverOpen && event.key === "Enter") {
+                      event.preventDefault();
+                      handleActiveOptionSelect();
+                      return;
+                    }
 
-                      if (event.key === "Escape") {
-                        setQuery("");
-                        inputRef.current?.blur();
-                      }
-                    }}
-                    placeholder="Search messages..."
-                    ref={inputRef}
-                    role="combobox"
-                    value={query}
-                  />
-                  <InputGroupAddon
-                    align="inline-end"
-                    className="hidden md:flex"
-                  >
-                    {hasQuery ? (
-                      <InputGroupButton
-                        aria-label="Clear search"
-                        onClick={() => setQuery("")}
-                        size="icon-xs"
-                      >
-                        <IconX className="size-3" />
-                      </InputGroupButton>
-                    ) : (
-                      <Kbd>Ctrl/Cmd K</Kbd>
-                    )}
-                  </InputGroupAddon>
-                </InputGroup>
-              </div>
-            </PopoverAnchor>
+                    if (event.key === "Escape") {
+                      setQuery("");
+                      inputRef.current?.blur();
+                    }
+                  }}
+                  placeholder="Search messages..."
+                  ref={inputRef}
+                  role="combobox"
+                  value={query}
+                />
+                <InputGroupAddon align="inline-end" className="hidden md:flex">
+                  {hasQuery ? (
+                    <InputGroupButton
+                      aria-label="Clear search"
+                      onClick={() => setQuery("")}
+                      size="icon-xs"
+                    >
+                      <IconX className="size-3" />
+                    </InputGroupButton>
+                  ) : (
+                    <Kbd>Ctrl/Cmd K</Kbd>
+                  )}
+                </InputGroupAddon>
+              </InputGroup>
+            </div>
 
             <PopoverContent
               align="end"
+              anchor={anchorRef.current ?? undefined}
               aria-label="Search results"
               className="w-[min(46rem,calc(100vw-1rem))] gap-0 overflow-hidden p-0"
               id={searchResultsListboxId}
-              onOpenAutoFocus={(event) => event.preventDefault()}
               role="listbox"
               side="bottom"
               sideOffset={8}
@@ -443,47 +439,53 @@ export function ChannelHeader() {
           </Popover>
 
           <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                className="relative"
-                onClick={toggleMentionsSidebar}
-                size="icon-sm"
-                variant={mentionsOpen ? "secondary" : "ghost"}
-              >
-                <IconAt />
-                {unreadMentionCount > 0 && (
-                  <span className="pointer-events-none absolute -top-1 -right-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1 font-semibold text-[10px] text-destructive-foreground leading-none">
-                    {unreadMentionCount > 99 ? "99+" : unreadMentionCount}
-                  </span>
-                )}
-              </Button>
-            </TooltipTrigger>
+            <TooltipTrigger
+              render={
+                <Button
+                  className="relative"
+                  onClick={toggleMentionsSidebar}
+                  size="icon-sm"
+                  variant={mentionsOpen ? "secondary" : "ghost"}
+                >
+                  <IconAt />
+                  {unreadMentionCount > 0 && (
+                    <span className="pointer-events-none absolute -top-1 -right-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1 font-semibold text-[10px] text-destructive-foreground leading-none">
+                      {unreadMentionCount > 99 ? "99+" : unreadMentionCount}
+                    </span>
+                  )}
+                </Button>
+              }
+            />
             <TooltipContent>Mentions</TooltipContent>
           </Tooltip>
           <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                onClick={togglePinnedMessages}
-                size="icon-sm"
-                variant={isOpen ? "secondary" : "ghost"}
-              >
-                <IconPinFilled />
-              </Button>
-            </TooltipTrigger>
+            <TooltipTrigger
+              render={
+                <Button
+                  onClick={togglePinnedMessages}
+                  size="icon-sm"
+                  variant={isOpen ? "secondary" : "ghost"}
+                >
+                  <IconPinFilled />
+                </Button>
+              }
+            />
             <TooltipContent>
               {isOpen ? "Close pinned messages" : "View pinned messages"}
             </TooltipContent>
           </Tooltip>
           <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                onClick={toggleInfoSidebar}
-                size="icon-sm"
-                variant="ghost"
-              >
-                <IconInfoCircleFilled />
-              </Button>
-            </TooltipTrigger>
+            <TooltipTrigger
+              render={
+                <Button
+                  onClick={toggleInfoSidebar}
+                  size="icon-sm"
+                  variant="ghost"
+                >
+                  <IconInfoCircleFilled />
+                </Button>
+              }
+            />
             <TooltipContent>Channel Info</TooltipContent>
           </Tooltip>
 
