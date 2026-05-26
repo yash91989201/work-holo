@@ -16,11 +16,12 @@ import type { AppRouterClient } from "@work-holo/api/routers/index";
 import { env } from "@work-holo/env/web";
 import { Toaster } from "@work-holo/ui/components/sonner";
 import { TooltipProvider } from "@work-holo/ui/components/tooltip";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ThemeProvider } from "@/providers/theme-provider";
 import appCss from "@/styles/index.css?url";
 import type { orpcClient, queryUtils } from "@/utils/orpc";
 import { link } from "@/utils/orpc";
+import { registerServiceWorker } from "@/lib/service-worker";
 
 export interface RouterAppContext {
   orpcClient: typeof orpcClient;
@@ -90,6 +91,12 @@ function ShellComponent({ children }: { children: React.ReactNode }) {
 }
 
 function RootDocument() {
+  useEffect(() => {
+    registerServiceWorker().catch((err) => {
+      console.error("Failed to register service worker:", err);
+    });
+  }, []);
+
   const [client] = useState<AppRouterClient>(() => createORPCClient(link));
   const [_orpcUtils] = useState(() => createTanstackQueryUtils(client));
 
