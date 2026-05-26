@@ -18,14 +18,24 @@ interface MessageContentProps {
   message: MessageWithSenderType;
 }
 
+const HTML_TAG_REGEX = /<[^>]*>/g;
+const INLINE_RENDERABLE_CONTENT_REGEX =
+  /<(img|video|audio|iframe|picture|figure)\b/i;
+const LINK_PREVIEW_CONTENT_REGEX = /data-type=["']link-preview["']/i;
+
 export function MessageContent({
   message,
   isOwnMessage = false,
 }: MessageContentProps) {
+  const trimmedContent = message.content?.trim() ?? "";
+  const hasTextContent =
+    trimmedContent.replace(HTML_TAG_REGEX, "").trim().length > 0;
+  const hasInlineRenderableContent =
+    INLINE_RENDERABLE_CONTENT_REGEX.test(trimmedContent) ||
+    LINK_PREVIEW_CONTENT_REGEX.test(trimmedContent);
   const hasContent =
-    message.content &&
-    message.content.trim().length > 0 &&
-    message.content.replace(/<[^>]*>/g, "").trim().length > 0;
+    trimmedContent.length > 0 &&
+    (hasTextContent || hasInlineRenderableContent);
   const hasAttachments = message.attachments && message.attachments.length > 0;
 
   const parserOptions = {
