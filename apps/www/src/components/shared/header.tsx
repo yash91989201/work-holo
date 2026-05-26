@@ -1,10 +1,3 @@
-import { Link } from "@tanstack/react-router";
-import { CTAButton } from "@work-holo/ui/components/cta-button";
-import { cn } from "@work-holo/ui/lib/utils";
-import { type ReactNode, useEffect, useState } from "react";
-import { getProjectNavigationList } from "@/components/projects/project-data";
-import { Image } from "@/components/shared/image";
-
 import {
   IconArrowUpRight,
   IconBolt,
@@ -31,6 +24,7 @@ import {
   useScroll,
 } from "motion/react";
 import { type ReactNode, useEffect, useState } from "react";
+import { getProjectNavigationList } from "@/components/projects/project-data";
 import { Image } from "@/components/shared/image";
 
 type DropdownItem = {
