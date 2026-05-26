@@ -9,11 +9,6 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams, useSearch } from "@tanstack/react-router";
 import type { ChannelFileOutput } from "@work-holo/api/lib/schemas/attachment";
-import type { ChangeEvent } from "react";
-import { useRef, useState } from "react";
-import { toast } from "sonner";
-import type { z } from "zod";
-import { Image } from "@/components/shared/image";
 import { Button } from "@work-holo/ui/components/button";
 import {
   Dialog,
@@ -29,6 +24,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@work-holo/ui/components/dropdown-menu";
+import type { ChangeEvent } from "react";
+import { useRef, useState } from "react";
+import { toast } from "sonner";
+import type { z } from "zod";
+import { Image } from "@/components/shared/image";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { queryUtils } from "@/utils/orpc";
 

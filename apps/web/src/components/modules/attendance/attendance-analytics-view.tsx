@@ -1,7 +1,5 @@
 import { IconCalendarWeek } from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { format, subDays } from "date-fns";
-import { useMemo, useState } from "react";
 import { Badge } from "@work-holo/ui/components/badge";
 import {
   Select,
@@ -10,6 +8,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@work-holo/ui/components/select";
+import { format, subDays } from "date-fns";
+import { useMemo, useState } from "react";
 import { queryUtils } from "@/utils/orpc";
 import { AttendanceInsights } from "./analytics-insights";
 import { AttendanceStatusBreakdown } from "./analytics-status-breakdown";

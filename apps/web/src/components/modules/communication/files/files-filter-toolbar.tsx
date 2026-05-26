@@ -2,8 +2,6 @@ import { IconSearch, IconX } from "@tabler/icons-react";
 import { useDebouncedValue } from "@tanstack/react-pacer";
 import { useIsFetching } from "@tanstack/react-query";
 import { useNavigate, useSearch } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-
 import { Button } from "@work-holo/ui/components/button";
 import {
   InputGroup,
@@ -20,6 +18,7 @@ import {
 } from "@work-holo/ui/components/select";
 import { Skeleton } from "@work-holo/ui/components/skeleton";
 import { Spinner } from "@work-holo/ui/components/spinner";
+import { useEffect, useState } from "react";
 import { queryUtils } from "@/utils/orpc";
 import { FilesViewToggle } from "./files-view-toggle";
 

@@ -13,7 +13,7 @@ function RouteComponent() {
       {/* Hero Section */}
       <section className="relative">
         <motion.div
-          className="relative w-full overflow-hidden h-[300px] sm:h-[360px] lg:h-[460px]"
+          className="relative h-[300px] w-full overflow-hidden sm:h-[360px] lg:h-[460px]"
           initial={{ opacity: 0, scale: 1.05 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           viewport={{ once: true }}
@@ -47,14 +47,13 @@ function RouteComponent() {
                 <h1 className="mb-4 font-bold font-heading text-2xl text-white sm:text-3xl lg:text-4xl xl:text-5xl">
                   Contact Us
                 </h1>
-                <p className="max-w-2xl text-white/70 text-sm leading-relaxed sm:text-base">
+                <p className="max-w-2xl text-sm text-white/70 leading-relaxed sm:text-base">
                   Have a project in mind or need expert guidance? Reach out and
                   let&apos;s build something great together.
                 </p>
               </motion.div>
             </div>
           </div>
-
         </motion.div>
       </section>
 

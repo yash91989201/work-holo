@@ -31,7 +31,7 @@ export function ContactImage({
   const gradient = gradients[gradientIndex];
 
   // ✅ PUT YOUR REAL IMAGE URL HERE
-const heroImageSrc = "/assets/contact-us.png";
+  const heroImageSrc = "/assets/contact-us.png";
   // e.g. "https://images.unsplash.com/photo-xxxxx"
   // e.g. "/assets/contact-hero.jpg"
 
@@ -73,10 +73,10 @@ const heroImageSrc = "/assets/contact-us.png";
 
   return (
     <img
-    alt={title}
-    className={`absolute inset-0 h-full w-full object-cover object-center ${className}`}
-    onError={() => setImageError(true)}
-    src={heroImageSrc}
-  />
+      alt={title}
+      className={`absolute inset-0 h-full w-full object-cover object-center ${className}`}
+      onError={() => setImageError(true)}
+      src={heroImageSrc}
+    />
   );
 }

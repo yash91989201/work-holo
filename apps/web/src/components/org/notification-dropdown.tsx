@@ -11,10 +11,6 @@ import {
   IconMoodSmile,
 } from "@tabler/icons-react";
 import { useNavigate, useParams } from "@tanstack/react-router";
-import DOMPurify from "dompurify";
-import parse from "html-react-parser";
-import type React from "react";
-import { useCallback, useMemo, useState } from "react";
 import { Button } from "@work-holo/ui/components/button";
 import { ButtonGroup } from "@work-holo/ui/components/button-group";
 import {
@@ -31,13 +27,20 @@ import {
 } from "@work-holo/ui/components/popover";
 import { ScrollArea } from "@work-holo/ui/components/scroll-area";
 import { Skeleton } from "@work-holo/ui/components/skeleton";
-import { ToggleGroup, ToggleGroupItem } from "@work-holo/ui/components/toggle-group";
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@work-holo/ui/components/toggle-group";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@work-holo/ui/components/tooltip";
+import DOMPurify from "dompurify";
+import parse from "html-react-parser";
+import type React from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   dmMessagesCollection,
   messagesCollection,

@@ -18,13 +18,11 @@ import {
 } from "@tanstack/react-query";
 import { useNavigate, useParams, useSearch } from "@tanstack/react-router";
 import type { ChannelFileOutput } from "@work-holo/api/lib/schemas/attachment";
-import { format } from "date-fns";
-import type { ChangeEvent } from "react";
-import { useRef, useState } from "react";
-import { toast } from "sonner";
-import type { z } from "zod";
-import { Image } from "@/components/shared/image";
-import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@work-holo/ui/components/avatar";
 import { Badge } from "@work-holo/ui/components/badge";
 import { Button } from "@work-holo/ui/components/button";
 import {
@@ -34,7 +32,11 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from "@work-holo/ui/components/context-menu";
-import { Dialog, DialogClose, DialogContent } from "@work-holo/ui/components/dialog";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+} from "@work-holo/ui/components/dialog";
 import {
   Select,
   SelectContent,
@@ -44,6 +46,12 @@ import {
 } from "@work-holo/ui/components/select";
 import { Separator } from "@work-holo/ui/components/separator";
 import { Skeleton } from "@work-holo/ui/components/skeleton";
+import { format } from "date-fns";
+import type { ChangeEvent } from "react";
+import { useRef, useState } from "react";
+import { toast } from "sonner";
+import type { z } from "zod";
+import { Image } from "@/components/shared/image";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { queryUtils } from "@/utils/orpc";
 import {

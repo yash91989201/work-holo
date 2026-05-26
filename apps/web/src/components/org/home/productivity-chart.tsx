@@ -1,6 +1,5 @@
 import { IconAdjustmentsHorizontal, IconDownload } from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { Button } from "@work-holo/ui/components/button";
 import { Card } from "@work-holo/ui/components/card";
 import type { ChartConfig } from "@work-holo/ui/components/chart";
@@ -10,6 +9,7 @@ import {
   ChartTooltipContent,
 } from "@work-holo/ui/components/chart";
 import { Skeleton } from "@work-holo/ui/components/skeleton";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { queryUtils } from "@/utils/orpc";
 
 const chartConfig = {

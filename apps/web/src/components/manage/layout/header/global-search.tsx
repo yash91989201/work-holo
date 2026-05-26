@@ -5,8 +5,6 @@ import {
   IconUser,
   IconUsers,
 } from "@tabler/icons-react";
-import type { ComponentType } from "react";
-import { useState } from "react";
 import { Button } from "@work-holo/ui/components/button";
 import {
   CommandDialog,
@@ -17,6 +15,8 @@ import {
   CommandList,
 } from "@work-holo/ui/components/command";
 import { Kbd } from "@work-holo/ui/components/kbd";
+import type { ComponentType } from "react";
+import { useState } from "react";
 
 type SearchItem = {
   id: string;

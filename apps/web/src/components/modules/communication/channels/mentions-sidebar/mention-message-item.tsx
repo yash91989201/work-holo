@@ -1,8 +1,10 @@
 import { Link, useParams } from "@tanstack/react-router";
 import type { MessageWithSenderType } from "@work-holo/api/lib/types";
-import DOMPurify from "dompurify";
-import parse from "html-react-parser";
-import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@work-holo/ui/components/avatar";
 import { Button } from "@work-holo/ui/components/button";
 import {
   Item,
@@ -12,6 +14,8 @@ import {
   ItemMedia,
   ItemTitle,
 } from "@work-holo/ui/components/item";
+import DOMPurify from "dompurify";
+import parse from "html-react-parser";
 import { formatMessageTimestamp } from "@/lib/utils";
 import { useChannelMessageHighlight } from "@/stores/channel-store";
 

@@ -6,7 +6,7 @@ The permission system is centered in `packages/permission/src/services`.
 
 - `PermissionService`: facade used by application code (`check`, `can`, guards, admin APIs)
 - `PermissionChecker`: resolves descriptors and dispatches authorization
-- `AuthorizationEngine`: decision pipeline (owner bypass, cache, bitset, Casbin)
+- `AuthorizationEngine`: decision pipeline (membership-derived system roles, owner bypass, cache, bitset, Casbin)
 - `PolicyManager`: compiles role + override data into Casbin rules and manages versioning
 - `CacheManager`: Redis cache for decisions, bitsets, and permission maps
 - `PermissionMapManager`: computes and caches full permission maps for frontend hydration
@@ -18,7 +18,7 @@ Manager instances are wired by `PermissionManagers.initialize()` in `apps/server
 
 ## End-to-end request flow
 
-For org-scoped API handlers, `packages/api/src/index.ts` creates a `PermissionService` in `orgProcedure` and places it in request context.
+For org-scoped API handlers, `packages/api/src/index.ts` creates a `PermissionService` in `orgProcedure` and places it in request context. `orgMemberProcedure` then validates membership and synchronizes the persisted org-scoped system-role assignment from `member.role` before continuing.
 
 Typical check path:
 
@@ -26,9 +26,12 @@ Typical check path:
 2. `PermissionChecker.authorizeDescriptor()` builds `AuthorizationRequest`.
 3. `AuthorizationEngine.authorizeWithOwnerBypass()` runs the full auth pipeline first, then applies owner bypass if the user is denied but is the resource owner (unless a scope-applicable explicit deny override exists).
 4. `AuthorizationEngine.authorize()` checks Redis decision cache.
-5. If no decision cache hit, engine loads/compiles user bitset (reading policy version once and using it consistently throughout compilation) and checks permission bit.
-6. If bit is set, engine calls Casbin enforcer with domain/object/action.
-7. Final decision is cached with current policy version.
+5. If no decision cache hit, engine resolves applicable role templates:
+   - system org role from Better Auth `member.role`
+   - non-system role assignments from `roleAssignment`
+6. Engine loads/compiles user bitset (reading policy version once and using it consistently throughout compilation) and checks permission bit.
+7. If bit is set, engine calls Casbin enforcer with domain/object/action.
+8. Final decision is cached with current policy version.
 
 ## Decision modes (`AuthorizationResult.decidedBy`)
 
@@ -81,3 +84,12 @@ The `respectDenyOverrides` flag is currently hardcoded to `true`. A future org s
 6. Save to Redis + DB snapshot
 
 This gives frontend a complete `Record<string, boolean>` map with one API call.
+
+## Current role architecture
+
+The runtime now follows these rules:
+
+- **System org roles** (`owner`, `admin`, `member`) come from Better Auth membership rows, not from `roleAssignment`
+- **Persisted system assignments** may still exist for sync/audit compatibility, but compilation and runtime authorization derive the effective system role from `member.role`
+- **Custom roles** are non-system templates; team-specific custom access should be modeled with `scope: "team"` and `roleAssignment.teamId`
+- direct backend checks against membership role strings should be treated as legacy unless no permission key exists for the capability

@@ -60,12 +60,12 @@ function buildToastDescription(
   messagePreview: string | null
 ): string | undefined {
   if (!messagePreview) {
-    return undefined;
+    return;
   }
 
   const plainText = stripHtmlToText(messagePreview);
   if (!plainText) {
-    return undefined;
+    return;
   }
 
   return truncateText(plainText, REPLY_PREVIEW_TRUNCATE_LENGTH);

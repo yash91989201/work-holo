@@ -137,6 +137,14 @@ export function useMessageMutations() {
 
   const updateMessage = createOptimisticAction({
     onMutate: ({ message }: { message: UpdateMessageInputType }) => {
+      messagesCollection.update(message.messageId, (draft) => {
+        if (message.content !== undefined) {
+          draft.content = message.content;
+        }
+        draft.isEdited = true;
+        draft.editedAt = new Date();
+      });
+
       if (message.mentions !== undefined) {
         const mentionsToRemove: string[] = [];
         messageMentionsCollection.forEach((mention) => {

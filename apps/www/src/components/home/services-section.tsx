@@ -1,7 +1,3 @@
-import { Link } from "@tanstack/react-router";
-import { CTAButton } from "@work-holo/ui/components/cta-button";
-import { motion, type Variants } from "motion/react";
-
 import {
   IconBrain,
   IconChevronRight,
@@ -10,6 +6,9 @@ import {
   IconRobot,
   IconRocket,
 } from "@tabler/icons-react";
+import { Link } from "@tanstack/react-router";
+import { CTAButton } from "@work-holo/ui/components/cta-button";
+import { motion, type Variants } from "motion/react";
 
 const services = [
   {

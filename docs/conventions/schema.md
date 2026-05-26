@@ -1,6 +1,5 @@
 # Schemas Coding Style Guidelines
 
-<!--toc:start-->
 - [Schemas Coding Style Guidelines](#schemas-coding-style-guidelines)
   - [1. Schema Definition](#1-schema-definition)
   - [2. Type Inference](#2-type-inference)
@@ -10,7 +9,6 @@
   - [5. Monorepo Structure and Server Schemas](#5-monorepo-structure-and-server-schemas)
     - [Usage Guidelines](#usage-guidelines)
   - [Example Project Structure](#example-project-structure)
-<!--toc:end-->
 
 ## 1. Schema Definition
 

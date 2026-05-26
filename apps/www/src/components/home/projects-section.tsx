@@ -1,7 +1,3 @@
-import { motion } from "motion/react";
-import { useEffect, useState } from "react";
-import { getProjectList } from "../projects/project-data";
-
 import {
   IconArrowUpRight,
   IconChevronLeft,
@@ -13,6 +9,9 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@work-holo/ui/components/carousel";
+import { motion } from "motion/react";
+import { useEffect, useState } from "react";
+import { getProjectList } from "../projects/project-data";
 
 const projects = getProjectList();
 

@@ -7,7 +7,6 @@ import {
 import { useDebouncedCallback } from "@tanstack/react-pacer";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
-import { useState } from "react";
 import { Badge } from "@work-holo/ui/components/badge";
 import {
   Empty,
@@ -31,6 +30,7 @@ import {
   TableHeader,
   TableRow,
 } from "@work-holo/ui/components/table";
+import { useState } from "react";
 import { queryUtils } from "@/utils/orpc";
 
 export function OwnersTable() {

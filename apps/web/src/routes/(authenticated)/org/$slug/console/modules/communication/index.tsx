@@ -6,8 +6,6 @@ import {
 } from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { Suspense, useEffect, useState } from "react";
-import { toast } from "sonner";
 import { Badge } from "@work-holo/ui/components/badge";
 import { Button } from "@work-holo/ui/components/button";
 import {
@@ -19,10 +17,15 @@ import {
   CardTitle,
 } from "@work-holo/ui/components/card";
 import { Checkbox } from "@work-holo/ui/components/checkbox";
-import { RadioGroup, RadioGroupItem } from "@work-holo/ui/components/radio-group";
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from "@work-holo/ui/components/radio-group";
 import { Separator } from "@work-holo/ui/components/separator";
 import { Skeleton } from "@work-holo/ui/components/skeleton";
 import { Spinner } from "@work-holo/ui/components/spinner";
+import { Suspense, useEffect, useState } from "react";
+import { toast } from "sonner";
 import {
   useModuleConfig,
   useUpdateModuleConfig,

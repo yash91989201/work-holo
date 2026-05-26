@@ -1,7 +1,5 @@
-import { IconPlayerPlay} from "@tabler/icons-react";
+import { IconPlayerPlay } from "@tabler/icons-react";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
-import { useRef, useState } from "react";
-import { toast } from "sonner";
 import { Button } from "@work-holo/ui/components/button";
 import {
   Item,
@@ -19,6 +17,8 @@ import {
 } from "@work-holo/ui/components/select";
 import { Separator } from "@work-holo/ui/components/separator";
 import { Skeleton } from "@work-holo/ui/components/skeleton";
+import { useRef, useState } from "react";
+import { toast } from "sonner";
 import { queryClient, queryUtils } from "@/utils/orpc";
 import { uploadNotificationSound } from "@/utils/upload-helper";
 
@@ -181,8 +181,8 @@ export function SoundNotifications() {
           <Select
             items={selectItems}
             onValueChange={(val) => {
-              if (val === null) return
-              handleSoundChange(scope, val)
+              if (val === null) return;
+              handleSoundChange(scope, val);
             }}
             value={currentValue}
           >

@@ -48,6 +48,8 @@ For each org compile:
 
 1. create next `policyVersion` row (status `compiling`)
 2. fetch role assignments, role permissions, active overrides
+   - effective system org roles are derived from Better Auth `member.role`
+   - only non-system `roleAssignment` rows are treated as assignable/custom role memberships
 3. compile grouping policies (`g` rules)
 4. compile role permission policies (`p` rules)
 5. compile override policies (`p` rules)
@@ -61,10 +63,12 @@ For each org compile:
 From `PolicyManager` helpers:
 
 - domain: `org:{orgId}`
-- org role: `role:{roleName}`
-- team role: `role:{roleName}:team:{teamId}`
+- org role subject: `role:{roleTemplateId}`
+- team role subject: `role:{roleTemplateId}:team:{teamId}`
 - object base: `resource[:subResourceSegments][:resourceId]`
 - team-scoped object includes `team:{teamId}` prefix
+
+Using `roleTemplate.id` instead of role name prevents identity collisions between system roles and future custom roles that may reuse the same display/name value.
 
 ### Team-scoped role policies
 
@@ -93,6 +97,17 @@ The transaction in step 6 deletes both:
 - `g` (grouping/role-assignment) rules where `v2 = domain`
 
 This ensures revoked role memberships are properly removed from Casbin and do not persist as stale `g` rows.
+
+## Compile-time role sourcing rules
+
+`PolicyManager.fetchRoleAssignments(orgId)` now merges two sources:
+
+1. **custom assignments** from `roleAssignment`
+   - only non-system templates are included
+2. **system assignments** synthesized from Better Auth `member` rows
+   - `member.role` is mapped to the matching system org `roleTemplate`
+
+This keeps effective authorization aligned with Better Auth even if persisted system `roleAssignment` rows become stale.
 
 ## Concurrency behavior for policy reload
 

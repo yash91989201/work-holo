@@ -33,8 +33,8 @@ export function useRecentMentions() {
   const userId = user.id;
 
   const { data, isLoading } = useLiveQuery(
-    (q) => {
-      return q
+    (q) =>
+      q
         .from({ mention: messageMentionsCollection })
         .innerJoin({ message: messagesCollection }, ({ mention, message }) =>
           eq(mention.messageId, message.id)
@@ -63,8 +63,7 @@ export function useRecentMentions() {
           message,
           sender,
           channel,
-        }));
-    },
+        })),
     [userId]
   );
 
@@ -104,9 +103,10 @@ export function useRecentMentions() {
     return orderedMentions.slice(0, 5);
   }, [data, userId]);
 
-  const unreadMentionCount = useMemo(() => {
-    return mentions.filter((m) => !m.isSeen).length;
-  }, [mentions]);
+  const unreadMentionCount = useMemo(
+    () => mentions.filter((m) => !m.isSeen).length,
+    [mentions]
+  );
 
   return {
     mentions,

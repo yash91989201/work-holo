@@ -33,12 +33,4 @@ export class PusherClient {
     }
     return instance;
   }
-
-  static reset(): void {
-    instance = null;
-  }
-
-  static setClient(p: Pusher): void {
-    instance = p;
-  }
 }

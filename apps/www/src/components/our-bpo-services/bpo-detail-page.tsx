@@ -1,6 +1,3 @@
-import type React from "react";
-import { useEffect, useRef, useState } from "react";
-
 import {
   IconArrowUpRight,
   IconBolt,
@@ -27,6 +24,8 @@ import {
   useSpring,
   useTransform,
 } from "motion/react";
+import type React from "react";
+import { useEffect, useRef, useState } from "react";
 
 // --- Constants & Types ---
 
@@ -324,7 +323,6 @@ const ServiceCard: React.FC<{ service: Service }> = ({ service }) => {
           </li>
         ))}
       </ul>
-
     </SpotlightCard>
   );
 };

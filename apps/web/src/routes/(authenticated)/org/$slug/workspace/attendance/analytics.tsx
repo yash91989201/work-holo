@@ -1,11 +1,6 @@
 import { IconCalendarEventFilled } from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { format, subDays } from "date-fns";
-import { useMemo, useState } from "react";
-import { AttendanceInsights } from "@/components/modules/attendance/analytics-insights";
-import { AttendanceStatusBreakdown } from "@/components/modules/attendance/analytics-status-breakdown";
-import { AttendanceTrendChart } from "@/components/modules/attendance/analytics-trend-chart";
 import { Badge } from "@work-holo/ui/components/badge";
 import {
   Select,
@@ -14,6 +9,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@work-holo/ui/components/select";
+import { format, subDays } from "date-fns";
+import { useMemo, useState } from "react";
+import { AttendanceInsights } from "@/components/modules/attendance/analytics-insights";
+import { AttendanceStatusBreakdown } from "@/components/modules/attendance/analytics-status-breakdown";
+import { AttendanceTrendChart } from "@/components/modules/attendance/analytics-trend-chart";
 import { queryUtils } from "@/utils/orpc";
 
 export const Route = createFileRoute(

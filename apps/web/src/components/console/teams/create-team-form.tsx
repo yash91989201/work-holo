@@ -1,6 +1,4 @@
 import { IconPlus } from "@tabler/icons-react";
-import React from "react";
-import { toast } from "sonner";
 import { Button } from "@work-holo/ui/components/button";
 import { Checkbox } from "@work-holo/ui/components/checkbox";
 import {
@@ -20,6 +18,8 @@ import {
 import { useAppForm } from "@work-holo/ui/components/form/hooks";
 import { Label } from "@work-holo/ui/components/label";
 import { Spinner } from "@work-holo/ui/components/spinner";
+import React from "react";
+import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 import { CreateTeamFormSchema } from "@/lib/schemas/team";
 import { queryClient, queryUtils } from "@/utils/orpc";
@@ -61,10 +61,14 @@ export const CreateTeamForm = () => {
 
   return (
     <Dialog onOpenChange={setOpen} open={open}>
-      <DialogTrigger render={<Button className="gap-1.5">
-        <IconPlus />
-        New Team
-      </Button>} />
+      <DialogTrigger
+        render={
+          <Button className="gap-1.5">
+            <IconPlus />
+            New Team
+          </Button>
+        }
+      />
 
       <DialogContent>
         <DialogHeader>

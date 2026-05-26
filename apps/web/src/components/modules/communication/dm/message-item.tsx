@@ -4,7 +4,11 @@ import {
   IconPinFilled,
 } from "@tabler/icons-react";
 import { eq, useLiveQuery } from "@tanstack/react-db";
-import { Avatar, AvatarFallback, AvatarImage } from "@work-holo/ui/components/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@work-holo/ui/components/avatar";
 import { Badge } from "@work-holo/ui/components/badge";
 import { Button } from "@work-holo/ui/components/button";
 import {

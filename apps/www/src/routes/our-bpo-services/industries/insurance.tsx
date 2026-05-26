@@ -1,20 +1,19 @@
-import BPOPage from "@/components/our-bpo-services/bpo-detail-page";
 import { createFileRoute } from "@tanstack/react-router";
-
 import type {
-  WebPageProps,
-  HeroProps,
-  StatItem,
-  ServicesProps,
-  WorkflowProps,
-  FAQProps,
   CTAProps,
+  FAQProps,
+  HeroProps,
   ImageSectionProps,
+  ServicesProps,
+  StatItem,
+  WebPageProps,
+  WorkflowProps,
 } from "@/components/our-bpo-services/bpo-detail-page";
+import BPOPage from "@/components/our-bpo-services/bpo-detail-page";
 
-export const Route = createFileRoute('/our-bpo-services/industries/insurance')({
+export const Route = createFileRoute("/our-bpo-services/industries/insurance")({
   component: RouteComponent,
-})
+});
 
 const hero: HeroProps = {
   badge: "Trusted BPO for Insurance Call Center Services",
@@ -39,7 +38,8 @@ const stats: StatItem[] = [
 
 const services: ServicesProps = {
   subtitle: "Capabilities",
-  title: "Maximize Your Insurance Company Potential with Insurance Call Center Services.",
+  title:
+    "Maximize Your Insurance Company Potential with Insurance Call Center Services.",
   description:
     "Confie insurance BPO can help you roll out new insurance products more easily and quickly than before. Whether you want direct-to-consumer sales or seamless customer support, we make the transition smooth.",
   items: [
@@ -108,7 +108,7 @@ const workflow: WorkflowProps = {
         "Real-time observability across your entire call center stack. Monitor first call resolution rate, call handle time and all key performance indicators from a single pane.",
     },
   ],
-   showcaseImage: {
+  showcaseImage: {
     src: "/assets/insurance.jpg",
     alt: "Insurance BPO team at work",
   },
@@ -144,7 +144,8 @@ const faq: FAQProps = {
     },
     {
       id: 3,
-      question: "How Do You Choose Which Applicants are Moved into BPO Insurance Services?",
+      question:
+        "How Do You Choose Which Applicants are Moved into BPO Insurance Services?",
       answer:
         "We use many different KPIs and customer interaction data to assess which applicants and processes are best handled by our agents. Our structured 5-stage training program ensures agents are ready for your specific brand and products.",
     },
@@ -162,7 +163,8 @@ const cta: CTAProps = {
   headlineAccent: "of Confie BPO.",
   primaryLabel: "Calculate your Cost",
   secondaryLabel: "Contact Sales",
-  footnote: "Ranked #1 Personal Lines Leader in Insurance Journal for 6 Straight Years.",
+  footnote:
+    "Ranked #1 Personal Lines Leader in Insurance Journal for 6 Straight Years.",
 };
 
 // ── Image Sections ──────────────────────────────────────────────────────────

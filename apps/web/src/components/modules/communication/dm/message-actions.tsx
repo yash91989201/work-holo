@@ -7,7 +7,6 @@ import {
   IconPinnedOff,
   IconTrash,
 } from "@tabler/icons-react";
-import { useState } from "react";
 import { Button } from "@work-holo/ui/components/button";
 import {
   DropdownMenu,
@@ -22,6 +21,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@work-holo/ui/components/tooltip";
+import { useState } from "react";
 
 interface DmMessageActionsProps {
   canEdit: boolean;

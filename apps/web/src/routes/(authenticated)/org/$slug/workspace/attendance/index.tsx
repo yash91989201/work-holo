@@ -1,11 +1,6 @@
 import { IconCalendarWeekFilled } from "@tabler/icons-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { format, subDays } from "date-fns";
-import { Suspense, useMemo, useState } from "react";
-import { AttendanceAnalyticsSummary } from "@/components/modules/attendance/analytics-summary";
-import { MarkAttendance } from "@/components/modules/attendance/mark-attendance";
-import { WorkBlocksList } from "@/components/modules/attendance/work-blocks-list";
 import { Badge } from "@work-holo/ui/components/badge";
 import {
   Select,
@@ -14,6 +9,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@work-holo/ui/components/select";
+import { format, subDays } from "date-fns";
+import { Suspense, useMemo, useState } from "react";
+import { AttendanceAnalyticsSummary } from "@/components/modules/attendance/analytics-summary";
+import { MarkAttendance } from "@/components/modules/attendance/mark-attendance";
+import { WorkBlocksList } from "@/components/modules/attendance/work-blocks-list";
 import { queryUtils } from "@/utils/orpc";
 
 export const Route = createFileRoute(

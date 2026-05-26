@@ -4,8 +4,6 @@ import {
   IconTrashFilled,
 } from "@tabler/icons-react";
 import { useNavigate } from "@tanstack/react-router";
-import { toast } from "sonner";
-import { UAParser } from "ua-parser-js";
 import { Button } from "@work-holo/ui/components/button";
 import {
   Item,
@@ -16,6 +14,8 @@ import {
 } from "@work-holo/ui/components/item";
 import { Separator } from "@work-holo/ui/components/separator";
 import { Skeleton } from "@work-holo/ui/components/skeleton";
+import { toast } from "sonner";
+import { UAParser } from "ua-parser-js";
 import { useSession } from "@/hooks/use-session";
 import { useSessionList } from "@/hooks/use-session-list";
 import { getAuthQueryKey } from "@/lib/auth/query-keys";

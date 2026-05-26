@@ -1,13 +1,12 @@
-import { cn } from "@work-holo/ui/lib/utils";
-import { motion, type Variants, useAnimationControls } from "motion/react";
-import { useEffect, useState } from "react";
-
 import {
   IconBulb,
   IconHeartHandshake,
   IconRocket,
   IconThumbUp,
 } from "@tabler/icons-react";
+import { cn } from "@work-holo/ui/lib/utils";
+import { motion, useAnimationControls, type Variants } from "motion/react";
+import { useEffect, useState } from "react";
 
 const logos = [
   { name: "Axonify", style: "font-bold text-base" },
@@ -209,7 +208,6 @@ export function WhyChooseUs() {
             </h2>
 
             {/* Right side */}
-
           </div>
         </motion.div>
 

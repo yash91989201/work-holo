@@ -27,8 +27,6 @@ import {
   type VisibilityState,
 } from "@tanstack/react-table";
 import type { ListChannelsOutputType } from "@work-holo/api/lib/types";
-import { Suspense, useMemo, useState } from "react";
-import { toast } from "sonner";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -82,6 +80,8 @@ import {
   TableHeader,
   TableRow,
 } from "@work-holo/ui/components/table";
+import { Suspense, useMemo, useState } from "react";
+import { toast } from "sonner";
 import { useListOrgMembers } from "@/hooks/use-list-org-members";
 import { queryClient, queryUtils } from "@/utils/orpc";
 import { ChannelMembersPopover } from "./channel-members-popover";
@@ -214,24 +214,43 @@ export const ChannelsListTable = () => {
 
           return (
             <DropdownMenu>
-              <DropdownMenuTrigger render={<Button size="icon" variant="ghost">
-                  <IconDots />
-                </Button>} />
+              <DropdownMenuTrigger
+                render={
+                  <Button size="icon" variant="ghost">
+                    <IconDots />
+                  </Button>
+                }
+              />
 
               <DropdownMenuContent className="flex flex-col items-stretch gap-1.5">
-                <DropdownMenuItem render={<Suspense fallback={<AddMemberDialog.Fallback />}>
-                    <AddMemberDialog channelId={channel.id} />
-                  </Suspense>} />
+                <DropdownMenuItem
+                  render={
+                    <Suspense fallback={<AddMemberDialog.Fallback />}>
+                      <AddMemberDialog channelId={channel.id} />
+                    </Suspense>
+                  }
+                />
 
-                <DropdownMenuItem render={<Suspense fallback={<RemoveMemberDialog.Fallback />}>
-                    <RemoveMemberDialog channelId={channel.id} />
-                  </Suspense>} />
+                <DropdownMenuItem
+                  render={
+                    <Suspense fallback={<RemoveMemberDialog.Fallback />}>
+                      <RemoveMemberDialog channelId={channel.id} />
+                    </Suspense>
+                  }
+                />
 
-                <DropdownMenuItem render={<Suspense fallback={<UpdateChannelDialog.Fallback />}>
-                    <UpdateChannelDialog channelId={channel.id} />
-                  </Suspense>} />
+                <DropdownMenuItem
+                  render={
+                    <Suspense fallback={<UpdateChannelDialog.Fallback />}>
+                      <UpdateChannelDialog channelId={channel.id} />
+                    </Suspense>
+                  }
+                />
 
-                <DropdownMenuItem className="text-destructive focus:text-destructive" render={<DeleteChannelDialog channelId={channel.id} />} />
+                <DropdownMenuItem
+                  className="text-destructive focus:text-destructive"
+                  render={<DeleteChannelDialog channelId={channel.id} />}
+                />
               </DropdownMenuContent>
             </DropdownMenu>
           );
@@ -479,13 +498,17 @@ export function AddMemberDialog({ channelId }: { channelId: string }) {
 
   return (
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
-      <DialogTrigger render={<Button
-          className="flex items-center justify-start gap-1.5"
-          variant="ghost"
-        >
-          <IconUserPlus className="size-4" />
-          Add Members
-        </Button>} />
+      <DialogTrigger
+        render={
+          <Button
+            className="flex items-center justify-start gap-1.5"
+            variant="ghost"
+          >
+            <IconUserPlus className="size-4" />
+            Add Members
+          </Button>
+        }
+      />
 
       <DialogContent className="sm:max-w-105">
         <DialogHeader>
@@ -640,13 +663,17 @@ export function RemoveMemberDialog({ channelId }: { channelId: string }) {
 
   return (
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
-      <DialogTrigger render={<Button
-          className="flex items-center justify-start gap-1.5"
-          variant="ghost"
-        >
-          <IconUserMinus className="size-4" />
-          <span>Remove Members</span>
-        </Button>} />
+      <DialogTrigger
+        render={
+          <Button
+            className="flex items-center justify-start gap-1.5"
+            variant="ghost"
+          >
+            <IconUserMinus className="size-4" />
+            <span>Remove Members</span>
+          </Button>
+        }
+      />
 
       <DialogContent>
         <DialogHeader>
@@ -767,7 +794,13 @@ export function DeleteChannelDialog({ channelId }: { channelId: string }) {
   );
   return (
     <AlertDialog onOpenChange={toggleDialog} open={dialog}>
-      <AlertDialogTrigger render={<span className={buttonVariants({ variant: "destructive" })}>Delete Channel</span>} />
+      <AlertDialogTrigger
+        render={
+          <span className={buttonVariants({ variant: "destructive" })}>
+            Delete Channel
+          </span>
+        }
+      />
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
@@ -849,13 +882,17 @@ export function UpdateChannelDialog({ channelId }: { channelId: string }) {
 
   return (
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
-      <DialogTrigger render={<Button
-          className="flex items-center justify-start gap-1.5"
-          variant="ghost"
-        >
-          <IconEdit className="size-4" />
-          Edit Channel
-        </Button>} />
+      <DialogTrigger
+        render={
+          <Button
+            className="flex items-center justify-start gap-1.5"
+            variant="ghost"
+          >
+            <IconEdit className="size-4" />
+            Edit Channel
+          </Button>
+        }
+      />
 
       <DialogContent className="sm:max-w-105">
         <DialogHeader>

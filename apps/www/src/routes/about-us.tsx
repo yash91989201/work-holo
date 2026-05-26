@@ -1,8 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { motion, useInView } from "motion/react";
-import { useEffect, useRef, useState } from "react";
-import { ContactCard } from "@/components/shared/contact-card";
-
 import {
   IconAward,
   IconBulb,
@@ -12,6 +7,10 @@ import {
   IconUsers,
   IconWorld,
 } from "@tabler/icons-react";
+import { createFileRoute } from "@tanstack/react-router";
+import { motion, useInView } from "motion/react";
+import { useEffect, useRef, useState } from "react";
+import { ContactCard } from "@/components/shared/contact-card";
 
 export const Route = createFileRoute("/about-us")({
   component: RouteComponent,
@@ -37,7 +36,7 @@ function AnimatedCounter({
     const animate = (timestamp: number) => {
       if (!startTime) startTime = timestamp;
       const progress = Math.min((timestamp - startTime) / (duration * 1000), 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
+      const eased = 1 - (1 - progress) ** 3;
       setCount(Math.floor(eased * target));
       if (progress < 1) {
         animationFrame = requestAnimationFrame(animate);
@@ -83,11 +82,32 @@ const values = [
 ];
 
 const milestones = [
-  { year: "2019", title: "Founded", description: "Work Holo established with a vision to transform IT services." },
-  { year: "2020", title: "First 50 Clients", description: "Rapid growth as businesses embraced our tailored solutions." },
-  { year: "2022", title: "Global Expansion", description: "Extended operations to serve international markets." },
-  { year: "2024", title: "AI & Cloud Leadership", description: "Pioneered agentic AI and cloud-native solutions." },
-  { year: "2025", title: "100+ Projects", description: "Surpassed 100 successful project deliveries worldwide." },
+  {
+    year: "2019",
+    title: "Founded",
+    description:
+      "Work Holo established with a vision to transform IT services.",
+  },
+  {
+    year: "2020",
+    title: "First 50 Clients",
+    description: "Rapid growth as businesses embraced our tailored solutions.",
+  },
+  {
+    year: "2022",
+    title: "Global Expansion",
+    description: "Extended operations to serve international markets.",
+  },
+  {
+    year: "2024",
+    title: "AI & Cloud Leadership",
+    description: "Pioneered agentic AI and cloud-native solutions.",
+  },
+  {
+    year: "2025",
+    title: "100+ Projects",
+    description: "Surpassed 100 successful project deliveries worldwide.",
+  },
 ];
 
 const team = [
@@ -148,9 +168,9 @@ function RouteComponent() {
           whileInView={{ opacity: 1, scale: 1 }}
         >
           <img
-            src="/assets/diverse-team-planning-stockcake.webp"
             alt="Our team collaborating"
             className="h-full w-full object-cover"
+            src="/assets/diverse-team-planning-stockcake.webp"
           />
           <div className="absolute inset-0 bg-linear-to-t from-background via-background/40 to-transparent" />
           <div className="absolute inset-0 bg-linear-to-r from-background/60 via-transparent to-background/60" />
@@ -159,7 +179,7 @@ function RouteComponent() {
         {/* Hero Content Overlay */}
         <div className="absolute inset-0 flex items-center justify-center">
           <motion.div
-            className="text-center px-4"
+            className="px-4 text-center"
             initial={{ opacity: 0, y: 30 }}
             transition={{ duration: 0.6, delay: 0.3 }}
             viewport={{ once: true }}
@@ -182,13 +202,13 @@ function RouteComponent() {
       {/* Intro / Story Section */}
       <section className="relative py-20 lg:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
             {/* Left - Content */}
             <motion.div
               initial={{ opacity: 0, x: -40 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              viewport={{ once: true }}
+              whileInView={{ opacity: 1, x: 0 }}
             >
               <p className="mb-5 font-medium text-primary text-sm uppercase tracking-[0.2em]">
                 [ Our Story ]
@@ -198,83 +218,102 @@ function RouteComponent() {
                 <br />
                 One Solution at a Time.
               </h2>
-              <p className="text-muted-foreground text-sm leading-relaxed mb-6">
-                Founded in 2019, Work Holo began with a simple belief: technology
-                should empower businesses, not complicate them. What started as a
-                small team of dedicated engineers has grown into a global force of
-                98+ IT professionals delivering transformative solutions.
+              <p className="mb-6 text-muted-foreground text-sm leading-relaxed">
+                Founded in 2019, Work Holo began with a simple belief:
+                technology should empower businesses, not complicate them. What
+                started as a small team of dedicated engineers has grown into a
+                global force of 98+ IT professionals delivering transformative
+                solutions.
               </p>
-              <p className="text-muted-foreground text-sm leading-relaxed mb-8">
+              <p className="mb-8 text-muted-foreground text-sm leading-relaxed">
                 We partner with organizations across healthcare, finance,
-                telecommunications, retail, and beyond — tailoring our expertise to
-                meet unique challenges. From cloud engineering to agentic AI, our
-                mission remains constant: drive innovation that creates lasting
-                value.
+                telecommunications, retail, and beyond — tailoring our expertise
+                to meet unique challenges. From cloud engineering to agentic AI,
+                our mission remains constant: drive innovation that creates
+                lasting value.
               </p>
 
               {/* Stats */}
               <div className="flex items-center gap-8">
                 <div>
-                  <div className="text-4xl sm:text-5xl font-bold text-primary leading-none">
-                    <AnimatedCounter target={3} suffix="K" duration={2} />
+                  <div className="font-bold text-4xl text-primary leading-none sm:text-5xl">
+                    <AnimatedCounter duration={2} suffix="K" target={3} />
                     <sup className="text-xl">+</sup>
                   </div>
-                  <p className="text-sm text-muted-foreground mt-2">Projects Delivered</p>
+                  <p className="mt-2 text-muted-foreground text-sm">
+                    Projects Delivered
+                  </p>
                 </div>
-                <div className="w-px h-16 bg-border/50" />
+                <div className="h-16 w-px bg-border/50" />
                 <div>
-                  <div className="text-4xl sm:text-5xl font-bold text-primary leading-none">
-                    <AnimatedCounter target={98} suffix="" duration={2} />
+                  <div className="font-bold text-4xl text-primary leading-none sm:text-5xl">
+                    <AnimatedCounter duration={2} suffix="" target={98} />
                     <sup className="text-xl">+</sup>
                   </div>
-                  <p className="text-sm text-muted-foreground mt-2">IT Professionals</p>
+                  <p className="mt-2 text-muted-foreground text-sm">
+                    IT Professionals
+                  </p>
                 </div>
-                <div className="w-px h-16 bg-border/50" />
+                <div className="h-16 w-px bg-border/50" />
                 <div>
-                  <div className="text-4xl sm:text-5xl font-bold text-primary leading-none">
-                    <AnimatedCounter target={20} suffix="" duration={2} />
+                  <div className="font-bold text-4xl text-primary leading-none sm:text-5xl">
+                    <AnimatedCounter duration={2} suffix="" target={20} />
                     <sup className="text-xl">+</sup>
                   </div>
-                  <p className="text-sm text-muted-foreground mt-2">Years Experience</p>
+                  <p className="mt-2 text-muted-foreground text-sm">
+                    Years Experience
+                  </p>
                 </div>
               </div>
             </motion.div>
 
             {/* Right - Image with Badge */}
             <motion.div
-              initial={{ opacity: 0, x: 40 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
               className="relative"
+              initial={{ opacity: 0, x: 40 }}
+              transition={{
+                duration: 0.7,
+                delay: 0.2,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              viewport={{ once: true }}
+              whileInView={{ opacity: 1, x: 0 }}
             >
-              <div className="relative rounded-3xl overflow-hidden aspect-[4/3]">
+              <div className="relative aspect-[4/3] overflow-hidden rounded-3xl">
                 <img
-                  src="/assets/hero-img.jpeg"
                   alt="Work Holo office"
-                  className="w-full h-full object-cover"
+                  className="h-full w-full object-cover"
+                  src="/assets/hero-img.jpeg"
                 />
               </div>
 
               {/* Award Badge */}
               <motion.div
+                className="absolute -right-2 -bottom-6 sm:right-6"
                 initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{
+                  duration: 0.7,
+                  delay: 0.5,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                className="absolute -bottom-6 -right-2 sm:right-6"
+                whileInView={{ opacity: 1, scale: 1 }}
               >
-                <div className="relative flex size-28 sm:size-32 items-center justify-center">
+                <div className="relative flex size-28 items-center justify-center sm:size-32">
                   <motion.svg
                     animate={{ rotate: 360 }}
-                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                    viewBox="0 0 120 120"
                     className="absolute inset-0 size-full"
+                    transition={{
+                      duration: 20,
+                      repeat: Number.POSITIVE_INFINITY,
+                      ease: "linear",
+                    }}
+                    viewBox="0 0 120 120"
                   >
                     <defs>
                       <path
-                        id="circlePathAbout"
                         d="M 60, 60 m -48, 0 a 48,48 0 1,1 96,0 a 48,48 0 1,1 -96,0"
+                        id="circlePathAbout"
                       />
                     </defs>
                     <text
@@ -287,8 +326,8 @@ function RouteComponent() {
                       </textPath>
                     </text>
                   </motion.svg>
-                  <div className="flex size-12 sm:size-14 items-center justify-center rounded-full bg-primary">
-                    <IconAward className="size-6 sm:size-7 text-primary-foreground" />
+                  <div className="flex size-12 items-center justify-center rounded-full bg-primary sm:size-14">
+                    <IconAward className="size-6 text-primary-foreground sm:size-7" />
                   </div>
                 </div>
               </motion.div>
@@ -298,7 +337,7 @@ function RouteComponent() {
       </section>
 
       {/* Core Values Section */}
-      <section className="relative py-20 lg:py-28 bg-muted/30">
+      <section className="relative bg-muted/30 py-20 lg:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
             className="mb-14 text-center"
@@ -372,19 +411,19 @@ function RouteComponent() {
 
           <div className="relative">
             {/* Timeline line */}
-            <div className="absolute left-4 sm:left-1/2 top-0 bottom-0 w-px bg-border/50 sm:-translate-x-px" />
+            <div className="absolute top-0 bottom-0 left-4 w-px bg-border/50 sm:left-1/2 sm:-translate-x-px" />
 
             <div className="space-y-12">
               {milestones.map((milestone, index) => (
                 <motion.div
-                  key={milestone.year}
                   className={`relative flex items-start gap-8 sm:gap-0 ${
                     index % 2 === 0 ? "sm:flex-row" : "sm:flex-row-reverse"
                   }`}
                   initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
+                  key={milestone.year}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                  whileInView={{ opacity: 1, y: 0 }}
                 >
                   {/* Content */}
                   <div
@@ -392,8 +431,8 @@ function RouteComponent() {
                       index % 2 === 0 ? "sm:text-right" : "sm:text-left"
                     }`}
                   >
-                    <div className="rounded-2xl border border-border/40 bg-card/60 p-6 sm:p-8 transition-all duration-300 hover:border-border/70">
-                      <span className="inline-block mb-2 font-bold text-primary text-xl">
+                    <div className="rounded-2xl border border-border/40 bg-card/60 p-6 transition-all duration-300 hover:border-border/70 sm:p-8">
+                      <span className="mb-2 inline-block font-bold text-primary text-xl">
                         {milestone.year}
                       </span>
                       <h3 className="mb-2 font-semibold text-foreground text-lg">
@@ -406,10 +445,10 @@ function RouteComponent() {
                   </div>
 
                   {/* Dot */}
-                  <div className="absolute left-4 sm:left-1/2 size-3 rounded-full bg-primary border-2 border-background -translate-x-1.5 mt-6 sm:mt-8" />
+                  <div className="absolute left-4 mt-6 size-3 -translate-x-1.5 rounded-full border-2 border-background bg-primary sm:left-1/2 sm:mt-8" />
 
                   {/* Spacer for other side */}
-                  <div className="hidden sm:block flex-1" />
+                  <div className="hidden flex-1 sm:block" />
                 </motion.div>
               ))}
             </div>
@@ -418,14 +457,14 @@ function RouteComponent() {
       </section>
 
       {/* Global Presence Section */}
-      <section className="relative py-20 lg:py-28 bg-muted/30">
+      <section className="relative bg-muted/30 py-20 lg:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
             <motion.div
               initial={{ opacity: 0, x: -40 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              viewport={{ once: true }}
+              whileInView={{ opacity: 1, x: 0 }}
             >
               <p className="mb-5 font-medium text-primary text-sm uppercase tracking-[0.2em]">
                 [ Global Reach ]
@@ -435,16 +474,16 @@ function RouteComponent() {
                 <br />
                 Worldwide.
               </h2>
-              <p className="text-muted-foreground text-sm leading-relaxed mb-6">
+              <p className="mb-6 text-muted-foreground text-sm leading-relaxed">
                 With teams and clients spanning multiple continents, we bring a
                 global perspective to every project. Our distributed workforce
                 enables round-the-clock development and support, ensuring your
                 business never misses a beat.
               </p>
-              <p className="text-muted-foreground text-sm leading-relaxed mb-8">
-                From startups in Silicon Valley to enterprises in Europe and Asia,
-                we have helped organizations of every scale harness technology to
-                achieve their ambitions.
+              <p className="mb-8 text-muted-foreground text-sm leading-relaxed">
+                From startups in Silicon Valley to enterprises in Europe and
+                Asia, we have helped organizations of every scale harness
+                technology to achieve their ambitions.
               </p>
 
               <div className="grid grid-cols-2 gap-6">
@@ -453,8 +492,12 @@ function RouteComponent() {
                     <IconWorld className="size-5 text-primary" />
                   </div>
                   <div>
-                    <p className="font-semibold text-foreground text-sm">15+ Countries</p>
-                    <p className="text-muted-foreground text-xs">Global Presence</p>
+                    <p className="font-semibold text-foreground text-sm">
+                      15+ Countries
+                    </p>
+                    <p className="text-muted-foreground text-xs">
+                      Global Presence
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -462,8 +505,12 @@ function RouteComponent() {
                     <IconUsers className="size-5 text-primary" />
                   </div>
                   <div>
-                    <p className="font-semibold text-foreground text-sm">500+ Clients</p>
-                    <p className="text-muted-foreground text-xs">Trusted Partners</p>
+                    <p className="font-semibold text-foreground text-sm">
+                      500+ Clients
+                    </p>
+                    <p className="text-muted-foreground text-xs">
+                      Trusted Partners
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -471,7 +518,9 @@ function RouteComponent() {
                     <IconRocket className="size-5 text-primary" />
                   </div>
                   <div>
-                    <p className="font-semibold text-foreground text-sm">24/7 Support</p>
+                    <p className="font-semibold text-foreground text-sm">
+                      24/7 Support
+                    </p>
                     <p className="text-muted-foreground text-xs">Always On</p>
                   </div>
                 </div>
@@ -480,26 +529,34 @@ function RouteComponent() {
                     <IconAward className="size-5 text-primary" />
                   </div>
                   <div>
-                    <p className="font-semibold text-foreground text-sm">Award Winning</p>
-                    <p className="text-muted-foreground text-xs">Industry Recognized</p>
+                    <p className="font-semibold text-foreground text-sm">
+                      Award Winning
+                    </p>
+                    <p className="text-muted-foreground text-xs">
+                      Industry Recognized
+                    </p>
                   </div>
                 </div>
               </div>
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, x: 40 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
               className="relative"
+              initial={{ opacity: 0, x: 40 }}
+              transition={{
+                duration: 0.7,
+                delay: 0.2,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              viewport={{ once: true }}
+              whileInView={{ opacity: 1, x: 0 }}
             >
-              <div className="relative rounded-3xl overflow-hidden aspect-[4/3] bg-card border border-border/40">
+              <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-border/40 bg-card">
                 {/* Decorative world map placeholder using CSS patterns */}
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="text-center">
-                    <IconWorld className="size-24 text-primary/20 mx-auto mb-4" />
-                    <p className="text-muted-foreground/40 text-sm font-medium uppercase tracking-widest">
+                    <IconWorld className="mx-auto mb-4 size-24 text-primary/20" />
+                    <p className="font-medium text-muted-foreground/40 text-sm uppercase tracking-widest">
                       Global Network
                     </p>
                   </div>
@@ -508,7 +565,8 @@ function RouteComponent() {
                 <div
                   className="absolute inset-0 opacity-[0.03]"
                   style={{
-                    backgroundImage: `linear-gradient(to right, currentColor 1px, transparent 1px), linear-gradient(to bottom, currentColor 1px, transparent 1px)`,
+                    backgroundImage:
+                      "linear-gradient(to right, currentColor 1px, transparent 1px), linear-gradient(to bottom, currentColor 1px, transparent 1px)",
                     backgroundSize: "40px 40px",
                   }}
                 />
@@ -566,7 +624,9 @@ function RouteComponent() {
                     <h3 className="mb-1 font-semibold text-base text-foreground">
                       {member.name}
                     </h3>
-                    <p className="text-muted-foreground text-sm">{member.role}</p>
+                    <p className="text-muted-foreground text-sm">
+                      {member.role}
+                    </p>
                   </div>
                 </div>
               </motion.div>

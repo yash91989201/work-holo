@@ -1,8 +1,8 @@
 import { IconArrowLeft } from "@tabler/icons-react";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Button } from "@work-holo/ui/components/button";
 import { Suspense } from "react";
 import { OwnerDetail } from "@/components/platform/owners/owner-detail";
-import { Button } from "@work-holo/ui/components/button";
 
 export const Route = createFileRoute(
   "/(authenticated)/platform/dashboard/owners/$ownerId"

@@ -1,5 +1,4 @@
 import { IconX } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
 import { Button } from "@work-holo/ui/components/button";
 import {
   Dialog,
@@ -7,6 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@work-holo/ui/components/dialog";
+import { useEffect, useState } from "react";
 import { useDmMessageMutations } from "@/hooks/communications/dm/use-dm-message-mutations";
 import { useMaximizedDmMessageComposer } from "@/stores/dm-store";
 import { DmMessageComposer } from "./message-composer";

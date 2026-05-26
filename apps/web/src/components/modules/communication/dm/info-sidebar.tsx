@@ -1,6 +1,5 @@
 import { IconMessage } from "@tabler/icons-react";
 import { useParams } from "@tanstack/react-router";
-import { Suspense } from "react";
 import { Badge } from "@work-holo/ui/components/badge";
 import {
   Sheet,
@@ -8,7 +7,13 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@work-holo/ui/components/sheet";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@work-holo/ui/components/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@work-holo/ui/components/tabs";
+import { Suspense } from "react";
 import { useDmConversations } from "@/hooks/communications/dm/use-dm-conversations";
 import { useDmPresence } from "@/hooks/communications/dm/use-dm-presence";
 import { useDmInfoSidebar } from "@/stores/dm-store";

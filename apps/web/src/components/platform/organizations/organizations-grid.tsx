@@ -7,9 +7,13 @@ import {
 import { useDebouncedCallback } from "@tanstack/react-pacer";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
-import { useState } from "react";
 import { Badge } from "@work-holo/ui/components/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@work-holo/ui/components/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@work-holo/ui/components/card";
 import {
   Empty,
   EmptyDescription,
@@ -24,6 +28,7 @@ import {
   InputGroupInput,
 } from "@work-holo/ui/components/input-group";
 import { Skeleton } from "@work-holo/ui/components/skeleton";
+import { useState } from "react";
 import { queryUtils } from "@/utils/orpc";
 
 export function OrganizationsGrid() {
