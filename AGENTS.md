@@ -14,7 +14,6 @@
 5. [Suspense Fallbacks](#5-suspense-fallbacks)
 6. [Images](#6-images)
 7. [Permission System](#7-permission-system)
-8. [GitNexus — Code Intelligence](#8-gitnexus--code-intelligence)
 
 ---
 
@@ -36,7 +35,7 @@ Docs: [`api-client-usage.md`](docs/guides/api-client-usage.md)
 
 ## 2. UI and Design System
 
-All frontend UI must use the project theme and shadcn primitives. Use **theme tokens** (colors, spacing, radius, typography) from `src/styles/index.css` / Tailwind. No invented hex values, arbitrary pixels, one-off radii, or inline style drift. Extend existing shadcn component tokens/primitives; inspect component code when needed.
+All frontend UI must use the project theme and shadcn primitives. Use **theme tokens** (colors, spacing, radius, typography) from `packages/ui/src/styles/globals.css` / Tailwind. Reuse shared primitives/components from `packages/ui/src/components` where applicable. No invented hex values, arbitrary pixels, one-off radii, or inline style drift. Extend existing shadcn component tokens/primitives; inspect component code when needed.
 
 Docs: [`ui.md`](docs/conventions/ui.md)
 
@@ -107,40 +106,3 @@ Docs: [`image-component.md`](docs/guides/image-component.md)
 | Adding permissions | Follow action/sub-resource/resource decision tree, then regenerate code |
 
 Docs: [`README`](docs/guides/permission-system/README.md) · [`backend-integration`](docs/guides/permission-system/backend-integration.md) · [`architecture-runtime-flow`](docs/guides/permission-system/architecture-runtime-flow.md) · [`frontend-integration`](docs/guides/permission-system/frontend-integration.md) · [`frontend-permissions`](docs/guides/permission-system/frontend-permissions.md) · [`caching-consistency`](docs/guides/permission-system/caching-consistency.md) · [`policy-compilation-casbin`](docs/guides/permission-system/policy-compilation-casbin.md) · [`dsl-vocabulary-codegen`](docs/guides/permission-system/dsl-vocabulary-codegen.md) · [`adding-permissions`](docs/guides/permission-system/adding-permissions.md) · [`extension-guide`](docs/guides/permission-system/extension-guide.md) · [`operations-troubleshooting`](docs/guides/permission-system/operations-troubleshooting.md)
-
----
-
-## 8. GitNexus — Code Intelligence
-
-Index: **work-holo** (9326 symbols, 17896 relationships, 241 execution flows). If any tool warns the index is stale, run `npx gitnexus analyze` first.
-
-### Rules
-
-| When | Action |
-|---|---|
-| Before editing any symbol | `gitnexus_impact({target: "symbolName", direction: "upstream"})` — report blast radius (callers, processes, risk) |
-| Before committing | `gitnexus_detect_changes()` — verify only expected symbols/flows are affected |
-| HIGH or CRITICAL risk | Warn the user before proceeding |
-| Exploring unfamiliar code | `gitnexus_query({query: "concept"})` — process-grouped results, ranked by relevance |
-| Full symbol context | `gitnexus_context({name: "symbolName"})` — callers, callees, execution flow membership |
-| Renaming symbols | `gitnexus_rename` only — never find-and-replace (not call-graph-aware) |
-
-### Resources
-
-| Resource | Use for |
-|---|---|
-| `gitnexus://repo/work-holo/context` | Codebase overview, index freshness |
-| `gitnexus://repo/work-holo/clusters` | All functional areas |
-| `gitnexus://repo/work-holo/processes` | All execution flows |
-| `gitnexus://repo/work-holo/process/{name}` | Step-by-step execution trace |
-
-### Skill Files
-
-| Task | Skill |
-|---|---|
-| Understand architecture | `.claude/skills/gitnexus/gitnexus-exploring/SKILL.md` |
-| Blast radius analysis | `.claude/skills/gitnexus/gitnexus-impact-analysis/SKILL.md` |
-| Trace bugs | `.claude/skills/gitnexus/gitnexus-debugging/SKILL.md` |
-| Rename / refactor | `.claude/skills/gitnexus/gitnexus-refactoring/SKILL.md` |
-| Tools / schema reference | `.claude/skills/gitnexus/gitnexus-guide/SKILL.md` |
-| Index / CLI commands | `.claude/skills/gitnexus/gitnexus-cli/SKILL.md` |
