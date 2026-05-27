@@ -112,6 +112,7 @@ scripts/dev.sh logs postgres
 `--run` notes:
 - Works with `start` and `start --dev-only`
 - Cannot be combined with `start --docker-only`
+- Type generators (`web`, `api`, `db`) run automatically in watch mode alongside dev targets
 
 `--run` supported values:
 - `all` — run default full dev graph
@@ -216,7 +217,41 @@ work-holo/
 - `bun db:migrate`: Run committed database migrations
 - `bun db:push`: Push schema changes directly to the database schema
 - `bun db:studio`: Open database studio UI
+- `bun generate:types`: Generate TypeScript types from Zod schemas (web, api, db)
+- `bun generate:types:watch`: Watch and regenerate types on schema changes
 - `cd apps/web && bun desktop:dev`: Start Tauri desktop app in development
 - `cd apps/web && bun desktop:build`: Build Tauri desktop app
 - `cd apps/docs && bun dev`: Start documentation site
 - `cd apps/docs && bun build`: Build documentation site
+
+## Type Generation
+
+This project auto-generates TypeScript types from Zod schemas. The type generators run automatically in watch mode when using `scripts/dev.sh start`.
+
+### Type Generator Locations
+
+| Package | Schema Directory | Output File |
+|---------|-----------------|-------------|
+| `apps/web` | `src/lib/schemas/` | `src/lib/types.ts` |
+| `packages/api` | `src/lib/schemas/` | `src/lib/types.ts` |
+| `packages/db` | `src/lib/schemas/` | `src/lib/types.ts` |
+
+### Manual Type Generation
+
+```bash
+# Generate types once for a specific package
+cd apps/web && bun run generate:types
+cd packages/api && bun run generate:types
+cd packages/db && bun run generate:types
+
+# Watch mode (regenerates on schema changes)
+cd apps/web && bun run generate:types:watch
+```
+
+### How It Works
+
+1. Define Zod schemas in `src/lib/schemas/*.ts`
+2. Export schemas with names ending in `Schema`, `Input`, or `Output`
+3. Run `generate:types` to create corresponding TypeScript types
+4. Types are auto-generated as `z.infer<typeof SchemaName>` exports
+5. In watch mode, types regenerate automatically when schema files change

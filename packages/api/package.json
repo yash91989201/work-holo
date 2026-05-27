@@ -14,6 +14,7 @@
   "type": "module",
   "scripts": {
     "generate:types": "bun run ./scripts/generate-types.ts",
+    "generate:types:watch": "bun run ./scripts/generate-types.ts --watch",
     "seed:sound-presets": "bun run ./scripts/seed-sound-presets.ts"
   },
   "devDependencies": {

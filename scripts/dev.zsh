@@ -21,6 +21,7 @@ fi
 DOCKER_COMPOSE_CMD=()
 START_WAS_INTERRUPTED="false"
 BUN_DEV_PID=""
+TYPE_WATCHER_PIDS=()
 VAPID_PUBLIC_KEY=""
 VAPID_PRIVATE_KEY=""
 
@@ -587,6 +588,7 @@ handle_interrupt() {
   if [[ -n "$BUN_DEV_PID" ]]; then
     kill -INT "$BUN_DEV_PID" >/dev/null 2>&1 || true
   fi
+  stop_type_watchers
   printf "\n"
   local i
   local response=""
@@ -602,6 +604,72 @@ handle_interrupt() {
   else
     cmd_stop
   fi
+}
+
+# Start type generators in watch mode based on run targets
+# Maps run targets to package directories that have type generators
+start_type_watchers() {
+  local -a run_targets=("$@")
+  local -a type_gen_dirs=()
+
+  if [[ ${#run_targets[@]} -eq 0 ]]; then
+    # No filters = run all type generators
+    type_gen_dirs=("apps/web" "packages/api" "packages/db")
+  else
+    local target=""
+    for target in "${run_targets[@]}"; do
+      case "$target" in
+      all)
+        type_gen_dirs=("apps/web" "packages/api" "packages/db")
+        break
+        ;;
+      web)
+        type_gen_dirs+=("apps/web")
+        ;;
+      server)
+        type_gen_dirs+=("packages/api" "packages/db")
+        ;;
+      # www, read-receipt, message-search, notification have no type generators
+      esac
+    done
+  fi
+
+  # Deduplicate
+  local -a unique_dirs=()
+  local dir=""
+  for dir in "${type_gen_dirs[@]}"; do
+    local found="false"
+    local udir=""
+    for udir in "${unique_dirs[@]}"; do
+      if [[ "$udir" == "$dir" ]]; then
+        found="true"
+        break
+      fi
+    done
+    if [[ "$found" == "false" ]]; then
+      unique_dirs+=("$dir")
+    fi
+  done
+
+  for dir in "${unique_dirs[@]}"; do
+    if [[ -f "$ROOT_DIR/$dir/package.json" ]] && grep -q '"generate:types:watch"' "$ROOT_DIR/$dir/package.json"; then
+      log_info "Starting type watcher: $dir"
+      (cd "$ROOT_DIR/$dir" && bun run generate:types:watch) &
+      TYPE_WATCHER_PIDS+=("$!")
+    fi
+  done
+}
+
+# Kill all running type watcher processes
+stop_type_watchers() {
+  local pid=""
+  for pid in "${TYPE_WATCHER_PIDS[@]}"; do
+    kill -TERM "$pid" >/dev/null 2>&1 || true
+  done
+  for pid in "${TYPE_WATCHER_PIDS[@]}"; do
+    wait "$pid" 2>/dev/null || true
+  done
+  TYPE_WATCHER_PIDS=()
 }
 
 cmd_start() {
@@ -717,18 +785,22 @@ cmd_start() {
     fi
 
     log_info "Starting dev server (with TUI)"
+    start_type_watchers "${run_targets[@]}"
     if [[ "${#turbo_filters[@]}" -gt 0 ]]; then
       bun run dev -- "${turbo_filters[@]}"
     else
       bun dev
     fi
-    return $?
+    local dev_rc=$?
+    stop_type_watchers
+    return $dev_rc
   fi
 
   compose_up
   wait_healthy
   START_WAS_INTERRUPTED="false"
   trap handle_interrupt INT
+  start_type_watchers "${run_targets[@]}"
   if [[ "${#turbo_filters[@]}" -gt 0 ]]; then
     TURBO_UI=0 bun run dev -- "${turbo_filters[@]}" &
   else
@@ -741,6 +813,7 @@ cmd_start() {
   set -e
   trap - INT
   BUN_DEV_PID=""
+  stop_type_watchers
   if [[ "$START_WAS_INTERRUPTED" == "true" ]]; then
     return 0
   fi
@@ -1016,6 +1089,7 @@ Command behavior:
     --run: run only selected targets via turbo filters
            allowed: all, web, www, server, read-receipt, message-search, message-indexer, notification
            example: scripts/dev.zsh start --run web,read-receipt,message-indexer
+    Type generators (web, api, db) run automatically in watch mode alongside dev.
     Ctrl+C prompt: Docker services will stop in 5s. Press 'n' to keep them running...
 
   stop-services

@@ -27,6 +27,7 @@ set "DEV_S3_SECRET_KEY=zmvR18mhKg3hDlKfdtfp_g"
 set "DEV_S3_ENDPOINT=http://127.0.0.1:9000"
 set "DEV_SMTP_USER=dev-smtp-user"
 set "DEV_SMTP_PASS=dev-smtp-pass"
+set "TYPE_WATCHER_PID="
 
 set "ENV_SERVER=apps\server\.env"
 set "ENV_WEB=apps\web\.env"
@@ -1017,12 +1018,14 @@ if "%DEV_ONLY%"=="true" (
 
   call :log_info "Starting dev server (with TUI)"
   pushd "%ROOT_DIR%" >nul
+  call :start_type_watchers
   if defined TURBO_FILTERS (
     bun run dev -- !TURBO_FILTERS!
   ) else (
     bun dev
   )
   set "RC=%ERRORLEVEL%"
+  call :stop_type_watcher
   popd >nul
   exit /b %RC%
 )
@@ -1032,12 +1035,14 @@ call :wait_healthy || exit /b 1
 set "START_WAS_INTERRUPTED=false"
 pushd "%ROOT_DIR%" >nul
 set "TURBO_UI=0"
+call :start_type_watchers
 if defined TURBO_FILTERS (
   bun run dev -- !TURBO_FILTERS!
 ) else (
   bun dev
 )
 set "RC=%ERRORLEVEL%"
+call :stop_type_watcher
 popd >nul
 if "%RC%"=="130" set "START_WAS_INTERRUPTED=true"
 if "%RC%"=="3221225786" set "START_WAS_INTERRUPTED=true"
@@ -1047,6 +1052,41 @@ if /I "%START_WAS_INTERRUPTED%"=="true" (
 )
 if not %RC%==0 call :log_warn "bun dev exited with code %RC%"
 exit /b %RC%
+
+:stop_type_watcher
+powershell -NoProfile -Command "Get-Process -Name bun -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -like '*generate:types:watch*' } | Stop-Process -Force -ErrorAction SilentlyContinue" >nul 2>nul
+exit /b 0
+
+:start_type_watchers
+set "TYPE_GEN_STARTED="
+if not defined RUN_VALUES (
+  call :log_info "Starting type watcher: apps\web"
+  start /b cmd /c "cd /d %ROOT_DIR%\apps\web && bun run generate:types:watch"
+  call :log_info "Starting type watcher: packages\api"
+  start /b cmd /c "cd /d %ROOT_DIR%\packages\api && bun run generate:types:watch"
+  call :log_info "Starting type watcher: packages\db"
+  start /b cmd /c "cd /d %ROOT_DIR%\packages\db && bun run generate:types:watch"
+  exit /b 0
+)
+for %%T in (!RUN_VALUES!) do (
+  if /I "%%~T"=="all" (
+    call :log_info "Starting type watcher: apps\web"
+    start /b cmd /c "cd /d %ROOT_DIR%\apps\web && bun run generate:types:watch"
+    call :log_info "Starting type watcher: packages\api"
+    start /b cmd /c "cd /d %ROOT_DIR%\packages\api && bun run generate:types:watch"
+    call :log_info "Starting type watcher: packages\db"
+    start /b cmd /c "cd /d %ROOT_DIR%\packages\db && bun run generate:types:watch"
+  ) else if /I "%%~T"=="web" (
+    call :log_info "Starting type watcher: apps\web"
+    start /b cmd /c "cd /d %ROOT_DIR%\apps\web && bun run generate:types:watch"
+  ) else if /I "%%~T"=="server" (
+    call :log_info "Starting type watcher: packages\api"
+    start /b cmd /c "cd /d %ROOT_DIR%\packages\api && bun run generate:types:watch"
+    call :log_info "Starting type watcher: packages\db"
+    start /b cmd /c "cd /d %ROOT_DIR%\packages\db && bun run generate:types:watch"
+  )
+)
+exit /b 0
 
 :handle_interrupt
 echo.
@@ -1393,6 +1433,7 @@ echo     --dev-only: start only dev server ^(with TUI^), auto-start services if 
 echo     --run: run only selected targets via turbo filters
 echo            allowed: all, web, www, server, read-receipt, message-search, message-indexer, notification
 echo            example: scripts\dev.cmd start --run web,read-receipt,message-indexer
+echo     Type generators (web, api, db) run automatically in watch mode alongside dev.
 echo     Ctrl+C prompt: Docker services will stop in 5s. Press 'n' to keep them running...
 echo.
 echo   stop-services
