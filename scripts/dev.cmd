@@ -529,54 +529,53 @@ if defined _sid set "%~2=%_sid%"
 set "_sid="
 exit /b 0
 
-:wait_for_service
-set "SERVICE=%~1"
-set /a TIMEOUT=%~2
+:wait_healthy
+set /a TIMEOUT=180
+set /a POLL_INTERVAL=3
 set /a ELAPSED=0
 
-call :log_info "Waiting for %SERVICE%"
+call :log_info "Waiting for all Docker services"
 
-:wait_service_loop
+:wait_healthy_loop
 if %ELAPSED% GEQ %TIMEOUT% (
-  call :log_error "Service not ready after %TIMEOUT%s: %SERVICE%"
+  call :log_error "Services not ready after %TIMEOUT%s"
   exit /b 1
 )
 
-set "SERVICE_ID="
-if "%COMPOSE_IS_V2%"=="1" (
-  for /f "usebackq delims=" %%I in (`docker compose ps -q %SERVICE% 2^>nul`) do (
-    if not defined SERVICE_ID set "SERVICE_ID=%%I"
-  )
-) else (
-  for /f "usebackq delims=" %%I in (`docker-compose ps -q %SERVICE% 2^>nul`) do (
-    if not defined SERVICE_ID set "SERVICE_ID=%%I"
-  )
-)
-
-if defined SERVICE_ID (
-  set "STATE="
-  for /f "usebackq delims=" %%S in (`docker inspect --format "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}" "%SERVICE_ID%" 2^>nul`) do (
-    set "STATE=%%S"
-  )
-  if /I "!STATE!"=="healthy" (
-    call :log_success "Service ready: %SERVICE%"
-    exit /b 0
-  )
-  if /I "!STATE!"=="running" (
-    call :log_success "Service ready: %SERVICE%"
-    exit /b 0
-  )
-)
-
-timeout /t 2 /nobreak >nul
-set /a ELAPSED+=2
-goto :wait_service_loop
-
-:wait_healthy
+set /a READY_COUNT=0
+set /a TOTAL_COUNT=0
 for %%S in (%CORE_SERVICES%) do (
-  call :wait_for_service %%S 180 || exit /b 1
+  set /a TOTAL_COUNT+=1
+  set "SERVICE_ID="
+  if "%COMPOSE_IS_V2%"=="1" (
+    for /f "usebackq delims=" %%I in (`docker compose ps -q %%S 2^>nul`) do (
+      if not defined SERVICE_ID set "SERVICE_ID=%%I"
+    )
+  ) else (
+    for /f "usebackq delims=" %%I in (`docker-compose ps -q %%S 2^>nul`) do (
+      if not defined SERVICE_ID set "SERVICE_ID=%%I"
+    )
+  )
+
+  if defined SERVICE_ID (
+    set "STATE="
+    for /f "usebackq delims=" %%T in (`docker inspect --format "{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}" "!SERVICE_ID!" 2^>nul`) do (
+      set "STATE=%%T"
+    )
+    if /I "!STATE!"=="healthy" set /a READY_COUNT+=1
+    if /I "!STATE!"=="running" set /a READY_COUNT+=1
+  )
 )
-exit /b 0
+
+if !READY_COUNT! EQU !TOTAL_COUNT! (
+  call :log_success "All services ready: !READY_COUNT!/!TOTAL_COUNT!"
+  exit /b 0
+)
+
+call :log_info "Services ready: !READY_COUNT!/!TOTAL_COUNT!"
+timeout /t %POLL_INTERVAL% /nobreak >nul
+set /a ELAPSED+=POLL_INTERVAL
+goto :wait_healthy_loop
 
 :migrate_database
 pushd "%ROOT_DIR%\packages\db" >nul
@@ -894,6 +893,8 @@ call :check_deps || exit /b 1
 
 set "DOCKER_ONLY=false"
 set "DEV_ONLY=false"
+set "RUN_VALUES="
+set "TURBO_FILTERS="
 
 :parse_start_args
 if "%~1"=="" goto :start_args_done
@@ -907,13 +908,73 @@ if /I "%~1"=="--dev-only" (
   shift
   goto :parse_start_args
 )
+if /I "%~1"=="--run" (
+  if "%~2"=="" (
+    call :log_error "Missing value for --run"
+    call :log_error "Example: scripts\dev.cmd start --run web,read-receipt,message-indexer"
+    call :log_error "See README.md for full --run target list and usage details"
+    exit /b 1
+  )
+  if defined RUN_VALUES (
+    set "RUN_VALUES=!RUN_VALUES!,%~2"
+  ) else (
+    set "RUN_VALUES=%~2"
+  )
+  shift
+  shift
+  goto :parse_start_args
+)
+set "ARG=%~1"
+if /I "!ARG:~0,6!"=="--run=" (
+  set "RUN_ARG=!ARG:~6!"
+  if defined RUN_VALUES (
+    set "RUN_VALUES=!RUN_VALUES!,!RUN_ARG!"
+  ) else (
+    set "RUN_VALUES=!RUN_ARG!"
+  )
+  set "RUN_ARG="
+  shift
+  goto :parse_start_args
+)
 call :log_error "Unknown option: %~1"
 call :cmd_help
 exit /b 1
 
 :start_args_done
+if defined RUN_VALUES (
+  set "RUN_VALUES=!RUN_VALUES:,= !"
+  for %%T in (!RUN_VALUES!) do (
+    if /I "%%~T"=="all" (
+      rem no filter
+    ) else if /I "%%~T"=="web" (
+      set "TURBO_FILTERS=!TURBO_FILTERS! -F web"
+    ) else if /I "%%~T"=="www" (
+      set "TURBO_FILTERS=!TURBO_FILTERS! -F www"
+    ) else if /I "%%~T"=="server" (
+      set "TURBO_FILTERS=!TURBO_FILTERS! -F server"
+    ) else if /I "%%~T"=="read-receipt" (
+      set "TURBO_FILTERS=!TURBO_FILTERS! -F read-receipt"
+    ) else if /I "%%~T"=="message-search" (
+      set "TURBO_FILTERS=!TURBO_FILTERS! -F message-search"
+    ) else if /I "%%~T"=="message-indexer" (
+      set "TURBO_FILTERS=!TURBO_FILTERS! -F message-search"
+    ) else if /I "%%~T"=="notification" (
+      set "TURBO_FILTERS=!TURBO_FILTERS! -F @work-holo/notification-worker"
+    ) else (
+      call :log_error "Unknown run target '%%~T'. Allowed: all, web, www, server, read-receipt, message-search, message-indexer, notification"
+      call :log_error "See README.md for full --run target list and usage details"
+      exit /b 1
+    )
+  )
+)
+
 if "%DOCKER_ONLY%"=="true" if "%DEV_ONLY%"=="true" (
   call :log_error "Cannot use both --docker-only and --dev-only"
+  exit /b 1
+)
+
+if "%DOCKER_ONLY%"=="true" if defined TURBO_FILTERS (
+  call :log_error "--run cannot be used with --docker-only"
   exit /b 1
 )
 
@@ -956,7 +1017,11 @@ if "%DEV_ONLY%"=="true" (
 
   call :log_info "Starting dev server (with TUI)"
   pushd "%ROOT_DIR%" >nul
-  bun dev
+  if defined TURBO_FILTERS (
+    bun run dev -- !TURBO_FILTERS!
+  ) else (
+    bun dev
+  )
   set "RC=%ERRORLEVEL%"
   popd >nul
   exit /b %RC%
@@ -967,7 +1032,11 @@ call :wait_healthy || exit /b 1
 set "START_WAS_INTERRUPTED=false"
 pushd "%ROOT_DIR%" >nul
 set "TURBO_UI=0"
-bun dev
+if defined TURBO_FILTERS (
+  bun run dev -- !TURBO_FILTERS!
+) else (
+  bun dev
+)
 set "RC=%ERRORLEVEL%"
 popd >nul
 if "%RC%"=="130" set "START_WAS_INTERRUPTED=true"
@@ -1317,10 +1386,13 @@ echo     - skipping a step that later init steps still depend on will error unle
 echo     - use --list-steps to show available steps and dependencies
 echo     - prompt to start dev
 echo.
-echo   start [--docker-only] [--dev-only]
+echo   start [--docker-only] [--dev-only] [--run target1,target2]
 echo     Default: docker compose up -d, wait healthy, bun dev
 echo     --docker-only: start only docker services
 echo     --dev-only: start only dev server ^(with TUI^), auto-start services if needed
+echo     --run: run only selected targets via turbo filters
+echo            allowed: all, web, www, server, read-receipt, message-search, message-indexer, notification
+echo            example: scripts\dev.cmd start --run web,read-receipt,message-indexer
 echo     Ctrl+C prompt: Docker services will stop in 5s. Press 'n' to keep them running...
 echo.
 echo   stop-services
