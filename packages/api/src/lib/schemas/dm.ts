@@ -22,6 +22,7 @@ export const GetDmMessagesInput = z.object({
 
 export const SendDmMessageInput = z
   .object({
+    id: z.string().optional(),
     conversationId: z.cuid2(),
     content: z.string().max(10_000).optional(),
     type: z.enum(["text", "attachment", "audio"]).default("text"),

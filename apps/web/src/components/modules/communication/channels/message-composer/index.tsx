@@ -13,7 +13,7 @@ import { useTypingIndicator } from "@/hooks/communications/use-typing-indicator"
 import { useAudioRecorder } from "@/hooks/use-audio-recorder";
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { CHANNEL_MENTION, CHANNEL_MENTION_ID } from "@/lib/mentions";
-import { cn } from "@/lib/utils";
+import { cn, generateId } from "@/lib/utils";
 import {
   useChannelComposerFocus,
   useChannelReplyState,
@@ -353,6 +353,7 @@ export function MessageComposer({
         uploadPromises.length > 0 ? await Promise.all(uploadPromises) : [];
 
       const messageData = {
+        id: generateId(),
         channelId,
         content: textToSend,
         mentions:

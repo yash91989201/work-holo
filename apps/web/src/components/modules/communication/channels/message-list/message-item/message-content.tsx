@@ -34,8 +34,7 @@ export function MessageContent({
     INLINE_RENDERABLE_CONTENT_REGEX.test(trimmedContent) ||
     LINK_PREVIEW_CONTENT_REGEX.test(trimmedContent);
   const hasContent =
-    trimmedContent.length > 0 &&
-    (hasTextContent || hasInlineRenderableContent);
+    trimmedContent.length > 0 && (hasTextContent || hasInlineRenderableContent);
   const hasAttachments = message.attachments && message.attachments.length > 0;
 
   const parserOptions = {

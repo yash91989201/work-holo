@@ -5,7 +5,7 @@ import { useDmMessageMutations } from "@/hooks/communications/dm/use-dm-message-
 import { useDmTyping } from "@/hooks/communications/dm/use-dm-typing";
 import { useAudioRecorder } from "@/hooks/use-audio-recorder";
 import { useAuthedSession } from "@/hooks/use-authed-session";
-import { cn } from "@/lib/utils";
+import { cn, generateId } from "@/lib/utils";
 import {
   useDmComposerFocus,
   useDmReplyState,
@@ -233,6 +233,7 @@ export function DmMessageComposer({
         uploadPromises.length > 0 ? await Promise.all(uploadPromises) : [];
 
       const messageData = {
+        id: generateId(),
         conversationId,
         content: textToSend,
         parentMessageId,
