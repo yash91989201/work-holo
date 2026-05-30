@@ -20,6 +20,10 @@ const pageData: WebPageProps = {
       label: "Book Your Consultation",
       href: "/contact-us",
     },
+    image: {
+      src: "/assets/back-office-processing-01.webp",
+      alt: "Back office processing operations",
+    },
     terminalCommand: "npm run start",
     terminalMessage: "Improve your ROI",
   },

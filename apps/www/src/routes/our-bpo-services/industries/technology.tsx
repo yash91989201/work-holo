@@ -16,10 +16,14 @@ const pageData: WebPageProps = {
     headlineLine1: "Confie BPO Has A Range of Technological Call Center",
     headlineAccent: "Solutions for You",
     description:
-      "If you really want to close the gap between your innovation and consumer understanding, Confie BPO is the bridge you’ve been looking for.",
+      "If you really want to close the gap between your innovation and consumer understanding, Confie BPO is the bridge you've been looking for.",
     primaryCta: {
       label: "Book Your Consultation",
       href: "/contact-us",
+    },
+    image: {
+      src: "/assets/technology-01.webp",
+      alt: "Technology industry support",
     },
     terminalCommand: "npm run start",
     terminalMessage: "Improve your ROI",
@@ -65,7 +69,7 @@ const pageData: WebPageProps = {
   },
   workflow: {
     subtitle: "Communication",
-    title: "Speaks the Customers’ Language",
+    title: "Speaks the Customers' Language",
     features: [
       {
         icon: "globe",
@@ -161,9 +165,9 @@ const pageData: WebPageProps = {
   },
   imageSections: [
     {
-      title: "No More “Crunch” with Confie BPO",
+      title: 'No More "Crunch" with Confie BPO',
       description:
-        "One thing every tech industry has in common is “crunch.” Unfortunately, sustained crunch always takes its toll on employees, sinking morale and increasing turnover.",
+        'One thing every tech industry has in common is "crunch." Unfortunately, sustained crunch always takes its toll on employees, sinking morale and increasing turnover.',
       bullets: [
         {
           label: "Employee Morale",
@@ -176,7 +180,7 @@ const pageData: WebPageProps = {
         },
       ],
       closingText:
-        "With Confie BPO services, crunch can finally be a thing of the past. We provide assistance during busy periods so your workers don’t feel the strain.",
+        "With Confie BPO services, crunch can finally be a thing of the past. We provide assistance during busy periods so your workers don't feel the strain.",
       imageSrc: "/assets/technology-02.jpg",
       imageAlt: "Agents working with headsets",
       imagePosition: "right",
@@ -184,7 +188,7 @@ const pageData: WebPageProps = {
     {
       title: "Fellow Technological Experts",
       description:
-        "When your business is on the cutting-edge, it can be hard to find anyone who can keep up. At Confie BPO, we take pride in our ability to “speak the language.”",
+        'When your business is on the cutting-edge, it can be hard to find anyone who can keep up. At Confie BPO, we take pride in our ability to "speak the language."',
       bullets: [
         {
           label: "Business Side",

@@ -17,7 +17,7 @@ import {
 } from "@work-holo/ui/components/accordion";
 import { cn } from "@work-holo/ui/lib/utils";
 import { motion, useScroll, useTransform } from "motion/react";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import type { ProjectPageData } from "./project-data";
 import { getProjectNavigationList } from "./project-data";
 import { ProjectGalleryImage } from "./project-image";
@@ -27,7 +27,6 @@ interface ProjectDetailPageProps {
 }
 
 const EASE = [0.16, 1, 0.3, 1] as const;
-const EASE_SPRING = { type: "spring", stiffness: 80, damping: 20 };
 
 /* ─── Reusable atoms ─────────────────────────────────────── */
 
@@ -70,7 +69,6 @@ function HeroSection({ data }: { data: ProjectPageData }) {
     target: ref,
     offset: ["start start", "end start"],
   });
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "28%"]);
   const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 0.6], [1, 0.96]);
 
@@ -79,6 +77,26 @@ function HeroSection({ data }: { data: ProjectPageData }) {
       className="relative flex min-h-svh flex-col justify-center overflow-hidden"
       ref={ref}
     >
+      {/* Hero Background Image */}
+      {data.heroImage && (
+        <motion.div
+          className="absolute inset-0 z-0"
+          initial={{ opacity: 0, scale: 1.1 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.5, ease: EASE }}
+        >
+          <img
+            alt={data.title}
+            className="h-full w-full object-cover"
+            src={data.heroImage}
+          />
+          {/* Dark overlay for text readability */}
+          <div className="absolute inset-0 bg-background/80" />
+          {/* Brand gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/60 to-background" />
+        </motion.div>
+      )}
+
       {/* Atmospheric background */}
       <GradientOrb className="-top-40 -left-40 size-150" />
       <GradientOrb
@@ -88,7 +106,7 @@ function HeroSection({ data }: { data: ProjectPageData }) {
 
       {/* Noise overlay */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.018]"
+        className="pointer-events-none absolute inset-0 z-10 opacity-[0.018]"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
           backgroundRepeat: "repeat",
@@ -98,7 +116,7 @@ function HeroSection({ data }: { data: ProjectPageData }) {
 
       {/* Subtle grid */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.025]"
+        className="pointer-events-none absolute inset-0 z-10 opacity-[0.025]"
         style={{
           backgroundImage:
             "linear-gradient(to right, currentColor 1px, transparent 1px), linear-gradient(to bottom, currentColor 1px, transparent 1px)",
@@ -109,7 +127,7 @@ function HeroSection({ data }: { data: ProjectPageData }) {
       {/* Content — zero bottom padding so hero ends flush */}
       <motion.div
         className={cn(
-          "relative",
+          "relative z-20",
           data.heroPaddingY || "pt-0 pb-0 sm:-mt-30 sm:pb-0 lg:pt-0 lg:pb-0"
         )}
         style={{ opacity, scale }}
@@ -662,8 +680,6 @@ function TimelineSection({ data }: { data: ProjectPageData }) {
 /* ─── FAQ ─────────────────────────────────────────────────── */
 
 function FAQSection({ data }: { data: ProjectPageData }) {
-  const [openFAQ, setOpenFAQ] = useState<string[]>(["item-0"]);
-
   return (
     <section className="relative border-border/8 border-t py-12 sm:py-16 lg:py-20">
       <div className="absolute inset-0 bg-linear-to-b from-transparent via-card/30 to-transparent" />
@@ -686,7 +702,7 @@ function FAQSection({ data }: { data: ProjectPageData }) {
           </h2>
         </motion.div>
 
-        <Accordion onValueChange={setOpenFAQ} type="multiple" value={openFAQ}>
+        <Accordion className="space-y-4 rounded-none border-0 bg-transparent">
           {data.faqs.map((faq, index) => (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -696,16 +712,14 @@ function FAQSection({ data }: { data: ProjectPageData }) {
               whileInView={{ opacity: 1, y: 0 }}
             >
               <AccordionItem
-                className="border-border/10 border-b last:border-0"
+                className="overflow-hidden rounded-[1.5rem] border border-white/10 not-last:border-b-0 bg-white/5 backdrop-blur-xl transition-colors duration-300 hover:border-primary/30 data-[state=open]:border-primary/40"
                 value={`item-${index}`}
               >
-                <AccordionTrigger className="py-5 pr-4 text-left font-heading font-semibold text-foreground text-sm hover:text-primary hover:no-underline sm:text-[0.9375rem]">
-                  <span className="pr-6">{faq.question}</span>
+                <AccordionTrigger className="group px-8 py-7 text-left font-bold font-display text-lg hover:no-underline">
+                  <span className="pr-4">{faq.question}</span>
                 </AccordionTrigger>
-                <AccordionContent className="pb-6">
-                  <p className="text-foreground/50 text-sm leading-[1.9]">
-                    {faq.answer}
-                  </p>
+                <AccordionContent className="px-8 pb-7 text-sm text-zinc-300 leading-relaxed">
+                  {faq.answer}
                 </AccordionContent>
               </AccordionItem>
             </motion.div>

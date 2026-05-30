@@ -21,6 +21,10 @@ const pageData: WebPageProps = {
       label: "Book Your Consultation",
       href: "/contact-us",
     },
+    image: {
+      src: "/assets/real-estate-01.jpg",
+      alt: "Real estate industry support",
+    },
     terminalCommand: "npm run start",
     terminalMessage: "Talk to Our Experts",
   },

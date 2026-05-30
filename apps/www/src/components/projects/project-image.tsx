@@ -119,12 +119,14 @@ export function ProjectGalleryImage({
     );
   }
 
+  const imageSrc = src || `/images/projects/${title.toLowerCase().replace(/\s+/g, "-")}-${index + 1}.jpg`;
+
   return (
     <img
       alt={`${title} gallery ${index + 1}`}
       className={`h-full w-full object-cover ${className}`}
       onError={() => setImageError(true)}
-      src={`/images/projects/${title.toLowerCase().replace(/\s+/g, "-")}-${index + 1}.jpg`}
+      src={imageSrc}
     />
   );
 }

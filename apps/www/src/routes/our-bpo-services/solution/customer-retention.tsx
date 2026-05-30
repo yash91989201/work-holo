@@ -20,6 +20,10 @@ const pageData: WebPageProps = {
       label: "Book Your Consultation",
       href: "/contact-us",
     },
+    image: {
+      src: "/assets/customer-retention.webp",
+      alt: "Customer retention strategies",
+    },
     terminalCommand: "npm run start",
     terminalMessage: "Quality BPO Services",
   },

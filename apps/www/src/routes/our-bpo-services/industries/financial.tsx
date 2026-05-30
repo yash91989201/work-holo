@@ -17,6 +17,10 @@ const pageData: WebPageProps = {
       label: "Book Your Consultation",
       href: "/contact-us",
     },
+    image: {
+      src: "/assets/financial-services-01.jpg",
+      alt: "Financial services team",
+    },
     terminalCommand: "npm run start",
     terminalMessage: "Improve your ROI",
   },

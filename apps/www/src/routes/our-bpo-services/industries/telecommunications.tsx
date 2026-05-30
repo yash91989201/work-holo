@@ -20,6 +20,10 @@ const pageData: WebPageProps = {
       label: "Book Your Consultation",
       href: "/contact-us",
     },
+    image: {
+      src: "/assets/telecommunication-01.webp",
+      alt: "Telecommunications industry support",
+    },
     terminalCommand: "npm run start-bpo",
     terminalMessage: "Telecommunications systems active.",
   },

@@ -20,6 +20,10 @@ const pageData: WebPageProps = {
       label: "Book Your Consultation",
       href: "/contact-us",
     },
+    image: {
+      src: "/assets/customer-service.webp",
+      alt: "Customer service agent helping clients",
+    },
     terminalCommand: "npm start",
     terminalMessage:
       "Largest personal lines agency in the U.S. handling millions of calls across industries.",

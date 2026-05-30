@@ -28,6 +28,10 @@ const hero: HeroProps = {
     label: "Book Your Consultation",
     href: "/contact-us",
   },
+  image: {
+    src: "/assets/logistics-and-supply-chain-01.jpg",
+    alt: "Logistics and supply chain support",
+  },
   terminalCommand: "npm run logistics",
   terminalMessage: "Optimizing Supply Chain...",
 };

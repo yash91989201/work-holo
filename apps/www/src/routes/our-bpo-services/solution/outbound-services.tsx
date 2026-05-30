@@ -21,6 +21,10 @@ const pageData: WebPageProps = {
       label: "Book your Consultation",
       href: "/contact-us",
     },
+    image: {
+      src: "/assets/outbound-services-02.jpg",
+      alt: "Outbound services call center",
+    },
     terminalCommand: "npm run ROI --optimize",
     terminalMessage: "Connecting with global customers...",
   },

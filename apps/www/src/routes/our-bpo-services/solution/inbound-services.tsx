@@ -20,6 +20,10 @@ const pageData: WebPageProps = {
       label: "Book Your Consultaion",
       href: "/contact-us",
     },
+    image: {
+      src: "/assets/inbound-services-01.jpg",
+      alt: "Inbound services support team",
+    },
     terminalCommand: "npm run start",
     terminalMessage: "1,500+ bilingual employees ready",
   },
