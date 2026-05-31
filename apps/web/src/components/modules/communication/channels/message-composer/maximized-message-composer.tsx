@@ -12,7 +12,7 @@ import { useTypingIndicator } from "@/hooks/communications/use-typing-indicator"
 import { useAuthedSession } from "@/hooks/use-authed-session";
 import { useResponsive } from "@/hooks/use-responsive";
 import { CHANNEL_MENTION_ID } from "@/lib/mentions";
-import { cn } from "@/lib/utils";
+import { cn, generateId } from "@/lib/utils";
 import { useMaximizedMessageComposer } from "@/stores/channel-store";
 import { orpcClient } from "@/utils/orpc";
 import { MessageEditor } from "./message-editor";
@@ -209,6 +209,7 @@ export function MaximizedMessageComposer() {
       } else {
         createMessage({
           message: {
+            id: generateId(),
             channelId,
             content: text.trim(),
             mentions: finalMentionUserIds.length

@@ -25,6 +25,10 @@ const hero: HeroProps = {
     label: "Book Your Consultation",
     href: "/contact-us",
   },
+  image: {
+    src: "/assets/insurance.jpg",
+    alt: "Insurance industry specialists",
+  },
   terminalCommand: "$ nexus deploy --region insurance-bpo",
   terminalMessage: "Active nodes",
 };

@@ -19,6 +19,10 @@ const pageData: WebPageProps = {
       label: "Book Your Consultation",
       href: "/contact-us",
     },
+    image: {
+      src: "/assets/direct-response-marketing-01.webp",
+      alt: "Direct response marketing team",
+    },
     terminalCommand: "npm run start",
     terminalMessage: "Improve your ROI",
   },

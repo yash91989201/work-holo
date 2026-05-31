@@ -20,6 +20,10 @@ const pageData: WebPageProps = {
       label: "Book Your Consultation",
       href: "/contact-us",
     },
+    image: {
+      src: "/assets/lead-generation-01.jpg",
+      alt: "Lead generation specialists",
+    },
     terminalCommand: "npm run start",
     terminalMessage: "Talk to Our Experts",
   },

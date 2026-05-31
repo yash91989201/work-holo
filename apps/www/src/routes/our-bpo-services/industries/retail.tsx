@@ -13,10 +13,14 @@ const pageData: WebPageProps = {
     headlineLine1: "Call Center for",
     headlineAccent: "Retail Services",
     description:
-      "In today’s e-commerce and digital world, you cannot afford to fall behind your competition. Your customers want to feel connected and like they matter.",
+      "In today's e-commerce and digital world, you cannot afford to fall behind your competition. Your customers want to feel connected and like they matter.",
     primaryCta: {
       label: "Book Your Consultation",
       href: "/contact-us",
+    },
+    image: {
+      src: "/assets/retail.webp",
+      alt: "Retail industry support",
     },
     terminalCommand: "npm run start",
     terminalMessage: "Talk to Our Experts",
@@ -137,7 +141,7 @@ const pageData: WebPageProps = {
     primaryLabel: "Calculate your Cost",
     secondaryLabel: "Improve your ROI",
     footnote:
-      "Retail call center services can boost your company’s inbound sales and more.",
+      "Retail call center services can boost your company's inbound sales and more.",
   },
   imageSections: [
     {

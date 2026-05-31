@@ -17,11 +17,11 @@ import { env } from "@work-holo/env/web";
 import { Toaster } from "@work-holo/ui/components/sonner";
 import { TooltipProvider } from "@work-holo/ui/components/tooltip";
 import { useEffect, useState } from "react";
+import { registerServiceWorker } from "@/lib/service-worker";
 import { ThemeProvider } from "@/providers/theme-provider";
 import appCss from "@/styles/index.css?url";
 import type { orpcClient, queryUtils } from "@/utils/orpc";
 import { link } from "@/utils/orpc";
-import { registerServiceWorker } from "@/lib/service-worker";
 
 export interface RouterAppContext {
   orpcClient: typeof orpcClient;

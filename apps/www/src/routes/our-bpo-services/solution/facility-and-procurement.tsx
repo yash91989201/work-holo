@@ -15,10 +15,14 @@ const pageData: WebPageProps = {
     headlineLine1: "Facility and Procurement",
     headlineAccent: "Call Center Solutions",
     description:
-      "Unlock your company’s full potential with an expert team focused on facility and procurement management.",
+      "Unlock your company's full potential with an expert team focused on facility and procurement management.",
     primaryCta: {
       label: "Book Your Consultation",
       href: "/contact-us",
+    },
+    image: {
+      src: "/assets/facility-and-procurement-01.jpg",
+      alt: "Facility and procurement services",
     },
     terminalCommand: "Talk to Our Experts",
     terminalMessage: "Improve your ROI",
@@ -132,7 +136,7 @@ const pageData: WebPageProps = {
         id: 3,
         question: "Can services scale with my business?",
         answer:
-          "Yes, BPO solutions are highly scalable and adjust based on your company’s growth and demand.",
+          "Yes, BPO solutions are highly scalable and adjust based on your company's growth and demand.",
       },
       {
         id: 4,
@@ -162,9 +166,9 @@ const pageData: WebPageProps = {
       imagePosition: "left",
     },
     {
-      title: "Unlock Your Company’s Full Potential",
+      title: "Unlock Your Company's Full Potential",
       description:
-        "When you hire Confie BPO services, you get an expert team to help take care of your different facility and procurement management needs. On top of that, you get an opportunity to unlock your company’s full potential.",
+        "When you hire Confie BPO services, you get an expert team to help take care of your different facility and procurement management needs. On top of that, you get an opportunity to unlock your company's full potential.",
       bullets: [],
       closingText:
         "With our BPO, you get additional human resources. We provide the tools and the talent, and we can take care of every aspect of facility and procurement management.",
@@ -178,7 +182,7 @@ const pageData: WebPageProps = {
         "The pulse of your company is facility and procurement management. When employees arrive at work, they are confident that their buildings will be in good condition and that they will have all of the supplies they need.",
       bullets: [],
       closingText:
-        "That’s why you need Confie BPO. With our BPO, you can have qualified experts take care of all your facility and procurement needs, freeing up your time for more important things.",
+        "That's why you need Confie BPO. With our BPO, you can have qualified experts take care of all your facility and procurement needs, freeing up your time for more important things.",
       imageSrc: "/assets/facility-and-procurement-03.png",
       imageAlt: "Modern office and building management environment",
       imagePosition: "left",
@@ -186,7 +190,7 @@ const pageData: WebPageProps = {
     {
       title: "What You Need, When You Need It",
       description:
-        "Unfortunately, taking care of all facility management and procurement needs eats into your time. If you’re not careful, you’ll spend all of your time and energy just keeping things going instead of finding ways to grow.",
+        "Unfortunately, taking care of all facility management and procurement needs eats into your time. If you're not careful, you'll spend all of your time and energy just keeping things going instead of finding ways to grow.",
       bullets: [],
       closingText:
         "We understand how to take care of all your facility and procurement needs effectively and efficiently. By saving your company both time and money, our BPO can help your business grow.",

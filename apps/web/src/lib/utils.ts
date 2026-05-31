@@ -1,4 +1,12 @@
 import { type ClassValue, clsx } from "clsx";
+
+const CUID2_CHARS = "abcdefghijklmnopqrstuvwxyz0123456789";
+export function generateId(): string {
+  const arr = new Uint8Array(24);
+  crypto.getRandomValues(arr);
+  return Array.from(arr, (b) => CUID2_CHARS[b % 36]).join("");
+}
+
 import { format, formatDistanceToNow } from "date-fns";
 import { twMerge } from "tailwind-merge";
 

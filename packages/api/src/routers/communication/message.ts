@@ -159,6 +159,7 @@ export const messageRouter = {
         const [newMessage] = await tx
           .insert(messageTable)
           .values({
+            ...(input.id ? { id: input.id } : {}),
             channelId: input.channelId,
             receiverId: input.receiverId,
             content: input.content,

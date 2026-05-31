@@ -25,7 +25,7 @@ import {
   useTransform,
 } from "motion/react";
 import type React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 
 // --- Constants & Types ---
 
@@ -75,6 +75,11 @@ export interface HeroProps {
   headlineAccent: string;
   headlineLine1: string;
   primaryCta: { label: string; href: string };
+  /** Hero background image displayed behind the headline */
+  image?: {
+    src: string;
+    alt: string;
+  };
   terminalCommand: string;
   terminalMessage: string;
 }
@@ -113,6 +118,7 @@ export interface ServicesProps {
   items: Service[];
   subtitle: string;
   title: string;
+  viewAllLabel?: string;
 }
 
 export interface FAQProps {
@@ -462,18 +468,10 @@ export default function BPOPage(props: WebPageProps) {
     services,
     workflow,
     faq,
-    cta,
     imageSections = [],
   } = props;
 
-  const [scrolled, setScrolled] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   const midpoint = Math.ceil(imageSections.length / 2);
   const earlyImageSections = imageSections.slice(0, midpoint);
@@ -492,7 +490,27 @@ export default function BPOPage(props: WebPageProps) {
       <main className="relative z-10">
         {/* Hero */}
         <section className="relative flex min-h-screen flex-col justify-center overflow-hidden px-6 pt-40 pb-32">
-          <div className="mx-auto w-full max-w-7xl text-center">
+          {/* Hero Background Image */}
+          {hero.image && (
+            <motion.div
+              className="absolute inset-0 z-0"
+              initial={{ opacity: 0, scale: 1.1 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.5, ease: EASE }}
+            >
+              <img
+                alt={hero.image.alt}
+                className="h-full w-full object-cover"
+                src={hero.image.src}
+              />
+              {/* Dark overlay for text readability */}
+              <div className="absolute inset-0 bg-[#0a0a0f]/80" />
+              {/* Brand gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0f]/40 via-[#0a0a0f]/60 to-[#0a0a0f]" />
+            </motion.div>
+          )}
+
+          <div className="relative z-10 mx-auto w-full max-w-7xl text-center">
             <motion.div
               animate={{ opacity: 1, y: 0 }}
               className="glass mb-10 inline-flex items-center gap-2 rounded-full border-brand/20 px-4 py-2"

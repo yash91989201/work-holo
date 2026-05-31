@@ -15,10 +15,14 @@ const pagedata: WebPageProps = {
     headlineLine1: "Accounting and Collections",
     headlineAccent: "BPO Services",
     description:
-      "An accounting and collections call center is a third-party business that provides financial services to help you manage your company’s money effectively, maintain consistent cash flow, and streamline your company’s finances.",
+      "An accounting and collections call center is a third-party business that provides financial services to help you manage your company's money effectively, maintain consistent cash flow, and streamline your company's finances.",
     primaryCta: {
       label: "Book Your Consultation",
       href: "/contact-us",
+    },
+    image: {
+      src: "/assets/account-and-collections-01.jpg",
+      alt: "Accounting and collections team",
     },
     terminalCommand: "Talk to Our Experts",
     terminalMessage: "Improve your ROI",
@@ -184,7 +188,7 @@ const pagedata: WebPageProps = {
         {
           label: "Increasing cash flow",
           detail:
-            "Your BPO vendor can maximize your business’s cash flow by streamlining your accounting systems.",
+            "Your BPO vendor can maximize your business's cash flow by streamlining your accounting systems.",
         },
         {
           label: "Maximizing growth potential",

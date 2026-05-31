@@ -21,6 +21,10 @@ const pageData: WebPageProps = {
       label: "Book Your Consultation",
       href: "/contact-us",
     },
+    image: {
+      src: "/assets/entertainment.webp",
+      alt: "Entertainment industry support",
+    },
     terminalCommand: "Improve your ROI",
     terminalMessage: "One Simple Click",
   },

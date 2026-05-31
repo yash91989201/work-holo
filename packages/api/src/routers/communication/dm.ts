@@ -387,6 +387,7 @@ export const dmRouter = {
         const [message] = await tx
           .insert(dmMessageTable)
           .values({
+            ...(input.id ? { id: input.id } : {}),
             conversationId: input.conversationId,
             senderId: userId,
             content: normalizedContent,

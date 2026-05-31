@@ -21,6 +21,7 @@ interface SendDmMessageInput {
   }>;
   content?: string;
   conversationId: string;
+  id?: string;
   parentMessageId?: string;
   replyToMessageId?: string;
   type?: "text" | "attachment" | "audio";
@@ -36,7 +37,7 @@ export function useDmMessageMutations() {
 
   const createMessage = createOptimisticAction({
     onMutate: ({ message }: { message: SendDmMessageInput }) => {
-      const messageId = crypto.randomUUID().toString();
+      const messageId = message.id ?? crypto.randomUUID().toString();
       const now = new Date();
 
       dmMessagesCollection.insert({

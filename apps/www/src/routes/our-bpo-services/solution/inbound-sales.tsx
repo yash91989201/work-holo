@@ -19,6 +19,10 @@ const pageData: WebPageProps = {
       label: "Book Your Consultation",
       href: "/contact-us",
     },
+    image: {
+      src: "/assets/inbound-sales-01.jpeg",
+      alt: "Inbound sales team collaborating",
+    },
     terminalCommand: "npm run start",
     terminalMessage: "Improve your ROI",
   },

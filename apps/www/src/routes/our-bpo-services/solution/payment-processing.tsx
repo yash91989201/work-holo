@@ -20,6 +20,10 @@ const pageData: WebPageProps = {
       label: "Book Your Consultation",
       href: "/contact-us",
     },
+    image: {
+      src: "/assets/financial-services-01.jpg",
+      alt: "Payment processing operations",
+    },
     terminalCommand: "npm run start",
     terminalMessage: "Talk to Our Experts",
   },

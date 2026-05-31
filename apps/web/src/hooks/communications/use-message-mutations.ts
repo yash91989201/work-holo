@@ -22,7 +22,7 @@ export function useMessageMutations() {
 
   const createMessage = createOptimisticAction({
     onMutate: ({ message }: { message: CreateMessageInputType }) => {
-      const messageId = crypto.randomUUID().toString();
+      const messageId = message.id ?? crypto.randomUUID().toString();
       const now = new Date();
 
       messagesCollection.insert({

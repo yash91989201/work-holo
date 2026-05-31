@@ -20,6 +20,10 @@ const pageData: WebPageProps = {
       label: "Book Your Consultation",
       href: "/contact-us",
     },
+    image: {
+      src: "/assets/healthcare-02.jpg",
+      alt: "Healthcare industry support",
+    },
     terminalCommand: "Talk to Our Experts",
     terminalMessage: "Improve your ROI",
   },

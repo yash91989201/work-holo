@@ -21,6 +21,7 @@ export const AttachmentInput = z.object({
 // Create message input
 export const CreateMessageInput = z
   .object({
+    id: z.string().optional(),
     channelId: z.string(),
     receiverId: z.string().optional(),
     content: z.string().max(10_000).optional(),

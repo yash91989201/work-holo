@@ -20,6 +20,10 @@ const pageData: WebPageProps = {
       label: "Book Your Consultation",
       href: "/contact-us",
     },
+    image: {
+      src: "/assets/technology-01.webp",
+      alt: "Technical support team",
+    },
     terminalCommand: "npm run start",
     terminalMessage: "Talk to Our Experts",
   },

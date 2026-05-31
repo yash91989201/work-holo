@@ -20,6 +20,10 @@ const pageData: WebPageProps = {
       label: "Book Your Consultation",
       href: "/contact-us",
     },
+    image: {
+      src: "/assets/claim-processing-01.webp",
+      alt: "Claims processing specialists",
+    },
     terminalCommand: "npm run start",
     terminalMessage: "Talk to Our Experts",
   },
