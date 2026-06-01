@@ -3,7 +3,6 @@ import { useNotificationSound } from "@/hooks/communications/use-notification-so
 import { authClient } from "@/lib/auth-client";
 
 export const Route = createFileRoute("/(authenticated)")({
-  ssr: false,
   beforeLoad: async () => {
     const { data: session } = await authClient.getSession();
 
