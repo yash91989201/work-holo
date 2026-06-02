@@ -1,3 +1,4 @@
+import { useRouter } from "@tanstack/react-router";
 import Lenis from "lenis";
 import { useEffect, useRef } from "react";
 
@@ -7,6 +8,7 @@ export function SmoothScrollProvider({
   children: React.ReactNode;
 }) {
   const lenisRef = useRef<Lenis | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const lenis = new Lenis({
@@ -29,6 +31,20 @@ export function SmoothScrollProvider({
       lenisRef.current = null;
     };
   }, []);
+
+  // Scroll to top on navigation
+  useEffect(() => {
+    const unsubscribe = router.subscribe("onBeforeLoad", () => {
+      // Scroll to top when navigating to a new page
+      if (lenisRef.current) {
+        lenisRef.current.scrollTo(0, { immediate: true });
+      } else {
+        window.scrollTo(0, 0);
+      }
+    });
+
+    return unsubscribe;
+  }, [router]);
 
   return <>{children}</>;
 }

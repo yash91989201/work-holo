@@ -8,7 +8,7 @@ import { routeTree } from "./routeTree.gen";
 export const getRouter = () => {
   const router = createTanStackRouter({
     routeTree,
-    scrollRestoration: true,
+    scrollRestoration: false,
     defaultPreloadStaleTime: 0,
     defaultPendingComponent: () => <FullScreenLoader />,
     defaultNotFoundComponent: () => <div>Not Found</div>,
