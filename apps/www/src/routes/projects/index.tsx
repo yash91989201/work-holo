@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { ProjectGrid } from "@/components/projects/project-grid";
-import { ProjectImage } from "@/components/projects/project-image";
 
 export const Route = createFileRoute("/projects/")({
   component: RouteComponent,
@@ -83,10 +82,10 @@ function RouteComponent() {
             >
               <div className="relative w-full overflow-hidden rounded-2xl border border-border/50 bg-muted/20 shadow-2xl shadow-black/10">
                 <div className="absolute inset-0 z-10 bg-gradient-to-tr from-background/80 via-transparent to-transparent mix-blend-overlay" />
-                <ProjectImage
-                  aspectRatio="16/10"
-                  className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
-                  title="Hero Project Showcase"
+                <img
+                  alt="Workholo digital projects showcase"
+                  className="aspect-[16/10] w-full object-cover transition-transform duration-700 hover:scale-105"
+                  src="/assets/digital-transformation-solutions.webp"
                 />
 
                 {/* Decorative Elements */}

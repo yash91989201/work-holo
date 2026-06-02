@@ -68,76 +68,118 @@ export interface ProjectListItem {
 }
 
 const projectList = [
-  {
-    slug: "health-track-pro",
-    title: "HealthTrack Pro",
-    icon: <IconDeviceMobile className="size-6" />,
-  },
-  {
-    slug: "finflow-dashboard",
-    title: "FinFlow Dashboard",
-    icon: <IconBuildingBank className="size-6" />,
-  },
-  {
-    slug: "ai-support-bot",
-    title: "AI Support Bot",
-    icon: <IconRobot className="size-6" />,
-  },
-  {
-    slug: "cloud-sync-platform",
-    title: "CloudSync Platform",
-    icon: <IconCloud className="size-6" />,
-  },
-  {
-    slug: "ecommerce-replatform",
-    title: "E-Commerce Replatform",
-    icon: <IconCode className="size-6" />,
-  },
-  {
-    slug: "ml-prediction-engine",
-    title: "ML Prediction Engine",
-    icon: <IconBrain className="size-6" />,
-  },
-  {
-    slug: "real-time-collaboration",
-    title: "Real-Time Collaboration",
-    icon: <IconBrandReact className="size-6" />,
-  },
-  {
-    slug: "datapulse-saas",
-    title: "DataPulse SaaS",
-    icon: <IconCode className="size-6" />,
-  },
-  {
-    slug: "healthconnect-enterprise-portal",
-    title: "HealthConnect Portal",
-    icon: <IconCloudComputing className="size-6" />,
-  },
-  {
-    slug: "fooddash-flutter",
-    title: "FoodDash",
-    icon: <IconBrandFlutter className="size-6" />,
-  },
-  {
-    slug: "paymate-react-native",
-    title: "PayMate",
-    icon: <IconBuildingBank className="size-6" />,
-  },
-  {
-    slug: "fitforce-android",
-    title: "FitForce",
-    icon: <IconBrandAndroid className="size-6" />,
-  },
-  {
-    slug: "devops-pipeline-pro",
-    title: "DevOps Pipeline Pro",
-    icon: <IconCloud className="size-6" />,
-  },
-  {
-    slug: "cloudwatch-pro",
-    title: "CloudWatch Pro",
-    icon: <IconCloudComputing className="size-6" />,
-  },
+  // Cloud & DevOps
+  { slug: "cloudwatch-pro", title: "CloudWatch Pro", icon: <IconCloud className="size-6" /> },
+  { slug: "vueling-serverless-transformation", title: "Vueling", icon: <IconCloud className="size-6" /> },
+  { slug: "moj-claims-digitisation", title: "Ministry of Justice", icon: <IconCloud className="size-6" /> },
+  { slug: "nhs-professionals", title: "NHS Professionals", icon: <IconCloud className="size-6" /> },
+  { slug: "adobe-creative-cloud-innovation", title: "Adobe", icon: <IconCloud className="size-6" /> },
+  { slug: "zego-resident-experience", title: "Zego", icon: <IconCloud className="size-6" /> },
+  { slug: "xerox-enterprise-document-cloud", title: "Xerox", icon: <IconCloud className="size-6" /> },
+  { slug: "decisiv-srm-platform", title: "Decisiv", icon: <IconCloud className="size-6" /> },
+  { slug: "enterprise-logistics-modernization", title: "Enterprise Logistics", icon: <IconCloud className="size-6" /> },
+  { slug: "enterprise-cloud-transformation", title: "Cloud Modernization", icon: <IconCloud className="size-6" /> },
+  { slug: "tax-automation-system", title: "Tax Automation", icon: <IconCloud className="size-6" /> },
+  { slug: "energo-iot", title: "Energo", icon: <IconCloud className="size-6" /> },
+  { slug: "sudan-civil-registry-digitization", title: "Sudan Civil Registry", icon: <IconCloud className="size-6" /> },
+  { slug: "github-scaling-engineering-acceleration", title: "GitHub Scale-Up", icon: <IconCloud className="size-6" /> },
+  { slug: "lockheed-martin-mission-control", title: "Lockheed Martin", icon: <IconCloud className="size-6" /> },
+  { slug: "fintech-cloud-migration", title: "FinTech Cloud", icon: <IconCloud className="size-6" /> },
+  { slug: "africa-prudential", title: "Africa Prudential", icon: <IconCloud className="size-6" /> },
+
+  // Web Development
+  { slug: "healthhero-scaling-telehealth", title: "HealthHero", icon: <IconCode className="size-6" /> },
+  { slug: "apotka-pharmacy", title: "Apotka", icon: <IconCode className="size-6" /> },
+  { slug: "infinitas-learning", title: "Infinitas Learning", icon: <IconCode className="size-6" /> },
+  { slug: "fine-rare", title: "Fine+Rare", icon: <IconCode className="size-6" /> },
+  { slug: "rspb-digital-transformation", title: "RSPB", icon: <IconCode className="size-6" /> },
+  { slug: "bbc-academy-platform", title: "BBC Academy", icon: <IconCode className="size-6" /> },
+  { slug: "winchester-college", title: "Winchester College", icon: <IconCode className="size-6" /> },
+  { slug: "printing-com", title: "Printing.com", icon: <IconCode className="size-6" /> },
+  { slug: "first-choice-group", title: "First Choice Group", icon: <IconCode className="size-6" /> },
+  { slug: "hillingdon-council", title: "Hillingdon Council", icon: <IconCode className="size-6" /> },
+  { slug: "ebay-marketplace-optimization", title: "eBay", icon: <IconCode className="size-6" /> },
+  { slug: "fih-international-hockey", title: "FIH Hockey", icon: <IconCode className="size-6" /> },
+  { slug: "bca-intelligent-auction-platform", title: "BCA Auctions", icon: <IconCode className="size-6" /> },
+  { slug: "expedia-global-inventory-sync", title: "Expedia", icon: <IconCode className="size-6" /> },
+  { slug: "hughesnet-digital-evolution", title: "HughesNet", icon: <IconCode className="size-6" /> },
+  { slug: "pawn-management-modernization", title: "Pawn Management", icon: <IconCode className="size-6" /> },
+  { slug: "millercoors-b2b-portal", title: "MillerCoors", icon: <IconCode className="size-6" /> },
+  { slug: "steelcase-b2b-portal", title: "Steelcase", icon: <IconCode className="size-6" /> },
+  { slug: "retail-personalization-engine", title: "Beauty Retail", icon: <IconCode className="size-6" /> },
+  { slug: "baza-real-estate", title: "Baza", icon: <IconCode className="size-6" /> },
+  { slug: "verified-kyc-verification", title: "Verified.ng", icon: <IconCode className="size-6" /> },
+  { slug: "module-academy", title: "Module Academy", icon: <IconCode className="size-6" /> },
+  { slug: "altmall-ecommerce", title: "AltMall", icon: <IconCode className="size-6" /> },
+  { slug: "viacomcbs-paramount-plus-transformation", title: "Paramount+", icon: <IconCode className="size-6" /> },
+  { slug: "dish-network-dish-anywhere", title: "DISH Anywhere", icon: <IconCode className="size-6" /> },
+  { slug: "transportation-legacy-modernization", title: "Transportation Modernization", icon: <IconCode className="size-6" /> },
+
+  // Mobile Development
+  { slug: "colas-logistics-optimisation", title: "Colas", icon: <IconDeviceMobile className="size-6" /> },
+  { slug: "david-lloyd-leisure", title: "David Lloyd Leisure", icon: <IconDeviceMobile className="size-6" /> },
+  { slug: "virgin-money-pulse", title: "Virgin Money", icon: <IconDeviceMobile className="size-6" /> },
+  { slug: "royal-london-pensions", title: "Royal London", icon: <IconDeviceMobile className="size-6" /> },
+  { slug: "scottishpower-yourenergy", title: "ScottishPower", icon: <IconDeviceMobile className="size-6" /> },
+  { slug: "the-gym-group", title: "The Gym Group", icon: <IconDeviceMobile className="size-6" /> },
+  { slug: "pinterest-mobile-engineering", title: "Pinterest", icon: <IconDeviceMobile className="size-6" /> },
+  { slug: "aarp-rewards-gamification", title: "AARP", icon: <IconDeviceMobile className="size-6" /> },
+  { slug: "tomtom-digital-cockpit", title: "TomTom Cockpit", icon: <IconDeviceMobile className="size-6" /> },
+  { slug: "i-invest", title: "i-invest", icon: <IconDeviceMobile className="size-6" /> },
+  { slug: "skyline-hms", title: "Skyline HMS", icon: <IconDeviceMobile className="size-6" /> },
+  { slug: "microfinance-field-digitization", title: "Kashf", icon: <IconDeviceMobile className="size-6" /> },
+  { slug: "grecha-delivery", title: "Grecha", icon: <IconDeviceMobile className="size-6" /> },
+  { slug: "mtn-biosmart-registration", title: "MTN BioSmart", icon: <IconDeviceMobile className="size-6" /> },
+  { slug: "kash-fintech", title: "Kash Fintech", icon: <IconDeviceMobile className="size-6" /> },
+  { slug: "mastercard-global-fintech-infrastructure", title: "Mastercard", icon: <IconDeviceMobile className="size-6" /> },
+  { slug: "tomtom-navigation-redesign", title: "TomTom Go", icon: <IconDeviceMobile className="size-6" /> },
+  { slug: "onebank-sterling", title: "OneBank", icon: <IconDeviceMobile className="size-6" /> },
+
+  // AI & Data
+  { slug: "simon-kucher-partners", title: "Simon-Kucher", icon: <IconBrain className="size-6" /> },
+  { slug: "smith-nephew", title: "Smith+Nephew Analytics", icon: <IconBrain className="size-6" /> },
+  { slug: "smith-nephew-orthopaedics", title: "Smith+Nephew Ortho", icon: <IconBrain className="size-6" /> },
+  { slug: "gc-business-finance", title: "GC Business Finance", icon: <IconBrain className="size-6" /> },
+  { slug: "salesforce-cloud-integration", title: "Salesforce", icon: <IconBrain className="size-6" /> },
+  { slug: "terawatt-ev-infrastructure", title: "Terawatt EV", icon: <IconBrain className="size-6" /> },
+  { slug: "medtech-ai-patient-care", title: "MedTech AI", icon: <IconBrain className="size-6" /> },
+  { slug: "jnj-vr-surgical-training", title: "J&J VR Training", icon: <IconBrain className="size-6" /> },
+  { slug: "insurance-claims-automation", title: "Insurance Claims AI", icon: <IconBrain className="size-6" /> },
+  { slug: "lockheed-martin-propel", title: "Lockheed Propel", icon: <IconBrain className="size-6" /> },
+  { slug: "unilever-subscription-engine", title: "Unilever", icon: <IconBrain className="size-6" /> },
+  { slug: "data-platform-modernization", title: "Data Platform", icon: <IconBrain className="size-6" /> },
+  { slug: "influence-flow", title: "Influence Flow", icon: <IconBrain className="size-6" /> },
+  { slug: "swiggy-web3-loyalty", title: "Swiggy Web3", icon: <IconBrain className="size-6" /> },
+  { slug: "nimc-national-id-enrollment", title: "NIMC National ID", icon: <IconBrain className="size-6" /> },
+  { slug: "coursera-ai-learning-optimization", title: "Coursera AI", icon: <IconBrain className="size-6" /> },
+  { slug: "healthcare-data-interoperability", title: "Healthcare FHIR", icon: <IconBrain className="size-6" /> },
+
+  // AI & Automation
+  { slug: "trust-stamp", title: "Trust Stamp", icon: <IconRobot className="size-6" /> },
+  { slug: "global-consultant-ai", title: "Consultant AI", icon: <IconRobot className="size-6" /> },
+  { slug: "dish-network-self-service", title: "MyDISH", icon: <IconRobot className="size-6" /> },
+  { slug: "drinkworks-iot-ecommerce", title: "Drinkworks", icon: <IconRobot className="size-6" /> },
+  { slug: "insurance-digital-transformation", title: "Insurance Modernization", icon: <IconRobot className="size-6" /> },
+  { slug: "smart-iot-diagnostic", title: "Daikin IoT", icon: <IconRobot className="size-6" /> },
+  { slug: "bento-payroll-hr", title: "Bento Africa", icon: <IconRobot className="size-6" /> },
+  { slug: "enterprise-ai-assistant", title: "AI Claims Assistant", icon: <IconRobot className="size-6" /> },
+  { slug: "glo-digital-gateway", title: "Globacom", icon: <IconRobot className="size-6" /> },
+
+  // Healthcare
+  { slug: "raccoon-recovery", title: "Raccoon Recovery", icon: <IconDeviceMobile className="size-6" /> },
+  { slug: "deluxe-care-hms", title: "Deluxe Care HMS", icon: <IconDeviceMobile className="size-6" /> },
+
+  // IoT & Automation
+  { slug: "costa-express", title: "Costa Express", icon: <IconCloudComputing className="size-6" /> },
+
+  // Fintech
+  { slug: "digital-banking-modernization", title: "UBL Digital Banking", icon: <IconBuildingBank className="size-6" /> },
+
+  // Blockchain
+  { slug: "push-chain", title: "PushChain", icon: <IconCode className="size-6" /> },
+
+  // Financial Services
+  { slug: "western-union-digital-transformation", title: "Western Union", icon: <IconBuildingBank className="size-6" /> },
 ];
 
 export function getProjectList(currentSlug?: string) {
