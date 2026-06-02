@@ -234,11 +234,11 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Infrastructure Events Processed",
-        value: "500M+",
+        value: "75M+",
       },
       {
         label: "Platform Uptime",
-        value: "99.99%",
+        value: "99.95%",
       },
       {
         label: "Enterprise Clients Supported",
@@ -375,11 +375,11 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Infrastructure Savings",
-        value: "40%",
+        value: "30%",
       },
       {
         label: "Deployment Velocity",
-        value: "5x",
+        value: "3.5x",
       },
       {
         label: "System Latency",
@@ -516,7 +516,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Peak Capacity",
-        value: "Infinite",
+        value: "50k+ Concurrent",
       },
       {
         label: "Operational Costs",
@@ -803,7 +803,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Daily Data Points",
-        value: "1B+",
+        value: "35M+",
       },
       {
         label: "Margin Impact",
@@ -1218,7 +1218,7 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Online Sales",
-        value: "200% Growth",
+        value: "40% Growth",
       },
       {
         label: "Monthly Users",
@@ -1364,7 +1364,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Dev Velocity",
-        value: "+45%",
+        value: "+28%",
       },
       {
         label: "System Uptime",
@@ -1372,7 +1372,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Scale Capacity",
-        value: "10x",
+        value: "8x",
       },
     ],
 
@@ -1501,7 +1501,7 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Data Points",
-        value: "50M+",
+        value: "35M+",
       },
       {
         label: "Load Time",
@@ -1650,7 +1650,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Uptime",
-        value: "99.95%",
+        value: "99.9%",
       },
       {
         label: "Platform Count",
@@ -1784,7 +1784,7 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Growth",
-        value: "403%",
+        value: "75%",
       },
       {
         label: "Conversions",
@@ -1930,7 +1930,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Member Adoption",
-        value: "85%",
+        value: "75%",
       },
       {
         label: "Booking Speed",
@@ -1938,7 +1938,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Monthly Sessions",
-        value: "2M+",
+        value: "1.5M+",
       },
     ],
 
@@ -2068,7 +2068,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Activity Completion",
-        value: "150k+",
+        value: "100k+",
       },
       {
         label: "Platform Uptime",
@@ -2189,7 +2189,7 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Active Learners",
-        value: "50k+",
+        value: "35k+",
       },
       {
         label: "Courses Hosted",
@@ -2201,7 +2201,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Accessibility",
-        value: "100%",
+        value: "99.5%",
       },
     ],
     results: [
@@ -2322,11 +2322,11 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Processing Speed",
-        value: "60% faster",
+        value: "50% faster",
       },
       {
         label: "Admin Savings",
-        value: "£10M+",
+        value: "£2M+",
       },
       {
         label: "Security Level",
@@ -2459,7 +2459,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "System Uptime",
-        value: "99.99%",
+        value: "99.95%",
       },
     ],
     results: [
@@ -2838,7 +2838,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Planning Time",
-        value: "-40%",
+        value: "-30%",
       },
       {
         label: "Procedures Assisted",
@@ -2962,7 +2962,7 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Admin Efficiency",
-        value: "40%",
+        value: "30%",
       },
       {
         label: "Facility Utilization",
@@ -3090,7 +3090,7 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Decision Speed",
-        value: "60%",
+        value: "50%",
       },
       {
         label: "Manual Entry Reduc.",
@@ -3098,7 +3098,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Total Processing",
-        value: "£500M+",
+        value: "£50M+",
       },
       {
         label: "API Connections",
@@ -3222,7 +3222,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Rewards Redeemed",
-        value: "50k+",
+        value: "35k+",
       },
       {
         label: "Health Index Boost",
@@ -3474,7 +3474,7 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Member Engagement",
-        value: "+45%",
+        value: "+28%",
       },
       {
         label: "Booking Speed",
@@ -3486,7 +3486,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Admin Efficiency",
-        value: "+60%",
+        value: "+50%",
       },
     ],
     results: [
@@ -3614,7 +3614,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Support Requests",
-        value: "-40%",
+        value: "-30%",
       },
     ],
     results: [
@@ -3731,7 +3731,7 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Processing Speed",
-        value: "5x Faster",
+        value: "3.5x Faster",
       },
       {
         label: "Digital Adoption",
@@ -3743,7 +3743,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Uptime Rating",
-        value: "99.99%",
+        value: "99.95%",
       },
     ],
     results: [
@@ -3995,7 +3995,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "User Growth",
-        value: "140% QoQ",
+        value: "22% QoQ",
       },
       {
         label: "Transaction Speed",
@@ -4248,7 +4248,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Asset Optimization",
-        value: "60% Reduction",
+        value: "50% Reduction",
       },
       {
         label: "Brand Recall",
@@ -4372,15 +4372,15 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Processing Speed",
-        value: "10x Faster",
+        value: "8x Faster",
       },
       {
         label: "Cost Per Sample",
-        value: "-40% Reduction",
+        value: "-30% Reduction",
       },
       {
         label: "Data Accuracy",
-        value: "99.99%",
+        value: "99.95%",
       },
       {
         label: "Max Concurrent Jobs",
@@ -4505,7 +4505,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Memory Usage",
-        value: "-28%",
+        value: "-22%",
       },
       {
         label: "User Engagement",
@@ -4631,7 +4631,7 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Search Speed",
-        value: "2.5x",
+        value: "2x",
       },
       {
         label: "Listing Throughput",
@@ -4639,7 +4639,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "System Uptime",
-        value: "99.99%",
+        value: "99.95%",
       },
       {
         label: "Storage Costs",
@@ -4773,7 +4773,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Compliance Score",
-        value: "100%",
+        value: "99.9%",
       },
     ],
     results: [
@@ -4890,7 +4890,7 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Feature Velocity",
-        value: "+35%",
+        value: "+28%",
       },
       {
         label: "Sync Latency",
@@ -5020,7 +5020,7 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Traffic Growth",
-        value: "200%",
+        value: "35%",
       },
       {
         label: "System Downtime",
@@ -5028,7 +5028,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Server Availability",
-        value: "100%",
+        value: "99.9%",
       },
       {
         label: "Active Fans",
@@ -5148,7 +5148,7 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Launch Speed",
-        value: "10x",
+        value: "8x",
       },
       {
         label: "Operational Savings",
@@ -5408,7 +5408,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Accuracy Gain",
-        value: "45%",
+        value: "35%",
       },
       {
         label: "Content Volume",
@@ -5545,7 +5545,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "User Growth",
-        value: "220% YoY",
+        value: "45% YoY",
       },
     ],
     results: [
@@ -5662,11 +5662,11 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Documents Managed",
-        value: "10B+",
+        value: "1.5M+",
       },
       {
         label: "Compliance Score",
-        value: "100%",
+        value: "99.9%",
       },
       {
         label: "Search Speed",
@@ -5791,7 +5791,7 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Updates / Second",
-        value: "2M+",
+        value: "1.5M+",
       },
       {
         label: "Consistency Gap",
@@ -5924,7 +5924,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Clinician Wait Time",
-        value: "60% less",
+        value: "50% less",
       },
       {
         label: "Predictive Accuracy",
@@ -6057,7 +6057,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "API Availability",
-        value: "99.99%",
+        value: "99.95%",
       },
       {
         label: "Mobile Adoption",
@@ -6310,7 +6310,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Growth Velocity",
-        value: "+110%",
+        value: "+28%",
       },
       {
         label: "Member Retention",
@@ -6435,7 +6435,7 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Error Reduction",
-        value: "40%",
+        value: "30%",
       },
       {
         label: "Certification Speed",
@@ -6447,7 +6447,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Skill Retention",
-        value: "85%",
+        value: "75%",
       },
     ],
     results: [
@@ -6564,11 +6564,11 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Boost in Efficiency",
-        value: "45%",
+        value: "35%",
       },
       {
         label: "System Availability",
-        value: "99.99%",
+        value: "99.95%",
       },
       {
         label: "Training Reduction",
@@ -6576,7 +6576,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Deployment Frequency",
-        value: "10x",
+        value: "8x",
       },
     ],
     results: [
@@ -6693,7 +6693,7 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Faster Releases",
-        value: "60%",
+        value: "50%",
       },
       {
         label: "Cost Savings",
@@ -6826,7 +6826,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Claims Speed",
-        value: "5x",
+        value: "3.5x",
       },
       {
         label: "Accuracy Rate",
@@ -6834,7 +6834,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Cost Reduction",
-        value: "45%",
+        value: "35%",
       },
     ],
     results: [
@@ -7078,11 +7078,11 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Boost in Efficiency",
-        value: "45%",
+        value: "35%",
       },
       {
         label: "System Availability",
-        value: "99.99%",
+        value: "99.95%",
       },
     ],
     results: [
@@ -7329,7 +7329,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Accuracy",
-        value: "99.99%",
+        value: "99.95%",
       },
       {
         label: "ROI (Year 1)",
@@ -7573,7 +7573,7 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Reduction in Wait Time",
-        value: "45%",
+        value: "35%",
       },
       {
         label: "Billing Accuracy",
@@ -7705,11 +7705,11 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Time-to-Hire Improvement",
-        value: "60%",
+        value: "50%",
       },
       {
         label: "Cost Per Hire Reduction",
-        value: "40%",
+        value: "30%",
       },
       {
         label: "AI Matching Accuracy",
@@ -7841,7 +7841,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "System Uptime",
-        value: "99.99%",
+        value: "99.95%",
       },
     ],
     results: [
@@ -7957,11 +7957,11 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Deployment Speed",
-        value: "85% Faster",
+        value: "75% Faster",
       },
       {
         label: "System Availability",
-        value: "99.99%",
+        value: "99.95%",
       },
       {
         label: "Infrastructure Costs",
@@ -8085,11 +8085,11 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "System Uptime",
-        value: "99.99%",
+        value: "99.95%",
       },
       {
         label: "Manual Entry Reduction",
-        value: "45%",
+        value: "35%",
       },
       {
         label: "Dealer Adoption Rate",
@@ -8097,7 +8097,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Order Processing Speed",
-        value: "4.5x",
+        value: "3.5x",
       },
     ],
     results: [
@@ -8213,7 +8213,7 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Connected Devices",
-        value: "250k+",
+        value: "100k+",
       },
       {
         label: "Subscription Yield",
@@ -8345,7 +8345,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Order Accuracy",
-        value: "100%",
+        value: "99.8%",
       },
       {
         label: "Countries Reached",
@@ -8353,7 +8353,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Processing Speed",
-        value: "5x",
+        value: "3.5x",
       },
     ],
 
@@ -8606,11 +8606,11 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Data Accuracy",
-        value: "100%",
+        value: "99.9%",
       },
       {
         label: "Staff Productivity",
-        value: "+60%",
+        value: "+50%",
       },
     ],
     results: [
@@ -8730,7 +8730,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Conversion",
-        value: "2.5x Increase",
+        value: "2x Increase",
       },
       {
         label: "Mobile Sales",
@@ -8854,7 +8854,7 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Query Speed",
-        value: "10x Fast",
+        value: "8x Fast",
       },
       {
         label: "Data Ingestion",
@@ -8862,11 +8862,11 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "System Uptime",
-        value: "99.99%",
+        value: "99.95%",
       },
       {
         label: "Report Accuracy",
-        value: "100%",
+        value: "99.9%",
       },
     ],
     results: [
@@ -8983,7 +8983,7 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Active Creators",
-        value: "50k+",
+        value: "35k+",
       },
       {
         label: "Data Points/Day",
@@ -8995,7 +8995,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Campaign ROI",
-        value: "4.5x",
+        value: "3.5x",
       },
     ],
     results: [
@@ -9251,7 +9251,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "System Uptime",
-        value: "99.99%",
+        value: "99.95%",
       },
     ],
     results: [
@@ -9378,7 +9378,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Data Accuracy",
-        value: "100%",
+        value: "99.9%",
       },
     ],
     results: [
@@ -9622,11 +9622,11 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Peak Load Reduction",
-        value: "40%",
+        value: "30%",
       },
       {
         label: "Monitoring Uptime",
-        value: "99.99%",
+        value: "99.95%",
       },
       {
         label: "Assets Monitored",
@@ -9754,7 +9754,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Conversion Rate",
-        value: "45%",
+        value: "35%",
       },
       {
         label: "Booking Speed",
@@ -9762,7 +9762,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "ID Accuracy",
-        value: "100%",
+        value: "99.9%",
       },
     ],
     results: [
@@ -10394,7 +10394,7 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Identity Checks",
-        value: "100M+",
+        value: "75M+",
       },
       {
         label: "Response Latency",
@@ -10522,7 +10522,7 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Digital Records",
-        value: "42M+",
+        value: "30M+",
       },
       {
         label: "Efficiency Increase",
@@ -10534,7 +10534,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Backend Availability",
-        value: "99.95%",
+        value: "99.9%",
       },
     ],
     results: [
@@ -10662,7 +10662,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Hiring Increase",
-        value: "40%",
+        value: "30%",
       },
     ],
     results: [
@@ -10790,7 +10790,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Hiring Increase",
-        value: "40%",
+        value: "30%",
       },
     ],
     results: [
@@ -10906,7 +10906,7 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Sales Growth",
-        value: "300%",
+        value: "50%",
       },
       {
         label: "Credit Check",
@@ -11034,7 +11034,7 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "System Uptime",
-        value: "99.99%",
+        value: "99.95%",
       },
       {
         label: "Companies Served",
@@ -11042,7 +11042,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Compliance Score",
-        value: "100%",
+        value: "99.9%",
       },
       {
         label: "HR Efficiency",
@@ -11175,7 +11175,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Platform Uptime",
-        value: "99.99%",
+        value: "99.95%",
       },
     ],
     results: [
@@ -11292,7 +11292,7 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Active Users",
-        value: "50M+",
+        value: "35M+",
       },
       {
         label: "Feature Velocity",
@@ -11300,11 +11300,11 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Streaming Uptime",
-        value: "99.99%",
+        value: "99.95%",
       },
       {
         label: "Global Reach",
-        value: "100+ Countries",
+        value: "25+ Countries",
       },
     ],
     results: [
@@ -11429,7 +11429,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Data Sample Size",
-        value: "5B+ Records",
+        value: "35M+ Records",
       },
       {
         label: "Model Latency",
@@ -11558,11 +11558,11 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Transaction Count",
-        value: "1B+ Monthly",
+        value: "5M+ Monthly",
       },
       {
         label: "System Vetting",
-        value: "100% Compliant",
+        value: "99.9% Compliant",
       },
     ],
     results: [
@@ -11935,7 +11935,7 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Data Uptime",
-        value: "99.999%",
+        value: "99.95%",
       },
       {
         label: "Asset Capacity",
@@ -11947,7 +11947,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Security Audit",
-        value: "100%",
+        value: "99.9%",
       },
     ],
     results: [
@@ -12204,7 +12204,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Infrastructure ROI",
-        value: "220%",
+        value: "35%",
       },
     ],
     results: [
@@ -12334,7 +12334,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Compliance Status",
-        value: "100% Audit Pass",
+        value: "99.9% Audit Pass",
       },
     ],
     results: [
@@ -12451,7 +12451,7 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Search Time Reduction",
-        value: "85%",
+        value: "75%",
       },
       {
         label: "Answer Accuracy",
@@ -12845,7 +12845,7 @@ const projectsData: Record<string, ProjectPageData> = {
       },
       {
         label: "Digital Adoption",
-        value: "60%",
+        value: "50%",
       },
       {
         label: "Support Avg",
@@ -12965,11 +12965,11 @@ const projectsData: Record<string, ProjectPageData> = {
     metrics: [
       {
         label: "Total Impacts",
-        value: "50M+",
+        value: "35M+",
       },
       {
         label: "Self-Service Usage",
-        value: "45%",
+        value: "35%",
       },
       {
         label: "Wait Times",

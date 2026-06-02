@@ -91,7 +91,7 @@ function ServiceSidebar({ currentSlug }: { currentSlug: string }) {
               <p className="text-primary-foreground/70 text-xs">
                 Call us anytime
               </p>
-              <p className="font-semibold text-sm">+1 (520) 890 56 4</p>
+              <p className="font-semibold text-sm">+91-9780970564</p>
             </div>
           </div>
         </div>
