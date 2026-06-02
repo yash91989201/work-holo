@@ -4,6 +4,7 @@ import { useState } from "react";
 interface ServiceImageProps {
   aspectRatio?: string;
   className?: string;
+  src?: string;
   title: string;
 }
 
@@ -22,6 +23,7 @@ export function ServiceImage({
   title,
   aspectRatio = "16/9",
   className = "",
+  src,
 }: ServiceImageProps) {
   const [imageError, setImageError] = useState(false);
 
@@ -77,7 +79,7 @@ export function ServiceImage({
       alt={title}
       className={`h-full w-full object-cover ${className}`}
       onError={() => setImageError(true)}
-      src={`/images/services/${title.toLowerCase().replace(/\s+/g, "-")}-hero.jpg`}
+      src={src || `/images/services/${title.toLowerCase().replace(/\s+/g, "-")}-hero.jpg`}
     />
   );
 }
@@ -86,10 +88,12 @@ export function ServiceGalleryImage({
   title,
   index,
   className = "",
+  src,
 }: {
   title: string;
   index: number;
   className?: string;
+  src?: string;
 }) {
   const [imageError, setImageError] = useState(false);
 
@@ -130,7 +134,7 @@ export function ServiceGalleryImage({
       alt={`${title} gallery ${index + 1}`}
       className={`h-full w-full object-cover ${className}`}
       onError={() => setImageError(true)}
-      src={`/images/services/${title.toLowerCase().replace(/\s+/g, "-")}-${index + 1}.jpg`}
+      src={src || `/images/services/${title.toLowerCase().replace(/\s+/g, "-")}-${index + 1}.jpg`}
     />
   );
 }

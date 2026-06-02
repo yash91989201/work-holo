@@ -244,7 +244,7 @@ export function ServiceDetailPage({ data }: ServiceDetailPageProps) {
                 viewport={{ once: true }}
                 whileInView={{ opacity: 1, y: 0 }}
               >
-                {data.galleryImages.map((_, index) => (
+                {data.galleryImages.map((imageSrc, index) => (
                   <motion.div
                     className="overflow-hidden rounded-2xl"
                     key={index}
@@ -254,6 +254,7 @@ export function ServiceDetailPage({ data }: ServiceDetailPageProps) {
                     <ServiceGalleryImage
                       className="aspect-4/3 w-full"
                       index={index}
+                      src={imageSrc}
                       title={data.title}
                     />
                   </motion.div>
