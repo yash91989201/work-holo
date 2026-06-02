@@ -207,7 +207,7 @@ const projectsData: Record<string, ProjectPageData> = {
     description:
       "Workholo designed and developed CloudWatch Pro, an advanced infrastructure monitoring and analytics platform built to help enterprises monitor cloud resources, application performance, server health, and real-time operational metrics from a centralized dashboard.",
 
-    heroImage: "/assets/data-pulse.png",
+    heroImage: "/assets/projects/cloudwatch-pro.jpg",
 
     overview:
       "CloudWatch Pro was fully engineered by Workholo as an enterprise-grade observability solution capable of tracking infrastructure health, application performance, security events, and operational alerts across multi-cloud environments. The platform delivers real-time insights, intelligent alerting, and centralized analytics for modern DevOps teams.",
@@ -218,7 +218,7 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Workholo architected a cloud-native microservices ecosystem using scalable event-driven infrastructure, real-time data pipelines, and automated monitoring workflows. The platform integrates centralized dashboards, alert systems, analytics engines, and intelligent infrastructure tracking into a single unified ecosystem.",
 
-    galleryImages: ["/assets/data-engineering.webp", "/assets/data-pulse.png"],
+    galleryImages: ["/assets/projects/cloudwatch-pro-gallery-1.jpg", "/assets/projects/cloudwatch-pro-gallery-2.jpg"],
 
     features: [
       "Real-time Infrastructure Monitoring",
@@ -344,7 +344,7 @@ const projectsData: Record<string, ProjectPageData> = {
     description:
       "HealthHero required a scalable and unified healthcare platform capable of supporting rapid digital growth across multiple regions. Workholo led the modernization initiative by transforming fragmented legacy systems into a high-performance cloud-native ecosystem optimized for large-scale telemedicine operations.",
 
-    heroImage: "/assets/healthcare.avif",
+    heroImage: "/assets/projects/healthhero-scaling-telehealth.jpg",
 
     overview:
       "As a rapidly growing telehealth provider, HealthHero faced operational complexity due to multiple disconnected legacy platforms. Workholo was responsible for building a unified digital ecosystem that streamlined patient management, consultation workflows, and healthcare operations while supporting international scalability.",
@@ -355,7 +355,7 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Workholo designed and implemented a federated GraphQL-based microservices architecture that allowed independent scaling and management of critical healthcare domains such as scheduling, prescriptions, billing, and patient records. The phased migration strategy ensured continuous service availability while significantly improving platform performance and flexibility.",
 
-    galleryImages: ["/assets/healthcare-02.jpg", "/assets/health-connect-portal.png"],
+    galleryImages: ["/assets/projects/healthhero-scaling-telehealth-gallery-1.jpg", "/assets/projects/healthhero-scaling-telehealth-gallery-2.jpg"],
 
     features: [
       "Federated GraphQL API",
@@ -485,7 +485,7 @@ const projectsData: Record<string, ProjectPageData> = {
     description:
       "Vueling required a modern, scalable booking platform capable of handling massive seasonal traffic spikes without performance degradation. Workholo led the cloud transformation initiative by migrating critical booking workflows to a serverless architecture that improved scalability, reliability, and operational efficiency.",
 
-    heroImage: "/assets/cloud-engineering-devops.jpg",
+    heroImage: "/assets/projects/vueling-serverless-transformation.jpg",
 
     overview:
       "Airline platforms experience highly dynamic traffic patterns, especially during holiday sales and promotional booking periods. Workholo redesigned Vueling’s digital booking infrastructure using cloud-native technologies to ensure high availability, faster booking experiences, and efficient resource utilization during peak demand.",
@@ -496,7 +496,7 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Workholo implemented a serverless-first architecture using AWS services to automatically scale infrastructure based on live booking demand. The frontend booking experience was also optimized with modern React technologies, significantly improving application speed, responsiveness, and customer experience for millions of users.",
 
-    galleryImages: ["/assets/cloud-migration-system.png", "/assets/cloudsync-platform.webp"],
+    galleryImages: ["/assets/projects/vueling-serverless-transformation-gallery-1.jpg", "/assets/projects/vueling-serverless-transformation-gallery-2.jpg"],
 
     features: [
       "Auto-Scaling Booking Engine",
@@ -627,7 +627,7 @@ const projectsData: Record<string, ProjectPageData> = {
     description:
       "Colas required a modern logistics management solution capable of coordinating material deliveries and fleet operations across thousands of construction sites. Workholo built a high-performance mobile platform that improved operational visibility, reduced material waste, and enhanced field productivity.",
 
-    heroImage: "/assets/logistics-and-supply-chain-01.jpg",
+    heroImage: "/assets/projects/colas-logistics-optimisation.jpg",
 
     overview:
       "Construction site operations at Colas relied heavily on manual coordination processes that often caused delays, inefficiencies, and material wastage. Workholo designed and implemented a real-time logistics ecosystem that enabled site managers to monitor fleet movement, delivery schedules, and operational workflows directly from mobile devices.",
@@ -638,7 +638,7 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Workholo developed a React Native mobile application with offline-first architecture and real-time synchronization capabilities. Using Azure IoT-driven backend systems and advanced Mapbox visualizations, the platform enabled managers to track vehicles, optimize deliveries, and streamline logistics workflows across active construction sites.",
 
-    galleryImages: ["/assets/logistics-and-supply-chain-02.jpg", "/assets/logistics-and-supply-chain.jpg"],
+    galleryImages: ["/assets/projects/colas-logistics-optimisation-gallery-1.jpg", "/assets/projects/colas-logistics-optimisation-gallery-2.jpg"],
 
     features: [
       "Offline-First Data Sync",
@@ -768,7 +768,7 @@ const projectsData: Record<string, ProjectPageData> = {
     description:
       "Workholo engineered a scalable pricing optimization and analytics platform for Simon-Kucher & Partners, enabling consultants to perform real-time pricing simulations, margin analysis, and strategic decision-making across global enterprise operations.",
 
-    heroImage: "/assets/data-engineering.webp",
+    heroImage: "/assets/projects/simon-kucher-partners.jpg",
 
     overview:
       "The project focused on replacing fragmented spreadsheet-based workflows with a centralized cloud-native analytics ecosystem. Workholo built a high-performance platform that enabled consultants to analyze massive datasets, simulate pricing strategies, and generate actionable business insights for enterprise clients worldwide.",
@@ -779,7 +779,7 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Workholo designed and developed a distributed analytics platform powered by React and Node.js. The solution included advanced data visualization systems, high-concurrency simulation engines, automated reporting workflows, and scalable cloud infrastructure optimized for enterprise-grade performance.",
 
-    galleryImages: ["/assets/data-pulse.png", "/assets/data-engineering.webp"],
+    galleryImages: ["/assets/projects/simon-kucher-partners-gallery-1.jpg", "/assets/projects/simon-kucher-partners-gallery-2.jpg"],
 
     features: [
       "Real-time margin impact simulator",
@@ -1050,7 +1050,7 @@ const projectsData: Record<string, ProjectPageData> = {
     description:
       "Workholo engineered an advanced telerehabilitation platform that combines wearable motion sensors, gamified therapy experiences, and remote clinical monitoring to improve patient recovery after orthopedic treatments and surgeries.",
 
-    heroImage: "/assets/healthcare.avif",
+    heroImage: "/assets/projects/raccoon-recovery.jpg",
 
     overview:
       "Traditional at-home rehabilitation programs often suffer from low patient engagement and inconsistent progress tracking. Workholo helped transform the recovery experience by building a digital rehabilitation ecosystem that motivates patients through interactive therapy exercises while delivering accurate recovery data to healthcare professionals.",
@@ -1061,7 +1061,7 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Workholo developed a cross-platform rehabilitation ecosystem using Unity and React technologies to create immersive, gamified therapy experiences. Integrated wearable sensor systems and secure healthcare dashboards enabled therapists to remotely monitor patient progress and personalize recovery programs based on live motion data.",
 
-    galleryImages: ["/assets/healthcare-02.jpg", "/assets/health-connect-portal.png"],
+    galleryImages: ["/assets/projects/raccoon-recovery-gallery-1.jpg", "/assets/projects/raccoon-recovery-gallery-2.jpg"],
 
     features: [
       "Real-time motion tracking",
@@ -1191,7 +1191,7 @@ const projectsData: Record<string, ProjectPageData> = {
     description:
       "Workholo delivered a complete digital transformation for Apotka by building a scalable healthcare retail ecosystem that unified e-commerce operations, prescription workflows, and inventory management across hundreds of pharmacy locations.",
 
-    heroImage: "/assets/e-commerce-platform.png",
+    heroImage: "/assets/projects/apotka-pharmacy.jpg",
 
     overview:
       "Apotka required a modern digital platform capable of connecting physical pharmacy operations with online healthcare services. Workholo developed a seamless omnichannel ecosystem that allowed customers to search, purchase, and manage medications efficiently while enabling real-time inventory synchronization across all stores.",
@@ -1202,7 +1202,7 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Workholo engineered a high-performance web platform using Next.js and GraphQL technologies integrated with enterprise inventory and logistics systems. Advanced search capabilities, scalable backend infrastructure, and optimized checkout experiences enabled fast and reliable healthcare commerce operations.",
 
-    galleryImages: ["/assets/retail.webp", "/assets/retails-01.webp"],
+    galleryImages: ["/assets/projects/apotka-pharmacy-gallery-1.jpg", "/assets/projects/apotka-pharmacy-gallery-2.jpg"],
 
     features: [
       "Intelligent medicine search",
@@ -1333,7 +1333,7 @@ const projectsData: Record<string, ProjectPageData> = {
     description:
       "Workholo partnered with Costa Express to modernize and scale the digital ecosystem powering thousands of self-service coffee kiosks globally. The collaboration focused on IoT connectivity, kiosk software modernization, cloud infrastructure, and operational automation.",
 
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/costa-express.jpg",
 
     overview:
       "Costa Express required a scalable technology ecosystem capable of supporting rapid international expansion and continuous innovation across its self-service coffee network. Workholo provided a dedicated engineering model to enhance kiosk reliability, streamline operations, and improve real-time monitoring capabilities.",
@@ -1344,7 +1344,7 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Workholo established a dedicated cross-functional engineering team that integrated directly with Costa Express operations. The team redesigned core kiosk software, improved IoT telemetry systems, and built scalable cloud-based APIs for diagnostics, monitoring, and inventory management.",
 
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/costa-express-gallery-1.jpg", "/assets/projects/costa-express-gallery-2.jpg"],
 
     features: [
       "Real-time IoT Telemetry Tracking",
@@ -1474,7 +1474,7 @@ const projectsData: Record<string, ProjectPageData> = {
     description:
       "Workholo engineered a scalable healthcare analytics ecosystem that transforms complex surgical and operational hospital data into actionable insights for clinicians, administrators, and healthcare decision-makers.",
 
-    heroImage: "/assets/healthcare.avif",
+    heroImage: "/assets/projects/smith-nephew.jpg",
 
     overview:
       "Smith+Nephew required an advanced digital platform capable of consolidating surgical performance data across multiple healthcare systems. Workholo developed an intuitive analytics environment that enables healthcare providers to improve procedural planning, monitor clinical outcomes, and optimize operational efficiency through real-time visualization.",
@@ -1485,7 +1485,7 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Workholo built a high-performance analytics platform powered by .NET, Power BI, and cloud-native data processing systems. The solution included advanced data anonymization, scalable ETL pipelines, and interactive visualization dashboards optimized for real-time surgical analytics and healthcare reporting.",
 
-    galleryImages: ["/assets/healthcare-02.jpg", "/assets/health-connect-portal.png"],
+    galleryImages: ["/assets/projects/smith-nephew-gallery-1.jpg", "/assets/projects/smith-nephew-gallery-2.jpg"],
 
     features: [
       "Surgical KPI Tracking",
@@ -1615,7 +1615,7 @@ const projectsData: Record<string, ProjectPageData> = {
     description:
       "Workholo partnered with Infinitas Learning to modernize and scale their educational technology ecosystem by simultaneously delivering a large-scale Learning Management System, digital commerce infrastructure, and integrated payment platform.",
 
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/infinitas-learning.jpg",
 
     overview:
       "Infinitas Learning required a unified digital ecosystem capable of supporting large-scale educational operations across multiple countries. Workholo assembled and managed a dedicated engineering organization to accelerate development, migrate legacy educational content, and deliver highly scalable learning and commerce platforms.",
@@ -1626,7 +1626,7 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Workholo established a large-scale cross-functional engineering team that collaborated directly with Infinitas Learning stakeholders. Using a microservices-based architecture, the team developed scalable learning systems, integrated commerce workflows, and secure multi-currency payment infrastructure.",
 
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/infinitas-learning-gallery-1.jpg", "/assets/projects/infinitas-learning-gallery-2.jpg"],
 
     features: [
       "Enterprise Learning Management (LMS)",
@@ -1757,7 +1757,7 @@ const projectsData: Record<string, ProjectPageData> = {
     description:
       "Workholo transformed Fine+Rare’s digital commerce platform by replacing legacy infrastructure with a scalable, high-performance luxury e-commerce ecosystem optimized for premium customer experiences and global growth.",
 
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/fine-rare.jpg",
 
     overview:
       "Fine+Rare required a modern digital platform capable of supporting luxury commerce operations, high-value transactions, and international collector experiences. Workholo designed a scalable architecture focused on performance, premium branding, and seamless inventory management for rare wines and spirits.",
@@ -1768,7 +1768,7 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Workholo engineered a headless e-commerce architecture powered by Node.js and React technologies. The platform included advanced search systems, real-time warehouse synchronization, personalized member experiences, and scalable cloud infrastructure optimized for premium digital commerce.",
 
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/fine-rare-gallery-1.jpg", "/assets/projects/fine-rare-gallery-2.jpg"],
 
     features: [
       "Headless E-commerce Engine",
@@ -1899,7 +1899,7 @@ const projectsData: Record<string, ProjectPageData> = {
     description:
       "Workholo partnered with David Lloyd Leisure to rebuild and modernize their mobile ecosystem, delivering a high-performance member application focused on seamless booking experiences, personalized fitness engagement, and scalable digital infrastructure.",
 
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/david-lloyd-leisure.jpg",
 
     overview:
       "David Lloyd Leisure required a modern mobile platform capable of supporting large-scale member engagement across its European fitness clubs. Workholo developed a unified application that streamlined bookings, improved digital interactions, and enhanced the overall fitness journey through personalized experiences and real-time club services.",
@@ -1910,7 +1910,7 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Workholo engineered a scalable React Native application backed by cloud-native microservices and GraphQL APIs. The platform was optimized for high-concurrency booking events, fast data synchronization, and responsive mobile experiences even during heavy traffic surges.",
 
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/david-lloyd-leisure-gallery-1.jpg", "/assets/projects/david-lloyd-leisure-gallery-2.jpg"],
 
     features: [
       "One-tap class and court booking system",
@@ -2039,14 +2039,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "18 Months",
     description:
       "Workholo lead a large-scale digital transformation to modernize the RSPB’s online presence, creating an interactive platform to encourage biodiversity in UK gardens.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/rspb-digital-transformation.jpg",
     overview:
       "The RSPB needed to move beyond traditional donor management into a mission-driven digital platform. 'Nature on Your Doorstep' was designed to provide personalized, localized advice to millions of UK citizens.",
     challenge:
       "The organization had multiple siloed databases and an aging CMS that made personalization impossible and data management inefficient.",
     solution:
       "Workholo built a centralized data platform and a modern web experience using Python/Django and React. The system utilizes geolocation to provide weather-dependent gardening tips tailored to the user's specific region.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/rspb-digital-transformation-gallery-1.jpg", "/assets/projects/rspb-digital-transformation-gallery-2.jpg"],
     features: [
       "Localized biodiversity activity engine",
       "Personalized impact dashboard for members",
@@ -2168,14 +2168,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "10 Months",
     description:
       "Workholo engineered a scalable, highly accessible learning management system to host the BBC's internal and partner training content across video, text, and interactive assessments.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/bbc-academy-platform.jpg",
     overview:
       "The BBC Academy required a modern digital hub to deliver training to staff and external partners. The platform needed to be robust enough to serve thousands of concurrent users while maintaining strict accessibility standards.",
     challenge:
       "The previous system was difficult to navigate on mobile devices and struggled with high-bitrate video delivery across disparate global networks.",
     solution:
       "Workholo developed a serverless architecture using AWS and a React-based frontend. We leveraged AWS CloudFront and Elemental MediaConvert to ensure smooth video delivery regardless of user location or bandwidth.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/bbc-academy-platform-gallery-1.jpg", "/assets/projects/bbc-academy-platform-gallery-2.jpg"],
     features: [
       "Adaptive bitrate video streaming",
       "Interactive quiz and assessment engine",
@@ -2297,14 +2297,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "24 Months",
     description:
       "Workholo spearheaded the digital transformation of a critical legal claims portal, replacing legacy paper processes with a secure, user-centric cloud platform.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/moj-claims-digitisation.jpg",
     overview:
       "The Ministry of Justice (MoJ) sought to modernize the way legal claims are submitted and processed. The goal was to reduce administrative overhead and increase transparency for both citizens and legal professionals.",
     challenge:
       "The system required extreme security due to the sensitive nature of legal data, along with strict adherence to GDS (Government Digital Service) standards.",
     solution:
       "Workholo deployed a Ruby on Rails application using a robust microservices architecture. By implementing Infrastructure as Code (IaC) with Terraform, we created a repeatable, highly secure environment across several AWS regions.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/moj-claims-digitisation-gallery-1.jpg", "/assets/projects/moj-claims-digitisation-gallery-2.jpg"],
     features: [
       "GDS-compliant web interface",
       "Secure document upload and encryption",
@@ -2426,14 +2426,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "18 Months",
     description:
       "A comprehensive digital transformation project aimed at unifying the retail banking experience into a single, high-performance mobile application.",
-    heroImage: "/assets/financial.webp",
+    heroImage: "/assets/projects/virgin-money-pulse.jpg",
     overview:
       "Workholo collaborated with Virgin Money to design, build, and deploy a next-generation mobile banking experience. The primary goal was to replace legacy systems with a modern, scalable architecture that could support millions of concurrent users while delivering a premium, intuitive UI.",
     challenge:
       "The existing mobile offering was hardware-limited and fragmented across different services. Virgin Money needed a solution that consolidated personal, savings, and credit accounts into one seamless interface while adhering to strict Open Banking regulations and high-security standards.",
     solution:
       "Workholo implemented a React Native architecture for rapid cross-platform deployment without compromising on native performance. Our teams focused on micro-frontend integration, biometrics (FaceID/TouchID), and real-time transaction processing using a robust AWS-backed infrastructure.",
-    galleryImages: ["/assets/financial-services-01.jpg", "/assets/financial-services-02.webp"],
+    galleryImages: ["/assets/projects/virgin-money-pulse-gallery-1.jpg", "/assets/projects/virgin-money-pulse-gallery-2.jpg"],
     features: [
       "Biometric Authentication & SCA",
       "Real-time Spending Analytics",
@@ -2555,14 +2555,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "14 Months",
     description:
       "A digital-first membership platform designed to simplify complex pension data and improve long-term financial engagement.",
-    heroImage: "/assets/financial.webp",
+    heroImage: "/assets/projects/royal-london-pensions.jpg",
     overview:
       "Workholo engaged with Royal London to bridge the gap between traditional pension services and modern mobile expectations. The project involved creating a member-centric app that allows users to view, manage, and project their retirement savings in real-time.",
     challenge:
       "Pension data is historically complex and often siloed. The challenge was to create a unified API layer that could securely fetch data from various legacy engines and present it in a digestible, actionable format for non-expert users.",
     solution:
       "Workholo built a secure, mobile-optimized portal using a GraphQL middleware layer to aggregate data. The app features interactive projection tools, digital nomination forms, and a secure document library, all wrapped in a highly accessible UI.",
-    galleryImages: ["/assets/financial-services-01.jpg", "/assets/financial-services-02.webp"],
+    galleryImages: ["/assets/projects/royal-london-pensions-gallery-1.jpg", "/assets/projects/royal-london-pensions-gallery-2.jpg"],
     features: [
       "Real-time Fund Tracking",
       "Interactive Retirement Forecaster",
@@ -2684,14 +2684,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "24 Months",
     description:
       "An innovative smart home application that integrates with smart meters to provide real-time usage insights and carbon footprint tracking.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/scottishpower-yourenergy.jpg",
     overview:
       "Workholo worked with ScottishPower to build an industry-leading utility app that moves beyond billing. YourEnergy allows users to monitor their live energy spend, manage smart home devices, and optimize their consumption for both cost and environmental impact.",
     challenge:
       "Integrating with the national Smart Meter infrastructure (DCC) while handling massive data throughput was the primary hurdle. The app needed to process billions of data points daily while maintaining a fast, responsive user experience.",
     solution:
       "Workholo developed a native mobile suite using Swift and Kotlin, backed by an AWS IoT Core infrastructure. The solution includes real-time data streaming, predictive cost algorithms, and a seamless billing integration via a modern API gateway.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/scottishpower-yourenergy-gallery-1.jpg", "/assets/projects/scottishpower-yourenergy-gallery-2.jpg"],
     features: [
       "Live Smart Meter Sync",
       "Predictive Billing Insights",
@@ -2813,14 +2813,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "20 Months",
     description:
       "A groundbreaking clinical tool that uses AI to map patient-specific knee topology, assisting surgeons in high-precision procedure planning.",
-    heroImage: "/assets/healthcare.avif",
+    heroImage: "/assets/projects/smith-nephew-orthopaedics.jpg",
     overview:
       "Workholo partnered with Smith & Nephew to digitize the surgical planning process. By leveraging advanced Computer Vision, we developed a system that analyzes DICOM medical imaging to create a perfect 1:1 digital twin of a patient's knee structure.",
     challenge:
       "Surgical planning for knee replacements was traditionally manual and prone to minor measurement errors. The system needed 99.9% accuracy and had to comply with strict medical device regulations (MDR Class II) while delivering real-time 3D performance.",
     solution:
       "Workholo built an AI-centric platform using TensorFlow for anatomical segmentation and specialized OpenGL wrappers for real-time 3D visualization on iPad Pro devices used in operating theaters.",
-    galleryImages: ["/assets/healthcare-02.jpg", "/assets/health-connect-portal.png"],
+    galleryImages: ["/assets/projects/smith-nephew-orthopaedics-gallery-1.jpg", "/assets/projects/smith-nephew-orthopaedics-gallery-2.jpg"],
     features: [
       "AI Anatomical Segmentation",
       "Real-time 3D Model Viz",
@@ -2941,14 +2941,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "8 Months",
     description:
       "A comprehensive web-based management system to streamline the booking and administrative operations of Winchester College's world-class sports facilities.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/winchester-college.jpg",
     overview:
       "Winchester College required a modern, unified platform to manage their extensive sports facilities. The project involved digitizing manual processes and providing a seamless experience for both internal staff and external community users.",
     challenge:
       "The college relied on fragmented, paper-based systems for managing sports hall bookings, memberships, and financial reconciliation. This led to significant administrative overhead, high risk of double-bookings, and difficulties in reporting accurate financial data.",
     solution:
       "GoodCore engineered a bespoke CRM and scheduling portal featuring a real-time availability engine, integrated payment processing, and automated reporting. The system provides role-based access for staff, students, and external associations to manage their bookings independently.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/winchester-college-gallery-1.jpg", "/assets/projects/winchester-college-gallery-2.jpg"],
     features: [
       "Real-time Booking Engine",
       "Automated Invoicing & Payments",
@@ -3069,14 +3069,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "12 Months",
     description:
       "An advanced end-to-end loan management system designed to automate financial underwriting, compliance checks, and disbursement workflows.",
-    heroImage: "/assets/financial.webp",
+    heroImage: "/assets/projects/gc-business-finance.jpg",
     overview:
       "The project aimed to transform a manual lending process into a data-driven digital experience. The platform supports the entire loan lifecycle from initial application to final repayment tracking.",
     challenge:
       "Manual processing of loan applications was slow and prone to error. The client needed to scale their lending capacity during economic shifts while maintaining rigorous risk assessments and compliance standards.",
     solution:
       "We developed a secure, cloud-hosted platform featuring automated credit scoring, integrated KYC/AML checks, and a sophisticated workflow engine that routes applications based on complex underwriting criteria.",
-    galleryImages: ["/assets/financial-services-01.jpg", "/assets/financial-services-02.webp"],
+    galleryImages: ["/assets/projects/gc-business-finance-gallery-1.jpg", "/assets/projects/gc-business-finance-gallery-2.jpg"],
     features: [
       "Automated Underwriting Engine",
       "KYC/AML API Integrations",
@@ -3325,14 +3325,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "9 Months",
     description:
       "A revolutionary print-on-demand integration that connects complex graphic design tools with high-volume production workflows.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/printing-com.jpg",
     overview:
       "Grafenia needed to modernize their printing.com platform to handle massive order volumes while reducing prepress errors. The solution involved building a robust middleware to automate the entire file-to-print lifecycle.",
     challenge:
       "Translating customer designs into high-quality, print-ready files was a manual, error-prone process that caused production bottlenecks and high rework costs.",
     solution:
       "We engineered a bespoke processing engine that automates pre-flight checks, file conversion, and intelligent order routing to regional production facilities.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/printing-com-gallery-1.jpg", "/assets/projects/printing-com-gallery-2.jpg"],
     features: [
       "Visual Design Middleware",
       "Automated Pre-flight Engine",
@@ -3453,14 +3453,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "12 Months",
     description:
       "A comprehensive mobile application and membership management system designed to streamline gym access, personal training sessions, and member engagement for a leading low-cost gym chain.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/the-gym-group.jpg",
     overview:
       "The Gym Group required a robust digital solution to manage their growing member base across hundreds of locations. The goal was to provide a seamless mobile experience for users while optimizing backend operations for staff.",
     challenge:
       "The existing systems were fragmented, leading to high friction during gym entry and session bookings. Managing real-time data across multiple sites with varying hardware configurations posed a significant challenge.",
     solution:
       "AppDrawn developed a cross-platform mobile app integrated with high-performance cloud infrastructure. Features including QR code entry, real-time class booking, and personalized workout tracking were implemented to enhance the member experience.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/the-gym-group-gallery-1.jpg", "/assets/projects/the-gym-group-gallery-2.jpg"],
     features: [
       "QR Code Entry Systems",
       "Real-time Class Bookings",
@@ -3581,14 +3581,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "10 Months",
     description:
       "A high-performance e-commerce and inventory management portal for the UK's leading provider of catering equipment spares. The system focuses on precision, speed, and real-time inventory tracking.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/first-choice-group.jpg",
     overview:
       "First Choice Group needed to modernize their legacy ordering system to better serve professional technicians and catering businesses. The new portal required deep integration with their ERP for real-time stock levels.",
     challenge:
       "The catalog consisted of over 100,000 SKUs with complex hierarchical relationships. Ensuring that technicians could find exact parts quickly in high-pressure environments was the primary UX challenge.",
     solution:
       "An enterprise-grade web application featuring advanced search algorithms, technical diagram integration, and a custom 'Quick Order' interface for verified engineers.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/first-choice-group-gallery-1.jpg", "/assets/projects/first-choice-group-gallery-2.jpg"],
     features: [
       "Advanced Part Search",
       "Interactive Technical Drawings",
@@ -3710,14 +3710,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "15 Months",
     description:
       "A secure digital overhaul of council-tax and housing service systems, replacing legacy processes with accessible web interfaces for residents and internal staff.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/hillingdon-council.jpg",
     overview:
       "Hillingdon Council aimed to improve the accessibility of their services while reducing the operational costs associated with manual paperwork and legacy systems.",
     challenge:
       "Migrating sensitive citizen data from 30-year-old mainframe systems required extreme caution and rigorous security auditing while maintaining accessibility standards.",
     solution:
       "A secure, service-oriented architecture providing a unified citizen portal. Fully integrated with national identity verification services and automated internal workflows.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/hillingdon-council-gallery-1.jpg", "/assets/projects/hillingdon-council-gallery-2.jpg"],
     features: [
       "Unified Citizen Dashboard",
       "Housing Workflow Automation",
@@ -3838,14 +3838,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "14 Months",
     description:
       "A high-concurrency booking and staff management platform that connects healthcare professionals with vacant shifts across the NHS network in real-time.",
-    heroImage: "/assets/healthcare.avif",
+    heroImage: "/assets/projects/nhs-professionals.jpg",
     overview:
       "NHS Professionals needed a way to manage tens of thousands of temporary staff. The system needed to handle extreme traffic spikes during morning shift release times.",
     challenge:
       "Coordinating shift availability with clinical requirements and worker compliance (certifications, training) for over 50,000 workers across multiple trusts.",
     solution:
       "A cloud-native platform with an automated compliance engine and a high-frequency matching algorithm that pairs staff with urgent clinical needs.",
-    galleryImages: ["/assets/healthcare-02.jpg", "/assets/health-connect-portal.png"],
+    galleryImages: ["/assets/projects/nhs-professionals-gallery-1.jpg", "/assets/projects/nhs-professionals-gallery-2.jpg"],
     features: [
       "Real-time Shift Posting",
       "Automated Compliance Engine",
@@ -4094,14 +4094,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "Ongoing Partnership",
     description:
       "Trust Stamp provides a secure layer of identity verification using advanced machine learning and biometrics, protecting users from identity theft in a digital world.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/trust-stamp.jpg",
     overview:
       "Trust Stamp delivers 'Identity & Trust as a Service'. They required a specialized engineering team to scale their biometric processing capabilities and integrate their proprietary AI models into various enterprise-level applications for global financial institutions.",
     challenge:
       "The complexity lay in processing massive amounts of biometric data in real-time while ensuring 100% data privacy. The system needed to detect sophisticated 'liveness' attacks and prevent spoofing without introducing latency into the user authentication flow.",
     solution:
       "10Clouds provided a dedicated team of engineers to enhance the machine learning pipeline and develop secure API wrappers. We optimized biometric hashing algorithms that protect user data even in the event of a database breach by using Irreversible Transformable Signatures.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/trust-stamp-gallery-1.jpg", "/assets/projects/trust-stamp-gallery-2.jpg"],
     features: [
       "Facial Recognition Liveness Detection",
       "Irreversible Biometric Hashing",
@@ -4480,14 +4480,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "18 Months",
     description:
       "BairesDev partnered with Pinterest to scale their mobile engineering capabilities and optimize cross-platform performance for millions of global users.",
-    heroImage: "/assets/mobile-app-development.webp",
+    heroImage: "/assets/projects/pinterest-mobile-engineering.jpg",
     overview:
       "As Pinterest's global user base surpassed 450 million, the requirement for a near-instantaneous visual discovery experience became paramount. Our mission was to eliminate rendering bottlenecks and modernize the mobile architecture for long-term scalability.",
     challenge:
       "Addressing significant latency in image rendering and data synchronization across distributed global servers while maintaining feature parity across iOS, Android, and Web platforms.",
     solution:
       "We deployed a dedicated team of Senior Engineers to architect a high-concurrency Redis caching layer, refactor legacy Java modules into micro-services, and implement specialized GraphQL query optimizations.",
-    galleryImages: ["/assets/ux-ui-design.jpg", "/assets/mobile-app-development.webp"],
+    galleryImages: ["/assets/projects/pinterest-mobile-engineering-gallery-1.jpg", "/assets/projects/pinterest-mobile-engineering-gallery-2.jpg"],
     features: [
       "Native Performance Optimization",
       "GraphQL API Refactoring",
@@ -4610,14 +4610,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "24 Months",
     description:
       "BairesDev collaborated with eBay to optimize the core marketplace engine, focusing on search throughput and transactional integrity for billions of listings.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/ebay-marketplace-optimization.jpg",
     overview:
       "In the competitive landscape of global e-commerce, milliseconds directly correlate to revenue. eBay required an overhaul of their search indexing and transaction processing systems to handle historic peak volumes.",
     challenge:
       "Managing massive data throughput without compromising transactional ACID properties, particularly during high-traffic events like Black Friday and Cyber Monday.",
     solution:
       "Our team developed a distributed indexing system using Kafka and ElasticSearch, alongside a modernized Node.js service layer that significantly reduced server-side processing time.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/ebay-marketplace-optimization-gallery-1.jpg", "/assets/projects/ebay-marketplace-optimization-gallery-2.jpg"],
     features: [
       "Distributed Indexing System",
       "Real-Time Inventory Sync",
@@ -4740,14 +4740,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "12 Months",
     description:
       "BairesDev assisted Salesforce in developing advanced data pipelines and AI-driven automation tools to enhance enterprise-level CRM insights.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/salesforce-cloud-integration.jpg",
     overview:
       "Salesforce needed to bridge the gap between vast enterprise data silos and actionable AI-driven insights. We built the connective tissue that enables real-time predictive analytics within their core platform ecosystems.",
     challenge:
       "Integrating heterogeneous data sources from disparate cloud providers while ensuring strict compliance with global data privacy regulations (GDPR/CCPA).",
     solution:
       "We engineered a secure data lake architecture using Snowflake and implemented custom TensorFlow models to predict customer churn and lifetime value.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/salesforce-cloud-integration-gallery-1.jpg", "/assets/projects/salesforce-cloud-integration-gallery-2.jpg"],
     features: [
       "Predictive Lead Scoring",
       "Automated Data Mapping",
@@ -4869,14 +4869,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "20 Months",
     description:
       "BairesDev provided expert C++ and Cloud engineers to help Adobe build high-performance collaborative features within the Creative Cloud suite.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/adobe-creative-cloud-innovation.jpg",
     overview:
       "Adobe sought to transform their desktop-centric design suite into a truly collaborative, cloud-first platform. This required deep low-level engineering and a robust DevOps foundation to support real-time sync.",
     challenge:
       "Enabling real-time collaborative editing on massive graphic files while ensuring sub-millisecond sync across geographically distributed teams.",
     solution:
       "We utilized WebAssembly to bring native C++ performance to the browser and implemented a Geo-distributed backend on AWS using Terraform for infrastructure as code.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/adobe-creative-cloud-innovation-gallery-1.jpg", "/assets/projects/adobe-creative-cloud-innovation-gallery-2.jpg"],
     features: [
       "WebAssembly Core Engines",
       "Real-Time Sync Protocol",
@@ -4999,14 +4999,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "8 Months",
     description:
       "Simform partnered with FIH to overhaul their legacy digital infrastructure, migrating to a high-performance headless architecture that supports millions of concurrent fans during global tournaments.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/fih-international-hockey.jpg",
     overview:
       "The International Hockey Federation required a robust, fail-safe digital platform to manage real-time game statistics, live streaming, and high-traffic fan engagement for major international events like the World Cup.",
     challenge:
       "Their legacy system suffered from significant performance bottlenecks during peak traffic, slow content publishing cycles, and difficult maintenance routines that impacted the overall fan experience.",
     solution:
       "We implemented a modern headless CMS architecture combined with a resilient microservices backend on AWS, ensuring zero downtime and lightning-fast content delivery across all global regions.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/fih-international-hockey-gallery-1.jpg", "/assets/projects/fih-international-hockey-gallery-2.jpg"],
     features: [
       "Headless CMS Architecture",
       "Real-time Score Integration",
@@ -5127,14 +5127,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "12 Months",
     description:
       "A comprehensive modernization of Zego's property management platform, enabling property managers to launch fully branded resident experience apps across thousands of properties with massive efficiency.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/zego-resident-experience.jpg",
     overview:
       "Zego needed to scale their mobile app offering to property managers, but manual configuration and deployment processes for individual branded apps were creating a massive backlog.",
     challenge:
       "The primary challenge was the operational overhead of managing cross-platform mobile apps for thousands of unique property brands while maintaining code consistency and security.",
     solution:
       "We engineered a DevOps-centric automation framework on Azure that automates the builds, white-labeling, and submission processes for both iOS and Android stores.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/zego-resident-experience-gallery-1.jpg", "/assets/projects/zego-resident-experience-gallery-2.jpg"],
     features: [
       "Automated White-labeling",
       "CI/CD Build Pipelines",
@@ -5255,14 +5255,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "10 Months",
     description:
       "Development of a unified data and billing platform for a massive electric vehicle truck charging network, consolidating fragmented data into actionable enterprise insights.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/terawatt-ev-infrastructure.jpg",
     overview:
       "TeraWatt Infrastructure is building a nationwide network of EV charging stations for commercial fleets, requiring a robust system to track power usage, site health, and complex billing.",
     challenge:
       "The client faced difficulties with fragmented data coming from various hardware vendors, leading to manual billing errors and slow reporting cycles of up to 30 days.",
     solution:
       "We built an Azure-native data platform that ingests real-time IoT telemetry from charging hardware, processes it through an automated billing engine, and provides real-time fleet dashboards.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/terawatt-ev-infrastructure-gallery-1.jpg", "/assets/projects/terawatt-ev-infrastructure-gallery-2.jpg"],
     features: [
       "IoT Telemetry Ingestion",
       "Automated Billing Engine",
@@ -5383,14 +5383,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "6 Months",
     description:
       "An AI-powered document analysis and strategy platform developed for a global consultancy firm to cut research time and improve decision-making accuracy.",
-    heroImage: "/assets/agentic-ai.webp",
+    heroImage: "/assets/projects/global-consultant-ai.jpg",
     overview:
       "A leading global consultancy firm needed to modernize how their analysts interact with massive repositories of internal and external market research data.",
     challenge:
       "Analysts were spending over 50% of their time manually synthesizing data from PDF reports, spreadsheets, and news cycles, leading to slower strategy delivery for clients.",
     solution:
       "We deployed a custom RAG (Retrieval-Augmented Generation) platform using Azure OpenAI, allowing analysts to query thousands of documents and get high-accuracy strategic summaries in seconds.",
-    galleryImages: ["/assets/ai-agents.webp", "/assets/data-engineering.webp"],
+    galleryImages: ["/assets/projects/global-consultant-ai-gallery-1.jpg", "/assets/projects/global-consultant-ai-gallery-2.jpg"],
     features: [
       "RAG Architecture",
       "Multi-format Doc Ingestion",
@@ -5512,14 +5512,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "18 Months",
     description:
       "A comprehensive digital transformation for Europe's leading vehicle marketplace, replacing legacy systems with a high-performance auction engine and automated inspection workflow.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/bca-intelligent-auction-platform.jpg",
     overview:
       "BCA required a robust, scalable platform capable of handling thousands of simultaneous bidders across international borders. The project involved migrating complex auction logic to a microservices architecture while integrating real-time vehicle diagnostics.",
     challenge:
       "The existing infrastructure struggled with high-concurrency bidding events, leading to latency issues during peak hours. Additionally, manual vehicle inspections were slow and prone to human error, delaying time-to-market for auction listings.",
     solution:
       "Itransition developed a custom real-time auction engine using WebSockets for sub-second latency. We implemented an AI-driven vehicle inspection app that uses computer vision to detect physical damage and auto-generate condition reports.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/bca-intelligent-auction-platform-gallery-1.jpg", "/assets/projects/bca-intelligent-auction-platform-gallery-2.jpg"],
     features: [
       "Real-time WebSocket-based bidding engine",
       "Automated computer vision damage detection",
@@ -5641,14 +5641,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "24 Months",
     description:
       "Redefining enterprise content management with a secure hybrid-cloud solution that automates document classification and ensures global compliance.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/xerox-enterprise-document-cloud.jpg",
     overview:
       "Xerox needed to transition their legacy document management services to a modern cloud-native environment while maintaining strict security standards for Fortune 500 clients.",
     challenge:
       "Managing billions of documents across fragmented regional silos created compliance risks and hindered cross-departmental collaboration. Data residency requirements varied significantly across jurisdictions.",
     solution:
       "Itransition designed a multi-region Azure architecture with automated data classification and intelligent search capabilities powered by ElasticSearch.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/xerox-enterprise-document-cloud-gallery-1.jpg", "/assets/projects/xerox-enterprise-document-cloud-gallery-2.jpg"],
     features: [
       "Automated PII data masking",
       "Cross-region data residency management",
@@ -5770,14 +5770,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "14 Months",
     description:
       "A precision-engineered synchronization layer that handles millions of inventory updates per second, ensuring price and availability parity worldwide.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/expedia-global-inventory-sync.jpg",
     overview:
       "Operating at Expedia's scale requires massive parallel processing. The project focused on building a resilient data pipeline that bridges hotel partners and the primary consumer booking platforms.",
     challenge:
       "Inventory discrepancies and overbookings were occurring due to slow synchronization between external hotel systems and internal booking caches.",
     solution:
       "Itransition implemented an event-driven Kafka architecture that enables real-time updates and ensures eventual consistency across globally distributed data centers.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/expedia-global-inventory-sync-gallery-1.jpg", "/assets/projects/expedia-global-inventory-sync-gallery-2.jpg"],
     features: [
       "Event-driven Kafka message bus",
       "Dynamic pricing adjustment engine",
@@ -5899,14 +5899,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "12 Months",
     description:
       "An intelligent healthcare ecosystem that combines HIPAA-compliant video conferencing with real-time biometric analysis and predictive health modeling.",
-    heroImage: "/assets/healthcare.avif",
+    heroImage: "/assets/projects/medtech-ai-patient-care.jpg",
     overview:
       "The provider needed to scale their remote care capabilities while reducing the workload on clinicians through automated screening and patient triage.",
     challenge:
       "Clinicians were overwhelmed with manual patient check-ins and data entry, leading to burnout and delayed responses for critical cases.",
     solution:
       "Itransition developed a telemedicine platform featuring an AI health assistant that pre-screens patients and prioritizes high-risk individuals based on biometric data.",
-    galleryImages: ["/assets/healthcare-02.jpg", "/assets/health-connect-portal.png"],
+    galleryImages: ["/assets/projects/medtech-ai-patient-care-gallery-1.jpg", "/assets/projects/medtech-ai-patient-care-gallery-2.jpg"],
     features: [
       "HIPAA-compliant video streaming",
       "AI-powered triage screening",
@@ -6028,14 +6028,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "24 Months",
     description:
       "A comprehensive digital transformation initiative that modernized the HughesNet customer experience by consolidating legacy portals into a high-performance, unified self-service platform.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/hughesnet-digital-evolution.jpg",
     overview:
       "Hughes Network Systems required a complete overhaul of their fragmented digital touchpoints. We engineered a scalable, cloud-native architecture to serve millions of satellite internet subscribers with real-time data management and billing tools.",
     challenge:
       "The existing infrastructure was composed of disparate legacy systems that led to high support costs, inconsistent user experiences, and significant friction in data top-up transactions.",
     solution:
       "We implemented a microservices-based architecture using React and Node.js on AWS, enabling real-time synchronization between billing systems and customer dashboards with a mobile-first design philosophy.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/hughesnet-digital-evolution-gallery-1.jpg", "/assets/projects/hughesnet-digital-evolution-gallery-2.jpg"],
     features: [
       "Unified Customer Dashboard",
       "Real-time Data Usage Monitoring",
@@ -6156,14 +6156,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "36 Months",
     description:
       "A mission-critical cloud-native platform that connects fleets, manufacturers, and service providers to streamline commercial vehicle maintenance and service events.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/decisiv-srm-platform.jpg",
     overview:
       "Decisiv needed to scale their industry-leading service management platform. We provided the engineering expertise to transition their monolith to a modern distributed cloud architecture.",
     challenge:
       "Legacy architecture limitations were hindering the ability to integrate with new OEM partners and process the rapidly growing volume of service events.",
     solution:
       "Engineering a multi-tenant, event-driven architecture using Java/Spring and AWS, enabling seamless integration with SAP, Oracle, and proprietary fleet systems.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/decisiv-srm-platform-gallery-1.jpg", "/assets/projects/decisiv-srm-platform-gallery-2.jpg"],
     features: [
       "Asset Lifecycle Tracking",
       "Automated Service Requests",
@@ -6285,14 +6285,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "18 Months",
     description:
       "A comprehensive loyalty and engagement platform designed to empower millions of AARP members through health challenges, learning goals, and community impact.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/aarp-rewards-gamification.jpg",
     overview:
       "AARP sought to modernize their member engagement strategy. We developed a gamified rewards system that drives meaningful daily interactions and social contributions.",
     challenge:
       "Traditional engagement methods were seeing declining participation among younger seniors. The goal was to build a 'digital-first' ecosystem that rewards healthy habits.",
     solution:
       "Developed a cross-platform mobile application utilizing a real-time gamification engine that tracks achievements across health, learning, and advocacy.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/aarp-rewards-gamification-gallery-1.jpg", "/assets/projects/aarp-rewards-gamification-gallery-2.jpg"],
     features: [
       "Gamified Health Tracking",
       "Real-time Point Accrual",
@@ -6414,14 +6414,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "12 Months",
     description:
       "An industry-leading VR training platform that uses haptic feedback and AI-driven performance assessment to train surgeons on complex orthopedic procedures.",
-    heroImage: "/assets/healthcare.avif",
+    heroImage: "/assets/projects/jnj-vr-surgical-training.jpg",
     overview:
       "Johnson & Johnson needed a scalable way to train global surgical teams. We built an immersive simulation environment that mimics real-world surgical environments with extreme precision.",
     challenge:
       "Traditional surgical training is expensive, requires physical cadavers, and offers limited objective performance metrics for trainees.",
     solution:
       "A custom Unity-based VR application integrated with haptic peripherals and an AI scoring engine that evaluates surgical precision in real-time.",
-    galleryImages: ["/assets/healthcare-02.jpg", "/assets/health-connect-portal.png"],
+    galleryImages: ["/assets/projects/jnj-vr-surgical-training-gallery-1.jpg", "/assets/projects/jnj-vr-surgical-training-gallery-2.jpg"],
     features: [
       "High-fidelity 3D Anatomy",
       "Haptic Feedback Integration",
@@ -6543,14 +6543,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "18 Months",
     description:
       "A comprehensive modernization of a mission-critical legacy desktop application into a resilient, cloud-native web platform supporting hundreds of locations across the United States.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/pawn-management-modernization.jpg",
     overview:
       "The client operated on a legacy Delphi-based system that was increasingly difficult to maintain and unable to support modern mobile requirements or multi-state regulatory compliance updates. Keyhole Software was engaged to lead the architectural redesign and implementation of a modern, web-based replacement that ensured high availability, enterprise security, and seamless data migration from decades of legacy records.",
     challenge:
       "The primary challenge was replicating complex business logic embedded in legacy code while ensuring zero downtime during the transition. The system had to handle high-concurrency transactions, integrate with hardware peripherals like fingerprint scanners and label printers, and comply with varied state-level lending regulations in real-time.",
     solution:
       "Our team architected a microservices-based solution using React and Node.js, deployed on AWS. We implemented a robust offline-first synchronization strategy for regional stores and built a centralized compliance engine that dynamically applies lending rules based on geo-location and local legislation.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/pawn-management-modernization-gallery-1.jpg", "/assets/projects/pawn-management-modernization-gallery-2.jpg"],
     features: [
       "Real-time Regulatory Compliance Engine",
       "Integrated Hardware Peripheral Support",
@@ -6672,14 +6672,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "12 Months",
     description:
       "A strategic modernization effort to move a massive Java-based logistics monolith to a cloud-native, scalable architecture optimized for global real-time tracking.",
-    heroImage: "/assets/cloud-engineering-devops.jpg",
+    heroImage: "/assets/projects/enterprise-logistics-modernization.jpg",
     overview:
       "The client faced significant performance bottlenecks and scaling issues with their legacy Java platform during peak shipping seasons. Keyhole Software led a multi-phase modernization initiative to decompose the monolith into scalable microservices, implement a robust CI/CD pipeline, and migrate the entire ecosystem to AWS EKS.",
     challenge:
       "The system processed millions of events per hour, making performance and data consistency critical. The team had to decouple tightly linked business domains while maintaining full operation of the legacy system to avoid any disruption to global shipping routes.",
     solution:
       "We implemented an event-driven architecture using Apache Kafka to handle high-frequency data streams. The frontend was rebuilt using React for improved responsiveness, and the backend was transitioned to Spring Boot services running on Kubernetes, enabling auto-scaling based on real-time load.",
-    galleryImages: ["/assets/cloud-migration-system.png", "/assets/cloudsync-platform.webp"],
+    galleryImages: ["/assets/projects/enterprise-logistics-modernization-gallery-1.jpg", "/assets/projects/enterprise-logistics-modernization-gallery-2.jpg"],
     features: [
       "Event-Driven Microservices Architecture",
       "Real-Time Package Tracking Engine",
@@ -6801,14 +6801,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "10 Months",
     description:
       "Development of an AI-enhanced claims processing platform that automates the intake, classification, and initial assessment of enterprise insurance claims.",
-    heroImage: "/assets/insurance.jpg",
+    heroImage: "/assets/projects/insurance-claims-automation.jpg",
     overview:
       "The processing of claims was a highly manual, error-prone effort involving thousands of physical and digital documents daily. Keyhole Software implemented an AI-driven pipeline that uses natural language processing (NLP) and a custom rules engine to automate 80% of routine claims, freeing adjusters to focus on complex cases.",
     challenge:
       "The primary challenge was the variety and low quality of incoming documents. The system needed to extract data from hand-written forms, poor-quality faxes, and varied digital formats with extremely high accuracy to ensure fair settlements and prevent fraud.",
     solution:
       "We developed a pipeline utilizing Python and Azure Machine Learning to extract and normalize data. This was coupled with a sophisticated Drools-based rules engine that analyzes claims against policy metadata to determine initial settlement recommendations.",
-    galleryImages: ["/assets/insurance-02.jpg", "/assets/insurance-03.jpg"],
+    galleryImages: ["/assets/projects/insurance-claims-automation-gallery-1.jpg", "/assets/projects/insurance-claims-automation-gallery-2.jpg"],
     features: [
       "Intelligent Document Extraction",
       "NLP-Based Claim Classification",
@@ -6929,14 +6929,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "18 Months",
     description:
       "A comprehensive digital cockpit solution designed to unify navigation, infotainment, and vehicle diagnostics into a seamless, high-performance interface for the next generation of connected vehicles.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/tomtom-digital-cockpit.jpg",
     overview:
       "In partnership with TomTom, Spire Digital engineered a groundbreaking Android-based automotive platform. The goal was to replace fragmented in-car systems with a cohesive digital experience that prioritizes safety while delivering rich, interactive content to drivers and passengers.",
     challenge:
       "The automotive industry faced a significant challenge: providing a modern, smartphone-like experience within the vehicle without compromising driver focus or system stability across diverse hardware configurations.",
     solution:
       "We developed a decoupled UI architecture using Android Automotive OS, leveraging custom OpenGL shaders for fluid map rendering and a robust micro-services backend to handle real-time vehicle telemetry and OTA updates.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/tomtom-digital-cockpit-gallery-1.jpg", "/assets/projects/tomtom-digital-cockpit-gallery-2.jpg"],
     features: [
       "Context-Aware Navigation Engine",
       "Dynamic Voice Assistant Integration",
@@ -7057,14 +7057,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "12 Months",
     description:
       "A high-scale B2B eCommerce and distributor management portal designed to modernize order fulfillment, inventory tracking, and sales analytics for one of the world's largest brewers.",
-    heroImage: "/assets/e-commerce-platform.png",
+    heroImage: "/assets/projects/millercoors-b2b-portal.jpg",
     overview:
       "MillerCoors needed to replace an aging legacy system with a modern, high-performance platform that could handle billions in transactions while providing an intuitive experience for thousands of distributors nationwide.",
     challenge:
       "Distributors struggled with manual entry, slow synchronization with SAP backends, and a lack of real-time visibility into stock levels and promotional pricing.",
     solution:
       "Spire Digital built a custom React-based application layer over a Node.js microservices architecture, integrated deeply with SAP and Salesforce to provide a 'single pane of glass' for distributor operations.",
-    galleryImages: ["/assets/retail.webp", "/assets/retails-01.webp"],
+    galleryImages: ["/assets/projects/millercoors-b2b-portal-gallery-1.jpg", "/assets/projects/millercoors-b2b-portal-gallery-2.jpg"],
     features: [
       "Real-Time Inventory Management",
       "Dynamic Promotional Pricing Engine",
@@ -7177,14 +7177,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "24 Months",
     description:
       "A large-scale digital overhaul of Dish Network's customer engagement platform, focusing on self-service automation, predictive troubleshooting, and bill management.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/dish-network-self-service.jpg",
     overview:
       "Dish Network aimed to reduce operational costs and improve customer satisfaction by moving millions of billing and support interactions from call centers to a modern digital platform.",
     challenge:
       "Existing customers found the legacy portal difficult to navigate, leading to high call volumes for simple tasks like bill payment or basic equipment troubleshooting.",
     solution:
       "We implemented an Angular-driven web application and a native mobile suite, integrated with AI-powered chatbots and predictive diagnostics for home equipment.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/dish-network-self-service-gallery-1.jpg", "/assets/projects/dish-network-self-service-gallery-2.jpg"],
     features: [
       "Predictive Troubleshooting",
       "Automated Bill Management",
@@ -7304,14 +7304,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "14 Months",
     description:
       "An advanced internal data dashboard and predictive analytics platform designed to monitor aerospace systems and optimize manufacturing lifecycles.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/lockheed-martin-propel.jpg",
     overview:
       "Lockheed Martin required a secure, high-performance platform to visualize complex telemetry data from aerospace assets and predict maintenance needs before failures occurred.",
     challenge:
       "Data was siloed across multiple departments, making it impossible to get a holistic view of asset health or manufacturing efficiency in real-time.",
     solution:
       "Spire Digital developed 'Propel', a React-based data lake visualization tool that uses machine learning to identify anomalies in massive datasets.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/lockheed-martin-propel-gallery-1.jpg", "/assets/projects/lockheed-martin-propel-gallery-2.jpg"],
     features: [
       "Real-Time Telemetry Feed",
       "Anomaly Detection Engine",
@@ -7433,14 +7433,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "8 Months",
     description:
       "A secure, social investment application that enables retail investors to trade Treasury Bills and other fixed-income instruments directly from their mobile devices.",
-    heroImage: "/assets/financial.webp",
+    heroImage: "/assets/projects/i-invest.jpg",
     overview:
       "Enyata partnered with Sterling Capital to build i-invest, Nigeria's first social investment mobile app. The goal was to remove the traditional barriers to entry for fixed-income investments and provide a transparent, user-friendly portal for wealth creation.",
     challenge:
       "Traditional investment processes required extensive paperwork and physical presence. The challenge was to create a digital-first onboarding experience (e-KYC) and integrate it with various financial clearing systems while maintaining military-grade security for user funds.",
     solution:
       "We developed a robust mobile application using Flutter for cross-platform efficiency, backed by a scalable Node.js microservices architecture. The solution featured a real-time portfolio tracker, automated investment maturity notifications, and a social feed for market insights.",
-    galleryImages: ["/assets/financial-services-01.jpg", "/assets/financial-services-02.webp"],
+    galleryImages: ["/assets/projects/i-invest-gallery-1.jpg", "/assets/projects/i-invest-gallery-2.jpg"],
     features: [
       "Automated e-KYC Onboarding",
       "Real-time Portfolio Dashboard",
@@ -7552,14 +7552,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "8 Months",
     description:
       "A comprehensive digital transformation of clinical workflows for a multi-specialty hospital group, integrating electronic health records (EHR) with real-time billing and laboratory automation.",
-    heroImage: "/assets/healthcare.avif",
+    heroImage: "/assets/projects/deluxe-care-hms.jpg",
     overview:
       "Deluxe Care HMS was designed to eliminate the inefficiencies of paper-based systems in high-volume medical centers. The platform centralizes patient data, streamlines administrative tasks, and ensures seamless communication between departments, from the front desk to the surgical theater.",
     challenge:
       "The client faced fragmented data silos, frequent billing discrepancies, and long patient wait times. Physical records were prone to loss, and reporting on hospital performance took weeks of manual data aggregation.",
     solution:
       "We implemented a cloud-native, modular HMS that provides a 360-degree view of patient history. Features include an automated triaging system, integrated pharmacy inventory, and a secure physician portal for remote chart reviews and tele-consultations.",
-    galleryImages: ["/assets/healthcare-02.jpg", "/assets/health-connect-portal.png"],
+    galleryImages: ["/assets/projects/deluxe-care-hms-gallery-1.jpg", "/assets/projects/deluxe-care-hms-gallery-2.jpg"],
     features: [
       "Integrated Electronic Health Records (EHR)",
       "Real-time Automated Billing and Invoicing",
@@ -7808,14 +7808,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "5 Months",
     description:
       "A premium suite of tools for the hospitality industry, combining a high-conversion booking engine, front-desk management, and mobile guest services into a unified ecosystem.",
-    heroImage: "/assets/healthcare.avif",
+    heroImage: "/assets/projects/skyline-hms.jpg",
     overview:
       "Skyline HMS was developed to provide a seamless digital journey for hotel guests while empowering staff with intuitive management tools. The system handles everything from online reservations to housekeeping status and restaurant POS.",
     challenge:
       "The client struggled with overbookings due to manual channel updates and suffered from poor guest engagement due to slow check-in processes at peak hours.",
     solution:
       "We built a real-time synchronized booking engine that connects to global distributors and a guest-facing mobile app that allows for digital check-ins and room service requests.",
-    galleryImages: ["/assets/healthcare-02.jpg", "/assets/health-connect-portal.png"],
+    galleryImages: ["/assets/projects/skyline-hms-gallery-1.jpg", "/assets/projects/skyline-hms-gallery-2.jpg"],
     features: [
       "Centralized Booking Engine & Channel Manager",
       "Interactive Front-Desk Room Matrix",
@@ -7936,14 +7936,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "7 Months",
     description:
       "A complete infrastructure overhaul for a logistics giant, migrating legacy on-premise servers to a high-availability microservices architecture on Google Cloud Platform.",
-    heroImage: "/assets/cloud-engineering-devops.jpg",
+    heroImage: "/assets/projects/enterprise-cloud-transformation.jpg",
     overview:
       "This project involved the containerization of critical supply chain applications and the implementation of automated CI/CD pipelines to ensure rapid, error-free software delivery cycles for an enterprise logistics network.",
     challenge:
       "The client was experiencing frequent downtime during high-traffic periods, slow deployment cycles taking weeks, and spiraling maintenance costs for aging physical servers.",
     solution:
       "We implemented a Kubernetes-managed architecture with auto-scaling capabilities. Using Terraform, we automated the entire infrastructure, enabling zero-downtime deployments and blue-green staging environments.",
-    galleryImages: ["/assets/cloud-migration-system.png", "/assets/cloudsync-platform.webp"],
+    galleryImages: ["/assets/projects/enterprise-cloud-transformation-gallery-1.jpg", "/assets/projects/enterprise-cloud-transformation-gallery-2.jpg"],
     features: [
       "Kubernetes (GKE) Cluster Implementation",
       "Infrastructure as Code (IaC) via Terraform",
@@ -8064,14 +8064,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "8 Months",
     description:
       "A high-performance B2B eCommerce portal designed to handle complex dealer relationships, custom pricing tiers, and global inventory synchronization for a Fortune 500 furniture leader.",
-    heroImage: "/assets/e-commerce-platform.png",
+    heroImage: "/assets/projects/steelcase-b2b-portal.jpg",
     overview:
       "Steelcase required a centralized digital ecosystem to manage thousands of global dealers. The legacy system struggled with real-time inventory and complex discount structures, leading to manual errors and procurement delays. We built a robust, scalable portal that integrated seamlessly with their existing ERP and logistics systems.",
     challenge:
       "The primary challenge was the fragmentation of data across different regions and the need for a highly customized ordering interface that could handle millions of SKU variations while maintaining sub-second response times for global users.",
     solution:
       "Leveraging a headless architecture with BigCommerce and a custom React frontend, we developed a dynamic pricing engine and a dealer-specific dashboard. This allowed dealers to configure products, see real-time availability, and track orders without manual intervention.",
-    galleryImages: ["/assets/retail.webp", "/assets/retails-01.webp"],
+    galleryImages: ["/assets/projects/steelcase-b2b-portal-gallery-1.jpg", "/assets/projects/steelcase-b2b-portal-gallery-2.jpg"],
     features: [
       "Headless BigCommerce Integration",
       "Dynamic Multi-tier Pricing Engine",
@@ -8192,14 +8192,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "12 Months",
     description:
       "An end-to-end digital transformation for an IoT-enabled home bar system, integrating hardware telemetry with an automated commerce engine for pod replenishment.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/drinkworks-iot-ecommerce.jpg",
     overview:
       "Drinkworks, a joint venture between AB InBev and Keurig Dr Pepper, needed a digital backbone to connect their smart drink dispenser with a consumer-facing eCommerce platform. The goal was to create a 'set and forget' ecosystem for drink pod subscriptions.",
     challenge:
       "The complexity lay in syncing physical device data with the digital store. We had to ensure that the machine could report pod usage accurately to trigger replenishment orders without user friction.",
     solution:
       "We implemented an AWS-based IoT hub that communicated with the dispensers and used BigCommerce as the commerce engine. A custom subscription management system was built to handle recurring deliveries based on real-time consumption data.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/drinkworks-iot-ecommerce-gallery-1.jpg", "/assets/projects/drinkworks-iot-ecommerce-gallery-2.jpg"],
     features: [
       "AWS IoT Core Integration",
       "Automated Pod Replenishment",
@@ -8320,14 +8320,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "6 Months",
     description:
       "A centralized B2B subscription platform enabling Unilever's global distributors to manage high-volume recurring orders with predictive inventory forecasting.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/unilever-subscription-engine.jpg",
     overview:
       "Unilever required a standardized digital solution to move from manual restocking to an automated subscription-based model for its wholesale distributors. The goal was to stabilize revenue and optimize factory production schedules.",
     challenge:
       "Managing varied subscription logic across different product categories and regions, each with unique compliance and shipping requirements, while ensuring the system could handle peak load during global promotional events.",
     solution:
       "We deployed a custom WooCommerce-based engine with a proprietary B2B subscription plugin. The system uses historical order data to predict future needs and pre-populate distributor baskets.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/unilever-subscription-engine-gallery-1.jpg", "/assets/projects/unilever-subscription-engine-gallery-2.jpg"],
     features: [
       "Predictive Order Modeling",
       "Custom B2B Subscription API",
@@ -8449,14 +8449,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "8 Months",
     description:
       "A comprehensive digital overhaul of core insurance operations, focusing on claims processing and policy management automation using a cloud-native architecture.",
-    heroImage: "/assets/insurance.jpg",
+    heroImage: "/assets/projects/insurance-digital-transformation.jpg",
     overview:
       "The project involved modernizing a legacy insurance ecosystem to improve operational efficiency and customer experience. We replaced manual workflows with intelligent automation to bridge the gap between technology and execution.",
     challenge:
       "The client faced significant bottlenecks in their claims processing department. Manual data entry, physical document handling, and fragmented legacy systems led to a 15-day average claim resolution time and high operational costs.",
     solution:
       "We implemented an AI-driven automation layer and a modernized React-based agent portal. By utilizing AWS Lambda for serverless processing and Python-based NLP for document parsing, we created a seamless end-to-end digital journey.",
-    galleryImages: ["/assets/insurance-02.jpg", "/assets/insurance-03.jpg"],
+    galleryImages: ["/assets/projects/insurance-digital-transformation-gallery-1.jpg", "/assets/projects/insurance-digital-transformation-gallery-2.jpg"],
     features: [
       "Automated Claims Triage",
       "Real-time Policy Analytics",
@@ -8577,14 +8577,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "6 Months",
     description:
       "Replaced fragile RPA with stable API-driven Power Automate flows, cutting processing time by 90% and ensuring 100% filing accuracy.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/tax-automation-system.jpg",
     overview:
       "We modernized the tax filing process for a major telco provider by moving away from unreliable UI-based automation to a robust API-driven architecture that ensures stability under heavy seasonal loads.",
     challenge:
       "The existing RPA solution was prone to breakage whenever the government portal UI changed, leading to missed deadlines and manual rework for thousands of filings during peak tax season.",
     solution:
       "We designed a robust automation engine using Microsoft Power Automate and .NET Core. By leveraging direct API integrations and Azure Functions, we created a system that is resilient to UI changes and scales effortlessly.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/tax-automation-system-gallery-1.jpg", "/assets/projects/tax-automation-system-gallery-2.jpg"],
     features: [
       "API-Driven Workflows",
       "Real-time Compliance Checks",
@@ -8705,14 +8705,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "10 Months",
     description:
       "A high-end retail personalization engine that unifies online and offline customer data to deliver hyper-personalized shopping experiences.",
-    heroImage: "/assets/e-commerce-platform.png",
+    heroImage: "/assets/projects/retail-personalization-engine.jpg",
     overview:
       "We built a premium omni-channel ecosystem for a leading beauty brand, focusing on bridging the gap between physical store visits and digital engagement through AI-driven personalization.",
     challenge:
       "The client suffered from siloed customer data, making it impossible to provide consistent recommendations. Page load times on the old platform were also hurting mobile conversion rates.",
     solution:
       "We developed a unified Shopify Plus storefront using React and GraphQL. We integrated a custom AI recommendation engine that analyzes skin profiles and purchase history to suggest tailored products.",
-    galleryImages: ["/assets/retail.webp", "/assets/retails-01.webp"],
+    galleryImages: ["/assets/projects/retail-personalization-engine-gallery-1.jpg", "/assets/projects/retail-personalization-engine-gallery-2.jpg"],
     features: [
       "Omni-channel Loyalty",
       "AI Product Recommendations",
@@ -8833,14 +8833,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "12 Months",
     description:
       "A complete data migration and analytics modernization project implementing a high-performance Snowflake architecture for financial intelligence.",
-    heroImage: "/assets/data-engineering.webp",
+    heroImage: "/assets/projects/data-platform-modernization.jpg",
     overview:
       "We helped a major banking group transition from fragmented legacy data silos to a unified, cloud-native analytics platform, enabling real-time business intelligence and predictive modeling.",
     challenge:
       "Slow legacy reporting cycles (taking over 24 hours) were preventing the bank from responding quickly to market shifts and customer needs.",
     solution:
       "We implemented a modern data stack using Snowflake and AWS. We built automated ETL pipelines using Airflow to ingest millions of daily transactions into a secure, centralized data warehouse.",
-    galleryImages: ["/assets/data-pulse.png", "/assets/data-engineering.webp"],
+    galleryImages: ["/assets/projects/data-platform-modernization-gallery-1.jpg", "/assets/projects/data-platform-modernization-gallery-2.jpg"],
     features: [
       "Cloud Data Warehouse",
       "Real-time Data Sync",
@@ -8962,14 +8962,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "8 Months",
     description:
       "A comprehensive influencer marketing platform that connects brands with creators through advanced AI-driven discovery, automated campaign management, and real-time performance tracking.",
-    heroImage: "/assets/data-engineering.webp",
+    heroImage: "/assets/projects/influence-flow.jpg",
     overview:
       "Influence Flow was designed to bridge the gap between enterprise brands and the growing creator economy. The platform automates the entire influencer lifecycle from discovery to payout, ensuring transparency and ROI measurement.",
     challenge:
       "The client needed to process millions of social data points in real-time to provide accurate engagement metrics while managing complex multi-currency payment workflows for thousands of creators simultaneously.",
     solution:
       "We implemented a microservices architecture using Node.js and Python for the data engine. The platform features an AI-powered discovery tool that analyzes creator content patterns and audience demographics using advanced NLP models.",
-    galleryImages: ["/assets/data-pulse.png", "/assets/data-engineering.webp"],
+    galleryImages: ["/assets/projects/influence-flow-gallery-1.jpg", "/assets/projects/influence-flow-gallery-2.jpg"],
     features: [
       "AI-Powered Creator Discovery",
       "Real-time Engagement Analytics",
@@ -9089,14 +9089,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "12 Months",
     description:
       "An advanced IoT ecosystem developed for remote monitoring, diagnostic predictive maintenance, and energy optimization of industrial cooling units.",
-    heroImage: "/assets/data-engineering.webp",
+    heroImage: "/assets/projects/smart-iot-diagnostic.jpg",
     overview:
       "Daikin required a centralized platform to manage thousands of industrial HVAC units across multiple territories. The goal was to move from reactive to predictive maintenance using live sensor data stream.",
     challenge:
       "Integrating legacy hardware protocols with modern cloud architecture while ensuring sub-second latency for critical system alerts in industrial environments.",
     solution:
       "Developed a custom IoT Gateway solution that bridges local sensor data with a Google Cloud-based analytics engine, visualization through a high-performance React dashboard.",
-    galleryImages: ["/assets/data-pulse.png", "/assets/data-engineering.webp"],
+    galleryImages: ["/assets/projects/smart-iot-diagnostic-gallery-1.jpg", "/assets/projects/smart-iot-diagnostic-gallery-2.jpg"],
     features: [
       "Real-time Sensor Telemetry",
       "Predictive Failure Analysis",
@@ -9218,14 +9218,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "18 Months",
     description:
       "Full-scale digital transformation of a legacy banking mobile app into a modern, feature-rich financial hub with biometric security and real-time payments.",
-    heroImage: "/assets/financial.webp",
+    heroImage: "/assets/projects/digital-banking-modernization.jpg",
     overview:
       "United Bank Limited needed to recapture the millennial market by redesigning their digital presence. We overhauled the entire UI/UX and backend integration to support high-traffic retail banking.",
     challenge:
       "Ensuring zero-downtime migration for millions of users while maintaining strict regulatory compliance and ultra-secure transaction protocols.",
     solution:
       "A scalable Flutter-based mobile application backed by a Java Spring Boot microservices layer, implementing 3D Secure 2.0 and biometric authentication patterns.",
-    galleryImages: ["/assets/financial-services-01.jpg", "/assets/financial-services-02.webp"],
+    galleryImages: ["/assets/projects/digital-banking-modernization-gallery-1.jpg", "/assets/projects/digital-banking-modernization-gallery-2.jpg"],
     features: [
       "Biometric Secure Login",
       "Real-time Fund Transfers",
@@ -9345,14 +9345,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "10 Months",
     description:
       "A specialized field officer application designed to digitize credit disbursement and collection processes in remote, low-connectivity areas.",
-    heroImage: "/assets/financial.webp",
+    heroImage: "/assets/projects/microfinance-field-digitization.jpg",
     overview:
       "Kashf Foundation required a way to eliminate paper-based documentation for their field officers. The solution needed to work in rural areas with unreliable internet connections.",
     challenge:
       "Designing a data synchronization engine that can handle conflict resolution when officers sync hundreds of applications after days of offline work.",
     solution:
       "Built a robust mobile application with a local SQLite database and a delta-based sync engine, allowing field officers to perform full credit assessments offline.",
-    galleryImages: ["/assets/financial-services-01.jpg", "/assets/financial-services-02.webp"],
+    galleryImages: ["/assets/projects/microfinance-field-digitization-gallery-1.jpg", "/assets/projects/microfinance-field-digitization-gallery-2.jpg"],
     features: [
       "Offline-First Data Entry",
       "Conflict Resolution Engine",
@@ -9473,14 +9473,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "4 Months",
     description:
       "A comprehensive delivery platform designed to eliminate the friction between local grocery stores and urban consumers through intelligent logistics.",
-    heroImage: "/assets/mobile-app-development.webp",
+    heroImage: "/assets/projects/grecha-delivery.jpg",
     overview:
       "Grecha approached us to build a robust MVP that could handle high-concurrency ordering while maintaining a seamless user experience for both customers and couriers.",
     challenge:
       "The primary challenge was synchronizing inventory across multiple regional warehouses in real-time while ensuring the mobile app remained responsive on mid-range devices.",
     solution:
       "We implemented a React Native application backed by a microservices architecture that prioritizes local caching and event-driven inventory updates.",
-    galleryImages: ["/assets/ux-ui-design.jpg", "/assets/mobile-app-development.webp"],
+    galleryImages: ["/assets/projects/grecha-delivery-gallery-1.jpg", "/assets/projects/grecha-delivery-gallery-2.jpg"],
     features: [
       "Real-time Inventory Sync",
       "Geofenced Courier Matching",
@@ -9601,14 +9601,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "6 Months",
     description:
       "An enterprise IoT platform designed to monitor and optimize energy consumption across large-scale industrial complexes using real-time data analytics.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/energo-iot.jpg",
     overview:
       "Energo needed a centralized system to aggregate data from thousands of IoT sensors to help plant managers identify energy waste and reduce operational costs.",
     challenge:
       "The system had to process high-velocity telemetry data from diverse hardware while providing sub-second latency for critical threshold alerts.",
     solution:
       "We developed a serverless architecture on AWS that leverages Kinesis for data ingestion and a React-based dashboard for advanced data visualization.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/energo-iot-gallery-1.jpg", "/assets/projects/energo-iot-gallery-2.jpg"],
     features: [
       "Real-time Telemetry Processing",
       "Predictive Maintenance Alerts",
@@ -9729,14 +9729,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "5 Months",
     description:
       "A sophisticated real estate marketplace connecting landlords with high-quality tenants through an automated vetting and bidding system.",
-    heroImage: "/assets/mobile-app-development.webp",
+    heroImage: "/assets/projects/baza-real-estate.jpg",
     overview:
       "Baza aimed to disrupt the manual rental process by automating tenant verification and rental offer management for premium properties.",
     challenge:
       "Creating a trust-based ecosystem where high-value transactions could be initiated and managed entirely online with zero friction.",
     solution:
       "We developed a custom web platform with integrated document e-signing, identity verification, and a real-time offer tracking system.",
-    galleryImages: ["/assets/ux-ui-design.jpg", "/assets/mobile-app-development.webp"],
+    galleryImages: ["/assets/projects/baza-real-estate-gallery-1.jpg", "/assets/projects/baza-real-estate-gallery-2.jpg"],
     features: [
       "Automated Tenant Vetting",
       "E-Signature Integration",
@@ -9857,14 +9857,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "8 Months",
     description:
       "Architecting and implementing a dedicated Layer 1 blockchain optimized specifically for decentralized notifications and real-time communication. This project involved deep protocol-level engineering to ensure low latency and high throughput for cross-chain messaging solutions.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/push-chain.jpg",
     overview:
       "PushChain was designed to solve the bottleneck of synchronized communication in the Web3 ecosystem. By moving notifications to a dedicated chain, we enabled seamless, trustless alerts across multiple blockchain networks without the congestion of primary liquidity layers.",
     challenge:
       "The primary challenge was maintaining near-instant finality for notifications while ensuring the cost per message remained negligible. Existing L1 structures were either too slow or too expensive for the high-frequency requirements of a global messaging protocol.",
     solution:
       "We implemented a custom consensus mechanism based on Proof of Stake with a focus on data availability. The architecture supports parallel processing of notification shards, allowing for horizontal scalability as the dApp ecosystem grows.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/push-chain-gallery-1.jpg", "/assets/projects/push-chain-gallery-2.jpg"],
     features: [
       "Protocol-Level Cross-Chain Messaging",
       "High-Throughput Gossip Protocol",
@@ -9985,14 +9985,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "6 Months",
     description:
       "Developing a cutting-edge loyalty ecosystem for India's leading delivery platform. We integrated NFT-based rewards and decentralized identifiers to create a unique, gamified dining experience that rewards high-frequency users with exclusive digital assets and real-world perks.",
-    heroImage: "/assets/mobile-app-development.webp",
+    heroImage: "/assets/projects/swiggy-web3-loyalty.jpg",
     overview:
       "The Swiggy Web3 project aimed to transform traditional point-based loyalty into a verifiable, tradeable, and engaging asset-based system. Users earn unique digital collectibles through the Dineout platform which unlock tiered premium services and partner discounts.",
     challenge:
       "Integrating Web3 technology into a high-scale consumer app required frictionless onboarding. We had to abstract the complexity of wallets and gas fees to ensure 100M+ users could interact with the system without technical knowledge.",
     solution:
       "A 'gasless' infrastructure combined with social login-based custodial wallets was implemented. We utilized a scalable sidechain to handle the high volume of micro-transactions associated with daily reward distributions.",
-    galleryImages: ["/assets/ux-ui-design.jpg", "/assets/mobile-app-development.webp"],
+    galleryImages: ["/assets/projects/swiggy-web3-loyalty-gallery-1.jpg", "/assets/projects/swiggy-web3-loyalty-gallery-2.jpg"],
     features: [
       "Gasless Reward Minting",
       "Social Login Wallet Provisioning",
@@ -10117,14 +10117,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "18 Months",
     description:
       "A massive-scale biometric capture and SIM registration system developed to meet complex national regulatory requirements and security standards.",
-    heroImage: "/assets/mobile-app-development.webp",
+    heroImage: "/assets/projects/mtn-biosmart-registration.jpg",
     overview:
       "Seamfix deployed the BioSmart solution to enable the largest telecommunications provider in Africa to register and verify millions of subscribers using secure biometric data capture. The system was designed to handle high-volume processing while maintaining strict data integrity and regulatory compliance with the Nigerian Communications Commission (NCC).",
     challenge:
       "The government issued a mandate for all active SIM cards to be linked to validated biometric data within a tight timeframe. MTN required a robust, distributed system capable of handling tens of thousands of concurrent sessions across diverse and often remote geographic locations with limited connectivity.",
     solution:
       "Seamfix engineered a distributed biometric platform featuring offline capture capabilities, real-time validation against central databases, and a comprehensive management dashboard. The solution utilized advanced compression algorithms for biometric data and a robust synchronization engine for low-bandwidth environments.",
-    galleryImages: ["/assets/ux-ui-design.jpg", "/assets/mobile-app-development.webp"],
+    galleryImages: ["/assets/projects/mtn-biosmart-registration-gallery-1.jpg", "/assets/projects/mtn-biosmart-registration-gallery-2.jpg"],
     features: [
       "Sub-15 Second Biometric Capture",
       "Advanced Offline Synchronization",
@@ -10245,14 +10245,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "24 Months",
     description:
       "An enterprise-grade enrollment solution designed to facilitate the rapid issuance of National Identity Numbers (NIN) to millions of citizens via decentralized centers.",
-    heroImage: "/assets/mobile-app-development.webp",
+    heroImage: "/assets/projects/nimc-national-id-enrollment.jpg",
     overview:
       "Partnering with the National Identity Management Commission (NIMC), Seamfix developed an advanced enrollment ecosystem to bridge the identity gap. The project involved deploying secure terminals across thousands of locations to capture demographic and biometric data, feeding into the national backend for identity deduplication and number issuance.",
     challenge:
       "The primary challenge was managing the sheer volume of data and ensuring high-fidelity biometric capture to prevent identity theft and fraud on a national scale. The infrastructure needed to support high availability and secure data transmission across fragmented network providers.",
     solution:
       "Seamfix implemented a high-availability cloud-hybrid infrastructure that optimized data ingestion and processing. We introduced AI-driven image quality checks at the point of capture to ensure all biometric data met international ICAO standards before submission.",
-    galleryImages: ["/assets/ux-ui-design.jpg", "/assets/mobile-app-development.webp"],
+    galleryImages: ["/assets/projects/nimc-national-id-enrollment-gallery-1.jpg", "/assets/projects/nimc-national-id-enrollment-gallery-2.jpg"],
     features: [
       "ICAO Standard Photo Capture",
       "Multi-Finger Biometric Scanning",
@@ -10373,14 +10373,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "Ongoing",
     description:
       "A premier identity verification platform connecting businesses with government databases for instant KYC and AML compliance checks.",
-    heroImage: "/assets/mobile-app-development.webp",
+    heroImage: "/assets/projects/verified-kyc-verification.jpg",
     overview:
       "Verified.ng is Seamfix's flagship SaaS identity platform. It provides a unified API for businesses to verify the identities of their customers against various authoritative databases, including passports, driver's licenses, and national ID cards. This project transformed the traditional multi-day KYC process into a sub-second digital experience.",
     challenge:
       "Financial institutions faced high abandonment rates due to slow, manual verification processes. Businesses needed a secure, reliable way to verify information without direct access to sensitive government servers.",
     solution:
       "Seamfix built a high-security middleware platform that securely bridges corporate applications and government databases. We implemented a robust rate-limiting and audit-logging engine to ensure compliance with data protection laws while maintaining low latency.",
-    galleryImages: ["/assets/ux-ui-design.jpg", "/assets/mobile-app-development.webp"],
+    galleryImages: ["/assets/projects/verified-kyc-verification-gallery-1.jpg", "/assets/projects/verified-kyc-verification-gallery-2.jpg"],
     features: [
       "Sub-Second API Responses",
       "OCR Document Extraction",
@@ -10501,14 +10501,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "36 Months",
     description:
       "A comprehensive digital overhaul of the Sudanese national civil registry, enabling secure identification and digital service delivery.",
-    heroImage: "/assets/mobile-app-development.webp",
+    heroImage: "/assets/projects/sudan-civil-registry-digitization.jpg",
     overview:
       "The Sudanese government sought to modernize its paper-based civil records to improve governance and security. Seamfix spearheaded the digital transition, creating a centralized civil registry that tracks birth, marriage, death, and residency records for over 40 million citizens using advanced cloud technologies.",
     challenge:
       "Migrating decades of physical records into a digital format while ensuring accuracy and preventing data duplication was a monumental task. The system also had to be resilient against infrastructure challenges and perform reliably at a national scale.",
     solution:
       "We deployed a high-redundancy cloud infrastructure and developed a custom ETL (Extract, Transform, Load) pipeline for large-scale data digitization. The system integrated biometric deduplication to ensure the uniqueness of each citizen entry.",
-    galleryImages: ["/assets/ux-ui-design.jpg", "/assets/mobile-app-development.webp"],
+    galleryImages: ["/assets/projects/sudan-civil-registry-digitization-gallery-1.jpg", "/assets/projects/sudan-civil-registry-digitization-gallery-2.jpg"],
     features: [
       "Centralized Identity Database",
       "Automatic Duplicate Detection",
@@ -10629,14 +10629,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "6 Months",
     description:
       "A comprehensive internship management and talent development platform designed to bridge the gap between education and industry.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/module-academy.jpg",
     overview:
       "Module is an end-to-end learning management system designed to automate the training, assessment, and placement of software engineering interns. It provides a structured pathway for learners and robust tracking for administrators.",
     challenge:
       "Scaling physical internship programs proved difficult due to disjointed tracking systems and a lack of standardized assessment tools for a growing number of remote participants.",
     solution:
       "We engineered a custom EdTech platform that automates curriculum delivery, offers real-time performance feedback through interactive coding sandboxes, and leverages AI to match top-performing graduates with global industry opportunities.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/module-academy-gallery-1.jpg", "/assets/projects/module-academy-gallery-2.jpg"],
     features: [
       "Automated curriculum delivery",
       "Mentor-mentee matching engine",
@@ -10757,14 +10757,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "8 Months",
     description:
       "A secure and user-centric mobile application enabling simplified savings, investment, and wealth management for the African market.",
-    heroImage: "/assets/financial.webp",
+    heroImage: "/assets/projects/kash-fintech.jpg",
     overview:
       "Kash is a mobile-first wealth management platform that encourages healthy financial habits through automated savings, goal tracking, and access to diversified low-risk investment options.",
     challenge:
       "High inflation rates and a lack of accessible investment vehicles made it difficult for common citizens to preserve wealth and build long-term savings.",
     solution:
       "We developed a secure mobile app with military-grade encryption that offers automated fund round-ups, instant withdrawals, and AI-driven personalized financial advice.",
-    galleryImages: ["/assets/financial-services-01.jpg", "/assets/financial-services-02.webp"],
+    galleryImages: ["/assets/projects/kash-fintech-gallery-1.jpg", "/assets/projects/kash-fintech-gallery-2.jpg"],
     features: [
       "High-yield savings accounts",
       "Automated investment portfolios",
@@ -10885,14 +10885,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "12 Months",
     description:
       "An innovative e-commerce solution that leverages banking infrastructure to provide users with a Buy Now, Pay Later shopping experience.",
-    heroImage: "/assets/e-commerce-platform.png",
+    heroImage: "/assets/projects/altmall-ecommerce.jpg",
     overview:
       "AltMall is a premium alternative marketplace that empowers customers to own high-value items immediately while spreading payments over flexible installment plans.",
     challenge:
       "Traditional e-commerce platforms lacked integrated financing solutions, leading to extremely high cart abandonment for electronics and home appliances.",
     solution:
       "We integrated a proprietary credit scoring engine directly into the checkout flow, enabling real-time approval of installment plans based on banking data.",
-    galleryImages: ["/assets/retail.webp", "/assets/retails-01.webp"],
+    galleryImages: ["/assets/projects/altmall-ecommerce-gallery-1.jpg", "/assets/projects/altmall-ecommerce-gallery-2.jpg"],
     features: [
       "Buy Now Pay Later (BNPL)",
       "Real-time credit assessment",
@@ -11013,14 +11013,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "10 Months",
     description:
       "Scalable cloud infrastructure and mobile interface development for a leading payroll and HR management system serving pan-African businesses.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/bento-payroll-hr.jpg",
     overview:
       "Bento is a sophisticated enterprise HR platform that automates complex payroll, tax compliance, and benefit management tasks through a unified cloud interface.",
     challenge:
       "Managing taxes, pensions, and varying labor laws across multiple African borders was a manual, error-prone process for growing enterprises.",
     solution:
       "We developed a cloud-native platform that automates statutory deductions and offers deep HR analytics via a robust API-first architecture.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/bento-payroll-hr-gallery-1.jpg", "/assets/projects/bento-payroll-hr-gallery-2.jpg"],
     features: [
       "Automated payroll engine",
       "Statutory tax compliance",
@@ -11142,14 +11142,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "18 Months",
     description:
       "GitHub collaborated with Andela to rapidly expand its engineering capabilities, focusing on platform reliability, infrastructure scalability, and feature velocity during peak global growth periods.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/github-scaling-engineering-acceleration.jpg",
     overview:
       "As GitHub's user base surged, their internal teams faced challenges in keeping pace with feature demands while maintaining 99.9% availability. Andela provided a specialized squad of senior engineers to integrate directly into GitHub's core product teams.",
     challenge:
       "Scaling a distributed system that supports millions of developers requires specialized knowledge in Ruby on Rails, Go, and massive-scale database architecture. GitHub needed engineers who could contribute immediately without extensive onboarding.",
     solution:
       "Andela deployed a team of 25+ senior software engineers across various time zones. These engineers focused on refactoring legacy monoliths into microservices, optimizing CI/CD pipelines, and implementing advanced monitoring solutions.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/github-scaling-engineering-acceleration-gallery-1.jpg", "/assets/projects/github-scaling-engineering-acceleration-gallery-2.jpg"],
     features: [
       "Core Monolith Refactoring",
       "High-Performance Go Microservices",
@@ -11271,14 +11271,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "24 Months",
     description:
       "ViacomCBS leveraged Andela's talent network to accelerate the development of Paramount+, ensuring a seamless transition and global rollout of their premium streaming service.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/viacomcbs-paramount-plus-transformation.jpg",
     overview:
       "The shift from traditional broadcast to digital streaming required a massive pivot in engineering resources. ViacomCBS needed to build high-concurrency architectures capable of handling 50M+ subscribers.",
     challenge:
       "Building a global streaming service involves complex video encoding, regional content licensing logic, and high-availability payment systems across multiple platforms and devices.",
     solution:
       "Andela provided specialized full-stack and mobile developers who specialized in Java, React, and cloud-native streaming protocols to build out the front-end and back-end of the Paramount+ ecosystem.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/viacomcbs-paramount-plus-transformation-gallery-1.jpg", "/assets/projects/viacomcbs-paramount-plus-transformation-gallery-2.jpg"],
     features: [
       "Global Content CMS",
       "Low-Latency Video Playback",
@@ -11400,14 +11400,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "12 Months",
     description:
       "Andela partnered with Coursera to enhance their digital learning platform using advanced data engineering and AI-driven personalization techniques.",
-    heroImage: "/assets/agentic-ai.webp",
+    heroImage: "/assets/projects/coursera-ai-learning-optimization.jpg",
     overview:
       "Coursera aimed to improve student completion rates by providing a more personalized and interactive learning journey. They needed data experts to refine their machine learning models.",
     challenge:
       "Analyzing billions of learning data points to provide real-time feedback and accurate course recommendations across a library of thousands of courses.",
     solution:
       "Andela embedded a team of senior data scientists and machine learning engineers to build predictive models that identify at-risk students and recommend intervention strategies.",
-    galleryImages: ["/assets/ai-agents.webp", "/assets/data-engineering.webp"],
+    galleryImages: ["/assets/projects/coursera-ai-learning-optimization-gallery-1.jpg", "/assets/projects/coursera-ai-learning-optimization-gallery-2.jpg"],
     features: [
       "Predictive Success Models",
       "Personalized Learning Paths",
@@ -11529,14 +11529,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "20 Months",
     description:
       "Andela collaborated with Mastercard to develop innovative mobile payment solutions and secure infrastructure to expand digital financial services in emerging markets.",
-    heroImage: "/assets/financial.webp",
+    heroImage: "/assets/projects/mastercard-global-fintech-infrastructure.jpg",
     overview:
       "Mastercard needed to accelerate the development of its digital wallet and payment gateway APIs to better serve customers in mobile-first economies.",
     challenge:
       "The financial sector requires zero-tolerance for errors, extremely low latency, and adherence to complex international security standards (PCI-DSS).",
     solution:
       "Andela provided a specialized group of security and mobile engineers who worked on building robust mobile SDKs and high-performance backend transaction layers.",
-    galleryImages: ["/assets/financial-services-01.jpg", "/assets/financial-services-02.webp"],
+    galleryImages: ["/assets/projects/mastercard-global-fintech-infrastructure-gallery-1.jpg", "/assets/projects/mastercard-global-fintech-infrastructure-gallery-2.jpg"],
     features: [
       "Secure Tokenization Engine",
       "Contactless Payment SDKs",
@@ -11657,14 +11657,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "18 Months",
     description:
       "Western Union partnered with Spire Digital to overhaul their digital transfer ecosystem, focusing on reducing friction in cross-border transactions and scaling their mobile presence to over 200 countries and territories.",
-    heroImage: "/assets/financial.webp",
+    heroImage: "/assets/projects/western-union-digital-transformation.jpg",
     overview:
       "Moving billions of dollars across the globe requires more than just code; it requires a deep understanding of international compliance, high-availability architecture, and user trust. Spire led the design and development of the next-generation Western Union mobile app and web portal.",
     challenge:
       "The primary challenge was modernizing a complex legacy infrastructure while ensuring zero downtime for millions of daily users. The system needed to handle volatile currency exchange rates and varying regional regulatory requirements with sub-second latency.",
     solution:
       "We implemented a microservices-based architecture focused on performance and security. By leveraging Biometric Authentication and a revamped state-management system, we created a seamless flow that reduced transaction time by 35%.",
-    galleryImages: ["/assets/financial-services-01.jpg", "/assets/financial-services-02.webp"],
+    galleryImages: ["/assets/projects/western-union-digital-transformation-gallery-1.jpg", "/assets/projects/western-union-digital-transformation-gallery-2.jpg"],
     features: [
       "Real-time Currency Exchange APIs",
       "Biometric Security Integration",
@@ -11786,14 +11786,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "12 Months",
     description:
       "Spire Digital worked with TomTom to redefine their mobile navigation experience, creating a sophisticated interface that integrates real-time traffic data, offline mapping, and a premium editorial design.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/tomtom-navigation-redesign.jpg",
     overview:
       "In a market dominated by free mapping tools, TomTom needed a premium application that justified its subscription model through superior data visualization, accurate lane guidance, and an intuitive driving-focused UI.",
     challenge:
       "The complexity lay in rendering high-fidelity 3D maps while maintaining perfectly smooth frame rates on mobile devices, all while consuming massive streams of real-time traffic and hazard data.",
     solution:
       "We developed a specialized rendering engine optimized for vector tiles and implemented a predictive caching layer that anticipates a driver's route to prevent navigation lag.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/tomtom-navigation-redesign-gallery-1.jpg", "/assets/projects/tomtom-navigation-redesign-gallery-2.jpg"],
     features: [
       "Real-time Vector Tile Rendering",
       "Predictive Traffic Analysis",
@@ -11914,14 +11914,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "24 Months",
     description:
       "Spire Digital developed a high-security tactical dashboard for Lockheed Martin, designed to ingest and visualize massive streams of telemetry data from orbital assets and terrestrial sensors into a unified operational picture.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/lockheed-martin-mission-control.jpg",
     overview:
       "Modern defense requires real-time situational awareness. We built an enterprise-grade web application that handles Petabytes of data, providing command centers with instant insights and predictive modeling capabilities.",
     challenge:
       "The system had to meet the highest security standards while maintaining extreme performance. Visualizing thousands of moving assets with their associated telemetry in a browser-based environment required innovative data-handling strategies.",
     solution:
       "A custom WebGL-based visualization engine was built to handle high-density data overlays, backed by a proprietary stream-processing backend that prioritizes alerts based on mission importance.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/lockheed-martin-mission-control-gallery-1.jpg", "/assets/projects/lockheed-martin-mission-control-gallery-2.jpg"],
     features: [
       "Real-time 3D Asset Visualization",
       "Petabyte-scale Data Ingestion",
@@ -12042,14 +12042,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "14 Months",
     description:
       "Spire Digital partnered with Dish Network to create DISH Anywhere, a unified streaming and DVR management platform that allows users to access their entire home entertainment library from any device, anywhere in the world.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/dish-network-dish-anywhere.jpg",
     overview:
       "The digital transition for satellite providers is critical. DISH Anywhere bridges the gap between traditional broadcast TV and the modern streaming-on-demand era, offering a cohesive experience across Web, iOS, and Android.",
     challenge:
       "Integrating with hardware DVRs located in users' homes meant overcoming varied network conditions, NAT traversal issues, and ensuring low-latency video streaming without a central server-side cache.",
     solution:
       "We engineered a direct peer-to-peer communication layer between mobile devices and the home Hopper DVR, combined with a cloud-based content aggregation system for VOD assets.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/dish-network-dish-anywhere-gallery-1.jpg", "/assets/projects/dish-network-dish-anywhere-gallery-2.jpg"],
     features: [
       "Remote DVR Scheduling",
       "Live TV Transcoding Engine",
@@ -12171,14 +12171,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "14 Months",
     description:
       "A comprehensive digital transformation replacing an aging monolithic platform with a responsive, microservices-driven architecture for real-time fleet management.",
-    heroImage: "/assets/cloud-engineering-devops.jpg",
+    heroImage: "/assets/projects/transportation-legacy-modernization.jpg",
     overview:
       "Our client, a leader in North American logistics, faced critical performance bottlenecks and mounting technical debt with their core mainframe application. Keyhole Software was engaged to architect and execute a complete modernization strategy that would transition their field operations into a cloud-native, high-performance web environment without disrupting 24/7 business operations.",
     challenge:
       "The existing system was bottlenecked by legacy database locks and lacked a modern API layer, preventing integration with third-party tracking partners and mobile applications. Data latency was exceeding 5 seconds per request, causing significant delays in dispatching and tracking critical freight across multiple time zones.",
     solution:
       "We implemented a staged migration using the Strangler Fig pattern, gradually moving functionality to a Spring Boot microservices backend and a React-based frontend. We introduced a distributed caching layer and an event-driven synchronization engine to keep the legacy and new systems in perfect alignment during the transition.",
-    galleryImages: ["/assets/cloud-migration-system.png", "/assets/cloudsync-platform.webp"],
+    galleryImages: ["/assets/projects/transportation-legacy-modernization-gallery-1.jpg", "/assets/projects/transportation-legacy-modernization-gallery-2.jpg"],
     features: [
       "Real-time GPS Integrated Dispatching",
       "Microservices-based Business Logic Engine",
@@ -12301,14 +12301,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "10 Months",
     description:
       "Transitioning a mission-critical payment processing engine from on-premise hardware to a secure, PCI-compliant Azure cloud architecture.",
-    heroImage: "/assets/cloud-engineering-devops.jpg",
+    heroImage: "/assets/projects/fintech-cloud-migration.jpg",
     overview:
       "Keyhole Software was commissioned by a global financial firm to migrate their high-frequency payment gateway to Azure. The project required a complete architectural overhaul to support 10 million daily transactions while adhering to strict SOC2 and PCI-DSS compliance standards.",
     challenge:
       "The client’s physical server infrastructure was reaching end-of-life, causing performance degradation during peak trading hours. Additionally, the existing monolithic code was difficult to scale vertically, leading to excessive hardware costs and maintenance windows that affected global availability.",
     solution:
       "We designed a Kubernetes-orchestrated environment on Azure (AKS) that leverages serverless functions for individual payment workflows. By implementing a zero-trust network architecture and automated compliance auditing, we ensured security was baked into every layer of the infrastructure.",
-    galleryImages: ["/assets/cloud-migration-system.png", "/assets/cloudsync-platform.webp"],
+    galleryImages: ["/assets/projects/fintech-cloud-migration-gallery-1.jpg", "/assets/projects/fintech-cloud-migration-gallery-2.jpg"],
     features: [
       "PCI-Compliant Azure Landing Zone",
       "Real-time Transaction Monitoring",
@@ -12430,14 +12430,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "8 Months",
     description:
       "A custom LLM-powered solution enabling claims adjusters to query complex policy documents and legal files using natural language.",
-    heroImage: "/assets/agentic-ai.webp",
+    heroImage: "/assets/projects/enterprise-ai-assistant.jpg",
     overview:
       "The client’s adjusters were spending hours manually searching through thousands of policy variations and historical claim records. Keyhole Software developed a Retrieval-Augmented Generation (RAG) assistant that integrates directly with their document management system, providing instant, source-cited answers to adjuster queries.",
     challenge:
       "Insurance policies are hyper-dense and context-dependent. Standard keyword search was failing to provide accurate answers. Furthermore, all data had to remain strictly on-premise or within a private cloud VPC to ensure policyholder privacy and compliance with insurance regulations.",
     solution:
       "We built a private RAG pipeline using a vector database for semantic search and a private instance of a Large Language Model. The system included a 'Source Verification' feature that highlights exactly where in a 200-page document the AI found its answer, ensuring human-in-the-loop accuracy.",
-    galleryImages: ["/assets/ai-agents.webp", "/assets/data-engineering.webp"],
+    galleryImages: ["/assets/projects/enterprise-ai-assistant-gallery-1.jpg", "/assets/projects/enterprise-ai-assistant-gallery-2.jpg"],
     features: [
       "Private LLM Integration (VPC)",
       "Semantic Document Indexing",
@@ -12559,14 +12559,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "12 Months",
     description:
       "Architecting a secure interoperability layer that aggregates data from 12+ separate health facilities using HL7 FHIR standards.",
-    heroImage: "/assets/healthcare.avif",
+    heroImage: "/assets/projects/healthcare-data-interoperability.jpg",
     overview:
       "MidWest Health Network suffered from fragmented patient data siloed across decades-old EHR instances. Keyhole Software designed and implemented a modern API gateway that normalizes various data formats into a unified FHIR-compliant repository, providing clinicians with a 360-degree view of patient history.",
     challenge:
       "Each facility used different data standards (HL7 v2, CSV, SQL), making real-time clinical decision support impossible. Doctors were forced to log into multiple portals to see a patient’s full history, significantly increasing the risk of medical oversight.",
     solution:
       "We built a specialized integration engine that transforms legacy data into FHIR R4 resources. This centralized data lake serves a modern React dashboard that features real-time clinical alerts, medication reconciliation, and longitudinal health charting.",
-    galleryImages: ["/assets/healthcare-02.jpg", "/assets/health-connect-portal.png"],
+    galleryImages: ["/assets/projects/healthcare-data-interoperability-gallery-1.jpg", "/assets/projects/healthcare-data-interoperability-gallery-2.jpg"],
     features: [
       "HL7 FHIR R4 Compliant API",
       "Real-time Clinical Event Alerts",
@@ -12688,14 +12688,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "18 Months",
     description:
       "A comprehensive digital transformation project that launched Nigeria's first fully digital bank, enabling end-to-end banking without physical intervention.",
-    heroImage: "/assets/financial.webp",
+    heroImage: "/assets/projects/onebank-sterling.jpg",
     overview:
       "Sterling Bank sought to disrupt the traditional banking model by creating a mobile-first platform that offers everything from automated savings to instant loans. Cregital was tasked with designing the experience and core interface for this ambitious fintech venture.",
     challenge:
       "The primary challenge was migrating complex legacy banking workflows into a simplified mobile experience while maintaining enterprise-level security and ensuring regulatory compliance across multiple service layers.",
     solution:
       "We implemented a microservices-based architecture coupled with a user-centric UI design that prioritized speed and accessibility. The result was a seamless onboarding process that takes less than 2 minutes.",
-    galleryImages: ["/assets/financial-services-01.jpg", "/assets/financial-services-02.webp"],
+    galleryImages: ["/assets/projects/onebank-sterling-gallery-1.jpg", "/assets/projects/onebank-sterling-gallery-2.jpg"],
     features: [
       "Instant Digital Onboarding",
       "Automated Wealth Management",
@@ -12816,14 +12816,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "14 Months",
     description:
       "Transformation of a traditional registrar business into a modern digital platform serving millions of shareholders and listed companies.",
-    heroImage: "/assets/financial.webp",
+    heroImage: "/assets/projects/africa-prudential.jpg",
     overview:
       "Africa Prudential needed to eliminate technical debt and manual paperwork in shares management. We developed 'EasyVerify', a digital suite for automated shareholder engagement and self-service dividend management.",
     challenge:
       "Digitizing millions of legacy physical records and creating a secure verification system that works even in low-connectivity environments.",
     solution:
       "We deployed a cloud-native platform with a mobile-optimized interface, enabling shareholders to track holdings and claim dividends via USSD and web.",
-    galleryImages: ["/assets/financial-services-01.jpg", "/assets/financial-services-02.webp"],
+    galleryImages: ["/assets/projects/africa-prudential-gallery-1.jpg", "/assets/projects/africa-prudential-gallery-2.jpg"],
     features: [
       "Dividend Self-Service",
       "Electronic Stock Proxy",
@@ -12944,14 +12944,14 @@ const projectsData: Record<string, ProjectPageData> = {
     duration: "24 Months",
     description:
       "Design and development of a massive-scale digital ecosystem integrating self-service, content, and financial services in one app.",
-    heroImage: "/assets/technology-01.webp",
+    heroImage: "/assets/projects/glo-digital-gateway.jpg",
     overview:
       "Globacom (Glo) wanted to transition from a telco to a 'techco'. We designed the 'Glo Café' and partner portals to centralize data management, lifestyle content, and AI-driven customer support.",
     challenge:
       "Engineering a platform capable of handling massive peak-time concurrency while simplifying a complex catalog of over 200 data and voice products.",
     solution:
       "A high-performance Angular frontend backed by a Java Spring microservices architecture, featuring an AI chatbot that handles 70% of common queries.",
-    galleryImages: ["/assets/technology-02.jpg", "/assets/technology.png"],
+    galleryImages: ["/assets/projects/glo-digital-gateway-gallery-1.jpg", "/assets/projects/glo-digital-gateway-gallery-2.jpg"],
     features: [
       "AI Customer Assistant",
       "Dynamic Data Bundling",
