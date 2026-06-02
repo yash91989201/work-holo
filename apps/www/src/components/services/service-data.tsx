@@ -84,8 +84,8 @@ export const servicesData: Record<string, ServicePageData> = {
       "Scalable architecture",
     ],
     galleryImages: [
-      "/images/services/agentic-ai-1.jpg",
-      "/images/services/agentic-ai-2.jpg",
+      "/assets/technology-01.webp",
+      "/assets/technology-02.jpg",
     ],
     customerServices: [
       {
@@ -156,8 +156,8 @@ export const servicesData: Record<string, ServicePageData> = {
       "Human handoff capability",
     ],
     galleryImages: [
-      "/images/services/ai-agents-1.jpg",
-      "/images/services/ai-agents-2.jpg",
+      "/assets/ai-support-bot.jpg",
+      "/assets/digital-transformation-solutions.webp",
     ],
     customerServices: [
       {
@@ -227,7 +227,10 @@ export const servicesData: Record<string, ServicePageData> = {
       "Iterative development",
       "Market validation",
     ],
-    galleryImages: ["/images/services/mvp-1.jpg", "/images/services/mvp-2.jpg"],
+    galleryImages: [
+      "/assets/business-transformation.webp",
+      "/assets/diverse-team-planning-stockcake.webp",
+    ],
     customerServices: [
       {
         icon: "IconUsers",
@@ -297,8 +300,8 @@ export const servicesData: Record<string, ServicePageData> = {
       "Performance optimization",
     ],
     galleryImages: [
-      "/images/services/web-app-1.jpg",
-      "/images/services/web-app-2.jpg",
+      "/assets/cloudsync-platform.webp",
+      "/assets/e-commerce-platform.png",
     ],
     customerServices: [
       {
@@ -369,8 +372,8 @@ export const servicesData: Record<string, ServicePageData> = {
       "Offline functionality",
     ],
     galleryImages: [
-      "/images/services/mobile-app-1.jpg",
-      "/images/services/mobile-app-2.jpg",
+      "/assets/health-connect-portal.png",
+      "/assets/health-track-pro.png",
     ],
     customerServices: [
       {
@@ -440,7 +443,10 @@ export const servicesData: Record<string, ServicePageData> = {
       "Security testing",
       "Test reporting & analytics",
     ],
-    galleryImages: ["/images/services/qa-1.jpg", "/images/services/qa-2.jpg"],
+    galleryImages: [
+      "/assets/cyber-security-audit.jpg",
+      "/assets/devops-pipeline.webp",
+    ],
     customerServices: [
       {
         icon: "IconUsers",
@@ -500,7 +506,7 @@ export const servicesData: Record<string, ServicePageData> = {
     subtitle: "User-First Design That Drives Adoption",
     description:
       "Create intuitive, beautiful interfaces that users love. Our design process combines research-driven insights with creative excellence to deliver experiences that drive engagement, satisfaction, and business results.",
-    heroImage: "ux-ui-design.jpg",
+    heroImage: "/assets/ux-ui-design.jpg",
     features: [
       "User research & testing",
       "Wireframing & prototyping",
@@ -510,8 +516,8 @@ export const servicesData: Record<string, ServicePageData> = {
       "Design handoff & documentation",
     ],
     galleryImages: [
-      "/images/services/ux-ui-1.jpg",
-      "/images/services/ux-ui-2.jpg",
+      "/assets/food-dash.webp",
+      "/assets/fit-force.png",
     ],
     customerServices: [
       {
@@ -582,8 +588,8 @@ export const servicesData: Record<string, ServicePageData> = {
       "Machine learning ops",
     ],
     galleryImages: [
-      "/images/services/data-engineering-1.jpg",
-      "/images/services/data-engineering-2.jpg",
+      "/assets/data-pulse.png",
+      "/assets/finflow.webp",
     ],
     customerServices: [
       {
@@ -653,7 +659,10 @@ export const servicesData: Record<string, ServicePageData> = {
       "Managed services",
       "Disaster recovery",
     ],
-    galleryImages: ["/images/services/aws-1.jpg", "/images/services/aws-2.jpg"],
+    galleryImages: [
+      "/assets/amazon-cloudwatch.png",
+      "/assets/cloud-migration-system.png",
+    ],
     customerServices: [
       {
         icon: "IconUsers",
@@ -723,8 +732,8 @@ export const servicesData: Record<string, ServicePageData> = {
       "DevSecOps integration",
     ],
     galleryImages: [
-      "/images/services/cloud-devops-1.jpg",
-      "/images/services/cloud-devops-2.jpg",
+      "/assets/devops-pipeline.webp",
+      "/assets/cloudsync-platform.webp",
     ],
     customerServices: [
       {
