@@ -7,10 +7,16 @@ import type { ContactFormType } from "@/lib/schemas/contact";
 import { ContactFormSchema } from "@/lib/schemas/contact";
 
 const serviceItems = [
-  { value: "managed-it", label: "Managed IT Services" },
-  { value: "cloud", label: "Cloud Computing" },
-  { value: "security", label: "Cybersecurity Solutions" },
-  { value: "consulting", label: "IT Consulting" },
+  { value: "agentic-ai", label: "Agentic AI" },
+  { value: "ai-agents", label: "AI Agents" },
+  { value: "mvp", label: "MVP" },
+  { value: "web-app-development", label: "Web App Development" },
+  { value: "mobile-app-development", label: "Mobile App Development" },
+  { value: "qa-test-automation", label: "QA & Test Automation" },
+  { value: "ux-ui-design", label: "UX/UI Design" },
+  { value: "data-engineering", label: "Data Engineering" },
+  { value: "aws", label: "AWS" },
+  { value: "cloud-engineering-devops", label: "Cloud Engineering & DevOps" },
 ];
 
 export function ContactCard() {
@@ -71,7 +77,7 @@ export function ContactCard() {
                     Contact Info:
                   </h4>
                   <p className="mb-1 text-muted-foreground text-sm">
-                    +1 (009) 544-7818
+                    +91-9780970564
                   </p>
                   <p className="break-all text-muted-foreground text-sm">
                     hr@workholo.com

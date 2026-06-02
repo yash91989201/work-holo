@@ -198,7 +198,7 @@ function RouteComponent() {
                 Founded in 2019, Work Holo began with a simple belief:
                 technology should empower businesses, not complicate them. What
                 started as a small team of dedicated engineers has grown into a
-                global force of 98+ IT professionals delivering transformative
+                global force of 30+ team members delivering transformative
                 solutions.
               </p>
               <p className="mb-8 text-muted-foreground text-sm leading-relaxed">
@@ -213,7 +213,7 @@ function RouteComponent() {
               <div className="flex items-center gap-8">
                 <div>
                   <div className="font-bold text-4xl text-primary leading-none sm:text-5xl">
-                    <AnimatedCounter duration={2} suffix="K" target={3} />
+                    <AnimatedCounter duration={2} suffix="" target={100} />
                     <sup className="text-xl">+</sup>
                   </div>
                   <p className="mt-2 text-muted-foreground text-sm">
@@ -223,11 +223,11 @@ function RouteComponent() {
                 <div className="h-16 w-px bg-border/50" />
                 <div>
                   <div className="font-bold text-4xl text-primary leading-none sm:text-5xl">
-                    <AnimatedCounter duration={2} suffix="" target={98} />
+                    <AnimatedCounter duration={2} suffix="" target={30} />
                     <sup className="text-xl">+</sup>
                   </div>
                   <p className="mt-2 text-muted-foreground text-sm">
-                    IT Professionals
+                    Team Members
                   </p>
                 </div>
                 <div className="h-16 w-px bg-border/50" />
@@ -487,7 +487,7 @@ function RouteComponent() {
                   </div>
                   <div>
                     <p className="font-semibold text-foreground text-sm">
-                      500+ Clients
+                      100+ Clients
                     </p>
                     <p className="text-muted-foreground text-xs">
                       Trusted Partners
@@ -538,24 +538,13 @@ function RouteComponent() {
               whileInView={{ opacity: 1, x: 0 }}
             >
               <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-border/40 bg-card">
-                {/* Decorative world map placeholder using CSS patterns */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center">
-                    <IconWorld className="mx-auto mb-4 size-24 text-primary/20" />
-                    <p className="font-medium text-muted-foreground/40 text-sm uppercase tracking-widest">
-                      Global Network
-                    </p>
-                  </div>
-                </div>
-                {/* Grid overlay */}
-                <div
-                  className="absolute inset-0 opacity-[0.03]"
-                  style={{
-                    backgroundImage:
-                      "linear-gradient(to right, currentColor 1px, transparent 1px), linear-gradient(to bottom, currentColor 1px, transparent 1px)",
-                    backgroundSize: "40px 40px",
-                  }}
+                <img
+                  alt="Global network visualization"
+                  className="h-full w-full object-cover"
+                  src="/assets/global-reach-globe.webp"
                 />
+                {/* Subtle overlay */}
+                <div className="absolute inset-0 bg-primary/5" />
               </div>
             </motion.div>
           </div>
