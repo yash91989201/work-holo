@@ -70,6 +70,12 @@ scripts/dev.sh start --docker-only
 # Start only dev server (auto-starts services if needed, includes Turbo TUI)
 scripts/dev.sh start --dev-only
 
+# Start specific apps/workers only
+scripts/dev.sh start --run web,read-receipt,message-indexer
+
+# Start only web + server
+scripts/dev.sh start --run web,server
+
 # Stop all docker services
 scripts/dev.sh stop-services
 
@@ -94,6 +100,7 @@ scripts/dev.sh logs postgres
 | `start` | Start Docker services and dev server (see options below) |
 | `start --docker-only` | Start only Docker services |
 | `start --dev-only` | Start only dev server (with Turbo TUI), auto-starts services if needed |
+| `start --run target1,target2` | Start Docker services and run only selected dev targets (`all`, `web`, `www`, `server`, `read-receipt`, `message-search`, `message-indexer` alias, `notification`) |
 | `stop-services` | Stop all Docker services without removing the containers |
 | `status` | Show status of services, ports, and environment files |
 | `reset-services [--skip-init-steps step1,step2]` | **Destructive** - Remove all containers, volumes, and re-run `init`. `--skip-init-steps` forwards the same step names supported by `init --skip-steps`, including dependency validation. |
@@ -101,6 +108,21 @@ scripts/dev.sh logs postgres
 | `doctor` | Check dependencies, env files, services, and ports |
 | `logs [service]` | View Docker logs for a specific service (or all if no service specified) |
 | `seed [--only=X]` | Run database seeds (optionally filter with --only) |
+
+`--run` notes:
+- Works with `start` and `start --dev-only`
+- Cannot be combined with `start --docker-only`
+- Type generators (`web`, `api`, `db`) run automatically in watch mode alongside dev targets
+
+`--run` supported values:
+- `all` — run default full dev graph
+- `web` — run `apps/web`
+- `www` — run `apps/www`
+- `server` — run `apps/server`
+- `read-receipt` — run `workers/read-receipt`
+- `message-search` — run `workers/message-search`
+- `message-indexer` — alias of `message-search`
+- `notification` — run `workers/notification` (`@work-holo/notification-worker`)
 
 After `init`, the workflow bootstraps a ready-to-use local workspace and writes the generated credentials to `apps/server/.env` as `USER1..USER7` entries:
 
@@ -195,7 +217,41 @@ work-holo/
 - `bun db:migrate`: Run committed database migrations
 - `bun db:push`: Push schema changes directly to the database schema
 - `bun db:studio`: Open database studio UI
+- `bun generate:types`: Generate TypeScript types from Zod schemas (web, api, db)
+- `bun generate:types:watch`: Watch and regenerate types on schema changes
 - `cd apps/web && bun desktop:dev`: Start Tauri desktop app in development
 - `cd apps/web && bun desktop:build`: Build Tauri desktop app
 - `cd apps/docs && bun dev`: Start documentation site
 - `cd apps/docs && bun build`: Build documentation site
+
+## Type Generation
+
+This project auto-generates TypeScript types from Zod schemas. The type generators run automatically in watch mode when using `scripts/dev.sh start`.
+
+### Type Generator Locations
+
+| Package | Schema Directory | Output File |
+|---------|-----------------|-------------|
+| `apps/web` | `src/lib/schemas/` | `src/lib/types.ts` |
+| `packages/api` | `src/lib/schemas/` | `src/lib/types.ts` |
+| `packages/db` | `src/lib/schemas/` | `src/lib/types.ts` |
+
+### Manual Type Generation
+
+```bash
+# Generate types once for a specific package
+cd apps/web && bun run generate:types
+cd packages/api && bun run generate:types
+cd packages/db && bun run generate:types
+
+# Watch mode (regenerates on schema changes)
+cd apps/web && bun run generate:types:watch
+```
+
+### How It Works
+
+1. Define Zod schemas in `src/lib/schemas/*.ts`
+2. Export schemas with names ending in `Schema`, `Input`, or `Output`
+3. Run `generate:types` to create corresponding TypeScript types
+4. Types are auto-generated as `z.infer<typeof SchemaName>` exports
+5. In watch mode, types regenerate automatically when schema files change

@@ -1,4 +1,4 @@
-import { IconAward } from "@tabler/icons-react";
+import { IconAward, IconBrandLinkedin } from "@tabler/icons-react";
 import { useNavigate } from "@tanstack/react-router";
 import { motion, useInView } from "motion/react";
 import { useEffect, useRef, useState } from "react";
@@ -174,7 +174,12 @@ export function AboutSection() {
               viewport={{ once: true }}
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
             >
-              <div className="flex items-center gap-3 rounded-2xl border border-border/50 bg-card/95 px-4 py-3 shadow-xl backdrop-blur-md">
+              <a
+                className="flex items-center gap-3 rounded-2xl border border-border/50 bg-card/95 px-4 py-3 shadow-xl backdrop-blur-md transition-all duration-300 hover:border-primary/30 hover:shadow-2xl"
+                href="https://www.linkedin.com/company/workholo/"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
                 <div className="flex size-10 items-center justify-center rounded-full bg-muted font-bold text-foreground text-sm">
                   AB
                 </div>
@@ -184,7 +189,10 @@ export function AboutSection() {
                   </p>
                   <p className="text-muted-foreground text-xs">Founder</p>
                 </div>
-              </div>
+                <div className="ml-1 flex size-8 items-center justify-center rounded-full bg-[#0077B5]/10 text-[#0077B5] transition-colors hover:bg-[#0077B5]/20">
+                  <IconBrandLinkedin className="size-4" />
+                </div>
+              </a>
             </motion.div>
           </motion.div>
 

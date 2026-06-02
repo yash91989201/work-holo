@@ -1,5 +1,6 @@
 import {
   IconAward,
+  IconBrandLinkedin,
   IconBulb,
   IconHeartHandshake,
   IconRocket,
@@ -110,32 +111,7 @@ const milestones = [
   },
 ];
 
-const team = [
-  {
-    name: "Eade Marren",
-    role: "Chief Executive Officer",
-    image:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop&crop=face",
-  },
-  {
-    name: "Savannah Nqueen",
-    role: "Head of Operations",
-    image:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=500&fit=crop&crop=face",
-  },
-  {
-    name: "Cameron William",
-    role: "Marketing Lead",
-    image:
-      "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=400&h=500&fit=crop&crop=face",
-  },
-  {
-    name: "Olivia Fox",
-    role: "Business Director",
-    image:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=500&fit=crop&crop=face",
-  },
-];
+
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -287,7 +263,7 @@ function RouteComponent() {
                 />
               </div>
 
-              {/* Award Badge */}
+              {/* LinkedIn Badge */}
               <motion.div
                 className="absolute -right-2 -bottom-6 sm:right-6"
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -299,7 +275,12 @@ function RouteComponent() {
                 viewport={{ once: true }}
                 whileInView={{ opacity: 1, scale: 1 }}
               >
-                <div className="relative flex size-28 items-center justify-center sm:size-32">
+                <a
+                  className="relative flex size-28 items-center justify-center sm:size-32"
+                  href="https://www.linkedin.com/company/workholo/"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   <motion.svg
                     animate={{ rotate: 360 }}
                     className="absolute inset-0 size-full"
@@ -321,15 +302,15 @@ function RouteComponent() {
                       style={{ fontSize: "9px" }}
                     >
                       <textPath href="#circlePathAbout">
-                        AWARD WINNING AGENCY - SINCE 2019 - AWARD WINNING AGENCY
-                        - SINCE 2019 -
+                        FOLLOW US ON LINKEDIN - WORKHOLO - FOLLOW US ON LINKEDIN -
+                        WORKHOLO -
                       </textPath>
                     </text>
                   </motion.svg>
-                  <div className="flex size-12 items-center justify-center rounded-full bg-primary sm:size-14">
-                    <IconAward className="size-6 text-primary-foreground sm:size-7" />
+                  <div className="flex size-12 items-center justify-center rounded-full bg-[#0077B5] sm:size-14">
+                    <IconBrandLinkedin className="size-6 text-white sm:size-7" />
                   </div>
-                </div>
+                </a>
               </motion.div>
             </motion.div>
           </div>
@@ -524,19 +505,24 @@ function RouteComponent() {
                     <p className="text-muted-foreground text-xs">Always On</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <div className="flex size-10 items-center justify-center rounded-full bg-primary/10">
-                    <IconAward className="size-5 text-primary" />
+                <a
+                  className="flex items-center gap-3 transition-opacity hover:opacity-80"
+                  href="https://www.linkedin.com/company/workholo/"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  <div className="flex size-10 items-center justify-center rounded-full bg-[#0077B5]/10">
+                    <IconBrandLinkedin className="size-5 text-[#0077B5]" />
                   </div>
                   <div>
                     <p className="font-semibold text-foreground text-sm">
-                      Award Winning
+                      Follow Us
                     </p>
                     <p className="text-muted-foreground text-xs">
-                      Industry Recognized
+                      LinkedIn
                     </p>
                   </div>
-                </div>
+                </a>
               </div>
             </motion.div>
 
@@ -576,64 +562,7 @@ function RouteComponent() {
         </div>
       </section>
 
-      {/* Team Section */}
-      <section className="relative py-20 lg:py-28">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div
-            className="mb-14 text-center"
-            initial={{ opacity: 0, y: 30 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            whileInView={{ opacity: 1, y: 0 }}
-          >
-            <p className="mb-5 font-medium text-primary text-sm uppercase tracking-[0.2em]">
-              [ Meet Our Team ]
-            </p>
-            <h2 className="font-bold text-3xl text-foreground leading-[1.1] tracking-tight sm:text-4xl lg:text-5xl">
-              The People Behind
-              <br />
-              Our Success.
-            </h2>
-          </motion.div>
 
-          <motion.div
-            className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
-            initial="hidden"
-            variants={containerVariants}
-            viewport={{ once: true, margin: "-80px" }}
-            whileInView="visible"
-          >
-            {team.map((member) => (
-              <motion.div
-                className="group relative"
-                key={member.name}
-                transition={{ duration: 0.3 }}
-                variants={itemVariants}
-                whileHover={{ y: -6 }}
-              >
-                <div className="relative overflow-hidden rounded-2xl border border-border/40 bg-card/50 transition-all duration-300 hover:border-border/70">
-                  <div className="relative aspect-3/4 overflow-hidden">
-                    <img
-                      alt={member.name}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      src={member.image}
-                    />
-                    <div className="absolute inset-0 bg-linear-to-t from-card/80 via-transparent to-transparent" />
-                  </div>
-                  <div className="p-5">
-                    <h3 className="mb-1 font-semibold text-base text-foreground">
-                      {member.name}
-                    </h3>
-                    <p className="text-muted-foreground text-sm">
-                      {member.role}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
 
       {/* Contact CTA Section */}
       <section className="relative py-16 lg:py-24">

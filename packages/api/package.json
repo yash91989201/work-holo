@@ -14,6 +14,7 @@
   "type": "module",
   "scripts": {
     "generate:types": "bun run ./scripts/generate-types.ts",
+    "generate:types:watch": "bun run ./scripts/generate-types.ts --watch",
     "seed:sound-presets": "bun run ./scripts/seed-sound-presets.ts"
   },
   "devDependencies": {
@@ -26,10 +27,10 @@
   },
   "dependencies": {
     "@electric-sql/client": "^1.5.19",
-    "@orpc/client": "^1.14.3",
-    "@orpc/openapi": "^1.14.3",
-    "@orpc/server": "^1.14.3",
-    "@orpc/zod": "^1.14.3",
+    "@orpc/client": "^1.14.4",
+    "@orpc/openapi": "^1.14.4",
+    "@orpc/server": "^1.14.4",
+    "@orpc/zod": "^1.14.4",
     "@t3-oss/env-core": "^0.13.11",
     "@work-holo/auth": "workspace:*",
     "@work-holo/db": "workspace:*",

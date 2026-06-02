@@ -21,6 +21,7 @@ fi
 DOCKER_COMPOSE_CMD=()
 START_WAS_INTERRUPTED="false"
 BUN_DEV_PID=""
+TYPE_WATCHER_PIDS=()
 VAPID_PUBLIC_KEY=""
 VAPID_PRIVATE_KEY=""
 
@@ -134,6 +135,13 @@ env_value_is_empty() {
   value="${value#"${value%%[![:space:]]*}"}"
   value="${value%"${value##*[![:space:]]}"}"
   [[ -z "$value" || "$value" == '""' || "$value" == "''" ]]
+}
+
+trim_whitespace() {
+  local value="$1"
+  value="${value#"${value%%[![:space:]]*}"}"
+  value="${value%"${value##*[![:space:]]}"}"
+  printf '%s' "$value"
 }
 
 ensure_env_default() {
@@ -312,42 +320,43 @@ compose_up() { docker_compose up -d; }
 compose_down() { docker_compose down; }
 compose_stop() { docker_compose stop; }
 
-wait_for_service() {
-  local service="$1"
-  local timeout="$2"
-  local elapsed=0
-  local id=""
-  local state=""
-  local dots=""
-  log_info "Waiting for $service"
-  while [[ "$elapsed" -lt "$timeout" ]]; do
-    id="$(docker_compose ps -q "$service" 2>/dev/null || true)"
-    if [[ -n "$id" ]]; then
-      state="$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "$id" 2>/dev/null || true)"
-      if [[ "$state" == "healthy" || "$state" == "running" ]]; then
-        printf "\r\033[K"
-        log_success "Service ready: $service"
-        return 0
-      fi
-    fi
-    dots="${dots}."
-    if [[ "${#dots}" -gt 3 ]]; then
-      dots="."
-    fi
-    printf "\r  %b⏳%b %s%s" "$COLOR_YELLOW" "$COLOR_RESET" "$service" "$dots"
-    sleep 2
-    elapsed=$((elapsed + 2))
-  done
-  printf "\n"
-  log_error "Service not ready after ${timeout}s: $service"
-  return 1
-}
-
 wait_healthy() {
-  local s=""
-  for s in "${CORE_SERVICES[@]}"; do
-    wait_for_service "$s" 180
+  local timeout=180
+  local poll_interval=3
+  local elapsed=0
+
+  log_info "Waiting for all Docker services"
+  while [[ "$elapsed" -lt "$timeout" ]]; do
+    local ready_count=0
+    local total_count="${#CORE_SERVICES[@]}"
+    local service=""
+
+    for service in "${CORE_SERVICES[@]}"; do
+      local id=""
+      id="$(docker_compose ps -q "$service" 2>/dev/null || true)"
+      if [[ -n "$id" ]]; then
+        local state=""
+        state="$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "$id" 2>/dev/null || true)"
+        if [[ "$state" == "healthy" || "$state" == "running" ]]; then
+          ready_count=$((ready_count + 1))
+        fi
+      fi
+    done
+
+    if [[ "$ready_count" -eq "$total_count" ]]; then
+      printf "\r\033[K"
+      log_success "All services ready: $ready_count/$total_count"
+      return 0
+    fi
+
+    printf "\r  %b⏳%b Services ready: %d/%d" "$COLOR_YELLOW" "$COLOR_RESET" "$ready_count" "$total_count"
+    sleep "$poll_interval"
+    elapsed=$((elapsed + poll_interval))
   done
+
+  printf "\n"
+  log_error "Services not ready after ${timeout}s"
+  return 1
 }
 
 migrate_database() {
@@ -579,6 +588,7 @@ handle_interrupt() {
   if [[ -n "$BUN_DEV_PID" ]]; then
     kill -INT "$BUN_DEV_PID" >/dev/null 2>&1 || true
   fi
+  stop_type_watchers
   printf "\n"
   local i
   local response=""
@@ -596,12 +606,81 @@ handle_interrupt() {
   fi
 }
 
+# Start type generators in watch mode based on run targets
+# Maps run targets to package directories that have type generators
+start_type_watchers() {
+  local -a run_targets=("$@")
+  local -a type_gen_dirs=()
+
+  if [[ ${#run_targets[@]} -eq 0 ]]; then
+    # No filters = run all type generators
+    type_gen_dirs=("apps/web" "packages/api" "packages/db")
+  else
+    local target=""
+    for target in "${run_targets[@]}"; do
+      case "$target" in
+      all)
+        type_gen_dirs=("apps/web" "packages/api" "packages/db")
+        break
+        ;;
+      web)
+        type_gen_dirs+=("apps/web")
+        ;;
+      server)
+        type_gen_dirs+=("packages/api" "packages/db")
+        ;;
+      # www, read-receipt, message-search, notification have no type generators
+      esac
+    done
+  fi
+
+  # Deduplicate
+  local -a unique_dirs=()
+  local dir=""
+  for dir in "${type_gen_dirs[@]}"; do
+    local found="false"
+    local udir=""
+    for udir in "${unique_dirs[@]}"; do
+      if [[ "$udir" == "$dir" ]]; then
+        found="true"
+        break
+      fi
+    done
+    if [[ "$found" == "false" ]]; then
+      unique_dirs+=("$dir")
+    fi
+  done
+
+  for dir in "${unique_dirs[@]}"; do
+    if [[ -f "$ROOT_DIR/$dir/package.json" ]] && grep -q '"generate:types:watch"' "$ROOT_DIR/$dir/package.json"; then
+      log_info "Starting type watcher: $dir"
+      (cd "$ROOT_DIR/$dir" && bun run generate:types:watch) &
+      TYPE_WATCHER_PIDS+=("$!")
+    fi
+  done
+}
+
+# Kill all running type watcher processes
+stop_type_watchers() {
+  local pid=""
+  for pid in "${TYPE_WATCHER_PIDS[@]}"; do
+    kill -TERM "$pid" >/dev/null 2>&1 || true
+  done
+  for pid in "${TYPE_WATCHER_PIDS[@]}"; do
+    wait "$pid" 2>/dev/null || true
+  done
+  TYPE_WATCHER_PIDS=()
+}
+
 cmd_start() {
   require_root
   check_deps
 
   local docker_only="false"
   local dev_only="false"
+  local -a run_values=()
+  local -a run_targets=()
+  local -a turbo_filters=()
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -613,6 +692,20 @@ cmd_start() {
       dev_only="true"
       shift
       ;;
+    --run)
+      if [[ $# -lt 2 ]]; then
+        log_error "Missing value for --run"
+        log_error "Example: scripts/dev.zsh start --run web,read-receipt,message-indexer"
+        log_error "See README.md for full --run target list and usage details"
+        exit 1
+      fi
+      run_values+=("$2")
+      shift 2
+      ;;
+    --run=*)
+      run_values+=("${1#--run=}")
+      shift
+      ;;
     *)
       log_error "Unknown option: $1"
       cmd_help
@@ -621,8 +714,43 @@ cmd_start() {
     esac
   done
 
+  local raw_run_value=""
+  for raw_run_value in "${run_values[@]}"; do
+    [[ -z "$raw_run_value" ]] && continue
+    local -a split_targets=("${(@s:,:)raw_run_value}")
+    local target=""
+    for target in "${split_targets[@]}"; do
+      target="$(trim_whitespace "$target")"
+      [[ -z "$target" ]] && continue
+      run_targets+=("$target")
+    done
+  done
+
+  local run_target=""
+  for run_target in "${run_targets[@]}"; do
+    case "$run_target" in
+    all) ;;
+    web) turbo_filters+=("-F" "web") ;;
+    www) turbo_filters+=("-F" "www") ;;
+    server) turbo_filters+=("-F" "server") ;;
+    read-receipt) turbo_filters+=("-F" "read-receipt") ;;
+    message-search | message-indexer) turbo_filters+=("-F" "message-search") ;;
+    notification) turbo_filters+=("-F" "@work-holo/notification-worker") ;;
+    *)
+      log_error "Unknown run target '$run_target'. Allowed: all, web, www, server, read-receipt, message-search, message-indexer, notification"
+      log_error "See README.md for full --run target list and usage details"
+      exit 1
+      ;;
+    esac
+  done
+
   if [[ "$docker_only" == "true" && "$dev_only" == "true" ]]; then
     log_error "Cannot use both --docker-only and --dev-only"
+    exit 1
+  fi
+
+  if [[ "$docker_only" == "true" && "${#turbo_filters[@]}" -gt 0 ]]; then
+    log_error "--run cannot be used with --docker-only"
     exit 1
   fi
 
@@ -657,15 +785,27 @@ cmd_start() {
     fi
 
     log_info "Starting dev server (with TUI)"
-    bun dev
-    return $?
+    start_type_watchers "${run_targets[@]}"
+    if [[ "${#turbo_filters[@]}" -gt 0 ]]; then
+      bun run dev -- "${turbo_filters[@]}"
+    else
+      bun dev
+    fi
+    local dev_rc=$?
+    stop_type_watchers
+    return $dev_rc
   fi
 
   compose_up
   wait_healthy
   START_WAS_INTERRUPTED="false"
   trap handle_interrupt INT
-  TURBO_UI=0 bun dev &
+  start_type_watchers "${run_targets[@]}"
+  if [[ "${#turbo_filters[@]}" -gt 0 ]]; then
+    TURBO_UI=0 bun run dev -- "${turbo_filters[@]}" &
+  else
+    TURBO_UI=0 bun dev &
+  fi
   BUN_DEV_PID="$!"
   set +e
   wait "$BUN_DEV_PID"
@@ -673,6 +813,7 @@ cmd_start() {
   set -e
   trap - INT
   BUN_DEV_PID=""
+  stop_type_watchers
   if [[ "$START_WAS_INTERRUPTED" == "true" ]]; then
     return 0
   fi
@@ -941,10 +1082,14 @@ Command behavior:
     - deps-install can be skipped when dependencies were installed manually beforehand
     - Skipping a step that later init steps still depend on will error unless you also skip dependents
 
-  start [--docker-only] [--dev-only]
+  start [--docker-only] [--dev-only] [--run target1,target2]
     Default: docker compose up -d, wait healthy, bun dev (no TUI)
     --docker-only: start only docker services
     --dev-only: start only dev server (with TUI), auto-start services if needed
+    --run: run only selected targets via turbo filters
+           allowed: all, web, www, server, read-receipt, message-search, message-indexer, notification
+           example: scripts/dev.zsh start --run web,read-receipt,message-indexer
+    Type generators (web, api, db) run automatically in watch mode alongside dev.
     Ctrl+C prompt: Docker services will stop in 5s. Press 'n' to keep them running...
 
   stop-services

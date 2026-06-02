@@ -14,7 +14,9 @@
     "dev": "drizzle-kit studio",
     "db:studio": "drizzle-kit studio",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate"
+    "db:migrate": "drizzle-kit migrate",
+    "generate:types": "bun run ./scripts/generate-types.ts",
+    "generate:types:watch": "bun run ./scripts/generate-types.ts --watch"
   },
   "devDependencies": {
     "@work-holo/config": "workspace:*",
