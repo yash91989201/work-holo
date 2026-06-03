@@ -34,12 +34,41 @@ export function SmoothScrollProvider({
 
   // Scroll to top on navigation
   useEffect(() => {
-    const unsubscribe = router.subscribe("onBeforeLoad", () => {
-      // Scroll to top when navigating to a new page
-      if (lenisRef.current) {
-        lenisRef.current.scrollTo(0, { immediate: true });
+    const unsubscribe = router.subscribe("onBeforeLoad", ({ next }) => {
+      const currentPath = router.state.location.pathname;
+      const nextPath = next.location.pathname;
+      const nextHash = next.location.hash;
+
+      // Check if this is a same-page hash navigation
+      const isSamePageHashNavigation =
+        currentPath === nextPath && nextHash && nextHash !== "";
+
+      if (isSamePageHashNavigation) {
+        // For same-page hash navigation, scroll to the element
+        // Use setTimeout to ensure DOM has updated
+        setTimeout(() => {
+          const targetId = nextHash.replace("#", "");
+          const targetElement = document.getElementById(targetId);
+
+          if (targetElement) {
+            if (lenisRef.current) {
+              // Use Lenis for smooth scrolling
+              lenisRef.current.scrollTo(targetElement, {
+                offset: -100, // Account for fixed header
+              });
+            } else {
+              // Fallback to native scroll
+              targetElement.scrollIntoView({ behavior: "smooth" });
+            }
+          }
+        }, 100);
       } else {
-        window.scrollTo(0, 0);
+        // For page navigation, scroll to top
+        if (lenisRef.current) {
+          lenisRef.current.scrollTo(0, { immediate: true });
+        } else {
+          window.scrollTo(0, 0);
+        }
       }
     });
 
