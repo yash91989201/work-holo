@@ -1,5 +1,4 @@
 import {
-  IconAward,
   IconBrandLinkedin,
   IconBulb,
   IconHeartHandshake,
@@ -110,8 +109,6 @@ const milestones = [
     description: "Surpassed 100 successful project deliveries worldwide.",
   },
 ];
-
-
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -302,8 +299,8 @@ function RouteComponent() {
                       style={{ fontSize: "9px" }}
                     >
                       <textPath href="#circlePathAbout">
-                        FOLLOW US ON LINKEDIN - WORKHOLO - FOLLOW US ON LINKEDIN -
-                        WORKHOLO -
+                        FOLLOW US ON LINKEDIN - WORKHOLO - FOLLOW US ON LINKEDIN
+                        - WORKHOLO -
                       </textPath>
                     </text>
                   </motion.svg>
@@ -518,9 +515,7 @@ function RouteComponent() {
                     <p className="font-semibold text-foreground text-sm">
                       Follow Us
                     </p>
-                    <p className="text-muted-foreground text-xs">
-                      LinkedIn
-                    </p>
+                    <p className="text-muted-foreground text-xs">LinkedIn</p>
                   </div>
                 </a>
               </div>
@@ -550,8 +545,6 @@ function RouteComponent() {
           </div>
         </div>
       </section>
-
-
 
       {/* Contact CTA Section */}
       <section className="relative py-16 lg:py-24">
