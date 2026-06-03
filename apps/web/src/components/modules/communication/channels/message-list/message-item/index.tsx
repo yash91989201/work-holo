@@ -15,7 +15,6 @@ import {
 import { Badge } from "@work-holo/ui/components/badge";
 import { Button } from "@work-holo/ui/components/button";
 import { useMemo } from "react";
-import { toast } from "sonner";
 import {
   attachmentsCollection,
   channelsCollection,
@@ -102,20 +101,6 @@ function ReplyPreview({
   }, [replyRows]);
 
   const handleReplyPreviewClick = () => {
-    const targetElement = document.querySelector(
-      `[data-message-id="${replyToMessageId}"]`
-    );
-
-    if (!targetElement) {
-      toast.error("Message not found in view");
-      return;
-    }
-
-    (targetElement as HTMLElement).scrollIntoView({
-      behavior: "smooth",
-      block: "center",
-    });
-
     highlightMessage(replyToMessageId);
   };
 
