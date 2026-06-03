@@ -104,9 +104,9 @@ export function ContactSection() {
                       Find Us:
                     </h4>
                     <p className="text-muted-foreground text-sm">
-                      Renner Burg, West Rond,
+                      Raj Nagar, Dwarka,
                       <br />
-                      MT 9421-030, USA.
+                      New Delhi- 1100XX, Delhi, India
                     </p>
                   </div>
 
