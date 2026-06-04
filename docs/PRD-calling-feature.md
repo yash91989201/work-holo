@@ -97,9 +97,35 @@ Holo currently supports rich async communication (DMs, channel messaging, reacti
 | Call State | **PostgreSQL + Drizzle** (existing) | `call` and `callParticipant` tables |
 | Presence Integration | **Redis + existing presence** | `in_call` status already defined in presence system |
 | Token Auth | **LiveKit JWT** issued by Hono server | Server-side, per-user, per-room access tokens |
-| Deployment | **Dedicated VPS** (separate from FreeSWITCH VPS at 135.181.31.20) | Media server needs dedicated CPU/bandwidth |
+| Deployment | **Same VPS as backend** (`work-holo-internal`) via **Coolify** | VPS has 5+ GB RAM free; LiveKit added as a new Coolify service |
 
-### 6.2 Call State Machine
+### 6.2 Server Capacity Analysis
+
+LiveKit runs on the existing `work-holo-internal` VPS (4 CPU / 7.6 GB RAM). Current observed usage:
+
+| Resource | Current Usage | Available for LiveKit |
+|----------|-------------|----------------------|
+| RAM | 2.4 GB / 7.6 GB (31%) | **~5 GB free** |
+| CPU | 28.2% avg (4 cores) | **~3 cores headroom** |
+
+**LiveKit resource requirements at scale:**
+
+| Concurrent participants | Extra RAM | Extra CPU |
+|------------------------|-----------|-----------|
+| 10 (voice) | ~100 MB | ~5% |
+| 25 (video) | ~400 MB | ~15% |
+| 50 (video) | ~800 MB | ~30% |
+
+**Conclusion:** Current VPS comfortably supports 50+ concurrent video participants alongside the full existing stack. A dedicated LiveKit server is **not needed** until sustained concurrent video participants exceed ~80–100.
+
+**Deployment method:** LiveKit is added as a new service in **Coolify** (already running on this VPS) — same workflow as all other services. No new servers, no new infrastructure accounts.
+
+**One manual step:** Open firewall ports on VPS provider:
+- `TCP 7880` — LiveKit HTTP/WebSocket
+- `TCP 7881` — WebRTC TCP fallback
+- `UDP 50000–60000` — media port range (critical)
+
+### 6.3 Call State Machine
 
 ```
 [initiated]
@@ -117,7 +143,7 @@ Holo currently supports rich async communication (DMs, channel messaging, reacti
      └── last participant leaves ──────► [ended]
 ```
 
-### 6.3 New Database Tables
+### 6.4 New Database Tables
 
 #### `call`
 | Column | Type | Notes |
@@ -146,7 +172,7 @@ Holo currently supports rich async communication (DMs, channel messaging, reacti
 | `isRemoved` | boolean default false | Set by host |
 | `createdAt` | timestamp | |
 
-### 6.4 New Backend Components
+### 6.5 New Backend Components
 
 | Component | Location | Purpose |
 |-----------|----------|---------|
@@ -156,7 +182,7 @@ Holo currently supports rich async communication (DMs, channel messaging, reacti
 | Call schema | `packages/db/src/schema/call.ts` | New Drizzle tables |
 | Ring timeout queue | `packages/infrastructure/src/queue.ts` | Add `CALL_RING_TIMEOUT` queue with DLX config |
 
-### 6.5 New Frontend Components
+### 6.6 New Frontend Components
 
 | Component | Purpose |
 |-----------|---------|
@@ -205,11 +231,12 @@ The **call directory sidebar** uses the existing `listAllowedUsers("calling")` e
 #### Week 1 — Infrastructure Setup
 | Task | Est. Days | With Claude AI |
 |------|-----------|----------------|
-| Provision dedicated VPS for LiveKit | 0.5 | 0.5 |
-| Deploy LiveKit server via Docker, configure env vars | 1 | 0.5 |
-| Add LiveKit service to `docker-compose.yml` (local dev) | 0.5 | 0.5 |
-| Configure TURN (LiveKit built-in), test room creation | 1 | 0.5 |
-| **Week 1 Total** | **3 days** | **2 days** |
+| Add LiveKit as new service in Coolify on `work-holo-internal` | 0.5 | 0.5 |
+| Create `livekit.yaml` config (API key, secret, public IP, TURN) | 0.5 | 0.5 |
+| Open UDP 50000–60000 + TCP 7880/7881 on VPS firewall *(manual)* | 0.5 | 0.5 |
+| Add LiveKit to local `docker-compose.yml` for dev environment | 0.5 | 0.5 |
+| Test room creation, verify TURN, confirm media flows | 0.5 | 0.5 |
+| **Week 1 Total** | **2.5 days** | **2.5 days** |
 
 #### Week 2 — Database & Backend Foundation
 | Task | Est. Days | With Claude AI |
@@ -360,7 +387,7 @@ Week 8-9 ████████  Call Recording
 
 | Risk | Likelihood | Impact | Mitigation |
 |------|------------|--------|------------|
-| LiveKit VPS NAT/firewall issues blocking WebRTC | Medium | High | Use LiveKit built-in TURN; test early in Week 1 |
+| VPS firewall UDP range not opened, blocking WebRTC media | Medium | High | Open UDP 50000–60000 in Week 1 Day 1; test with LiveKit `lk room create` before writing any app code |
 | Pusher event ordering causing double-ring or missed events | Low | Medium | Idempotent call state checks in all handlers |
 | Floating overlay causing React re-renders in messaging | Low | Medium | Zustand store is outside React Query scope; test after Phase 1 |
 | RabbitMQ DLX timing drift under load | Low | Low | Dead letter timeout is best-effort; UI shows elapsed ring time client-side |
@@ -373,8 +400,8 @@ Week 8-9 ████████  Call Recording
 
 | Dependency | Owner | Required By |
 |------------|-------|-------------|
-| Dedicated VPS provisioned for LiveKit | DevOps / Ashish | Week 1 |
-| LiveKit API key + secret generated | Ashish | Week 2 |
+| UDP 50000–60000 + TCP 7880/7881 opened on VPS firewall | Ashish (VPS provider panel) | Week 1 |
+| LiveKit API key + secret generated (`livekit-cli generate-key`) | Ashish | Week 1 |
 | Pusher `private-user-{userId}` channel confirmed active | Already exists | Week 3 |
 | RabbitMQ DLX plugin (native, no extra install) | Already supported | Week 3 |
 | RustFS bucket for recordings | Already exists | Phase 3 |
