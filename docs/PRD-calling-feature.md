@@ -3,7 +3,7 @@
 **Document Owner:** Ashish Pandey
 **Status:** Draft
 **Created:** 2026-06-04
-**Last Updated:** 2026-06-04
+**Last Updated:** 2026-06-04 (v2 — channel call model, device switcher, emoji reactions, pill overlay, directory UX)
 **Target Platform:** Web (work-holo)
 
 ---
@@ -47,41 +47,56 @@ Holo currently supports rich async communication (DMs, channel messaging, reacti
 
 ## 5. User Stories
 
-### 5.1 Core Calling
+### 5.1 Core Calling — DM Calls (Direct Ring)
 - As a user, I can start a **voice call** or **video call** from a DM conversation with one click.
-- As a user, I can start a call from a **group channel**, bringing all members into the room.
 - As a user, I can start a call from the **Calls sidebar** by browsing org members — no prior chat required.
 - As a user, when I call someone from the directory with no prior DM, a DM conversation is **automatically created**.
 - As a user, I receive an **incoming call popup** in the corner of my screen with the caller's name and call type.
 - As a user, I receive a **browser push notification** if the tab is in the background or closed.
 - As a user, if I do not answer within **30 seconds**, the call moves to **missed** and both parties are notified.
 - As a user, I can **accept** or **decline** an incoming call from the popup.
+- As a user calling someone whose presence shows `in_call`, I see a toast warning: *"Ashish is on a call — they may not answer."* The ring goes through anyway.
 
-### 5.2 In-Call Experience
+### 5.2 Core Calling — Channel Calls (Open Room / Huddle)
+- As a user, I can start a call from a **group channel** — this opens an ambient room with no forced ring.
+- As a channel member, I see a **"call in progress — N joined"** banner in the channel thread and a **pulsing live indicator** on the channel name in the sidebar.
+- As a user, I can **join or leave** a channel call at will — no ring, no timeout pressure.
+- As a user, a channel call **auto-closes after 5 minutes** if only 1 participant remains (via LiveKit `emptyTimeout`).
+- As a user, channel calls I didn't join do **not** count as missed — they appear in the Calls sidebar as history only.
+
+### 5.3 In-Call Experience
 - As a user, the call opens as a **floating overlay** I can move around — I can keep browsing channels while on a call.
+- As a user, I can **minimise** the overlay to a **floating pill** in the bottom-left corner showing call duration, mic toggle, and end button.
 - As a user, I can **toggle my microphone** on/off at any time.
 - As a user, I can **toggle my camera** on/off at any time.
 - As a user on a voice call, I can **upgrade to video** by turning on my camera.
+- As a user, I can **switch microphone, speaker, or camera** mid-call from a settings icon in the controls bar.
+- As a user, I can **send emoji reactions** (👍 ❤️ 😂 🎉 ✋) that animate on my tile for 3 seconds — broadcast to all via LiveKit data channel.
+- As a user, I can see a **connection quality indicator** on every participant's tile.
 - As a user, I can **add other org members** to an ongoing call mid-conversation.
 - As a user, I can **leave a call** at any time; the call continues for remaining participants.
 - As a user, if I accidentally close my tab, I can **rejoin the call** as long as ≥1 participant remains.
+- As a user already on a call, if I try to join a second call I see a prompt: *"Leave current call and join this one?"* — no auto-end.
 
-### 5.3 Group Calls
+### 5.4 Group Calls
 - As a call initiator (host), I can **mute any participant**.
 - As a call initiator (host), I can **remove a participant** from the call.
 - As a call initiator (host), I can **end the call for everyone**.
 - As a user in a group call, I see a **grid layout** for ≤4 participants and **active speaker layout** for 5–25 participants.
 - Maximum group call size is **25 participants**.
 
-### 5.4 Call History
-- As a user, every call appears as an **inline event** in the DM or channel thread (e.g., "Voice call · 4m 32s").
-- As a user, I see all my calls (recent, missed, outgoing) in the **Calls section of the sidebar**.
-- As a user, I can **call back** directly from the call history entry.
-- As a user, **missed calls** show a red badge on the Calls sidebar icon.
+### 5.5 Call History & Calls Sidebar
+- As a user, every call appears as an **inline event** in the DM or channel thread (e.g., "Voice call · 4m 32s" or "📹 Video call · Missed").
+- As a user, the **Calls sidebar** has two tabs: **Directory** (who to call) and **Recents** (all call history).
+- As a user, the **Directory** shows org members online-first then alphabetical, with presence indicators and a search bar.
+- As a user, I can **call back** directly from any entry in the Recents tab.
+- As a user, **missed DM calls** show a red badge on the Calls sidebar icon. Channel calls never increment the missed badge.
+- As a user, channel call history shows as *"Call in #engineering · 24 min · 5 joined"* — no missed state.
 
-### 5.5 Permissions
+### 5.6 Permissions
 - As an org admin, I can enable/disable the **calling module** org-wide, per team, or per specific users — using the existing module access system.
 - As a user without calling access, call buttons are hidden and I cannot initiate or receive calls.
+- As a user, the **call directory only shows members who have calling access** (via existing `listAllowedUsers("calling")` endpoint).
 
 ---
 
@@ -127,20 +142,50 @@ LiveKit runs on the existing `work-holo-internal` VPS (4 CPU / 7.6 GB RAM). Curr
 
 ### 6.3 Call State Machine
 
+**DM Calls (direct ring):**
 ```
 [initiated]
      │
-     ▼ Pusher event + Push notification → callee
+     ▼ Pusher private-user-{userId} + Push notification → callee
 [ringing] ──── 30s RabbitMQ DLX ────► [missed]  → notify both parties
      │
      ├── callee declines ──────────────► [rejected]
      ├── caller cancels ──────────────► [cancelled]
      │
      ▼ callee accepts
-  [active] ◄──── participants can rejoin freely while active
+  [active] ◄──── free rejoin while ≥1 participant present
      │
      ├── host ends for all ───────────► [ended]
      └── last participant leaves ──────► [ended]
+          ▲
+          └── LiveKit room_finished webhook → mark ended in DB
+```
+
+**Channel Calls (open room / huddle):**
+```
+[initiated] → status: active immediately (no ringing)
+     │
+     ▼ Pusher private-org-{orgId} → broadcast to all connected members
+  pulsing live indicator on channel name in sidebar
+  "call in progress" banner in channel thread
+     │
+  [active] ◄──── any channel member can join freely
+     │
+     ├── host ends for all ───────────► [ended]
+     ├── last participant leaves ──────► 5-min emptyTimeout
+     │                                       │
+     │                                       ▼ [ended]
+     └── LiveKit room_finished webhook → mark ended in DB
+```
+
+**Soft-switch (user already in a call):**
+```
+User tries to join/accept second call
+     │
+     ▼ callStore detects activeCall exists
+  Prompt: "Leave [current call] and join this one?"
+     ├── Confirm → end current call → join new call
+     └── Cancel  → stay in current call
 ```
 
 ### 6.4 New Database Tables
@@ -178,23 +223,34 @@ LiveKit runs on the existing `work-holo-internal` VPS (4 CPU / 7.6 GB RAM). Curr
 |-----------|----------|---------|
 | Call router | `packages/api/src/routers/communication/call.ts` | initiate, accept, reject, end, getJoinToken, list, addParticipant |
 | Call timeout worker | `workers/call-timeout/` | RabbitMQ DLX consumer → marks missed, sends notifications |
+| LiveKit webhook handler | `apps/server/src/api/livekit-webhook.ts` | Receives `room_finished`, `participant_joined`, `participant_left` → syncs DB |
 | Module ID | `packages/api/src/lib/module-ids.ts` | Add `CALLING: "calling"` |
 | Call schema | `packages/db/src/schema/call.ts` | New Drizzle tables |
 | Ring timeout queue | `packages/infrastructure/src/queue.ts` | Add `CALL_RING_TIMEOUT` queue with DLX config |
+| LiveKit config | `infra/livekit/livekit.yaml` | `room.empty_timeout: 300`, TURN config, API key/secret |
 
 ### 6.6 New Frontend Components
 
 | Component | Purpose |
 |-----------|---------|
-| `callStore` (Zustand) | Global call state — active call, incoming call, participant list |
-| `<CallOverlay />` | Floating draggable call window, persists across route navigation |
-| `<IncomingCallPopup />` | Corner notification — caller info, accept/decline, ringing sound |
+| `callStore` (Zustand) | Global call state — activeCall, incomingCall, isMinimized, softSwitchPending |
+| `<CallOverlay />` | Floating draggable full call window, persists across navigation |
+| `<CallPill />` | Minimized floating pill — bottom-left, duration timer, mic toggle, end button |
+| `<IncomingCallPopup />` | Corner notification — caller info, call type, accept/decline, ringing sound |
+| `<SoftSwitchPrompt />` | Modal: "Leave [current] and join [new]?" — shown when joining while in a call |
 | `<ParticipantGrid />` | ≤4 participants grid layout |
 | `<ActiveSpeakerLayout />` | 5–25 participants, dominant speaker tile |
-| `<CallControls />` | Mic, camera, end call, add participant buttons |
-| `<CallsSection />` | Sidebar Calls tab — directory + recent/missed call history |
-| `<CallHistoryItem />` | Inline call event in DM/channel thread |
-| `<CallDirectoryList />` | Browse org members with calling access, click to call |
+| `<CallControls />` | Mic, camera, device settings, reactions, add participant, end call |
+| `<DeviceSwitcher />` | Dropdown for mic/camera/speaker using `useMediaDevices()` hook |
+| `<CallReactionPicker />` | Emoji picker (👍 ❤️ 😂 🎉 ✋) — fires via `useDataChannel()` |
+| `<ReactionAnimation />` | Floating emoji animation on participant tile for 3 seconds |
+| `<ConnectionQualityIndicator />` | Signal icon overlay on each tile using `useConnectionQuality()` |
+| `<ChannelCallBanner />` | "Call in progress · N joined" banner in channel thread |
+| `<ChannelLiveIndicator />` | Pulsing green dot on channel name in sidebar when call is active |
+| `<CallsSection />` | Sidebar Calls — two tabs: Directory and Recents |
+| `<CallDirectory />` | Online-first member list with search bar, presence indicators, call buttons |
+| `<CallRecents />` | Aggregated call history — missed (red), outgoing, incoming, quick-redial |
+| `<CallHistoryItem />` | Inline call event in DM/channel thread with duration |
 
 ---
 
@@ -251,12 +307,14 @@ The **call directory sidebar** uses the existing `listAllowedUsers("calling")` e
 #### Week 3 — Signaling, State Machine & Ring Timeout
 | Task | Est. Days | With Claude AI |
 |------|-----------|----------------|
-| Pusher signaling events: `call.incoming`, `call.accepted`, `call.rejected`, `call.ended` | 1.5 | 1 |
-| RabbitMQ DLX queue for ring timeout (30s) | 1 | 0.5 |
+| Pusher DM signaling: `call.incoming`, `call.accepted`, `call.rejected`, `call.ended` | 1 | 0.5 |
+| Pusher channel call signaling: `call.channel.started`, `call.channel.ended` via `private-org-{orgId}` | 0.5 | 0.5 |
+| RabbitMQ DLX queue for ring timeout (30s, DM calls only) | 1 | 0.5 |
 | `workers/call-timeout/` — marks missed, fires notification | 1.5 | 1 |
 | oRPC endpoints: `accept`, `reject`, `cancel`, `end` | 1.5 | 1 |
+| LiveKit webhook handler (`room_finished`, `participant_joined`, `participant_left`) | 1 | 0.5 |
 | Presence integration — set `in_call` on active, clear on end | 0.5 | 0.5 |
-| **Week 3 Total** | **6 days** | **4 days** |
+| **Week 3 Total** | **7 days** | **4.5 days** |
 
 #### Week 4 — Frontend Core State & Incoming Call
 | Task | Est. Days | With Claude AI |
@@ -273,43 +331,61 @@ The **call directory sidebar** uses the existing `listAllowedUsers("calling")` e
 | Task | Est. Days | With Claude AI |
 |------|-----------|----------------|
 | Install `@livekit/components-react`, wire up `LiveKitRoom` | 0.5 | 0.5 |
-| `<CallOverlay />` — floating, draggable, minimizable | 2 | 1.5 |
+| `<CallOverlay />` — floating, draggable, full mode | 1.5 | 1 |
+| `<CallPill />` — minimized bottom-left pill, `isMinimized` toggle | 1 | 0.5 |
 | `<ParticipantGrid />` — ≤4 participants grid layout | 1 | 0.5 |
 | `<ActiveSpeakerLayout />` — 5–25 participants speaker view | 1.5 | 1 |
-| `<CallControls />` — mic toggle, camera toggle, end call | 1 | 0.5 |
+| `<CallControls />` — mic toggle, camera toggle, end call, settings icon | 1 | 0.5 |
+| `<DeviceSwitcher />` — mic/camera/speaker dropdown via `useMediaDevices()` | 0.5 | 0.5 |
+| `<ConnectionQualityIndicator />` — signal icon on all tiles via `useConnectionQuality()` | 0.5 | 0.5 |
+| `<CallReactionPicker />` + `<ReactionAnimation />` via `useDataChannel()` | 1 | 0.5 |
 | Voice call (audio-only) vs Video call (camera-on) initiation | 0.5 | 0.5 |
-| **Week 5 Total** | **6.5 days** | **4.5 days** |
+| `<SoftSwitchPrompt />` — "leave and join?" modal in callStore | 0.5 | 0.5 |
+| **Week 5 Total** | **9.5 days** | **6 days** |
 
-#### Week 6 — Entry Points, Calls Sidebar & Testing
+#### Week 6 — Entry Points, Channel Calls, Calls Sidebar & Testing
 | Task | Est. Days | With Claude AI |
 |------|-----------|----------------|
 | Voice/Video call buttons in DM conversation header | 0.5 | 0.5 |
-| Call button in channel header | 0.5 | 0.5 |
-| `<CallsSection />` sidebar — missed badge, recent calls, quick redial | 2 | 1.5 |
-| `<CallDirectoryList />` — browse org members, filtered by module access | 1.5 | 1 |
+| Call button in channel header (open-room model) | 0.5 | 0.5 |
+| `<ChannelCallBanner />` — "call in progress · N joined" in thread | 0.5 | 0.5 |
+| `<ChannelLiveIndicator />` — pulsing dot on channel name via `private-org-{orgId}` | 0.5 | 0.5 |
+| `<CallsSection />` — two-tab sidebar (Directory + Recents) | 2 | 1.5 |
+| `<CallDirectory />` — online-first, search bar, presence indicators | 1.5 | 1 |
+| `<CallRecents />` — aggregated history, missed badge (DM only), quick-redial | 1 | 1 |
 | Inline call event in DM/channel thread (`<CallHistoryItem />`) | 1 | 0.5 |
 | Host controls — mute participant, remove participant, end for all | 1.5 | 1 |
 | Add participant mid-call | 1 | 0.5 |
+| Warning toast when calling user with `in_call` presence | 0.5 | 0.5 |
 | End-to-end testing, bug fixes, polish | 2 | 1.5 |
-| **Week 6 Total** | **10 days** | **7 days** |
+| **Week 6 Total** | **12.5 days** | **8.5 days** |
 
 #### Phase 1 Summary
 | | Without Claude AI | With Claude AI ($20 plan) |
 |-|-------------------|--------------------------|
-| Estimated effort | ~36 dev-days (~7.5 weeks) | ~24 dev-days (~5 weeks) |
-| Calendar time (1 dev) | **7–8 weeks** | **5–6 weeks** |
+| Estimated effort | ~44 dev-days (~9 weeks) | ~29 dev-days (~6 weeks) |
+| Calendar time (1 dev) | **8–9 weeks** | **6–7 weeks** |
 
 **Phase 1 Deliverables:**
-- ✅ Voice and video 1-1 calls
+- ✅ Voice and video 1-1 calls (direct ring model)
+- ✅ Channel calls (open-room / huddle model, no forced ring)
 - ✅ Group calls (up to 25 participants)
 - ✅ Mid-call participant addition (1-1 → group escalation)
 - ✅ Floating overlay persists across navigation
+- ✅ Minimized pill — bottom-left, duration timer, mic toggle
 - ✅ Incoming call corner popup + push notification
-- ✅ 30-second ring timeout → missed call
+- ✅ 30-second ring timeout → missed call (DM only)
+- ✅ Channel call 5-minute empty timeout (LiveKit native)
 - ✅ Host controls (mute, remove, end for all)
+- ✅ Soft-switch prompt (no concurrent calls)
 - ✅ Rejoin while call is active
-- ✅ Calls sidebar with directory, history, missed badge
+- ✅ In-call device switcher (mic/camera/speaker)
+- ✅ Emoji reactions via LiveKit data channel
+- ✅ Connection quality on all participant tiles
+- ✅ Pulsing live indicator on channel name in sidebar
+- ✅ Calls sidebar — Directory tab (online-first + search) + Recents tab
 - ✅ Inline call events in chat thread
+- ✅ Warning toast when calling someone already in a call
 - ✅ Module-based permission control
 
 ---
@@ -359,25 +435,26 @@ The **call directory sidebar** uses the existing `listAllowedUsers("calling")` e
 ## 9. Full Timeline Summary
 
 ```
-Week 1   ████████  Infrastructure (LiveKit VPS, Docker, local dev)
+Week 1   ████████  Infrastructure (LiveKit in Coolify, firewall, local dev)
 Week 2   ████████  DB Schema + Backend Foundation
-Week 3   ████████  Signaling + Ring Timeout + State Machine
-Week 4   ████████  Frontend State + Incoming Call Popup
-Week 5   ████████  LiveKit Integration + Call UI
-Week 6   ████████  Entry Points + Sidebar + Testing
+Week 3   ████████  Signaling + Ring Timeout + State Machine + LiveKit Webhook
+Week 4   ████████  Frontend State + Incoming Call Popup + Soft Switch
+Week 5   ████████  LiveKit Integration + Full Call UI (pill, reactions, devices, quality)
+Week 6   ████████  Entry Points + Channel Calls + Sidebar + Testing
+Week 7   ████░░░░  Overflow / polish buffer
                    ── Phase 1 Complete ──
-Week 7   ████░░░░  Screen Sharing
+Week 8   ████░░░░  Screen Sharing
                    ── Phase 2 Complete ──
-Week 8-9 ████████  Call Recording
-                   ── Phase 3 Complete ──
+Week 9-10 ████████  Call Recording
+                    ── Phase 3 Complete ──
 ```
 
 | Phase | Feature | Calendar Time (with Claude AI) | Cumulative |
 |-------|---------|-------------------------------|------------|
-| Phase 1 | Voice + Video Calling | 5–6 weeks | 5–6 weeks |
-| Phase 2 | Screen Sharing | 1 week | 6–7 weeks |
-| Phase 3 | Call Recording | 1.5 weeks | 7.5–8.5 weeks |
-| **Total** | **Full calling platform** | | **~8–9 weeks** |
+| Phase 1 | Voice + Video Calling (full feature set) | 6–7 weeks | 6–7 weeks |
+| Phase 2 | Screen Sharing | 1 week | 7–8 weeks |
+| Phase 3 | Call Recording | 1.5 weeks | 8.5–9.5 weeks |
+| **Total** | **Full calling platform** | | **~9–10 weeks** |
 
 > **Note on Claude AI impact:** Claude AI Pro ($20/month) is used for code generation, boilerplate scaffolding, debugging, and reviewing oRPC/Drizzle/Zustand patterns consistent with the existing codebase. Estimated 30–40% reduction in development time on implementation tasks. Research, architecture decisions, deployment configuration, and testing remain manual.
 
@@ -411,13 +488,22 @@ Week 8-9 ████████  Call Recording
 ## 12. Success Criteria (Phase 1)
 
 - [ ] A user can initiate a voice or video call from a DM, channel, or call directory
-- [ ] The callee receives a corner popup within 2 seconds of the call being initiated
-- [ ] Unanswered calls automatically move to missed after 30 seconds
+- [ ] DM calls ring the callee directly; corner popup appears within 2 seconds
+- [ ] Channel calls open an ambient room; pulsing indicator appears on channel name immediately
+- [ ] Unanswered DM calls auto-move to missed after 30 seconds
+- [ ] Channel calls auto-close after 5 minutes with 1 participant remaining
 - [ ] The call overlay persists while navigating between channels and DMs
+- [ ] Minimising shows a floating pill (bottom-left) with duration, mic toggle, end button
 - [ ] A group call with 3+ participants shows active speaker layout
 - [ ] A participant who leaves can rejoin while the call is active
+- [ ] Trying to join a second call shows a soft-switch prompt — no auto-end
 - [ ] The host can mute, remove, and end-for-all
-- [ ] Missed calls show a badge on the Calls sidebar icon
+- [ ] Device switcher works mid-call for mic, camera, and speaker
+- [ ] Emoji reactions animate on tiles and broadcast to all participants
+- [ ] Connection quality indicator is visible on all participant tiles
+- [ ] Missed DM calls show a red badge on the Calls sidebar icon; channel calls do not
+- [ ] Calls sidebar has Directory tab (online-first, searchable) and Recents tab
+- [ ] Calling a user who is `in_call` shows a warning toast before ringing
 - [ ] Call events appear inline in the DM/channel thread with duration
 - [ ] Org admins can enable/disable calling per org, team, or user
 
@@ -441,3 +527,17 @@ Week 8-9 ████████  Call Recording
 | Layout switching | Grid ≤4 participants; active speaker 5–25 |
 | Rejoin window | Free rejoin while call is active (≥1 participant present) |
 | Call types | Voice (audio-first) and Video (camera-on), user chooses at initiation |
+| Channel call model | Open room / huddle — no ring, passive join, banner in thread + pulsing sidebar indicator |
+| DM call model | Direct ring — corner popup + push notification + 30s timeout |
+| Channel call empty timeout | 5 minutes via LiveKit `room.empty_timeout: 300` — no worker needed |
+| Channel calls in missed badge | Never — history only, no badge increment |
+| Concurrent calls | Soft-switch prompt — user chooses to leave current and join new |
+| Calling someone in a call | Warning toast to caller, ring goes through, callee gets soft-switch |
+| In-call chat | None — media-only overlay; minimise to use thread |
+| Minimised overlay | Floating pill bottom-left — duration, mic toggle, end button |
+| Device switcher | In-call via `useMediaDevices()` hook, settings icon in `<CallControls />` |
+| Connection quality | All tiles via `useConnectionQuality()` |
+| Emoji reactions | Full picker via `useDataChannel()` — zero server round-trip |
+| Call directory layout | Online-first then alphabetical, search bar, presence indicators |
+| Calls sidebar structure | Two tabs: Directory (who to call) + Recents (history + missed badge) |
+| LiveKit deployment | Same VPS (`work-holo-internal`) via Coolify — no new server needed |
