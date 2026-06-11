@@ -70,7 +70,14 @@ const TeamsDropdownBase = withForm({
     return (
       <form.AppField name="teamId">
         {(field) => (
-          <field.Select label="Team" placeholder="Select a team">
+          <field.Select
+            items={teams.map((team) => ({
+              value: team.id,
+              label: team.name,
+            }))}
+            label="Team"
+            placeholder="Select a team"
+          >
             {teams.map((team) => (
               <SelectItem key={team.id} value={team.id}>
                 {team.name}

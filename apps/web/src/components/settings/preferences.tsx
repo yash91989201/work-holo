@@ -116,7 +116,13 @@ export function General() {
             </ItemDescription>
           </ItemContent>
           <ItemActions>
-            <Select>
+            <Select
+              items={[
+                { value: "org", label: "Org home" },
+                { value: "attendance", label: "Attendance" },
+                { value: "communication", label: "Communication" },
+              ]}
+            >
               <SelectTrigger className="w-40">
                 <SelectValue placeholder="Select a view" />
               </SelectTrigger>
@@ -152,7 +158,17 @@ export function General() {
             </ItemDescription>
           </ItemContent>
           <ItemActions>
-            <Select>
+            <Select
+              items={[
+                { value: "monday", label: "Monday" },
+                { value: "tuesday", label: "Tuesday" },
+                { value: "wednesday", label: "Wednesday" },
+                { value: "thursday", label: "Thursday" },
+                { value: "friday", label: "Friday" },
+                { value: "saturday", label: "Saturday" },
+                { value: "sunday", label: "Sunday" },
+              ]}
+            >
               <SelectTrigger className="w-40">
                 <SelectValue placeholder="Select a day" />
               </SelectTrigger>
@@ -216,6 +232,7 @@ export function Interface() {
           </ItemContent>
           <ItemActions>
             <Select
+              items={themeOptions.map((o) => ({ value: o.value, label: o.label }))}
               onValueChange={(value) => {
                 if (value === null) return;
                 setTheme(value);
@@ -248,6 +265,7 @@ export function Interface() {
           </ItemContent>
           <ItemActions>
             <Select
+              items={fontFamilyOptions.map((o) => ({ value: o.value, label: o.label }))}
               onValueChange={(value) => {
                 if (value === null) return;
                 setFontFamily(value as FontFamily);
@@ -277,6 +295,7 @@ export function Interface() {
           </ItemContent>
           <ItemActions>
             <Select
+              items={fontSizeOptions.map((o) => ({ value: o.value, label: o.label }))}
               onValueChange={(value) => {
                 if (value === null) return;
                 setFontSize(value as FontSize);
@@ -306,6 +325,7 @@ export function Interface() {
           </ItemContent>
           <ItemActions>
             <Select
+              items={letterSpacingOptions.map((o) => ({ value: o.value, label: o.label }))}
               onValueChange={(value) => {
                 if (value === null) return;
                 setLetterSpacing(value as LetterSpacing);
@@ -333,6 +353,7 @@ export function Interface() {
           </ItemContent>
           <ItemActions>
             <Select
+              items={spacingOptions.map((o) => ({ value: o.value, label: o.label }))}
               onValueChange={(value) => {
                 if (value === null) return;
                 setSpacing(value as Spacing);
@@ -362,6 +383,7 @@ export function Interface() {
           </ItemContent>
           <ItemActions>
             <Select
+              items={radiusOptions.map((o) => ({ value: o.value, label: o.label }))}
               onValueChange={(value) => {
                 if (value === null) return;
                 setRadius(value as Radius);

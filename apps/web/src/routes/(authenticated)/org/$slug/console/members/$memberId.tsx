@@ -118,7 +118,14 @@ function UpdateMemberRole({
             <FieldGroup>
               <form.AppField name="role">
                 {(field) => (
-                  <field.Select label="Role" placeholder="Select a role">
+                  <field.Select
+                    items={[
+                      { value: "admin", label: "Admin" },
+                      { value: "member", label: "Member" },
+                    ]}
+                    label="Role"
+                    placeholder="Select a role"
+                  >
                     <SelectItem value="admin">
                       <div className="flex items-center gap-2">
                         <IconShieldFilled className="h-4 w-4" />

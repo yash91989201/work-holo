@@ -139,6 +139,13 @@ export function EmailNotifications() {
         </TableCell>
         <TableCell className="text-right">
           <Select
+            items={[
+              { value: "off", label: "Off" },
+              { value: "immediate", label: "Immediate" },
+              { value: "15min", label: "Every 15 min" },
+              { value: "hourly", label: "Hourly" },
+              { value: "daily", label: "Daily" },
+            ]}
             onValueChange={(val) => {
               if (val === null) return;
               handleEmailChange(

@@ -224,10 +224,10 @@ export function AccountDropdown() {
                 }
               />
             )}
+            <DropdownMenuSeparator />
           </DropdownMenuGroup>
         )}
 
-        <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuLabel>Account</DropdownMenuLabel>
           <DropdownMenuItem
