@@ -127,11 +127,10 @@ export function useMessageMutations() {
       const { txid } = await orpcClient.communication.message.create(message);
 
       await messagesCollection.utils.awaitTxId(txid);
-      await attachmentsCollection.utils.awaitTxId(txid);
-      await messageMentionsCollection.utils.awaitTxId(txid);
-      await messageReadCollection.utils.awaitTxId(txid);
-      await channelReadCollection.utils.awaitTxId(txid);
-      await notificationsCollection.utils.awaitTxId(txid);
+
+      if (message.attachments?.length) {
+        await attachmentsCollection.utils.awaitTxId(txid);
+      }
     },
   });
 
