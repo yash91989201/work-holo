@@ -1,14 +1,14 @@
 import { IconMessage2 } from "@tabler/icons-react";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { Button } from "@work-holo/ui/components/button";
 import {
-  Item,
-  ItemActions,
-  ItemContent,
-  ItemDescription,
-  ItemGroup,
-  ItemMedia,
-  ItemTitle,
-} from "@work-holo/ui/components/item";
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@work-holo/ui/components/card";
 import {
   Select,
   SelectContent,
@@ -18,21 +18,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@work-holo/ui/components/select";
+import { Skeleton } from "@work-holo/ui/components/skeleton";
 import { Spinner } from "@work-holo/ui/components/spinner";
-import { Switch } from "@work-holo/ui/components/switch";
 import { Suspense, useEffect, useState } from "react";
 import { toast } from "sonner";
-import {
-  useModuleConfig,
-  useUpdateModuleConfig,
-} from "@/hooks/use-module-access";
-import { FeatureSectionSkeleton } from "./feature-section-skeleton";
+import { useUpdateModuleConfig } from "@/hooks/use-module-access";
+import { queryUtils } from "@/utils/orpc";
 import { TeamPicker } from "./team-picker";
 import { MODE_OPTIONS, type ModuleMode } from "./types";
 import { UserPicker } from "./user-picker";
 
 export function DirectMessageFeature() {
-  const { data, isLoading } = useModuleConfig("direct_message");
+  const { data } = useSuspenseQuery(
+    queryUtils.org.moduleConfig.getModuleConfig.queryOptions({
+      input: { module: "direct_message" },
+    })
+  );
   const { mutate, isPending } = useUpdateModuleConfig();
 
   const [mode, setMode] = useState<ModuleMode>("disabled");
@@ -46,18 +47,6 @@ export function DirectMessageFeature() {
       setSelectedUserIds(data.users?.map((u) => u.id) ?? []);
     }
   }, [data]);
-
-  const isEnabled = mode !== "disabled";
-
-  const handleToggle = (checked: boolean) => {
-    if (checked) {
-      setMode("org_wide");
-    } else {
-      setMode("disabled");
-      setSelectedTeamIds([]);
-      setSelectedUserIds([]);
-    }
-  };
 
   const handleModeChange = (newMode: ModuleMode) => {
     setMode(newMode);
@@ -81,47 +70,17 @@ export function DirectMessageFeature() {
     );
   };
 
-  if (isLoading) return <FeatureSectionSkeleton />;
-
-  const showTeamPicker = mode === "team_based";
-  const showUserPicker = mode === "user_based";
+  const showPicker = mode === "team_based" || mode === "user_based";
 
   return (
-    <div className="space-y-8">
-      <div className="space-y-3">
-        <div>
-          <p className="font-semibold text-sm">Feature Access</p>
-          <p className="mt-0.5 text-muted-foreground text-xs">
-            Enable or disable direct messaging for your organization
-          </p>
-        </div>
-        <ItemGroup>
-          <Item variant="outline">
-            <ItemMedia className="text-blue-500" variant="icon">
-              <IconMessage2 />
-            </ItemMedia>
-            <ItemContent>
-              <ItemTitle>Direct Messages</ItemTitle>
-              <ItemDescription>
-                Allow members to send private messages to each other
-              </ItemDescription>
-            </ItemContent>
-            <ItemActions>
-              <Switch checked={isEnabled} onCheckedChange={handleToggle} />
-            </ItemActions>
-          </Item>
-        </ItemGroup>
-      </div>
-
-      {isEnabled && (
-        <div className="space-y-3">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <p className="font-semibold text-sm">Access Level</p>
-              <p className="mt-0.5 text-muted-foreground text-xs">
-                Choose who in your organization can use direct messages
-              </p>
-            </div>
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Access Level</CardTitle>
+          <CardDescription>
+            Control who in your organization can send private messages
+          </CardDescription>
+          <CardAction>
             <Select
               items={MODE_OPTIONS}
               onValueChange={(value) => {
@@ -143,44 +102,88 @@ export function DirectMessageFeature() {
                 </SelectGroup>
               </SelectContent>
             </Select>
-          </div>
+          </CardAction>
+        </CardHeader>
+      </Card>
 
-          {showTeamPicker && (
-            <Suspense
-              fallback={
-                <div className="flex items-center justify-center py-6">
-                  <Spinner className="h-5 w-5" />
-                </div>
-              }
-            >
-              <TeamPicker
-                onChange={setSelectedTeamIds}
-                selectedIds={selectedTeamIds}
-              />
-            </Suspense>
-          )}
+      {showPicker && (
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              {mode === "team_based" ? "Select Teams" : "Select Users"}
+            </CardTitle>
+            <CardDescription>
+              {mode === "team_based"
+                ? "Choose which teams have access to direct messages"
+                : "Choose which users have access to direct messages"}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {mode === "team_based" && (
+              <Suspense
+                fallback={
+                  <div className="flex items-center justify-center py-6">
+                    <Spinner className="h-5 w-5" />
+                  </div>
+                }
+              >
+                <TeamPicker
+                  onChange={setSelectedTeamIds}
+                  selectedIds={selectedTeamIds}
+                />
+              </Suspense>
+            )}
 
-          {showUserPicker && (
-            <Suspense
-              fallback={
-                <div className="flex items-center justify-center py-6">
-                  <Spinner className="h-5 w-5" />
-                </div>
-              }
-            >
-              <UserPicker
-                onChange={setSelectedUserIds}
-                selectedIds={selectedUserIds}
-              />
-            </Suspense>
-          )}
-        </div>
+            {mode === "user_based" && (
+              <Suspense
+                fallback={
+                  <div className="flex items-center justify-center py-6">
+                    <Spinner className="h-5 w-5" />
+                  </div>
+                }
+              >
+                <UserPicker
+                  onChange={setSelectedUserIds}
+                  selectedIds={selectedUserIds}
+                />
+              </Suspense>
+            )}
+          </CardContent>
+        </Card>
       )}
 
-      <Button disabled={isPending} onClick={handleSave} size="sm">
-        {isPending ? <Spinner className="mr-2 h-3.5 w-3.5" /> : null}
-        Save Changes
-      </Button>
+      <div className="flex justify-end">
+        <Button disabled={isPending} onClick={handleSave} size="sm">
+          {isPending ? <Spinner className="mr-2 h-3.5 w-3.5" /> : null}
+          Save Changes
+        </Button>
+      </div>
     </div>
   );
 }
+
+function DirectMessageFeatureSkeleton() {
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <IconMessage2 className="h-4 w-4 text-muted-foreground" />
+            <CardTitle>Direct Messages</CardTitle>
+          </div>
+          <CardDescription>
+            Control who in your organization can send private messages
+          </CardDescription>
+          <CardAction>
+            <Skeleton className="h-9 w-44 rounded-md" />
+          </CardAction>
+        </CardHeader>
+      </Card>
+      <div className="flex justify-end">
+        <Skeleton className="h-9 w-28 rounded-md" />
+      </div>
+    </div>
+  );
+}
+
+DirectMessageFeature.Fallback = DirectMessageFeatureSkeleton;

@@ -6,8 +6,9 @@ import {
   TabsList,
   TabsTrigger,
 } from "@work-holo/ui/components/tabs";
-import { ChannelFeature } from "@/components/console/modules/communication/channel-feature";
+import { Suspense } from "react";
 import { DirectMessageFeature } from "@/components/console/modules/communication/direct-message-feature";
+import { ChannelsListTable } from "@/components/modules/communication/channels/channels-list-table";
 
 export const Route = createFileRoute(
   "/(authenticated)/org/$slug/console/modules/communication/"
@@ -32,11 +33,15 @@ function RouteComponent() {
         </TabsList>
 
         <TabsContent className="pt-6" value="channels">
-          <ChannelFeature />
+          <Suspense fallback={<ChannelsListTable.Fallback />}>
+            <ChannelsListTable />
+          </Suspense>
         </TabsContent>
 
         <TabsContent className="pt-6" value="direct_message">
-          <DirectMessageFeature />
+          <Suspense fallback={<DirectMessageFeature.Fallback />}>
+            <DirectMessageFeature />
+          </Suspense>
         </TabsContent>
       </Tabs>
     </section>

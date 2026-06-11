@@ -1,10 +1,15 @@
 export type ModuleMode = "disabled" | "org_wide" | "team_based" | "user_based";
 
 export const MODE_OPTIONS: {
-  value: Exclude<ModuleMode, "disabled">;
+  value: ModuleMode;
   label: string;
   description: string;
 }[] = [
+  {
+    value: "disabled",
+    label: "Disabled",
+    description: "Direct messaging is turned off",
+  },
   {
     value: "org_wide",
     label: "Organization Wide",

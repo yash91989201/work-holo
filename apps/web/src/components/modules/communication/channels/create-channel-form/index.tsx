@@ -126,7 +126,13 @@ export const CreateChannelForm = ({ trigger }: CreateChannelFormProps) => {
 
               <form.AppField name="type">
                 {(field) => (
-                  <field.Select label="Channel Type">
+                  <field.Select
+                    items={[
+                      { label: "Team", value: "team" },
+                      { label: "Group", value: "group" },
+                    ]}
+                    label="Channel Type"
+                  >
                     <SelectItem value="team">Team</SelectItem>
                     <SelectItem value="group">Group</SelectItem>
                   </field.Select>

@@ -1,5 +1,4 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Badge } from "@work-holo/ui/components/badge";
 import { Checkbox } from "@work-holo/ui/components/checkbox";
 import {
   Item,
@@ -23,17 +22,7 @@ export function TeamPicker({ selectedIds, onChange }: TeamPickerProps) {
 
   return (
     <div className="space-y-2 pt-2">
-      <div className="flex items-center justify-between">
-        <p className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
-          Select Teams
-        </p>
-        {selectedIds.length > 0 && (
-          <Badge className="text-xs" variant="secondary">
-            {selectedIds.length} selected
-          </Badge>
-        )}
-      </div>
-      <ScrollArea className="h-48 rounded-xl border">
+      <ScrollArea className="h-64">
         <div className="p-1">
           {teams.length > 0 ? (
             <ItemGroup>

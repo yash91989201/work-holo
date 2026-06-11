@@ -45,8 +45,11 @@ const TeamSelectBase = withForm({
                 label: team.name,
                 value: team.id,
               }))}
-              onValueChange={(value) => field.handleChange(value ?? undefined)}
-              value={field.state.value ?? ""}
+              onValueChange={(value) => {
+                if (value === null) return;
+                field.handleChange(value);
+              }}
+              value={field.state.value}
             >
               <SelectTrigger className="w-full">
                 <SelectValue />
