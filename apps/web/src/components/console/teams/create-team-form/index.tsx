@@ -1,4 +1,5 @@
 import { IconPlus } from "@tabler/icons-react";
+import { useMutation } from "@tanstack/react-query";
 import { Button } from "@work-holo/ui/components/button";
 import { Checkbox } from "@work-holo/ui/components/checkbox";
 import {
@@ -18,25 +19,30 @@ import {
 import { useAppForm } from "@work-holo/ui/components/form/hooks";
 import { Label } from "@work-holo/ui/components/label";
 import { Spinner } from "@work-holo/ui/components/spinner";
-import React from "react";
+import type { ReactElement } from "react";
+import { Suspense, useState } from "react";
 import { toast } from "sonner";
+import { getAuthQueryKey } from "@/lib/auth/query-keys";
 import { authClient } from "@/lib/auth-client";
 import { CreateTeamFormSchema } from "@/lib/schemas/team";
 import { queryClient, queryUtils } from "@/utils/orpc";
+import { baseModules, createTeamFormOpts } from "./form-options";
+import { MembersSelect } from "./members-select";
 
-const baseModules = [
-  { id: "communication", name: "Communication" },
-  { id: "attendance", name: "Attendance" },
-];
+interface CreateTeamFormProps {
+  onSuccess?: (team: { id: string; name: string }) => void;
+  trigger?: ReactElement;
+}
 
-export const CreateTeamForm = () => {
-  const [open, setOpen] = React.useState(false);
+export const CreateTeamForm = ({ trigger, onSuccess }: CreateTeamFormProps) => {
+  const [open, setOpen] = useState(false);
+
+  const { mutateAsync: addMembers } = useMutation(
+    queryUtils.team.manage.addMember.mutationOptions()
+  );
 
   const form = useAppForm({
-    defaultValues: {
-      name: "",
-      modules: baseModules.map((m) => m.id),
-    },
+    ...createTeamFormOpts,
     validators: {
       onSubmit: CreateTeamFormSchema,
     },
@@ -48,14 +54,26 @@ export const CreateTeamForm = () => {
       if (error) throw new Error(error.message);
       if (!data) throw new Error("Failed to create team");
 
-      // Refresh team list
-      queryClient.refetchQueries({
-        queryKey: queryUtils.team.manage.list.queryKey({}),
-      });
+      if (value.memberIds.length > 0) {
+        await addMembers({ teamId: data.id, userIds: value.memberIds });
+      }
+
+      await Promise.all([
+        queryClient.refetchQueries({
+          queryKey: queryUtils.team.manage.list.queryKey({}),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: getAuthQueryKey.organization.myTeamMemberships(),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: getAuthQueryKey.organization.teams("current"),
+        }),
+      ]);
 
       toast.success(`${data.name} team created successfully`);
       form.reset();
       setOpen(false);
+      onSuccess?.(data);
     },
   });
 
@@ -63,10 +81,12 @@ export const CreateTeamForm = () => {
     <Dialog onOpenChange={setOpen} open={open}>
       <DialogTrigger
         render={
-          <Button className="gap-1.5">
-            <IconPlus />
-            New Team
-          </Button>
+          trigger ?? (
+            <Button className="gap-1.5">
+              <IconPlus />
+              New Team
+            </Button>
+          )
         }
       />
 
@@ -96,6 +116,10 @@ export const CreateTeamForm = () => {
                   />
                 )}
               </form.AppField>
+
+              <Suspense fallback={<MembersSelect.Fallback />}>
+                <MembersSelect form={form} />
+              </Suspense>
 
               <form.AppField mode="array" name="modules">
                 {(field) => {

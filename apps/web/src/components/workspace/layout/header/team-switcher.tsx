@@ -17,10 +17,12 @@ import {
 } from "@work-holo/ui/components/popover";
 import { Skeleton } from "@work-holo/ui/components/skeleton";
 import { useState } from "react";
+import { CreateTeamForm } from "@/components/console/teams/create-team-form";
 import { useMyTeams } from "@/hooks/use-my-teams";
 import { useSession } from "@/hooks/use-session";
 import { getAuthQueryKey } from "@/lib/auth/query-keys";
 import { authClient } from "@/lib/auth-client";
+import { Can } from "@/lib/permission";
 import { cn } from "@/lib/utils";
 import { queryClient } from "@/utils/orpc";
 
@@ -145,18 +147,25 @@ export function TeamSwitcher() {
               </>
             )}
           </CommandList>
-          <div className="border-t p-1">
-            <Button
-              className="h-9 w-full justify-start gap-2 px-2 text-muted-foreground hover:text-foreground"
-              size="sm"
-              variant="ghost"
-            >
-              <div className="flex size-5 items-center justify-center rounded-sm border bg-background">
-                <IconPlus className="size-3" />
-              </div>
-              New Team
-            </Button>
-          </div>
+          <Can permission={(p) => p.team.create}>
+            <div className="border-t p-1">
+              <CreateTeamForm
+                onSuccess={() => setOpen(false)}
+                trigger={
+                  <Button
+                    className="h-9 w-full justify-start gap-2 px-2 text-muted-foreground hover:text-foreground"
+                    size="sm"
+                    variant="ghost"
+                  >
+                    <div className="flex size-5 items-center justify-center rounded-sm border bg-background">
+                      <IconPlus className="size-3" />
+                    </div>
+                    New Team
+                  </Button>
+                }
+              />
+            </div>
+          </Can>
         </Command>
       </PopoverContent>
     </Popover>
