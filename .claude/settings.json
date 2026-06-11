@@ -1,4 +1,12 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p /Users/ashishpandey/Work/WorkHolo/work-holo/.claude/skills/calling-context)"
+    ],
+    "additionalDirectories": [
+      "/Users/ashishpandey/Work/WorkHolo/work-holo/.claude/skills"
+    ]
+  },
   "hooks": {
     "PostToolUse": [
       {
