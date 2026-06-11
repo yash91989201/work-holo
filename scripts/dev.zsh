@@ -21,6 +21,7 @@ fi
 DOCKER_COMPOSE_CMD=()
 START_WAS_INTERRUPTED="false"
 BUN_DEV_PID=""
+STUDIO_PID=""
 TYPE_WATCHER_PIDS=()
 VAPID_PUBLIC_KEY=""
 VAPID_PRIVATE_KEY=""
@@ -603,6 +604,7 @@ handle_interrupt() {
   if [[ -n "$BUN_DEV_PID" ]]; then
     kill -INT "$BUN_DEV_PID" >/dev/null 2>&1 || true
   fi
+  stop_studio
   stop_type_watchers
   printf "\n"
   local i
@@ -641,7 +643,7 @@ start_type_watchers() {
       web)
         type_gen_dirs+=("apps/web")
         ;;
-      server)
+      server | studio)
         type_gen_dirs+=("packages/api" "packages/db")
         ;;
       # www, read-receipt, message-search, notification have no type generators
@@ -687,6 +689,56 @@ stop_type_watchers() {
   TYPE_WATCHER_PIDS=()
 }
 
+should_run_studio() {
+  local -a run_targets=("$@")
+  if [[ ${#run_targets[@]} -eq 0 ]]; then
+    return 0
+  fi
+  local target=""
+  for target in "${run_targets[@]}"; do
+    if [[ "$target" == "all" || "$target" == "studio" ]]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
+start_studio() {
+  local -a run_targets=("$@")
+  if ! should_run_studio "${run_targets[@]}"; then
+    return 0
+  fi
+  log_info "Starting Drizzle Studio (https://local.drizzle.studio)"
+  (
+    cd "$ROOT_DIR/packages/db"
+    bun run db:studio
+  ) &
+  STUDIO_PID="$!"
+}
+
+should_run_turbo_dev() {
+  local -a run_targets=("$@")
+  if [[ ${#run_targets[@]} -eq 0 ]]; then
+    return 0
+  fi
+  local target=""
+  for target in "${run_targets[@]}"; do
+    if [[ "$target" != "studio" ]]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
+stop_studio() {
+  if [[ -z "$STUDIO_PID" ]]; then
+    return 0
+  fi
+  kill -TERM "$STUDIO_PID" >/dev/null 2>&1 || true
+  wait "$STUDIO_PID" 2>/dev/null || true
+  STUDIO_PID=""
+}
+
 cmd_start() {
   require_root
   check_deps
@@ -710,7 +762,7 @@ cmd_start() {
     --run)
       if [[ $# -lt 2 ]]; then
         log_error "Missing value for --run"
-        log_error "Example: scripts/dev.zsh start --run web,read-receipt,message-indexer"
+        log_error "Example: scripts/dev.zsh start --run web,server,studio"
         log_error "See README.md for full --run target list and usage details"
         exit 1
       fi
@@ -751,8 +803,9 @@ cmd_start() {
     read-receipt) turbo_filters+=("-F" "read-receipt") ;;
     message-search | message-indexer) turbo_filters+=("-F" "message-search") ;;
     notification) turbo_filters+=("-F" "@work-holo/notification-worker") ;;
+    studio) ;;
     *)
-      log_error "Unknown run target '$run_target'. Allowed: all, web, www, server, read-receipt, message-search, message-indexer, notification"
+      log_error "Unknown run target '$run_target'. Allowed: all, web, www, server, studio, read-receipt, message-search, message-indexer, notification"
       log_error "See README.md for full --run target list and usage details"
       exit 1
       ;;
@@ -799,14 +852,22 @@ cmd_start() {
       log_warn "Only $running_count/${#CORE_SERVICES[@]} services are running. Some features may not work."
     fi
 
-    log_info "Starting dev server (with TUI)"
     start_type_watchers "${run_targets[@]}"
-    if [[ "${#turbo_filters[@]}" -gt 0 ]]; then
-      bun run dev -- "${turbo_filters[@]}"
-    else
-      bun dev
+    start_studio "${run_targets[@]}"
+    local dev_rc=0
+    if should_run_turbo_dev "${run_targets[@]}"; then
+      log_info "Starting dev server (with TUI)"
+      if [[ "${#turbo_filters[@]}" -gt 0 ]]; then
+        bun run dev -- "${turbo_filters[@]}"
+      else
+        bun dev
+      fi
+      dev_rc=$?
+    elif [[ -n "$STUDIO_PID" ]]; then
+      log_info "Drizzle Studio running; press Ctrl+C to stop"
+      wait "$STUDIO_PID" || dev_rc=$?
     fi
-    local dev_rc=$?
+    stop_studio
     stop_type_watchers
     return $dev_rc
   fi
@@ -816,24 +877,33 @@ cmd_start() {
   START_WAS_INTERRUPTED="false"
   trap handle_interrupt INT
   start_type_watchers "${run_targets[@]}"
-  if [[ "${#turbo_filters[@]}" -gt 0 ]]; then
-    TURBO_UI=0 bun run dev -- "${turbo_filters[@]}" &
-  else
-    TURBO_UI=0 bun dev &
-  fi
-  BUN_DEV_PID="$!"
+  start_studio "${run_targets[@]}"
+  local code=0
   set +e
-  wait "$BUN_DEV_PID"
-  local code=$?
+  if should_run_turbo_dev "${run_targets[@]}"; then
+    if [[ "${#turbo_filters[@]}" -gt 0 ]]; then
+      TURBO_UI=0 bun run dev -- "${turbo_filters[@]}" &
+    else
+      TURBO_UI=0 bun dev &
+    fi
+    BUN_DEV_PID="$!"
+    wait "$BUN_DEV_PID"
+    code=$?
+    BUN_DEV_PID=""
+  elif [[ -n "$STUDIO_PID" ]]; then
+    log_info "Drizzle Studio running; press Ctrl+C to stop"
+    wait "$STUDIO_PID"
+    code=$?
+  fi
   set -e
   trap - INT
-  BUN_DEV_PID=""
+  stop_studio
   stop_type_watchers
   if [[ "$START_WAS_INTERRUPTED" == "true" ]]; then
     return 0
   fi
   if [[ "$code" -ne 0 ]]; then
-    log_warn "bun dev exited with code $code"
+    log_warn "dev process exited with code $code"
   fi
 }
 
@@ -1102,8 +1172,9 @@ Command behavior:
     --docker-only: start only docker services
     --dev-only: start only dev server (with TUI), auto-start services if needed
     --run: run only selected targets via turbo filters
-           allowed: all, web, www, server, read-receipt, message-search, message-indexer, notification
-           example: scripts/dev.zsh start --run web,read-receipt,message-indexer
+           allowed: all, web, www, server, studio, read-receipt, message-search, message-indexer, notification
+           example: scripts/dev.zsh start --run web,server,studio
+    Drizzle Studio runs outside Turbo (direct drizzle-kit); use --run studio to include it in filtered starts.
     Type generators (web, api, db) run automatically in watch mode alongside dev.
     Ctrl+C prompt: Docker services will stop in 5s. Press 'n' to keep them running...
 
