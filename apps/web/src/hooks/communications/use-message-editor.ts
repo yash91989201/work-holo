@@ -103,6 +103,9 @@ export function useMessageEditor({
         heading: false,
         codeBlock: false,
         horizontalRule: false,
+        link: false,
+        underline: false,
+        dropcursor: false,
       }),
       Underline,
       Placeholder.configure({
