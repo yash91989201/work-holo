@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(mkdir -p /Users/ashishpandey/Work/WorkHolo/work-holo/.claude/skills/calling-context)"
+      "Bash(mkdir -p /Users/ashishpandey/Work/WorkHolo/work-holo/.claude/skills/calling-context)",
+      "Bash(docker compose *)",
+      "Bash(grep -E \"\\\\.\\(ts|js\\)$\")"
     ],
     "additionalDirectories": [
       "/Users/ashishpandey/Work/WorkHolo/work-holo/.claude/skills"

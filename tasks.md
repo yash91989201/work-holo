@@ -18,8 +18,8 @@
 ## 1.1 — Infrastructure Setup
 > Week 1 · Blocker for everything else · Do this first
 
-- [ ] 🔴 Add LiveKit service to local `docker-compose.yml` (image, ports 7880/7881/UDP range)
-- [ ] 🔴 Create `infra/livekit/livekit.yaml` — API key, secret, TURN config, `room.empty_timeout: 300`
+- [x] 🔴 Add LiveKit service to local `docker-compose.yml` (image, ports 7880/7881/UDP range)
+- [x] 🔴 Create `infra/livekit/livekit.yaml` — API key, secret, TURN config, `room.empty_timeout: 300`
 - [ ] 🔴 Open firewall ports on VPS (`work-holo-internal`) — TCP 7880, TCP 7881, UDP 50000–60000
 - [ ] 🔴 Add LiveKit as new service in Coolify on `work-holo-internal`
 - [ ] 🔴 Verify room creation end-to-end — `lk room create` confirms media flows before writing app code
@@ -29,10 +29,11 @@
 ## 1.2 — Database & Backend Foundation
 > Week 2 · Depends on 1.1
 
-- [ ] 🔴 Create `packages/db/src/schema/call.ts` — `call` table (id, orgId, type, status, initiatorId, sourceConversationId, sourceType, livekitRoomName, startedAt, endedAt, createdAt)
-- [ ] 🔴 Create `callParticipant` table in same file (id, callId, userId, role, joinedAt, leftAt, isRemoved, createdAt)
+- [ ] 🔴 Create `packages/db/src/schema/call.ts` — `call` table (id, orgId, type, status, initiatorId, sourceConversationId, sourceType, livekitRoomName, startedAt, endedAt, createdAt, updatedAt) + export from `schema/index.ts` barrel
+- [ ] 🔴 Create `callParticipant` table in same file (id, callId, userId, role, joinedAt, leftAt, isRemoved, createdAt, updatedAt)
 - [ ] 🔴 Run `bun run db:generate && bun run db:migrate`
-- [ ] 🔴 Add `CALLING: "calling"` to `packages/api/src/lib/module-ids.ts`
+- [ ] 🔴 Add `CALLING: "calling"` to `packages/api/src/lib/module-ids.ts` (moduleSchema + `listAllowedUsers` auto-derive from this — no other permission code needed)
+- [ ] 🔴 Add `callingProcedure` to `packages/api/src/index.ts` — mirror `dmProcedure` module-enablement middleware
 - [ ] 🔴 Scaffold oRPC call router — `packages/api/src/routers/communication/call.ts` (initiate, getJoinToken, list)
 - [ ] 🔴 LiveKit JWT token generation — server-side per-user per-room access tokens
 - [ ] 🟠 Register call router in the main router index
@@ -45,10 +46,10 @@
 - [ ] 🔴 Pusher DM signaling events — `call.incoming`, `call.accepted`, `call.rejected`, `call.ended` on `private-user-{userId}`
 - [ ] 🔴 Pusher channel call events — `call.channel.started`, `call.channel.ended` on `private-org-{orgId}`
 - [ ] 🔴 RabbitMQ DLX queue for 30s ring timeout — add `CALL_RING_TIMEOUT` queue with `x-message-ttl: 30000` + dead-letter exchange to `packages/infrastructure/src/queue.ts`
-- [ ] 🔴 Create `workers/call-timeout/` — DLX consumer: checks if call still `ringing` → marks `missed` → fires push notification to both parties
+- [ ] 🔴 Create `workers/call-timeout/` — DLX consumer (mirror `workers/read-receipt/` QueueWorker structure): checks if call still `ringing` → marks `missed` → fires push notification to both parties
 - [ ] 🔴 oRPC endpoints — `accept`, `reject`, `cancel`, `end` in call router
 - [ ] 🔴 oRPC endpoint — `addParticipant` (mid-call invite)
-- [ ] 🔴 LiveKit webhook handler — `apps/server/src/api/livekit-webhook.ts` handles `room_finished`, `participant_joined`, `participant_left` → syncs DB
+- [ ] 🔴 LiveKit webhook handler — `apps/server/src/lib/livekit-webhook.ts`, route registered in `apps/server/src/index.ts` (mirror auth route registration) — handles `room_finished`, `participant_joined`, `participant_left` → syncs DB
 - [ ] 🟠 Presence integration — set `in_call` status on call active, clear on call ended (existing Redis presence system)
 - [ ] 🟠 Auto-create DM when calling from directory with no prior conversation
 
@@ -57,9 +58,10 @@
 ## 1.4 — Frontend Core State & Incoming Call
 > Week 4 · Depends on 1.3
 
-- [ ] 🔴 Create `callStore` (Zustand) — `activeCall`, `incomingCall`, `isMinimized`, `softSwitchPending` state + actions
-- [ ] 🔴 Mount `callStore` provider above TanStack Router in root layout
-- [ ] 🔴 Wire Pusher event listeners to `callStore` — `call.incoming` → set incomingCall, `call.accepted` → set activeCall, etc.
+- [ ] 🔴 Create `callStore` (Zustand) — `apps/web/src/stores/call-store.ts`, mirror `dm-store.ts` pattern (no provider needed — Zustand stores are global hooks)
+- [ ] 🔴 Mount call UI (`<CallOverlay />`, `<CallPill />`, `<IncomingCallPopup />`, `<SoftSwitchPrompt />`) in workspace layout `routes/(authenticated)/org/$slug/workspace/route.tsx` — persists across workspace navigation
+- [ ] 🔴 Wire Pusher event listeners to `callStore` — new hook mirroring `use-notification-sound.ts` subscribe pattern on `private-user-{userId}`; `call.incoming` → set incomingCall, `call.accepted` → set activeCall, etc.
+- [ ] 🔴 New org-level Pusher hook — client does NOT yet subscribe to `private-org-{orgId}`; create `use-org-call-events.ts` (mirror `use-channel-presence.ts`)
 - [ ] 🔴 `<IncomingCallPopup />` — corner notification, caller avatar, call type badge (voice/video), accept (green) / decline (red), ringing sound via existing `use-notification-sound`
 - [ ] 🔴 Accept flow → request LiveKit join token → open `<CallOverlay />`
 - [ ] 🔴 Decline flow → fire `reject` oRPC call → dismiss popup
@@ -72,7 +74,7 @@
 ## 1.5 — LiveKit Integration & Call UI
 > Week 5 · Depends on 1.4
 
-- [ ] 🔴 Install `@livekit/components-react` — pin version, verify React 19 compatibility
+- [ ] 🔴 Install `@livekit/components-react` — pin v2.9.21 (verified 2026-06-12: peer deps declare `react: ">=18"` — React 19.2.6 officially supported)
 - [ ] 🔴 Wire `<LiveKitRoom>` with JWT token from `getJoinToken` endpoint
 - [ ] 🔴 `<CallOverlay />` — floating, draggable full-screen call window, mounts above router, persists across navigation
 - [ ] 🔴 `<CallPill />` — minimized state: bottom-left floating pill, call duration timer, mic toggle, end call button. Toggle via `isMinimized` in callStore
@@ -94,7 +96,7 @@
 - [ ] 🔴 Call button in channel header — opens open-room channel call (no ring, ambient join)
 - [ ] 🔴 `<ChannelCallBanner />` — "call in progress · N joined · Join" banner inside channel thread
 - [ ] 🔴 `<ChannelLiveIndicator />` — pulsing green dot on channel name in sidebar (shown while channel call is active, via `private-org-{orgId}` Pusher event)
-- [ ] 🔴 `<CallsSection />` — new top-level sidebar section with two tabs: **Directory** and **Recents**
+- [ ] 🔴 `<CallsSection />` — new sidebar group at `components/workspace/layout/sidebar/groups/calls.tsx` (mirror `groups/dm.tsx`) with two tabs: **Directory** and **Recents**
 - [ ] 🔴 `<CallDirectory />` — org members list: online-first then alphabetical, presence indicators (green/yellow/grey), search bar, call button per member. Filtered by `listAllowedUsers("calling")`
 - [ ] 🔴 `<CallRecents />` — aggregated call history across all conversations: missed calls (red badge), outgoing, incoming, channel calls. Quick-redial button per entry
 - [ ] 🔴 `<CallHistoryItem />` — inline call event in DM/channel thread ("📞 Voice call · 4m 32s" or "📹 Video call · Missed")

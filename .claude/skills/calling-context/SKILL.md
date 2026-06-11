@@ -57,7 +57,7 @@ initiated → active immediately (no ringing phase)
 - `room_finished` → mark call `ended`, set `endedAt`
 - `participant_joined` → set `callParticipant.joinedAt`
 - `participant_left` → set `callParticipant.leftAt`
-- Webhook handler: `apps/server/src/api/livekit-webhook.ts`
+- Webhook handler: `apps/server/src/lib/livekit-webhook.ts`, registered as a Hono route in `apps/server/src/index.ts` (mirror how the auth route is registered — there is NO `apps/server/src/api/` directory)
 
 ### Concurrent Calls — Soft Switch
 - User can only be in ONE call at a time
@@ -87,7 +87,10 @@ livekitRoomName  text unique  (convention: `call_${callId}`)
 startedAt        timestamp nullable  (when first participant joined)
 endedAt          timestamp nullable
 createdAt        timestamp
+updatedAt        timestamp  (project convention — $onUpdate(() => new Date()))
 ```
+
+> Schema conventions verified against `packages/db/src/schema/direct-message.ts`: `import { cuid2 } from "drizzle-cuid2/postgres"`, `timestamp({ withTimezone: true })`, indexes as array in third arg, barrel export from `schema/index.ts`. DM tables have NO soft-delete column — calls don't need one either.
 
 ### `callParticipant` table — same file
 ```
@@ -99,6 +102,7 @@ joinedAt   timestamp nullable
 leftAt     timestamp nullable
 isRemoved  boolean default false  (set by host when removing)
 createdAt  timestamp
+updatedAt  timestamp
 ```
 
 ---
@@ -115,6 +119,8 @@ createdAt  timestamp
 | Channel call started | `private-org-{orgId}` | `{ callId, channelId, initiatorName, type }` |
 | Channel call ended | `private-org-{orgId}` | `{ callId, channelId }` |
 | Participant joined channel call | `private-org-{orgId}` | `{ callId, channelId, userId, participantCount }` |
+
+> Verified: server already triggers on `private-user-${userId}` (see `workers/notification/src/lib/handlers/pusher.ts`) and `private-org-${orgId}` exists server-side in the realtime router. The web client does NOT yet subscribe to `private-org-{orgId}` — a new hook is needed (mirror `apps/web/src/hooks/communications/use-channel-presence.ts`). Client subscribe pattern + ringing sound reuse: `apps/web/src/hooks/communications/use-notification-sound.ts`.
 
 ---
 
@@ -175,6 +181,8 @@ interface CallStore {
 
 ## Permission Model
 - Module ID: `CALLING = "calling"` in `packages/api/src/lib/module-ids.ts`
+- `moduleSchema` in `packages/api/src/routers/org/module-config.ts` is derived from `Object.values(MODULE_IDS)` — adding CALLING to module-ids.ts automatically makes `listAllowedUsers("calling")` and module config work. No other permission code needed.
+- New `callingProcedure` mirrors `dmProcedure` in `packages/api/src/index.ts` (lines ~117–208) — copy its module-enablement middleware, swap module ID
 - Same system as `DIRECT_MESSAGE` — org admin controls access
 - Modes: `disabled` | `org_wide` | `team_based` | `user_based`
 - Call directory filtered by `listAllowedUsers("calling")` — only shows callable members
@@ -184,27 +192,31 @@ interface CallStore {
 
 ## Key File Locations
 
-### New files to create
+### New files to create (paths verified against codebase 2026-06-12)
 | File | Purpose |
 |------|---------|
-| `packages/db/src/schema/call.ts` | DB schema |
+| `packages/db/src/schema/call.ts` | DB schema (export from `schema/index.ts` barrel) |
 | `packages/api/src/routers/communication/call.ts` | oRPC call router |
-| `packages/api/src/lib/module-ids.ts` | Add CALLING constant |
-| `apps/server/src/api/livekit-webhook.ts` | LiveKit webhook handler |
-| `workers/call-timeout/` | RabbitMQ DLX ring timeout worker |
-| `infra/livekit/livekit.yaml` | LiveKit server config |
-| `apps/web/src/stores/call-store.ts` | Zustand callStore |
-| `apps/web/src/hooks/use-call.ts` | Call initiation hook |
-| `apps/web/src/components/call/` | All call UI components |
-| `apps/web/src/components/sidebar/calls-section/` | Calls sidebar section |
+| `apps/server/src/lib/livekit-webhook.ts` | LiveKit webhook handler (register route in `apps/server/src/index.ts`) |
+| `workers/call-timeout/` | RabbitMQ DLX ring timeout worker — mirror `workers/read-receipt/` structure (QueueWorker class, prefetch, ack pattern) |
+| `infra/livekit/livekit.yaml` | LiveKit server config ✅ created |
+| `apps/web/src/stores/call-store.ts` | Zustand callStore — mirror `stores/dm-store.ts` pattern. NO provider needed — Zustand stores are global hooks |
+| `apps/web/src/hooks/communications/use-call.ts` | Call initiation hook (hooks live under `hooks/communications/`) |
+| `apps/web/src/components/modules/communication/calls/` | All call UI components (matches existing `modules/communication/dm/` + `channels/` convention) |
+| `apps/web/src/components/workspace/layout/sidebar/groups/calls.tsx` | Calls sidebar group (matches existing `groups/dm.tsx`, `groups/channel.tsx` pattern) |
 
 ### Existing files to modify
 | File | Change |
 |------|--------|
-| `docker-compose.yml` | Add LiveKit service |
-| `packages/infrastructure/src/queue.ts` | Add CALL_RING_TIMEOUT queue with DLX |
+| `docker-compose.yml` | Add LiveKit service ✅ done |
+| `packages/api/src/lib/module-ids.ts` | Add `CALLING: "calling"` — moduleSchema auto-derives from this |
+| `packages/api/src/index.ts` | Add `callingProcedure` (mirror `dmProcedure`) |
+| `packages/infrastructure/src/queue.ts` | Add CALL_RING_TIMEOUT queue with DLX args (existing QUEUES pattern: READ_RECEIPTS, NOTIFICATIONS, SEARCH_INDEXING — none use DLX yet) |
 | `packages/api/src/routers/communication/index.ts` | Register call router |
-| `apps/web/src/routes/(authenticated)/org/$slug/workspace/` | Mount callStore + overlays |
+| `apps/web/src/routes/(authenticated)/org/$slug/workspace/route.tsx` | Mount `<CallOverlay />`, `<CallPill />`, `<IncomingCallPopup />`, `<SoftSwitchPrompt />` inside `<SidebarInset>` — persists across workspace navigation (NOT `__root.tsx`; call UI needs authenticated org context) |
+| `apps/web/src/components/workspace/layout/sidebar/groups/channel.tsx` | Add `<ChannelLiveIndicator />` pulsing dot |
+| `apps/web/src/components/modules/communication/dm/dm-conversation-header.tsx` | Voice/video buttons in the `ml-auto` actions div |
+| `apps/web/src/components/modules/communication/channels/channel-header.tsx` | Huddle button in actions area |
 
 ---
 
@@ -212,23 +224,23 @@ interface CallStore {
 
 | Component | Location | Purpose |
 |-----------|----------|---------|
-| `<CallOverlay />` | `components/call/call-overlay.tsx` | Full floating call window |
-| `<CallPill />` | `components/call/call-pill.tsx` | Minimized pill, bottom-left |
-| `<IncomingCallPopup />` | `components/call/incoming-call-popup.tsx` | Corner ring notification |
-| `<SoftSwitchPrompt />` | `components/call/soft-switch-prompt.tsx` | Leave and join modal |
-| `<ParticipantGrid />` | `components/call/participant-grid.tsx` | ≤4 participants grid |
-| `<ActiveSpeakerLayout />` | `components/call/active-speaker-layout.tsx` | 5–25 participants layout |
-| `<CallControls />` | `components/call/call-controls.tsx` | Mic, camera, settings, reactions, end |
-| `<DeviceSwitcher />` | `components/call/device-switcher.tsx` | useMediaDevices() dropdown |
-| `<CallReactionPicker />` | `components/call/call-reaction-picker.tsx` | Emoji picker via useDataChannel() |
-| `<ReactionAnimation />` | `components/call/reaction-animation.tsx` | 3-second floating emoji on tile |
-| `<ConnectionQualityIndicator />` | `components/call/connection-quality.tsx` | Signal icon via useConnectionQuality() |
-| `<ChannelCallBanner />` | `components/call/channel-call-banner.tsx` | "Call in progress · N joined" in thread |
-| `<ChannelLiveIndicator />` | `components/sidebar/channel-live-indicator.tsx` | Pulsing dot on channel name |
-| `<CallsSection />` | `components/sidebar/calls-section/index.tsx` | Sidebar section with Directory + Recents tabs |
-| `<CallDirectory />` | `components/sidebar/calls-section/call-directory.tsx` | Online-first member list with search |
-| `<CallRecents />` | `components/sidebar/calls-section/call-recents.tsx` | Aggregated call history |
-| `<CallHistoryItem />` | `components/call/call-history-item.tsx` | Inline call event in DM/channel thread |
+| `<CallOverlay />` | `components/modules/communication/calls/call-overlay.tsx` | Full floating call window |
+| `<CallPill />` | `components/modules/communication/calls/call-pill.tsx` | Minimized pill, bottom-left |
+| `<IncomingCallPopup />` | `components/modules/communication/calls/incoming-call-popup.tsx` | Corner ring notification |
+| `<SoftSwitchPrompt />` | `components/modules/communication/calls/soft-switch-prompt.tsx` | Leave and join modal |
+| `<ParticipantGrid />` | `components/modules/communication/calls/participant-grid.tsx` | ≤4 participants grid |
+| `<ActiveSpeakerLayout />` | `components/modules/communication/calls/active-speaker-layout.tsx` | 5–25 participants layout |
+| `<CallControls />` | `components/modules/communication/calls/call-controls.tsx` | Mic, camera, settings, reactions, end |
+| `<DeviceSwitcher />` | `components/modules/communication/calls/device-switcher.tsx` | useMediaDevices() dropdown |
+| `<CallReactionPicker />` | `components/modules/communication/calls/call-reaction-picker.tsx` | Emoji picker via useDataChannel() |
+| `<ReactionAnimation />` | `components/modules/communication/calls/reaction-animation.tsx` | 3-second floating emoji on tile |
+| `<ConnectionQualityIndicator />` | `components/modules/communication/calls/connection-quality.tsx` | Signal icon via useConnectionQuality() |
+| `<ChannelCallBanner />` | `components/modules/communication/calls/channel-call-banner.tsx` | "Call in progress · N joined" in thread |
+| `<ChannelLiveIndicator />` | `components/modules/communication/calls/channel-live-indicator.tsx` | Pulsing dot — rendered inside `sidebar/groups/channel.tsx` |
+| `<CallsSection />` | `components/workspace/layout/sidebar/groups/calls.tsx` | Sidebar group with Directory + Recents tabs |
+| `<CallDirectory />` | `components/modules/communication/calls/call-directory.tsx` | Online-first member list with search |
+| `<CallRecents />` | `components/modules/communication/calls/call-recents.tsx` | Aggregated call history |
+| `<CallHistoryItem />` | `components/modules/communication/calls/call-history-item.tsx` | Inline call event in DM/channel thread |
 
 ---
 
