@@ -116,14 +116,23 @@ exit /b %ERRORLEVEL%
 :check_deps
 call :check_command bun || exit /b 1
 call :check_command docker || exit /b 1
-call :check_command openssl || exit /b 1
 call :detect_docker_compose || exit /b 1
 exit /b 0
 
 :generate_better_auth_secret
 set "_SECRET="
-for /f "usebackq delims=" %%S in (`openssl rand -base64 24 ^| bun -e "const fs=require('node:fs');process.stdout.write(fs.readFileSync(0,'utf8').replace(/[\/+=]/g,'').slice(0,32))"`) do (
-  set "_SECRET=%%S"
+for /f "usebackq delims=" %%S in (`npx --yes auth secret 2^>nul`) do (
+  if not defined _SECRET set "_SECRET=%%S"
+)
+if not defined _SECRET (
+  for /f "usebackq delims=" %%S in (`bunx auth secret 2^>nul`) do (
+    if not defined _SECRET set "_SECRET=%%S"
+  )
+)
+if not defined _SECRET (
+  for /f "usebackq delims=" %%S in (`openssl rand -base64 32 2^>nul`) do (
+    if not defined _SECRET set "_SECRET=%%S"
+  )
 )
 if not defined _SECRET (
   call :log_error "Failed to generate BETTER_AUTH_SECRET"
@@ -1484,7 +1493,9 @@ echo   shared across server/web/notification env files
 echo   on failure, VAPID values remain empty
 echo.
 echo Auth secret generation:
-echo   openssl rand -base64 24 ^| tr -d '/+=' ^| head -c 32
+echo   npx --yes auth secret
+echo   fallback: bunx auth secret
+echo   fallback: openssl rand -base64 32
 echo.
 echo Docker compose detection:
 echo   prefers docker compose ^(v2^), fallback docker-compose ^(v1^)

@@ -154,6 +154,17 @@ export function PresenceRoster() {
         </CardDescription>
         <CardAction>
           <Select
+            items={[
+              { value: "all", label: "All Status" },
+              { value: "available", label: "Available" },
+              { value: "busy", label: "Busy" },
+              { value: "away", label: "Away" },
+              { value: "dnd", label: "Do Not Disturb" },
+              { value: "on_break", label: "On Break" },
+              { value: "in_call", label: "In a Call" },
+              { value: "in_meeting", label: "In a Meeting" },
+              { value: "offline", label: "Offline" },
+            ]}
             onValueChange={(value) =>
               setStatusFilter(value as PresenceStatus | "all")
             }

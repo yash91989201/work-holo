@@ -160,7 +160,14 @@ function UpdateMemberRole({
             <FieldGroup>
               <form.AppField name="role">
                 {(field) => (
-                  <field.Select label="Role" placeholder="Select a role">
+                  <field.Select
+                    items={[
+                      { value: "admin", label: "Admin" },
+                      { value: "member", label: "Member" },
+                    ]}
+                    label="Role"
+                    placeholder="Select a role"
+                  >
                     <SelectItem value="admin">
                       <div className="flex items-center gap-2">
                         <IconShieldFilled className="h-4 w-4" />
@@ -572,6 +579,12 @@ export const MembersTable = () => {
               )}
             </InputGroup>
             <Select
+              items={[
+                { value: "all", label: "All Roles" },
+                { value: "owner", label: "Owner" },
+                { value: "admin", label: "Admin" },
+                { value: "member", label: "Member" },
+              ]}
               onValueChange={(value) => {
                 navigate({
                   search: (prev) => ({
@@ -721,6 +734,10 @@ export const MembersTable = () => {
             <div className="flex items-center gap-2">
               <p className="hidden sm:block">Rows per page</p>
               <Select
+                items={[10, 20, 30, 40, 50].map((size) => ({
+                  value: `${size}`,
+                  label: `${size}`,
+                }))}
                 onValueChange={(value) => {
                   navigate({
                     search: (prev) => ({

@@ -565,6 +565,10 @@ export const FilesGrid = () => {
           <div className="flex items-center gap-2">
             <p className="hidden sm:block">Items per page</p>
             <Select
+              items={[10, 20, 30, 40, 50].map((size) => ({
+                value: `${size}`,
+                label: `${size}`,
+              }))}
               onValueChange={(value) => {
                 navigate({
                   search: (prev) => ({
@@ -644,7 +648,11 @@ const FilesGridSkeleton = () => {
         <div className="flex flex-col gap-3 text-muted-foreground text-sm sm:flex-row sm:items-center sm:gap-4">
           <div className="flex items-center gap-2">
             <p className="hidden sm:block">Items per page</p>
-            <Select disabled value="20">
+            <Select
+              disabled
+              items={[{ value: "20", label: "20" }]}
+              value="20"
+            >
               <SelectTrigger className="h-8 w-17">
                 <SelectValue placeholder="20" />
               </SelectTrigger>

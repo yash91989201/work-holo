@@ -1168,9 +1168,10 @@ export const dmRouter = {
         },
       });
 
-      const hits = response.body.hits.hits as SearchHit[];
+      const hits = response.body.hits.hits as unknown as SearchHit[];
       const totalHits = response.body.hits.total;
-      const total = typeof totalHits === "number" ? totalHits : totalHits.value;
+      const total =
+        typeof totalHits === "number" ? totalHits : totalHits?.value ?? 0;
 
       const senderIds = Array.from(
         new Set(hits.map((hit) => hit._source.senderId))

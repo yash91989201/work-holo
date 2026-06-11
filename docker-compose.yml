@@ -2,7 +2,7 @@ name: "work-holo"
 
 services:
   postgres:
-    image: postgres:18.1-alpine3.23
+    image: postgres:18.4-alpine3.23
     restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
@@ -29,7 +29,7 @@ services:
       retries: 5
 
   electric:
-    image: docker.io/electricsql/electric:1.4.16
+    image: docker.io/electricsql/electric:1.6.10
     environment:
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres
       # Not suitable for production. Only use insecure mode in development or if you've otherwise secured the Electric API.
@@ -40,7 +40,7 @@ services:
       - "5003:3000"
 
   dragonfly:
-    image: docker.dragonflydb.io/dragonflydb/dragonfly:latest
+    image: docker.dragonflydb.io/dragonflydb/dragonfly:v1.27.1
     ports:
       - "6379:6379"
     ulimits:
@@ -50,7 +50,7 @@ services:
       - dragonfly_data:/data
 
   rabbitmq:
-    image: rabbitmq:3-management-alpine
+    image: rabbitmq:4.3.1-management-alpine
     ports:
       - "5672:5672" # AMQP port
       - "15672:15672" # Management UI port
@@ -66,7 +66,7 @@ services:
       retries: 5
 
   opensearch:
-    image: opensearchproject/opensearch:latest
+    image: opensearchproject/opensearch:3.7.0
     ports:
       - "9200:9200" # REST API port
       - "9600:9600" # Performance analyzer port
@@ -84,7 +84,7 @@ services:
       retries: 5
 
   rustfs:
-    image: "rustfs/rustfs:latest"
+    image: "rustfs/rustfs:1.0.0-beta.8"
     restart: unless-stopped
     user: "0:0"
     security_opt:
@@ -116,7 +116,7 @@ services:
       start_period: 40s
 
   soketi:
-    image: "quay.io/soketi/soketi:1.6-16-debian"
+    image: "quay.io/soketi/soketi:1.6.1-16-debian"
     ports:
       - "6001:6001"
       - "9601:9601"
@@ -138,7 +138,7 @@ services:
       retries: 3
 
   imgproxy:
-    image: darthsim/imgproxy:v3.30.1
+    image: darthsim/imgproxy:v4.0.4
     restart: unless-stopped
     ports:
       - "8080:8080"

@@ -80,9 +80,9 @@ function HeroSection({ data }: { data: ProjectPageData }) {
       {/* Hero Background Image */}
       {data.heroImage && (
         <motion.div
+          animate={{ opacity: 1, scale: 1 }}
           className="absolute inset-0 z-0"
           initial={{ opacity: 0, scale: 1.1 }}
-          animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.5, ease: EASE }}
         >
           <img

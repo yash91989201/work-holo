@@ -49,6 +49,11 @@ export function AttendanceAnalyticsView() {
     })
   );
 
+  const rangeItems = RANGE_OPTIONS.map((option) => ({
+    value: option.value,
+    label: option.label,
+  }));
+
   return (
     <div className="space-y-6 p-6">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -61,6 +66,7 @@ export function AttendanceAnalyticsView() {
 
         <div className="flex items-center gap-3">
           <Select
+            items={rangeItems}
             onValueChange={(value) => setRange(value as RangeOptionValue)}
             value={range}
           >

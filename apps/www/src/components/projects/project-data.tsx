@@ -1,8 +1,5 @@
 import {
   IconBrain,
-  IconBrandAndroid,
-  IconBrandFlutter,
-  IconBrandReact,
   IconBuildingBank,
   IconCloud,
   IconCloudComputing,
@@ -69,117 +66,489 @@ export interface ProjectListItem {
 
 const projectList = [
   // Cloud & DevOps
-  { slug: "cloudwatch-pro", title: "CloudWatch Pro", icon: <IconCloud className="size-6" /> },
-  { slug: "vueling-serverless-transformation", title: "Vueling", icon: <IconCloud className="size-6" /> },
-  { slug: "moj-claims-digitisation", title: "Ministry of Justice", icon: <IconCloud className="size-6" /> },
-  { slug: "nhs-professionals", title: "NHS Professionals", icon: <IconCloud className="size-6" /> },
-  { slug: "adobe-creative-cloud-innovation", title: "Adobe", icon: <IconCloud className="size-6" /> },
-  { slug: "zego-resident-experience", title: "Zego", icon: <IconCloud className="size-6" /> },
-  { slug: "xerox-enterprise-document-cloud", title: "Xerox", icon: <IconCloud className="size-6" /> },
-  { slug: "decisiv-srm-platform", title: "Decisiv", icon: <IconCloud className="size-6" /> },
-  { slug: "enterprise-logistics-modernization", title: "Enterprise Logistics", icon: <IconCloud className="size-6" /> },
-  { slug: "enterprise-cloud-transformation", title: "Cloud Modernization", icon: <IconCloud className="size-6" /> },
-  { slug: "tax-automation-system", title: "Tax Automation", icon: <IconCloud className="size-6" /> },
-  { slug: "energo-iot", title: "Energo", icon: <IconCloud className="size-6" /> },
-  { slug: "sudan-civil-registry-digitization", title: "Sudan Civil Registry", icon: <IconCloud className="size-6" /> },
-  { slug: "github-scaling-engineering-acceleration", title: "GitHub Scale-Up", icon: <IconCloud className="size-6" /> },
-  { slug: "lockheed-martin-mission-control", title: "Lockheed Martin", icon: <IconCloud className="size-6" /> },
-  { slug: "fintech-cloud-migration", title: "FinTech Cloud", icon: <IconCloud className="size-6" /> },
-  { slug: "africa-prudential", title: "Africa Prudential", icon: <IconCloud className="size-6" /> },
+  {
+    slug: "cloudwatch-pro",
+    title: "CloudWatch Pro",
+    icon: <IconCloud className="size-6" />,
+  },
+  {
+    slug: "vueling-serverless-transformation",
+    title: "Vueling",
+    icon: <IconCloud className="size-6" />,
+  },
+  {
+    slug: "moj-claims-digitisation",
+    title: "Ministry of Justice",
+    icon: <IconCloud className="size-6" />,
+  },
+  {
+    slug: "nhs-professionals",
+    title: "NHS Professionals",
+    icon: <IconCloud className="size-6" />,
+  },
+  {
+    slug: "adobe-creative-cloud-innovation",
+    title: "Adobe",
+    icon: <IconCloud className="size-6" />,
+  },
+  {
+    slug: "zego-resident-experience",
+    title: "Zego",
+    icon: <IconCloud className="size-6" />,
+  },
+  {
+    slug: "xerox-enterprise-document-cloud",
+    title: "Xerox",
+    icon: <IconCloud className="size-6" />,
+  },
+  {
+    slug: "decisiv-srm-platform",
+    title: "Decisiv",
+    icon: <IconCloud className="size-6" />,
+  },
+  {
+    slug: "enterprise-logistics-modernization",
+    title: "Enterprise Logistics",
+    icon: <IconCloud className="size-6" />,
+  },
+  {
+    slug: "enterprise-cloud-transformation",
+    title: "Cloud Modernization",
+    icon: <IconCloud className="size-6" />,
+  },
+  {
+    slug: "tax-automation-system",
+    title: "Tax Automation",
+    icon: <IconCloud className="size-6" />,
+  },
+  {
+    slug: "energo-iot",
+    title: "Energo",
+    icon: <IconCloud className="size-6" />,
+  },
+  {
+    slug: "sudan-civil-registry-digitization",
+    title: "Sudan Civil Registry",
+    icon: <IconCloud className="size-6" />,
+  },
+  {
+    slug: "github-scaling-engineering-acceleration",
+    title: "GitHub Scale-Up",
+    icon: <IconCloud className="size-6" />,
+  },
+  {
+    slug: "lockheed-martin-mission-control",
+    title: "Lockheed Martin",
+    icon: <IconCloud className="size-6" />,
+  },
+  {
+    slug: "fintech-cloud-migration",
+    title: "FinTech Cloud",
+    icon: <IconCloud className="size-6" />,
+  },
+  {
+    slug: "africa-prudential",
+    title: "Africa Prudential",
+    icon: <IconCloud className="size-6" />,
+  },
 
   // Web Development
-  { slug: "healthhero-scaling-telehealth", title: "HealthHero", icon: <IconCode className="size-6" /> },
-  { slug: "apotka-pharmacy", title: "Apotka", icon: <IconCode className="size-6" /> },
-  { slug: "infinitas-learning", title: "Infinitas Learning", icon: <IconCode className="size-6" /> },
-  { slug: "fine-rare", title: "Fine+Rare", icon: <IconCode className="size-6" /> },
-  { slug: "rspb-digital-transformation", title: "RSPB", icon: <IconCode className="size-6" /> },
-  { slug: "bbc-academy-platform", title: "BBC Academy", icon: <IconCode className="size-6" /> },
-  { slug: "winchester-college", title: "Winchester College", icon: <IconCode className="size-6" /> },
-  { slug: "printing-com", title: "Printing.com", icon: <IconCode className="size-6" /> },
-  { slug: "first-choice-group", title: "First Choice Group", icon: <IconCode className="size-6" /> },
-  { slug: "hillingdon-council", title: "Hillingdon Council", icon: <IconCode className="size-6" /> },
-  { slug: "ebay-marketplace-optimization", title: "eBay", icon: <IconCode className="size-6" /> },
-  { slug: "fih-international-hockey", title: "FIH Hockey", icon: <IconCode className="size-6" /> },
-  { slug: "bca-intelligent-auction-platform", title: "BCA Auctions", icon: <IconCode className="size-6" /> },
-  { slug: "expedia-global-inventory-sync", title: "Expedia", icon: <IconCode className="size-6" /> },
-  { slug: "hughesnet-digital-evolution", title: "HughesNet", icon: <IconCode className="size-6" /> },
-  { slug: "pawn-management-modernization", title: "Pawn Management", icon: <IconCode className="size-6" /> },
-  { slug: "millercoors-b2b-portal", title: "MillerCoors", icon: <IconCode className="size-6" /> },
-  { slug: "steelcase-b2b-portal", title: "Steelcase", icon: <IconCode className="size-6" /> },
-  { slug: "retail-personalization-engine", title: "Beauty Retail", icon: <IconCode className="size-6" /> },
-  { slug: "baza-real-estate", title: "Baza", icon: <IconCode className="size-6" /> },
-  { slug: "verified-kyc-verification", title: "Verified.ng", icon: <IconCode className="size-6" /> },
-  { slug: "module-academy", title: "Module Academy", icon: <IconCode className="size-6" /> },
-  { slug: "altmall-ecommerce", title: "AltMall", icon: <IconCode className="size-6" /> },
-  { slug: "viacomcbs-paramount-plus-transformation", title: "Paramount+", icon: <IconCode className="size-6" /> },
-  { slug: "dish-network-dish-anywhere", title: "DISH Anywhere", icon: <IconCode className="size-6" /> },
-  { slug: "transportation-legacy-modernization", title: "Transportation Modernization", icon: <IconCode className="size-6" /> },
+  {
+    slug: "healthhero-scaling-telehealth",
+    title: "HealthHero",
+    icon: <IconCode className="size-6" />,
+  },
+  {
+    slug: "apotka-pharmacy",
+    title: "Apotka",
+    icon: <IconCode className="size-6" />,
+  },
+  {
+    slug: "infinitas-learning",
+    title: "Infinitas Learning",
+    icon: <IconCode className="size-6" />,
+  },
+  {
+    slug: "fine-rare",
+    title: "Fine+Rare",
+    icon: <IconCode className="size-6" />,
+  },
+  {
+    slug: "rspb-digital-transformation",
+    title: "RSPB",
+    icon: <IconCode className="size-6" />,
+  },
+  {
+    slug: "bbc-academy-platform",
+    title: "BBC Academy",
+    icon: <IconCode className="size-6" />,
+  },
+  {
+    slug: "winchester-college",
+    title: "Winchester College",
+    icon: <IconCode className="size-6" />,
+  },
+  {
+    slug: "printing-com",
+    title: "Printing.com",
+    icon: <IconCode className="size-6" />,
+  },
+  {
+    slug: "first-choice-group",
+    title: "First Choice Group",
+    icon: <IconCode className="size-6" />,
+  },
+  {
+    slug: "hillingdon-council",
+    title: "Hillingdon Council",
+    icon: <IconCode className="size-6" />,
+  },
+  {
+    slug: "ebay-marketplace-optimization",
+    title: "eBay",
+    icon: <IconCode className="size-6" />,
+  },
+  {
+    slug: "fih-international-hockey",
+    title: "FIH Hockey",
+    icon: <IconCode className="size-6" />,
+  },
+  {
+    slug: "bca-intelligent-auction-platform",
+    title: "BCA Auctions",
+    icon: <IconCode className="size-6" />,
+  },
+  {
+    slug: "expedia-global-inventory-sync",
+    title: "Expedia",
+    icon: <IconCode className="size-6" />,
+  },
+  {
+    slug: "hughesnet-digital-evolution",
+    title: "HughesNet",
+    icon: <IconCode className="size-6" />,
+  },
+  {
+    slug: "pawn-management-modernization",
+    title: "Pawn Management",
+    icon: <IconCode className="size-6" />,
+  },
+  {
+    slug: "millercoors-b2b-portal",
+    title: "MillerCoors",
+    icon: <IconCode className="size-6" />,
+  },
+  {
+    slug: "steelcase-b2b-portal",
+    title: "Steelcase",
+    icon: <IconCode className="size-6" />,
+  },
+  {
+    slug: "retail-personalization-engine",
+    title: "Beauty Retail",
+    icon: <IconCode className="size-6" />,
+  },
+  {
+    slug: "baza-real-estate",
+    title: "Baza",
+    icon: <IconCode className="size-6" />,
+  },
+  {
+    slug: "verified-kyc-verification",
+    title: "Verified.ng",
+    icon: <IconCode className="size-6" />,
+  },
+  {
+    slug: "module-academy",
+    title: "Module Academy",
+    icon: <IconCode className="size-6" />,
+  },
+  {
+    slug: "altmall-ecommerce",
+    title: "AltMall",
+    icon: <IconCode className="size-6" />,
+  },
+  {
+    slug: "viacomcbs-paramount-plus-transformation",
+    title: "Paramount+",
+    icon: <IconCode className="size-6" />,
+  },
+  {
+    slug: "dish-network-dish-anywhere",
+    title: "DISH Anywhere",
+    icon: <IconCode className="size-6" />,
+  },
+  {
+    slug: "transportation-legacy-modernization",
+    title: "Transportation Modernization",
+    icon: <IconCode className="size-6" />,
+  },
 
   // Mobile Development
-  { slug: "colas-logistics-optimisation", title: "Colas", icon: <IconDeviceMobile className="size-6" /> },
-  { slug: "david-lloyd-leisure", title: "David Lloyd Leisure", icon: <IconDeviceMobile className="size-6" /> },
-  { slug: "virgin-money-pulse", title: "Virgin Money", icon: <IconDeviceMobile className="size-6" /> },
-  { slug: "royal-london-pensions", title: "Royal London", icon: <IconDeviceMobile className="size-6" /> },
-  { slug: "scottishpower-yourenergy", title: "ScottishPower", icon: <IconDeviceMobile className="size-6" /> },
-  { slug: "the-gym-group", title: "The Gym Group", icon: <IconDeviceMobile className="size-6" /> },
-  { slug: "pinterest-mobile-engineering", title: "Pinterest", icon: <IconDeviceMobile className="size-6" /> },
-  { slug: "aarp-rewards-gamification", title: "AARP", icon: <IconDeviceMobile className="size-6" /> },
-  { slug: "tomtom-digital-cockpit", title: "TomTom Cockpit", icon: <IconDeviceMobile className="size-6" /> },
-  { slug: "i-invest", title: "i-invest", icon: <IconDeviceMobile className="size-6" /> },
-  { slug: "skyline-hms", title: "Skyline HMS", icon: <IconDeviceMobile className="size-6" /> },
-  { slug: "microfinance-field-digitization", title: "Kashf", icon: <IconDeviceMobile className="size-6" /> },
-  { slug: "grecha-delivery", title: "Grecha", icon: <IconDeviceMobile className="size-6" /> },
-  { slug: "mtn-biosmart-registration", title: "MTN BioSmart", icon: <IconDeviceMobile className="size-6" /> },
-  { slug: "kash-fintech", title: "Kash Fintech", icon: <IconDeviceMobile className="size-6" /> },
-  { slug: "mastercard-global-fintech-infrastructure", title: "Mastercard", icon: <IconDeviceMobile className="size-6" /> },
-  { slug: "tomtom-navigation-redesign", title: "TomTom Go", icon: <IconDeviceMobile className="size-6" /> },
-  { slug: "onebank-sterling", title: "OneBank", icon: <IconDeviceMobile className="size-6" /> },
+  {
+    slug: "colas-logistics-optimisation",
+    title: "Colas",
+    icon: <IconDeviceMobile className="size-6" />,
+  },
+  {
+    slug: "david-lloyd-leisure",
+    title: "David Lloyd Leisure",
+    icon: <IconDeviceMobile className="size-6" />,
+  },
+  {
+    slug: "virgin-money-pulse",
+    title: "Virgin Money",
+    icon: <IconDeviceMobile className="size-6" />,
+  },
+  {
+    slug: "royal-london-pensions",
+    title: "Royal London",
+    icon: <IconDeviceMobile className="size-6" />,
+  },
+  {
+    slug: "scottishpower-yourenergy",
+    title: "ScottishPower",
+    icon: <IconDeviceMobile className="size-6" />,
+  },
+  {
+    slug: "the-gym-group",
+    title: "The Gym Group",
+    icon: <IconDeviceMobile className="size-6" />,
+  },
+  {
+    slug: "pinterest-mobile-engineering",
+    title: "Pinterest",
+    icon: <IconDeviceMobile className="size-6" />,
+  },
+  {
+    slug: "aarp-rewards-gamification",
+    title: "AARP",
+    icon: <IconDeviceMobile className="size-6" />,
+  },
+  {
+    slug: "tomtom-digital-cockpit",
+    title: "TomTom Cockpit",
+    icon: <IconDeviceMobile className="size-6" />,
+  },
+  {
+    slug: "i-invest",
+    title: "i-invest",
+    icon: <IconDeviceMobile className="size-6" />,
+  },
+  {
+    slug: "skyline-hms",
+    title: "Skyline HMS",
+    icon: <IconDeviceMobile className="size-6" />,
+  },
+  {
+    slug: "microfinance-field-digitization",
+    title: "Kashf",
+    icon: <IconDeviceMobile className="size-6" />,
+  },
+  {
+    slug: "grecha-delivery",
+    title: "Grecha",
+    icon: <IconDeviceMobile className="size-6" />,
+  },
+  {
+    slug: "mtn-biosmart-registration",
+    title: "MTN BioSmart",
+    icon: <IconDeviceMobile className="size-6" />,
+  },
+  {
+    slug: "kash-fintech",
+    title: "Kash Fintech",
+    icon: <IconDeviceMobile className="size-6" />,
+  },
+  {
+    slug: "mastercard-global-fintech-infrastructure",
+    title: "Mastercard",
+    icon: <IconDeviceMobile className="size-6" />,
+  },
+  {
+    slug: "tomtom-navigation-redesign",
+    title: "TomTom Go",
+    icon: <IconDeviceMobile className="size-6" />,
+  },
+  {
+    slug: "onebank-sterling",
+    title: "OneBank",
+    icon: <IconDeviceMobile className="size-6" />,
+  },
 
   // AI & Data
-  { slug: "simon-kucher-partners", title: "Simon-Kucher", icon: <IconBrain className="size-6" /> },
-  { slug: "smith-nephew", title: "Smith+Nephew Analytics", icon: <IconBrain className="size-6" /> },
-  { slug: "smith-nephew-orthopaedics", title: "Smith+Nephew Ortho", icon: <IconBrain className="size-6" /> },
-  { slug: "gc-business-finance", title: "GC Business Finance", icon: <IconBrain className="size-6" /> },
-  { slug: "salesforce-cloud-integration", title: "Salesforce", icon: <IconBrain className="size-6" /> },
-  { slug: "terawatt-ev-infrastructure", title: "Terawatt EV", icon: <IconBrain className="size-6" /> },
-  { slug: "medtech-ai-patient-care", title: "MedTech AI", icon: <IconBrain className="size-6" /> },
-  { slug: "jnj-vr-surgical-training", title: "J&J VR Training", icon: <IconBrain className="size-6" /> },
-  { slug: "insurance-claims-automation", title: "Insurance Claims AI", icon: <IconBrain className="size-6" /> },
-  { slug: "lockheed-martin-propel", title: "Lockheed Propel", icon: <IconBrain className="size-6" /> },
-  { slug: "unilever-subscription-engine", title: "Unilever", icon: <IconBrain className="size-6" /> },
-  { slug: "data-platform-modernization", title: "Data Platform", icon: <IconBrain className="size-6" /> },
-  { slug: "influence-flow", title: "Influence Flow", icon: <IconBrain className="size-6" /> },
-  { slug: "swiggy-web3-loyalty", title: "Swiggy Web3", icon: <IconBrain className="size-6" /> },
-  { slug: "nimc-national-id-enrollment", title: "NIMC National ID", icon: <IconBrain className="size-6" /> },
-  { slug: "coursera-ai-learning-optimization", title: "Coursera AI", icon: <IconBrain className="size-6" /> },
-  { slug: "healthcare-data-interoperability", title: "Healthcare FHIR", icon: <IconBrain className="size-6" /> },
+  {
+    slug: "simon-kucher-partners",
+    title: "Simon-Kucher",
+    icon: <IconBrain className="size-6" />,
+  },
+  {
+    slug: "smith-nephew",
+    title: "Smith+Nephew Analytics",
+    icon: <IconBrain className="size-6" />,
+  },
+  {
+    slug: "smith-nephew-orthopaedics",
+    title: "Smith+Nephew Ortho",
+    icon: <IconBrain className="size-6" />,
+  },
+  {
+    slug: "gc-business-finance",
+    title: "GC Business Finance",
+    icon: <IconBrain className="size-6" />,
+  },
+  {
+    slug: "salesforce-cloud-integration",
+    title: "Salesforce",
+    icon: <IconBrain className="size-6" />,
+  },
+  {
+    slug: "terawatt-ev-infrastructure",
+    title: "Terawatt EV",
+    icon: <IconBrain className="size-6" />,
+  },
+  {
+    slug: "medtech-ai-patient-care",
+    title: "MedTech AI",
+    icon: <IconBrain className="size-6" />,
+  },
+  {
+    slug: "jnj-vr-surgical-training",
+    title: "J&J VR Training",
+    icon: <IconBrain className="size-6" />,
+  },
+  {
+    slug: "insurance-claims-automation",
+    title: "Insurance Claims AI",
+    icon: <IconBrain className="size-6" />,
+  },
+  {
+    slug: "lockheed-martin-propel",
+    title: "Lockheed Propel",
+    icon: <IconBrain className="size-6" />,
+  },
+  {
+    slug: "unilever-subscription-engine",
+    title: "Unilever",
+    icon: <IconBrain className="size-6" />,
+  },
+  {
+    slug: "data-platform-modernization",
+    title: "Data Platform",
+    icon: <IconBrain className="size-6" />,
+  },
+  {
+    slug: "influence-flow",
+    title: "Influence Flow",
+    icon: <IconBrain className="size-6" />,
+  },
+  {
+    slug: "swiggy-web3-loyalty",
+    title: "Swiggy Web3",
+    icon: <IconBrain className="size-6" />,
+  },
+  {
+    slug: "nimc-national-id-enrollment",
+    title: "NIMC National ID",
+    icon: <IconBrain className="size-6" />,
+  },
+  {
+    slug: "coursera-ai-learning-optimization",
+    title: "Coursera AI",
+    icon: <IconBrain className="size-6" />,
+  },
+  {
+    slug: "healthcare-data-interoperability",
+    title: "Healthcare FHIR",
+    icon: <IconBrain className="size-6" />,
+  },
 
   // AI & Automation
-  { slug: "trust-stamp", title: "Trust Stamp", icon: <IconRobot className="size-6" /> },
-  { slug: "global-consultant-ai", title: "Consultant AI", icon: <IconRobot className="size-6" /> },
-  { slug: "dish-network-self-service", title: "MyDISH", icon: <IconRobot className="size-6" /> },
-  { slug: "drinkworks-iot-ecommerce", title: "Drinkworks", icon: <IconRobot className="size-6" /> },
-  { slug: "insurance-digital-transformation", title: "Insurance Modernization", icon: <IconRobot className="size-6" /> },
-  { slug: "smart-iot-diagnostic", title: "Daikin IoT", icon: <IconRobot className="size-6" /> },
-  { slug: "bento-payroll-hr", title: "Bento Africa", icon: <IconRobot className="size-6" /> },
-  { slug: "enterprise-ai-assistant", title: "AI Claims Assistant", icon: <IconRobot className="size-6" /> },
-  { slug: "glo-digital-gateway", title: "Globacom", icon: <IconRobot className="size-6" /> },
+  {
+    slug: "trust-stamp",
+    title: "Trust Stamp",
+    icon: <IconRobot className="size-6" />,
+  },
+  {
+    slug: "global-consultant-ai",
+    title: "Consultant AI",
+    icon: <IconRobot className="size-6" />,
+  },
+  {
+    slug: "dish-network-self-service",
+    title: "MyDISH",
+    icon: <IconRobot className="size-6" />,
+  },
+  {
+    slug: "drinkworks-iot-ecommerce",
+    title: "Drinkworks",
+    icon: <IconRobot className="size-6" />,
+  },
+  {
+    slug: "insurance-digital-transformation",
+    title: "Insurance Modernization",
+    icon: <IconRobot className="size-6" />,
+  },
+  {
+    slug: "smart-iot-diagnostic",
+    title: "Daikin IoT",
+    icon: <IconRobot className="size-6" />,
+  },
+  {
+    slug: "bento-payroll-hr",
+    title: "Bento Africa",
+    icon: <IconRobot className="size-6" />,
+  },
+  {
+    slug: "enterprise-ai-assistant",
+    title: "AI Claims Assistant",
+    icon: <IconRobot className="size-6" />,
+  },
+  {
+    slug: "glo-digital-gateway",
+    title: "Globacom",
+    icon: <IconRobot className="size-6" />,
+  },
 
   // Healthcare
-  { slug: "raccoon-recovery", title: "Raccoon Recovery", icon: <IconDeviceMobile className="size-6" /> },
-  { slug: "deluxe-care-hms", title: "Deluxe Care HMS", icon: <IconDeviceMobile className="size-6" /> },
+  {
+    slug: "raccoon-recovery",
+    title: "Raccoon Recovery",
+    icon: <IconDeviceMobile className="size-6" />,
+  },
+  {
+    slug: "deluxe-care-hms",
+    title: "Deluxe Care HMS",
+    icon: <IconDeviceMobile className="size-6" />,
+  },
 
   // IoT & Automation
-  { slug: "costa-express", title: "Costa Express", icon: <IconCloudComputing className="size-6" /> },
+  {
+    slug: "costa-express",
+    title: "Costa Express",
+    icon: <IconCloudComputing className="size-6" />,
+  },
 
   // Fintech
-  { slug: "digital-banking-modernization", title: "UBL Digital Banking", icon: <IconBuildingBank className="size-6" /> },
+  {
+    slug: "digital-banking-modernization",
+    title: "UBL Digital Banking",
+    icon: <IconBuildingBank className="size-6" />,
+  },
 
   // Blockchain
-  { slug: "push-chain", title: "PushChain", icon: <IconCode className="size-6" /> },
+  {
+    slug: "push-chain",
+    title: "PushChain",
+    icon: <IconCode className="size-6" />,
+  },
 
   // Financial Services
-  { slug: "western-union-digital-transformation", title: "Western Union", icon: <IconBuildingBank className="size-6" /> },
+  {
+    slug: "western-union-digital-transformation",
+    title: "Western Union",
+    icon: <IconBuildingBank className="size-6" />,
+  },
 ];
 
 export function getProjectList(currentSlug?: string) {
@@ -218,7 +587,10 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Workholo architected a cloud-native microservices ecosystem using scalable event-driven infrastructure, real-time data pipelines, and automated monitoring workflows. The platform integrates centralized dashboards, alert systems, analytics engines, and intelligent infrastructure tracking into a single unified ecosystem.",
 
-    galleryImages: ["/assets/projects/cloudwatch-pro-gallery-1.jpg", "/assets/projects/cloudwatch-pro-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/cloudwatch-pro-gallery-1.jpg",
+      "/assets/projects/cloudwatch-pro-gallery-2.jpg",
+    ],
 
     features: [
       "Real-time Infrastructure Monitoring",
@@ -355,7 +727,10 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Workholo designed and implemented a federated GraphQL-based microservices architecture that allowed independent scaling and management of critical healthcare domains such as scheduling, prescriptions, billing, and patient records. The phased migration strategy ensured continuous service availability while significantly improving platform performance and flexibility.",
 
-    galleryImages: ["/assets/projects/healthhero-scaling-telehealth-gallery-1.jpg", "/assets/projects/healthhero-scaling-telehealth-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/healthhero-scaling-telehealth-gallery-1.jpg",
+      "/assets/projects/healthhero-scaling-telehealth-gallery-2.jpg",
+    ],
 
     features: [
       "Federated GraphQL API",
@@ -496,7 +871,10 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Workholo implemented a serverless-first architecture using AWS services to automatically scale infrastructure based on live booking demand. The frontend booking experience was also optimized with modern React technologies, significantly improving application speed, responsiveness, and customer experience for millions of users.",
 
-    galleryImages: ["/assets/projects/vueling-serverless-transformation-gallery-1.jpg", "/assets/projects/vueling-serverless-transformation-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/vueling-serverless-transformation-gallery-1.jpg",
+      "/assets/projects/vueling-serverless-transformation-gallery-2.jpg",
+    ],
 
     features: [
       "Auto-Scaling Booking Engine",
@@ -638,7 +1016,10 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Workholo developed a React Native mobile application with offline-first architecture and real-time synchronization capabilities. Using Azure IoT-driven backend systems and advanced Mapbox visualizations, the platform enabled managers to track vehicles, optimize deliveries, and streamline logistics workflows across active construction sites.",
 
-    galleryImages: ["/assets/projects/colas-logistics-optimisation-gallery-1.jpg", "/assets/projects/colas-logistics-optimisation-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/colas-logistics-optimisation-gallery-1.jpg",
+      "/assets/projects/colas-logistics-optimisation-gallery-2.jpg",
+    ],
 
     features: [
       "Offline-First Data Sync",
@@ -779,7 +1160,10 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Workholo designed and developed a distributed analytics platform powered by React and Node.js. The solution included advanced data visualization systems, high-concurrency simulation engines, automated reporting workflows, and scalable cloud infrastructure optimized for enterprise-grade performance.",
 
-    galleryImages: ["/assets/projects/simon-kucher-partners-gallery-1.jpg", "/assets/projects/simon-kucher-partners-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/simon-kucher-partners-gallery-1.jpg",
+      "/assets/projects/simon-kucher-partners-gallery-2.jpg",
+    ],
 
     features: [
       "Real-time margin impact simulator",
@@ -1061,7 +1445,10 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Workholo developed a cross-platform rehabilitation ecosystem using Unity and React technologies to create immersive, gamified therapy experiences. Integrated wearable sensor systems and secure healthcare dashboards enabled therapists to remotely monitor patient progress and personalize recovery programs based on live motion data.",
 
-    galleryImages: ["/assets/projects/raccoon-recovery-gallery-1.jpg", "/assets/projects/raccoon-recovery-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/raccoon-recovery-gallery-1.jpg",
+      "/assets/projects/raccoon-recovery-gallery-2.jpg",
+    ],
 
     features: [
       "Real-time motion tracking",
@@ -1202,7 +1589,10 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Workholo engineered a high-performance web platform using Next.js and GraphQL technologies integrated with enterprise inventory and logistics systems. Advanced search capabilities, scalable backend infrastructure, and optimized checkout experiences enabled fast and reliable healthcare commerce operations.",
 
-    galleryImages: ["/assets/projects/apotka-pharmacy-gallery-1.jpg", "/assets/projects/apotka-pharmacy-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/apotka-pharmacy-gallery-1.jpg",
+      "/assets/projects/apotka-pharmacy-gallery-2.jpg",
+    ],
 
     features: [
       "Intelligent medicine search",
@@ -1344,7 +1734,10 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Workholo established a dedicated cross-functional engineering team that integrated directly with Costa Express operations. The team redesigned core kiosk software, improved IoT telemetry systems, and built scalable cloud-based APIs for diagnostics, monitoring, and inventory management.",
 
-    galleryImages: ["/assets/projects/costa-express-gallery-1.jpg", "/assets/projects/costa-express-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/costa-express-gallery-1.jpg",
+      "/assets/projects/costa-express-gallery-2.jpg",
+    ],
 
     features: [
       "Real-time IoT Telemetry Tracking",
@@ -1485,7 +1878,10 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Workholo built a high-performance analytics platform powered by .NET, Power BI, and cloud-native data processing systems. The solution included advanced data anonymization, scalable ETL pipelines, and interactive visualization dashboards optimized for real-time surgical analytics and healthcare reporting.",
 
-    galleryImages: ["/assets/projects/smith-nephew-gallery-1.jpg", "/assets/projects/smith-nephew-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/smith-nephew-gallery-1.jpg",
+      "/assets/projects/smith-nephew-gallery-2.jpg",
+    ],
 
     features: [
       "Surgical KPI Tracking",
@@ -1626,7 +2022,10 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Workholo established a large-scale cross-functional engineering team that collaborated directly with Infinitas Learning stakeholders. Using a microservices-based architecture, the team developed scalable learning systems, integrated commerce workflows, and secure multi-currency payment infrastructure.",
 
-    galleryImages: ["/assets/projects/infinitas-learning-gallery-1.jpg", "/assets/projects/infinitas-learning-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/infinitas-learning-gallery-1.jpg",
+      "/assets/projects/infinitas-learning-gallery-2.jpg",
+    ],
 
     features: [
       "Enterprise Learning Management (LMS)",
@@ -1768,7 +2167,10 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Workholo engineered a headless e-commerce architecture powered by Node.js and React technologies. The platform included advanced search systems, real-time warehouse synchronization, personalized member experiences, and scalable cloud infrastructure optimized for premium digital commerce.",
 
-    galleryImages: ["/assets/projects/fine-rare-gallery-1.jpg", "/assets/projects/fine-rare-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/fine-rare-gallery-1.jpg",
+      "/assets/projects/fine-rare-gallery-2.jpg",
+    ],
 
     features: [
       "Headless E-commerce Engine",
@@ -1910,7 +2312,10 @@ const projectsData: Record<string, ProjectPageData> = {
     solution:
       "Workholo engineered a scalable React Native application backed by cloud-native microservices and GraphQL APIs. The platform was optimized for high-concurrency booking events, fast data synchronization, and responsive mobile experiences even during heavy traffic surges.",
 
-    galleryImages: ["/assets/projects/david-lloyd-leisure-gallery-1.jpg", "/assets/projects/david-lloyd-leisure-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/david-lloyd-leisure-gallery-1.jpg",
+      "/assets/projects/david-lloyd-leisure-gallery-2.jpg",
+    ],
 
     features: [
       "One-tap class and court booking system",
@@ -2046,7 +2451,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The organization had multiple siloed databases and an aging CMS that made personalization impossible and data management inefficient.",
     solution:
       "Workholo built a centralized data platform and a modern web experience using Python/Django and React. The system utilizes geolocation to provide weather-dependent gardening tips tailored to the user's specific region.",
-    galleryImages: ["/assets/projects/rspb-digital-transformation-gallery-1.jpg", "/assets/projects/rspb-digital-transformation-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/rspb-digital-transformation-gallery-1.jpg",
+      "/assets/projects/rspb-digital-transformation-gallery-2.jpg",
+    ],
     features: [
       "Localized biodiversity activity engine",
       "Personalized impact dashboard for members",
@@ -2175,7 +2583,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The previous system was difficult to navigate on mobile devices and struggled with high-bitrate video delivery across disparate global networks.",
     solution:
       "Workholo developed a serverless architecture using AWS and a React-based frontend. We leveraged AWS CloudFront and Elemental MediaConvert to ensure smooth video delivery regardless of user location or bandwidth.",
-    galleryImages: ["/assets/projects/bbc-academy-platform-gallery-1.jpg", "/assets/projects/bbc-academy-platform-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/bbc-academy-platform-gallery-1.jpg",
+      "/assets/projects/bbc-academy-platform-gallery-2.jpg",
+    ],
     features: [
       "Adaptive bitrate video streaming",
       "Interactive quiz and assessment engine",
@@ -2304,7 +2715,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The system required extreme security due to the sensitive nature of legal data, along with strict adherence to GDS (Government Digital Service) standards.",
     solution:
       "Workholo deployed a Ruby on Rails application using a robust microservices architecture. By implementing Infrastructure as Code (IaC) with Terraform, we created a repeatable, highly secure environment across several AWS regions.",
-    galleryImages: ["/assets/projects/moj-claims-digitisation-gallery-1.jpg", "/assets/projects/moj-claims-digitisation-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/moj-claims-digitisation-gallery-1.jpg",
+      "/assets/projects/moj-claims-digitisation-gallery-2.jpg",
+    ],
     features: [
       "GDS-compliant web interface",
       "Secure document upload and encryption",
@@ -2433,7 +2847,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The existing mobile offering was hardware-limited and fragmented across different services. Virgin Money needed a solution that consolidated personal, savings, and credit accounts into one seamless interface while adhering to strict Open Banking regulations and high-security standards.",
     solution:
       "Workholo implemented a React Native architecture for rapid cross-platform deployment without compromising on native performance. Our teams focused on micro-frontend integration, biometrics (FaceID/TouchID), and real-time transaction processing using a robust AWS-backed infrastructure.",
-    galleryImages: ["/assets/projects/virgin-money-pulse-gallery-1.jpg", "/assets/projects/virgin-money-pulse-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/virgin-money-pulse-gallery-1.jpg",
+      "/assets/projects/virgin-money-pulse-gallery-2.jpg",
+    ],
     features: [
       "Biometric Authentication & SCA",
       "Real-time Spending Analytics",
@@ -2562,7 +2979,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Pension data is historically complex and often siloed. The challenge was to create a unified API layer that could securely fetch data from various legacy engines and present it in a digestible, actionable format for non-expert users.",
     solution:
       "Workholo built a secure, mobile-optimized portal using a GraphQL middleware layer to aggregate data. The app features interactive projection tools, digital nomination forms, and a secure document library, all wrapped in a highly accessible UI.",
-    galleryImages: ["/assets/projects/royal-london-pensions-gallery-1.jpg", "/assets/projects/royal-london-pensions-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/royal-london-pensions-gallery-1.jpg",
+      "/assets/projects/royal-london-pensions-gallery-2.jpg",
+    ],
     features: [
       "Real-time Fund Tracking",
       "Interactive Retirement Forecaster",
@@ -2691,7 +3111,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Integrating with the national Smart Meter infrastructure (DCC) while handling massive data throughput was the primary hurdle. The app needed to process billions of data points daily while maintaining a fast, responsive user experience.",
     solution:
       "Workholo developed a native mobile suite using Swift and Kotlin, backed by an AWS IoT Core infrastructure. The solution includes real-time data streaming, predictive cost algorithms, and a seamless billing integration via a modern API gateway.",
-    galleryImages: ["/assets/projects/scottishpower-yourenergy-gallery-1.jpg", "/assets/projects/scottishpower-yourenergy-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/scottishpower-yourenergy-gallery-1.jpg",
+      "/assets/projects/scottishpower-yourenergy-gallery-2.jpg",
+    ],
     features: [
       "Live Smart Meter Sync",
       "Predictive Billing Insights",
@@ -2820,7 +3243,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Surgical planning for knee replacements was traditionally manual and prone to minor measurement errors. The system needed 99.9% accuracy and had to comply with strict medical device regulations (MDR Class II) while delivering real-time 3D performance.",
     solution:
       "Workholo built an AI-centric platform using TensorFlow for anatomical segmentation and specialized OpenGL wrappers for real-time 3D visualization on iPad Pro devices used in operating theaters.",
-    galleryImages: ["/assets/projects/smith-nephew-orthopaedics-gallery-1.jpg", "/assets/projects/smith-nephew-orthopaedics-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/smith-nephew-orthopaedics-gallery-1.jpg",
+      "/assets/projects/smith-nephew-orthopaedics-gallery-2.jpg",
+    ],
     features: [
       "AI Anatomical Segmentation",
       "Real-time 3D Model Viz",
@@ -2948,7 +3374,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The college relied on fragmented, paper-based systems for managing sports hall bookings, memberships, and financial reconciliation. This led to significant administrative overhead, high risk of double-bookings, and difficulties in reporting accurate financial data.",
     solution:
       "GoodCore engineered a bespoke CRM and scheduling portal featuring a real-time availability engine, integrated payment processing, and automated reporting. The system provides role-based access for staff, students, and external associations to manage their bookings independently.",
-    galleryImages: ["/assets/projects/winchester-college-gallery-1.jpg", "/assets/projects/winchester-college-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/winchester-college-gallery-1.jpg",
+      "/assets/projects/winchester-college-gallery-2.jpg",
+    ],
     features: [
       "Real-time Booking Engine",
       "Automated Invoicing & Payments",
@@ -3076,7 +3505,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Manual processing of loan applications was slow and prone to error. The client needed to scale their lending capacity during economic shifts while maintaining rigorous risk assessments and compliance standards.",
     solution:
       "We developed a secure, cloud-hosted platform featuring automated credit scoring, integrated KYC/AML checks, and a sophisticated workflow engine that routes applications based on complex underwriting criteria.",
-    galleryImages: ["/assets/projects/gc-business-finance-gallery-1.jpg", "/assets/projects/gc-business-finance-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/gc-business-finance-gallery-1.jpg",
+      "/assets/projects/gc-business-finance-gallery-2.jpg",
+    ],
     features: [
       "Automated Underwriting Engine",
       "KYC/AML API Integrations",
@@ -3332,7 +3764,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Translating customer designs into high-quality, print-ready files was a manual, error-prone process that caused production bottlenecks and high rework costs.",
     solution:
       "We engineered a bespoke processing engine that automates pre-flight checks, file conversion, and intelligent order routing to regional production facilities.",
-    galleryImages: ["/assets/projects/printing-com-gallery-1.jpg", "/assets/projects/printing-com-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/printing-com-gallery-1.jpg",
+      "/assets/projects/printing-com-gallery-2.jpg",
+    ],
     features: [
       "Visual Design Middleware",
       "Automated Pre-flight Engine",
@@ -3460,7 +3895,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The existing systems were fragmented, leading to high friction during gym entry and session bookings. Managing real-time data across multiple sites with varying hardware configurations posed a significant challenge.",
     solution:
       "AppDrawn developed a cross-platform mobile app integrated with high-performance cloud infrastructure. Features including QR code entry, real-time class booking, and personalized workout tracking were implemented to enhance the member experience.",
-    galleryImages: ["/assets/projects/the-gym-group-gallery-1.jpg", "/assets/projects/the-gym-group-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/the-gym-group-gallery-1.jpg",
+      "/assets/projects/the-gym-group-gallery-2.jpg",
+    ],
     features: [
       "QR Code Entry Systems",
       "Real-time Class Bookings",
@@ -3588,7 +4026,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The catalog consisted of over 100,000 SKUs with complex hierarchical relationships. Ensuring that technicians could find exact parts quickly in high-pressure environments was the primary UX challenge.",
     solution:
       "An enterprise-grade web application featuring advanced search algorithms, technical diagram integration, and a custom 'Quick Order' interface for verified engineers.",
-    galleryImages: ["/assets/projects/first-choice-group-gallery-1.jpg", "/assets/projects/first-choice-group-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/first-choice-group-gallery-1.jpg",
+      "/assets/projects/first-choice-group-gallery-2.jpg",
+    ],
     features: [
       "Advanced Part Search",
       "Interactive Technical Drawings",
@@ -3717,7 +4158,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Migrating sensitive citizen data from 30-year-old mainframe systems required extreme caution and rigorous security auditing while maintaining accessibility standards.",
     solution:
       "A secure, service-oriented architecture providing a unified citizen portal. Fully integrated with national identity verification services and automated internal workflows.",
-    galleryImages: ["/assets/projects/hillingdon-council-gallery-1.jpg", "/assets/projects/hillingdon-council-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/hillingdon-council-gallery-1.jpg",
+      "/assets/projects/hillingdon-council-gallery-2.jpg",
+    ],
     features: [
       "Unified Citizen Dashboard",
       "Housing Workflow Automation",
@@ -3845,7 +4289,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Coordinating shift availability with clinical requirements and worker compliance (certifications, training) for over 50,000 workers across multiple trusts.",
     solution:
       "A cloud-native platform with an automated compliance engine and a high-frequency matching algorithm that pairs staff with urgent clinical needs.",
-    galleryImages: ["/assets/projects/nhs-professionals-gallery-1.jpg", "/assets/projects/nhs-professionals-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/nhs-professionals-gallery-1.jpg",
+      "/assets/projects/nhs-professionals-gallery-2.jpg",
+    ],
     features: [
       "Real-time Shift Posting",
       "Automated Compliance Engine",
@@ -4101,7 +4548,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The complexity lay in processing massive amounts of biometric data in real-time while ensuring 100% data privacy. The system needed to detect sophisticated 'liveness' attacks and prevent spoofing without introducing latency into the user authentication flow.",
     solution:
       "10Clouds provided a dedicated team of engineers to enhance the machine learning pipeline and develop secure API wrappers. We optimized biometric hashing algorithms that protect user data even in the event of a database breach by using Irreversible Transformable Signatures.",
-    galleryImages: ["/assets/projects/trust-stamp-gallery-1.jpg", "/assets/projects/trust-stamp-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/trust-stamp-gallery-1.jpg",
+      "/assets/projects/trust-stamp-gallery-2.jpg",
+    ],
     features: [
       "Facial Recognition Liveness Detection",
       "Irreversible Biometric Hashing",
@@ -4487,7 +4937,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Addressing significant latency in image rendering and data synchronization across distributed global servers while maintaining feature parity across iOS, Android, and Web platforms.",
     solution:
       "We deployed a dedicated team of Senior Engineers to architect a high-concurrency Redis caching layer, refactor legacy Java modules into micro-services, and implement specialized GraphQL query optimizations.",
-    galleryImages: ["/assets/projects/pinterest-mobile-engineering-gallery-1.jpg", "/assets/projects/pinterest-mobile-engineering-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/pinterest-mobile-engineering-gallery-1.jpg",
+      "/assets/projects/pinterest-mobile-engineering-gallery-2.jpg",
+    ],
     features: [
       "Native Performance Optimization",
       "GraphQL API Refactoring",
@@ -4617,7 +5070,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Managing massive data throughput without compromising transactional ACID properties, particularly during high-traffic events like Black Friday and Cyber Monday.",
     solution:
       "Our team developed a distributed indexing system using Kafka and ElasticSearch, alongside a modernized Node.js service layer that significantly reduced server-side processing time.",
-    galleryImages: ["/assets/projects/ebay-marketplace-optimization-gallery-1.jpg", "/assets/projects/ebay-marketplace-optimization-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/ebay-marketplace-optimization-gallery-1.jpg",
+      "/assets/projects/ebay-marketplace-optimization-gallery-2.jpg",
+    ],
     features: [
       "Distributed Indexing System",
       "Real-Time Inventory Sync",
@@ -4747,7 +5203,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Integrating heterogeneous data sources from disparate cloud providers while ensuring strict compliance with global data privacy regulations (GDPR/CCPA).",
     solution:
       "We engineered a secure data lake architecture using Snowflake and implemented custom TensorFlow models to predict customer churn and lifetime value.",
-    galleryImages: ["/assets/projects/salesforce-cloud-integration-gallery-1.jpg", "/assets/projects/salesforce-cloud-integration-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/salesforce-cloud-integration-gallery-1.jpg",
+      "/assets/projects/salesforce-cloud-integration-gallery-2.jpg",
+    ],
     features: [
       "Predictive Lead Scoring",
       "Automated Data Mapping",
@@ -4876,7 +5335,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Enabling real-time collaborative editing on massive graphic files while ensuring sub-millisecond sync across geographically distributed teams.",
     solution:
       "We utilized WebAssembly to bring native C++ performance to the browser and implemented a Geo-distributed backend on AWS using Terraform for infrastructure as code.",
-    galleryImages: ["/assets/projects/adobe-creative-cloud-innovation-gallery-1.jpg", "/assets/projects/adobe-creative-cloud-innovation-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/adobe-creative-cloud-innovation-gallery-1.jpg",
+      "/assets/projects/adobe-creative-cloud-innovation-gallery-2.jpg",
+    ],
     features: [
       "WebAssembly Core Engines",
       "Real-Time Sync Protocol",
@@ -5006,7 +5468,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Their legacy system suffered from significant performance bottlenecks during peak traffic, slow content publishing cycles, and difficult maintenance routines that impacted the overall fan experience.",
     solution:
       "We implemented a modern headless CMS architecture combined with a resilient microservices backend on AWS, ensuring zero downtime and lightning-fast content delivery across all global regions.",
-    galleryImages: ["/assets/projects/fih-international-hockey-gallery-1.jpg", "/assets/projects/fih-international-hockey-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/fih-international-hockey-gallery-1.jpg",
+      "/assets/projects/fih-international-hockey-gallery-2.jpg",
+    ],
     features: [
       "Headless CMS Architecture",
       "Real-time Score Integration",
@@ -5134,7 +5599,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The primary challenge was the operational overhead of managing cross-platform mobile apps for thousands of unique property brands while maintaining code consistency and security.",
     solution:
       "We engineered a DevOps-centric automation framework on Azure that automates the builds, white-labeling, and submission processes for both iOS and Android stores.",
-    galleryImages: ["/assets/projects/zego-resident-experience-gallery-1.jpg", "/assets/projects/zego-resident-experience-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/zego-resident-experience-gallery-1.jpg",
+      "/assets/projects/zego-resident-experience-gallery-2.jpg",
+    ],
     features: [
       "Automated White-labeling",
       "CI/CD Build Pipelines",
@@ -5262,7 +5730,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The client faced difficulties with fragmented data coming from various hardware vendors, leading to manual billing errors and slow reporting cycles of up to 30 days.",
     solution:
       "We built an Azure-native data platform that ingests real-time IoT telemetry from charging hardware, processes it through an automated billing engine, and provides real-time fleet dashboards.",
-    galleryImages: ["/assets/projects/terawatt-ev-infrastructure-gallery-1.jpg", "/assets/projects/terawatt-ev-infrastructure-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/terawatt-ev-infrastructure-gallery-1.jpg",
+      "/assets/projects/terawatt-ev-infrastructure-gallery-2.jpg",
+    ],
     features: [
       "IoT Telemetry Ingestion",
       "Automated Billing Engine",
@@ -5390,7 +5861,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Analysts were spending over 50% of their time manually synthesizing data from PDF reports, spreadsheets, and news cycles, leading to slower strategy delivery for clients.",
     solution:
       "We deployed a custom RAG (Retrieval-Augmented Generation) platform using Azure OpenAI, allowing analysts to query thousands of documents and get high-accuracy strategic summaries in seconds.",
-    galleryImages: ["/assets/projects/global-consultant-ai-gallery-1.jpg", "/assets/projects/global-consultant-ai-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/global-consultant-ai-gallery-1.jpg",
+      "/assets/projects/global-consultant-ai-gallery-2.jpg",
+    ],
     features: [
       "RAG Architecture",
       "Multi-format Doc Ingestion",
@@ -5519,7 +5993,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The existing infrastructure struggled with high-concurrency bidding events, leading to latency issues during peak hours. Additionally, manual vehicle inspections were slow and prone to human error, delaying time-to-market for auction listings.",
     solution:
       "Itransition developed a custom real-time auction engine using WebSockets for sub-second latency. We implemented an AI-driven vehicle inspection app that uses computer vision to detect physical damage and auto-generate condition reports.",
-    galleryImages: ["/assets/projects/bca-intelligent-auction-platform-gallery-1.jpg", "/assets/projects/bca-intelligent-auction-platform-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/bca-intelligent-auction-platform-gallery-1.jpg",
+      "/assets/projects/bca-intelligent-auction-platform-gallery-2.jpg",
+    ],
     features: [
       "Real-time WebSocket-based bidding engine",
       "Automated computer vision damage detection",
@@ -5648,7 +6125,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Managing billions of documents across fragmented regional silos created compliance risks and hindered cross-departmental collaboration. Data residency requirements varied significantly across jurisdictions.",
     solution:
       "Itransition designed a multi-region Azure architecture with automated data classification and intelligent search capabilities powered by ElasticSearch.",
-    galleryImages: ["/assets/projects/xerox-enterprise-document-cloud-gallery-1.jpg", "/assets/projects/xerox-enterprise-document-cloud-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/xerox-enterprise-document-cloud-gallery-1.jpg",
+      "/assets/projects/xerox-enterprise-document-cloud-gallery-2.jpg",
+    ],
     features: [
       "Automated PII data masking",
       "Cross-region data residency management",
@@ -5777,7 +6257,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Inventory discrepancies and overbookings were occurring due to slow synchronization between external hotel systems and internal booking caches.",
     solution:
       "Itransition implemented an event-driven Kafka architecture that enables real-time updates and ensures eventual consistency across globally distributed data centers.",
-    galleryImages: ["/assets/projects/expedia-global-inventory-sync-gallery-1.jpg", "/assets/projects/expedia-global-inventory-sync-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/expedia-global-inventory-sync-gallery-1.jpg",
+      "/assets/projects/expedia-global-inventory-sync-gallery-2.jpg",
+    ],
     features: [
       "Event-driven Kafka message bus",
       "Dynamic pricing adjustment engine",
@@ -5906,7 +6389,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Clinicians were overwhelmed with manual patient check-ins and data entry, leading to burnout and delayed responses for critical cases.",
     solution:
       "Itransition developed a telemedicine platform featuring an AI health assistant that pre-screens patients and prioritizes high-risk individuals based on biometric data.",
-    galleryImages: ["/assets/projects/medtech-ai-patient-care-gallery-1.jpg", "/assets/projects/medtech-ai-patient-care-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/medtech-ai-patient-care-gallery-1.jpg",
+      "/assets/projects/medtech-ai-patient-care-gallery-2.jpg",
+    ],
     features: [
       "HIPAA-compliant video streaming",
       "AI-powered triage screening",
@@ -6035,7 +6521,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The existing infrastructure was composed of disparate legacy systems that led to high support costs, inconsistent user experiences, and significant friction in data top-up transactions.",
     solution:
       "We implemented a microservices-based architecture using React and Node.js on AWS, enabling real-time synchronization between billing systems and customer dashboards with a mobile-first design philosophy.",
-    galleryImages: ["/assets/projects/hughesnet-digital-evolution-gallery-1.jpg", "/assets/projects/hughesnet-digital-evolution-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/hughesnet-digital-evolution-gallery-1.jpg",
+      "/assets/projects/hughesnet-digital-evolution-gallery-2.jpg",
+    ],
     features: [
       "Unified Customer Dashboard",
       "Real-time Data Usage Monitoring",
@@ -6163,7 +6652,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Legacy architecture limitations were hindering the ability to integrate with new OEM partners and process the rapidly growing volume of service events.",
     solution:
       "Engineering a multi-tenant, event-driven architecture using Java/Spring and AWS, enabling seamless integration with SAP, Oracle, and proprietary fleet systems.",
-    galleryImages: ["/assets/projects/decisiv-srm-platform-gallery-1.jpg", "/assets/projects/decisiv-srm-platform-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/decisiv-srm-platform-gallery-1.jpg",
+      "/assets/projects/decisiv-srm-platform-gallery-2.jpg",
+    ],
     features: [
       "Asset Lifecycle Tracking",
       "Automated Service Requests",
@@ -6292,7 +6784,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Traditional engagement methods were seeing declining participation among younger seniors. The goal was to build a 'digital-first' ecosystem that rewards healthy habits.",
     solution:
       "Developed a cross-platform mobile application utilizing a real-time gamification engine that tracks achievements across health, learning, and advocacy.",
-    galleryImages: ["/assets/projects/aarp-rewards-gamification-gallery-1.jpg", "/assets/projects/aarp-rewards-gamification-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/aarp-rewards-gamification-gallery-1.jpg",
+      "/assets/projects/aarp-rewards-gamification-gallery-2.jpg",
+    ],
     features: [
       "Gamified Health Tracking",
       "Real-time Point Accrual",
@@ -6421,7 +6916,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Traditional surgical training is expensive, requires physical cadavers, and offers limited objective performance metrics for trainees.",
     solution:
       "A custom Unity-based VR application integrated with haptic peripherals and an AI scoring engine that evaluates surgical precision in real-time.",
-    galleryImages: ["/assets/projects/jnj-vr-surgical-training-gallery-1.jpg", "/assets/projects/jnj-vr-surgical-training-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/jnj-vr-surgical-training-gallery-1.jpg",
+      "/assets/projects/jnj-vr-surgical-training-gallery-2.jpg",
+    ],
     features: [
       "High-fidelity 3D Anatomy",
       "Haptic Feedback Integration",
@@ -6550,7 +7048,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The primary challenge was replicating complex business logic embedded in legacy code while ensuring zero downtime during the transition. The system had to handle high-concurrency transactions, integrate with hardware peripherals like fingerprint scanners and label printers, and comply with varied state-level lending regulations in real-time.",
     solution:
       "Our team architected a microservices-based solution using React and Node.js, deployed on AWS. We implemented a robust offline-first synchronization strategy for regional stores and built a centralized compliance engine that dynamically applies lending rules based on geo-location and local legislation.",
-    galleryImages: ["/assets/projects/pawn-management-modernization-gallery-1.jpg", "/assets/projects/pawn-management-modernization-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/pawn-management-modernization-gallery-1.jpg",
+      "/assets/projects/pawn-management-modernization-gallery-2.jpg",
+    ],
     features: [
       "Real-time Regulatory Compliance Engine",
       "Integrated Hardware Peripheral Support",
@@ -6679,7 +7180,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The system processed millions of events per hour, making performance and data consistency critical. The team had to decouple tightly linked business domains while maintaining full operation of the legacy system to avoid any disruption to global shipping routes.",
     solution:
       "We implemented an event-driven architecture using Apache Kafka to handle high-frequency data streams. The frontend was rebuilt using React for improved responsiveness, and the backend was transitioned to Spring Boot services running on Kubernetes, enabling auto-scaling based on real-time load.",
-    galleryImages: ["/assets/projects/enterprise-logistics-modernization-gallery-1.jpg", "/assets/projects/enterprise-logistics-modernization-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/enterprise-logistics-modernization-gallery-1.jpg",
+      "/assets/projects/enterprise-logistics-modernization-gallery-2.jpg",
+    ],
     features: [
       "Event-Driven Microservices Architecture",
       "Real-Time Package Tracking Engine",
@@ -6808,7 +7312,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The primary challenge was the variety and low quality of incoming documents. The system needed to extract data from hand-written forms, poor-quality faxes, and varied digital formats with extremely high accuracy to ensure fair settlements and prevent fraud.",
     solution:
       "We developed a pipeline utilizing Python and Azure Machine Learning to extract and normalize data. This was coupled with a sophisticated Drools-based rules engine that analyzes claims against policy metadata to determine initial settlement recommendations.",
-    galleryImages: ["/assets/projects/insurance-claims-automation-gallery-1.jpg", "/assets/projects/insurance-claims-automation-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/insurance-claims-automation-gallery-1.jpg",
+      "/assets/projects/insurance-claims-automation-gallery-2.jpg",
+    ],
     features: [
       "Intelligent Document Extraction",
       "NLP-Based Claim Classification",
@@ -6936,7 +7443,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The automotive industry faced a significant challenge: providing a modern, smartphone-like experience within the vehicle without compromising driver focus or system stability across diverse hardware configurations.",
     solution:
       "We developed a decoupled UI architecture using Android Automotive OS, leveraging custom OpenGL shaders for fluid map rendering and a robust micro-services backend to handle real-time vehicle telemetry and OTA updates.",
-    galleryImages: ["/assets/projects/tomtom-digital-cockpit-gallery-1.jpg", "/assets/projects/tomtom-digital-cockpit-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/tomtom-digital-cockpit-gallery-1.jpg",
+      "/assets/projects/tomtom-digital-cockpit-gallery-2.jpg",
+    ],
     features: [
       "Context-Aware Navigation Engine",
       "Dynamic Voice Assistant Integration",
@@ -7064,7 +7574,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Distributors struggled with manual entry, slow synchronization with SAP backends, and a lack of real-time visibility into stock levels and promotional pricing.",
     solution:
       "Spire Digital built a custom React-based application layer over a Node.js microservices architecture, integrated deeply with SAP and Salesforce to provide a 'single pane of glass' for distributor operations.",
-    galleryImages: ["/assets/projects/millercoors-b2b-portal-gallery-1.jpg", "/assets/projects/millercoors-b2b-portal-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/millercoors-b2b-portal-gallery-1.jpg",
+      "/assets/projects/millercoors-b2b-portal-gallery-2.jpg",
+    ],
     features: [
       "Real-Time Inventory Management",
       "Dynamic Promotional Pricing Engine",
@@ -7184,7 +7697,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Existing customers found the legacy portal difficult to navigate, leading to high call volumes for simple tasks like bill payment or basic equipment troubleshooting.",
     solution:
       "We implemented an Angular-driven web application and a native mobile suite, integrated with AI-powered chatbots and predictive diagnostics for home equipment.",
-    galleryImages: ["/assets/projects/dish-network-self-service-gallery-1.jpg", "/assets/projects/dish-network-self-service-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/dish-network-self-service-gallery-1.jpg",
+      "/assets/projects/dish-network-self-service-gallery-2.jpg",
+    ],
     features: [
       "Predictive Troubleshooting",
       "Automated Bill Management",
@@ -7311,7 +7827,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Data was siloed across multiple departments, making it impossible to get a holistic view of asset health or manufacturing efficiency in real-time.",
     solution:
       "Spire Digital developed 'Propel', a React-based data lake visualization tool that uses machine learning to identify anomalies in massive datasets.",
-    galleryImages: ["/assets/projects/lockheed-martin-propel-gallery-1.jpg", "/assets/projects/lockheed-martin-propel-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/lockheed-martin-propel-gallery-1.jpg",
+      "/assets/projects/lockheed-martin-propel-gallery-2.jpg",
+    ],
     features: [
       "Real-Time Telemetry Feed",
       "Anomaly Detection Engine",
@@ -7440,7 +7959,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Traditional investment processes required extensive paperwork and physical presence. The challenge was to create a digital-first onboarding experience (e-KYC) and integrate it with various financial clearing systems while maintaining military-grade security for user funds.",
     solution:
       "We developed a robust mobile application using Flutter for cross-platform efficiency, backed by a scalable Node.js microservices architecture. The solution featured a real-time portfolio tracker, automated investment maturity notifications, and a social feed for market insights.",
-    galleryImages: ["/assets/projects/i-invest-gallery-1.jpg", "/assets/projects/i-invest-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/i-invest-gallery-1.jpg",
+      "/assets/projects/i-invest-gallery-2.jpg",
+    ],
     features: [
       "Automated e-KYC Onboarding",
       "Real-time Portfolio Dashboard",
@@ -7559,7 +8081,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The client faced fragmented data silos, frequent billing discrepancies, and long patient wait times. Physical records were prone to loss, and reporting on hospital performance took weeks of manual data aggregation.",
     solution:
       "We implemented a cloud-native, modular HMS that provides a 360-degree view of patient history. Features include an automated triaging system, integrated pharmacy inventory, and a secure physician portal for remote chart reviews and tele-consultations.",
-    galleryImages: ["/assets/projects/deluxe-care-hms-gallery-1.jpg", "/assets/projects/deluxe-care-hms-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/deluxe-care-hms-gallery-1.jpg",
+      "/assets/projects/deluxe-care-hms-gallery-2.jpg",
+    ],
     features: [
       "Integrated Electronic Health Records (EHR)",
       "Real-time Automated Billing and Invoicing",
@@ -7815,7 +8340,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The client struggled with overbookings due to manual channel updates and suffered from poor guest engagement due to slow check-in processes at peak hours.",
     solution:
       "We built a real-time synchronized booking engine that connects to global distributors and a guest-facing mobile app that allows for digital check-ins and room service requests.",
-    galleryImages: ["/assets/projects/skyline-hms-gallery-1.jpg", "/assets/projects/skyline-hms-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/skyline-hms-gallery-1.jpg",
+      "/assets/projects/skyline-hms-gallery-2.jpg",
+    ],
     features: [
       "Centralized Booking Engine & Channel Manager",
       "Interactive Front-Desk Room Matrix",
@@ -7943,7 +8471,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The client was experiencing frequent downtime during high-traffic periods, slow deployment cycles taking weeks, and spiraling maintenance costs for aging physical servers.",
     solution:
       "We implemented a Kubernetes-managed architecture with auto-scaling capabilities. Using Terraform, we automated the entire infrastructure, enabling zero-downtime deployments and blue-green staging environments.",
-    galleryImages: ["/assets/projects/enterprise-cloud-transformation-gallery-1.jpg", "/assets/projects/enterprise-cloud-transformation-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/enterprise-cloud-transformation-gallery-1.jpg",
+      "/assets/projects/enterprise-cloud-transformation-gallery-2.jpg",
+    ],
     features: [
       "Kubernetes (GKE) Cluster Implementation",
       "Infrastructure as Code (IaC) via Terraform",
@@ -8071,7 +8602,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The primary challenge was the fragmentation of data across different regions and the need for a highly customized ordering interface that could handle millions of SKU variations while maintaining sub-second response times for global users.",
     solution:
       "Leveraging a headless architecture with BigCommerce and a custom React frontend, we developed a dynamic pricing engine and a dealer-specific dashboard. This allowed dealers to configure products, see real-time availability, and track orders without manual intervention.",
-    galleryImages: ["/assets/projects/steelcase-b2b-portal-gallery-1.jpg", "/assets/projects/steelcase-b2b-portal-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/steelcase-b2b-portal-gallery-1.jpg",
+      "/assets/projects/steelcase-b2b-portal-gallery-2.jpg",
+    ],
     features: [
       "Headless BigCommerce Integration",
       "Dynamic Multi-tier Pricing Engine",
@@ -8199,7 +8733,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The complexity lay in syncing physical device data with the digital store. We had to ensure that the machine could report pod usage accurately to trigger replenishment orders without user friction.",
     solution:
       "We implemented an AWS-based IoT hub that communicated with the dispensers and used BigCommerce as the commerce engine. A custom subscription management system was built to handle recurring deliveries based on real-time consumption data.",
-    galleryImages: ["/assets/projects/drinkworks-iot-ecommerce-gallery-1.jpg", "/assets/projects/drinkworks-iot-ecommerce-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/drinkworks-iot-ecommerce-gallery-1.jpg",
+      "/assets/projects/drinkworks-iot-ecommerce-gallery-2.jpg",
+    ],
     features: [
       "AWS IoT Core Integration",
       "Automated Pod Replenishment",
@@ -8327,7 +8864,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Managing varied subscription logic across different product categories and regions, each with unique compliance and shipping requirements, while ensuring the system could handle peak load during global promotional events.",
     solution:
       "We deployed a custom WooCommerce-based engine with a proprietary B2B subscription plugin. The system uses historical order data to predict future needs and pre-populate distributor baskets.",
-    galleryImages: ["/assets/projects/unilever-subscription-engine-gallery-1.jpg", "/assets/projects/unilever-subscription-engine-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/unilever-subscription-engine-gallery-1.jpg",
+      "/assets/projects/unilever-subscription-engine-gallery-2.jpg",
+    ],
     features: [
       "Predictive Order Modeling",
       "Custom B2B Subscription API",
@@ -8456,7 +8996,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The client faced significant bottlenecks in their claims processing department. Manual data entry, physical document handling, and fragmented legacy systems led to a 15-day average claim resolution time and high operational costs.",
     solution:
       "We implemented an AI-driven automation layer and a modernized React-based agent portal. By utilizing AWS Lambda for serverless processing and Python-based NLP for document parsing, we created a seamless end-to-end digital journey.",
-    galleryImages: ["/assets/projects/insurance-digital-transformation-gallery-1.jpg", "/assets/projects/insurance-digital-transformation-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/insurance-digital-transformation-gallery-1.jpg",
+      "/assets/projects/insurance-digital-transformation-gallery-2.jpg",
+    ],
     features: [
       "Automated Claims Triage",
       "Real-time Policy Analytics",
@@ -8584,7 +9127,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The existing RPA solution was prone to breakage whenever the government portal UI changed, leading to missed deadlines and manual rework for thousands of filings during peak tax season.",
     solution:
       "We designed a robust automation engine using Microsoft Power Automate and .NET Core. By leveraging direct API integrations and Azure Functions, we created a system that is resilient to UI changes and scales effortlessly.",
-    galleryImages: ["/assets/projects/tax-automation-system-gallery-1.jpg", "/assets/projects/tax-automation-system-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/tax-automation-system-gallery-1.jpg",
+      "/assets/projects/tax-automation-system-gallery-2.jpg",
+    ],
     features: [
       "API-Driven Workflows",
       "Real-time Compliance Checks",
@@ -8712,7 +9258,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The client suffered from siloed customer data, making it impossible to provide consistent recommendations. Page load times on the old platform were also hurting mobile conversion rates.",
     solution:
       "We developed a unified Shopify Plus storefront using React and GraphQL. We integrated a custom AI recommendation engine that analyzes skin profiles and purchase history to suggest tailored products.",
-    galleryImages: ["/assets/projects/retail-personalization-engine-gallery-1.jpg", "/assets/projects/retail-personalization-engine-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/retail-personalization-engine-gallery-1.jpg",
+      "/assets/projects/retail-personalization-engine-gallery-2.jpg",
+    ],
     features: [
       "Omni-channel Loyalty",
       "AI Product Recommendations",
@@ -8840,7 +9389,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Slow legacy reporting cycles (taking over 24 hours) were preventing the bank from responding quickly to market shifts and customer needs.",
     solution:
       "We implemented a modern data stack using Snowflake and AWS. We built automated ETL pipelines using Airflow to ingest millions of daily transactions into a secure, centralized data warehouse.",
-    galleryImages: ["/assets/projects/data-platform-modernization-gallery-1.jpg", "/assets/projects/data-platform-modernization-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/data-platform-modernization-gallery-1.jpg",
+      "/assets/projects/data-platform-modernization-gallery-2.jpg",
+    ],
     features: [
       "Cloud Data Warehouse",
       "Real-time Data Sync",
@@ -8969,7 +9521,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The client needed to process millions of social data points in real-time to provide accurate engagement metrics while managing complex multi-currency payment workflows for thousands of creators simultaneously.",
     solution:
       "We implemented a microservices architecture using Node.js and Python for the data engine. The platform features an AI-powered discovery tool that analyzes creator content patterns and audience demographics using advanced NLP models.",
-    galleryImages: ["/assets/projects/influence-flow-gallery-1.jpg", "/assets/projects/influence-flow-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/influence-flow-gallery-1.jpg",
+      "/assets/projects/influence-flow-gallery-2.jpg",
+    ],
     features: [
       "AI-Powered Creator Discovery",
       "Real-time Engagement Analytics",
@@ -9096,7 +9651,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Integrating legacy hardware protocols with modern cloud architecture while ensuring sub-second latency for critical system alerts in industrial environments.",
     solution:
       "Developed a custom IoT Gateway solution that bridges local sensor data with a Google Cloud-based analytics engine, visualization through a high-performance React dashboard.",
-    galleryImages: ["/assets/projects/smart-iot-diagnostic-gallery-1.jpg", "/assets/projects/smart-iot-diagnostic-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/smart-iot-diagnostic-gallery-1.jpg",
+      "/assets/projects/smart-iot-diagnostic-gallery-2.jpg",
+    ],
     features: [
       "Real-time Sensor Telemetry",
       "Predictive Failure Analysis",
@@ -9225,7 +9783,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Ensuring zero-downtime migration for millions of users while maintaining strict regulatory compliance and ultra-secure transaction protocols.",
     solution:
       "A scalable Flutter-based mobile application backed by a Java Spring Boot microservices layer, implementing 3D Secure 2.0 and biometric authentication patterns.",
-    galleryImages: ["/assets/projects/digital-banking-modernization-gallery-1.jpg", "/assets/projects/digital-banking-modernization-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/digital-banking-modernization-gallery-1.jpg",
+      "/assets/projects/digital-banking-modernization-gallery-2.jpg",
+    ],
     features: [
       "Biometric Secure Login",
       "Real-time Fund Transfers",
@@ -9352,7 +9913,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Designing a data synchronization engine that can handle conflict resolution when officers sync hundreds of applications after days of offline work.",
     solution:
       "Built a robust mobile application with a local SQLite database and a delta-based sync engine, allowing field officers to perform full credit assessments offline.",
-    galleryImages: ["/assets/projects/microfinance-field-digitization-gallery-1.jpg", "/assets/projects/microfinance-field-digitization-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/microfinance-field-digitization-gallery-1.jpg",
+      "/assets/projects/microfinance-field-digitization-gallery-2.jpg",
+    ],
     features: [
       "Offline-First Data Entry",
       "Conflict Resolution Engine",
@@ -9480,7 +10044,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The primary challenge was synchronizing inventory across multiple regional warehouses in real-time while ensuring the mobile app remained responsive on mid-range devices.",
     solution:
       "We implemented a React Native application backed by a microservices architecture that prioritizes local caching and event-driven inventory updates.",
-    galleryImages: ["/assets/projects/grecha-delivery-gallery-1.jpg", "/assets/projects/grecha-delivery-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/grecha-delivery-gallery-1.jpg",
+      "/assets/projects/grecha-delivery-gallery-2.jpg",
+    ],
     features: [
       "Real-time Inventory Sync",
       "Geofenced Courier Matching",
@@ -9608,7 +10175,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The system had to process high-velocity telemetry data from diverse hardware while providing sub-second latency for critical threshold alerts.",
     solution:
       "We developed a serverless architecture on AWS that leverages Kinesis for data ingestion and a React-based dashboard for advanced data visualization.",
-    galleryImages: ["/assets/projects/energo-iot-gallery-1.jpg", "/assets/projects/energo-iot-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/energo-iot-gallery-1.jpg",
+      "/assets/projects/energo-iot-gallery-2.jpg",
+    ],
     features: [
       "Real-time Telemetry Processing",
       "Predictive Maintenance Alerts",
@@ -9736,7 +10306,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Creating a trust-based ecosystem where high-value transactions could be initiated and managed entirely online with zero friction.",
     solution:
       "We developed a custom web platform with integrated document e-signing, identity verification, and a real-time offer tracking system.",
-    galleryImages: ["/assets/projects/baza-real-estate-gallery-1.jpg", "/assets/projects/baza-real-estate-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/baza-real-estate-gallery-1.jpg",
+      "/assets/projects/baza-real-estate-gallery-2.jpg",
+    ],
     features: [
       "Automated Tenant Vetting",
       "E-Signature Integration",
@@ -9864,7 +10437,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The primary challenge was maintaining near-instant finality for notifications while ensuring the cost per message remained negligible. Existing L1 structures were either too slow or too expensive for the high-frequency requirements of a global messaging protocol.",
     solution:
       "We implemented a custom consensus mechanism based on Proof of Stake with a focus on data availability. The architecture supports parallel processing of notification shards, allowing for horizontal scalability as the dApp ecosystem grows.",
-    galleryImages: ["/assets/projects/push-chain-gallery-1.jpg", "/assets/projects/push-chain-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/push-chain-gallery-1.jpg",
+      "/assets/projects/push-chain-gallery-2.jpg",
+    ],
     features: [
       "Protocol-Level Cross-Chain Messaging",
       "High-Throughput Gossip Protocol",
@@ -9992,7 +10568,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Integrating Web3 technology into a high-scale consumer app required frictionless onboarding. We had to abstract the complexity of wallets and gas fees to ensure 100M+ users could interact with the system without technical knowledge.",
     solution:
       "A 'gasless' infrastructure combined with social login-based custodial wallets was implemented. We utilized a scalable sidechain to handle the high volume of micro-transactions associated with daily reward distributions.",
-    galleryImages: ["/assets/projects/swiggy-web3-loyalty-gallery-1.jpg", "/assets/projects/swiggy-web3-loyalty-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/swiggy-web3-loyalty-gallery-1.jpg",
+      "/assets/projects/swiggy-web3-loyalty-gallery-2.jpg",
+    ],
     features: [
       "Gasless Reward Minting",
       "Social Login Wallet Provisioning",
@@ -10124,7 +10703,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The government issued a mandate for all active SIM cards to be linked to validated biometric data within a tight timeframe. MTN required a robust, distributed system capable of handling tens of thousands of concurrent sessions across diverse and often remote geographic locations with limited connectivity.",
     solution:
       "Seamfix engineered a distributed biometric platform featuring offline capture capabilities, real-time validation against central databases, and a comprehensive management dashboard. The solution utilized advanced compression algorithms for biometric data and a robust synchronization engine for low-bandwidth environments.",
-    galleryImages: ["/assets/projects/mtn-biosmart-registration-gallery-1.jpg", "/assets/projects/mtn-biosmart-registration-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/mtn-biosmart-registration-gallery-1.jpg",
+      "/assets/projects/mtn-biosmart-registration-gallery-2.jpg",
+    ],
     features: [
       "Sub-15 Second Biometric Capture",
       "Advanced Offline Synchronization",
@@ -10252,7 +10834,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The primary challenge was managing the sheer volume of data and ensuring high-fidelity biometric capture to prevent identity theft and fraud on a national scale. The infrastructure needed to support high availability and secure data transmission across fragmented network providers.",
     solution:
       "Seamfix implemented a high-availability cloud-hybrid infrastructure that optimized data ingestion and processing. We introduced AI-driven image quality checks at the point of capture to ensure all biometric data met international ICAO standards before submission.",
-    galleryImages: ["/assets/projects/nimc-national-id-enrollment-gallery-1.jpg", "/assets/projects/nimc-national-id-enrollment-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/nimc-national-id-enrollment-gallery-1.jpg",
+      "/assets/projects/nimc-national-id-enrollment-gallery-2.jpg",
+    ],
     features: [
       "ICAO Standard Photo Capture",
       "Multi-Finger Biometric Scanning",
@@ -10380,7 +10965,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Financial institutions faced high abandonment rates due to slow, manual verification processes. Businesses needed a secure, reliable way to verify information without direct access to sensitive government servers.",
     solution:
       "Seamfix built a high-security middleware platform that securely bridges corporate applications and government databases. We implemented a robust rate-limiting and audit-logging engine to ensure compliance with data protection laws while maintaining low latency.",
-    galleryImages: ["/assets/projects/verified-kyc-verification-gallery-1.jpg", "/assets/projects/verified-kyc-verification-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/verified-kyc-verification-gallery-1.jpg",
+      "/assets/projects/verified-kyc-verification-gallery-2.jpg",
+    ],
     features: [
       "Sub-Second API Responses",
       "OCR Document Extraction",
@@ -10508,7 +11096,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Migrating decades of physical records into a digital format while ensuring accuracy and preventing data duplication was a monumental task. The system also had to be resilient against infrastructure challenges and perform reliably at a national scale.",
     solution:
       "We deployed a high-redundancy cloud infrastructure and developed a custom ETL (Extract, Transform, Load) pipeline for large-scale data digitization. The system integrated biometric deduplication to ensure the uniqueness of each citizen entry.",
-    galleryImages: ["/assets/projects/sudan-civil-registry-digitization-gallery-1.jpg", "/assets/projects/sudan-civil-registry-digitization-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/sudan-civil-registry-digitization-gallery-1.jpg",
+      "/assets/projects/sudan-civil-registry-digitization-gallery-2.jpg",
+    ],
     features: [
       "Centralized Identity Database",
       "Automatic Duplicate Detection",
@@ -10636,7 +11227,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Scaling physical internship programs proved difficult due to disjointed tracking systems and a lack of standardized assessment tools for a growing number of remote participants.",
     solution:
       "We engineered a custom EdTech platform that automates curriculum delivery, offers real-time performance feedback through interactive coding sandboxes, and leverages AI to match top-performing graduates with global industry opportunities.",
-    galleryImages: ["/assets/projects/module-academy-gallery-1.jpg", "/assets/projects/module-academy-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/module-academy-gallery-1.jpg",
+      "/assets/projects/module-academy-gallery-2.jpg",
+    ],
     features: [
       "Automated curriculum delivery",
       "Mentor-mentee matching engine",
@@ -10764,7 +11358,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "High inflation rates and a lack of accessible investment vehicles made it difficult for common citizens to preserve wealth and build long-term savings.",
     solution:
       "We developed a secure mobile app with military-grade encryption that offers automated fund round-ups, instant withdrawals, and AI-driven personalized financial advice.",
-    galleryImages: ["/assets/projects/kash-fintech-gallery-1.jpg", "/assets/projects/kash-fintech-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/kash-fintech-gallery-1.jpg",
+      "/assets/projects/kash-fintech-gallery-2.jpg",
+    ],
     features: [
       "High-yield savings accounts",
       "Automated investment portfolios",
@@ -10892,7 +11489,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Traditional e-commerce platforms lacked integrated financing solutions, leading to extremely high cart abandonment for electronics and home appliances.",
     solution:
       "We integrated a proprietary credit scoring engine directly into the checkout flow, enabling real-time approval of installment plans based on banking data.",
-    galleryImages: ["/assets/projects/altmall-ecommerce-gallery-1.jpg", "/assets/projects/altmall-ecommerce-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/altmall-ecommerce-gallery-1.jpg",
+      "/assets/projects/altmall-ecommerce-gallery-2.jpg",
+    ],
     features: [
       "Buy Now Pay Later (BNPL)",
       "Real-time credit assessment",
@@ -11020,7 +11620,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Managing taxes, pensions, and varying labor laws across multiple African borders was a manual, error-prone process for growing enterprises.",
     solution:
       "We developed a cloud-native platform that automates statutory deductions and offers deep HR analytics via a robust API-first architecture.",
-    galleryImages: ["/assets/projects/bento-payroll-hr-gallery-1.jpg", "/assets/projects/bento-payroll-hr-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/bento-payroll-hr-gallery-1.jpg",
+      "/assets/projects/bento-payroll-hr-gallery-2.jpg",
+    ],
     features: [
       "Automated payroll engine",
       "Statutory tax compliance",
@@ -11149,7 +11752,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Scaling a distributed system that supports millions of developers requires specialized knowledge in Ruby on Rails, Go, and massive-scale database architecture. GitHub needed engineers who could contribute immediately without extensive onboarding.",
     solution:
       "Andela deployed a team of 25+ senior software engineers across various time zones. These engineers focused on refactoring legacy monoliths into microservices, optimizing CI/CD pipelines, and implementing advanced monitoring solutions.",
-    galleryImages: ["/assets/projects/github-scaling-engineering-acceleration-gallery-1.jpg", "/assets/projects/github-scaling-engineering-acceleration-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/github-scaling-engineering-acceleration-gallery-1.jpg",
+      "/assets/projects/github-scaling-engineering-acceleration-gallery-2.jpg",
+    ],
     features: [
       "Core Monolith Refactoring",
       "High-Performance Go Microservices",
@@ -11278,7 +11884,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Building a global streaming service involves complex video encoding, regional content licensing logic, and high-availability payment systems across multiple platforms and devices.",
     solution:
       "Andela provided specialized full-stack and mobile developers who specialized in Java, React, and cloud-native streaming protocols to build out the front-end and back-end of the Paramount+ ecosystem.",
-    galleryImages: ["/assets/projects/viacomcbs-paramount-plus-transformation-gallery-1.jpg", "/assets/projects/viacomcbs-paramount-plus-transformation-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/viacomcbs-paramount-plus-transformation-gallery-1.jpg",
+      "/assets/projects/viacomcbs-paramount-plus-transformation-gallery-2.jpg",
+    ],
     features: [
       "Global Content CMS",
       "Low-Latency Video Playback",
@@ -11407,7 +12016,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Analyzing billions of learning data points to provide real-time feedback and accurate course recommendations across a library of thousands of courses.",
     solution:
       "Andela embedded a team of senior data scientists and machine learning engineers to build predictive models that identify at-risk students and recommend intervention strategies.",
-    galleryImages: ["/assets/projects/coursera-ai-learning-optimization-gallery-1.jpg", "/assets/projects/coursera-ai-learning-optimization-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/coursera-ai-learning-optimization-gallery-1.jpg",
+      "/assets/projects/coursera-ai-learning-optimization-gallery-2.jpg",
+    ],
     features: [
       "Predictive Success Models",
       "Personalized Learning Paths",
@@ -11536,7 +12148,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The financial sector requires zero-tolerance for errors, extremely low latency, and adherence to complex international security standards (PCI-DSS).",
     solution:
       "Andela provided a specialized group of security and mobile engineers who worked on building robust mobile SDKs and high-performance backend transaction layers.",
-    galleryImages: ["/assets/projects/mastercard-global-fintech-infrastructure-gallery-1.jpg", "/assets/projects/mastercard-global-fintech-infrastructure-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/mastercard-global-fintech-infrastructure-gallery-1.jpg",
+      "/assets/projects/mastercard-global-fintech-infrastructure-gallery-2.jpg",
+    ],
     features: [
       "Secure Tokenization Engine",
       "Contactless Payment SDKs",
@@ -11664,7 +12279,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The primary challenge was modernizing a complex legacy infrastructure while ensuring zero downtime for millions of daily users. The system needed to handle volatile currency exchange rates and varying regional regulatory requirements with sub-second latency.",
     solution:
       "We implemented a microservices-based architecture focused on performance and security. By leveraging Biometric Authentication and a revamped state-management system, we created a seamless flow that reduced transaction time by 35%.",
-    galleryImages: ["/assets/projects/western-union-digital-transformation-gallery-1.jpg", "/assets/projects/western-union-digital-transformation-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/western-union-digital-transformation-gallery-1.jpg",
+      "/assets/projects/western-union-digital-transformation-gallery-2.jpg",
+    ],
     features: [
       "Real-time Currency Exchange APIs",
       "Biometric Security Integration",
@@ -11793,7 +12411,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The complexity lay in rendering high-fidelity 3D maps while maintaining perfectly smooth frame rates on mobile devices, all while consuming massive streams of real-time traffic and hazard data.",
     solution:
       "We developed a specialized rendering engine optimized for vector tiles and implemented a predictive caching layer that anticipates a driver's route to prevent navigation lag.",
-    galleryImages: ["/assets/projects/tomtom-navigation-redesign-gallery-1.jpg", "/assets/projects/tomtom-navigation-redesign-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/tomtom-navigation-redesign-gallery-1.jpg",
+      "/assets/projects/tomtom-navigation-redesign-gallery-2.jpg",
+    ],
     features: [
       "Real-time Vector Tile Rendering",
       "Predictive Traffic Analysis",
@@ -11921,7 +12542,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The system had to meet the highest security standards while maintaining extreme performance. Visualizing thousands of moving assets with their associated telemetry in a browser-based environment required innovative data-handling strategies.",
     solution:
       "A custom WebGL-based visualization engine was built to handle high-density data overlays, backed by a proprietary stream-processing backend that prioritizes alerts based on mission importance.",
-    galleryImages: ["/assets/projects/lockheed-martin-mission-control-gallery-1.jpg", "/assets/projects/lockheed-martin-mission-control-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/lockheed-martin-mission-control-gallery-1.jpg",
+      "/assets/projects/lockheed-martin-mission-control-gallery-2.jpg",
+    ],
     features: [
       "Real-time 3D Asset Visualization",
       "Petabyte-scale Data Ingestion",
@@ -12049,7 +12673,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Integrating with hardware DVRs located in users' homes meant overcoming varied network conditions, NAT traversal issues, and ensuring low-latency video streaming without a central server-side cache.",
     solution:
       "We engineered a direct peer-to-peer communication layer between mobile devices and the home Hopper DVR, combined with a cloud-based content aggregation system for VOD assets.",
-    galleryImages: ["/assets/projects/dish-network-dish-anywhere-gallery-1.jpg", "/assets/projects/dish-network-dish-anywhere-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/dish-network-dish-anywhere-gallery-1.jpg",
+      "/assets/projects/dish-network-dish-anywhere-gallery-2.jpg",
+    ],
     features: [
       "Remote DVR Scheduling",
       "Live TV Transcoding Engine",
@@ -12178,7 +12805,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The existing system was bottlenecked by legacy database locks and lacked a modern API layer, preventing integration with third-party tracking partners and mobile applications. Data latency was exceeding 5 seconds per request, causing significant delays in dispatching and tracking critical freight across multiple time zones.",
     solution:
       "We implemented a staged migration using the Strangler Fig pattern, gradually moving functionality to a Spring Boot microservices backend and a React-based frontend. We introduced a distributed caching layer and an event-driven synchronization engine to keep the legacy and new systems in perfect alignment during the transition.",
-    galleryImages: ["/assets/projects/transportation-legacy-modernization-gallery-1.jpg", "/assets/projects/transportation-legacy-modernization-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/transportation-legacy-modernization-gallery-1.jpg",
+      "/assets/projects/transportation-legacy-modernization-gallery-2.jpg",
+    ],
     features: [
       "Real-time GPS Integrated Dispatching",
       "Microservices-based Business Logic Engine",
@@ -12308,7 +12938,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The client’s physical server infrastructure was reaching end-of-life, causing performance degradation during peak trading hours. Additionally, the existing monolithic code was difficult to scale vertically, leading to excessive hardware costs and maintenance windows that affected global availability.",
     solution:
       "We designed a Kubernetes-orchestrated environment on Azure (AKS) that leverages serverless functions for individual payment workflows. By implementing a zero-trust network architecture and automated compliance auditing, we ensured security was baked into every layer of the infrastructure.",
-    galleryImages: ["/assets/projects/fintech-cloud-migration-gallery-1.jpg", "/assets/projects/fintech-cloud-migration-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/fintech-cloud-migration-gallery-1.jpg",
+      "/assets/projects/fintech-cloud-migration-gallery-2.jpg",
+    ],
     features: [
       "PCI-Compliant Azure Landing Zone",
       "Real-time Transaction Monitoring",
@@ -12437,7 +13070,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Insurance policies are hyper-dense and context-dependent. Standard keyword search was failing to provide accurate answers. Furthermore, all data had to remain strictly on-premise or within a private cloud VPC to ensure policyholder privacy and compliance with insurance regulations.",
     solution:
       "We built a private RAG pipeline using a vector database for semantic search and a private instance of a Large Language Model. The system included a 'Source Verification' feature that highlights exactly where in a 200-page document the AI found its answer, ensuring human-in-the-loop accuracy.",
-    galleryImages: ["/assets/projects/enterprise-ai-assistant-gallery-1.jpg", "/assets/projects/enterprise-ai-assistant-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/enterprise-ai-assistant-gallery-1.jpg",
+      "/assets/projects/enterprise-ai-assistant-gallery-2.jpg",
+    ],
     features: [
       "Private LLM Integration (VPC)",
       "Semantic Document Indexing",
@@ -12566,7 +13202,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Each facility used different data standards (HL7 v2, CSV, SQL), making real-time clinical decision support impossible. Doctors were forced to log into multiple portals to see a patient’s full history, significantly increasing the risk of medical oversight.",
     solution:
       "We built a specialized integration engine that transforms legacy data into FHIR R4 resources. This centralized data lake serves a modern React dashboard that features real-time clinical alerts, medication reconciliation, and longitudinal health charting.",
-    galleryImages: ["/assets/projects/healthcare-data-interoperability-gallery-1.jpg", "/assets/projects/healthcare-data-interoperability-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/healthcare-data-interoperability-gallery-1.jpg",
+      "/assets/projects/healthcare-data-interoperability-gallery-2.jpg",
+    ],
     features: [
       "HL7 FHIR R4 Compliant API",
       "Real-time Clinical Event Alerts",
@@ -12695,7 +13334,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "The primary challenge was migrating complex legacy banking workflows into a simplified mobile experience while maintaining enterprise-level security and ensuring regulatory compliance across multiple service layers.",
     solution:
       "We implemented a microservices-based architecture coupled with a user-centric UI design that prioritized speed and accessibility. The result was a seamless onboarding process that takes less than 2 minutes.",
-    galleryImages: ["/assets/projects/onebank-sterling-gallery-1.jpg", "/assets/projects/onebank-sterling-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/onebank-sterling-gallery-1.jpg",
+      "/assets/projects/onebank-sterling-gallery-2.jpg",
+    ],
     features: [
       "Instant Digital Onboarding",
       "Automated Wealth Management",
@@ -12823,7 +13465,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Digitizing millions of legacy physical records and creating a secure verification system that works even in low-connectivity environments.",
     solution:
       "We deployed a cloud-native platform with a mobile-optimized interface, enabling shareholders to track holdings and claim dividends via USSD and web.",
-    galleryImages: ["/assets/projects/africa-prudential-gallery-1.jpg", "/assets/projects/africa-prudential-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/africa-prudential-gallery-1.jpg",
+      "/assets/projects/africa-prudential-gallery-2.jpg",
+    ],
     features: [
       "Dividend Self-Service",
       "Electronic Stock Proxy",
@@ -12951,7 +13596,10 @@ const projectsData: Record<string, ProjectPageData> = {
       "Engineering a platform capable of handling massive peak-time concurrency while simplifying a complex catalog of over 200 data and voice products.",
     solution:
       "A high-performance Angular frontend backed by a Java Spring microservices architecture, featuring an AI chatbot that handles 70% of common queries.",
-    galleryImages: ["/assets/projects/glo-digital-gateway-gallery-1.jpg", "/assets/projects/glo-digital-gateway-gallery-2.jpg"],
+    galleryImages: [
+      "/assets/projects/glo-digital-gateway-gallery-1.jpg",
+      "/assets/projects/glo-digital-gateway-gallery-2.jpg",
+    ],
     features: [
       "AI Customer Assistant",
       "Dynamic Data Bundling",

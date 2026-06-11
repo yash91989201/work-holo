@@ -119,7 +119,9 @@ export function ProjectGalleryImage({
     );
   }
 
-  const imageSrc = src || `/images/projects/${title.toLowerCase().replace(/\s+/g, "-")}-${index + 1}.jpg`;
+  const imageSrc =
+    src ||
+    `/images/projects/${title.toLowerCase().replace(/\s+/g, "-")}-${index + 1}.jpg`;
 
   return (
     <img

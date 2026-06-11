@@ -95,12 +95,27 @@ docker_compose() { "${DOCKER_COMPOSE_CMD[@]}" "$@"; }
 check_deps() {
   check_command bun
   check_command docker
-  check_command openssl
   detect_docker_compose
 }
 
 generate_better_auth_secret() {
-  openssl rand -base64 24 | tr -d '/+=' | head -c 32
+  local secret=""
+  if secret="$(npx --yes auth secret 2>/dev/null)" && [[ -n "$secret" ]]; then
+    :
+  elif secret="$(bunx auth secret 2>/dev/null)" && [[ -n "$secret" ]]; then
+    :
+  else
+    secret="$(openssl rand -base64 32 2>/dev/null)"
+  fi
+
+  secret="$(printf '%s' "$secret" | tr -d '\r\n')"
+  if [[ -n "$secret" ]]; then
+    printf '%s' "$secret"
+    return 0
+  fi
+
+  log_error "Failed to generate BETTER_AUTH_SECRET"
+  return 1
 }
 
 generate_vapid_keys() {
@@ -1139,7 +1154,9 @@ VAPID generation:
   on failure, VAPID values remain empty
 
 Auth secret generation:
-  openssl rand -base64 24 | tr -d '/+=' | head -c 32
+  npx --yes auth secret
+  fallback: bunx auth secret
+  fallback: openssl rand -base64 32
 
 Docker compose detection:
   prefers docker compose (v2), fallback docker-compose (v1)

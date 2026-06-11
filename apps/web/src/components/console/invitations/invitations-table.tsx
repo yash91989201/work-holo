@@ -346,6 +346,27 @@ export const InvitationsTable = () => {
   const roleFilter = search.role ?? "all";
   const statusFilter = search.status ?? "all";
 
+  const roleItems = [
+    { value: "all", label: "All Roles" },
+    { value: "admin", label: "Admin" },
+    { value: "manager", label: "Manager" },
+    { value: "team-lead", label: "Team Lead" },
+    { value: "member", label: "Member" },
+  ];
+
+  const statusItems = [
+    { value: "all", label: "All Status" },
+    { value: "pending", label: "Pending" },
+    { value: "accepted", label: "Accepted" },
+    { value: "rejected", label: "Rejected" },
+    { value: "expired", label: "Expired" },
+  ];
+
+  const pageSizeItems = [10, 20, 30, 40, 50].map((size) => ({
+    value: `${size}`,
+    label: `${size}`,
+  }));
+
   let expiryDateRange: DateRange | undefined;
   if (search.expiryStartDate && search.expiryEndDate) {
     expiryDateRange = {
@@ -505,6 +526,7 @@ export const InvitationsTable = () => {
           </InputGroup>
 
           <Select
+            items={roleItems}
             onValueChange={(value) => {
               navigate({
                 search: (prev) => ({
@@ -534,6 +556,7 @@ export const InvitationsTable = () => {
           </Select>
 
           <Select
+            items={statusItems}
             onValueChange={(value) => {
               navigate({
                 search: (prev) => ({
@@ -691,6 +714,7 @@ export const InvitationsTable = () => {
           <div className="flex items-center gap-2">
             <p className="hidden sm:block">Rows per page</p>
             <Select
+              items={pageSizeItems}
               onValueChange={(value) => {
                 table.setPageSize(Number(value));
               }}

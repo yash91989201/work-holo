@@ -83,10 +83,7 @@ export const servicesData: Record<string, ServicePageData> = {
       "Integration with existing tools",
       "Scalable architecture",
     ],
-    galleryImages: [
-      "/assets/technology-01.webp",
-      "/assets/technology-02.jpg",
-    ],
+    galleryImages: ["/assets/technology-01.webp", "/assets/technology-02.jpg"],
     customerServices: [
       {
         icon: "IconUsers",
@@ -515,10 +512,7 @@ export const servicesData: Record<string, ServicePageData> = {
       "Accessibility compliance",
       "Design handoff & documentation",
     ],
-    galleryImages: [
-      "/assets/food-dash.webp",
-      "/assets/fit-force.png",
-    ],
+    galleryImages: ["/assets/food-dash.webp", "/assets/fit-force.png"],
     customerServices: [
       {
         icon: "IconUsers",
@@ -587,10 +581,7 @@ export const servicesData: Record<string, ServicePageData> = {
       "Data quality & governance",
       "Machine learning ops",
     ],
-    galleryImages: [
-      "/assets/data-pulse.png",
-      "/assets/finflow.webp",
-    ],
+    galleryImages: ["/assets/data-pulse.png", "/assets/finflow.webp"],
     customerServices: [
       {
         icon: "IconUsers",

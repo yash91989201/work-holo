@@ -74,12 +74,12 @@ export interface HeroProps {
   description: string;
   headlineAccent: string;
   headlineLine1: string;
-  primaryCta: { label: string; href: string };
   /** Hero background image displayed behind the headline */
   image?: {
     src: string;
     alt: string;
   };
+  primaryCta: { label: string; href: string };
   terminalCommand: string;
   terminalMessage: string;
 }
@@ -462,14 +462,7 @@ const ImageSection: React.FC<ImageSectionProps & { index: number }> = ({
 };
 
 export default function BPOPage(props: WebPageProps) {
-  const {
-    hero,
-    stats,
-    services,
-    workflow,
-    faq,
-    imageSections = [],
-  } = props;
+  const { hero, stats, services, workflow, faq, imageSections = [] } = props;
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -493,9 +486,9 @@ export default function BPOPage(props: WebPageProps) {
           {/* Hero Background Image */}
           {hero.image && (
             <motion.div
+              animate={{ opacity: 1, scale: 1 }}
               className="absolute inset-0 z-0"
               initial={{ opacity: 0, scale: 1.1 }}
-              animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1.5, ease: EASE }}
             >
               <img

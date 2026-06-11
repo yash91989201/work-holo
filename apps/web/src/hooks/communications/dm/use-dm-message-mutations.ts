@@ -24,7 +24,7 @@ interface SendDmMessageInput {
   id?: string;
   parentMessageId?: string;
   replyToMessageId?: string;
-  type?: "text" | "attachment" | "audio";
+  type: "text" | "attachment" | "audio";
 }
 
 interface UpdateDmMessageInput {
@@ -110,19 +110,13 @@ export function useDmMessageMutations() {
       }
     },
     mutationFn: async ({ message }: { message: SendDmMessageInput }) => {
-      const { txid } = await orpcClient.communication.dm.sendMessage({
-        conversationId: message.conversationId,
-        content: message.content,
-        type: message.type ?? "text",
-        parentMessageId: message.parentMessageId,
-        replyToMessageId: message.replyToMessageId,
-        attachments: message.attachments,
-      });
+      const { txid } = await orpcClient.communication.dm.sendMessage(message);
 
       await dmMessagesCollection.utils.awaitTxId(txid);
-      await dmAttachmentsCollection.utils.awaitTxId(txid);
-      await dmConversationsCollection.utils.awaitTxId(txid);
-      await dmConversationReadsCollection.utils.awaitTxId(txid);
+
+      if (message.attachments?.length) {
+        await dmAttachmentsCollection.utils.awaitTxId(txid);
+      }
     },
   });
 

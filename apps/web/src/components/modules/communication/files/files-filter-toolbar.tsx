@@ -178,6 +178,14 @@ export function FilesFilterToolbar() {
         </InputGroup>
 
         <Select
+          items={[
+            { value: "all", label: "All Types" },
+            { value: "image", label: "Image" },
+            { value: "document", label: "Document" },
+            { value: "video", label: "Video" },
+            { value: "audio", label: "Audio" },
+            { value: "archive", label: "Archive" },
+          ]}
           onValueChange={(value) => {
             if (value === null) return;
             handleTypeChange(value);
@@ -198,6 +206,14 @@ export function FilesFilterToolbar() {
         </Select>
 
         <Select
+          items={[
+            { value: "createdAt-desc", label: "Newest" },
+            { value: "createdAt-asc", label: "Oldest" },
+            { value: "name-asc", label: "Name A-Z" },
+            { value: "name-desc", label: "Name Z-A" },
+            { value: "size-desc", label: "Largest" },
+            { value: "size-asc", label: "Smallest" },
+          ]}
           onValueChange={(value) => {
             if (value === null) return;
             handleSortChange(value);
@@ -218,6 +234,10 @@ export function FilesFilterToolbar() {
         </Select>
 
         <Select
+          items={[
+            { value: "all", label: "All Senders" },
+            { value: "mine", label: "Sent by me" },
+          ]}
           onValueChange={(value) => {
             if (value === null) return;
             handleSenderChange(value);

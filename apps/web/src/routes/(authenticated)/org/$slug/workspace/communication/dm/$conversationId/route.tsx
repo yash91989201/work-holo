@@ -3,6 +3,8 @@ import { Suspense } from "react";
 import { DmConversationHeader } from "@/components/modules/communication/dm/dm-conversation-header";
 import { DmInfoSidebar } from "@/components/modules/communication/dm/info-sidebar";
 import { DmPinsSidebar } from "@/components/modules/communication/dm/pins-sidebar";
+import { DmRouteSkeleton } from "@/components/modules/communication/dm/dm-route-skeleton";
+import { MessageListSkeleton } from "@/components/modules/communication/channels/message-list/message-list-skeleton";
 import { DmThreadSidebar } from "@/components/modules/communication/dm/thread-sidebar";
 
 export const Route = createFileRoute(
@@ -19,6 +21,7 @@ export const Route = createFileRoute(
       conversation.participantOne ?? conversation.participantTwo;
     return { crumb: otherParticipant?.name ?? "Conversation" };
   },
+  pendingComponent: DmRouteSkeleton,
   component: RouteComponent,
 });
 
@@ -29,10 +32,11 @@ function RouteComponent() {
       <div className="flex min-h-0 flex-1">
         <Suspense
           fallback={
-            <div className="flex min-h-0 flex-1 flex-col items-center justify-center">
-              <p className="text-muted-foreground text-sm">
-                Loading conversation…
-              </p>
+            <div className="flex min-h-0 flex-1 flex-col">
+              <MessageListSkeleton />
+              <div className="border-t bg-background px-4 py-6 text-center text-muted-foreground text-sm">
+                Preparing message composer.
+              </div>
             </div>
           }
         >

@@ -14,7 +14,7 @@ import { FieldGroup } from "@work-holo/ui/components/field";
 import { useAppForm } from "@work-holo/ui/components/form/hooks";
 import { SelectItem } from "@work-holo/ui/components/select";
 import { Spinner } from "@work-holo/ui/components/spinner";
-import type { ReactNode } from "react";
+import type { ReactElement } from "react";
 import { Suspense, useState } from "react";
 import { toast } from "sonner";
 import { useAuthedSession } from "@/hooks/use-authed-session";
@@ -25,7 +25,7 @@ import { MembersSelect } from "./members-select";
 import { TeamSelect } from "./team-select";
 
 interface CreateChannelFormProps {
-  trigger?: ReactNode;
+  trigger?: ReactElement;
 }
 
 export const CreateChannelForm = ({ trigger }: CreateChannelFormProps) => {
@@ -71,13 +71,15 @@ export const CreateChannelForm = ({ trigger }: CreateChannelFormProps) => {
 
   return (
     <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
-      <DialogTrigger>
-        {trigger ?? (
-          <Button aria-label="Create channel" size="icon" variant="link">
-            <IconPlus />
-          </Button>
-        )}
-      </DialogTrigger>
+      <DialogTrigger
+        render={
+          trigger ?? (
+            <Button aria-label="Create channel" size="icon" variant="link">
+              <IconPlus />
+            </Button>
+          )
+        }
+      />
 
       <DialogContent className="sm:max-w-106">
         <DialogHeader>
@@ -124,7 +126,13 @@ export const CreateChannelForm = ({ trigger }: CreateChannelFormProps) => {
 
               <form.AppField name="type">
                 {(field) => (
-                  <field.Select label="Channel Type">
+                  <field.Select
+                    items={[
+                      { label: "Team", value: "team" },
+                      { label: "Group", value: "group" },
+                    ]}
+                    label="Channel Type"
+                  >
                     <SelectItem value="team">Team</SelectItem>
                     <SelectItem value="group">Group</SelectItem>
                   </field.Select>

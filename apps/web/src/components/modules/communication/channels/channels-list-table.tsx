@@ -371,6 +371,10 @@ export const ChannelsListTable = () => {
           <div className="flex items-center gap-2">
             <p className="hidden sm:block">Rows per page</p>
             <Select
+              items={[10, 20, 30, 40, 50].map((size) => ({
+                value: `${size}`,
+                label: `${size}`,
+              }))}
               onValueChange={(value) => {
                 table.setPageSize(Number(value));
               }}
@@ -1009,29 +1013,92 @@ export function UpdateChannelDialogSkeleton() {
 
 UpdateChannelDialog.Fallback = UpdateChannelDialogSkeleton;
 export const ChannelsListTableSkeleton = () => (
-  <div className="space-y-4">
-    <div className="flex items-center justify-between">
-      <div className="space-y-2">
-        <Skeleton className="h-4 w-32" />
-        <Skeleton className="h-3 w-48" />
-      </div>
+  <div className="w-full rounded-md border bg-card text-card-foreground shadow-sm">
+    {/* Header: search + create button */}
+    <div className="flex items-center justify-between gap-4 border-b p-4">
+      <Skeleton className="h-9 w-full max-w-sm" />
+      <Skeleton className="h-9 w-36" />
     </div>
-    <div className="space-y-2">
-      {Array.from({ length: 5 }).map((_, index) => (
-        <div
-          className="flex items-center space-x-4 rounded-md border p-4"
-          key={index.toString()}
-        >
-          <Skeleton className="h-10 w-10 rounded-md" />
-          <div className="flex-1 space-y-2">
-            <Skeleton className="h-4 w-32" />
-            <Skeleton className="h-3 w-48" />
-          </div>
-          <Skeleton className="h-6 w-20" />
-          <Skeleton className="h-8 w-16" />
-          <Skeleton className="h-4 w-24" />
-        </div>
-      ))}
+
+    {/* Table */}
+    <div className="rounded-md border-b">
+      <Table>
+        <TableHeader>
+          <TableRow className="hover:bg-transparent">
+            <TableHead>
+              <Skeleton className="h-4 w-16" />
+            </TableHead>
+            <TableHead>
+              <Skeleton className="h-4 w-10" />
+            </TableHead>
+            <TableHead>
+              <Skeleton className="h-4 w-14" />
+            </TableHead>
+            <TableHead>
+              <Skeleton className="h-4 w-16" />
+            </TableHead>
+            <TableHead>
+              <Skeleton className="h-4 w-18" />
+            </TableHead>
+            <TableHead>
+              <Skeleton className="h-4 w-14" />
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {Array.from({ length: 5 }).map((_, i) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton list
+            <TableRow className="hover:bg-muted/50" key={i}>
+              {/* Channel: icon + name + description */}
+              <TableCell>
+                <div className="flex items-center gap-3">
+                  <Skeleton className="h-10 w-10 rounded-md" />
+                  <div className="space-y-1.5">
+                    <Skeleton className="h-4 w-28" />
+                    <Skeleton className="h-3 w-40" />
+                  </div>
+                </div>
+              </TableCell>
+              {/* Type badge */}
+              <TableCell>
+                <Skeleton className="h-5 w-16 rounded-full" />
+              </TableCell>
+              {/* Members */}
+              <TableCell>
+                <Skeleton className="h-4 w-14" />
+              </TableCell>
+              {/* Created by */}
+              <TableCell>
+                <Skeleton className="h-4 w-20" />
+              </TableCell>
+              {/* Created On */}
+              <TableCell>
+                <Skeleton className="h-4 w-24" />
+              </TableCell>
+              {/* Actions */}
+              <TableCell>
+                <Skeleton className="h-8 w-8" />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+
+    {/* Pagination footer */}
+    <div className="flex items-center justify-between p-4">
+      <div className="flex items-center gap-2 text-sm">
+        <Skeleton className="h-4 w-20" />
+        <Skeleton className="h-8 w-18" />
+        <Skeleton className="h-4 w-24" />
+      </div>
+      <div className="flex items-center gap-2">
+        <Skeleton className="h-8 w-8" />
+        <Skeleton className="h-8 w-8" />
+        <Skeleton className="h-4 w-10" />
+        <Skeleton className="h-8 w-8" />
+        <Skeleton className="h-8 w-8" />
+      </div>
     </div>
   </div>
 );

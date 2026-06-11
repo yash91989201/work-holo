@@ -401,6 +401,10 @@ export const FilesTable = () => {
           <div className="flex items-center gap-2">
             <p className="hidden sm:block">Rows per page</p>
             <Select
+              items={[10, 20, 30, 40, 50].map((size) => ({
+                value: `${size}`,
+                label: `${size}`,
+              }))}
               onValueChange={(value) => {
                 navigate({
                   search: (prev) => ({

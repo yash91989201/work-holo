@@ -113,10 +113,6 @@ AdminStats.Fallback = AdminStatsSkeleton;
 function RouteComponent() {
   return (
     <section className="space-y-6 p-6">
-      {/* Header */}
-      <h1 className="font-bold text-3xl tracking-tight">Console</h1>
-
-      {/* Stats */}
       <Suspense fallback={<AdminStats.Fallback />}>
         <AdminStats />
       </Suspense>

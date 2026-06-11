@@ -79,7 +79,10 @@ export function ServiceImage({
       alt={title}
       className={`h-full w-full object-cover ${className}`}
       onError={() => setImageError(true)}
-      src={src || `/images/services/${title.toLowerCase().replace(/\s+/g, "-")}-hero.jpg`}
+      src={
+        src ||
+        `/images/services/${title.toLowerCase().replace(/\s+/g, "-")}-hero.jpg`
+      }
     />
   );
 }
@@ -134,7 +137,10 @@ export function ServiceGalleryImage({
       alt={`${title} gallery ${index + 1}`}
       className={`h-full w-full object-cover ${className}`}
       onError={() => setImageError(true)}
-      src={src || `/images/services/${title.toLowerCase().replace(/\s+/g, "-")}-${index + 1}.jpg`}
+      src={
+        src ||
+        `/images/services/${title.toLowerCase().replace(/\s+/g, "-")}-${index + 1}.jpg`
+      }
     />
   );
 }

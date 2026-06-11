@@ -107,10 +107,7 @@ function ProjectCard({
   project: ReturnType<typeof getProjectList>[number];
 }) {
   return (
-    <a
-      className="group relative block flex-shrink-0"
-      href={project.href}
-    >
+    <a className="group relative block flex-shrink-0" href={project.href}>
       <div className="relative overflow-hidden rounded-2xl border border-border/40 bg-card transition-all duration-300 hover:border-border/70">
         {/* Image */}
         <div className="relative aspect-[4/3] overflow-hidden">

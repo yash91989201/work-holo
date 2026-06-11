@@ -58,8 +58,8 @@ export const UsersTableSkeleton = () => {
         </tr>
       </thead>
       <tbody>
-        {/* biome-ignore lint/suspicious/noArrayIndexKey: static skeleton list */}
         {Array.from({ length: 5 }).map((_, i) => (
+          //biome-ignore lint/suspicious/noArrayIndexKey: static skeleton list
           <tr key={i}>
             <td><Skeleton className="h-4 w-32" /></td> {/* Dynamic */}
             <td><Skeleton className="h-4 w-48" /></td> {/* Dynamic */}
