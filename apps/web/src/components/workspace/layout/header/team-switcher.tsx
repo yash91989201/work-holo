@@ -1,11 +1,6 @@
-import {
-  IconCheck,
-  IconChevronDown,
-  IconPlus,
-  IconUsers,
-} from "@tabler/icons-react";
+import { IconCheck, IconChevronDown, IconPlus } from "@tabler/icons-react";
+import { useMutation } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
-import { Avatar, AvatarFallback } from "@work-holo/ui/components/avatar";
 import { Button } from "@work-holo/ui/components/button";
 import {
   Command,
@@ -22,7 +17,6 @@ import {
 } from "@work-holo/ui/components/popover";
 import { Skeleton } from "@work-holo/ui/components/skeleton";
 import { useState } from "react";
-import { useActiveMemberRole } from "@/hooks/use-active-member-role";
 import { useMyTeams } from "@/hooks/use-my-teams";
 import { useSession } from "@/hooks/use-session";
 import { getAuthQueryKey } from "@/lib/auth/query-keys";
@@ -32,9 +26,7 @@ import { queryClient } from "@/utils/orpc";
 
 export function TeamSwitcher() {
   const [open, setOpen] = useState(false);
-  const [isSwitching, setIsSwitching] = useState(false);
   const navigate = useNavigate();
-  const role = useActiveMemberRole();
   const session = useSession();
 
   const { slug } = useParams({
@@ -44,86 +36,53 @@ export function TeamSwitcher() {
   const teamIdFromSession = session?.session?.activeTeamId;
   const teamId = teamIdFromSession;
 
-  const { teams, isRefetching } = useMyTeams(role);
-  const isOwnerOrAdmin = role === "owner" || role === "admin";
+  const { teams, isRefetching } = useMyTeams();
 
   const selectedTeam = teams.find((team) => team.id === teamId);
 
-  if (!role) {
-    return <TeamSwitcherSkeleton />;
-  }
-
-  // Only show team switcher for non-owner/admin roles
-  // or when a team is selected
-  if (isOwnerOrAdmin && !teamId) {
-    return null;
-  }
-
-  const handleSwitchTeam = async (newTeamId: string) => {
-    if (isSwitching || newTeamId === teamId || !slug) {
-      return;
-    }
-
-    try {
-      setIsSwitching(true);
-
-      if (!isOwnerOrAdmin) {
-        const { error } = await authClient.organization.setActiveTeam({
-          teamId: newTeamId,
-        });
-
-        if (error !== null) {
-          console.error("Failed to switch team:", error);
-          return;
-        }
-
-        await queryClient.invalidateQueries({
-          queryKey: getAuthQueryKey.organization.teams("current"),
-        });
-
-        await queryClient.invalidateQueries({
-          queryKey: getAuthQueryKey.session.current(),
-        });
+  const { mutateAsync: switchTeam, isPending } = useMutation({
+    mutationFn: async (newTeamId: string) => {
+      const { error } = await authClient.organization.setActiveTeam({
+        teamId: newTeamId,
+      });
+      if (error !== null) {
+        throw new Error(error.message || "Failed to switch team");
       }
-
-      // Navigate to workspace home after switching team
-      navigate({
-        to: "/org/$slug/workspace",
-        params: { slug },
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: getAuthQueryKey.organization.teams("current"),
       });
 
+      await queryClient.invalidateQueries({
+        queryKey: getAuthQueryKey.session.current(),
+      });
+      navigate({ to: "/org/$slug/workspace", params: { slug } });
       setOpen(false);
-    } catch (error) {
-      console.error("Error switching team:", error);
-    } finally {
-      setIsSwitching(false);
-    }
-  };
+    },
+    onError: (error) => {
+      console.error("Failed to switch team:", error);
+    },
+  });
 
   if (teams.length === 0) {
     if (isRefetching) {
       return <TeamSwitcherSkeleton />;
     }
     return (
-      <Button disabled role="combobox" variant="outline">
-        <div className="flex items-center gap-2">
-          <Avatar>
-            <AvatarFallback>
-              <IconUsers className="size-3" />
-            </AvatarFallback>
-          </Avatar>
-          <span className="truncate">No teams available</span>
-        </div>
-        <IconChevronDown className="ml-2 size-4 shrink-0 opacity-50" />
+      <Button
+        className="h-8 gap-2 px-2 hover:bg-accent/50"
+        disabled
+        role="combobox"
+        variant="ghost"
+      >
+        <span className="truncate font-medium text-sm">No teams available</span>
+        <IconChevronDown className="size-3.5 shrink-0 opacity-50" />
       </Button>
     );
   }
 
   const displayName = selectedTeam?.name ?? "Select team";
-
-  if (!selectedTeam && teams.length > 0) {
-    return <TeamSwitcherSkeleton />;
-  }
 
   return (
     <Popover onOpenChange={setOpen} open={open}>
@@ -131,54 +90,52 @@ export function TeamSwitcher() {
         render={
           <Button
             aria-expanded={open}
-            disabled={isSwitching || isRefetching}
+            className={cn(
+              "h-8 gap-2 px-2",
+              open ? "bg-accent" : "hover:bg-accent/50"
+            )}
+            disabled={isPending || isRefetching}
             role="combobox"
-            variant="outline"
+            variant="ghost"
           >
-            <div className="flex items-center gap-2">
-              <Avatar>
-                <AvatarFallback>
-                  <IconUsers className="size-3" />
-                </AvatarFallback>
-              </Avatar>
-              <span className="truncate">{displayName}</span>
-            </div>
-            <IconChevronDown className="ml-2 size-4 shrink-0 opacity-50" />
+            <span className="truncate font-medium text-sm">{displayName}</span>
+            <IconChevronDown className="size-3.5 shrink-0 opacity-50" />
           </Button>
         }
       />
-      <PopoverContent align="start" className="w-64 p-0">
+      <PopoverContent align="start" className="w-55 p-0">
         <Command>
           <CommandInput placeholder="Search teams..." />
-          <CommandList className="my-1.5 min-h-40">
+          <CommandList className="my-1.5 max-h-75 min-h-25">
             {isRefetching ? (
-              <div className="space-y-1.5 p-2">
-                <Skeleton className="h-8 w-full" />
-                <Skeleton className="h-8 w-full" />
+              <div className="space-y-2 p-2">
+                <Skeleton className="h-8 w-full rounded-sm" />
+                <Skeleton className="h-8 w-full rounded-sm" />
               </div>
             ) : (
               <>
                 <CommandEmpty>No team found.</CommandEmpty>
-                <CommandGroup>
+                <CommandGroup heading="Teams">
                   {teams.map((team) => (
                     <CommandItem
-                      className="gap-2"
-                      disabled={isSwitching}
+                      className="cursor-pointer gap-2"
+                      disabled={isPending}
                       key={team.id}
-                      onSelect={() => handleSwitchTeam(team.id)}
+                      onSelect={() => {
+                        if (team.id !== teamId && slug) {
+                          switchTeam(team.id);
+                        }
+                      }}
                       value={team.name}
                     >
-                      <Avatar size="sm">
-                        <AvatarFallback>
-                          <IconUsers className="size-3" />
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex flex-1 flex-col">
-                        <span className="font-medium text-sm">{team.name}</span>
+                      <div className="flex flex-1 flex-col overflow-hidden">
+                        <span className="truncate font-medium text-sm">
+                          {team.name}
+                        </span>
                       </div>
                       <IconCheck
                         className={cn(
-                          "ml-auto size-4",
+                          "ml-auto size-4 shrink-0",
                           teamId === team.id ? "opacity-100" : "opacity-0"
                         )}
                       />
@@ -188,13 +145,19 @@ export function TeamSwitcher() {
               </>
             )}
           </CommandList>
+          <div className="border-t p-1">
+            <Button
+              className="h-9 w-full justify-start gap-2 px-2 text-muted-foreground hover:text-foreground"
+              size="sm"
+              variant="ghost"
+            >
+              <div className="flex size-5 items-center justify-center rounded-sm border bg-background">
+                <IconPlus className="size-3" />
+              </div>
+              New Team
+            </Button>
+          </div>
         </Command>
-        <div className="border-t p-1.5">
-          <Button className="w-full justify-start gap-2" variant="ghost">
-            <IconPlus className="size-4" />
-            New Team
-          </Button>
-        </div>
       </PopoverContent>
     </Popover>
   );
@@ -202,12 +165,11 @@ export function TeamSwitcher() {
 
 function TeamSwitcherSkeleton() {
   return (
-    <Button disabled role="combobox" variant="outline">
-      <div className="flex items-center gap-2">
-        <Skeleton className="size-5 rounded-full" />
-        <Skeleton className="h-4 w-20" />
-      </div>
-      <IconChevronDown className="ml-2 size-4 shrink-0 opacity-50" />
+    <Button className="h-8 gap-2 px-2" disabled role="combobox" variant="ghost">
+      <Skeleton className="h-4 w-20" />
+      <IconChevronDown className="size-3.5 shrink-0 opacity-50" />
     </Button>
   );
 }
+
+TeamSwitcher.Fallback = TeamSwitcherSkeleton;
