@@ -40,7 +40,6 @@ export const messagesCollection = createCollection(
   electricCollectionOptions({
     getKey: (m) => m.id,
     schema: MessageSchema,
-    autoIndex: "eager",
     defaultIndexType: BasicIndex,
     shapeOptions: {
       url: `${ELECTRIC_SHAPE_BASE_URL}/messages`,
@@ -55,10 +54,20 @@ export const messagesCollection = createCollection(
   })
 );
 
+// Join: message.senderId = sender.id
+messagesCollection.createIndex((m) => m.senderId);
+// Join: message.channelId = channel.id
+messagesCollection.createIndex((m) => m.channelId);
+// orderBy: message.createdAt (useMessages, usePinnedMessages)
+messagesCollection.createIndex((m) => m.createdAt);
+// orderBy: message.pinnedAt (usePinnedMessages)
+messagesCollection.createIndex((m) => m.pinnedAt);
+
 export const messageMentionsCollection = createCollection(
   electricCollectionOptions({
     getKey: (m) => m.id,
     schema: MessageMentionSchema,
+    defaultIndexType: BasicIndex,
     shapeOptions: {
       url: `${ELECTRIC_SHAPE_BASE_URL}/message-mentions`,
       params: {
@@ -72,10 +81,16 @@ export const messageMentionsCollection = createCollection(
   })
 );
 
+// Join: mention.messageId = message.id
+messageMentionsCollection.createIndex((m) => m.messageId);
+// Filter: mention.mentionedUserId = user.id
+messageMentionsCollection.createIndex((m) => m.mentionedUserId);
+
 export const messageReactionsCollection = createCollection(
   electricCollectionOptions({
     getKey: (r) => r.id,
     schema: MessageReactionSchema,
+    defaultIndexType: BasicIndex,
     shapeOptions: {
       url: `${ELECTRIC_SHAPE_BASE_URL}/message-reactions`,
       params: {
@@ -89,10 +104,16 @@ export const messageReactionsCollection = createCollection(
   })
 );
 
+// Join/filter: reaction.messageId = message.id
+messageReactionsCollection.createIndex((r) => r.messageId);
+// Join/filter: reaction.userId = user.id
+messageReactionsCollection.createIndex((r) => r.userId);
+
 export const usersCollection = createCollection(
   electricCollectionOptions({
     schema: UserSchema,
     getKey: (m) => m.id,
+    defaultIndexType: BasicIndex,
     shapeOptions: {
       url: `${ELECTRIC_SHAPE_BASE_URL}/users`,
       params: {
@@ -106,10 +127,14 @@ export const usersCollection = createCollection(
   })
 );
 
+// Join: sender.id = message.senderId
+usersCollection.createIndex((u) => u.id);
+
 export const attachmentsCollection = createCollection(
   electricCollectionOptions({
     getKey: (m) => m.id,
     schema: AttachmentSchema,
+    defaultIndexType: BasicIndex,
     shapeOptions: {
       url: `${ELECTRIC_SHAPE_BASE_URL}/attachments`,
       params: {
@@ -276,10 +301,14 @@ export const attendanceCollection = createCollection(
   })
 );
 
+// Join: attachment.messageId = message.id
+attachmentsCollection.createIndex((a) => a.messageId);
+
 export const channelsCollection = createCollection(
   electricCollectionOptions({
     getKey: (c) => c.id,
     schema: ChannelSchema,
+    defaultIndexType: BasicIndex,
     shapeOptions: {
       url: `${ELECTRIC_SHAPE_BASE_URL}/channels`,
       params: {
@@ -293,10 +322,14 @@ export const channelsCollection = createCollection(
   })
 );
 
+// Join: channel.id = message.channelId, member.channelId = channel.id
+channelsCollection.createIndex((c) => c.id);
+
 export const channelMembersCollection = createCollection(
   electricCollectionOptions({
     getKey: (cm) => cm.id,
     schema: ChannelMemberSchema,
+    defaultIndexType: BasicIndex,
     shapeOptions: {
       url: `${ELECTRIC_SHAPE_BASE_URL}/channel-members`,
       params: {
@@ -331,6 +364,7 @@ export const messageReadCollection = createCollection(
   electricCollectionOptions({
     getKey: (mr) => mr.id,
     schema: MessageReadSchema,
+    defaultIndexType: BasicIndex,
     shapeOptions: {
       url: `${ELECTRIC_SHAPE_BASE_URL}/message-read`,
       params: {
@@ -343,6 +377,14 @@ export const messageReadCollection = createCollection(
     },
   })
 );
+
+// Join/filter: read.messageId = message.id
+messageReadCollection.createIndex((mr) => mr.messageId);
+// Join/filter: read.userId = user.id
+messageReadCollection.createIndex((mr) => mr.userId);
+
+// Join: member.channelId = channel.id
+channelMembersCollection.createIndex((cm) => cm.channelId);
 
 export const dmConversationsCollection = createCollection(
   electricCollectionOptions({
@@ -365,7 +407,6 @@ export const dmMessagesCollection = createCollection(
   electricCollectionOptions({
     getKey: (m) => m.id,
     schema: DmMessageSchema,
-    autoIndex: "eager",
     defaultIndexType: BasicIndex,
     shapeOptions: {
       url: `${ELECTRIC_SHAPE_BASE_URL}/dm-messages`,
@@ -380,10 +421,20 @@ export const dmMessagesCollection = createCollection(
   })
 );
 
+// Join: dmMessage.senderId = sender.id
+dmMessagesCollection.createIndex((m) => m.senderId);
+// Join: dmMessage.conversationId
+dmMessagesCollection.createIndex((m) => m.conversationId);
+// orderBy: dmMessage.createdAt (useDmMessages, useDmPinnedMessages)
+dmMessagesCollection.createIndex((m) => m.createdAt);
+// orderBy: dmMessage.pinnedAt (useDmPinnedMessages)
+dmMessagesCollection.createIndex((m) => m.pinnedAt);
+
 export const dmAttachmentsCollection = createCollection(
   electricCollectionOptions({
     getKey: (a) => a.id,
     schema: DmAttachmentSchema,
+    defaultIndexType: BasicIndex,
     shapeOptions: {
       url: `${ELECTRIC_SHAPE_BASE_URL}/dm-attachments`,
       params: {
@@ -396,6 +447,9 @@ export const dmAttachmentsCollection = createCollection(
     },
   })
 );
+
+// Join: dmAttachment.messageId = dmMessage.id
+dmAttachmentsCollection.createIndex((a) => a.messageId);
 
 export const dmReactionsCollection = createCollection(
   electricCollectionOptions({
@@ -486,6 +540,7 @@ export const messageReadSummaryCollection = createCollection(
   electricCollectionOptions({
     getKey: (mrs) => mrs.id,
     schema: MessageReadSummarySchema,
+    defaultIndexType: BasicIndex,
     shapeOptions: {
       url: `${ELECTRIC_SHAPE_BASE_URL}/message-read-summary`,
       params: {
@@ -514,6 +569,9 @@ export const messageReadSummaryCollection = createCollection(
     },
   })
 );
+
+// where: summary.messageId (MessageReadReceipts)
+messageReadSummaryCollection.createIndex((mrs) => mrs.messageId);
 
 export const channelReadProcessedWatermarkCollection = createCollection(
   electricCollectionOptions({
