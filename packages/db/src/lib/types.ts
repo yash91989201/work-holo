@@ -1,110 +1,109 @@
 // AUTO-GENERATED FILE. DO NOT EDIT.
 // Run `bun run generate:types` to refresh
 import type { z } from "zod";
-import type {
-  AccountInsertSchema,
-  AccountSchema,
-  AccountUpdateSchema,
-  AttachmentInsertSchema,
-  AttachmentSchema,
-  AttachmentUpdateSchema,
-  AttendanceInsertSchema,
-  AttendanceSchema,
-  AttendanceUpdateSchema,
-  ChannelInsertSchema,
-  ChannelMemberInsertSchema,
-  ChannelMemberSchema,
-  ChannelMemberUpdateSchema,
-  ChannelReadInsertSchema,
-  ChannelReadProcessedWatermarkInsertSchema,
-  ChannelReadProcessedWatermarkSchema,
-  ChannelReadProcessedWatermarkUpdateSchema,
-  ChannelReadSchema,
-  ChannelReadUpdateSchema,
-  ChannelSchema,
-  ChannelTypeSchema,
-  ChannelUpdateSchema,
-  DmAttachmentInsertSchema,
-  DmAttachmentSchema,
-  DmAttachmentUpdateSchema,
-  DmConversationInsertSchema,
-  DmConversationMuteInsertSchema,
-  DmConversationMuteSchema,
-  DmConversationMuteUpdateSchema,
-  DmConversationReadInsertSchema,
-  DmConversationReadSchema,
-  DmConversationReadUpdateSchema,
-  DmConversationSchema,
-  DmConversationUpdateSchema,
-  DmMessageInsertSchema,
-  DmMessageReactionInsertSchema,
-  DmMessageReactionSchema,
-  DmMessageReactionUpdateSchema,
-  DmMessageReadInsertSchema,
-  DmMessageReadSchema,
-  DmMessageReadUpdateSchema,
-  DmMessageSchema,
-  DmMessageUpdateSchema,
-  InvitationInsertSchema,
-  InvitationSchema,
-  InvitationUpdateSchema,
-  MemberInsertSchema,
-  MemberSchema,
-  MemberUpdateSchema,
-  MessageInsertSchema,
-  MessageMentionInsertSchema,
-  MessageMentionSchema,
-  MessageMentionUpdateSchema,
-  MessageReactionInsertSchema,
-  MessageReactionSchema,
-  MessageReactionUpdateSchema,
-  MessageReadInsertSchema,
-  MessageReadSchema,
-  MessageReadSummaryInsertSchema,
-  MessageReadSummarySchema,
-  MessageReadSummaryUpdateSchema,
-  MessageSchema,
-  MessageUpdateSchema,
-  NotificationInsertSchema,
-  NotificationPreferenceInsertSchema,
-  NotificationPreferenceSchema,
-  NotificationPreferenceUpdateSchema,
-  NotificationSchema,
-  NotificationSoundPreferenceInsertSchema,
-  NotificationSoundPreferenceSchema,
-  NotificationSoundPreferenceUpdateSchema,
-  NotificationSoundPresetInsertSchema,
-  NotificationSoundPresetSchema,
-  NotificationSoundPresetUpdateSchema,
-  NotificationUpdateSchema,
-  OrganizationInsertSchema,
-  OrganizationSchema,
-  OrganizationUpdateSchema,
-  PendingEmailDigestInsertSchema,
-  PendingEmailDigestSchema,
-  PendingEmailDigestUpdateSchema,
-  PushSubscriptionInsertSchema,
-  PushSubscriptionSchema,
-  PushSubscriptionUpdateSchema,
-  SessionInsertSchema,
-  SessionSchema,
-  SessionUpdateSchema,
-  TeamInsertSchema,
-  TeamMemberInsertSchema,
-  TeamMemberSchema,
-  TeamMemberUpdateSchema,
-  TeamSchema,
-  TeamUpdateSchema,
-  UserInsertSchema,
-  UserSchema,
-  UserUpdateSchema,
-  VerificationInsertSchema,
-  VerificationSchema,
-  VerificationUpdateSchema,
-  WorkBlockInsertSchema,
-  WorkBlockSchema,
-  WorkBlockUpdateSchema,
-} from "./schemas/db-tables";
+
+import type { AccountInsertSchema } from "./schemas/db-tables";
+import type { AccountSchema } from "./schemas/db-tables";
+import type { AccountUpdateSchema } from "./schemas/db-tables";
+import type { AttachmentInsertSchema } from "./schemas/db-tables";
+import type { AttachmentSchema } from "./schemas/db-tables";
+import type { AttachmentUpdateSchema } from "./schemas/db-tables";
+import type { AttendanceInsertSchema } from "./schemas/db-tables";
+import type { AttendanceSchema } from "./schemas/db-tables";
+import type { AttendanceUpdateSchema } from "./schemas/db-tables";
+import type { ChannelInsertSchema } from "./schemas/db-tables";
+import type { ChannelMemberInsertSchema } from "./schemas/db-tables";
+import type { ChannelMemberSchema } from "./schemas/db-tables";
+import type { ChannelMemberUpdateSchema } from "./schemas/db-tables";
+import type { ChannelReadInsertSchema } from "./schemas/db-tables";
+import type { ChannelReadProcessedWatermarkInsertSchema } from "./schemas/db-tables";
+import type { ChannelReadProcessedWatermarkSchema } from "./schemas/db-tables";
+import type { ChannelReadProcessedWatermarkUpdateSchema } from "./schemas/db-tables";
+import type { ChannelReadSchema } from "./schemas/db-tables";
+import type { ChannelReadUpdateSchema } from "./schemas/db-tables";
+import type { ChannelSchema } from "./schemas/db-tables";
+import type { ChannelTypeSchema } from "./schemas/db-tables";
+import type { ChannelUpdateSchema } from "./schemas/db-tables";
+import type { DmAttachmentInsertSchema } from "./schemas/db-tables";
+import type { DmAttachmentSchema } from "./schemas/db-tables";
+import type { DmAttachmentUpdateSchema } from "./schemas/db-tables";
+import type { DmConversationInsertSchema } from "./schemas/db-tables";
+import type { DmConversationMuteInsertSchema } from "./schemas/db-tables";
+import type { DmConversationMuteSchema } from "./schemas/db-tables";
+import type { DmConversationMuteUpdateSchema } from "./schemas/db-tables";
+import type { DmConversationReadInsertSchema } from "./schemas/db-tables";
+import type { DmConversationReadSchema } from "./schemas/db-tables";
+import type { DmConversationReadUpdateSchema } from "./schemas/db-tables";
+import type { DmConversationSchema } from "./schemas/db-tables";
+import type { DmConversationUpdateSchema } from "./schemas/db-tables";
+import type { DmMessageInsertSchema } from "./schemas/db-tables";
+import type { DmMessageReactionInsertSchema } from "./schemas/db-tables";
+import type { DmMessageReactionSchema } from "./schemas/db-tables";
+import type { DmMessageReactionUpdateSchema } from "./schemas/db-tables";
+import type { DmMessageReadInsertSchema } from "./schemas/db-tables";
+import type { DmMessageReadSchema } from "./schemas/db-tables";
+import type { DmMessageReadUpdateSchema } from "./schemas/db-tables";
+import type { DmMessageSchema } from "./schemas/db-tables";
+import type { DmMessageUpdateSchema } from "./schemas/db-tables";
+import type { InvitationInsertSchema } from "./schemas/db-tables";
+import type { InvitationSchema } from "./schemas/db-tables";
+import type { InvitationUpdateSchema } from "./schemas/db-tables";
+import type { MemberInsertSchema } from "./schemas/db-tables";
+import type { MemberSchema } from "./schemas/db-tables";
+import type { MemberUpdateSchema } from "./schemas/db-tables";
+import type { MessageInsertSchema } from "./schemas/db-tables";
+import type { MessageMentionInsertSchema } from "./schemas/db-tables";
+import type { MessageMentionSchema } from "./schemas/db-tables";
+import type { MessageMentionUpdateSchema } from "./schemas/db-tables";
+import type { MessageReactionInsertSchema } from "./schemas/db-tables";
+import type { MessageReactionSchema } from "./schemas/db-tables";
+import type { MessageReactionUpdateSchema } from "./schemas/db-tables";
+import type { MessageReadInsertSchema } from "./schemas/db-tables";
+import type { MessageReadSchema } from "./schemas/db-tables";
+import type { MessageReadSummaryInsertSchema } from "./schemas/db-tables";
+import type { MessageReadSummarySchema } from "./schemas/db-tables";
+import type { MessageReadSummaryUpdateSchema } from "./schemas/db-tables";
+import type { MessageSchema } from "./schemas/db-tables";
+import type { MessageUpdateSchema } from "./schemas/db-tables";
+import type { NotificationInsertSchema } from "./schemas/db-tables";
+import type { NotificationPreferenceInsertSchema } from "./schemas/db-tables";
+import type { NotificationPreferenceSchema } from "./schemas/db-tables";
+import type { NotificationPreferenceUpdateSchema } from "./schemas/db-tables";
+import type { NotificationSchema } from "./schemas/db-tables";
+import type { NotificationSoundPreferenceInsertSchema } from "./schemas/db-tables";
+import type { NotificationSoundPreferenceSchema } from "./schemas/db-tables";
+import type { NotificationSoundPreferenceUpdateSchema } from "./schemas/db-tables";
+import type { NotificationSoundPresetInsertSchema } from "./schemas/db-tables";
+import type { NotificationSoundPresetSchema } from "./schemas/db-tables";
+import type { NotificationSoundPresetUpdateSchema } from "./schemas/db-tables";
+import type { NotificationUpdateSchema } from "./schemas/db-tables";
+import type { OrganizationInsertSchema } from "./schemas/db-tables";
+import type { OrganizationSchema } from "./schemas/db-tables";
+import type { OrganizationUpdateSchema } from "./schemas/db-tables";
+import type { PendingEmailDigestInsertSchema } from "./schemas/db-tables";
+import type { PendingEmailDigestSchema } from "./schemas/db-tables";
+import type { PendingEmailDigestUpdateSchema } from "./schemas/db-tables";
+import type { PushSubscriptionInsertSchema } from "./schemas/db-tables";
+import type { PushSubscriptionSchema } from "./schemas/db-tables";
+import type { PushSubscriptionUpdateSchema } from "./schemas/db-tables";
+import type { SessionInsertSchema } from "./schemas/db-tables";
+import type { SessionSchema } from "./schemas/db-tables";
+import type { SessionUpdateSchema } from "./schemas/db-tables";
+import type { TeamInsertSchema } from "./schemas/db-tables";
+import type { TeamMemberInsertSchema } from "./schemas/db-tables";
+import type { TeamMemberSchema } from "./schemas/db-tables";
+import type { TeamMemberUpdateSchema } from "./schemas/db-tables";
+import type { TeamSchema } from "./schemas/db-tables";
+import type { TeamUpdateSchema } from "./schemas/db-tables";
+import type { UserInsertSchema } from "./schemas/db-tables";
+import type { UserSchema } from "./schemas/db-tables";
+import type { UserUpdateSchema } from "./schemas/db-tables";
+import type { VerificationInsertSchema } from "./schemas/db-tables";
+import type { VerificationSchema } from "./schemas/db-tables";
+import type { VerificationUpdateSchema } from "./schemas/db-tables";
+import type { WorkBlockInsertSchema } from "./schemas/db-tables";
+import type { WorkBlockSchema } from "./schemas/db-tables";
+import type { WorkBlockUpdateSchema } from "./schemas/db-tables";
 
 export type AccountInsertType = z.infer<typeof AccountInsertSchema>;
 export type AccountType = z.infer<typeof AccountSchema>;
@@ -120,15 +119,9 @@ export type ChannelMemberInsertType = z.infer<typeof ChannelMemberInsertSchema>;
 export type ChannelMemberType = z.infer<typeof ChannelMemberSchema>;
 export type ChannelMemberUpdateType = z.infer<typeof ChannelMemberUpdateSchema>;
 export type ChannelReadInsertType = z.infer<typeof ChannelReadInsertSchema>;
-export type ChannelReadProcessedWatermarkInsertType = z.infer<
-  typeof ChannelReadProcessedWatermarkInsertSchema
->;
-export type ChannelReadProcessedWatermarkType = z.infer<
-  typeof ChannelReadProcessedWatermarkSchema
->;
-export type ChannelReadProcessedWatermarkUpdateType = z.infer<
-  typeof ChannelReadProcessedWatermarkUpdateSchema
->;
+export type ChannelReadProcessedWatermarkInsertType = z.infer<typeof ChannelReadProcessedWatermarkInsertSchema>;
+export type ChannelReadProcessedWatermarkType = z.infer<typeof ChannelReadProcessedWatermarkSchema>;
+export type ChannelReadProcessedWatermarkUpdateType = z.infer<typeof ChannelReadProcessedWatermarkUpdateSchema>;
 export type ChannelReadType = z.infer<typeof ChannelReadSchema>;
 export type ChannelReadUpdateType = z.infer<typeof ChannelReadUpdateSchema>;
 export type ChannelType = z.infer<typeof ChannelSchema>;
@@ -137,35 +130,19 @@ export type ChannelUpdateType = z.infer<typeof ChannelUpdateSchema>;
 export type DmAttachmentInsertType = z.infer<typeof DmAttachmentInsertSchema>;
 export type DmAttachmentType = z.infer<typeof DmAttachmentSchema>;
 export type DmAttachmentUpdateType = z.infer<typeof DmAttachmentUpdateSchema>;
-export type DmConversationInsertType = z.infer<
-  typeof DmConversationInsertSchema
->;
-export type DmConversationMuteInsertType = z.infer<
-  typeof DmConversationMuteInsertSchema
->;
+export type DmConversationInsertType = z.infer<typeof DmConversationInsertSchema>;
+export type DmConversationMuteInsertType = z.infer<typeof DmConversationMuteInsertSchema>;
 export type DmConversationMuteType = z.infer<typeof DmConversationMuteSchema>;
-export type DmConversationMuteUpdateType = z.infer<
-  typeof DmConversationMuteUpdateSchema
->;
-export type DmConversationReadInsertType = z.infer<
-  typeof DmConversationReadInsertSchema
->;
+export type DmConversationMuteUpdateType = z.infer<typeof DmConversationMuteUpdateSchema>;
+export type DmConversationReadInsertType = z.infer<typeof DmConversationReadInsertSchema>;
 export type DmConversationReadType = z.infer<typeof DmConversationReadSchema>;
-export type DmConversationReadUpdateType = z.infer<
-  typeof DmConversationReadUpdateSchema
->;
+export type DmConversationReadUpdateType = z.infer<typeof DmConversationReadUpdateSchema>;
 export type DmConversationType = z.infer<typeof DmConversationSchema>;
-export type DmConversationUpdateType = z.infer<
-  typeof DmConversationUpdateSchema
->;
+export type DmConversationUpdateType = z.infer<typeof DmConversationUpdateSchema>;
 export type DmMessageInsertType = z.infer<typeof DmMessageInsertSchema>;
-export type DmMessageReactionInsertType = z.infer<
-  typeof DmMessageReactionInsertSchema
->;
+export type DmMessageReactionInsertType = z.infer<typeof DmMessageReactionInsertSchema>;
 export type DmMessageReactionType = z.infer<typeof DmMessageReactionSchema>;
-export type DmMessageReactionUpdateType = z.infer<
-  typeof DmMessageReactionUpdateSchema
->;
+export type DmMessageReactionUpdateType = z.infer<typeof DmMessageReactionUpdateSchema>;
 export type DmMessageReadInsertType = z.infer<typeof DmMessageReadInsertSchema>;
 export type DmMessageReadType = z.infer<typeof DmMessageReadSchema>;
 export type DmMessageReadUpdateType = z.infer<typeof DmMessageReadUpdateSchema>;
@@ -178,78 +155,40 @@ export type MemberInsertType = z.infer<typeof MemberInsertSchema>;
 export type MemberType = z.infer<typeof MemberSchema>;
 export type MemberUpdateType = z.infer<typeof MemberUpdateSchema>;
 export type MessageInsertType = z.infer<typeof MessageInsertSchema>;
-export type MessageMentionInsertType = z.infer<
-  typeof MessageMentionInsertSchema
->;
+export type MessageMentionInsertType = z.infer<typeof MessageMentionInsertSchema>;
 export type MessageMentionType = z.infer<typeof MessageMentionSchema>;
-export type MessageMentionUpdateType = z.infer<
-  typeof MessageMentionUpdateSchema
->;
-export type MessageReactionInsertType = z.infer<
-  typeof MessageReactionInsertSchema
->;
+export type MessageMentionUpdateType = z.infer<typeof MessageMentionUpdateSchema>;
+export type MessageReactionInsertType = z.infer<typeof MessageReactionInsertSchema>;
 export type MessageReactionType = z.infer<typeof MessageReactionSchema>;
-export type MessageReactionUpdateType = z.infer<
-  typeof MessageReactionUpdateSchema
->;
+export type MessageReactionUpdateType = z.infer<typeof MessageReactionUpdateSchema>;
 export type MessageReadInsertType = z.infer<typeof MessageReadInsertSchema>;
-export type MessageReadSummaryInsertType = z.infer<
-  typeof MessageReadSummaryInsertSchema
->;
+export type MessageReadSummaryInsertType = z.infer<typeof MessageReadSummaryInsertSchema>;
 export type MessageReadSummaryType = z.infer<typeof MessageReadSummarySchema>;
-export type MessageReadSummaryUpdateType = z.infer<
-  typeof MessageReadSummaryUpdateSchema
->;
+export type MessageReadSummaryUpdateType = z.infer<typeof MessageReadSummaryUpdateSchema>;
 export type MessageReadType = z.infer<typeof MessageReadSchema>;
 export type MessageType = z.infer<typeof MessageSchema>;
 export type MessageUpdateType = z.infer<typeof MessageUpdateSchema>;
 export type NotificationInsertType = z.infer<typeof NotificationInsertSchema>;
-export type NotificationPreferenceInsertType = z.infer<
-  typeof NotificationPreferenceInsertSchema
->;
-export type NotificationPreferenceType = z.infer<
-  typeof NotificationPreferenceSchema
->;
-export type NotificationPreferenceUpdateType = z.infer<
-  typeof NotificationPreferenceUpdateSchema
->;
-export type NotificationSoundPreferenceInsertType = z.infer<
-  typeof NotificationSoundPreferenceInsertSchema
->;
-export type NotificationSoundPreferenceType = z.infer<
-  typeof NotificationSoundPreferenceSchema
->;
-export type NotificationSoundPreferenceUpdateType = z.infer<
-  typeof NotificationSoundPreferenceUpdateSchema
->;
-export type NotificationSoundPresetInsertType = z.infer<
-  typeof NotificationSoundPresetInsertSchema
->;
-export type NotificationSoundPresetType = z.infer<
-  typeof NotificationSoundPresetSchema
->;
-export type NotificationSoundPresetUpdateType = z.infer<
-  typeof NotificationSoundPresetUpdateSchema
->;
+export type NotificationPreferenceInsertType = z.infer<typeof NotificationPreferenceInsertSchema>;
+export type NotificationPreferenceType = z.infer<typeof NotificationPreferenceSchema>;
+export type NotificationPreferenceUpdateType = z.infer<typeof NotificationPreferenceUpdateSchema>;
+export type NotificationSoundPreferenceInsertType = z.infer<typeof NotificationSoundPreferenceInsertSchema>;
+export type NotificationSoundPreferenceType = z.infer<typeof NotificationSoundPreferenceSchema>;
+export type NotificationSoundPreferenceUpdateType = z.infer<typeof NotificationSoundPreferenceUpdateSchema>;
+export type NotificationSoundPresetInsertType = z.infer<typeof NotificationSoundPresetInsertSchema>;
+export type NotificationSoundPresetType = z.infer<typeof NotificationSoundPresetSchema>;
+export type NotificationSoundPresetUpdateType = z.infer<typeof NotificationSoundPresetUpdateSchema>;
 export type NotificationType = z.infer<typeof NotificationSchema>;
 export type NotificationUpdateType = z.infer<typeof NotificationUpdateSchema>;
 export type OrganizationInsertType = z.infer<typeof OrganizationInsertSchema>;
 export type OrganizationType = z.infer<typeof OrganizationSchema>;
 export type OrganizationUpdateType = z.infer<typeof OrganizationUpdateSchema>;
-export type PendingEmailDigestInsertType = z.infer<
-  typeof PendingEmailDigestInsertSchema
->;
+export type PendingEmailDigestInsertType = z.infer<typeof PendingEmailDigestInsertSchema>;
 export type PendingEmailDigestType = z.infer<typeof PendingEmailDigestSchema>;
-export type PendingEmailDigestUpdateType = z.infer<
-  typeof PendingEmailDigestUpdateSchema
->;
-export type PushSubscriptionInsertType = z.infer<
-  typeof PushSubscriptionInsertSchema
->;
+export type PendingEmailDigestUpdateType = z.infer<typeof PendingEmailDigestUpdateSchema>;
+export type PushSubscriptionInsertType = z.infer<typeof PushSubscriptionInsertSchema>;
 export type PushSubscriptionType = z.infer<typeof PushSubscriptionSchema>;
-export type PushSubscriptionUpdateType = z.infer<
-  typeof PushSubscriptionUpdateSchema
->;
+export type PushSubscriptionUpdateType = z.infer<typeof PushSubscriptionUpdateSchema>;
 export type SessionInsertType = z.infer<typeof SessionInsertSchema>;
 export type SessionType = z.infer<typeof SessionSchema>;
 export type SessionUpdateType = z.infer<typeof SessionUpdateSchema>;

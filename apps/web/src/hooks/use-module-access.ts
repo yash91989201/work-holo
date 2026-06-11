@@ -1,5 +1,5 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { queryUtils } from "@/utils/orpc";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { queryClient, queryUtils } from "@/utils/orpc";
 
 export function useCheckModuleAccess(module: string) {
   return useQuery(
@@ -19,7 +19,6 @@ export function useModuleConfig(module: string) {
 }
 
 export function useUpdateModuleConfig() {
-  const queryClient = useQueryClient();
   return useMutation(
     queryUtils.org.moduleConfig.updateModuleConfig.mutationOptions({
       onSuccess: () => {
