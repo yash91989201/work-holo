@@ -232,7 +232,10 @@ export function Interface() {
           </ItemContent>
           <ItemActions>
             <Select
-              items={themeOptions.map((o) => ({ value: o.value, label: o.label }))}
+              items={themeOptions.map((o) => ({
+                value: o.value,
+                label: o.label,
+              }))}
               onValueChange={(value) => {
                 if (value === null) return;
                 setTheme(value);
@@ -265,7 +268,10 @@ export function Interface() {
           </ItemContent>
           <ItemActions>
             <Select
-              items={fontFamilyOptions.map((o) => ({ value: o.value, label: o.label }))}
+              items={fontFamilyOptions.map((o) => ({
+                value: o.value,
+                label: o.label,
+              }))}
               onValueChange={(value) => {
                 if (value === null) return;
                 setFontFamily(value as FontFamily);
@@ -295,7 +301,10 @@ export function Interface() {
           </ItemContent>
           <ItemActions>
             <Select
-              items={fontSizeOptions.map((o) => ({ value: o.value, label: o.label }))}
+              items={fontSizeOptions.map((o) => ({
+                value: o.value,
+                label: o.label,
+              }))}
               onValueChange={(value) => {
                 if (value === null) return;
                 setFontSize(value as FontSize);
@@ -325,7 +334,10 @@ export function Interface() {
           </ItemContent>
           <ItemActions>
             <Select
-              items={letterSpacingOptions.map((o) => ({ value: o.value, label: o.label }))}
+              items={letterSpacingOptions.map((o) => ({
+                value: o.value,
+                label: o.label,
+              }))}
               onValueChange={(value) => {
                 if (value === null) return;
                 setLetterSpacing(value as LetterSpacing);
@@ -353,7 +365,10 @@ export function Interface() {
           </ItemContent>
           <ItemActions>
             <Select
-              items={spacingOptions.map((o) => ({ value: o.value, label: o.label }))}
+              items={spacingOptions.map((o) => ({
+                value: o.value,
+                label: o.label,
+              }))}
               onValueChange={(value) => {
                 if (value === null) return;
                 setSpacing(value as Spacing);
@@ -383,7 +398,10 @@ export function Interface() {
           </ItemContent>
           <ItemActions>
             <Select
-              items={radiusOptions.map((o) => ({ value: o.value, label: o.label }))}
+              items={radiusOptions.map((o) => ({
+                value: o.value,
+                label: o.label,
+              }))}
               onValueChange={(value) => {
                 if (value === null) return;
                 setRadius(value as Radius);

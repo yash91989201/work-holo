@@ -40,7 +40,6 @@ import {
 } from "@work-holo/ui/components/alert-dialog";
 import { Badge } from "@work-holo/ui/components/badge";
 import { Button, buttonVariants } from "@work-holo/ui/components/button";
-import { Checkbox } from "@work-holo/ui/components/checkbox";
 import {
   Card,
   CardAction,
@@ -48,6 +47,7 @@ import {
   CardFooter,
   CardHeader,
 } from "@work-holo/ui/components/card";
+import { Checkbox } from "@work-holo/ui/components/checkbox";
 import {
   Dialog,
   DialogContent,
