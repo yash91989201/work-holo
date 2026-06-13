@@ -26,11 +26,11 @@
     "typescript": "^6.0.3"
   },
   "dependencies": {
-    "@electric-sql/client": "^1.5.20",
-    "@orpc/client": "^1.14.5",
-    "@orpc/openapi": "^1.14.5",
-    "@orpc/server": "^1.14.5",
-    "@orpc/zod": "^1.14.5",
+    "@electric-sql/client": "^1.5.21",
+    "@orpc/client": "^1.14.6",
+    "@orpc/openapi": "^1.14.6",
+    "@orpc/server": "^1.14.6",
+    "@orpc/zod": "^1.14.6",
     "@t3-oss/env-core": "^0.13.11",
     "@work-holo/auth": "workspace:*",
     "@work-holo/db": "workspace:*",

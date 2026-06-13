@@ -11,9 +11,9 @@
     "db:seed": "bun run src/db/seed.ts"
   },
   "dependencies": {
-    "@orpc/openapi": "^1.14.5",
-    "@orpc/server": "^1.14.5",
-    "@orpc/zod": "^1.14.5",
+    "@orpc/openapi": "^1.14.6",
+    "@orpc/server": "^1.14.6",
+    "@orpc/zod": "^1.14.6",
     "@work-holo/api": "workspace:*",
     "@work-holo/auth": "workspace:*",
     "@work-holo/db": "workspace:*",
