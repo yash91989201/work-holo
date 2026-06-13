@@ -283,7 +283,7 @@ export function NotificationDropdown() {
 
         <PopoverContent
           align="end"
-          className="w-140 overflow-hidden rounded-xl border border-border/50 bg-background/95 p-0 shadow-black/5 shadow-xl backdrop-blur-xl"
+          className="flex max-h-[calc(100vh-2rem)] w-140 flex-col overflow-hidden rounded-xl border border-border/50 bg-background/95 p-0 shadow-black/5 shadow-xl backdrop-blur-xl"
           sideOffset={8}
         >
           <div className="flex items-center justify-between border-border/40 border-b bg-background/50 px-4 py-3 backdrop-blur-md">
@@ -311,7 +311,7 @@ export function NotificationDropdown() {
             </ToggleGroup>
           </div>
 
-          <ScrollArea className="h-140">
+          <ScrollArea className="min-h-0 flex-1">
             <NotificationContent
               filter={filter}
               groupedNotifications={groupedNotifications}
