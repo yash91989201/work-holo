@@ -1,4 +1,7 @@
+import { log } from "evlog";
 import { PusherClient } from "@work-holo/infrastructure";
+
+const TAG = "notification:pusher";
 
 interface PusherDeliveryParams {
   actorId: string;
@@ -57,14 +60,16 @@ export async function handlePusherDelivery(
       payload
     );
 
-    console.log(
-      `[Notification Worker] Pusher event sent on ${channel} for notification ${notificationId}`
+    log.info(
+      TAG,
+      `Pusher event sent on ${channel} for notification ${notificationId}`
     );
   } catch (error) {
-    console.error(
-      `[Notification Worker] Failed to send Pusher event for notification ${notificationId}:`,
-      error
-    );
+    log.error({
+      tag: TAG,
+      message: `Failed to send Pusher event for notification ${notificationId}`,
+      error: error instanceof Error ? error.message : String(error),
+    });
     throw error;
   }
 }

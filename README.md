@@ -70,11 +70,14 @@ scripts/dev.sh start --docker-only
 # Start only dev server (auto-starts services if needed, includes Turbo TUI)
 scripts/dev.sh start --dev-only
 
-# Start specific apps/workers only
+# Start specific apps/workers only (add studio to include Drizzle Studio)
 scripts/dev.sh start --run web,read-receipt,message-indexer
 
-# Start only web + server
-scripts/dev.sh start --run web,server
+# Start only web + server + Drizzle Studio
+scripts/dev.sh start --run web,server,studio
+
+# Start only Drizzle Studio
+scripts/dev.sh start --run studio
 
 # Stop all docker services
 scripts/dev.sh stop-services
@@ -100,7 +103,7 @@ scripts/dev.sh logs postgres
 | `start` | Start Docker services and dev server (see options below) |
 | `start --docker-only` | Start only Docker services |
 | `start --dev-only` | Start only dev server (with Turbo TUI), auto-starts services if needed |
-| `start --run target1,target2` | Start Docker services and run only selected dev targets (`all`, `web`, `www`, `server`, `read-receipt`, `message-search`, `message-indexer` alias, `notification`) |
+| `start --run target1,target2` | Start Docker services and run only selected dev targets (`all`, `web`, `www`, `server`, `studio`, `read-receipt`, `message-search`, `message-indexer` alias, `notification`) |
 | `stop-services` | Stop all Docker services without removing the containers |
 | `status` | Show status of services, ports, and environment files |
 | `reset-services [--skip-init-steps step1,step2]` | **Destructive** - Remove all containers, volumes, and re-run `init`. `--skip-init-steps` forwards the same step names supported by `init --skip-steps`, including dependency validation. |
@@ -112,6 +115,7 @@ scripts/dev.sh logs postgres
 `--run` notes:
 - Works with `start` and `start --dev-only`
 - Cannot be combined with `start --docker-only`
+- Drizzle Studio starts by default with `start` (runs `drizzle-kit studio` directly, not via Turbo); add `studio` to a filtered `--run` list to include it
 - Type generators (`web`, `api`, `db`) run automatically in watch mode alongside dev targets
 
 `--run` supported values:
@@ -119,6 +123,7 @@ scripts/dev.sh logs postgres
 - `web` — run `apps/web`
 - `www` — run `apps/www`
 - `server` — run `apps/server`
+- `studio` — run Drizzle Studio (`bun db:studio`)
 - `read-receipt` — run `workers/read-receipt`
 - `message-search` — run `workers/message-search`
 - `message-indexer` — alias of `message-search`
@@ -216,7 +221,7 @@ work-holo/
 - `bun dev:native`: Start the React Native/Expo development server
 - `bun db:migrate`: Run committed database migrations
 - `bun db:push`: Push schema changes directly to the database schema
-- `bun db:studio`: Open database studio UI
+- `bun db:studio`: Open database studio UI (also started automatically by `scripts/dev.sh start`)
 - `bun generate:types`: Generate TypeScript types from Zod schemas (web, api, db)
 - `bun generate:types:watch`: Watch and regenerate types on schema changes
 - `cd apps/web && bun desktop:dev`: Start Tauri desktop app in development

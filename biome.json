@@ -34,11 +34,6 @@
       "complexity": {
         "noForEach": "off"
       },
-      "nursery": {
-        "noShadow": "off",
-        "noIncrementDecrement": "off",
-        "noLeakedRender": "off"
-      },
       "style": {
         "noMagicNumbers": "off",
         "useBlockStatements": "off",

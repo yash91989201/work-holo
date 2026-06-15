@@ -40,6 +40,13 @@ import {
 } from "@work-holo/ui/components/alert-dialog";
 import { Badge } from "@work-holo/ui/components/badge";
 import { Button, buttonVariants } from "@work-holo/ui/components/button";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@work-holo/ui/components/card";
 import { Checkbox } from "@work-holo/ui/components/checkbox";
 import {
   Dialog,
@@ -292,8 +299,8 @@ export const ChannelsListTable = () => {
   }
 
   return (
-    <div className="w-full rounded-md border bg-card text-card-foreground shadow-sm">
-      <div className="flex items-center justify-between gap-4 border-b p-4">
+    <Card className="w-full">
+      <CardHeader className="border-b">
         <div className="flex flex-1 items-center gap-2">
           <InputGroup className="w-full max-w-sm">
             <InputGroupAddon>
@@ -306,17 +313,19 @@ export const ChannelsListTable = () => {
             />
           </InputGroup>
         </div>
-        <CreateChannelForm
-          trigger={
-            <Button>
-              <IconPlus className="mr-2 h-4 w-4" />
-              Create Channel
-            </Button>
-          }
-        />
-      </div>
+        <CardAction>
+          <CreateChannelForm
+            trigger={
+              <Button>
+                <IconPlus className="mr-2 h-4 w-4" />
+                Create Channel
+              </Button>
+            }
+          />
+        </CardAction>
+      </CardHeader>
 
-      <div className="rounded-md border-b">
+      <CardContent className="px-0">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -364,82 +373,84 @@ export const ChannelsListTable = () => {
             )}
           </TableBody>
         </Table>
-      </div>
+      </CardContent>
 
-      <div className="flex items-center justify-between p-4">
-        <div className="flex items-center gap-2 text-muted-foreground text-sm">
-          <div className="flex items-center gap-2">
-            <p className="hidden sm:block">Rows per page</p>
-            <Select
-              items={[10, 20, 30, 40, 50].map((size) => ({
-                value: `${size}`,
-                label: `${size}`,
-              }))}
-              onValueChange={(value) => {
-                table.setPageSize(Number(value));
-              }}
-              value={`${table.getState().pagination.pageSize}`}
+      <CardFooter className="border-t">
+        <div className="flex w-full items-center justify-between">
+          <div className="flex items-center gap-2 text-muted-foreground text-sm">
+            <div className="flex items-center gap-2">
+              <p className="hidden sm:block">Rows per page</p>
+              <Select
+                items={[10, 20, 30, 40, 50].map((size) => ({
+                  value: `${size}`,
+                  label: `${size}`,
+                }))}
+                onValueChange={(value) => {
+                  table.setPageSize(Number(value));
+                }}
+                value={`${table.getState().pagination.pageSize}`}
+              >
+                <SelectTrigger className="h-8 w-18">
+                  <SelectValue>
+                    {table.getState().pagination.pageSize}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent side="top">
+                  {[10, 20, 30, 40, 50].map((pageSize) => (
+                    <SelectItem key={pageSize} value={`${pageSize}`}>
+                      {pageSize}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>{total} row(s) total</div>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Button
+              className="h-8 px-2 lg:px-3"
+              disabled={!table.getCanPreviousPage()}
+              onClick={() => table.setPageIndex(0)}
+              variant="outline"
             >
-              <SelectTrigger className="h-8 w-18">
-                <SelectValue>
-                  {table.getState().pagination.pageSize}
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent side="top">
-                {[10, 20, 30, 40, 50].map((pageSize) => (
-                  <SelectItem key={pageSize} value={`${pageSize}`}>
-                    {pageSize}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              <span className="sr-only">Go to first page</span>
+              <IconCircleChevronsLeftFilled />
+            </Button>
+            <Button
+              className="h-8 px-2 lg:px-3"
+              disabled={!table.getCanPreviousPage()}
+              onClick={() => table.previousPage()}
+              variant="outline"
+            >
+              <span className="sr-only">Go to previous page</span>
+              <IconCircleChevronLeftFilled />
+            </Button>
+            <div className="flex items-center justify-center font-medium text-sm">
+              {table.getState().pagination.pageIndex + 1} /{" "}
+              {table.getPageCount() || 1}
+            </div>
+            <Button
+              className="h-8 px-2 lg:px-3"
+              disabled={!table.getCanNextPage()}
+              onClick={() => table.nextPage()}
+              variant="outline"
+            >
+              <span className="sr-only">Go to next page</span>
+              <IconCircleChevronRightFilled />
+            </Button>
+            <Button
+              className="h-8 px-2 lg:px-3"
+              disabled={!table.getCanNextPage()}
+              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+              variant="outline"
+            >
+              <span className="sr-only">Go to last page</span>
+              <IconCircleChevronsRightFilled />
+            </Button>
           </div>
-          <div>{total} row(s) total</div>
         </div>
-        <div className="flex items-center space-x-2">
-          <Button
-            className="h-8 px-2 lg:px-3"
-            disabled={!table.getCanPreviousPage()}
-            onClick={() => table.setPageIndex(0)}
-            variant="outline"
-          >
-            <span className="sr-only">Go to first page</span>
-            <IconCircleChevronsLeftFilled />
-          </Button>
-          <Button
-            className="h-8 px-2 lg:px-3"
-            disabled={!table.getCanPreviousPage()}
-            onClick={() => table.previousPage()}
-            variant="outline"
-          >
-            <span className="sr-only">Go to previous page</span>
-            <IconCircleChevronLeftFilled />
-          </Button>
-          <div className="flex items-center justify-center font-medium text-sm">
-            {table.getState().pagination.pageIndex + 1} /{" "}
-            {table.getPageCount() || 1}
-          </div>
-          <Button
-            className="h-8 px-2 lg:px-3"
-            disabled={!table.getCanNextPage()}
-            onClick={() => table.nextPage()}
-            variant="outline"
-          >
-            <span className="sr-only">Go to next page</span>
-            <IconCircleChevronRightFilled />
-          </Button>
-          <Button
-            className="h-8 px-2 lg:px-3"
-            disabled={!table.getCanNextPage()}
-            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-            variant="outline"
-          >
-            <span className="sr-only">Go to last page</span>
-            <IconCircleChevronsRightFilled />
-          </Button>
-        </div>
-      </div>
-    </div>
+      </CardFooter>
+    </Card>
   );
 };
 
@@ -1013,15 +1024,17 @@ export function UpdateChannelDialogSkeleton() {
 
 UpdateChannelDialog.Fallback = UpdateChannelDialogSkeleton;
 export const ChannelsListTableSkeleton = () => (
-  <div className="w-full rounded-md border bg-card text-card-foreground shadow-sm">
+  <Card className="w-full">
     {/* Header: search + create button */}
-    <div className="flex items-center justify-between gap-4 border-b p-4">
+    <CardHeader className="border-b">
       <Skeleton className="h-9 w-full max-w-sm" />
-      <Skeleton className="h-9 w-36" />
-    </div>
+      <CardAction>
+        <Skeleton className="h-9 w-36" />
+      </CardAction>
+    </CardHeader>
 
     {/* Table */}
-    <div className="rounded-md border-b">
+    <CardContent className="px-0">
       <Table>
         <TableHeader>
           <TableRow className="hover:bg-transparent">
@@ -1083,24 +1096,26 @@ export const ChannelsListTableSkeleton = () => (
           ))}
         </TableBody>
       </Table>
-    </div>
+    </CardContent>
 
     {/* Pagination footer */}
-    <div className="flex items-center justify-between p-4">
-      <div className="flex items-center gap-2 text-sm">
-        <Skeleton className="h-4 w-20" />
-        <Skeleton className="h-8 w-18" />
-        <Skeleton className="h-4 w-24" />
+    <CardFooter className="border-t">
+      <div className="flex w-full items-center justify-between">
+        <div className="flex items-center gap-2 text-sm">
+          <Skeleton className="h-4 w-20" />
+          <Skeleton className="h-8 w-18" />
+          <Skeleton className="h-4 w-24" />
+        </div>
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-8 w-8" />
+          <Skeleton className="h-8 w-8" />
+          <Skeleton className="h-4 w-10" />
+          <Skeleton className="h-8 w-8" />
+          <Skeleton className="h-8 w-8" />
+        </div>
       </div>
-      <div className="flex items-center gap-2">
-        <Skeleton className="h-8 w-8" />
-        <Skeleton className="h-8 w-8" />
-        <Skeleton className="h-4 w-10" />
-        <Skeleton className="h-8 w-8" />
-        <Skeleton className="h-8 w-8" />
-      </div>
-    </div>
-  </div>
+    </CardFooter>
+  </Card>
 );
 
 ChannelsListTable.Fallback = ChannelsListTableSkeleton;

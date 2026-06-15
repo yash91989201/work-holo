@@ -19,9 +19,9 @@ import {
   roleTemplateTable,
 } from "@work-holo/db/schema/authorization";
 import { channelMemberTable, channelTable } from "@work-holo/db/schema/channel";
+import { Redis } from "@work-holo/infrastructure";
 import { assignOrgUserRole, PermissionManagers } from "@work-holo/permission";
 import { hashPassword } from "better-auth/crypto";
-import { RedisClient } from "bun";
 import { and, eq, inArray, isNull } from "drizzle-orm";
 
 type OrgRole = "owner" | "admin" | "member";
@@ -130,17 +130,12 @@ function getRequiredEnv(name: string): string {
   return value;
 }
 
-let bootstrapRedisClient: RedisClient | null = null;
-
 async function ensurePermissionManagersInitialized(): Promise<void> {
-  if (!bootstrapRedisClient) {
-    bootstrapRedisClient = new RedisClient(getRequiredEnv("REDIS_URL"));
-    await bootstrapRedisClient.connect();
-  }
+  await Redis.connect({ url: getRequiredEnv("REDIS_URL") });
 
   PermissionManagers.initialize({
     db,
-    redis: bootstrapRedisClient,
+    redis: () => Redis.getClient(),
   });
 }
 

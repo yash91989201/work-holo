@@ -11,7 +11,6 @@
   },
   "scripts": {
     "db:push": "drizzle-kit push",
-    "dev": "drizzle-kit studio",
     "db:studio": "drizzle-kit studio",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
@@ -19,6 +18,7 @@
     "generate:types:watch": "bun run ./scripts/generate-types.ts --watch"
   },
   "devDependencies": {
+    "@types/pg": "^8.20.0",
     "@work-holo/config": "workspace:*",
     "drizzle-kit": "^0.31.10",
     "chokidar": "^5.0.0"

@@ -1,10 +1,10 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { Suspense } from "react";
+import { MessageListSkeleton } from "@/components/modules/communication/channels/message-list/message-list-skeleton";
 import { DmConversationHeader } from "@/components/modules/communication/dm/dm-conversation-header";
+import { DmRouteSkeleton } from "@/components/modules/communication/dm/dm-route-skeleton";
 import { DmInfoSidebar } from "@/components/modules/communication/dm/info-sidebar";
 import { DmPinsSidebar } from "@/components/modules/communication/dm/pins-sidebar";
-import { DmRouteSkeleton } from "@/components/modules/communication/dm/dm-route-skeleton";
-import { MessageListSkeleton } from "@/components/modules/communication/channels/message-list/message-list-skeleton";
 import { DmThreadSidebar } from "@/components/modules/communication/dm/thread-sidebar";
 
 export const Route = createFileRoute(

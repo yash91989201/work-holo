@@ -1,4 +1,4 @@
-import type { RedisClient } from "bun";
+import type { RedisClient } from "@work-holo/infrastructure";
 import { getPresenceKey } from "./redis";
 
 // Presence status types

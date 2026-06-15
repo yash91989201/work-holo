@@ -70,6 +70,15 @@ export function LogInForm() {
             organizationSlug: org.slug,
           });
 
+          const { data: userTeams } =
+            await authClient.organization.listUserTeams();
+
+          if (userTeams && userTeams.length > 0) {
+            await authClient.organization.setActiveTeam({
+              teamId: userTeams[0].id,
+            });
+          }
+
           const { data: memberData } =
             await authClient.organization.getActiveMemberRole();
           navigate(getOrgRouteByRole(memberData?.role ?? "member", org.slug));

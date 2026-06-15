@@ -52,14 +52,20 @@ const TeamSelectBase = withForm({
               value={field.state.value}
             >
               <SelectTrigger className="w-full">
-                <SelectValue />
+                <SelectValue placeholder="Select a team" />
               </SelectTrigger>
               <SelectContent>
-                {teams.map((team) => (
-                  <SelectItem key={team.id} value={team.id}>
-                    {team.name}
+                {teams.length === 0 ? (
+                  <SelectItem disabled value="no-teams">
+                    No teams available
                   </SelectItem>
-                ))}
+                ) : (
+                  teams.map((team) => (
+                    <SelectItem key={team.id} value={team.id}>
+                      {team.name}
+                    </SelectItem>
+                  ))
+                )}
               </SelectContent>
             </Select>
           </div>

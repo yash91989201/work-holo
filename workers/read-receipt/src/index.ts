@@ -6,10 +6,13 @@ import {
   type ReadReceiptQueueMessage,
 } from "@work-holo/infrastructure";
 import type { Channel } from "amqplib";
+import { log } from "evlog";
 import {
   cleanupMemberCountCache,
   processChannelReadReceiptsNow,
 } from "./lib/processor";
+
+const TAG = "read-receipt";
 
 // Queue configuration
 const PREFETCH_COUNT = Number(env.PREFETCH_COUNT ?? 5);
@@ -27,7 +30,8 @@ async function handleMessage(message: ReadReceiptQueueMessage): Promise<void> {
 
     // Skip if already processing this channel
     if (processingChannels.has(channelId)) {
-      console.log(
+      log.info(
+        TAG,
         `Channel ${channelId} is already being processed, skipping duplicate message`
       );
       return; // Will ack the message automatically
@@ -40,7 +44,8 @@ async function handleMessage(message: ReadReceiptQueueMessage): Promise<void> {
         ? "detailed"
         : "aggregated";
 
-    console.log(
+    log.info(
+      TAG,
       `Processing read receipts for channel: ${channelId} (${channelMessage.memberCount} members, ${strategy} tracking)`
     );
 
@@ -51,20 +56,26 @@ async function handleMessage(message: ReadReceiptQueueMessage): Promise<void> {
         channelMessage.memberCount
       );
 
-      console.log(`Successfully processed channel ${channelId}:`, {
+      log.info({
+        tag: TAG,
+        message: `Successfully processed channel ${channelId}`,
         strategy,
         messagesProcessed: result.messagesProcessed,
         summariesUpdated: result.summariesUpdated,
       });
     } catch (error) {
-      console.error(`Error processing channel ${channelId}:`, error);
+      log.error({
+        tag: TAG,
+        message: `Error processing channel ${channelId}`,
+        error: error instanceof Error ? error.message : String(error),
+      });
       throw error; // Rethrow to trigger retry mechanism
     } finally {
       // Always remove from processing set
       processingChannels.delete(channelId);
     }
   } else {
-    console.warn("Unknown message type:", message);
+    log.warn({ tag: TAG, message: "Unknown message type", type: message.type });
   }
 }
 
@@ -79,9 +90,9 @@ class QueueWorker {
    * Connect to RabbitMQ and create channel
    */
   async connect(): Promise<void> {
-    await Queue.connect({ url: env.RABBITMQ_URL });
+    Queue.connect({ url: env.RABBITMQ_URL });
     this.channel = Queue.getClient();
-    console.log("Connected to RabbitMQ successfully");
+    log.info(TAG, "Connected to RabbitMQ successfully");
   }
 
   /**
@@ -95,10 +106,11 @@ class QueueWorker {
     // Set prefetch count (how many messages to process concurrently)
     await this.channel.prefetch(PREFETCH_COUNT);
 
-    console.log(
+    log.info(
+      TAG,
       `Starting to consume messages from queue: ${QUEUES.READ_RECEIPTS}`
     );
-    console.log(`Prefetch count: ${PREFETCH_COUNT}`);
+    log.info(TAG, `Prefetch count: ${PREFETCH_COUNT}`);
 
     await this.channel.consume(
       QUEUES.READ_RECEIPTS,
@@ -118,7 +130,11 @@ class QueueWorker {
           // Process the message (can take as long as needed now)
           await handleMessage(message);
         } catch (error) {
-          console.error("Error processing message:", error);
+          log.error({
+            tag: TAG,
+            message: "Error processing message",
+            error: error instanceof Error ? error.message : String(error),
+          });
           // Message already acknowledged, so we just log the error
           // The watermark ensures we don't lose progress on successful processing
         }
@@ -128,7 +144,7 @@ class QueueWorker {
       }
     );
 
-    console.log("Worker is now consuming messages. Press CTRL+C to exit.\n");
+    log.info(TAG, "Worker is now consuming messages. Press CTRL+C to exit.");
   }
 
   /**
@@ -137,11 +153,12 @@ class QueueWorker {
   startCacheCleanup(): void {
     this.cleanupIntervalId = setInterval(() => {
       cleanupMemberCountCache();
-      console.log("[Cache Cleanup] Member count cache cleanup completed");
+      log.info(TAG, "Member count cache cleanup completed");
     }, CACHE_CLEANUP_INTERVAL);
 
-    console.log(
-      `Member count cache cleanup scheduled every ${CACHE_CLEANUP_INTERVAL / 1000 / 60} minutes\n`
+    log.info(
+      TAG,
+      `Member count cache cleanup scheduled every ${CACHE_CLEANUP_INTERVAL / 1000 / 60} minutes`
     );
   }
 
@@ -149,20 +166,18 @@ class QueueWorker {
    * Close connection and cleanup
    */
   async close(): Promise<void> {
-    console.log("\n===========================================");
-    console.log("Shutting down worker gracefully...");
-    console.log("===========================================");
+    log.info({ tag: TAG, message: "Shutting down worker gracefully" });
 
     // Clear cache cleanup interval
     if (this.cleanupIntervalId) {
       clearInterval(this.cleanupIntervalId);
       this.cleanupIntervalId = null;
-      console.log("Cache cleanup interval cleared");
+      log.info(TAG, "Cache cleanup interval cleared");
     }
 
     await Queue.close();
     this.channel = null;
-    console.log("RabbitMQ connection closed successfully");
+    log.info(TAG, "RabbitMQ connection closed successfully");
   }
 }
 
@@ -170,17 +185,15 @@ class QueueWorker {
  * Start the worker
  */
 async function startWorker() {
-  console.log("===========================================");
-  console.log("Read Receipt Worker Starting...");
-  console.log("===========================================");
-  console.log(`Environment: ${env.ENV}`);
-  console.log(`RabbitMQ URL: ${env.RABBITMQ_URL}`);
-  console.log(`Prefetch Count: ${PREFETCH_COUNT}`);
-  console.log(`Batch Size: ${env.READ_RECEIPT_BATCH_SIZE}`);
-  console.log(
-    `Max Members for Detailed Tracking: ${env.MAX_MEMBERS_FOR_DETAILED_TRACKING}`
-  );
-  console.log("===========================================\n");
+  log.info({
+    tag: TAG,
+    message: "Read Receipt Worker Starting",
+    environment: env.ENV,
+    rabbitmqUrl: env.RABBITMQ_URL,
+    prefetchCount: PREFETCH_COUNT,
+    batchSize: env.READ_RECEIPT_BATCH_SIZE,
+    maxMembersForDetailedTracking: env.MAX_MEMBERS_FOR_DETAILED_TRACKING,
+  });
 
   const worker = new QueueWorker();
 
@@ -205,22 +218,39 @@ async function startWorker() {
 
     // Handle uncaught errors
     process.on("uncaughtException", (error) => {
-      console.error("Uncaught exception:", error);
+      log.error({
+        tag: TAG,
+        message: "Uncaught exception",
+        error: error instanceof Error ? error.message : String(error),
+      });
       shutdown();
     });
 
     process.on("unhandledRejection", (reason, promise) => {
-      console.error("Unhandled rejection at:", promise, "reason:", reason);
+      log.error({
+        tag: TAG,
+        message: "Unhandled rejection",
+        reason: String(reason),
+        promise: String(promise),
+      });
       shutdown();
     });
   } catch (error) {
-    console.error("Failed to start worker:", error);
+    log.error({
+      tag: TAG,
+      message: "Failed to start worker",
+      error: error instanceof Error ? error.message : String(error),
+    });
     process.exit(1);
   }
 }
 
 // Start the worker
 startWorker().catch((error) => {
-  console.error("[Read Receipt Worker] Failed to start:", error);
+  log.error({
+    tag: TAG,
+    message: "Failed to start",
+    error: error instanceof Error ? error.message : String(error),
+  });
   process.exit(1);
 });

@@ -1,4 +1,4 @@
-import { drizzle } from "drizzle-orm/bun-sql";
+import { drizzle } from "drizzle-orm/node-postgres";
 import { env } from "./env";
 import * as schema from "./schema";
 

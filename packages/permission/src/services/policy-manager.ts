@@ -7,7 +7,7 @@ import {
   roleTemplateTable,
 } from "@work-holo/db/schema/authorization";
 import { casbinTable } from "@work-holo/db/schema/casbin";
-import type { RedisClient } from "bun";
+import type { RedisClient } from "@work-holo/infrastructure";
 import { type Enforcer, newEnforcer, newModel } from "casbin";
 import { DrizzleAdapter } from "casbin-drizzle-adapter";
 import { and, eq, gt, inArray, isNull, or } from "drizzle-orm";
@@ -190,7 +190,7 @@ export class PolicyManager {
   async setPolicyVersion(orgId: string, version: number): Promise<void> {
     const redis = await this.getRedisClient();
     const key = `${POLICY_VERSION_PREFIX}${orgId}`;
-    await redis.send("SET", [key, String(version)]);
+    await redis.set(key, String(version));
     this.localVersionCache.set(orgId, version);
   }
 
@@ -211,13 +211,7 @@ export class PolicyManager {
   ): Promise<boolean> {
     const redis = await this.getRedisClient();
     const lockKey = `compilation_lock:${orgId}`;
-    const result = await redis.send("SET", [
-      lockKey,
-      "1",
-      "NX",
-      "PX",
-      String(ttlMs),
-    ]);
+    const result = await redis.set(lockKey, "1", "PX", ttlMs, "NX");
     return result === "OK";
   }
 
@@ -227,7 +221,7 @@ export class PolicyManager {
   private async releaseCompilationLock(orgId: string): Promise<void> {
     const redis = await this.getRedisClient();
     const lockKey = `compilation_lock:${orgId}`;
-    await redis.send("DEL", [lockKey]);
+    await redis.del(lockKey);
   }
 
   /**

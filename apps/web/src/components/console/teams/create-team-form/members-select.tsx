@@ -30,10 +30,10 @@ import { useState } from "react";
 import { useListOrgMembers } from "@/hooks/use-list-org-members";
 import { cn } from "@/lib/utils";
 import { withFallback } from "@/types/component-fallback";
-import { channelFormOpts } from "./form-options";
+import { createTeamFormOpts } from "./form-options";
 
 const MembersSelectBase = withForm({
-  ...channelFormOpts,
+  ...createTeamFormOpts,
   render({ form }) {
     // biome-ignore lint/correctness/useHookAtTopLevel: render() inside withForm is a valid React component context
     const { members, refetchTeamMembers, isRefetching } = useListOrgMembers();
@@ -41,16 +41,15 @@ const MembersSelectBase = withForm({
     const [debouncedSearch] = useDebouncedValue(search, { wait: 300 });
     const [open, setOpen] = useState(false);
 
-    const memberOnlyList = members.filter((m) => m.role === "member");
     const filtered = debouncedSearch.trim()
-      ? memberOnlyList.filter(
+      ? members.filter(
           (m) =>
             m.user.name
               ?.toLowerCase()
               .includes(debouncedSearch.toLowerCase()) ||
             m.user.email?.toLowerCase().includes(debouncedSearch.toLowerCase())
         )
-      : memberOnlyList;
+      : members;
 
     return (
       <form.AppField mode="array" name="memberIds">
@@ -64,7 +63,7 @@ const MembersSelectBase = withForm({
               <div className="flex items-center gap-2">
                 <span className="flex-1 font-medium text-sm">Members</span>
                 <Badge className="ml-2" variant="secondary">
-                  <span>1+</span>
+                  <span>{selectedIds.length}</span>
                   <IconUsers />
                 </Badge>
                 <Button
@@ -92,9 +91,7 @@ const MembersSelectBase = withForm({
                       {selectedIds.length > 0 ? (
                         <div className="flex flex-wrap items-center gap-1">
                           {selectedIds.slice(0, 3).map((id) => {
-                            const member = memberOnlyList.find(
-                              (m) => m.userId === id
-                            );
+                            const member = members.find((m) => m.userId === id);
                             return (
                               <Badge
                                 className="gap-1 text-xs"
@@ -123,7 +120,7 @@ const MembersSelectBase = withForm({
                         </div>
                       ) : (
                         <span className="text-muted-foreground text-sm">
-                          Select channel members
+                          Select team members
                         </span>
                       )}
                       <IconChevronDown className="size-4 shrink-0 text-muted-foreground" />
@@ -161,7 +158,7 @@ const MembersSelectBase = withForm({
                   <div className="mt-2 max-h-64 overflow-y-auto">
                     {filtered.length === 0 ? (
                       <p className="py-4 text-center text-muted-foreground text-sm">
-                        {memberOnlyList.length === 0
+                        {members.length === 0
                           ? "No members available"
                           : "No members match your search"}
                       </p>
@@ -262,11 +259,9 @@ const MembersSelectBase = withForm({
                       </Button>
                       <Button
                         className="h-7 text-xs"
-                        disabled={selectedIds.length === memberOnlyList.length}
+                        disabled={selectedIds.length === members.length}
                         onClick={() =>
-                          field.handleChange(
-                            memberOnlyList.map((m) => m.userId)
-                          )
+                          field.handleChange(members.map((m) => m.userId))
                         }
                         size="sm"
                         type="button"
@@ -293,7 +288,7 @@ function MembersSelectSkeleton() {
       <div className="flex items-center gap-2">
         <span className="flex-1 font-medium text-sm">Members</span>
         <Badge className="ml-2" variant="secondary">
-          <span>1+</span>
+          <span>0</span>
           <IconUsers />
         </Badge>
         <Button
@@ -307,7 +302,7 @@ function MembersSelectSkeleton() {
         </Button>
       </div>
       <div className="flex h-10 animate-pulse cursor-progress items-center justify-between rounded-md border px-3">
-        <p className="text-muted-foreground text-sm">Select channel members</p>
+        <p className="text-muted-foreground text-sm">Select team members</p>
         <IconChevronDown className="size-4" />
       </div>
     </div>

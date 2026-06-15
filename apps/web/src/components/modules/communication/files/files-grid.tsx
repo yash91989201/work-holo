@@ -648,11 +648,7 @@ const FilesGridSkeleton = () => {
         <div className="flex flex-col gap-3 text-muted-foreground text-sm sm:flex-row sm:items-center sm:gap-4">
           <div className="flex items-center gap-2">
             <p className="hidden sm:block">Items per page</p>
-            <Select
-              disabled
-              items={[{ value: "20", label: "20" }]}
-              value="20"
-            >
+            <Select disabled items={[{ value: "20", label: "20" }]} value="20">
               <SelectTrigger className="h-8 w-17">
                 <SelectValue placeholder="20" />
               </SelectTrigger>
