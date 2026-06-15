@@ -18,6 +18,7 @@
     "generate:types:watch": "bun run ./scripts/generate-types.ts --watch"
   },
   "devDependencies": {
+    "@types/pg": "^8.20.0",
     "@work-holo/config": "workspace:*",
     "drizzle-kit": "^0.31.10",
     "chokidar": "^5.0.0"

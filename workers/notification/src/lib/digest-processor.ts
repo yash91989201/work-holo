@@ -1,3 +1,4 @@
+import { log } from "evlog";
 import type { db as Db } from "@work-holo/db";
 import { user } from "@work-holo/db/schema/auth";
 import {
@@ -12,6 +13,8 @@ import {
 import { and, eq, lte } from "drizzle-orm";
 import type { Transporter } from "nodemailer";
 import { createElement } from "react";
+
+const TAG = "notification:digest";
 
 const DIGEST_INTERVAL_MS = 60_000;
 
@@ -108,8 +111,9 @@ async function processDigestGroup(
     .limit(1);
 
   if (!userInfo?.email) {
-    console.log(
-      `[Digest Processor] User ${firstEntry.userId} has no email, marking entries as sent`
+    log.info(
+      TAG,
+      `User ${firstEntry.userId} has no email, marking entries as sent`
     );
     await markEntriesAsSent(db, entries);
     return;
@@ -159,8 +163,9 @@ async function processDigestGroup(
 
   await markEntriesAsSent(db, entries);
 
-  console.log(
-    `[Digest Processor] Sent digest with ${digestItems.length} items to ${userInfo.email}`
+  log.info(
+    TAG,
+    `Sent digest with ${digestItems.length} items to ${userInfo.email}`
   );
 }
 
@@ -187,9 +192,7 @@ async function processDigests(
     return;
   }
 
-  console.log(
-    `[Digest Processor] Found ${pending.length} pending digest entries`
-  );
+  log.info(TAG, `Found ${pending.length} pending digest entries`);
 
   const groups = groupByUserOrg(pending);
 
@@ -197,10 +200,11 @@ async function processDigests(
     try {
       await processDigestGroup(db, transport, fromAddress, entries);
     } catch (error) {
-      console.error(
-        `[Digest Processor] Failed to process digest for group ${key}:`,
-        error
-      );
+      log.error({
+        tag: TAG,
+        message: `Failed to process digest for group ${key}`,
+        error: error instanceof Error ? error.message : String(error),
+      });
     }
   }
 }
@@ -210,13 +214,15 @@ export function startDigestProcessor(
   transport: Transporter,
   fromAddress: string
 ): NodeJS.Timeout {
-  console.log(
-    `[Digest Processor] Starting with ${DIGEST_INTERVAL_MS / 1000}s interval`
-  );
+  log.info(TAG, `Starting with ${DIGEST_INTERVAL_MS / 1000}s interval`);
 
   const intervalId = setInterval(() => {
     processDigests(db, transport, fromAddress).catch((error) => {
-      console.error("[Digest Processor] Unhandled error:", error);
+      log.error({
+        tag: TAG,
+        message: "Unhandled error",
+        error: error instanceof Error ? error.message : String(error),
+      });
     });
   }, DIGEST_INTERVAL_MS);
 

@@ -1,10 +1,19 @@
-import amqp, { type Channel, type ChannelModel } from "amqplib";
+import amqp, {
+  type Channel,
+  type ChannelModel,
+  type ConsumeMessage,
+  type Options,
+  type RecoveringChannelModel,
+} from "amqplib";
+import { log } from "evlog";
 
 export const QUEUES = {
   READ_RECEIPTS: "read_receipts",
   NOTIFICATIONS: "notifications",
   SEARCH_INDEXING: "search_indexing",
 } as const;
+
+export type QueueName = keyof typeof QUEUES;
 
 export interface ReadReceiptQueueMessage {
   channelId: string;
@@ -49,116 +58,253 @@ export type QueueMessage =
   | SearchIndexQueueMessage;
 
 export interface QueueConfig {
+  /** Maximum reconnect backoff in ms (default 30000). */
+  maxReconnectDelayMs?: number;
+  /** Initial reconnect backoff in ms (default 1000). */
+  reconnectDelayMs?: number;
   url: string;
 }
 
-let connection: ChannelModel | null = null;
-let channel: Channel | null = null;
+/**
+ * Consumer callback. Receives the message plus the live channel so ack/nack
+ * always target the current (post-reconnect) channel rather than a stale ref.
+ */
+export type ConsumerHandler = (
+  msg: ConsumeMessage,
+  channel: Channel
+) => void | Promise<void>;
 
-async function setupQueues(): Promise<void> {
-  if (!channel) {
-    throw new Error("Channel not initialized");
-  }
-
-  await channel.assertQueue(QUEUES.READ_RECEIPTS, {
-    durable: true,
-    arguments: {
-      "x-message-ttl": 3_600_000,
-      "x-max-length": 10_000,
-    },
-  });
-
-  await channel.assertQueue(QUEUES.NOTIFICATIONS, {
-    durable: true,
-    arguments: {
-      "x-message-ttl": 3_600_000,
-      "x-max-length": 50_000,
-    },
-  });
-
-  await channel.assertQueue(QUEUES.SEARCH_INDEXING, {
-    durable: true,
-    arguments: {
-      "x-max-length": 50_000,
-    },
-  });
+export interface ConsumerOptions {
+  /** Skip explicit acks (default false). */
+  noAck?: boolean;
+  /** Max unacked messages delivered to this channel at once. */
+  prefetch?: number;
 }
 
-// biome-ignore lint/complexity/noStaticOnlyClass: Singleton pattern with encapsulated state
-export class Queue {
-  static async connect(config: QueueConfig): Promise<void> {
-    if (connection && channel) {
+interface ConsumerRegistration {
+  handler: ConsumerHandler;
+  options: ConsumerOptions;
+  queue: QueueName;
+}
+
+/**
+ * Per-queue declarations. Adding a new queue is a single entry here plus a key
+ * in {@link QUEUES} — assertion and re-assertion on reconnect happen for free.
+ */
+const QUEUE_DECLARATIONS: Record<QueueName, Options.AssertQueue> = {
+  READ_RECEIPTS: {
+    durable: true,
+    arguments: { "x-message-ttl": 3_600_000, "x-max-length": 10_000 },
+  },
+  NOTIFICATIONS: {
+    durable: true,
+    arguments: { "x-message-ttl": 3_600_000, "x-max-length": 50_000 },
+  },
+  SEARCH_INDEXING: {
+    durable: true,
+    arguments: { "x-max-length": 50_000 },
+  },
+};
+
+const DEFAULT_RECONNECT_DELAY_MS = 1000;
+const DEFAULT_MAX_RECONNECT_DELAY_MS = 30_000;
+
+// Heartbeat keeps the socket active (so intermediaries don't reap it as idle)
+// and lets the broker detect a dead peer within ~2 missed intervals. Without
+// it, drops only surface as "Unexpected close" after a TCP timeout.
+const DEFAULT_HEARTBEAT_SECONDS = 30;
+
+const TAG = "rabbitmq";
+
+function withHeartbeat(url: string): string {
+  if (url.includes("heartbeat=")) {
+    return url;
+  }
+  const sep = url.includes("?") ? "&" : "?";
+  return `${url}${sep}heartbeat=${DEFAULT_HEARTBEAT_SECONDS}`;
+}
+
+let model: RecoveringChannelModel | null = null;
+let channel: Channel | null = null;
+let connecting: Promise<RecoveringChannelModel> | null = null;
+
+// Consumers are stored so they can be re-subscribed on every (re)connect.
+// After a recovery the `setup` hook builds a fresh channel; without replaying
+// these the new channel would have no consumers and messages would pile up.
+const consumers: ConsumerRegistration[] = [];
+
+async function assertQueues(ch: Channel): Promise<void> {
+  for (const [name, options] of Object.entries(QUEUE_DECLARATIONS)) {
+    await ch.assertQueue(QUEUES[name as QueueName], options);
+  }
+}
+
+async function applyConsumer(
+  ch: Channel,
+  registration: ConsumerRegistration
+): Promise<void> {
+  const { queue, handler, options } = registration;
+  if (options.prefetch != null) {
+    await ch.prefetch(options.prefetch);
+  }
+  await ch.consume(
+    QUEUES[queue],
+    (msg) => {
+      if (!msg) {
+        return;
+      }
+      void Promise.resolve(handler(msg, ch)).catch((err) =>
+        log.error(TAG, `consumer error on ${queue}: ${err}`)
+      );
+    },
+    { noAck: options.noAck ?? false }
+  );
+}
+
+async function applyConsumers(ch: Channel): Promise<void> {
+  for (const registration of consumers) {
+    await applyConsumer(ch, registration);
+  }
+}
+
+function buildRecoveryOptions(cfg: QueueConfig) {
+  return {
+    initialDelay: cfg.reconnectDelayMs ?? DEFAULT_RECONNECT_DELAY_MS,
+    maxDelay: cfg.maxReconnectDelayMs ?? DEFAULT_MAX_RECONNECT_DELAY_MS,
+    factor: 2,
+    jitter: 0.2,
+    maxRetries: Number.POSITIVE_INFINITY,
+    // Runs after every successful (re)connect: a fresh channel, queue
+    // re-assertion, and consumer replay so processing self-heals after a drop.
+    setup: async (m: ChannelModel) => {
+      const ch = await m.createChannel();
+      ch.on("error", (err) => log.error(TAG, `channel error: ${err}`));
+      await assertQueues(ch);
+      await applyConsumers(ch);
+      channel = ch;
+    },
+  };
+}
+
+function attachModelListeners(m: RecoveringChannelModel): void {
+  m.on("disconnect", (err) => {
+    channel = null;
+    log.warn(TAG, `disconnected: ${err}`);
+  });
+  m.on("reconnect-scheduled", ({ attempt, delay: delayMs }) =>
+    log.warn(TAG, `reconnecting in ${delayMs}ms (attempt ${attempt})`)
+  );
+  m.on("error", (err) => log.error(TAG, `connection error: ${err}`));
+}
+
+/**
+ * RabbitMQ connection manager with self-healing connections.
+ *
+ * Reconnect is delegated to amqplib's built-in `recovery`: it owns the
+ * exponential backoff + jitter, and the `setup` hook re-runs on every
+ * (re)connect to recreate the channel and re-assert all queues. This replaces
+ * the previous hand-rolled reconnect state machine while keeping the same
+ * robustness (auto-reconnect, channel recreation, queue re-assertion).
+ */
+export const Queue = {
+  // Fire-and-forget: recovery retries in the background with backoff, so a
+  // broker outage at boot never blocks startup. Publishes degrade (return
+  // false) until the first connection lands and the setup hook builds a channel.
+  connect(cfg: QueueConfig): void {
+    if (model || connecting) {
       return;
     }
 
-    connection = await amqp.connect(config.url);
-
-    connection.on("error", (err) => {
-      console.error("RabbitMQ connection error:", err);
+    connecting = amqp.connect(withHeartbeat(cfg.url), {
+      recovery: buildRecoveryOptions(cfg),
+      // TCP keepalive complements the AMQP heartbeat: it nudges NAT/LB layers
+      // that drop idle sockets and detects half-open connections faster.
+      keepAlive: true,
+      keepAliveDelay: 15_000,
     });
+    void connecting.then(
+      (m) => {
+        model = m;
+        attachModelListeners(m);
+        log.info(TAG, "connected");
+      },
+      (err) => {
+        connecting = null;
+        log.error(TAG, `connect failed: ${err}`);
+      }
+    );
+  },
 
-    connection.on("close", () => {
-      console.log("RabbitMQ connection closed");
-      connection = null;
-      channel = null;
-    });
-
-    channel = await connection.createChannel();
-    console.log("Connected to RabbitMQ successfully");
-
-    await setupQueues();
-  }
-
-  static getClient(): Channel {
+  getClient(): Channel {
     if (!channel) {
       throw new Error(
         "Queue client not initialized. Call Queue.connect() first."
       );
     }
     return channel;
-  }
+  },
 
-  static publish(queue: keyof typeof QUEUES, message: QueueMessage): boolean {
+  isConnected(): boolean {
+    return channel !== null;
+  },
+
+  /**
+   * Register a consumer that survives reconnects. The handler is replayed on
+   * every (re)connect against the fresh channel, so a broker drop no longer
+   * silently stops message processing. Safe to call before or after connect.
+   */
+  async consume(
+    queue: QueueName,
+    handler: ConsumerHandler,
+    options: ConsumerOptions = {}
+  ): Promise<void> {
+    const registration: ConsumerRegistration = { queue, handler, options };
+    consumers.push(registration);
+    // If a channel is already live, subscribe immediately; otherwise the next
+    // (re)connect's setup hook will pick it up.
+    if (channel) {
+      await applyConsumer(channel, registration);
+    }
+  },
+
+  publish(queue: QueueName, message: QueueMessage): boolean {
     if (!channel) {
-      console.error("Cannot publish: Channel not initialized");
+      log.error(TAG, `cannot publish to ${queue}: channel unavailable`);
       return false;
     }
 
     try {
-      const queueName = QUEUES[queue];
-      const messageBuffer = Buffer.from(JSON.stringify(message));
-
-      const sent = channel.sendToQueue(queueName, messageBuffer, {
-        persistent: true,
-        timestamp: Date.now(),
-      });
+      const sent = channel.sendToQueue(
+        QUEUES[queue],
+        Buffer.from(JSON.stringify(message)),
+        { persistent: true, timestamp: Date.now() }
+      );
 
       if (!sent) {
-        console.warn(
-          `Failed to send message to queue ${queueName}: Queue full or blocked`
+        log.warn(
+          TAG,
+          `queue ${QUEUES[queue]} full or blocked — message not sent`
         );
       }
-
       return sent;
-    } catch (error) {
-      console.error(`Error publishing message to ${queue}:`, error);
+    } catch (err) {
+      log.error(TAG, `error publishing to ${queue}: ${err}`);
       return false;
     }
-  }
+  },
 
-  static async close(): Promise<void> {
-    try {
-      if (channel) {
-        await channel.close();
-        channel = null;
+  async close(): Promise<void> {
+    // Closing the recovering model stops the backoff loop and tears down the
+    // connection + channels in one call.
+    if (model) {
+      try {
+        await model.close();
+        log.info(TAG, "closed");
+      } catch (err) {
+        log.error(TAG, `error during close: ${err}`);
       }
-      if (connection) {
-        await connection.close();
-        connection = null;
-      }
-      console.log("RabbitMQ connection closed successfully");
-    } catch (error) {
-      console.error("Error closing RabbitMQ connection:", error);
     }
-  }
-}
+    model = null;
+    channel = null;
+  },
+};

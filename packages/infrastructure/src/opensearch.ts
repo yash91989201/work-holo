@@ -1,94 +1,117 @@
 import { Client } from "@opensearch-project/opensearch";
+import { log } from "evlog";
 
 export interface OpenSearchConfig {
   url: string;
 }
 
-let client: Client | null = null;
-let connectPromise: Promise<void> | null = null;
-let savedConfig: OpenSearchConfig | null = null;
-
-function createClient(url: string): Client {
-  const c = new Client({
-    node: url,
-    ssl: {
-      rejectUnauthorized: false,
-    },
-  });
-
-  return c;
+export interface OpenSearchConnectOptions {
+  /** Throw instead of degrading to lazy retry when the initial probe fails. */
+  throwOnError?: boolean;
 }
 
-// biome-ignore lint/complexity/noStaticOnlyClass: Singleton pattern with encapsulated state
-export class OpenSearchClient {
-  static async connect(
-    config: OpenSearchConfig,
-    options?: { throwOnError?: boolean }
-  ): Promise<void> {
-    if (client) return;
-    savedConfig = config;
+const TAG = "opensearch";
 
-    if (connectPromise) {
-      await connectPromise;
+let client: Client | null = null;
+let config: OpenSearchConfig | null = null;
+let connecting: Promise<void> | null = null;
+
+function build(url: string): Client {
+  return new Client({
+    node: url,
+    ssl: { rejectUnauthorized: false },
+  });
+}
+
+async function probe(candidate: Client): Promise<void> {
+  await candidate.cluster.health();
+}
+
+/**
+ * OpenSearch connection manager.
+ *
+ * OpenSearch is stateless HTTP, so "connecting" is really a one-time health
+ * probe. The server boots tolerantly (probe failure degrades to lazy retry via
+ * {@link OpenSearchClient.ensureConnected}); workers that hard-depend on search
+ * pass `throwOnError` to fail fast at startup.
+ */
+export const OpenSearchClient = {
+  async connect(
+    cfg: OpenSearchConfig,
+    options?: OpenSearchConnectOptions
+  ): Promise<void> {
+    config = cfg;
+
+    if (client) {
+      return;
+    }
+    if (connecting) {
+      await connecting;
       return;
     }
 
-    connectPromise = (async () => {
-      const c = createClient(config.url);
+    connecting = (async () => {
+      const candidate = build(cfg.url);
       try {
-        await c.cluster.health();
-        client = c;
-        console.log("[opensearch] connected");
+        await probe(candidate);
+        client = candidate;
+        log.info(TAG, "connected");
       } catch (err) {
-        console.warn("[opensearch] initial connect failed — will retry lazily");
+        log.warn(TAG, "initial connect failed — will retry lazily");
         client = null;
-        connectPromise = null;
         if (options?.throwOnError) {
           throw err;
         }
+      } finally {
+        connecting = null;
       }
     })();
 
-    await connectPromise;
-  }
+    await connecting;
+  },
 
-  static getClient(): Client {
+  getClient(): Client {
     if (!client) {
       throw new Error(
         "OpenSearch client not initialized. Call OpenSearchClient.connect() first."
       );
     }
     return client;
-  }
+  },
 
-  static async ensureConnected(): Promise<Client> {
-    if (client) return client;
-
-    if (!savedConfig) {
+  /**
+   * Returns a live client, transparently retrying the connection if a prior
+   * probe failed. Use this on request paths so a brief startup outage doesn't
+   * permanently disable search.
+   */
+  async ensureConnected(): Promise<Client> {
+    if (client) {
+      return client;
+    }
+    if (!config) {
       throw new Error(
         "OpenSearch config not set. Call OpenSearchClient.connect() first."
       );
     }
 
-    await OpenSearchClient.connect(savedConfig, { throwOnError: true });
+    await OpenSearchClient.connect(config, { throwOnError: true });
 
     if (!client) {
-      throw new Error("[opensearch] failed to connect after retry");
+      throw new Error("failed to connect to OpenSearch after retry");
     }
-
     return client;
-  }
+  },
 
-  static isConnected(): boolean {
+  isConnected(): boolean {
     return client !== null;
-  }
+  },
 
-  static async close(): Promise<void> {
+  async close(): Promise<void> {
     if (client) {
       await client.close();
       client = null;
-      connectPromise = null;
-      console.log("[opensearch] closed");
+      connecting = null;
+      log.info(TAG, "closed");
     }
-  }
-}
+  },
+};

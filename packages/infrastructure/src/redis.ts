@@ -1,40 +1,51 @@
-import { RedisClient } from "bun";
+import { log } from "evlog";
+import Ioredis from "ioredis";
 
 export interface RedisConfig {
   url: string;
 }
 
-let client: RedisClient | null = null;
+export type RedisClient = Ioredis;
 
-// biome-ignore lint/complexity/noStaticOnlyClass: Singleton pattern with encapsulated state
-export class Redis {
-  static async connect({ url }: RedisConfig): Promise<RedisClient> {
+const TAG = "redis";
+
+let client: Ioredis | null = null;
+
+export const Redis = {
+  async connect({ url }: RedisConfig): Promise<Ioredis> {
     if (!client) {
-      client = new RedisClient(url);
-
-      client.onconnect = () => {
-        console.log("[redis] connected");
-      };
-
-      client.onclose = (err) => {
-        console.error("[redis] connection closed:", err);
-      };
+      client = new Ioredis(url, {
+        // TCP keepalive stops idle proxies (Coolify/Traefik) from reaping the
+        // socket overnight — the morning drop. Auto-reconnect + offline queue
+        // are on by default, so commands during a blip are queued, not rejected.
+        keepAlive: 30_000,
+      });
+      client.on("connect", () => log.info(TAG, "connected"));
+      client.on("error", (err) => log.error(TAG, `${err}`));
+      client.on("close", () => log.warn(TAG, "connection closed"));
+      client.on("reconnecting", () => log.warn(TAG, "reconnecting"));
     }
+    return Redis.getClient();
+  },
 
-    return await Redis.getClient();
-  }
-
-  static async getClient(): Promise<RedisClient> {
+  async getClient(): Promise<Ioredis> {
     if (!client) {
       throw new Error(
         "Redis client not connected. Call Redis.connect() first."
       );
     }
-
-    if (!client.connected) {
-      await client.connect();
-    }
-
     return client;
-  }
-}
+  },
+
+  isConnected(): boolean {
+    return client?.status === "ready";
+  },
+
+  async close(): Promise<void> {
+    if (client) {
+      await client.quit();
+      client = null;
+      log.info(TAG, "closed");
+    }
+  },
+};

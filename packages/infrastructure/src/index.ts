@@ -1,4 +1,5 @@
-export type { OpenSearchConfig } from "./opensearch";
+export type { Channel, ConsumeMessage } from "amqplib";
+export type { OpenSearchConfig, OpenSearchConnectOptions } from "./opensearch";
 export { OpenSearchClient } from "./opensearch";
 export type { MessageSearchDocument } from "./opensearch-index";
 export {
@@ -9,12 +10,15 @@ export {
 export type { PusherConfig } from "./pusher";
 export { PusherClient } from "./pusher";
 export type {
+  ConsumerHandler,
+  ConsumerOptions,
   NotificationQueueMessage,
   QueueConfig,
   QueueMessage,
+  QueueName,
   ReadReceiptQueueMessage,
   SearchIndexQueueMessage,
 } from "./queue";
 export { QUEUES, Queue } from "./queue";
-export type { RedisConfig } from "./redis";
+export type { RedisClient, RedisConfig } from "./redis";
 export { Redis } from "./redis";

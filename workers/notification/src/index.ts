@@ -1,3 +1,4 @@
+import { log } from "evlog";
 import { db } from "@work-holo/db";
 import { createEmailTransport } from "@work-holo/email";
 import { env } from "@work-holo/env/notification-worker";
@@ -13,6 +14,8 @@ import { startDigestProcessor } from "./lib/digest-processor";
 import { handleEmailDelivery as sendEmailNotification } from "./lib/handlers/email";
 import { handlePushDelivery as sendPushNotifications } from "./lib/handlers/push";
 import { handlePusherDelivery } from "./lib/handlers/pusher";
+
+const TAG = "notification";
 
 webpush.setVapidDetails(
   env.VAPID_SUBJECT,
@@ -136,10 +139,12 @@ async function handleEmailDelivery(
 
     if (isDnsResolutionError) {
       emailDeliveryDisabled = true;
-      console.warn(
-        `[Notification Worker] Email delivery disabled due SMTP DNS resolution failure. Check SMTP_HOST in worker env (current: ${env.SMTP_HOST}).`,
-        error
-      );
+      log.warn({
+        tag: TAG,
+        message: "Email delivery disabled due to SMTP DNS resolution failure",
+        smtpHost: env.SMTP_HOST,
+        error: error instanceof Error ? error.message : errorText,
+      });
       return;
     }
 
@@ -149,14 +154,14 @@ async function handleEmailDelivery(
 
 async function handleMessage(message: NotificationQueueMessage): Promise<void> {
   if (isDuplicateNotification(message)) {
-    console.log(
-      `[Notification Worker] Duplicate message skipped within ${DEDUP_WINDOW_MS / 1000}s window:`,
-      {
-        targetUserId: message.targetUserId,
-        eventType: message.eventType,
-        entityId: message.entityId,
-      }
-    );
+    log.info({
+      tag: TAG,
+      message: "Duplicate message skipped",
+      windowSeconds: DEDUP_WINDOW_MS / 1000,
+      targetUserId: message.targetUserId,
+      eventType: message.eventType,
+      entityId: message.entityId,
+    });
     return;
   }
 
@@ -182,9 +187,10 @@ async function handleMessage(message: NotificationQueueMessage): Promise<void> {
         await handleEmailDelivery(message);
         return;
       default:
-        console.warn(
-          `[Notification Worker] Unsupported delivery channel "${channel}" for notification ${message.notificationId}`
-        );
+        log.warn({
+          tag: TAG,
+          message: `Unsupported delivery channel "${channel}" for notification ${message.notificationId}`,
+        });
     }
   });
 
@@ -204,10 +210,11 @@ async function handleMessage(message: NotificationQueueMessage): Promise<void> {
       continue;
     }
 
-    console.warn(
-      `[Notification Worker] Non-critical ${failedChannel} delivery failed for notification ${message.notificationId}. Realtime delivery already handled; skipping retry for this channel.`,
-      result.reason
-    );
+    log.warn({
+      tag: TAG,
+      message: `Non-critical ${failedChannel} delivery failed for notification ${message.notificationId}. Realtime delivery already handled; skipping retry for this channel.`,
+      reason: result.reason,
+    });
   }
 
   if (realtimeFailure) {
@@ -221,7 +228,7 @@ class QueueWorker {
   async connect(): Promise<void> {
     await Queue.connect({ url: env.RABBITMQ_URL });
     this.channel = Queue.getClient();
-    console.log("Connected to RabbitMQ successfully");
+    log.info(TAG, "Connected to RabbitMQ successfully");
   }
 
   async consume(): Promise<void> {
@@ -231,10 +238,11 @@ class QueueWorker {
 
     await this.channel.prefetch(PREFETCH_COUNT);
 
-    console.log(
+    log.info(
+      TAG,
       `Starting to consume messages from queue: ${QUEUES.NOTIFICATIONS}`
     );
-    console.log(`Prefetch count: ${PREFETCH_COUNT}`);
+    log.info(TAG, `Prefetch count: ${PREFETCH_COUNT}`);
 
     await this.channel.consume(
       QUEUES.NOTIFICATIONS,
@@ -252,10 +260,11 @@ class QueueWorker {
             this.channel.ack(msg);
           }
         } catch (error) {
-          console.error(
-            "[Notification Worker] Error processing message:",
-            error
-          );
+          log.error({
+            tag: TAG,
+            message: "Error processing message",
+            error: error instanceof Error ? error.message : String(error),
+          });
 
           if (this.channel) {
             this.channel.nack(msg, false, true);
@@ -267,28 +276,26 @@ class QueueWorker {
       }
     );
 
-    console.log("Worker is now consuming messages. Press CTRL+C to exit.\n");
+    log.info(TAG, "Worker is now consuming messages. Press CTRL+C to exit.");
   }
 
   async close(): Promise<void> {
-    console.log("\n===========================================");
-    console.log("Shutting down worker gracefully...");
-    console.log("===========================================");
+    log.info({ tag: TAG, message: "Shutting down worker gracefully" });
 
     await Queue.close();
     this.channel = null;
-    console.log("RabbitMQ connection closed successfully");
+    log.info(TAG, "RabbitMQ connection closed successfully");
   }
 }
 
 async function startWorker() {
-  console.log("===========================================");
-  console.log("Notification Worker Starting...");
-  console.log("===========================================");
-  console.log(`Environment: ${env.ENV}`);
-  console.log(`RabbitMQ URL: ${env.RABBITMQ_URL}`);
-  console.log(`Prefetch Count: ${PREFETCH_COUNT}`);
-  console.log("===========================================\n");
+  log.info({
+    tag: TAG,
+    message: "Notification Worker Starting",
+    environment: env.ENV,
+    rabbitmqUrl: env.RABBITMQ_URL,
+    prefetchCount: PREFETCH_COUNT,
+  });
 
   const worker = new QueueWorker();
   const isProduction = env.ENV === "production";
@@ -302,14 +309,14 @@ async function startWorker() {
     useTLS: isProduction,
   });
 
-  console.log("Pusher client initialized");
+  log.info(TAG, "Pusher client initialized");
 
   const digestIntervalId = startDigestProcessor(
     db,
     emailTransport,
     env.SMTP_FROM
   );
-  console.log("Email digest processor started");
+  log.info(TAG, "Email digest processor started");
 
   try {
     await worker.connect();
@@ -325,21 +332,38 @@ async function startWorker() {
     process.on("SIGTERM", shutdown);
 
     process.on("uncaughtException", (error) => {
-      console.error("Uncaught exception:", error);
+      log.error({
+        tag: TAG,
+        message: "Uncaught exception",
+        error: error instanceof Error ? error.message : String(error),
+      });
       shutdown();
     });
 
     process.on("unhandledRejection", (reason, promise) => {
-      console.error("Unhandled rejection at:", promise, "reason:", reason);
+      log.error({
+        tag: TAG,
+        message: "Unhandled rejection",
+        reason: String(reason),
+        promise: String(promise),
+      });
       shutdown();
     });
   } catch (error) {
-    console.error("Failed to start worker:", error);
+    log.error({
+      tag: TAG,
+      message: "Failed to start worker",
+      error: error instanceof Error ? error.message : String(error),
+    });
     process.exit(1);
   }
 }
 
 startWorker().catch((error) => {
-  console.error("[Notification Worker] Failed to start:", error);
+  log.error({
+    tag: TAG,
+    message: "Failed to start",
+    error: error instanceof Error ? error.message : String(error),
+  });
   process.exit(1);
 });

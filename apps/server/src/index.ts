@@ -35,7 +35,7 @@ PusherClient.connect({
   useTLS: isProduction,
 });
 
-await Queue.connect({ url: env.RABBITMQ_URL });
+Queue.connect({ url: env.RABBITMQ_URL });
 
 PermissionManagers.initialize({
   db,
@@ -108,6 +108,26 @@ app.use("/*", async (c, next) => {
 });
 
 app.get("/", (c) => c.text("OK"));
+
+let shuttingDown = false;
+const shutdown = async (signal: string) => {
+  if (shuttingDown) {
+    return;
+  }
+  shuttingDown = true;
+  console.log(`[server] received ${signal}, closing infrastructure...`);
+  // Close Queue first so in-flight RabbitMQ publishes flush before teardown.
+  await Promise.allSettled([
+    Queue.close(),
+    OpenSearchClient.close(),
+    Redis.close(),
+    PusherClient.close(),
+  ]);
+  process.exit(0);
+};
+
+process.on("SIGTERM", () => shutdown("SIGTERM"));
+process.on("SIGINT", () => shutdown("SIGINT"));
 
 export default {
   fetch: app.fetch,

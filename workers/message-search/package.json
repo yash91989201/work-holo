@@ -10,7 +10,8 @@
   "dependencies": {
     "@work-holo/env": "workspace:*",
     "@work-holo/config": "workspace:*",
-    "@work-holo/infrastructure": "workspace:*"
+    "@work-holo/infrastructure": "workspace:*",
+    "evlog": "^2.19.1"
   },
   "devDependencies": {
     "@types/bun": "^1.3.14",

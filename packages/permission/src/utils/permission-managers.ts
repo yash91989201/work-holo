@@ -1,5 +1,5 @@
 import type { db as DbClient } from "@work-holo/db";
-import type { RedisClient } from "bun";
+import type { RedisClient } from "@work-holo/infrastructure";
 import type Pusher from "pusher";
 import { AuthorizationEngine } from "../services/authorization-engine";
 import { CacheManager } from "../services/cache-manager";

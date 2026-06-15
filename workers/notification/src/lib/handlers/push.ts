@@ -1,8 +1,11 @@
+import { log } from "evlog";
 import type { db as Db } from "@work-holo/db";
 import { organization } from "@work-holo/db/schema/auth";
 import { pushSubscriptionTable, user } from "@work-holo/db/schema/index";
 import { eq } from "drizzle-orm";
 import webpush from "web-push";
+
+const TAG = "notification:push";
 
 interface HandlePushDeliveryParams {
   actorId: string;
@@ -132,8 +135,9 @@ export async function handlePushDelivery(
     .where(eq(pushSubscriptionTable.userId, targetUserId));
 
   if (subscriptions.length === 0) {
-    console.log(
-      `[Push Handler] No push subscriptions for user ${targetUserId}, skipping`
+    log.info(
+      TAG,
+      `No push subscriptions for user ${targetUserId}, skipping`
     );
     return;
   }
@@ -190,8 +194,9 @@ export async function handlePushDelivery(
           "statusCode" in error &&
           (error.statusCode === 410 || error.statusCode === 404)
         ) {
-          console.log(
-            `[Push Handler] Removing stale subscription ${sub.id} (status: ${error.statusCode})`
+          log.info(
+            TAG,
+            `Removing stale subscription ${sub.id} (status: ${error.statusCode})`
           );
           await db
             .delete(pushSubscriptionTable)
@@ -207,17 +212,23 @@ export async function handlePushDelivery(
   const failed = results.filter((r) => r.status === "rejected").length;
 
   if (failed > 0) {
-    console.error(
-      `[Push Handler] Push delivery for notification ${notificationId}: ${succeeded} succeeded, ${failed} failed`
-    );
+    log.error({
+      tag: TAG,
+      message: `Push delivery for notification ${notificationId}: ${succeeded} succeeded, ${failed} failed`,
+    });
     for (const result of results) {
       if (result.status === "rejected") {
-        console.error("[Push Handler] Push error:", result.reason);
+        log.error({
+          tag: TAG,
+          message: "Push error",
+          reason: result.reason,
+        });
       }
     }
   } else {
-    console.log(
-      `[Push Handler] Push delivered to ${succeeded} device(s) for notification ${notificationId}`
+    log.info(
+      TAG,
+      `Push delivered to ${succeeded} device(s) for notification ${notificationId}`
     );
   }
 }

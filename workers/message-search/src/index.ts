@@ -1,3 +1,4 @@
+import { log } from "evlog";
 import { env } from "@work-holo/env/search-worker";
 import {
   ensureSearchIndex,
@@ -9,12 +10,15 @@ import {
 import type { Channel, ConsumeMessage } from "amqplib";
 import { handleSearchIndexMessage } from "./lib/processor";
 
+const TAG = "message-search";
+
 const PREFETCH_COUNT = env.PREFETCH_COUNT;
 const MAX_RETRIES = env.MAX_RETRIES;
 
 async function handleMessage(message: SearchIndexQueueMessage): Promise<void> {
-  console.log(
-    `[Message Search Worker] Processing ${message.action} for message: ${message.messageId}`
+  log.info(
+    TAG,
+    `Processing ${message.action} for message: ${message.messageId}`
   );
 
   const client = OpenSearchClient.getClient();
@@ -27,7 +31,7 @@ class QueueWorker {
   async connect(): Promise<void> {
     await Queue.connect({ url: env.RABBITMQ_URL });
     this.channel = Queue.getClient();
-    console.log("Connected to RabbitMQ successfully");
+    log.info(TAG, "Connected to RabbitMQ successfully");
   }
 
   async consume(): Promise<void> {
@@ -37,10 +41,11 @@ class QueueWorker {
 
     await this.channel.prefetch(PREFETCH_COUNT);
 
-    console.log(
+    log.info(
+      TAG,
       `Starting to consume messages from queue: ${QUEUES.SEARCH_INDEXING}`
     );
-    console.log(`Prefetch count: ${PREFETCH_COUNT}`);
+    log.info(TAG, `Prefetch count: ${PREFETCH_COUNT}`);
 
     await this.channel.consume(
       QUEUES.SEARCH_INDEXING,
@@ -57,10 +62,11 @@ class QueueWorker {
             this.channel.ack(msg);
           }
         } catch (error) {
-          console.error(
-            "[Message Search Worker] Error processing message:",
-            error
-          );
+          log.error({
+            tag: TAG,
+            message: "Error processing message",
+            error: error instanceof Error ? error.message : String(error),
+          });
 
           if (!this.channel) return;
 
@@ -68,9 +74,10 @@ class QueueWorker {
           const retryCount = (headers["x-retries"] as number) || 0;
 
           if (retryCount >= MAX_RETRIES) {
-            console.error(
-              `[Message Search Worker] Message ${msg.properties.messageId} exceeded max retries (${MAX_RETRIES}). Discarding.`
-            );
+            log.error({
+              tag: TAG,
+              message: `Message ${msg.properties.messageId} exceeded max retries (${MAX_RETRIES}). Discarding.`,
+            });
             this.channel.ack(msg);
             return;
           }
@@ -95,32 +102,30 @@ class QueueWorker {
       }
     );
 
-    console.log("Worker is now consuming messages. Press CTRL+C to exit.\n");
+    log.info(TAG, "Worker is now consuming messages. Press CTRL+C to exit.");
   }
 
   async close(): Promise<void> {
-    console.log("\n===========================================");
-    console.log("Shutting down worker gracefully...");
-    console.log("===========================================");
+    log.info({ tag: TAG, message: "Shutting down worker gracefully" });
 
     await Queue.close();
     this.channel = null;
-    console.log("RabbitMQ connection closed successfully");
+    log.info(TAG, "RabbitMQ connection closed successfully");
 
     await OpenSearchClient.close();
-    console.log("OpenSearch connection closed successfully");
+    log.info(TAG, "OpenSearch connection closed successfully");
   }
 }
 
 async function startWorker() {
-  console.log("===========================================");
-  console.log("Message Search Worker Starting...");
-  console.log("===========================================");
-  console.log(`Environment: ${env.ENV}`);
-  console.log(`RabbitMQ URL: ${env.RABBITMQ_URL}`);
-  console.log(`OpenSearch URL: ${env.OPENSEARCH_URL}`);
-  console.log(`Prefetch Count: ${PREFETCH_COUNT}`);
-  console.log("===========================================\n");
+  log.info({
+    tag: TAG,
+    message: "Message Search Worker Starting",
+    environment: env.ENV,
+    rabbitmqUrl: env.RABBITMQ_URL,
+    opensearchUrl: env.OPENSEARCH_URL,
+    prefetchCount: PREFETCH_COUNT,
+  });
 
   const worker = new QueueWorker();
 
@@ -129,11 +134,11 @@ async function startWorker() {
       { url: env.OPENSEARCH_URL },
       { throwOnError: true }
     );
-    console.log("Connected to OpenSearch successfully");
+    log.info(TAG, "Connected to OpenSearch successfully");
 
     const searchClient = OpenSearchClient.getClient();
     await ensureSearchIndex(searchClient);
-    console.log("Search index ensured");
+    log.info(TAG, "Search index ensured");
 
     await worker.connect();
     await worker.consume();
@@ -147,21 +152,38 @@ async function startWorker() {
     process.on("SIGTERM", shutdown);
 
     process.on("uncaughtException", (error) => {
-      console.error("Uncaught exception:", error);
+      log.error({
+        tag: TAG,
+        message: "Uncaught exception",
+        error: error instanceof Error ? error.message : String(error),
+      });
       shutdown();
     });
 
     process.on("unhandledRejection", (reason, promise) => {
-      console.error("Unhandled rejection at:", promise, "reason:", reason);
+      log.error({
+        tag: TAG,
+        message: "Unhandled rejection",
+        reason: String(reason),
+        promise: String(promise),
+      });
       shutdown();
     });
   } catch (error) {
-    console.error("Failed to start worker:", error);
+    log.error({
+      tag: TAG,
+      message: "Failed to start worker",
+      error: error instanceof Error ? error.message : String(error),
+    });
     process.exit(1);
   }
 }
 
 startWorker().catch((error) => {
-  console.error("[Message Search Worker] Failed to start:", error);
+  log.error({
+    tag: TAG,
+    message: "Failed to start",
+    error: error instanceof Error ? error.message : String(error),
+  });
   process.exit(1);
 });

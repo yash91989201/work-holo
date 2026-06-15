@@ -1,3 +1,4 @@
+import { log } from "evlog";
 import type { db as Db } from "@work-holo/db";
 import { organization, user } from "@work-holo/db/schema/auth";
 import {
@@ -16,6 +17,8 @@ import type { NotificationQueueMessage } from "@work-holo/infrastructure";
 import { and, eq, isNull } from "drizzle-orm";
 import type { Transporter } from "nodemailer";
 import { createElement } from "react";
+
+const TAG = "notification:email";
 
 type EmailDigestInterval = "immediate" | "15min" | "hourly" | "daily";
 
@@ -291,8 +294,9 @@ export async function handleEmailDelivery(
 
   const userInfo = await getUserEmailInfo(db, message.targetUserId);
   if (!userInfo) {
-    console.log(
-      `[Email Handler] User ${message.targetUserId} has no email address, skipping`
+    log.info(
+      TAG,
+      `User ${message.targetUserId} has no email address, skipping`
     );
     return;
   }
@@ -317,15 +321,17 @@ export async function handleEmailDelivery(
     );
 
     if (!emailOptions) {
-      console.warn(
-        `[Email Handler] No template mapping for event type "${message.eventType}"`
+      log.warn(
+        TAG,
+        `No template mapping for event type "${message.eventType}"`
       );
       return;
     }
 
     await sendEmail(transport, emailOptions);
-    console.log(
-      `[Email Handler] Immediate email sent for notification ${message.notificationId} to ${userInfo.email}`
+    log.info(
+      TAG,
+      `Immediate email sent for notification ${message.notificationId} to ${userInfo.email}`
     );
     return;
   }
@@ -340,7 +346,8 @@ export async function handleEmailDelivery(
     sent: false,
   });
 
-  console.log(
-    `[Email Handler] Batched email for notification ${message.notificationId} (interval: ${interval}, scheduled: ${scheduledAt.toISOString()})`
+  log.info(
+    TAG,
+    `Batched email for notification ${message.notificationId} (interval: ${interval}, scheduled: ${scheduledAt.toISOString()})`
   );
 }
