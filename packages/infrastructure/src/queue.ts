@@ -205,7 +205,12 @@ function buildRecoveryOptions(cfg: QueueConfig) {
 
 function attachModelListeners(m: RecoveringChannelModel): void {
   m.on("disconnect", (err) => {
+    const hadActiveChannel = channel !== null;
     channel = null;
+    if (hadActiveChannel) {
+      // Re-arm readiness so whenReady() waits for the next recovered channel.
+      resetChannelReady();
+    }
     log.warn(TAG, `disconnected: ${err}`);
   });
   m.on("reconnect-scheduled", ({ attempt, delay: delayMs }) =>
