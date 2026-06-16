@@ -1,5 +1,5 @@
-import { log } from "evlog";
 import { PusherClient } from "@work-holo/infrastructure";
+import { log } from "evlog";
 
 const TAG = "notification:pusher";
 

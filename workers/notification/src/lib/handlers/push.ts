@@ -1,8 +1,8 @@
-import { log } from "evlog";
 import type { db as Db } from "@work-holo/db";
 import { organization } from "@work-holo/db/schema/auth";
 import { pushSubscriptionTable, user } from "@work-holo/db/schema/index";
 import { eq } from "drizzle-orm";
+import { log } from "evlog";
 import webpush from "web-push";
 
 const TAG = "notification:push";
@@ -135,10 +135,7 @@ export async function handlePushDelivery(
     .where(eq(pushSubscriptionTable.userId, targetUserId));
 
   if (subscriptions.length === 0) {
-    log.info(
-      TAG,
-      `No push subscriptions for user ${targetUserId}, skipping`
-    );
+    log.info(TAG, `No push subscriptions for user ${targetUserId}, skipping`);
     return;
   }
 

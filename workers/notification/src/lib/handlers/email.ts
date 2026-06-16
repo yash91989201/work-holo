@@ -1,4 +1,3 @@
-import { log } from "evlog";
 import type { db as Db } from "@work-holo/db";
 import { organization, user } from "@work-holo/db/schema/auth";
 import {
@@ -15,6 +14,7 @@ import {
 } from "@work-holo/email";
 import type { NotificationQueueMessage } from "@work-holo/infrastructure";
 import { and, eq, isNull } from "drizzle-orm";
+import { log } from "evlog";
 import type { Transporter } from "nodemailer";
 import { createElement } from "react";
 
