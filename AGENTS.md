@@ -1,61 +1,87 @@
 # AGENTS.md
 
-> **Purpose:** This file defines workflow patterns and mandatory tooling rules for AI agents operating in this codebase.
-> All rules are non-negotiable unless explicitly stated otherwise.
+> **Purpose:** Behavioral guidelines, project-specific tooling rules, and code intelligence for AI agents in this codebase. All rules are non-negotiable unless explicitly stated otherwise.
 
 ---
 
-## Table of Contents
+## Agent Behavior
 
-1. [Frontend API — oRPC + TanStack Query](#1-frontend-api--orpc--tanstack-query)
-2. [UI and Design System](#2-ui-and-design-system)
-3. [Schemas and Generated Types](#3-schemas-and-generated-types)
-4. [Forms — TanStack Form + Zod](#4-forms--tanstack-form--zod)
-5. [Suspense Fallbacks](#5-suspense-fallbacks)
-6. [Images](#6-images)
-7. [Permission System](#7-permission-system)
+### Think Before Coding
+
+Don't assume. Don't hide confusion. Surface tradeoffs.
+
+- State assumptions explicitly; if uncertain, ask.
+- Present multiple interpretations rather than picking silently.
+- If a simpler approach exists, say so and push back.
+- If something is unclear, stop — name what's confusing, then ask.
+
+### Simplicity First
+
+Minimum code that solves the problem. Nothing speculative.
+
+- No features, abstractions, or flexibility beyond what was asked.
+- No error handling for impossible scenarios.
+- If 200 lines could be 50, rewrite it.
+
+Ask: *Would a senior engineer say this is overcomplicated?* If yes, simplify.
+
+### Surgical Changes
+
+Touch only what you must. Clean up only your own mess.
+
+- Don't improve adjacent code, comments, or formatting.
+- Don't refactor things that aren't broken; match existing style.
+- Mention unrelated dead code — don't delete it.
+- Remove imports/variables/functions that *your* changes made unused.
+
+Every changed line must trace directly to the user's request.
+
+### Goal-Driven Execution
+
+Define success criteria. Loop until verified.
+
+- Transform vague tasks: "Fix the bug" → write a reproducing test, then make it pass.
+- For multi-step tasks, state a brief plan with a verify check per step.
 
 ---
 
-## 1. Frontend API — oRPC + TanStack Query
+## Project Rules Overview
 
-All API calls must use `queryUtils` with TanStack Query. Never call procedures directly from components.
+**Note:** This is just an overview . Always read the linked docs files for full implementation details when required.
+
+### API — oRPC + TanStack Query
+
+All API calls via `queryUtils`. Never call procedures directly from components.
 
 | Pattern | Rule |
 |---|---|
 | Reads | `useSuspenseQuery` preferred; `useQuery` when suspense is inappropriate |
 | Writes | `useMutation(queryUtils.*.mutationOptions(...))` |
 | Invalidation | Only inside mutation callbacks |
-| Query keys | `queryUtils.*.queryKey(...)` — never hand-roll keys |
-| Auth | Cookie-backed by default; TanStack options supported |
+| Query keys | `queryUtils.*.queryKey(...)` — never hand-roll |
+| Auth | Cookie-backed by default |
 
 Docs: [`api-client-usage.md`](docs/guides/api-client-usage.md)
 
----
+### UI and Design System
 
-## 2. UI and Design System
-
-All frontend UI must use the project theme and shadcn primitives. Use **theme tokens** (colors, spacing, radius, typography) from `packages/ui/src/styles/globals.css` / Tailwind. Reuse shared primitives/components from `packages/ui/src/components` where applicable. No invented hex values, arbitrary pixels, one-off radii, or inline style drift. Extend existing shadcn component tokens/primitives; inspect component code when needed.
+Use **theme tokens** from `packages/ui/src/styles/globals.css` / Tailwind and shadcn primitives from `packages/ui/src/components`. No invented hex values, arbitrary pixels, one-off radii, or inline style drift.
 
 Docs: [`ui.md`](docs/conventions/ui.md)
 
----
-
-## 3. Schemas and Generated Types
+### Schemas and Types
 
 | | |
 |---|---|
 | Schema tool | Zod — defined outside components |
 | Frontend location | `apps/web/src/lib/schemas/` |
-| Generated types | Import from `@/lib/types`; never manually edit generated files |
+| Generated types | Import from `@/lib/types`; never manually edit |
 | Form naming | `*FormSchema` / `*FormType` |
 | Monorepo boundaries | Frontend: `@/lib/*` · Server shared: `@server/lib/*` |
 
 Docs: [`schema.md`](docs/conventions/schema.md), [`form-schema.md`](docs/guides/forms/form-schema.md)
 
----
-
-## 4. Forms — TanStack Form + Zod
+### Forms — TanStack Form + Zod
 
 | Step | Rule |
 |---|---|
@@ -64,21 +90,17 @@ Docs: [`schema.md`](docs/conventions/schema.md), [`form-schema.md`](docs/guides/
 | Submission | `useMutation(queryUtils.*.mutationOptions())` — side effects in callbacks |
 | Buttons | Explicit type on non-submit buttons; submit state via `form.Subscribe` |
 | Complex forms | Nested paths, `FieldGroup`/`FieldSet`, TanStack array APIs |
-| Validation | Async and cross-field validation in Zod refinements |
+| Validation | Async and cross-field in Zod refinements |
 
 Docs: [`simple-form.md`](docs/guides/forms/simple-form.md), [`complex-form.md`](docs/guides/forms/complex-form.md), [`form-schema.md`](docs/guides/forms/form-schema.md)
 
----
+### Suspense Fallbacks
 
-## 5. Suspense Fallbacks
-
-Fallbacks must mirror the final UI, skeletonizing only dynamic data. Create `ComponentNameSkeleton` and assign to `ComponentName.Fallback`. Keep wrappers, hierarchy, headers, labels, and icons identical. Replace API-sourced values with sized `<Skeleton />`; keep all static content visible.
+Create `ComponentNameSkeleton`, assign to `ComponentName.Fallback`. Mirror final UI exactly — same wrappers, hierarchy, headers, labels, icons. Replace API-sourced values with sized `<Skeleton />`; keep static content visible.
 
 Docs: [`suspense-fallback.md`](docs/guides/suspense-fallback.md)
 
----
-
-## 6. Images
+### Images
 
 Use `Image` from `@/components/shared/image` for all images.
 
@@ -91,9 +113,7 @@ Use `Image` from `@/components/shared/image` for all images.
 
 Docs: [`image-component.md`](docs/guides/image-component.md)
 
----
-
-## 7. Permission System
+### Permission System
 
 | Concern | Rule |
 |---|---|
@@ -107,10 +127,12 @@ Docs: [`image-component.md`](docs/guides/image-component.md)
 
 Docs: [`README`](docs/guides/permission-system/README.md) · [`backend-integration`](docs/guides/permission-system/backend-integration.md) · [`architecture-runtime-flow`](docs/guides/permission-system/architecture-runtime-flow.md) · [`frontend-integration`](docs/guides/permission-system/frontend-integration.md) · [`frontend-permissions`](docs/guides/permission-system/frontend-permissions.md) · [`caching-consistency`](docs/guides/permission-system/caching-consistency.md) · [`policy-compilation-casbin`](docs/guides/permission-system/policy-compilation-casbin.md) · [`dsl-vocabulary-codegen`](docs/guides/permission-system/dsl-vocabulary-codegen.md) · [`adding-permissions`](docs/guides/permission-system/adding-permissions.md) · [`extension-guide`](docs/guides/permission-system/extension-guide.md) · [`operations-troubleshooting`](docs/guides/permission-system/operations-troubleshooting.md)
 
+---
+
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **work-holo** (6083 symbols, 14740 relationships, 242 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **work-holo** (6142 symbols, 14777 relationships, 240 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > Index stale? Run `node .gitnexus/run.cjs analyze` from the project root — it auto-selects an available runner. No `.gitnexus/run.cjs` yet? `npx gitnexus analyze` (npm 11 crash → `npm i -g gitnexus`; #1939).
 
@@ -126,6 +148,30 @@ This project is indexed by GitNexus as **work-holo** (6083 symbols, 14740 relati
 
 - NEVER edit a function, class, or method without first running `impact` on it.
 - NEVER ignore HIGH or CRITICAL risk warnings from impact analysis.
+- NEVER rename symbols with find-and-replace — use `rename` which understands the call graph.
+- NEVER commit changes without running `detect_changes()` to check affected scope.
+
+## Resources
+
+| Resource | Use for |
+|----------|---------|
+| `gitnexus://repo/work-holo/context` | Codebase overview, check index freshness |
+| `gitnexus://repo/work-holo/clusters` | All functional areas |
+| `gitnexus://repo/work-holo/processes` | All execution flows |
+| `gitnexus://repo/work-holo/process/{name}` | Step-by-step execution trace |
+
+## CLI
+
+| Task | Read this skill file |
+|------|---------------------|
+| Understand architecture / "How does X work?" | `.claude/skills/gitnexus/gitnexus-exploring/SKILL.md` |
+| Blast radius / "What breaks if I change X?" | `.claude/skills/gitnexus/gitnexus-impact-analysis/SKILL.md` |
+| Trace bugs / "Why is X failing?" | `.claude/skills/gitnexus/gitnexus-debugging/SKILL.md` |
+| Rename / extract / split / refactor | `.claude/skills/gitnexus/gitnexus-refactoring/SKILL.md` |
+| Tools, resources, schema reference | `.claude/skills/gitnexus/gitnexus-guide/SKILL.md` |
+| Index, status, clean, wiki CLI commands | `.claude/skills/gitnexus/gitnexus-cli/SKILL.md` |
+
+<!-- gitnexus:end -->
 - NEVER rename symbols with find-and-replace — use `rename` which understands the call graph.
 - NEVER commit changes without running `detect_changes()` to check affected scope.
 
