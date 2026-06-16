@@ -1,13 +1,11 @@
 import type { RedisClient } from "@work-holo/infrastructure";
 import type { BitsetData, CachedDecision, PermissionMap } from "../lib/types";
 
-type RedisClientProvider = () => Promise<RedisClient>;
-
 /**
  * Manages Redis-backed decision, bitset, and permission-map caches.
  */
 export class CacheManager {
-  private readonly getRedisClient: RedisClientProvider;
+  private readonly redis: RedisClient;
 
   private readonly DECISION_PREFIX = "perm:";
   private readonly BITSET_PREFIX = "bitset:";
@@ -23,9 +21,8 @@ export class CacheManager {
   /**
    * Creates a cache manager from a Redis client.
    */
-  constructor(redis: RedisClient | RedisClientProvider) {
-    this.getRedisClient =
-      typeof redis === "function" ? redis : async () => redis;
+  constructor(redis: RedisClient) {
+    this.redis = redis;
   }
 
   /**
@@ -38,7 +35,7 @@ export class CacheManager {
     currentVersion: number,
     scopeKey?: string
   ): Promise<CachedDecision | null> {
-    const redis = await this.getRedisClient();
+    const redis = this.redis;
     const key = `${this.DECISION_PREFIX}${userId}:${orgId}:${this.buildScopeKey(scopeKey)}:${permissionKey}`;
     const raw = await redis.get(key);
 
@@ -65,7 +62,7 @@ export class CacheManager {
     currentVersion: number,
     scopeKey?: string
   ): Promise<void> {
-    const redis = await this.getRedisClient();
+    const redis = this.redis;
     const key = `${this.DECISION_PREFIX}${userId}:${orgId}:${this.buildScopeKey(scopeKey)}:${permissionKey}`;
 
     const decision: CachedDecision = {
@@ -81,7 +78,7 @@ export class CacheManager {
    * Clears all decision cache entries for a user within an organization.
    */
   async invalidateUserCache(userId: string, orgId: string): Promise<void> {
-    const redis = await this.getRedisClient();
+    const redis = this.redis;
     const pattern = `${this.DECISION_PREFIX}${userId}:${orgId}:*`;
 
     const keys: string[] = [];
@@ -105,7 +102,7 @@ export class CacheManager {
    * Clears all decision cache entries for an organization.
    */
   async invalidateOrgCache(orgId: string): Promise<void> {
-    const redis = await this.getRedisClient();
+    const redis = this.redis;
     const patterns = [
       `${this.DECISION_PREFIX}*:${orgId}:*`,
       `${this.BITSET_PREFIX}*:${orgId}:*`,
@@ -140,7 +137,7 @@ export class CacheManager {
     currentVersion: number,
     scopeKey?: string
   ): Promise<BitsetData | null> {
-    const redis = await this.getRedisClient();
+    const redis = this.redis;
     const cacheKey = `${this.BITSET_PREFIX}${userId}:${orgId}:${this.buildScopeKey(scopeKey)}`;
     const raw = await redis.get(cacheKey);
 
@@ -165,7 +162,7 @@ export class CacheManager {
     bitsetData: BitsetData,
     scopeKey?: string
   ): Promise<void> {
-    const redis = await this.getRedisClient();
+    const redis = this.redis;
     const cacheKey = `${this.BITSET_PREFIX}${userId}:${orgId}:${this.buildScopeKey(scopeKey)}`;
     await redis.setEx(cacheKey, this.BITSET_TTL, JSON.stringify(bitsetData));
   }
@@ -174,7 +171,7 @@ export class CacheManager {
    * Deletes the bitset cache entry for a user and organization.
    */
   async invalidateBitset(userId: string, orgId: string): Promise<void> {
-    const redis = await this.getRedisClient();
+    const redis = this.redis;
     const pattern = `${this.BITSET_PREFIX}${userId}:${orgId}:*`;
 
     const keys: string[] = [];
@@ -202,7 +199,7 @@ export class CacheManager {
     orgId: string,
     currentVersion: number
   ): Promise<PermissionMap | null> {
-    const redis = await this.getRedisClient();
+    const redis = this.redis;
     const cacheKey = `${this.PERM_MAP_PREFIX}${userId}:${orgId}`;
     const raw = await redis.get(cacheKey);
 
@@ -226,7 +223,7 @@ export class CacheManager {
     orgId: string,
     permissionMap: PermissionMap
   ): Promise<void> {
-    const redis = await this.getRedisClient();
+    const redis = this.redis;
     const cacheKey = `${this.PERM_MAP_PREFIX}${userId}:${orgId}`;
     await redis.setEx(
       cacheKey,
@@ -239,7 +236,7 @@ export class CacheManager {
    * Deletes the permission-map cache entry for a user and organization.
    */
   async invalidatePermissionMap(userId: string, orgId: string): Promise<void> {
-    const redis = await this.getRedisClient();
+    const redis = this.redis;
     const cacheKey = `${this.PERM_MAP_PREFIX}${userId}:${orgId}`;
     await redis.del(cacheKey);
   }
