@@ -6,7 +6,6 @@ import {
   Queue,
   type SearchIndexQueueMessage,
 } from "@work-holo/infrastructure";
-import type { Channel } from "amqplib";
 import { log } from "evlog";
 import { handleSearchIndexMessage } from "./lib/processor";
 
@@ -26,11 +25,9 @@ async function handleMessage(message: SearchIndexQueueMessage): Promise<void> {
 }
 
 class QueueWorker {
-  private channel: Channel | null = null;
-
   async connect(): Promise<void> {
-    await Queue.connect({ url: env.RABBITMQ_URL });
-    this.channel = Queue.getClient();
+    Queue.connect({ url: env.RABBITMQ_URL });
+    await Queue.whenReady();
     log.info(TAG, "Connected to RabbitMQ successfully");
   }
 
@@ -87,7 +84,6 @@ class QueueWorker {
     log.info({ tag: TAG, message: "Shutting down worker gracefully" });
 
     await Queue.close();
-    this.channel = null;
     log.info(TAG, "RabbitMQ connection closed successfully");
 
     await OpenSearchClient.close();

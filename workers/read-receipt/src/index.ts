@@ -5,7 +5,6 @@ import {
   Queue,
   type ReadReceiptQueueMessage,
 } from "@work-holo/infrastructure";
-import type { Channel } from "amqplib";
 import { log } from "evlog";
 import {
   cleanupMemberCountCache,
@@ -83,7 +82,6 @@ async function handleMessage(message: ReadReceiptQueueMessage): Promise<void> {
  * RabbitMQ connection manager
  */
 class QueueWorker {
-  private channel: Channel | null = null;
   private cleanupIntervalId: NodeJS.Timeout | null = null;
 
   /**
@@ -91,7 +89,7 @@ class QueueWorker {
    */
   async connect(): Promise<void> {
     Queue.connect({ url: env.RABBITMQ_URL });
-    this.channel = Queue.getClient();
+    await Queue.whenReady();
     log.info(TAG, "Connected to RabbitMQ successfully");
   }
 
@@ -159,7 +157,6 @@ class QueueWorker {
     }
 
     await Queue.close();
-    this.channel = null;
     log.info(TAG, "RabbitMQ connection closed successfully");
   }
 }

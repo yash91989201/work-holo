@@ -127,6 +127,22 @@ function withHeartbeat(url: string): string {
 let model: RecoveringChannelModel | null = null;
 let channel: Channel | null = null;
 let connecting: Promise<RecoveringChannelModel> | null = null;
+let channelReady: Promise<Channel> | null = null;
+let resolveChannelReady: ((ch: Channel) => void) | null = null;
+let rejectChannelReady: ((err: Error) => void) | null = null;
+
+function resetChannelReady(): void {
+  channelReady = new Promise((resolve, reject) => {
+    resolveChannelReady = resolve;
+    rejectChannelReady = reject;
+  });
+}
+
+function settleChannelReady(ch: Channel): void {
+  resolveChannelReady?.(ch);
+  resolveChannelReady = null;
+  rejectChannelReady = null;
+}
 
 // Consumers are stored so they can be re-subscribed on every (re)connect.
 // After a recovery the `setup` hook builds a fresh channel; without replaying
@@ -182,6 +198,7 @@ function buildRecoveryOptions(cfg: QueueConfig) {
       await assertQueues(ch);
       await applyConsumers(ch);
       channel = ch;
+      settleChannelReady(ch);
     },
   };
 }
@@ -215,6 +232,8 @@ export const Queue = {
       return;
     }
 
+    resetChannelReady();
+
     connecting = amqp.connect(withHeartbeat(cfg.url), {
       recovery: buildRecoveryOptions(cfg),
       // TCP keepalive complements the AMQP heartbeat: it nudges NAT/LB layers
@@ -230,9 +249,28 @@ export const Queue = {
       },
       (err) => {
         connecting = null;
+        rejectChannelReady?.(
+          err instanceof Error ? err : new Error(String(err))
+        );
+        rejectChannelReady = null;
+        resolveChannelReady = null;
+        channelReady = null;
         log.error(TAG, `connect failed: ${err}`);
       }
     );
+  },
+
+  /** Resolves once the first channel is ready after {@link connect}. */
+  whenReady(): Promise<Channel> {
+    if (channel) {
+      return Promise.resolve(channel);
+    }
+    if (!channelReady) {
+      throw new Error(
+        "Queue client not initialized. Call Queue.connect() first."
+      );
+    }
+    return channelReady;
   },
 
   getClient(): Channel {
