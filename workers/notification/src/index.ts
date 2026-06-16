@@ -1,4 +1,3 @@
-import { log } from "evlog";
 import { db } from "@work-holo/db";
 import { createEmailTransport } from "@work-holo/email";
 import { env } from "@work-holo/env/notification-worker";
@@ -9,6 +8,7 @@ import {
   Queue,
 } from "@work-holo/infrastructure";
 import type { Channel } from "amqplib";
+import { log } from "evlog";
 import webpush from "web-push";
 import { startDigestProcessor } from "./lib/digest-processor";
 import { handleEmailDelivery as sendEmailNotification } from "./lib/handlers/email";
@@ -232,48 +232,33 @@ class QueueWorker {
   }
 
   async consume(): Promise<void> {
-    if (!this.channel) {
-      throw new Error("Channel not initialized");
-    }
-
-    await this.channel.prefetch(PREFETCH_COUNT);
-
     log.info(
       TAG,
       `Starting to consume messages from queue: ${QUEUES.NOTIFICATIONS}`
     );
     log.info(TAG, `Prefetch count: ${PREFETCH_COUNT}`);
 
-    await this.channel.consume(
-      QUEUES.NOTIFICATIONS,
-      async (msg) => {
-        if (!msg) return;
-
+    await Queue.consume(
+      "NOTIFICATIONS",
+      async (msg, channel) => {
         try {
-          const content = msg.content.toString();
-          const message: NotificationQueueMessage = JSON.parse(content);
+          const message: NotificationQueueMessage = JSON.parse(
+            msg.content.toString()
+          );
 
           await handleMessage(message);
           markNotificationProcessed(message);
-
-          if (this.channel) {
-            this.channel.ack(msg);
-          }
+          channel.ack(msg);
         } catch (error) {
           log.error({
             tag: TAG,
             message: "Error processing message",
             error: error instanceof Error ? error.message : String(error),
           });
-
-          if (this.channel) {
-            this.channel.nack(msg, false, true);
-          }
+          channel.nack(msg, false, true);
         }
       },
-      {
-        noAck: false,
-      }
+      { prefetch: PREFETCH_COUNT, noAck: false }
     );
 
     log.info(TAG, "Worker is now consuming messages. Press CTRL+C to exit.");

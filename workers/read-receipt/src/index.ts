@@ -99,35 +99,22 @@ class QueueWorker {
    * Start consuming messages from the queue
    */
   async consume(): Promise<void> {
-    if (!this.channel) {
-      throw new Error("Channel not initialized");
-    }
-
-    // Set prefetch count (how many messages to process concurrently)
-    await this.channel.prefetch(PREFETCH_COUNT);
-
     log.info(
       TAG,
       `Starting to consume messages from queue: ${QUEUES.READ_RECEIPTS}`
     );
     log.info(TAG, `Prefetch count: ${PREFETCH_COUNT}`);
 
-    await this.channel.consume(
-      QUEUES.READ_RECEIPTS,
-      async (msg) => {
-        if (!msg) return;
-
+    await Queue.consume(
+      "READ_RECEIPTS",
+      async (msg, channel) => {
         try {
-          const content = msg.content.toString();
-          const message: ReadReceiptQueueMessage = JSON.parse(content);
+          const message: ReadReceiptQueueMessage = JSON.parse(
+            msg.content.toString()
+          );
 
-          // Acknowledge the message immediately after parsing
-          // This prevents RabbitMQ timeout for long-running processing
-          if (this.channel) {
-            this.channel.ack(msg);
-          }
-
-          // Process the message (can take as long as needed now)
+          // Ack immediately after parsing to avoid RabbitMQ timeout during processing
+          channel.ack(msg);
           await handleMessage(message);
         } catch (error) {
           log.error({
@@ -135,13 +122,9 @@ class QueueWorker {
             message: "Error processing message",
             error: error instanceof Error ? error.message : String(error),
           });
-          // Message already acknowledged, so we just log the error
-          // The watermark ensures we don't lose progress on successful processing
         }
       },
-      {
-        noAck: false, // Require explicit acknowledgment
-      }
+      { prefetch: PREFETCH_COUNT, noAck: false }
     );
 
     log.info(TAG, "Worker is now consuming messages. Press CTRL+C to exit.");
