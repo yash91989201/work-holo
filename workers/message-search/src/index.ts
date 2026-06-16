@@ -1,4 +1,3 @@
-import { log } from "evlog";
 import { env } from "@work-holo/env/search-worker";
 import {
   ensureSearchIndex,
@@ -7,7 +6,7 @@ import {
   Queue,
   type SearchIndexQueueMessage,
 } from "@work-holo/infrastructure";
-import type { Channel, ConsumeMessage } from "amqplib";
+import { log } from "evlog";
 import { handleSearchIndexMessage } from "./lib/processor";
 
 const TAG = "message-search";
@@ -26,49 +25,35 @@ async function handleMessage(message: SearchIndexQueueMessage): Promise<void> {
 }
 
 class QueueWorker {
-  private channel: Channel | null = null;
-
   async connect(): Promise<void> {
-    await Queue.connect({ url: env.RABBITMQ_URL });
-    this.channel = Queue.getClient();
+    Queue.connect({ url: env.RABBITMQ_URL });
+    await Queue.whenReady();
     log.info(TAG, "Connected to RabbitMQ successfully");
   }
 
   async consume(): Promise<void> {
-    if (!this.channel) {
-      throw new Error("Channel not initialized");
-    }
-
-    await this.channel.prefetch(PREFETCH_COUNT);
-
     log.info(
       TAG,
       `Starting to consume messages from queue: ${QUEUES.SEARCH_INDEXING}`
     );
     log.info(TAG, `Prefetch count: ${PREFETCH_COUNT}`);
 
-    await this.channel.consume(
-      QUEUES.SEARCH_INDEXING,
-      async (msg: ConsumeMessage | null) => {
-        if (!msg) return;
-
+    await Queue.consume(
+      "SEARCH_INDEXING",
+      async (msg, channel) => {
         try {
-          const content = msg.content.toString();
-          const message: SearchIndexQueueMessage = JSON.parse(content);
+          const message: SearchIndexQueueMessage = JSON.parse(
+            msg.content.toString()
+          );
 
           await handleMessage(message);
-
-          if (this.channel) {
-            this.channel.ack(msg);
-          }
+          channel.ack(msg);
         } catch (error) {
           log.error({
             tag: TAG,
             message: "Error processing message",
             error: error instanceof Error ? error.message : String(error),
           });
-
-          if (!this.channel) return;
 
           const headers = msg.properties.headers || {};
           const retryCount = (headers["x-retries"] as number) || 0;
@@ -78,28 +63,18 @@ class QueueWorker {
               tag: TAG,
               message: `Message ${msg.properties.messageId} exceeded max retries (${MAX_RETRIES}). Discarding.`,
             });
-            this.channel.ack(msg);
+            channel.ack(msg);
             return;
           }
 
-          // Republish with incremented retry count
-          const updatedHeaders = {
-            ...headers,
-            "x-retries": retryCount + 1,
-          };
-
-          this.channel.publish("", QUEUES.SEARCH_INDEXING, msg.content, {
+          channel.publish("", QUEUES.SEARCH_INDEXING, msg.content, {
             ...msg.properties,
-            headers: updatedHeaders,
+            headers: { ...headers, "x-retries": retryCount + 1 },
           });
-
-          // Ack the original message
-          this.channel.ack(msg);
+          channel.ack(msg);
         }
       },
-      {
-        noAck: false,
-      }
+      { prefetch: PREFETCH_COUNT, noAck: false }
     );
 
     log.info(TAG, "Worker is now consuming messages. Press CTRL+C to exit.");
@@ -109,7 +84,6 @@ class QueueWorker {
     log.info({ tag: TAG, message: "Shutting down worker gracefully" });
 
     await Queue.close();
-    this.channel = null;
     log.info(TAG, "RabbitMQ connection closed successfully");
 
     await OpenSearchClient.close();

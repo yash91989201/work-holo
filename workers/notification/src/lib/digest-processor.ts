@@ -1,4 +1,3 @@
-import { log } from "evlog";
 import type { db as Db } from "@work-holo/db";
 import { user } from "@work-holo/db/schema/auth";
 import {
@@ -11,6 +10,7 @@ import {
   sendEmail,
 } from "@work-holo/email";
 import { and, eq, lte } from "drizzle-orm";
+import { log } from "evlog";
 import type { Transporter } from "nodemailer";
 import { createElement } from "react";
 
