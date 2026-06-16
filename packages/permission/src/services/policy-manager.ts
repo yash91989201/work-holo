@@ -211,7 +211,7 @@ export class PolicyManager {
   ): Promise<boolean> {
     const redis = await this.getRedisClient();
     const lockKey = `compilation_lock:${orgId}`;
-    const result = await redis.set(lockKey, "1", "PX", ttlMs, "NX");
+    const result = await redis.set(lockKey, "1", { PX: ttlMs, NX: true });
     return result === "OK";
   }
 

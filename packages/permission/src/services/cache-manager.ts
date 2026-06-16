@@ -74,7 +74,7 @@ export class CacheManager {
       cachedAt: Date.now(),
     };
 
-    await redis.setex(key, this.DECISION_TTL, JSON.stringify(decision));
+    await redis.setEx(key, this.DECISION_TTL, JSON.stringify(decision));
   }
 
   /**
@@ -88,19 +88,16 @@ export class CacheManager {
     let cursor = "0";
 
     do {
-      const result = (await redis.scan(
-        cursor,
-        "MATCH",
-        pattern,
-        "COUNT",
-        100
-      )) as [string, string[]];
-      cursor = result[0];
-      keys.push(...result[1]);
+      const result = await redis.scan(cursor, {
+        MATCH: pattern,
+        COUNT: 100,
+      });
+      cursor = result.cursor;
+      keys.push(...result.keys);
     } while (cursor !== "0");
 
     if (keys.length > 0) {
-      await redis.del(...keys);
+      await redis.del(keys);
     }
   }
 
@@ -120,20 +117,17 @@ export class CacheManager {
     for (const pattern of patterns) {
       let cursor = "0";
       do {
-        const result = (await redis.scan(
-          cursor,
-          "MATCH",
-          pattern,
-          "COUNT",
-          100
-        )) as [string, string[]];
-        cursor = result[0];
-        keys.push(...result[1]);
+        const result = await redis.scan(cursor, {
+          MATCH: pattern,
+          COUNT: 100,
+        });
+        cursor = result.cursor;
+        keys.push(...result.keys);
       } while (cursor !== "0");
     }
 
     if (keys.length > 0) {
-      await redis.del(...keys);
+      await redis.del(keys);
     }
   }
 
@@ -173,7 +167,7 @@ export class CacheManager {
   ): Promise<void> {
     const redis = await this.getRedisClient();
     const cacheKey = `${this.BITSET_PREFIX}${userId}:${orgId}:${this.buildScopeKey(scopeKey)}`;
-    await redis.setex(cacheKey, this.BITSET_TTL, JSON.stringify(bitsetData));
+    await redis.setEx(cacheKey, this.BITSET_TTL, JSON.stringify(bitsetData));
   }
 
   /**
@@ -187,19 +181,16 @@ export class CacheManager {
     let cursor = "0";
 
     do {
-      const result = (await redis.scan(
-        cursor,
-        "MATCH",
-        pattern,
-        "COUNT",
-        100
-      )) as [string, string[]];
-      cursor = result[0];
-      keys.push(...result[1]);
+      const result = await redis.scan(cursor, {
+        MATCH: pattern,
+        COUNT: 100,
+      });
+      cursor = result.cursor;
+      keys.push(...result.keys);
     } while (cursor !== "0");
 
     if (keys.length > 0) {
-      await redis.del(...keys);
+      await redis.del(keys);
     }
   }
 
@@ -237,7 +228,7 @@ export class CacheManager {
   ): Promise<void> {
     const redis = await this.getRedisClient();
     const cacheKey = `${this.PERM_MAP_PREFIX}${userId}:${orgId}`;
-    await redis.setex(
+    await redis.setEx(
       cacheKey,
       this.PERM_MAP_TTL,
       JSON.stringify(permissionMap)
