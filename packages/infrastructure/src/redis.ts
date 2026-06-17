@@ -17,12 +17,11 @@ export const Redis = {
       client = createClient({
         url,
         socket: {
-          // TCP keepalive stops idle proxies (Coolify/Traefik) from reaping the
-          // socket overnight — the morning drop.
           keepAlive: true,
           keepAliveInitialDelay: 30_000,
           reconnectStrategy: (retries) => Math.min(retries * 50, 2000),
         },
+        pingInterval: 30_000,
       });
       client.on("connect", () => log.info(TAG, "connected"));
       client.on("ready", () => log.info(TAG, "ready"));
