@@ -1,34 +1,39 @@
 import { log } from "evlog";
-import Ioredis from "ioredis";
+import { createClient, type RedisClientType } from "redis";
 
 export interface RedisConfig {
   url: string;
 }
 
-export type RedisClient = Ioredis;
+export type RedisClient = RedisClientType;
 
 const TAG = "redis";
 
-let client: Ioredis | null = null;
+let client: RedisClient | null = null;
 
 export const Redis = {
-  async connect({ url }: RedisConfig): Promise<Ioredis> {
+  async connect({ url }: RedisConfig): Promise<RedisClient> {
     if (!client) {
-      client = new Ioredis(url, {
-        // TCP keepalive stops idle proxies (Coolify/Traefik) from reaping the
-        // socket overnight — the morning drop. Auto-reconnect + offline queue
-        // are on by default, so commands during a blip are queued, not rejected.
-        keepAlive: 30_000,
+      client = createClient({
+        url,
+        socket: {
+          keepAlive: true,
+          keepAliveInitialDelay: 30_000,
+          reconnectStrategy: (retries) => Math.min(retries * 50, 2000),
+        },
+        pingInterval: 30_000,
       });
       client.on("connect", () => log.info(TAG, "connected"));
+      client.on("ready", () => log.info(TAG, "ready"));
       client.on("error", (err) => log.error(TAG, `${err}`));
-      client.on("close", () => log.warn(TAG, "connection closed"));
+      client.on("end", () => log.warn(TAG, "connection closed"));
       client.on("reconnecting", () => log.warn(TAG, "reconnecting"));
+      await client.connect();
     }
     return Redis.getClient();
   },
 
-  async getClient(): Promise<Ioredis> {
+  getClient(): RedisClient {
     if (!client) {
       throw new Error(
         "Redis client not connected. Call Redis.connect() first."
@@ -38,7 +43,7 @@ export const Redis = {
   },
 
   isConnected(): boolean {
-    return client?.status === "ready";
+    return client?.isReady ?? false;
   },
 
   async close(): Promise<void> {

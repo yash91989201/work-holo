@@ -1,5 +1,6 @@
 import type { db as DbClient } from "@work-holo/db";
 import type { RedisClient } from "@work-holo/infrastructure";
+
 import type Pusher from "pusher";
 import { AuthorizationEngine } from "../services/authorization-engine";
 import { CacheManager } from "../services/cache-manager";
@@ -60,7 +61,7 @@ export const PermissionManagers = {
    */
   initialize(config: {
     db: typeof DbClient;
-    redis: RedisClient | (() => Promise<RedisClient>);
+    redis: RedisClient;
     pusher?: Pusher;
   }): void {
     cacheManager = new CacheManager(config.redis);

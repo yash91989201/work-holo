@@ -80,7 +80,7 @@ export async function updatePresence(
   const now = Date.now().toString();
 
   // Set hash fields using hset (hmset is deprecated)
-  await redis.hset(key, {
+  await redis.hSet(key, {
     status,
     lastSeenAt: now,
     orgId,
@@ -125,7 +125,7 @@ export async function setManualStatus(
   const newStatus = computeStatus(currentInput);
 
   // Update all fields including the computed status
-  await redis.hset(key, {
+  await redis.hSet(key, {
     status: newStatus,
     manualStatus: manualStatus || "",
     lastSeenAt: now,
@@ -148,7 +148,7 @@ export async function getPresence(
   userId: string
 ): Promise<PresenceData | null> {
   const key = getPresenceKey(userId);
-  const data = await redis.hgetall(key);
+  const data = await redis.hGetAll(key);
 
   if (!data || Object.keys(data).length === 0) {
     return null;
@@ -173,7 +173,7 @@ export async function getPresenceForUsers(
   // Fetch all presence data in parallel
   const promises = userIds.map(async (userId) => {
     const key = getPresenceKey(userId);
-    const data = await redis.hgetall(key);
+    const data = await redis.hGetAll(key);
 
     if (data && Object.keys(data).length > 0) {
       presenceMap[userId] = data as unknown as PresenceData;

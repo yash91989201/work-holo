@@ -135,7 +135,7 @@ async function ensurePermissionManagersInitialized(): Promise<void> {
 
   PermissionManagers.initialize({
     db,
-    redis: () => Redis.getClient(),
+    redis: Redis.getClient(),
   });
 }
 
