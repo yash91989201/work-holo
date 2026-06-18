@@ -40,7 +40,7 @@ health.get("/", (c) => {
   };
 
   // Return 503 for unhealthy, 200 for healthy/degraded
-  return c.json(response, allHealthy ? 200 : 503);
+  return c.json(response, noneHealthy ? 503 : 200);
 });
 
 // Simple liveness probe — always 200 if server process is running
