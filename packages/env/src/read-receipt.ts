@@ -12,7 +12,7 @@ export const env = createEnv({
       .int()
       .positive()
       .default(25),
-    HEALTH_PORT: z.coerce.number().int().positive().default(3001),
+    HEALTH_PORT: z.string().transform((val) => Number.parseInt(val, 10)),
     ENV: z
       .enum(["development", "staging", "testing", "production"])
       .default("development"),
