@@ -45,7 +45,8 @@ COPY apps/server/src apps/server/src
 RUN bun run --cwd apps/server build
 
 FROM oven/bun:1.3.10-slim AS runtime
-RUN apt-get update && apt-get install -y --no-install-recommends curl \n  && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl \
+  && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
 COPY --from=deps /app/node_modules/.bun node_modules/.bun
