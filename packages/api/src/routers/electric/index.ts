@@ -336,7 +336,7 @@ electricRouter.get("/shapes/push-subscriptions", requireAuth, (c) => {
 // Direct Message Shape Endpoints
 // ============================================================
 
-electricRouter.get("/shapes/dm-conversations", requireOrgMember, async (c) => {
+electricRouter.get("/shapes/dm-conversations", requireOrgMember, (c) => {
   const context = c.var.context;
   const orgId = context.session?.session.activeOrganizationId;
   const userId = context.session?.user.id;
@@ -350,7 +350,7 @@ electricRouter.get("/shapes/dm-conversations", requireOrgMember, async (c) => {
   return sendProxyResponse(originUrl);
 });
 
-electricRouter.get("/shapes/dm-messages", requireOrgMember, async (c) => {
+electricRouter.get("/shapes/dm-messages", requireOrgMember, (c) => {
   const context = c.var.context;
   const orgId = context.session?.session.activeOrganizationId;
   const userId = context.session?.user.id;
@@ -364,7 +364,7 @@ electricRouter.get("/shapes/dm-messages", requireOrgMember, async (c) => {
   return sendProxyResponse(originUrl);
 });
 
-electricRouter.get("/shapes/dm-attachments", requireOrgMember, async (c) => {
+electricRouter.get("/shapes/dm-attachments", requireOrgMember, (c) => {
   const context = c.var.context;
   const orgId = context.session?.session.activeOrganizationId;
   const userId = context.session?.user.id;
@@ -378,7 +378,7 @@ electricRouter.get("/shapes/dm-attachments", requireOrgMember, async (c) => {
   return sendProxyResponse(originUrl);
 });
 
-electricRouter.get("/shapes/dm-reactions", requireOrgMember, async (c) => {
+electricRouter.get("/shapes/dm-reactions", requireOrgMember, (c) => {
   const context = c.var.context;
   const orgId = context.session?.session.activeOrganizationId;
   const userId = context.session?.user.id;
@@ -392,7 +392,7 @@ electricRouter.get("/shapes/dm-reactions", requireOrgMember, async (c) => {
   return sendProxyResponse(originUrl);
 });
 
-electricRouter.get("/shapes/dm-message-reads", requireOrgMember, async (c) => {
+electricRouter.get("/shapes/dm-message-reads", requireOrgMember, (c) => {
   const context = c.var.context;
   const orgId = context.session?.session.activeOrganizationId;
   const userId = context.session?.user.id;

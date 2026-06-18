@@ -41,7 +41,9 @@ export const largeChannelReadersSql = db
     name: userTable.name,
     email: userTable.email,
     image: userTable.image,
-    readAt: sql`${channelReadTable.lastReadAt}`.mapWith(channelReadTable.lastReadAt).as("readAt"),
+    readAt: sql`${channelReadTable.lastReadAt}`
+      .mapWith(channelReadTable.lastReadAt)
+      .as("readAt"),
   })
   .from(channelReadTable)
   .innerJoin(userTable, eq(channelReadTable.userId, userTable.id))

@@ -40,9 +40,17 @@ RUN bun build \
 FROM debian:bookworm-slim AS runtime
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl \
   && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /app/workers/read-receipt/read-receipt-worker ./
+
+ARG HEALTH_PORT=3001
+ENV HEALTH_PORT=$HEALTH_PORT
+
+EXPOSE $HEALTH_PORT
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+  CMD curl -f http://localhost:${HEALTH_PORT}/health/live || exit 1
 
 CMD ["./read-receipt-worker"]

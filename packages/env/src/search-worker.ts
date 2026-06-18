@@ -8,6 +8,7 @@ export const env = createEnv({
     OPENSEARCH_URL: z.url().default("http://localhost:9200"),
     PREFETCH_COUNT: z.coerce.number().int().positive().default(10),
     MAX_RETRIES: z.coerce.number().int().nonnegative().default(3),
+    HEALTH_PORT: z.string().transform((val) => Number.parseInt(val, 10)),
     ENV: z
       .enum(["development", "staging", "testing", "production"])
       .default("development"),

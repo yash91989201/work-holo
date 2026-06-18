@@ -13,6 +13,7 @@ import { startDigestProcessor } from "./lib/digest-processor";
 import { handleEmailDelivery as sendEmailNotification } from "./lib/handlers/email";
 import { handlePushDelivery as sendPushNotifications } from "./lib/handlers/push";
 import { handlePusherDelivery } from "./lib/handlers/pusher";
+import { startHealthServer, stopHealthServer } from "./lib/health";
 
 const TAG = "notification";
 
@@ -300,10 +301,13 @@ async function startWorker() {
   log.info(TAG, "Email digest processor started");
 
   try {
+    startHealthServer(env.HEALTH_PORT);
+
     await worker.connect();
     await worker.consume();
 
     const shutdown = async () => {
+      stopHealthServer();
       clearInterval(digestIntervalId);
       await worker.close();
       process.exit(0);

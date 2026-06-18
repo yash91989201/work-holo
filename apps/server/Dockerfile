@@ -45,6 +45,8 @@ COPY apps/server/src apps/server/src
 RUN bun run --cwd apps/server build
 
 FROM oven/bun:1.3.10-slim AS runtime
+RUN apt-get update && apt-get install -y --no-install-recommends curl \
+  && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
 COPY --from=deps /app/node_modules/.bun node_modules/.bun
@@ -57,5 +59,8 @@ ARG PORT
 ENV PORT=$PORT
 
 EXPOSE $PORT
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+  CMD curl -f http://localhost:${PORT}/health/live || exit 1
 
 CMD ["bun", "apps/server/dist/index.mjs"]
