@@ -20,6 +20,7 @@ import { PermissionManagers } from "@work-holo/permission";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
+import health from "./routes/health";
 
 await Redis.connect({ url: env.REDIS_URL });
 await OpenSearchClient.connect({ url: env.OPENSEARCH_URL });
@@ -107,6 +108,7 @@ app.use("/*", async (c, next) => {
   await next();
 });
 
+app.route("/health", health);
 app.get("/", (c) => c.text("OK"));
 
 let shuttingDown = false;

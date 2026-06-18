@@ -7,6 +7,7 @@ import {
   type SearchIndexQueueMessage,
 } from "@work-holo/infrastructure";
 import { log } from "evlog";
+import { startHealthServer, stopHealthServer } from "./lib/health";
 import { handleSearchIndexMessage } from "./lib/processor";
 
 const TAG = "message-search";
@@ -114,10 +115,13 @@ async function startWorker() {
     await ensureSearchIndex(searchClient);
     log.info(TAG, "Search index ensured");
 
+    startHealthServer(env.HEALTH_PORT);
+
     await worker.connect();
     await worker.consume();
 
     const shutdown = async () => {
+      stopHealthServer();
       await worker.close();
       process.exit(0);
     };

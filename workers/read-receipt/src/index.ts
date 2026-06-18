@@ -6,6 +6,7 @@ import {
   type ReadReceiptQueueMessage,
 } from "@work-holo/infrastructure";
 import { log } from "evlog";
+import { startHealthServer, stopHealthServer } from "./lib/health";
 import {
   cleanupMemberCountCache,
   processChannelReadReceiptsNow,
@@ -178,7 +179,8 @@ async function startWorker() {
   const worker = new QueueWorker();
 
   try {
-    // Connect to RabbitMQ
+    startHealthServer(env.HEALTH_PORT);
+
     await worker.connect();
 
     // Start consuming messages
@@ -189,6 +191,7 @@ async function startWorker() {
 
     // Setup graceful shutdown
     const shutdown = async () => {
+      stopHealthServer();
       await worker.close();
       process.exit(0);
     };

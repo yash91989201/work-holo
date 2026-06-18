@@ -12,6 +12,7 @@ export const env = createEnv({
       .int()
       .positive()
       .default(25),
+    HEALTH_PORT: z.coerce.number().int().positive().default(3001),
     ENV: z
       .enum(["development", "staging", "testing", "production"])
       .default("development"),

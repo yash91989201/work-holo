@@ -44,11 +44,19 @@ RUN bun build \
 FROM debian:bookworm-slim AS runtime
 WORKDIR /app
 
-# Install ca-certificates for HTTPS requests
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
+# Install ca-certificates for HTTPS requests and curl for health checks
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl \
   && rm -rf /var/lib/apt/lists/*
 
 # Copy the compiled binary
 COPY --from=builder /app/workers/notification/notification-worker ./
+
+ARG HEALTH_PORT=3001
+ENV HEALTH_PORT=$HEALTH_PORT
+
+EXPOSE $HEALTH_PORT
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+  CMD curl -f http://localhost:${HEALTH_PORT}/health/live || exit 1
 
 CMD ["./notification-worker"]
