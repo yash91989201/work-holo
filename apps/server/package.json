@@ -22,7 +22,7 @@
     "@work-holo/permission": "workspace:*",
     "better-auth": "^1.5.5",
     "dotenv": "^17.4.2",
-    "hono": "^4.12.26",
+    "hono": "^4.12.27",
     "drizzle-orm": "^0.45.2"
   },
   "devDependencies": {

@@ -15,7 +15,7 @@
   "dependencies": {
     "@opensearch-project/opensearch": "^3.6.0",
     "amqplib": "^2.0.1",
-    "evlog": "^2.19.1",
+    "evlog": "^2.19.2",
     "redis": "^6.0.0",
     "pusher": "^5.3.4"
   },

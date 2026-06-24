@@ -30,7 +30,7 @@
     "@orpc/server": "^1.14.6",
     "@work-holo/db": "workspace:*",
     "@work-holo/env": "workspace:*",
-    "casbin": "^5.50.0",
+    "casbin": "^5.51.0",
     "casbin-drizzle-adapter": "^1.1.2",
     "drizzle-orm": "^0.45.2",
     "@work-holo/infrastructure": "workspace:*"
