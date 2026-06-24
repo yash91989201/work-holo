@@ -10,15 +10,15 @@ import {
   HeadContent,
   Outlet,
   Scripts,
+  useLocation,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import type { AppRouterClient } from "@work-holo/api/routers/index";
 import { env } from "@work-holo/env/www";
 import { Toaster } from "@work-holo/ui/components/sonner";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Footer } from "@/components/shared/footer";
 import { Header } from "@/components/shared/header";
-import { SmoothScrollProvider } from "@/components/shared/smooth-scroll-provider";
 import appCss from "@/styles/index.css?url";
 import type { orpcClient, queryUtils } from "@/utils/orpc";
 import { link } from "@/utils/orpc";
@@ -91,15 +91,34 @@ function ShellComponent({ children }: { children: React.ReactNode }) {
 }
 
 function RootDocument() {
+  const location = useLocation();
+
+  useEffect(() => {
+    // Hash navigation → scroll to element with header offset
+    if (location.hash) {
+      const id = location.hash.replace("#", "");
+      // Delay to let DOM render
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) {
+          const headerOffset = 100;
+          const y = el.getBoundingClientRect().top + window.scrollY - headerOffset;
+          window.scrollTo({ top: y, behavior: "smooth" });
+        }
+      }, 50);
+      return;
+    }
+    // Page navigation → scroll to top
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [location.pathname, location.hash]);
+
   return (
-    <SmoothScrollProvider>
-      <div className="flex min-h-svh flex-col">
-        <Header />
-        <main className="flex-1">
-          <Outlet />
-        </main>
-        <Footer />
-      </div>
-    </SmoothScrollProvider>
+    <div className="flex min-h-svh flex-col">
+      <Header />
+      <main className="flex-1">
+        <Outlet />
+      </main>
+      <Footer />
+    </div>
   );
 }
