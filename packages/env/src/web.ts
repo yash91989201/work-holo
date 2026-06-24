@@ -13,6 +13,7 @@ export const env = createEnv({
     VITE_PUSHER_KEY: z.string().min(1),
     VITE_PUSHER_HOST: z.string().min(1),
     VITE_PUSHER_PORT: z.coerce.number().default(6001),
+    VITE_LIVEKIT_URL: z.string().min(1),
   },
   runtimeEnv: import.meta.env,
   skipValidation: !!import.meta.env.SKIP_ENV_VALIDATION,

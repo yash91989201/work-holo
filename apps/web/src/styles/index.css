@@ -1,1 +1,17 @@
 @import "@work-holo/ui/globals.css";
+
+/* Floating emoji reaction animation for in-call reactions */
+@keyframes float-up {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.6);
+  }
+  15% {
+    opacity: 1;
+    transform: translateY(-10px) scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-160px) scale(1);
+  }
+}

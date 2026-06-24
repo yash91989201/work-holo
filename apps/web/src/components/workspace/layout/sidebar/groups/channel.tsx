@@ -34,6 +34,7 @@ import {
 } from "@work-holo/ui/components/sidebar";
 import { Spinner } from "@work-holo/ui/components/spinner";
 import { useState } from "react";
+import { ChannelLiveIndicator } from "@/components/modules/communication/calls/channel-live-indicator";
 import { CreateChannelForm } from "@/components/modules/communication/channels/create-channel-form";
 import { useChannelUnreadCounts } from "@/hooks/communications/use-channel-unread-counts";
 import { useUserChannels } from "@/hooks/communications/use-user-channels";
@@ -175,6 +176,7 @@ const ChannelGroup = () => {
                                 <span className="flex-1 truncate">
                                   {channel.name}
                                 </span>
+                                <ChannelLiveIndicator channelId={channel.id} />
                                 {unreadCount > 0 && (
                                   <Badge
                                     className="ml-auto h-5 w-5 shrink-0 items-center justify-center rounded-full p-0"
@@ -269,6 +271,7 @@ const ChannelGroup = () => {
                     >
                       <IconHash />
                       <span className="flex-1">{channel.name}</span>
+                      <ChannelLiveIndicator channelId={channel.id} />
                       {unreadCount > 0 && (
                         <Badge
                           className="ml-auto h-5 w-5 shrink-0 items-center justify-center rounded-full p-0"

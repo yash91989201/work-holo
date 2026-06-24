@@ -4,6 +4,7 @@ import {
   SidebarProvider,
 } from "@work-holo/ui/components/sidebar";
 import { Suspense } from "react";
+import { CallManager } from "@/components/modules/communication/calls/call-manager";
 import { PresenceHeartbeat } from "@/components/org/presence-heartbeat";
 import { Header } from "@/components/workspace/layout/header";
 import { Sidebar } from "@/components/workspace/layout/sidebar";
@@ -35,6 +36,8 @@ function RouteComponent() {
       <Suspense fallback={null}>
         <PresenceHeartbeat />
       </Suspense>
+
+      <CallManager />
     </>
   );
 }

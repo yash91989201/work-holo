@@ -9,6 +9,7 @@ export {
 export type { PusherConfig } from "./pusher";
 export { PusherClient } from "./pusher";
 export type {
+  CallRingTimeoutQueueMessage,
   NotificationQueueMessage,
   QueueConfig,
   QueueMessage,

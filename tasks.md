@@ -29,81 +29,82 @@
 ## 1.2 — Database & Backend Foundation
 > Week 2 · Depends on 1.1
 
-- [ ] 🔴 Create `packages/db/src/schema/call.ts` — `call` table (id, orgId, type, status, initiatorId, sourceConversationId, sourceType, livekitRoomName, startedAt, endedAt, createdAt, updatedAt) + export from `schema/index.ts` barrel
-- [ ] 🔴 Create `callParticipant` table in same file (id, callId, userId, role, joinedAt, leftAt, isRemoved, createdAt, updatedAt)
-- [ ] 🔴 Run `bun run db:generate && bun run db:migrate`
-- [ ] 🔴 Add `CALLING: "calling"` to `packages/api/src/lib/module-ids.ts` (moduleSchema + `listAllowedUsers` auto-derive from this — no other permission code needed)
-- [ ] 🔴 Add `callingProcedure` to `packages/api/src/index.ts` — mirror `dmProcedure` module-enablement middleware
-- [ ] 🔴 Scaffold oRPC call router — `packages/api/src/routers/communication/call.ts` (initiate, getJoinToken, list)
-- [ ] 🔴 LiveKit JWT token generation — server-side per-user per-room access tokens
-- [ ] 🟠 Register call router in the main router index
+- [x] 🔴 Create `packages/db/src/schema/call.ts` — `call` table (id, orgId, type, status, initiatorId, sourceConversationId, sourceType, livekitRoomName, startedAt, endedAt, createdAt, updatedAt) + export from `schema/index.ts` barrel
+- [x] 🔴 Create `callParticipant` table in same file (id, callId, userId, role, joinedAt, leftAt, isRemoved, createdAt, updatedAt)
+- [x] 🔴 Run `bun run db:generate && bun run db:migrate`
+- [x] 🔴 Add `CALLING: "calling"` to `packages/api/src/lib/module-ids.ts` (moduleSchema + `listAllowedUsers` auto-derive from this — no other permission code needed)
+- [x] 🔴 Add `callingProcedure` to `packages/api/src/index.ts` — mirror `dmProcedure` module-enablement middleware
+- [x] 🔴 Scaffold oRPC call router — `packages/api/src/routers/communication/call.ts` (initiate, accept, reject, cancel, end, getJoinToken, addParticipant, list)
+- [x] 🔴 LiveKit JWT token generation — server-side per-user per-room access tokens
+- [x] 🟠 Register call router in the main router index
 
 ---
 
 ## 1.3 — Signaling, State Machine & Ring Timeout
 > Week 3 · Depends on 1.2
 
-- [ ] 🔴 Pusher DM signaling events — `call.incoming`, `call.accepted`, `call.rejected`, `call.ended` on `private-user-{userId}`
-- [ ] 🔴 Pusher channel call events — `call.channel.started`, `call.channel.ended` on `private-org-{orgId}`
-- [ ] 🔴 RabbitMQ DLX queue for 30s ring timeout — add `CALL_RING_TIMEOUT` queue with `x-message-ttl: 30000` + dead-letter exchange to `packages/infrastructure/src/queue.ts`
-- [ ] 🔴 Create `workers/call-timeout/` — DLX consumer (mirror `workers/read-receipt/` QueueWorker structure): checks if call still `ringing` → marks `missed` → fires push notification to both parties
-- [ ] 🔴 oRPC endpoints — `accept`, `reject`, `cancel`, `end` in call router
-- [ ] 🔴 oRPC endpoint — `addParticipant` (mid-call invite)
-- [ ] 🔴 LiveKit webhook handler — `apps/server/src/lib/livekit-webhook.ts`, route registered in `apps/server/src/index.ts` (mirror auth route registration) — handles `room_finished`, `participant_joined`, `participant_left` → syncs DB
-- [ ] 🟠 Presence integration — set `in_call` status on call active, clear on call ended (existing Redis presence system)
-- [ ] 🟠 Auto-create DM when calling from directory with no prior conversation
+- [x] 🔴 Pusher DM signaling events — `call.incoming`, `call.accepted`, `call.rejected`, `call.cancelled`, `call.ended`, `call.missed` on `private-user-{userId}`
+- [x] 🔴 Pusher channel call events — `call.channel.started`, `call.channel.ended` on `private-org-{orgId}`
+- [x] 🔴 RabbitMQ DLX queue for 30s ring timeout — `CALL_RING_TIMEOUT` (TTL 30s + DLX) → `CALL_RING_TIMEOUT_DLX` in `packages/infrastructure/src/queue.ts` (verified: message dead-letters after 30s)
+- [x] 🔴 Create `workers/call-timeout/` — DLX consumer: checks if call still `ringing` → marks `missed` → fires `call.missed` to both parties (verified: boots, consumes, idempotent no-op when call not ringing)
+- [x] 🔴 oRPC endpoints — `accept`, `reject`, `cancel`, `end` in call router
+- [x] 🔴 oRPC endpoint — `addParticipant` (mid-call invite)
+- [x] 🔴 LiveKit webhook handler — `apps/server/src/lib/livekit-webhook.ts`, route `/webhooks/livekit` registered in `apps/server/src/index.ts`, webhook URL configured in `livekit.yaml` — handles `room_finished`, `participant_joined`, `participant_left` → syncs DB
+- [x] 🟠 Presence integration — `setInCall` helper added to `presence.ts`; set `in_call` on accept (both parties) + channel initiate, clear on end (all participants)
+- [ ] 🟠 Auto-create DM when calling from directory with no prior conversation — deferred to 1.6 entry-points work
 
 ---
 
 ## 1.4 — Frontend Core State & Incoming Call
 > Week 4 · Depends on 1.3
 
-- [ ] 🔴 Create `callStore` (Zustand) — `apps/web/src/stores/call-store.ts`, mirror `dm-store.ts` pattern (no provider needed — Zustand stores are global hooks)
-- [ ] 🔴 Mount call UI (`<CallOverlay />`, `<CallPill />`, `<IncomingCallPopup />`, `<SoftSwitchPrompt />`) in workspace layout `routes/(authenticated)/org/$slug/workspace/route.tsx` — persists across workspace navigation
-- [ ] 🔴 Wire Pusher event listeners to `callStore` — new hook mirroring `use-notification-sound.ts` subscribe pattern on `private-user-{userId}`; `call.incoming` → set incomingCall, `call.accepted` → set activeCall, etc.
-- [ ] 🔴 New org-level Pusher hook — client does NOT yet subscribe to `private-org-{orgId}`; create `use-org-call-events.ts` (mirror `use-channel-presence.ts`)
-- [ ] 🔴 `<IncomingCallPopup />` — corner notification, caller avatar, call type badge (voice/video), accept (green) / decline (red), ringing sound via existing `use-notification-sound`
-- [ ] 🔴 Accept flow → request LiveKit join token → open `<CallOverlay />`
-- [ ] 🔴 Decline flow → fire `reject` oRPC call → dismiss popup
-- [ ] 🔴 Auto-dismiss after 30s (ring timeout fires, popup disappears, shows "Missed call" toast)
-- [ ] 🟠 `<SoftSwitchPrompt />` — modal shown when `softSwitchPending` is set: "Leave [current call] and join this one?"
-- [ ] 🟠 Push notification for background tab — wire incoming call event to existing push notification worker
+- [x] 🔴 Create `callStore` (Zustand) — `apps/web/src/stores/call-store.ts`, mirror `dm-store.ts` pattern (no provider needed — Zustand stores are global hooks)
+- [x] 🔴 Mount call UI in workspace layout `routes/(authenticated)/org/$slug/workspace/route.tsx` via `<CallManager />` — persists across workspace navigation (full `<CallOverlay />`/`<CallPill />` are 1.5; placeholder bar in place)
+- [x] 🔴 Wire Pusher event listeners to `callStore` — `use-call-events.ts` subscribes `private-user-{userId}` for `call.incoming`/`accepted`/`rejected`/`cancelled`/`ended`/`missed`
+- [ ] 🔴 New org-level Pusher hook — client does NOT yet subscribe to `private-org-{orgId}`; create `use-org-call-events.ts` (mirror `use-channel-presence.ts`) — deferred to 1.6 (channel calls)
+- [x] 🔴 `<IncomingCallPopup />` — corner notification, caller avatar, call type badge (voice/video), accept (green) / decline (red), looping ringing sound
+- [x] 🔴 Accept flow → `use-call.ts` requests join token via `accept` oRPC → sets activeCall (opens overlay in 1.5)
+- [x] 🔴 Decline flow → fire `reject` oRPC call → dismiss popup
+- [x] 🔴 Auto-dismiss after 32s safety timer (in addition to server ring-timeout `call.missed` event)
+- [x] 🟠 `<SoftSwitchPrompt />` — modal shown when `softSwitchPending` is set: "Leave [current call] and join this one?"
+- [ ] 🟠 Push notification for background tab — wire incoming call event to existing push notification worker — deferred to 1.6 polish
 
 ---
 
 ## 1.5 — LiveKit Integration & Call UI
 > Week 5 · Depends on 1.4
 
-- [ ] 🔴 Install `@livekit/components-react` — pin v2.9.21 (verified 2026-06-12: peer deps declare `react: ">=18"` — React 19.2.6 officially supported)
-- [ ] 🔴 Wire `<LiveKitRoom>` with JWT token from `getJoinToken` endpoint
-- [ ] 🔴 `<CallOverlay />` — floating, draggable full-screen call window, mounts above router, persists across navigation
-- [ ] 🔴 `<CallPill />` — minimized state: bottom-left floating pill, call duration timer, mic toggle, end call button. Toggle via `isMinimized` in callStore
-- [ ] 🔴 `<ParticipantGrid />` — grid layout for ≤4 participants
-- [ ] 🔴 `<ActiveSpeakerLayout />` — active speaker dominant tile for 5–25 participants, auto-switches based on participant count
-- [ ] 🔴 `<CallControls />` — mic toggle, camera toggle, settings icon (device switcher), reaction picker, add participant, end call
-- [ ] 🟠 `<DeviceSwitcher />` — dropdown inside settings icon for mic / camera / speaker using `useMediaDevices()` hook
-- [ ] 🟠 `<ConnectionQualityIndicator />` — signal strength icon overlay on each participant tile using `useConnectionQuality()` hook
-- [ ] 🟠 `<CallReactionPicker />` — emoji picker (👍 ❤️ 😂 🎉 ✋) sends reaction via `useDataChannel()`
-- [ ] 🟠 `<ReactionAnimation />` — floating emoji animates on sender's tile for 3 seconds on all clients
-- [ ] 🟠 Voice call (audio-only, camera off) vs Video call (camera on) — set initial track state based on call type
+- [x] 🔴 Install `@livekit/components-react` — pinned v2.9.21 + livekit-client + components-styles (React 19.2.6 verified working)
+- [x] 🔴 Wire `<LiveKitRoom>` with JWT token from store (`accept`/`initiate` return token); `VITE_LIVEKIT_URL` added to web env
+- [x] 🔴 `<CallOverlay />` — floating draggable window (pointer-drag handle), mounted in workspace layout via `<CallManager />`, persists across navigation
+- [x] 🔴 `<CallPill />` — minimized state: bottom-left pill, duration timer, mic toggle, end/leave button. Toggle via `isMinimized` in callStore
+- [x] 🔴 `<ParticipantGrid />` — `GridLayout` for ≤4 participants
+- [x] 🔴 `<ActiveSpeakerLayout />` — `FocusLayout` + `CarouselLayout`, auto-switches at >4 tracks (loudest speaker focus)
+- [x] 🔴 `<CallControls />` — mic toggle, camera toggle, device switcher, reactions, minimize, end/leave (add-participant in 1.6 host controls)
+- [x] 🟠 `<DeviceSwitcher />` — dropdown for mic / speaker / camera via `useMediaDeviceSelect()`
+- [x] 🟠 `<CallConnectionQuality />` — signal icon via `useConnectionQualityIndicator()` (renamed to avoid livekit `ConnectionQuality` enum collision)
+- [x] 🟠 `<CallReactions />` — emoji picker (👍 ❤️ 😂 🎉 ✋) + floating animation via `useDataChannel("reactions")`, `float-up` keyframe in index.css
+- [x] 🟠 Voice (audio-only) vs Video (camera-on) — `<LiveKitRoom video={type === "video"}>` sets initial track state
+- [ ] 🟢 Reaction-on-sender-tile attribution — current impl floats reactions in a shared layer, not per-tile (polish, deferred)
 
 ---
 
 ## 1.6 — Entry Points, Channel Calls, Sidebar & Testing
 > Week 6 · Depends on 1.5
 
-- [ ] 🔴 Voice + Video call buttons in DM conversation header
-- [ ] 🔴 Call button in channel header — opens open-room channel call (no ring, ambient join)
-- [ ] 🔴 `<ChannelCallBanner />` — "call in progress · N joined · Join" banner inside channel thread
-- [ ] 🔴 `<ChannelLiveIndicator />` — pulsing green dot on channel name in sidebar (shown while channel call is active, via `private-org-{orgId}` Pusher event)
-- [ ] 🔴 `<CallsSection />` — new sidebar group at `components/workspace/layout/sidebar/groups/calls.tsx` (mirror `groups/dm.tsx`) with two tabs: **Directory** and **Recents**
-- [ ] 🔴 `<CallDirectory />` — org members list: online-first then alphabetical, presence indicators (green/yellow/grey), search bar, call button per member. Filtered by `listAllowedUsers("calling")`
-- [ ] 🔴 `<CallRecents />` — aggregated call history across all conversations: missed calls (red badge), outgoing, incoming, channel calls. Quick-redial button per entry
-- [ ] 🔴 `<CallHistoryItem />` — inline call event in DM/channel thread ("📞 Voice call · 4m 32s" or "📹 Video call · Missed")
-- [ ] 🟠 Host controls in `<CallControls />` — mute individual participant, remove participant, end call for all (visible to host only)
-- [ ] 🟠 Add participant mid-call — search and invite org members to an active call
-- [ ] 🟠 Warning toast when initiating call to user with `in_call` presence status
-- [ ] 🟠 Missed call badge — red dot on Calls sidebar icon (DM missed calls only, not channel calls)
+- [x] 🔴 Voice + Video call buttons in DM conversation header (`<CallButtons />`)
+- [x] 🔴 Call button in channel header — `<ChannelCallButton />` starts huddle (voice/video) or joins active one (no ring, ambient join)
+- [x] 🔴 `<ChannelCallBanner />` — "call in progress · N joined · Join" banner inside channel thread (above MessageList)
+- [x] 🔴 `<ChannelLiveIndicator />` — pulsing green dot on channel name in sidebar (both collapsed + expanded views), driven by `use-org-call-events` on `private-org-{orgId}`
+- [x] 🔴 `use-org-call-events.ts` (deferred from 1.4) — subscribes `private-org-{orgId}` for `call.channel.started`/`ended`/`participant` → `callStore.activeChannelCalls`
+- [x] 🔴 `<CallsSection />` — new sidebar group at `components/workspace/layout/sidebar/groups/calls.tsx` (mirror `groups/dm.tsx`) with two tabs: **Directory** and **Recents**
+- [x] 🔴 `<CallDirectory />` — org members list: online-first then alphabetical, presence indicators (green/yellow/grey), search bar, call button per member. Filtered by `listAllowedUsers("calling")`
+- [x] 🔴 `<CallRecents />` — aggregated call history across all conversations: missed calls (red badge), outgoing, incoming, channel calls. Quick-redial button per entry
+- [x] 🔴 `<CallHistoryItem />` — inline call event in DM/channel thread ("📞 Voice call · 4m 32s" or "📹 Video call · Missed")
+- [x] 🟠 Host controls in `<CallControls />` — mute individual participant, remove participant, end call for all (visible to host only)
+- [x] 🟠 Add participant mid-call — search and invite org members to an active call
+- [x] 🟠 Warning toast when initiating call to user with `in_call` presence status
+- [x] 🟠 Missed call badge — red dot on Calls sidebar icon (DM missed calls only, not channel calls)
 - [ ] 🟡 End-to-end call flow testing — 1-1 voice, 1-1 video, group call, channel huddle, mid-call add, rejoin after tab close
 - [ ] 🟡 Bug fixes and polish pass
 

@@ -40,6 +40,7 @@ import {
 import DOMPurify from "dompurify";
 import parse from "html-react-parser";
 import { useEffect, useId, useRef, useState } from "react";
+import { ChannelCallButton } from "@/components/modules/communication/calls/channel-call-button";
 import { useChannelMentions } from "@/hooks/communications/use-channel-mentions";
 import { useMessageSearch } from "@/hooks/communications/use-message-search";
 import { formatMessageTimestamp } from "@/lib/utils";
@@ -437,6 +438,8 @@ export function ChannelHeader() {
               })()}
             </PopoverContent>
           </Popover>
+
+          <ChannelCallButton channelId={channelId} />
 
           <Tooltip>
             <TooltipTrigger

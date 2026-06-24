@@ -39,6 +39,7 @@ import {
 import DOMPurify from "dompurify";
 import parse from "html-react-parser";
 import { type ReactNode, useEffect, useRef, useState } from "react";
+import { CallButtons } from "@/components/modules/communication/calls/call-buttons";
 import { useDmConversations } from "@/hooks/communications/dm/use-dm-conversations";
 import { useDmMessageSearch } from "@/hooks/communications/dm/use-dm-message-search";
 import { useVirtualDmMessages } from "@/hooks/communications/dm/use-dm-messages";
@@ -343,6 +344,13 @@ export function DmConversationHeader() {
               {popoverContent}
             </PopoverContent>
           </Popover>
+
+          {otherParticipant && (
+            <CallButtons
+              calleeId={otherParticipant.id}
+              conversationId={conversationId}
+            />
+          )}
 
           <Tooltip>
             <TooltipTrigger

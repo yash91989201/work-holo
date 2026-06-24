@@ -33,6 +33,9 @@ export const env = createEnv({
       .default("true")
       .transform((val) => val === "true"),
     OPENSEARCH_URL: z.url().default("http://localhost:9200"),
+    LIVEKIT_URL: z.string().min(1),
+    LIVEKIT_API_KEY: z.string().min(1),
+    LIVEKIT_API_SECRET: z.string().min(32),
   },
   runtimeEnv: process.env,
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,

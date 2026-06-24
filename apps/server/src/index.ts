@@ -20,6 +20,7 @@ import { PermissionManagers } from "@work-holo/permission";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
+import { handleLivekitWebhook } from "./lib/livekit-webhook";
 
 await Redis.connect({ url: env.REDIS_URL });
 await OpenSearchClient.connect({ url: env.OPENSEARCH_URL });
@@ -57,6 +58,18 @@ app.use(
 );
 
 app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));
+
+app.post("/webhooks/livekit", async (c) => {
+  try {
+    const body = await c.req.text();
+    const authHeader = c.req.header("Authorization");
+    await handleLivekitWebhook(body, authHeader);
+    return c.json({ received: true });
+  } catch (error) {
+    console.error("LiveKit webhook error:", error);
+    return c.json({ error: "Invalid webhook" }, 400);
+  }
+});
 
 app.route("/electric", electricRouter);
 

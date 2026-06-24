@@ -141,6 +141,45 @@ export async function setManualStatus(
 }
 
 /**
+ * Sets the in_call flag for a user, preserving all other presence inputs.
+ * Mirrors setManualStatus — reads existing data and recomputes status.
+ */
+export async function setInCall(
+  redis: RedisClient,
+  userId: string,
+  orgId: string,
+  inCall: boolean
+): Promise<void> {
+  const key = getPresenceKey(userId);
+  const now = Date.now().toString();
+
+  const existingData = await getPresence(redis, userId);
+  const manualStatus = (existingData?.manualStatus || null) as ManualStatus;
+  const newStatus = computeStatus({
+    punchedIn: existingData?.punchedIn === "1",
+    onBreak: existingData?.onBreak === "1",
+    inCall,
+    inMeeting: existingData?.inMeeting === "1",
+    isTabFocused: true,
+    isIdle: false,
+    manualStatus,
+  });
+
+  await redis.hset(key, {
+    status: newStatus,
+    inCall: inCall ? "1" : "0",
+    lastSeenAt: now,
+    orgId,
+    punchedIn: existingData?.punchedIn ?? "0",
+    onBreak: existingData?.onBreak ?? "0",
+    inMeeting: existingData?.inMeeting ?? "0",
+    manualStatus: existingData?.manualStatus ?? "",
+  });
+
+  await redis.expire(key, PRESENCE_TTL);
+}
+
+/**
  * Gets presence for a single user
  */
 export async function getPresence(

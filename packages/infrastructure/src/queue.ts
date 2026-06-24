@@ -4,6 +4,8 @@ export const QUEUES = {
   READ_RECEIPTS: "read_receipts",
   NOTIFICATIONS: "notifications",
   SEARCH_INDEXING: "search_indexing",
+  CALL_RING_TIMEOUT: "call_ring_timeout",
+  CALL_RING_TIMEOUT_DLX: "call_ring_timeout_dlx",
 } as const;
 
 export interface ReadReceiptQueueMessage {
@@ -43,10 +45,16 @@ export interface SearchIndexQueueMessage {
   updatedAt?: string;
 }
 
+export interface CallRingTimeoutQueueMessage {
+  callId: string;
+  type: "ring_timeout";
+}
+
 export type QueueMessage =
   | ReadReceiptQueueMessage
   | NotificationQueueMessage
-  | SearchIndexQueueMessage;
+  | SearchIndexQueueMessage
+  | CallRingTimeoutQueueMessage;
 
 export interface QueueConfig {
   url: string;
@@ -81,6 +89,23 @@ async function setupQueues(): Promise<void> {
     arguments: {
       "x-max-length": 50_000,
     },
+  });
+
+  // Wait queue: messages sit here for 30s (ring window) then dead-letter to the
+  // DLX queue, which the call-timeout worker consumes. Nothing consumes this
+  // queue directly — TTL expiry is the delay mechanism.
+  await channel.assertQueue(QUEUES.CALL_RING_TIMEOUT, {
+    durable: true,
+    arguments: {
+      "x-message-ttl": 30_000,
+      "x-dead-letter-exchange": "",
+      "x-dead-letter-routing-key": QUEUES.CALL_RING_TIMEOUT_DLX,
+    },
+  });
+
+  // Dead-letter destination: the worker consumes from here after the 30s delay.
+  await channel.assertQueue(QUEUES.CALL_RING_TIMEOUT_DLX, {
+    durable: true,
   });
 }
 

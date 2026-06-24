@@ -272,6 +272,16 @@ CALL_RING_TIMEOUT_DLX: "call_ring_timeout_dlx" // dead-letter destination, worke
 
 ---
 
+## Call Router Security Model (enforced in call.ts — do not regress)
+- **Procedure base:** `initiate` + `addParticipant` use `callingProcedure` (need CALLING permission). `accept`/`reject`/`getJoinToken`/`cancel`/`end`/`list` use `orgMemberProcedure` — receiving/joining a call you were invited to must NOT require calling permission. They are gated by in-handler checks instead.
+- **Every call lookup is org-scoped** via `getOrgCall(db, callId, orgId)` — `and(eq(id), eq(orgId))`. Never look up a call by id alone.
+- **Token minting requires participation:** `getJoinToken`/`accept` only mint a LiveKit token after confirming a non-removed `callParticipant` row. Channel calls: `getJoinToken` verifies `channelMember` membership and inserts the participant row on first join.
+- **`end` is host-only** (`actor.role === "host"`). **`cancel` is initiator-only.**
+- **`initiate` validates** all `calleeIds` are org members (DM) / caller is a channel member (channel).
+- **`list`** returns only calls the requester participated in (never the whole org's history).
+- **Webhook** (`livekit-webhook.ts`) throws at load if `LIVEKIT_API_KEY/SECRET` missing (fail closed) — signature is verified by `WebhookReceiver`.
+- `callParticipant` has a **unique index on `(callId, userId)`** — prevents duplicate rows from concurrent joins.
+
 ## Host Controls
 - Mute individual participant (LiveKit `room.muteTrack`)
 - Remove participant (LiveKit `room.removeParticipant` + mark `callParticipant.isRemoved = true`)

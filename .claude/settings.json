@@ -3,7 +3,18 @@
     "allow": [
       "Bash(mkdir -p /Users/ashishpandey/Work/WorkHolo/work-holo/.claude/skills/calling-context)",
       "Bash(docker compose *)",
-      "Bash(grep -E \"\\\\.\\(ts|js\\)$\")"
+      "Bash(grep -E \"\\\\.\\(ts|js\\)$\")",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(json.dumps\\({**d.get\\('dependencies',{}\\), **d.get\\('devDependencies',{}\\)}, indent=2\\)\\)\")",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(d.get\\('dependencies',{}\\), indent=2\\)\\)\")",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(d.get\\('scripts',{}\\), indent=2\\)\\)\")",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(d.get\\('workspaces'\\)\\)\")",
+      "Bash(timeout 25 bun -e ' *)",
+      "Bash(grep -v \"^$\")",
+      "Bash(curl -s -u admin:admin http://localhost:15672/api/queues/%2F/call_ring_timeout)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\('messages:', d.get\\('messages'\\)\\)\")",
+      "Bash(curl -s -u admin:admin http://localhost:15672/api/queues/%2F/call_ring_timeout_dlx)",
+      "Bash(head -5 /Users/ashishpandey/Work/WorkHolo/work-holo/apps/web/src/routes/\\\\\\(authenticated\\\\\\)/org/\\\\$slug/workspace/communication/channels/\\\\$channelId/index.tsx)",
+      "Read(//Users/ashishpandey/Work/WorkHolo/work-holo/apps/web/src/routes/\\(authenticated\\)/org/$slug/workspace/communication/channels/$channelId/**)"
     ],
     "additionalDirectories": [
       "/Users/ashishpandey/Work/WorkHolo/work-holo/.claude/skills"

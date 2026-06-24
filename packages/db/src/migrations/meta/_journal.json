@@ -22,6 +22,20 @@
       "when": 1774950965163,
       "tag": "0002_sad_rogue",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1781215172811,
+      "tag": "0003_faithful_terror",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1781216398435,
+      "tag": "0004_chubby_maddog",
+      "breakpoints": true
     }
   ]
 }

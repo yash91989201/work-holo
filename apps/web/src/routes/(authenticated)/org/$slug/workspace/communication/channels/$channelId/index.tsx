@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { ChannelCallBanner } from "@/components/modules/communication/calls/channel-call-banner";
 import { MessageComposer } from "@/components/modules/communication/channels/message-composer";
 import { MaximizedMessageComposer } from "@/components/modules/communication/channels/message-composer/maximized-message-composer";
 import { MessageList } from "@/components/modules/communication/channels/message-list";
@@ -25,6 +26,7 @@ function RouteComponent() {
 
   return (
     <div className="flex min-h-0 min-w-0 flex-1 flex-col bg-background shadow-sm">
+      <ChannelCallBanner channelId={id} />
       <div className="page-gradient flex min-h-0 min-w-0 flex-1 flex-col">
         <MessageList key={id} />
         <MessageComposer channelId={id} />

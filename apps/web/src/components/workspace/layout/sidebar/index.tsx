@@ -8,6 +8,7 @@ import {
 import { Suspense } from "react";
 import { OrgSwitcher } from "@/components/org/org-switcher";
 import { AttendanceGroup } from "./groups/attendance";
+import { CallsGroup } from "./groups/calls";
 import { ChannelGroup } from "./groups/channel";
 import { DmGroup } from "./groups/dm";
 import { FilesGroup } from "./groups/files";
@@ -36,6 +37,9 @@ export function Sidebar({
         <FilesGroup />
         <Suspense fallback={<DmGroup.Fallback />}>
           <DmGroup />
+        </Suspense>
+        <Suspense fallback={<CallsGroup.Fallback />}>
+          <CallsGroup />
         </Suspense>
       </SidebarContent>
       <SidebarRail />
