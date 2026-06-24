@@ -14,7 +14,7 @@
     "@work-holo/config": "workspace:*",
     "@work-holo/infrastructure": "workspace:*",
     "amqplib": "^2.0.1",
-    "evlog": "^2.19.1",
+    "evlog": "^2.19.2",
     "drizzle-orm": "^0.45.2",
     "nodemailer": "^9.0.1",
     "react": "^19.2.7",
