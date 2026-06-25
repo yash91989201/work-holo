@@ -743,6 +743,8 @@ export async function seedDevBootstrap(): Promise<void> {
   );
   await writeCredentialsToEnv(bootstrapUsers);
 
+  await Redis.close();
+
   console.log("  💬 Channels ready: general + one team channel per team");
   console.log("  🔐 Credentials written to apps/server/.env");
   for (const config of bootstrapUsers) {

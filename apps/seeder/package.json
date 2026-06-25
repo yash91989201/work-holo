@@ -16,6 +16,7 @@
     "@work-holo/auth": "workspace:*",
     "@work-holo/db": "workspace:*",
     "@work-holo/env": "workspace:*",
+    "@work-holo/infrastructure": "workspace:*",
     "@work-holo/permission": "workspace:*",
     "better-auth": "^1.5.5",
     "drizzle-orm": "^0.45.2"
