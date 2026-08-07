@@ -142,10 +142,10 @@ export function HeroSection() {
 
               <a
                 className="inline-flex items-center gap-2 font-medium text-muted-foreground text-sm transition-colors hover:text-foreground"
-                href="tel:+18883338181"
+                href="tel:+919014065638"
               >
                 <IconPhone className="size-5 text-primary" />
-                +91-9780970564
+                +91 90140 65638
               </a>
             </motion.div>
 

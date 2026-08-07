@@ -92,7 +92,7 @@ export function ContactSection() {
                       Contact Info:
                     </h4>
                     <p className="mb-1 text-muted-foreground text-sm">
-                      +91-9780970564
+                      +91 90140 65638
                     </p>
                     <p className="break-all text-muted-foreground text-sm">
                       hr@workholo.com
@@ -174,7 +174,7 @@ export function ContactSection() {
                           {(field) => (
                             <field.Input
                               label="Phone Number *"
-                              placeholder="+1 (555) 000-0000"
+                              placeholder="+91 90140 65638"
                               type="tel"
                             />
                           )}

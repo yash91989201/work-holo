@@ -283,9 +283,9 @@ export function Footer() {
 
                     <a
                       className="text-muted-foreground transition-colors hover:text-primary"
-                      href="tel:++91-9780970564"
+                      href="tel:+919014065638"
                     >
-                      +97809 70564
+                      +91 90140 65638
                     </a>
                   </div>
 
